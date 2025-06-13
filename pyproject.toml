@@ -61,6 +61,7 @@ formatting = [
 ]
 tests = [
     "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
     "pytest-cov>=6.1.1",
 ]
 changelog = [
@@ -96,7 +97,9 @@ docbuild = "docbuild.__main__:cli"
 # --- Setuptools configuration ---
 [tool.setuptools]
 package-dir = {"" = "src"}
-package-data = { "docbuild" = ["py.typed"] }
+package-data = { "docbuild" = ["py.typed",
+                               "config/xml/data/*.rnc",
+                               "config/xml/data/*.xsl"]}
 include-package-data = true
 
 [tool.setuptools.dynamic]

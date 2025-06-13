@@ -1,3 +1,13 @@
 [run]
 concurrency = multiprocessing
 parallel = true
+
+[report]
+precision = 1
+exclude_lines =
+   pragma: no cover
+   raise NotImplementedError
+   if TYPE_CHECKING:
+   if __name__ == .__main__.:
+   if 0:
+   if False:

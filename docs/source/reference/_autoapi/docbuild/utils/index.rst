@@ -16,6 +16,7 @@ Submodules
    :maxdepth: 1
 
    /reference/_autoapi/docbuild/utils/convert/index
+   /reference/_autoapi/docbuild/utils/decorators/index
    /reference/_autoapi/docbuild/utils/merge/index
 
 

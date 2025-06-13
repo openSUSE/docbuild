@@ -14,8 +14,10 @@ from ..constants import (
     PROJECT_DIR,
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
+from ..logging import setup_logging
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_validate import validate
 from .config import config
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
@@ -25,6 +27,7 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
     name=APP_NAME,
     context_settings={'show_default': True, 'help_option_names': ['-h', '--help']},
     help='Main CLI tool for document operations.',
+    invoke_without_command=True,
 )
 @click.version_option(
     __version__,
@@ -86,6 +89,14 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
+    setup_logging(cliverbosity=verbose)
+
+    if ctx.invoked_subcommand is None:
+        # If no subcommand is invoked, show the help message
+        click.echo(10* '-')
+        click.echo(ctx.get_help())
+        ctx.exit(0)
+
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
@@ -123,3 +134,4 @@ def cli(
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
+cli.add_command(validate)

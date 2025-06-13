@@ -27,6 +27,7 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_build/index
    /reference/_autoapi/docbuild/cli/cmd_c14n/index
    /reference/_autoapi/docbuild/cli/cmd_cli/index
+   /reference/_autoapi/docbuild/cli/cmd_validate/index
    /reference/_autoapi/docbuild/cli/config/index
    /reference/_autoapi/docbuild/cli/context/index
    /reference/_autoapi/docbuild/cli/defaults/index

@@ -10,7 +10,8 @@
         ".pytest_cache/": true,
         ".ruff_cache/": true,
         ".venv*/": true,
-        "**/*.egg-info/": true
+        "**/*.egg-info/": true,
+	"tmp/": true
     },
     "python.analysis.diagnosticsSource": "Pyright",
     "python.analysis.typeCheckingMode": "standard",

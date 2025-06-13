@@ -152,3 +152,6 @@ BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
 """The directory where log files will be stored, typically at
 :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
 Directory Specification."""
+
+XMLDATADIR = Path(__file__).parent / 'config' / 'xml' / 'data'
+"""Directory where additional files (RNC, XSLT) for XML processing are stored."""

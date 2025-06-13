@@ -13,3 +13,12 @@ This is a unsorted collection of ideas what could be implemented.
 
 * `Deliverable`
    support subdeliverables?
+
+* Implement a "check environment" function.
+  Before we really do anything, this check some prerequisites:
+   * Checks if certain commands are available (e.g. `git`, `jing`)
+   * Check if commands have a minimum version
+   * Check if the available space is enough (can be customized in the envconfig)
+   * More...?
+  
+  This should help that it breaks in the middle of, for example, a build operation.

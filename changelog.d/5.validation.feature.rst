@@ -1,0 +1,3 @@
+Implement :command:`validate` subcommand
+
+This subcommand is used to validate XML configuration files against a RelaxNG schema. It checks both the structure and semantic correctness of the XML files to ensure they conform to the expected format.
