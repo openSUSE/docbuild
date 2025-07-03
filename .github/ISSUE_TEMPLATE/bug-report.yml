@@ -42,7 +42,7 @@ body:
         - Linux
         - Windows
         - macOS
-        - Other
+        - Other (describe below)
     validations:
       required: true
 
@@ -62,6 +62,9 @@ body:
     attributes:
       label: Expected Behavior
       description: What did you expect to happen?
+      placeholder: |
+        I expected the command to return this output...
+        Or, I expected the application to behave like this...
     validations:
       required: false
 
@@ -70,6 +73,9 @@ body:
     attributes:
       label: Actual Behavior
       description: What actually happened?
+      placeholder: |
+        Instead, I got this output...
+        Or, the application crashed with this error...
     validations:
       required: false
 
@@ -79,5 +85,11 @@ body:
       label: Additional Information
       description: |
         Any other relevant information? (e.g., logs, environment variables, installed packages)
+      placeholder: |
+        - Logs:
+        - Output from the command:
+        - Error messages:
+        - Environment variables:
+        - Installed packages:
     validations:
       required: false

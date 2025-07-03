@@ -1,0 +1,48 @@
+name: Pull Request
+description: Template for pull requests
+
+
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you for your pull request! Please fill in the checklist below."
+
+  - type: input
+    id: description
+    attributes:
+      label: Description
+      description: Describe your changes.
+      placeholder: adds logging to the application
+    validations:
+      required: true
+
+  - type: input
+    id: related_issues
+    attributes:
+      label: Related Issues
+      description: |
+        List any related issues or pull requests.
+        If not applicable, leave it blank or write "n/a".
+      placeholder: e.g., Fixes #123, Closes #456
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: type_of_change
+    attributes:
+      label: Type of Change
+      options:
+        - label: Bug fix
+        - label: New feature
+        - label: Documentation update
+        - label: Other (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: Additional Notes
+      description: Add any other context or screenshots here.
+    validations:
+      required: false
