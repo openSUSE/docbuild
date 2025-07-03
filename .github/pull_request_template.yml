@@ -39,10 +39,20 @@ body:
     validations:
       required: true
 
+  - type: checkboxes
+    id: breaking_changes
+    attributes:
+      label: Breaking Changes or Deprecations
+      options:
+        - label: This PR introduces breaking changes (describe below)
+        - label: This PR deprecates existing functionality (describe below)
+    validations:
+      required: false
+
   - type: textarea
     id: additional_notes
     attributes:
       label: Additional Notes
-      description: Add any other context or screenshots here.
+      description: Add any other context.
     validations:
       required: false

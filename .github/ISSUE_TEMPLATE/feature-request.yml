@@ -2,6 +2,7 @@ name: Feature Request
 description: Suggest an idea or request a new feature.
 labels: [enhancement]
 assignees: [tomschr]
+type: task
 
 body:
   - type: markdown

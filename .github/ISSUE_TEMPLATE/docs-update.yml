@@ -1,6 +1,9 @@
 name: Documentation Update
 description: Propose improvements or corrections to the documentation.
 labels: [documentation]
+type: task
+
+
 body:
   - type: markdown
     attributes:
