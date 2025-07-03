@@ -1,11 +1,11 @@
 name: Pull Request
 description: Template for pull requests
 
-
 body:
   - type: markdown
     attributes:
-      value: "Thank you for your pull request! Please fill in the checklist below."
+      value: |
+        Thank you for your pull request! Please fill in the checklist below.
 
   - type: input
     id: description
