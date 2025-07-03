@@ -1,0 +1,35 @@
+name: Feature Request
+description: Suggest an idea or request a new feature.
+labels: [enhancement]
+assignees: [tomschr]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your suggestion! Please provide as much detail as possible.
+
+  - type: textarea
+    id: situation
+    attributes:
+      label: Situation
+      description: A clear and concise description of what the feature is. Ex. I'm always frustrated when [...]
+      placeholder: Describe the situation...
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+      description: Why is this feature useful? What problem does it solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Possible Implementation
+      description: Do you have any ideas on how this could be implemented?
+    validations:
+      required: false
