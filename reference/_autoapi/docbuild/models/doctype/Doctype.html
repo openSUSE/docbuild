@@ -490,15 +490,10 @@
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.doctype.</span></span><span class="sig-name descname"><span class="pre">Doctype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.doctype.Doctype" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
-digraph inheritancef7ccbd15aa {
-bgcolor=transparent;
-rankdir=LR;
-size=&quot;8.0, 12.0&quot;;
-  &quot;BaseModel&quot; [fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=&quot;setlinewidth(0.5),filled&quot;,tooltip=&quot;!!! abstract \&quot;Usage Documentation\&quot;&quot;];
-  &quot;Doctype&quot; [URL=&quot;#docbuild.models.doctype.Doctype&quot;,fillcolor=white,fontname=&quot;Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans&quot;,fontsize=10,height=0.25,shape=box,style=&quot;setlinewidth(0.5),filled&quot;,target=&quot;_top&quot;,tooltip=&quot;A \&quot;doctype\&quot; that comprises of a product, docset, lifecycle, and language.&quot;];
-  &quot;BaseModel&quot; -&gt; &quot;Doctype&quot; [arrowsize=0.5,style=&quot;setlinewidth(0.5)&quot;];
-}
-<p>A “doctype” that comprises of a product, docset, lifecycle, and language.</p>
+<div class="graphviz"><img src="../../../../../_images/inheritance-9fbd967259efd1a26f3b2f1de9b1bf1717bc5eaf.png" alt="Inheritance diagram of docbuild.models.doctype.Doctype" usemap="#inheritancef7ccbd15aa" class="inheritance graphviz" /></div>
+<map id="inheritancef7ccbd15aa" name="inheritancef7ccbd15aa">
+<area shape="rect" id="node2" href="#docbuild.models.doctype.Doctype" target="_top" title="A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language." alt="" coords="148,5,224,31"/>
+</map><p>A “doctype” that comprises of a product, docset, lifecycle, and language.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
 <span class="go">Doctype(product=&lt;Product.SLES: &#39;sles&#39;&gt;, docset=[&#39;15-SP6&#39;],     lifecycle=&lt;LifecycleFlag.SUPPORTED: &#39;supported&#39;&gt;,     langs=[LanguageCode(language=&#39;en-us&#39;), LanguageCode(language=&#39;de-de&#39;)])</span>
 </pre></div>
