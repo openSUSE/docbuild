@@ -1,0 +1,46 @@
+name: Build and Deploy Sphinx Docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - '.github/workflows/sphinx-pages.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install the latest version of uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "docbuild"
+
+      - name: Print the installed version
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group docs
+
+      - name: Build documentation
+        run: |
+          uv run make -C docs html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html
+    
+      - name: Print documentation URL
+        run: |
+            echo "Your documentation will be available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
