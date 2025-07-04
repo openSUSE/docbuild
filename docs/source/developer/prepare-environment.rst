@@ -1,7 +1,7 @@
-.. _setting-devel-environment:
+.. _prepare-your-devel-environment:
 
-Setting Development Environment
-===============================
+Preparing Your Development Environment
+======================================
 
 This document provides instructions for setting up a development environment for this project.
 
@@ -13,6 +13,14 @@ This document provides instructions for setting up a development environment for
    However, if you get used to activating your Python VENV's, it's
    possible to do so.
 
+
+
+.. include:: devel-helpers.rst
+
+
+
+Starting the development environment
+------------------------------------
 
 The following steps are recommended to set up your development environment:
 
@@ -33,14 +41,15 @@ The following steps are recommended to set up your development environment:
 
    .. code-block:: shell-session
 
-      $ uv sync --group devel
+      $ uv sync --frozen --group devel
 
-4. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls.
+   The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
+
+4. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
 
    .. code-block:: shell-session
 
       $ source devel/activate-aliases.sh
 
-   This helps to shorten the command names, making it easier to work with the project. For example, you can use :command:`upytest` instead of typing :command:`uv run pytest` for running the test suite.
 
-After completing these steps, you will have a virtual environment set up with the necessary dependencies for development.
+After completing these steps, your development environment is ready to go.

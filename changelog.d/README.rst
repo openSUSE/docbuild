@@ -10,14 +10,9 @@ a changelog, in our case the :file:`CHANGELOG.rst`, is read by our *users*.
 Therefor, any description should be aimed to users instead of describing
 internal changes which are only relevant to developers.
 
-To avoid merge conflicts, we use the `Towncrier`_ package to manage our changelog.
-
 The directory :file:`changelog.d` contains "newsfragments" which are short
-ReST-formatted files.
+ReST-formatted files. Each newsfragment describes a change in the project. A change is usually from a pull request or issue.
 On release, those news fragments are compiled into our :file:`CHANGELOG.rst`.
-
-You don't need to install ``towncrier`` yourself, use the :command:`tox` command
-to call the tool.
 
 We recommend to follow the steps to make a smooth integration of your changes:
 
@@ -26,9 +21,10 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
     <ISSUE>.<TYPE>.rst
 
-   where ``<ISSUE>`` is the GitHub issue number.
-   In case you have no issue but a pull request, prefix your number with ``pr``.
-   ``<TYPE>`` is one of:
+   where ``<ISSUE>`` is the GitHub pull request or issue number.
+   If you have changes that are not associated with an issue or pull request,
+   start with a ``+`` (plus) sign and a short description
+   The ``<TYPE>`` is one of:
 
    * ``breaking``: describes a change that breaks backward compatibility.
    * ``bugfix``: fixes a reported bug.
@@ -39,13 +35,15 @@ We recommend to follow the steps to make a smooth integration of your changes:
    * ``removal``: removes obsolete or deprecated features.
    * ``infra``: improves the infrastructure, e.g. build or test system.
 
-   For example: ``123.feature.rst``, ``pr233.removal.rst``, ``456.bugfix.rst`` etc.
-   If you have changes that are not associated with an issue or pull request,
-   start with a "+" sign and a short description, for example, ``+add-json.feature.rst``. 
-   
-   Create the new file with the command::
+   For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
 
-     uv run towncrier create -c "Description" 123.feature.rst
+   Create the new file with the command:
+
+   .. code-block:: shell
+      :caption: Create a new newsfragment file
+      :name: towncrier-create
+
+      towncrier create -c "Description" 123.feature.rst
 
    The file is created int the :file:`changelog.d/` directory.
 
@@ -57,11 +55,11 @@ We recommend to follow the steps to make a smooth integration of your changes:
 
 #. Check your changes with::
 
-     uv run towncrier check
+     towncrier check
 
 #. Optionally, build a draft version of the changelog file with the command::
 
-    uv run towncrier build --draft
+    towncrier build --draft
 
 #. Commit all your changes and push it.
 
@@ -70,7 +68,7 @@ This finishes your steps.
 
 On release, the maintainer compiles a new :file:`CHANGELOG.rst` file by running::
 
-   uv run towncrier build
+   towncrier build
 
 This will remove all newsfragments inside the :file:`changelog.d` directory,
 making it ready for the next release.

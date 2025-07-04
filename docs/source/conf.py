@@ -26,6 +26,7 @@ rst_prolog = f"""
 .. |gh_repo| replace:: {gh_repo_url}
 .. |gh_repo_url| replace:: `{gh_repo_slug} <{gh_repo_url}>`__
 .. |uv| replace:: :command:`uv`
+.. |gh_release| replace:: `Releases <{gh_repo_url}/releases/>`__
 """
 
 # -- General configuration
