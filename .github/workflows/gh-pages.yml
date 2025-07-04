@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - 'docs/**'
-      - '.github/workflows/sphinx-pages.yml'
+      - '.github/workflows/gh-pages.yml'
 
 jobs:
   build-and-deploy:
