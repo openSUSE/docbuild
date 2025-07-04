@@ -1,0 +1,8 @@
+
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+html {
+    --pst-font-family-base: SUSE, var(--pst-font-family-base-system);
+    --pst-font-family-heading: SUSE, sans-serif, var(--pst-font-family-base-system);
+    --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
+}
