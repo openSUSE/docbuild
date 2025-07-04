@@ -5,7 +5,7 @@ docbuild.config
 
 .. autoapi-nested-parse::
 
-   Configuration for app and env config.
+   Tools for app, env, and XML config.
 
 
 

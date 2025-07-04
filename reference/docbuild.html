@@ -378,9 +378,11 @@
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/config/index.html">docbuild.cli.config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/context/index.html">docbuild.cli.context</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/process_validation/index.html">docbuild.cli.process_validation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -405,7 +407,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/contextmgr/index.html">docbuild.utils.contextmgr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/decorators/index.html">docbuild.utils.decorators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/paths/index.html">docbuild.utils.paths</a></li>
 </ul>
 </details></li>
 </ul>
@@ -618,6 +622,20 @@ with the following properties:</p>
 </div>
 </section>
 </section>
+<section id="docbuild-validate">
+<h3>validate<a class="headerlink" href="#docbuild-validate" title="Link to this heading">#</a></h3>
+<p>CLI interface to validate XML configuration files.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>XMLFILES<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-validate-arg-XMLFILES">
+<span class="sig-name descname"><span class="pre">XMLFILES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-validate-arg-XMLFILES" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
 </section>
 </section>
 
@@ -676,6 +694,7 @@ with the following properties:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-env">env</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-validate">validate</a></li>
 </ul>
 </li>
 </ul>

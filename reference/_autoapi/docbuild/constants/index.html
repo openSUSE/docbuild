@@ -50,7 +50,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="docbuild.logging" href="../logging/index.html" />
-    <link rel="prev" title="docbuild.config.xml.list" href="../config/xml/list/index.html" />
+    <link rel="prev" title="docbuild.config.xml.stitch" href="../config/xml/stitch/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -378,9 +378,11 @@
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/config/index.html">docbuild.cli.config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/context/index.html">docbuild.cli.context</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/process_validation/index.html">docbuild.cli.process_validation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -405,7 +407,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../utils/contextmgr/index.html">docbuild.utils.contextmgr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../utils/convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/decorators/index.html">docbuild.utils.decorators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../utils/merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/paths/index.html">docbuild.utils.paths</a></li>
 </ul>
 </details></li>
 </ul>
@@ -553,6 +557,9 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
 <td><p>The directory where log files will be stored, typically at</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
+<td><p>Directory where additional files (RNC, XSLT) for XML processing are stored.</p></td>
 </tr>
 </tbody>
 </table>
@@ -704,6 +711,12 @@ used in production.</p>
 Directory Specification.</p>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.XMLDATADIR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XMLDATADIR</span></span><a class="headerlink" href="#docbuild.constants.XMLDATADIR" title="Link to this definition">#</a></dt>
+<dd><p>Directory where additional files (RNC, XSLT) for XML processing are stored.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -718,12 +731,12 @@ Directory Specification.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../config/xml/list/index.html"
+       href="../config/xml/stitch/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.config.xml.list</p>
+        <p class="prev-next-title">docbuild.config.xml.stitch</p>
       </div>
     </a>
     <a class="right-next"
@@ -779,6 +792,7 @@ Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 </ul>
 </li>
 </ul>

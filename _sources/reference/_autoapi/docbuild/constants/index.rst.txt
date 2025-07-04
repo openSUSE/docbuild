@@ -37,6 +37,7 @@ Attributes
    docbuild.constants.ENV_CONFIG_FILENAME
    docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME
    docbuild.constants.BASE_LOG_DIR
+   docbuild.constants.XMLDATADIR
 
 
 Module Contents
@@ -182,5 +183,10 @@ Module Contents
    The directory where log files will be stored, typically at
    :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
    Directory Specification.
+
+
+.. py:data:: XMLDATADIR
+
+   Directory where additional files (RNC, XSLT) for XML processing are stored.
 
 
