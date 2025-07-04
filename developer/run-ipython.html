@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/run-ipython';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Howto" href="howto.html" />
+    <link rel="next" title="Updating the Changelog" href="update-changelog.html" />
     <link rel="prev" title="Running the Test Suite" href="run-testsuite.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -368,11 +368,13 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="set-environment.html">Setting Development Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="list-dependencies.html">Listing dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Running IPython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 </div>
@@ -437,10 +439,10 @@
   <section id="running-ipython">
 <h1>Running IPython<a class="headerlink" href="#running-ipython" title="Link to this heading">#</a></h1>
 <p><a class="reference external" href="https://ipython.org/">IPython</a> is a powerful interactive shell that can be used for development and testing of the code in this repository.</p>
-<p>This repository provides a convenient way to run IPython with the current environment, allowing you to easily import and test the code without needing to modify the Python path.</p>
+<p>This repository provides a convenient way to run IPython with the current environment, allowing you to easily import and test the code without needing to modify the Python path:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Running IPython using <strong class="command">uv</strong></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>ipython<span class="w"> </span>--ipython-dir<span class="o">=</span>.ipython
+<div class="code-block-caption"><span class="caption-text">Running IPython using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">uipython</span></a></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uipython
 </pre></div>
 </div>
 </div>
@@ -448,10 +450,10 @@
 import without changing the import path:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Interactive IPython session</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span>[...]
-In [1]: from docbuild.cli.context import Doctype
-In [2]: Doctype
-Out[2]: docbuild.models.doctype.Doctype
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">[...]</span>
+<span class="go">In [1] from docbuild.cli.context import Doctype</span>
+<span class="go">In [2]: Doctype</span>
+<span class="go">Out[2]: docbuild.models.doctype.Doctype</span>
 </pre></div>
 </div>
 </div>
@@ -477,11 +479,11 @@ Out[2]: docbuild.models.doctype.Doctype
       </div>
     </a>
     <a class="right-next"
-       href="howto.html"
+       href="update-changelog.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Howto</p>
+        <p class="prev-next-title">Updating the Changelog</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -50,7 +50,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Updating a specific package" href="update-package.html" />
-    <link rel="prev" title="Setting Development Environment" href="set-environment.html" />
+    <link rel="prev" title="Preparing Your Development Environment" href="prepare-environment.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -368,11 +368,13 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="set-environment.html">Setting Development Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Listing dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 </div>
@@ -437,51 +439,51 @@
   <section id="listing-dependencies">
 <h1>Listing dependencies<a class="headerlink" href="#listing-dependencies" title="Link to this heading">#</a></h1>
 <p>If you want to get an overview of the dependencies used in the project, you can use the <cite>uv</cite> command to list them:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree
-<span class="go">Resolved 53 packages in 15ms</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--frozen
+<span class="go">Resolved 78 packages in 290ms</span>
 <span class="go">docbuild</span>
 <span class="go">├── click v8.2.1</span>
 <span class="go">├── jinja2 v3.1.6</span>
 <span class="go">│   └── markupsafe v3.0.2</span>
-<span class="go">├── lxml v5.4.0</span>
-<span class="go">├── pydantic v2.11.5</span>
+<span class="go">├── lxml v6.0.0</span>
+<span class="go">├── pydantic v2.11.7</span>
 <span class="go">│   ├── annotated-types v0.7.0</span>
 <span class="go">│   ├── pydantic-core v2.33.2</span>
-<span class="go">│   │   └── typing-extensions v4.14.0</span>
-<span class="go">│   ├── typing-extensions v4.14.0</span>
+<span class="go">│   │   └── typing-extensions v4.14.1</span>
+<span class="go">│   ├── typing-extensions v4.14.1</span>
 <span class="go">│   └── typing-inspection v0.4.1</span>
-<span class="go">│       └── typing-extensions v4.14.0</span>
+<span class="go">│       └── typing-extensions v4.14.1</span>
 <span class="go">├── rich v14.0.0</span>
 <span class="go">│   ├── markdown-it-py v3.0.0</span>
 <span class="go">│   │   └── mdurl v0.1.2</span>
-<span class="go">│   └── pygments v2.19.1</span>
+<span class="go">│   └── pygments v2.19.2</span>
 <span class="go">└── tomlkit v0.13.3</span>
 </pre></div>
 </div>
 <p>This gives a tree-like structure of the dependencies, showing the main packages and their sub-dependencies. The output includes the package names and their versions, allowing you to see which libraries are being used in the project.</p>
 <p>In case you want to list outdated dependencies, use the option <code class="docutils literal notranslate"><span class="pre">--outdated</span></code>:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--outdated
-<span class="go">Resolved 53 packages in 15ms</span>
+<span class="go">Resolved 78 packages in 15ms</span>
 <span class="go">docbuild</span>
 <span class="go">├── click v8.2.1</span>
 <span class="go">├── jinja2 v3.1.6</span>
 <span class="go">│   └── markupsafe v3.0.2</span>
-<span class="go">├── lxml v5.4.0</span>
-<span class="go">├── pydantic v2.11.5</span>
+<span class="go">├── lxml v6.0.0</span>
+<span class="go">├── pydantic v2.11.7</span>
 <span class="go">│   ├── annotated-types v0.7.0</span>
-<span class="go">│   ├── pydantic-core v2.33.2 (latest: v2.34.1)</span>
-<span class="go">│   │   └── typing-extensions v4.14.0</span>
-<span class="go">│   ├── typing-extensions v4.14.0</span>
+<span class="go">│   ├── pydantic-core v2.33.2 (latest: v2.35.2)</span>
+<span class="go">│   │   └── typing-extensions v4.14.1</span>
+<span class="go">│   ├── typing-extensions v4.14.1</span>
 <span class="go">│   └── typing-inspection v0.4.1</span>
-<span class="go">│       └── typing-extensions v4.14.0</span>
+<span class="go">│       └── typing-extensions v4.14.1</span>
 <span class="go">├── rich v14.0.0</span>
 <span class="go">│   ├── markdown-it-py v3.0.0</span>
 <span class="go">│   │   └── mdurl v0.1.2</span>
-<span class="go">│   └── pygments v2.19.1</span>
+<span class="go">│   └── pygments v2.19.2</span>
 <span class="go">└── tomlkit v0.13.3</span>
 </pre></div>
 </div>
-<p>As you can see, the output indicates that the package <code class="docutils literal notranslate"><span class="pre">pydantic-core</span></code> has a newer version available (v2.34.1), while the others are up to date.</p>
+<p>As you can see, the output indicates that the package <code class="docutils literal notranslate"><span class="pre">pydantic-core</span></code> has a newer version available (v2.35.2), while the others are up to date.</p>
 </section>
 
 
@@ -495,12 +497,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="set-environment.html"
+       href="prepare-environment.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Setting Development Environment</p>
+        <p class="prev-next-title">Preparing Your Development Environment</p>
       </div>
     </a>
     <a class="right-next"

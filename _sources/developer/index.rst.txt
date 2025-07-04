@@ -7,9 +7,11 @@ Developer Guide
 
    concepts
    design
-   set-environment
+   prepare-environment
    list-dependencies
    update-package
    run-testsuite
    run-ipython
+   update-changelog
+   create-release
    howto

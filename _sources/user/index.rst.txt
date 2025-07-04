@@ -9,3 +9,4 @@ User Guide
    run-docbuild
    config/index
    build
+   validate

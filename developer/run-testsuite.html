@@ -368,11 +368,13 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="set-environment.html">Setting Development Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="list-dependencies.html">Listing dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 </div>
@@ -436,21 +438,37 @@
                   
   <section id="running-the-test-suite">
 <h1>Running the Test Suite<a class="headerlink" href="#running-the-test-suite" title="Link to this heading">#</a></h1>
-<p>To run the test suite for this project, you need to have completed the setup of your development environment as described in the <a class="reference internal" href="set-environment.html#setting-devel-environment"><span class="std std-ref">Setting Development Environment</span></a> topic.</p>
+<p>To run the test suite for this project, you need to have completed the setup of your development environment as described in the <a class="reference internal" href="prepare-environment.html#prepare-your-devel-environment"><span class="std std-ref">Preparing Your Development Environment</span></a> topic.</p>
 <p>To run the full test suite, use the following command:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>pytest
+<div class="literal-block-wrapper docutils container" id="running-pytest-with-uv">
+<div class="code-block-caption"><span class="caption-text">Running pytest directly with <strong class="command">uv</strong></span><a class="headerlink" href="#running-pytest-with-uv" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>--frozen<span class="w"> </span>pytest
 </pre></div>
 </div>
-<p>This command will execute all the tests defined in the project. The test suite is designed to ensure that all components of the project are functioning correctly and to catch any regressions.</p>
-<p>In case you want to run a specific test or a subset of tests, you can specify the path to the test file or the test function. For example:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_module.py
-<span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_module.py::test_function_name
+</div>
+<p>or use the alias (see <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">Development helper tools</span></a> for more information):</p>
+<div class="literal-block-wrapper docutils container" id="running-upytest">
+<div class="code-block-caption"><span class="caption-text">Running pytest using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">upytest</span></a></span><a class="headerlink" href="#running-upytest" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest
 </pre></div>
+</div>
+</div>
+<p>This command will execute all the tests defined in the project. The test suite is designed to ensure that all components of the project are functioning correctly and to catch any regressions.</p>
+<p>In case you want to run a specific test or a subset of tests, specify the path to the test file or the test function. For example:</p>
+<div class="literal-block-wrapper docutils container" id="running-specific-tests">
+<div class="code-block-caption"><span class="caption-text">Running specific tests</span><a class="headerlink" href="#running-specific-tests" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest<span class="w"> </span>tests/test_module.py
+<span class="gp">$ </span>upytest<span class="w"> </span>tests/test_module.py::test_function_name
+</pre></div>
+</div>
 </div>
 <p>In the first example, all tests in <cite>test_module.py</cite> will be executed, while in the second example, only the specific test function <cite>test_function_name</cite> will be run.</p>
 <p>If one of the test fails and you want to repeat the test run after you have fixed the issue, use the <code class="docutils literal notranslate"><span class="pre">--lf</span></code>/<code class="docutils literal notranslate"><span class="pre">--last-failed</span></code> option. For example:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--lf
+<div class="literal-block-wrapper docutils container" id="running-last-failed-tests">
+<div class="code-block-caption"><span class="caption-text">Running only the last failed tests</span><a class="headerlink" href="#running-last-failed-tests" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest<span class="w"> </span>--lf
 </pre></div>
+</div>
 </div>
 </section>
 
