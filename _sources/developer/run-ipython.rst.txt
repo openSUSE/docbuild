@@ -18,6 +18,6 @@ import without changing the import path:
    :caption: Interactive IPython session
 
    [...]
-   In [1] from docbuild.cli.context import Doctype
+   In [1]: from docbuild.cli.context import Doctype
    In [2]: Doctype
    Out[2]: docbuild.models.doctype.Doctype
