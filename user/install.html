@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/install';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Running docbuild" href="run-docbuild.html" />
+    <link rel="next" title="Configuring the Tool" href="config.html" />
     <link rel="prev" title="User Guide" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -367,13 +367,14 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Installing docbuild</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuring the Tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config/index.html">Showing configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing app’s configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing env’s configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing App’s Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing Env’s Configuration</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Building documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building Deliverables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validate.html">Validating XML configuration</a></li>
 </ul>
 </div>
@@ -441,7 +442,7 @@
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#prepare-installation"><span class="std std-ref">Preparing for Installation</span></a> - Prepare your environment for installation.</p></li>
 <li><p><a class="reference internal" href="#id1"><span class="std std-ref">Installing the tool</span></a> - Install the docbuild tool itself.</p></li>
-<li><p><a class="reference internal" href="#configuring-docbuild"><span class="std std-ref">Configuring the tool</span></a> - Configure the docbuild tool to suit your needs.</p></li>
+<li><p><a class="reference internal" href="config.html#configuring-docbuild"><span class="std std-ref">Configuring the Tool</span></a> - Configure the docbuild tool to suit your needs.</p></li>
 </ol>
 <section id="preparing-for-installation">
 <span id="prepare-installation"></span><h2>Preparing for Installation<a class="headerlink" href="#preparing-for-installation" title="Link to this heading">#</a></h2>
@@ -508,7 +509,7 @@ Run the following command:</p>
 <ol class="arabic" start="4">
 <li><p><strong>Install dependencies</strong></p>
 <p>Ensure you have Python 3.12 or higher installed, then install the required dependencies using pip:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
 <span class="go">Resolved 29 packages in 586ms</span>
 <span class="go">Built docbuild @ file:///.../docbuild</span>
 <span class="go">Installed 15 packages in 2.11s</span>
@@ -516,10 +517,6 @@ Run the following command:</p>
 </div>
 </li>
 </ol>
-</section>
-<section id="configuring-the-tool">
-<span id="configuring-docbuild"></span><h2>Configuring the tool<a class="headerlink" href="#configuring-the-tool" title="Link to this heading">#</a></h2>
-<p>TODO</p>
 </section>
 </section>
 
@@ -543,11 +540,11 @@ Run the following command:</p>
       </div>
     </a>
     <a class="right-next"
-       href="run-docbuild.html"
+       href="config.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Running docbuild</p>
+        <p class="prev-next-title">Configuring the Tool</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -572,7 +569,6 @@ Run the following command:</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-for-installation">Preparing for Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-the-tool">Installing the tool</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-the-tool">Configuring the tool</a></li>
 </ul>
   </nav></div>
 

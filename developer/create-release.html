@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/create-release';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Howto" href="howto.html" />
+    <link rel="next" title="Triggering Actions Manually" href="trigger-actions.html" />
     <link rel="prev" title="Updating the Changelog" href="update-changelog.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -375,6 +375,9 @@
 <li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Creating a New Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 </div>
@@ -445,7 +448,7 @@
 <li><p>Run the alias <strong class="command">bump-version.sh</strong> to update the version number in the project files. For example:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Bump the version number</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>bump-version.sh<span class="w"> </span>minor
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>bump-version.sh<span class="w"> </span>minor
 </pre></div>
 </div>
 </div>
@@ -459,8 +462,8 @@
 <p>For example, if you are releasing version 1.1.0, you would tag the commit as follows:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Tag the release commit</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>$<span class="w"> </span>git<span class="w"> </span>tag<span class="w"> </span><span class="m">1</span>.1.0
-<span class="w"> </span>$<span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="m">1</span>.1.0
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp"> $ </span>git<span class="w"> </span>tag<span class="w"> </span><span class="m">1</span>.1.0
+<span class="gp"> $ </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="m">1</span>.1.0
 </pre></div>
 </div>
 </div>
@@ -489,11 +492,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="howto.html"
+       href="trigger-actions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Howto</p>
+        <p class="prev-next-title">Triggering Actions Manually</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

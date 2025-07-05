@@ -6,6 +6,7 @@ User Guide
    :caption: Contents
 
    install
+   config
    run-docbuild
    config/index
    build

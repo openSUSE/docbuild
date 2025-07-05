@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating the Changelog &#8212; docbuild 0.9.0 documentation</title>
+    <title>Configuring the Tool &#8212; docbuild 0.9.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/update-changelog';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/config';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating a New Release" href="create-release.html" />
-    <link rel="prev" title="Running IPython" href="run-ipython.html" />
+    <link rel="next" title="Running docbuild" href="run-docbuild.html" />
+    <link rel="prev" title="Installing docbuild" href="install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -140,15 +140,15 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../user/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
     User Guide
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer/index.html">
     Developer Guide
   </a>
 </li>
@@ -275,15 +275,15 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../user/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
     User Guide
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer/index.html">
     Developer Guide
   </a>
 </li>
@@ -366,19 +366,16 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="list-dependencies.html">Listing dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updating the Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing docbuild</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Configuring the Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="config/index.html">Showing configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing App’s Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing Env’s Configuration</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="build.html">Building Deliverables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validate.html">Validating XML configuration</a></li>
 </ul>
 </div>
 </nav></div>
@@ -420,9 +417,9 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Updating the Changelog</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Configuring the Tool</span></li>
   </ul>
 </nav>
 </div>
@@ -439,78 +436,20 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="updating-the-changelog">
-<span id="update-changelog"></span><h1>Updating the Changelog<a class="headerlink" href="#updating-the-changelog" title="Link to this heading">#</a></h1>
-<p>To manage the changelog for this project, it needs the following requirements:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://pypi.org/project/towncrier">towncrier</a>: A tool to manage changelogs. This is installed automatically.</p></li>
-<li><p>News fragments: Short ReST-formatted files that describe changes.</p></li>
-<li><p>A new version: You need to create a new version with <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">bump-version.sh</span></a>.</p></li>
-</ul>
-<p>A “Changelog” is a record of all notable changes made to a project. Such
-a changelog, in our case the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>, is read by our <em>users</em>.
-Therefor, any description should be aimed to users instead of describing
-internal changes which are only relevant to developers.</p>
-<p>The directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> contains “newsfragments” which are short
-ReST-formatted files. Each newsfragment describes a change in the project. A change is usually from a pull request or issue.
-On release, those news fragments are compiled into our <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>.</p>
-<p>We recommend to follow the steps to make a smooth integration of your changes:</p>
-<ol class="arabic">
-<li><p>After you have created a new pull request (PR), add a new file into the
-directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code>. Each filename follows the syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ISSUE</span><span class="o">&gt;.&lt;</span><span class="n">TYPE</span><span class="o">&gt;.</span><span class="n">rst</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">&lt;ISSUE&gt;</span></code> is the GitHub pull request or issue number.
-If you have changes that are not associated with an issue or pull request,
-start with a <code class="docutils literal notranslate"><span class="pre">+</span></code> (plus) sign and a short description
-The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</span></code> is one of:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">breaking</span></code>: describes a change that breaks backward compatibility.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bugfix</span></code>: fixes a reported bug.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecation</span></code>: informs about deprecation or removed features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">doc</span></code>: improves documentation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature</span></code>: adds new user facing features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">refactor</span></code>: refactors code without changing the user facing API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">removal</span></code>: removes obsolete or deprecated features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">infra</span></code>: improves the infrastructure, e.g. build or test system.</p></li>
-</ul>
-<p>For example, these are valid filenames: <code class="docutils literal notranslate"><span class="pre">123.feature.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">456.bugfix.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">+add-json.feature.rst</span></code> etc.</p>
-<p>Create the new file with the command:</p>
-<div class="literal-block-wrapper docutils container" id="towncrier-create">
-<div class="code-block-caption"><span class="caption-text">Create a new newsfragment file</span><a class="headerlink" href="#towncrier-create" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="w"> </span><span class="m">123</span>.feature.rst
+  <section id="configuring-the-tool">
+<span id="configuring-docbuild"></span><h1>Configuring the Tool<a class="headerlink" href="#configuring-the-tool" title="Link to this heading">#</a></h1>
+<p>Currently, the environment configuration is done via a TOML file. An example configuration file is provided in the repository. find it at <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/etc/docbuild/env.example.toml">etc/docbuild/env.example.toml</a>. Copy it to your working directory and name it accordingly to your purpose, for example, <code class="docutils literal notranslate"><span class="pre">env.development.toml</span></code>, <code class="docutils literal notranslate"><span class="pre">env.testing.toml</span></code>, or <code class="docutils literal notranslate"><span class="pre">env.production.toml</span></code>. Modify it according to your needs.</p>
+<p>To use the configuration file, specific it with the option <code class="docutils literal notranslate"><span class="pre">--env-config</span></code>.</p>
+<p>If you need to deal with different environments (testing, staging, production), it can be tedious to type. In such a case, use aliases in your shell.</p>
+<div class="literal-block-wrapper docutils container" id="docbuild-aliases">
+<div class="code-block-caption"><span class="caption-text">Example aliases for a configuration file</span><a class="headerlink" href="#docbuild-aliases" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">alias</span><span class="w"> </span>docbuild-prod<span class="o">=</span><span class="s1">&#39;docbuild --env-config env.production.toml&#39;</span>
+<span class="gp">$ </span><span class="nb">alias</span><span class="w"> </span>docbuild-test<span class="o">=</span><span class="s1">&#39;docbuild --env-config env.testing.toml&#39;</span>
+<span class="gp">$ </span><span class="nb">alias</span><span class="w"> </span>docbuild-dev<span class="o">=</span><span class="s1">&#39;docbuild --env-config env.development.toml&#39;</span>
 </pre></div>
 </div>
 </div>
-<p>The file is created int the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory.</p>
-</li>
-<li><p>Open the file and describe your changes in RST format.</p>
-<ul class="simple">
-<li><p>Wrap symbols like modules, functions, or classes into double backticks
-so they are rendered in a <code class="docutils literal notranslate"><span class="pre">monospace</span> <span class="pre">font</span></code>.</p></li>
-<li><p>Prefer simple past tense or constructions with “now”.</p></li>
-</ul>
-</li>
-<li><p>Check your changes with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">check</span>
-</pre></div>
-</div>
-</li>
-<li><p>Optionally, build a draft version of the changelog file with the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span> <span class="o">--</span><span class="n">draft</span>
-</pre></div>
-</div>
-</li>
-<li><p>Commit all your changes and push it.</p></li>
-</ol>
-<p>This finishes your steps.</p>
-<p>On release, the maintainer compiles a new <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span>
-</pre></div>
-</div>
-<p>This will remove all newsfragments inside the <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> directory,
-making it ready for the next release.</p>
+<p>Keep in mind, all configuration files that match the pattern <code class="docutils literal notranslate"><span class="pre">env.*.toml</span></code> are ignored by git. This is on purpose to prevent accidental commits of sensitive information.</p>
 </section>
 
 
@@ -524,20 +463,20 @@ making it ready for the next release.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="run-ipython.html"
+       href="install.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Running IPython</p>
+        <p class="prev-next-title">Installing docbuild</p>
       </div>
     </a>
     <a class="right-next"
-       href="create-release.html"
+       href="run-docbuild.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating a New Release</p>
+        <p class="prev-next-title">Running docbuild</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -556,7 +495,7 @@ making it ready for the next release.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/update-changelog.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/config.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -572,7 +511,7 @@ making it ready for the next release.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/update-changelog.rst.txt"
+      <li><a href="../_sources/user/config.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

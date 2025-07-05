@@ -1,7 +1,7 @@
 .. _devel-helpers:
 
-Development helper tools
-------------------------
+Helper Tools
+------------
 
 .. include:: ../../../devel/README.rst
    :start-line: 3

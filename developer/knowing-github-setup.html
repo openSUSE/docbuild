@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating the Changelog &#8212; docbuild 0.9.0 documentation</title>
+    <title>Knowing GitHub Project Setup &#8212; docbuild 0.9.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/update-changelog';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/knowing-github-setup';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating a New Release" href="create-release.html" />
-    <link rel="prev" title="Running IPython" href="run-ipython.html" />
+    <link rel="next" title="Building Documentation" href="build-docs.html" />
+    <link rel="prev" title="Triggering Actions Manually" href="trigger-actions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -373,10 +373,10 @@
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updating the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Knowing GitHub Project Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
@@ -422,7 +422,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Updating the Changelog</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Knowing GitHub Project Setup</span></li>
   </ul>
 </nav>
 </div>
@@ -439,78 +439,31 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="updating-the-changelog">
-<span id="update-changelog"></span><h1>Updating the Changelog<a class="headerlink" href="#updating-the-changelog" title="Link to this heading">#</a></h1>
-<p>To manage the changelog for this project, it needs the following requirements:</p>
+  <section id="knowing-github-project-setup">
+<span id="know-github-setup"></span><h1>Knowing GitHub Project Setup<a class="headerlink" href="#knowing-github-project-setup" title="Link to this heading">#</a></h1>
+<p>This project uses GitHub for version control and issue tracking.
+Additionally, it uses GitHub Actions for different tasks like building the documentation, running tests, and creating a release.</p>
+<section id="github-actions">
+<h2>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://pypi.org/project/towncrier">towncrier</a>: A tool to manage changelogs. This is installed automatically.</p></li>
-<li><p>News fragments: Short ReST-formatted files that describe changes.</p></li>
-<li><p>A new version: You need to create a new version with <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">bump-version.sh</span></a>.</p></li>
+<li><p>Testing (<code class="file docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code>):
+Runs the test suite on every push and pull request to the main branch.
+It uses the <cite>pytest</cite> framework to execute tests.</p></li>
+<li><p>Documentation (<code class="file docutils literal notranslate"><span class="pre">.github/workflows/gh-pages.yml</span></code>):
+Builds the documentation and deploys it to the <cite>gh-pages</cite> branch.
+This is triggered on every push to the main branch and on pull requests that target the main. Furthermore it is only triggered if the workflow file itself is changed or anything inside the <cite>docs/</cite> directory.
+The documentation is available at <a class="github reference external" href="https://github.com/openSUSE/docbuild">openSUSE/docbuild</a>.</p></li>
+<li><p>Release (<code class="file docutils literal notranslate"><span class="pre">.github/workflows/release.yml</span></code>):
+Create a new release when a tag is pushed to the repository.
+It is triggered by a tag in the format <cite>MAJOR.MINOR.PATCH</cite>, e.g. <cite>1.0.0</cite>.
+Currently, it creates a release on GitHub where the description is automatically generated from pull requests and issues that are closed in the release.
+The releases are available at <a class="reference external" href="https://github.com/openSUSE/docbuild/releases/">Releases</a>.</p></li>
 </ul>
-<p>A “Changelog” is a record of all notable changes made to a project. Such
-a changelog, in our case the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>, is read by our <em>users</em>.
-Therefor, any description should be aimed to users instead of describing
-internal changes which are only relevant to developers.</p>
-<p>The directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> contains “newsfragments” which are short
-ReST-formatted files. Each newsfragment describes a change in the project. A change is usually from a pull request or issue.
-On release, those news fragments are compiled into our <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>.</p>
-<p>We recommend to follow the steps to make a smooth integration of your changes:</p>
-<ol class="arabic">
-<li><p>After you have created a new pull request (PR), add a new file into the
-directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code>. Each filename follows the syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ISSUE</span><span class="o">&gt;.&lt;</span><span class="n">TYPE</span><span class="o">&gt;.</span><span class="n">rst</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">&lt;ISSUE&gt;</span></code> is the GitHub pull request or issue number.
-If you have changes that are not associated with an issue or pull request,
-start with a <code class="docutils literal notranslate"><span class="pre">+</span></code> (plus) sign and a short description
-The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</span></code> is one of:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">breaking</span></code>: describes a change that breaks backward compatibility.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bugfix</span></code>: fixes a reported bug.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecation</span></code>: informs about deprecation or removed features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">doc</span></code>: improves documentation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature</span></code>: adds new user facing features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">refactor</span></code>: refactors code without changing the user facing API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">removal</span></code>: removes obsolete or deprecated features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">infra</span></code>: improves the infrastructure, e.g. build or test system.</p></li>
-</ul>
-<p>For example, these are valid filenames: <code class="docutils literal notranslate"><span class="pre">123.feature.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">456.bugfix.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">+add-json.feature.rst</span></code> etc.</p>
-<p>Create the new file with the command:</p>
-<div class="literal-block-wrapper docutils container" id="towncrier-create">
-<div class="code-block-caption"><span class="caption-text">Create a new newsfragment file</span><a class="headerlink" href="#towncrier-create" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="w"> </span><span class="m">123</span>.feature.rst
-</pre></div>
-</div>
-</div>
-<p>The file is created int the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory.</p>
-</li>
-<li><p>Open the file and describe your changes in RST format.</p>
-<ul class="simple">
-<li><p>Wrap symbols like modules, functions, or classes into double backticks
-so they are rendered in a <code class="docutils literal notranslate"><span class="pre">monospace</span> <span class="pre">font</span></code>.</p></li>
-<li><p>Prefer simple past tense or constructions with “now”.</p></li>
-</ul>
-</li>
-<li><p>Check your changes with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">check</span>
-</pre></div>
-</div>
-</li>
-<li><p>Optionally, build a draft version of the changelog file with the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span> <span class="o">--</span><span class="n">draft</span>
-</pre></div>
-</div>
-</li>
-<li><p>Commit all your changes and push it.</p></li>
-</ol>
-<p>This finishes your steps.</p>
-<p>On release, the maintainer compiles a new <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span>
-</pre></div>
-</div>
-<p>This will remove all newsfragments inside the <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> directory,
-making it ready for the next release.</p>
+</section>
+<section id="rulesets">
+<h2>Rulesets<a class="headerlink" href="#rulesets" title="Link to this heading">#</a></h2>
+<p>Under <a class="github reference external" href="https://github.com/openSUSE/docbuild/settings/rules">openSUSE/docbuild</a> we have rulesets to protect the default branch and tags that matches the semantic versioning format.</p>
+</section>
 </section>
 
 
@@ -524,20 +477,20 @@ making it ready for the next release.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="run-ipython.html"
+       href="trigger-actions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Running IPython</p>
+        <p class="prev-next-title">Triggering Actions Manually</p>
       </div>
     </a>
     <a class="right-next"
-       href="create-release.html"
+       href="build-docs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating a New Release</p>
+        <p class="prev-next-title">Building Documentation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -553,10 +506,23 @@ making it ready for the next release.</p>
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-actions">GitHub Actions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rulesets">Rulesets</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/update-changelog.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/knowing-github-setup.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -572,7 +538,7 @@ making it ready for the next release.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/update-changelog.rst.txt"
+      <li><a href="../_sources/developer/knowing-github-setup.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

@@ -101,15 +101,7 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ uv sync
+      $ uv sync --frozen
       Resolved 29 packages in 586ms
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
-
-
-.. _configuring-docbuild:
-
-Configuring the tool
----------------------
-
-TODO

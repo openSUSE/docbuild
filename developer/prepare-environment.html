@@ -375,6 +375,9 @@
 <li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 </div>
@@ -437,7 +440,7 @@
                 <article class="bd-article">
                   
   <section id="preparing-your-development-environment">
-<span id="prepare-your-devel-environment"></span><h1>Preparing Your Development Environment<a class="headerlink" href="#preparing-your-development-environment" title="Link to this heading">#</a></h1>
+<span id="prepare-devel-env"></span><h1>Preparing Your Development Environment<a class="headerlink" href="#preparing-your-development-environment" title="Link to this heading">#</a></h1>
 <p>This document provides instructions for setting up a development environment for this project.</p>
 <div class="admonition-note-a-quick-word-on-virtual-environments admonition" id="note-uv-venv">
 <p class="admonition-title">Note: A Quick Word on Virtual Environments</p>
@@ -446,8 +449,8 @@ uses it automatically. There is no need to “activate” it.
 However, if you get used to activating your Python VENV’s, it’s
 possible to do so.</p>
 </div>
-<section id="development-helper-tools">
-<span id="devel-helpers"></span><h2>Development helper tools<a class="headerlink" href="#development-helper-tools" title="Link to this heading">#</a></h2>
+<section id="helper-tools">
+<span id="devel-helpers"></span><h2>Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading">#</a></h2>
 <p>The directory <code class="code docutils literal notranslate"><span class="pre">devel/</span></code> contains some helper tools to make development easier:</p>
 <ul>
 <li><dl>
@@ -482,8 +485,8 @@ in the <code class="file docutils literal notranslate"><span class="pre">.ipytho
 </li>
 </ul>
 <p>It is recommended to enable the aliases in your shell by sourcing the shell script in the root directory of the project:</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
 </div>
@@ -509,28 +512,43 @@ for each file type.</p>
 </ul>
 <p>In this documentation, we will use the aliases from now on.</p>
 </section>
+<section id="github-cli">
+<h2>GitHub CLI<a class="headerlink" href="#github-cli" title="Link to this heading">#</a></h2>
+<p>GiHub CLI is a command-line tool <strong class="command">gh</strong> allows you to interact with GitHub repositories and perform various tasks directly from the terminal.</p>
+<p>It is not required for this project, but it can be useful for managing issues, pull requests, and other GitHub-related tasks directly from the terminal.</p>
+<p>Find more information at <a class="reference external" href="https://cli.github.com/">GitHub CLI</a>.</p>
+</section>
 <section id="starting-the-development-environment">
 <h2>Starting the development environment<a class="headerlink" href="#starting-the-development-environment" title="Link to this heading">#</a></h2>
 <p>The following steps are recommended to set up your development environment:</p>
 <ol class="arabic">
 <li><p>Follow the steps in <a class="reference internal" href="../user/install.html#prepare-installation"><span class="std std-ref">Preparing for Installation</span></a> and <a class="reference internal" href="../user/install.html#id1"><span class="std std-ref">Installing the tool</span></a>.</p></li>
 <li><p>If you haven’t created a virtual environment, do so:</p>
+<div class="literal-block-wrapper docutils container" id="uv-venv">
+<div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
 </pre></div>
+</div>
 </div>
 <p>Keep in mind that the Python version used in the virtual environment should match the version specified in the <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
 <p>The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
 See file <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> in <code class="docutils literal notranslate"><span class="pre">project.requires-python</span></code> for the exact version.</p>
 </li>
-<li><p>Syncronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
+<li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
+<div class="literal-block-wrapper docutils container" id="uv-sync-devel">
+<div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen<span class="w"> </span>--group<span class="w"> </span>devel
 </pre></div>
 </div>
+</div>
 <p>The option <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.</p>
 </li>
-<li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Development helper tools</span></a> for more information):</p>
+<li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
+<div class="literal-block-wrapper docutils container" id="activate-aliases">
+<div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
+</div>
 </div>
 </li>
 </ol>
@@ -585,7 +603,8 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-helper-tools">Development helper tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-tools">Helper Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-cli">GitHub CLI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-the-development-environment">Starting the development environment</a></li>
 </ul>
   </nav></div>

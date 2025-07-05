@@ -1,7 +1,9 @@
-Building documentation
-======================
+.. _build-deliverables:
 
-The :command:`docbuild build` subcommand is used to build the documentation from source files. It processes the source files and generates the output in the specified format, such as HTML or PDF.
+Building Deliverables
+=====================
+
+The :command:`docbuild build` subcommand is used to build the deliverables from source files. It processes the source files and generates the output in the specified format, such as HTML or PDF.
 
 .. code-block:: shell
    :caption: Synopsis of :command:`docbuild build`
@@ -17,6 +19,7 @@ describes the document to be built. The general syntax for a doctype is:
 
 .. code-block:: text
    :caption: Doctype syntax
+   :name: doctype-syntax
 
    [PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS
 

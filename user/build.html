@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building documentation &#8212; docbuild 0.9.0 documentation</title>
+    <title>Building Deliverables &#8212; docbuild 0.9.0 documentation</title>
   
   
   
@@ -50,7 +50,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Validating XML configuration" href="validate.html" />
-    <link rel="prev" title="Showing env’s configuration" href="config/environment.html" />
+    <link rel="prev" title="Showing Env’s Configuration" href="config/environment.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -367,13 +367,14 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing docbuild</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuring the Tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config/index.html">Showing configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing app’s configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing env’s configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing App’s Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing Env’s Configuration</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building documentation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building Deliverables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validate.html">Validating XML configuration</a></li>
 </ul>
 </div>
@@ -418,7 +419,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Building documentation</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Building Deliverables</span></li>
   </ul>
 </nav>
 </div>
@@ -435,9 +436,9 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="building-documentation">
-<h1>Building documentation<a class="headerlink" href="#building-documentation" title="Link to this heading">#</a></h1>
-<p>The <strong class="command">docbuild build</strong> subcommand is used to build the documentation from source files. It processes the source files and generates the output in the specified format, such as HTML or PDF.</p>
+  <section id="building-deliverables">
+<span id="build-deliverables"></span><h1>Building Deliverables<a class="headerlink" href="#building-deliverables" title="Link to this heading">#</a></h1>
+<p>The <strong class="command">docbuild build</strong> subcommand is used to build the deliverables from source files. It processes the source files and generates the output in the specified format, such as HTML or PDF.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Synopsis of <strong class="command">docbuild build</strong></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>build<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DOCTYPE<span class="w"> </span><span class="o">[</span>DOCTYPE<span class="w"> </span>...<span class="o">]</span>
@@ -448,8 +449,8 @@
 <h2>The doctype syntax<a class="headerlink" href="#the-doctype-syntax" title="Link to this heading">#</a></h2>
 <p>It requires a set of so called “doctypes” to be passed as argument. A <em>doctype</em>
 describes the document to be built. The general syntax for a doctype is:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Doctype syntax</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="doctype-syntax">
+<div class="code-block-caption"><span class="caption-text">Doctype syntax</span><a class="headerlink" href="#doctype-syntax" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS
 </pre></div>
 </div>
@@ -477,8 +478,8 @@ You can omit this field if the language is not relevant for the document or you 
 <h2>Minimal set of doctypes<a class="headerlink" href="#minimal-set-of-doctypes" title="Link to this heading">#</a></h2>
 <p>The <strong class="command">docbuild build</strong> subcommand can take multiple doctypes as arguments, allowing you to build multiple documents at once.
 The command tries to find overlaps in the specified doctypes and only builds the documents that match all specified criteria avoiding unnecessary rebuilds.</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Minimal set of doctypes</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Minimal set of doctypes</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[1] sles/*/en-us + sles/15-SP6/en-us      =&gt; sles/*/en-us
 [2] sles/*/en-us + sles/15-SP6/de-de      =&gt; sles/*/en-us,sles/15-SP6/de-de
 [3] sles/15-SP6/en-us + sles/15-SP6/de-de =&gt; sles/15-SP6/en-us,de-de
@@ -504,7 +505,7 @@ The command tries to find overlaps in the specified doctypes and only builds the
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Showing env’s configuration</p>
+        <p class="prev-next-title">Showing Env’s Configuration</p>
       </div>
     </a>
     <a class="right-next"

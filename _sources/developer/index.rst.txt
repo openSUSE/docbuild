@@ -14,4 +14,7 @@ Developer Guide
    run-ipython
    update-changelog
    create-release
+   trigger-actions
+   knowing-github-setup
+   build-docs
    howto

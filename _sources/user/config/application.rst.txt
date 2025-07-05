@@ -1,4 +1,4 @@
-Showing app's configuration
+Showing App's Configuration
 ===========================
 
 Application configuration files ("app config") affects the behavior of the docbuild tool itself, such as how it processes documents, logging, handles errors, etc.
@@ -18,7 +18,7 @@ If you want to override the default search strategy, use the ``--app-config`` op
    :caption: Showing configuration files
 
    $ docbuild config app
-   # Application config files '/home/tux/repos/GH/tomschr/docbuild/.config.toml'
+   # Application config files '/home/tux/repos/GH/opensuse/docbuild/.config.toml'
    [ ... content ...]
 
 In the previous example, there is a :file:`.config.toml` file in the

@@ -1,4 +1,4 @@
-Showing env's configuration
+Showing Env's Configuration
 ===========================
 
 Environment configuration files ("env config") is specific to the environment in which the docbuild tool operates, such as paths to source files, output directories, and other environment-specific settings.
@@ -11,7 +11,7 @@ If you want to override the default, use the ``--env-config`` option to specify 
    :caption: Showing env configuration content
 
    $ docbuild --env-config env.develop.toml config env
-   # ENV Config file '/home/tux/repos/GH/tomschr/docbuild/env.production.toml'
+   # ENV Config file '/home/tux/repos/GH/opensuse/docbuild/env.production.toml'
    [ ... content ...]
 
 In the previous example, there is a :file:`env.production.toml` file in the
