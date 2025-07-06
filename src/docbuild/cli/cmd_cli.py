@@ -18,6 +18,7 @@ from ..constants import (
 from ..logging import setup_logging
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_metadata import metadata
 from .cmd_repo import repo
 from .cmd_validate import validate
 from .config import config
@@ -142,4 +143,5 @@ cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
 cli.add_command(repo)
+cli.add_command(metadata)
 cli.add_command(validate)

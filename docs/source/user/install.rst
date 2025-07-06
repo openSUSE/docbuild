@@ -9,7 +9,7 @@ To install the docbuild tool, follow these steps:
 
 #. :ref:`get-xml-config` - Get the XML configuration files required for building documentation.
 
-#. :ref:`configuring-docbuild` - Configure the docbuild tool to suit your needs.
+#. :ref:`config-docbuild` - Configure the docbuild tool to suit your needs.
 
 
 .. _prepare-installation:

@@ -12,3 +12,4 @@ User Guide
    build
    validate
    clone
+   metadata

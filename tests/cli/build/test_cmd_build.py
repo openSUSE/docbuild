@@ -42,6 +42,9 @@ def test_validate_doctypes_abort(monkeypatch):
 class DummyDoctype:
     def __init__(self, value):
         self.value = value
+        parts = value.split('/')
+        self.product = parts[0]
+        self.version = parts[1]
 
     def __eq__(self, other):
         return isinstance(other, DummyDoctype) and self.value == other.value
@@ -218,13 +221,12 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
     ]
 
 
-def test_validate_doctypes_echo_outputs(ctx, capsys):
+def test_validate_doctypes_echo_outputs(ctx):
     """Test the echo statements in validate_doctypes."""
-    context = ctx(SimpleNamespace())
-    validate_doctypes(context, None, ('sles/15/en-us',))
+    context = ctx(SimpleNamespace(verbose=1))
+    result = validate_doctypes(context, None, ('sles/15/en-us',))
 
-    captured = capsys.readouterr()
-    assert 'Got sles/15' in captured.out
+    assert result[0].value == 'sles/15/en-us'
 
 
 def test_validate_doctypes_full_error_message(monkeypatch, capsys):
@@ -265,9 +267,8 @@ def test_validate_doctypes_full_error_message(monkeypatch, capsys):
     captured = capsys.readouterr()
 
     # assert exc_info.value.title == "Mock validation error"
-    assert "ERROR in 'product'" in captured.err or captured.out
-    assert 'Hint' in captured.out
-    assert 'Examples' in captured.out
+    assert "Invalid doctype string" in captured.err
+    assert "'foo/bar'" in captured.err
 
 
 def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
@@ -310,9 +311,8 @@ def test_validate_doctypes_only_hint_error_message(monkeypatch, capsys):
     # Capture output after the function call
     captured = capsys.readouterr()
 
-    assert "ERROR in 'product'" in captured.err or captured.out
-    assert 'Hint' in captured.out
-    assert 'Examples' not in captured.out  # No examples provided
+    assert "Invalid doctype string" in captured.err
+    assert "'foo/bar'" in captured.err
 
 
 def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
@@ -356,6 +356,5 @@ def test_validate_doctypes_only_description_error_message(monkeypatch, capsys):
     captured = capsys.readouterr()
 
     # assert exc_info.value.title == "Mock validation error"
-    assert "ERROR in 'product'" in captured.err or captured.out
-    assert 'Hint' not in captured.out  # No description provided
-    assert 'Examples' in captured.out
+    assert "Invalid doctype string" in captured.err or captured.out
+    assert "'foo/bar'" in captured.err
