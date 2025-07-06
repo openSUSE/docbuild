@@ -1,9 +1,13 @@
-# --- Callback Function ---
+import logging
+
 import click
 from pydantic import Field, ValidationError
 
 from ..models.doctype import Doctype
 from ..utils.merge import merge_doctypes
+
+#
+log = logging.getLogger(__name__)
 
 
 def validate_doctypes(
@@ -32,7 +36,6 @@ def validate_doctypes(
     for doctype_str in doctypes:
         try:
             doctype = Doctype.from_str(doctype_str)
-            click.echo(f'Got {doctype}')
             processed_data.append(doctype)
 
         except ValidationError as err:
