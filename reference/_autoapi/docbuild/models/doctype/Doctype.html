@@ -378,6 +378,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/config/index.html">docbuild.cli.config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a></li>
@@ -401,6 +402,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../lifecycle/index.html">docbuild.models.lifecycle</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../product/index.html">docbuild.models.product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../repo/index.html">docbuild.models.repo</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../serverroles/index.html">docbuild.models.serverroles</a></li>
 </ul>
 </details></li>
@@ -498,8 +500,15 @@
 <map id="inheritancef7ccbd15aa" name="inheritancef7ccbd15aa">
 <area shape="rect" id="node2" href="#docbuild.models.doctype.Doctype" target="_top" title="A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language." alt="" coords="148,5,224,31"/>
 </map><p>A “doctype” that comprises of a product, docset, lifecycle, and language.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
-<span class="go">Doctype(product=&lt;Product.SLES: &#39;sles&#39;&gt;, docset=[&#39;15-SP6&#39;],     lifecycle=&lt;LifecycleFlag.SUPPORTED: &#39;supported&#39;&gt;,     langs=[LanguageCode(language=&#39;en-us&#39;), LanguageCode(language=&#39;de-de&#39;)])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">product</span>
+<span class="go">&lt;Product.sles: &#39;sles&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">docset</span>
+<span class="go">[&#39;15-SP6&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;supported&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">langs</span>
+<span class="go">[LanguageCode(language=&#39;de-de&#39;), LanguageCode(language=&#39;en-us&#39;)]</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -602,6 +611,28 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code>: separated by comma or pipe</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code>: separated by comma</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.xpath">
+<span class="sig-name descname"><span class="pre">xpath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.xpath" title="Link to this definition">#</a></dt>
+<dd><p>Return an XPath expression for this Doctype to find all deliverables.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;product[@productid=&#39;sles&#39;]/docset[@setid=&#39;15-SP6&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;[@lifecycle=&#39;supported&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;/builddocs/language[@lang=&#39;de-de&#39; or @lang=&#39;en-us&#39;]&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">==</span> <span class="n">expected</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A relative XPath expression that can be used to find all
+deliverables that match this Doctype.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1184,6 +1215,7 @@ deep: If True, the values of fields that are Pydantic models will be deep-copied
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_lifecycle"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_lifecycle()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_langs"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_langs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.from_str"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.from_str()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.xpath"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.xpath()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.model_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.model_config</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__class_vars__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__class_vars__</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__private_attributes__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__private_attributes__</span></code></a></li>

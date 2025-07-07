@@ -114,7 +114,7 @@ docbuild.models.deliverable.Deliverable
 
 
    .. py:property:: git
-      :type: str
+      :type: docbuild.models.repo.Repo
 
 
       Return the git repository.

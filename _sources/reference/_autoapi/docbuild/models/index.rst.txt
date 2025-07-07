@@ -21,6 +21,7 @@ Submodules
    /reference/_autoapi/docbuild/models/lifecycle/index
    /reference/_autoapi/docbuild/models/metadata/index
    /reference/_autoapi/docbuild/models/product/index
+   /reference/_autoapi/docbuild/models/repo/index
    /reference/_autoapi/docbuild/models/serverroles/index
 
 

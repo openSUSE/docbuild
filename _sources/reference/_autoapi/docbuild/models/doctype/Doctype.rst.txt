@@ -11,8 +11,15 @@ docbuild.models.doctype.Doctype
 
    A "doctype" that comprises of a product, docset, lifecycle, and language.
 
-   >>> Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
-   Doctype(product=<Product.SLES: 'sles'>, docset=['15-SP6'],     lifecycle=<LifecycleFlag.SUPPORTED: 'supported'>,     langs=[LanguageCode(language='en-us'), LanguageCode(language='de-de')])
+   >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
+   >>> doctype.product
+   <Product.sles: 'sles'>
+   >>> doctype.docset
+   ['15-SP6']
+   >>> doctype.lifecycle.name
+   'supported'
+   >>> doctype.langs
+   [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
 
 
    .. py:attribute:: product
@@ -137,6 +144,24 @@ docbuild.models.doctype.Doctype
       * ``DOCSETS``: separated by comma
       * ``LIFECYCLES``: separated by comma or pipe
       * ``LANGS``: separated by comma
+
+
+
+   .. py:method:: xpath() -> str
+
+      Return an XPath expression for this Doctype to find all deliverables.
+
+      >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
+      >>> expected = (
+      ...     "product[@productid='sles']/docset[@setid='15-SP6']"
+      ...     "[@lifecycle='supported']"
+      ...     "/builddocs/language[@lang='de-de' or @lang='en-us']"
+      ... )
+      >>> result == expected
+      True
+
+      :return: A relative XPath expression that can be used to find all
+          deliverables that match this Doctype.
 
 
 

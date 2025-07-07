@@ -11,3 +11,4 @@ User Guide
    config/index
    build
    validate
+   clone

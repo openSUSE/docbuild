@@ -23,7 +23,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: process_envconfig(envconfigfile: str | pathlib.Path | None) -> tuple[pathlib.Path, docbuild.config.app.Container]
+.. py:function:: process_envconfig(envconfigfile: str | pathlib.Path | None) -> tuple[pathlib.Path, dict[str, Any]]
 
    Process the env config.
 

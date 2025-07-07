@@ -14,7 +14,6 @@ Attributes
 
 .. autoapisummary::
 
-   docbuild.config.app.Container
    docbuild.config.app.MAX_RECURSION_DEPTH
 
 
@@ -57,11 +56,6 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: Container
-
-   A dictionary or list container for any configuration data.
-
-
 .. py:data:: MAX_RECURSION_DEPTH
    :type:  int
    :value: 10
@@ -70,7 +64,7 @@ Module Contents
    The maximum recursion depth for placeholder replacement.
 
 
-.. py:function:: replace_placeholders(config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH) -> Container
+.. py:function:: replace_placeholders(config: dict[str, Any] | None, max_recursion_depth: int = MAX_RECURSION_DEPTH) -> dict[str, Any] | None
 
    Replace placeholder values in a nested dictionary structure.
 
