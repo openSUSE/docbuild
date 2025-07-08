@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_build &#8212; docbuild 0.9.0 documentation</title>
+    <title>docbuild.cli.cmd_build &#8212; docbuild 0.10.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../../../../../_static/documentation_options.js?v=82662543"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/cmd_build/index';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.cli.cmd_c14n" href="../cmd_c14n/index.html" />
+    <link rel="next" title="docbuild.cli.cmd_build.Doctype" href="Doctype.html" />
     <link rel="prev" title="docbuild.cli" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -383,7 +383,6 @@
 <li class="toctree-l4"><a class="reference internal" href="../config/index.html">docbuild.cli.config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../defaults/index.html">docbuild.cli.defaults</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../process_validation/index.html">docbuild.cli.process_validation</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -521,19 +520,62 @@ Build all docsets that are supported and beta for German SLES.</p></li>
 Same as the previous one, but with comma as the separator between
 the lifecycle states.</p></li>
 </ul>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="Doctype.html#docbuild.cli.cmd_build.Doctype" title="docbuild.cli.cmd_build.Doctype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Doctype</span></code></a></p></td>
+<td><p>A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="DocBuildContext.html#docbuild.cli.cmd_build.DocBuildContext" title="docbuild.cli.cmd_build.DocBuildContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DocBuildContext</span></code></a></p></td>
+<td><p>The CLI context shared between different subcommands.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.build" title="docbuild.cli.cmd_build.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.validate_doctypes" title="docbuild.cli.cmd_build.validate_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_doctypes</span></code></a>(→ list[docbuild.models.doctype.Doctype])</p></td>
+<td><p>Click callback function to validate a list of doctype strings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.build" title="docbuild.cli.cmd_build.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(→ None)</p></td>
 <td><p>Subcommand build.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_build.validate_doctypes">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.</span></span><span class="sig-name descname"><span class="pre">validate_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.2.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Parameter" title="(in Click v8.2.x)"><span class="pre">click.Parameter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.validate_doctypes" title="Link to this definition">#</a></dt>
+<dd><p>Click callback function to validate a list of doctype strings.</p>
+<p>Each string must conform to the format: <a class="reference external" href="mailto:PRODUCT/DOCSET&#37;&#52;&#48;LIFECYCLE/LANGS">PRODUCT/DOCSET<span>&#64;</span>LIFECYCLE/LANGS</a>
+LANGS can be a single language code, a comma-separated list (no spaces),
+or ‘*’ for all.
+Defaults and wildcards (*) are handled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – The click parameter that triggered this callback.</p></li>
+<li><p><strong>doctypes</strong> – A tuple of doctype strings to validate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of validated Doctype objects.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.2.x)"><strong>click.Abort</strong></a> – If any doctype string is invalid, the command is aborted.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_build.build">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.2.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.build" title="Link to this definition">#</a></dt>
@@ -571,11 +613,11 @@ the lifecycle states.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="../cmd_c14n/index.html"
+       href="Doctype.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.cli.cmd_c14n</p>
+        <p class="prev-next-title">docbuild.cli.cmd_build.Doctype</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -598,8 +640,10 @@ the lifecycle states.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.validate_doctypes"><code class="docutils literal notranslate"><span class="pre">validate_doctypes()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
 </ul>
 </li>

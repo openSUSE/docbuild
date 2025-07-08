@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; docbuild 0.9.0 documentation</title>
+    <title>Change Log &#8212; docbuild 0.10.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -426,10 +426,55 @@
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
 <a class="reference external" href="https://github.com/tomschr/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
-<section id="version-0-9-0">
-<h2>Version 0.9.0<a class="headerlink" href="#version-0-9-0" title="Link to this heading">#</a></h2>
+<section id="version-0-10-0">
+<h2>Version 0.10.0<a class="headerlink" href="#version-0-10-0" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>Replace placeholders in <strong class="command">cli</strong> main command. This ensures that the placeholders in the environment or application configuration are replaced before the subcommands are executed. This is necessary because the subcommands might rely on these placeholders being resolved. (<a href="#id1"><span class="problematic" id="id2">:gh:`20`</span></a>)</p></li>
+<li><p>Correctly convert <code class="docutils literal notranslate"><span class="pre">'*'</span></code> for products in <code class="xref py py-func docutils literal notranslate"><span class="pre">docbuild.model.doctype.Doctype.xpath()</span></code></p>
+<p>An XPath <code class="docutils literal notranslate"><span class="pre">//*</span></code> created a syntactically correct XPath, but with an
+additional and unnecessary <code class="docutils literal notranslate"><span class="pre">[&#64;productid='*']</span></code> predicate. (<a href="#id3"><span class="problematic" id="id4">:gh:`31`</span></a>)</p>
+</li>
+</ul>
+</section>
+<section id="improved-documentation">
+<h3>Improved Documentation<a class="headerlink" href="#improved-documentation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Docs: Improve development and user docs (<a href="#id5"><span class="problematic" id="id6">:gh:`18`</span></a>)</p></li>
+</ul>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>Implement cloning of Git repositories</p>
+<p>All repos are “bare” clones, meaning they do not have a working directory.
+This was needed to avoid issues with branches.</p>
+<p>The internal logic is available through some CLI commands:</p>
+<ul class="simple">
+<li><p><strong class="command">docbuild repo clone</strong> - Clone a repository into the permanent storage.
+With the help of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code> class,
+it can handle different notations of repositories, such as HTTP URLs, SSH URLS, or abbreviated URLs (like <code class="docutils literal notranslate"><span class="pre">gh://org/repo</span></code>).</p></li>
+<li><p><strong class="command">docbuild repo dir</strong> - Shows the directory path for permanent storage.
+This is useful for debugging and manual operations.</p></li>
+<li><p><strong class="command">docbuild repo list</strong> - List all repositories in the permanent storage. (<a href="#id7"><span class="problematic" id="id8">:gh:`3`</span></a>)</p></li>
+</ul>
+</li>
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">.xpath</span></code> method in <code class="xref py py-class docutils literal notranslate"><span class="pre">Doctype</span></code> (<a href="#id9"><span class="problematic" id="id10">:gh:`23`</span></a>)</p></li>
+</ul>
+</section>
+<section id="code-refactoring">
+<h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Introduce new <code class="file docutils literal notranslate"><span class="pre">callback.py</span></code> file to separate <code class="xref py py-func docutils literal notranslate"><span class="pre">validate_doctypes()</span></code> function from the build command. (<a href="#id11"><span class="problematic" id="id12">:gh:`19`</span></a>)</p></li>
+<li><p>Refactor subcommands into packages (<a href="#id13"><span class="problematic" id="id14">:gh:`30`</span></a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-9-0">
+<h2>Version 0.9.0<a class="headerlink" href="#version-0-9-0" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h3>Bug Fixes<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Fix problem in logging test</p>
 <p>The test suite reported a ValueError with I/O operations on closed files.
@@ -437,17 +482,17 @@ The fix ensures that we clean all handlers before and after the respective test.
 </li>
 </ul>
 </section>
-<section id="improved-documentation">
-<h3>Improved Documentation<a class="headerlink" href="#improved-documentation" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Improved Documentation<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Extend design chapter</p></li>
 </ul>
 </section>
-<section id="features">
-<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Features<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Implement <strong class="command">validate</strong> subcommand</p>
-<p>This subcommand is used to validate XML configuration files against a RelaxNG schema. It checks both the structure and semantic correctness of the XML files to ensure they conform to the expected format. (<a href="#id1"><span class="problematic" id="id2">:gh:`5`</span></a>)</p>
+<p>This subcommand is used to validate XML configuration files against a RelaxNG schema. It checks both the structure and semantic correctness of the XML files to ensure they conform to the expected format. (<a href="#id18"><span class="problematic" id="id19">:gh:`5`</span></a>)</p>
 </li>
 <li><p>Implement a timer contextmanager factory in <a class="reference internal" href="reference/_autoapi/docbuild/utils/contextmgr/index.html#docbuild.utils.contextmgr.make_timer" title="docbuild.utils.contextmgr.make_timer"><code class="xref py py-func docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.make_timer()</span></code></a>.</p></li>
 </ul>
@@ -456,7 +501,7 @@ The fix ensures that we clean all handlers before and after the respective test.
 <h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Create issue templates for bug report, feature request, and
-documentation update. (<a href="#id3"><span class="problematic" id="id4">:gh:`6`</span></a>)</p></li>
+documentation update. (<a href="#id20"><span class="problematic" id="id21">:gh:`6`</span></a>)</p></li>
 <li><p>Add new type ‘refactor’ for towncrier</p></li>
 <li><p>Format source code with ruff</p></li>
 <li><p>GHA: Install xmllint/xsltproc tools</p></li>
@@ -468,12 +513,12 @@ it raises the respective parts. It respects the semver specification.</p></li>
 from helper files (like <code class="file docutils literal notranslate"><span class="pre">context.py</span></code> which isn’t a command).</p>
 </li>
 <li><p>Refactor Deliverable to use <code class="docutils literal notranslate"><span class="pre">.findtext()</span></code></p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> option in aliases to avoid updating <a href="#id5"><span class="problematic" id="id6">:filename:`uv.lock`</span></a>.
-Add new alias <strong class="command">towncrier</strong> (see <a href="#id7"><span class="problematic" id="id8">:filename:`devel/activate-aliases.sh`</span></a>).</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> option in aliases to avoid updating <a href="#id22"><span class="problematic" id="id23">:filename:`uv.lock`</span></a>.
+Add new alias <strong class="command">towncrier</strong> (see <a href="#id24"><span class="problematic" id="id25">:filename:`devel/activate-aliases.sh`</span></a>).</p></li>
 </ul>
 </section>
-<section id="code-refactoring">
-<h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
+<section id="id26">
+<h3>Code Refactoring<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Refactor <code class="docutils literal notranslate"><span class="pre">replace_placeholders()</span></code> function</p>
 <ul>
@@ -496,8 +541,8 @@ This is now changed to <code class="docutils literal notranslate"><span class="p
 </li>
 </ul>
 </section>
-<section id="id9">
-<h3>Features<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id27">
+<h3>Features<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add new list_all_deliverables for XML files</p>
 <p>Generator to yield all deliverables in XML format.</p>
@@ -517,8 +562,8 @@ XPath, and Git.</p>
 </section>
 <section id="version-0-7-0">
 <h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Link to this heading">#</a></h2>
-<section id="id10">
-<h3>Improved Documentation<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id28">
+<h3>Improved Documentation<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add first docbuild documentation</p>
 <ul>
@@ -535,8 +580,8 @@ documentation standard</p></li>
 </li>
 </ul>
 </section>
-<section id="id11">
-<h3>Features<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id29">
+<h3>Features<a class="headerlink" href="#id29" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implement Deliverable &amp; Metadata classes</p>
 <ul>
@@ -549,8 +594,8 @@ an interface to extract important values from the XML config</p></li>
 </li>
 </ul>
 </section>
-<section id="id12">
-<h3>Infrastructure<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id30">
+<h3>Infrastructure<a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add missing license file (GPL-3.0-or-later)</p></li>
 <li><p>Add py.typed in project and pyproject.toml</p></li>
@@ -624,23 +669,30 @@ these are renamed:</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-9-0">Version 0.9.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-10-0">Version 0.10.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-documentation">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-refactoring">Code Refactoring</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-9-0">Version 0.9.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Bug Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">Code Refactoring</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-8-0">Version 0.8.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#breaking-changes">Breaking Changes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">Features</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-7-0">Version 0.7.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
 </ul>
 </li>

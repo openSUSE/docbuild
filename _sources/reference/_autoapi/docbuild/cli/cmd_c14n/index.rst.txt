@@ -17,8 +17,8 @@ Functions
    docbuild.cli.cmd_c14n.c14n
 
 
-Module Contents
----------------
+Package Contents
+----------------
 
 .. py:function:: c14n(ctx: click.Context) -> None
 

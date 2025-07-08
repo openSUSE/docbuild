@@ -1,7 +1,7 @@
-docbuild.cli.process_validation
-===============================
+docbuild.cli.cmd_validate.process
+=================================
 
-.. py:module:: docbuild.cli.process_validation
+.. py:module:: docbuild.cli.cmd_validate.process
 
 .. autoapi-nested-parse::
 
@@ -14,12 +14,12 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.process_validation.display_results
-   docbuild.cli.process_validation.run_command
-   docbuild.cli.process_validation.validate_rng
-   docbuild.cli.process_validation.run_python_checks
-   docbuild.cli.process_validation.process_file
-   docbuild.cli.process_validation.process
+   docbuild.cli.cmd_validate.process.display_results
+   docbuild.cli.cmd_validate.process.run_command
+   docbuild.cli.cmd_validate.process.validate_rng
+   docbuild.cli.cmd_validate.process.run_python_checks
+   docbuild.cli.cmd_validate.process.process_file
+   docbuild.cli.cmd_validate.process.process
 
 
 Module Contents

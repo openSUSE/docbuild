@@ -1,7 +1,7 @@
 Running the Test Suite
 ======================
 
-To run the test suite for this project, you need to have completed the setup of your development environment as described in the :ref:`prepare-your-devel-environment` topic.
+To run the test suite for this project, you need to have completed the setup of your development environment as described in the :ref:`prepare-devel-env` topic.
 
 To run the full test suite, use the following command:
 

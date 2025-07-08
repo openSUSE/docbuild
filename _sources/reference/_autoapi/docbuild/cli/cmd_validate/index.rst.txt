@@ -9,6 +9,28 @@ docbuild.cli.cmd_validate
 
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /reference/_autoapi/docbuild/cli/cmd_validate/process/index
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/cmd_validate/DocBuildContext
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_validate.DocBuildContext
+
+
 Functions
 ---------
 
@@ -17,8 +39,8 @@ Functions
    docbuild.cli.cmd_validate.validate
 
 
-Module Contents
----------------
+Package Contents
+----------------
 
 .. py:function:: validate(ctx: click.Context, xmlfiles: tuple | collections.abc.Iterator[pathlib.Path]) -> None
 
