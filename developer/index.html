@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/index';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Concepts" href="concepts.html" />
+    <link rel="next" title="Overview" href="overview.html" />
     <link rel="prev" title="Cloning Repositories" href="../user/clone.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -364,11 +364,13 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="know-tools-config.html">Knowning the Tools Config Files</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
@@ -378,9 +380,13 @@
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="know-tools-config.html">Knowning the Tools Config Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
 </ul>
 </div>
 </nav></div>
@@ -442,9 +448,9 @@
 <h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading">#</a></h1>
 <p>This guide provides all the necessary information for contributing to the project. It covers core concepts, design principles, and instructions for setting up your development environment. You will also find detailed procedures for testing, creating releases, and other common development tasks.</p>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="design.html#principles">Principles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="design.html#project-design-structure">Project design structure</a></li>
@@ -453,7 +459,11 @@
 <li class="toctree-l2"><a class="reference internal" href="design.html#documentation-design-patterns">Documentation design patterns</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="know-tools-config.html">Knowning the Tools Config Files</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="prepare-environment.html#helper-tools">Helper Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="prepare-environment.html#github-cli">GitHub CLI</a></li>
@@ -473,11 +483,6 @@
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="knowing-github-setup.html#github-actions">GitHub Actions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="knowing-github-setup.html#rulesets">Rulesets</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="howto.html#adding-or-removing-a-new-product">Adding or removing a new product</a></li>
@@ -485,6 +490,17 @@
 <li class="toctree-l2"><a class="reference internal" href="howto.html#changing-the-lifecycle-set">Changing the lifecycle set</a></li>
 <li class="toctree-l2"><a class="reference internal" href="howto.html#changing-the-app-s-config-paths">Changing the app’s config paths</a></li>
 <li class="toctree-l2"><a class="reference internal" href="howto.html#changing-the-app-s-config-file-names">Changing the app’s config file names</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="know-tools-config.html">Knowning the Tools Config Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="knowing-github-setup.html#github-actions">GitHub Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="knowing-github-setup.html#rulesets">Rulesets</a></li>
 </ul>
 </li>
 </ul>
@@ -511,11 +527,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="concepts.html"
+       href="overview.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Concepts</p>
+        <p class="prev-next-title">Overview</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

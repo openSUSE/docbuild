@@ -5,11 +5,15 @@ This guide provides all the necessary information for contributing to the projec
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Concepts
 
-   concepts
+   overview
    design
-   know-tools-config
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tasks
+
    prepare-environment
    develop-project
    run-testsuite
@@ -19,6 +23,13 @@ This guide provides all the necessary information for contributing to the projec
    add-newsfragments
    create-release
    trigger-actions
-   knowing-github-setup
+   
    build-docs
    howto
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Appendix
+
+   know-tools-config
+   knowing-github-setup
