@@ -1,6 +1,12 @@
 Design
 ======
 
+This document outlines the design philosophy and structure of the project.
+It covers the core principles that guide development, the overall project layout,
+and the specific design patterns used for the command-line interface,
+configuration, and documentation. Understanding these concepts is key for
+making effective contributions.
+
 
 Principles
 ----------

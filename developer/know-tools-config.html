@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating the Changelog &#8212; docbuild 0.10.0 documentation</title>
+    <title>Knowning the Tools Config Files &#8212; docbuild 0.10.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/update-changelog';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/know-tools-config';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating a New Release" href="create-release.html" />
-    <link rel="prev" title="Running IPython" href="run-ipython.html" />
+    <link rel="next" title="Preparing Your Development Environment" href="prepare-environment.html" />
+    <link rel="prev" title="Design" href="design.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -368,12 +368,14 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Knowning the Tools Config Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="list-dependencies.html">Listing dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run-ipython.html">Running IPython</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updating the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
 <li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
@@ -422,7 +424,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Updating the Changelog</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Knowning the Tools Config Files</span></li>
   </ul>
 </nav>
 </div>
@@ -439,78 +441,43 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="updating-the-changelog">
-<span id="update-changelog"></span><h1>Updating the Changelog<a class="headerlink" href="#updating-the-changelog" title="Link to this heading">#</a></h1>
-<p>To manage the changelog for this project, it needs the following requirements:</p>
+  <section id="knowning-the-tools-config-files">
+<span id="know-tools-config"></span><h1>Knowning the Tools Config Files<a class="headerlink" href="#knowning-the-tools-config-files" title="Link to this heading">#</a></h1>
+<p>This project uses several configuration files to manage its settings. While it
+is possible to consolidate many tool settings into the <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
+file, this project intentionally keeps most configurations in separate,
+dedicated files. This approach promotes clarity and modularity, making it
+easier to understand and manage the settings for each specific tool.</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://pypi.org/project/towncrier">towncrier</a>: A tool to manage changelogs. This is installed automatically.</p></li>
-<li><p>News fragments: Short ReST-formatted files that describe changes.</p></li>
-<li><p>A new version: You need to create a new version with <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">bump-version.sh</span></a>.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.gitignore</span></code>
+This file tells Git which files and directories to ignore.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
+This is the central configuration file for the project, based on <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0621/"><strong>PEP 621</strong></a>. It
+primarily defines project metadata (like name, version, and dependencies) and
+build system requirements for the <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> build backend.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.pytest.ini</span></code>
+This file contains configuration for the <a class="reference internal" href="../glossary.html#term-Pytest"><span class="xref std std-term">Pytest</span></a> testing framework. It
+specifies options such as test paths, Python path for imports, and default
+command-line arguments for running tests, including coverage analysis and
+doctest settings.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.ruff.toml</span></code>
+This file configures the Ruff linter and formatter. It defines the
+target Python version, line length, which linting rules to enable or
+disable, and any per-file rule overrides.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">towncrier.toml</span></code>
+This file configures Towncrier, the tool used to generate the project’s
+<a class="reference internal" href="../glossary.html#term-Changelog"><span class="xref std std-term">Changelog</span></a>. It specifies the location of news fragments, the
+changelog file itself, and the different types of changes.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">uv.toml</span></code>
+This file provides project-specific configuration for the <strong class="command">uv</strong> package
+manager.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.vscode/</span></code>
+This directory contains workspace-specific settings for Visual Studio Code.
+It can include recommended extensions (<code class="file docutils literal notranslate"><span class="pre">extensions.json</span></code>), debug
+configurations (<code class="file docutils literal notranslate"><span class="pre">launch.json</span></code>), and shared workspace settings
+(<code class="file docutils literal notranslate"><span class="pre">settings.json</span></code>) to ensure a consistent development experience for
+all contributors using this editor.</p></li>
 </ul>
-<p>A “Changelog” is a record of all notable changes made to a project. Such
-a changelog, in our case the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>, is read by our <em>users</em>.
-Therefor, any description should be aimed to users instead of describing
-internal changes which are only relevant to developers.</p>
-<p>The directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> contains “newsfragments” which are short
-ReST-formatted files. Each newsfragment describes a change in the project. A change is usually from a pull request or issue.
-On release, those news fragments are compiled into our <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code>.</p>
-<p>We recommend to follow the steps to make a smooth integration of your changes:</p>
-<ol class="arabic">
-<li><p>After you have created a new pull request (PR), add a new file into the
-directory <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code>. Each filename follows the syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ISSUE</span><span class="o">&gt;.&lt;</span><span class="n">TYPE</span><span class="o">&gt;.</span><span class="n">rst</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">&lt;ISSUE&gt;</span></code> is the GitHub pull request or issue number.
-If you have changes that are not associated with an issue or pull request,
-start with a <code class="docutils literal notranslate"><span class="pre">+</span></code> (plus) sign and a short description
-The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</span></code> is one of:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">breaking</span></code>: describes a change that breaks backward compatibility.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bugfix</span></code>: fixes a reported bug.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecation</span></code>: informs about deprecation or removed features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">doc</span></code>: improves documentation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">feature</span></code>: adds new user facing features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">refactor</span></code>: refactors code without changing the user facing API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">removal</span></code>: removes obsolete or deprecated features.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">infra</span></code>: improves the infrastructure, e.g. build or test system.</p></li>
-</ul>
-<p>For example, these are valid filenames: <code class="docutils literal notranslate"><span class="pre">123.feature.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">456.bugfix.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">+add-json.feature.rst</span></code> etc.</p>
-<p>Create the new file with the command:</p>
-<div class="literal-block-wrapper docutils container" id="towncrier-create">
-<div class="code-block-caption"><span class="caption-text">Create a new newsfragment file</span><a class="headerlink" href="#towncrier-create" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="w"> </span><span class="m">123</span>.feature.rst
-</pre></div>
-</div>
-</div>
-<p>The file is created int the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory.</p>
-</li>
-<li><p>Open the file and describe your changes in RST format.</p>
-<ul class="simple">
-<li><p>Wrap symbols like modules, functions, or classes into double backticks
-so they are rendered in a <code class="docutils literal notranslate"><span class="pre">monospace</span> <span class="pre">font</span></code>.</p></li>
-<li><p>Prefer simple past tense or constructions with “now”.</p></li>
-</ul>
-</li>
-<li><p>Check your changes with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">check</span>
-</pre></div>
-</div>
-</li>
-<li><p>Optionally, build a draft version of the changelog file with the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span> <span class="o">--</span><span class="n">draft</span>
-</pre></div>
-</div>
-</li>
-<li><p>Commit all your changes and push it.</p></li>
-</ol>
-<p>This finishes your steps.</p>
-<p>On release, the maintainer compiles a new <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span>
-</pre></div>
-</div>
-<p>This will remove all newsfragments inside the <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> directory,
-making it ready for the next release.</p>
 </section>
 
 
@@ -524,20 +491,20 @@ making it ready for the next release.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="run-ipython.html"
+       href="design.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Running IPython</p>
+        <p class="prev-next-title">Design</p>
       </div>
     </a>
     <a class="right-next"
-       href="create-release.html"
+       href="prepare-environment.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Creating a New Release</p>
+        <p class="prev-next-title">Preparing Your Development Environment</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -556,7 +523,7 @@ making it ready for the next release.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/update-changelog.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/know-tools-config.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -572,7 +539,7 @@ making it ready for the next release.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/update-changelog.rst.txt"
+      <li><a href="../_sources/developer/know-tools-config.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

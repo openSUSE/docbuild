@@ -1,3 +1,5 @@
+.. _create-release:
+
 Creating a New Release
 ======================
 
@@ -5,15 +7,16 @@ To create a new release, follow these steps:
 
 #. Ensure that you have the latest changes from the main branch of the repository.
 #. Create a new branch for your release. The branch name should follow the format: ``release/<VERSION>``, where ``<VERSION>`` is the version number you are releasing (e.g., ``release/1.0.0``).
-#. Run the alias :command:`bump-version.sh` to update the version number in the project files. For example:
+#. :ref:`Bump the version <bump-version>`.
+#. :ref:`Update the project <update-project>`.
+#. Build the changelog file from all news fragments:
 
    .. code-block:: shell-session
-      :caption: Bump the version number
-    
-      $ bump-version.sh minor
+      :caption: Build a combined changelog from news fragment
 
-   This will update the version number to the next minor version (e.g., from `1.0.0` to `1.1.0`).
-#. Update the changelog (see :ref:`update-changelog` for details).
+      $ towncrier build [--yes]
+
+
 #. Commit your changes with a message that describes the release.
 #. Wait for the CI to pass. If it fails, fix the issues and commit again.
 #. If the CI passes, (squash-)merge your release branch into the main branch.

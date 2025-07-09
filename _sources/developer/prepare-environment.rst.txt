@@ -20,15 +20,15 @@ This document provides instructions for setting up a development environment for
 GitHub CLI
 ----------
 
-GiHub CLI is a command-line tool :command:`gh` allows you to interact with GitHub repositories and perform various tasks directly from the terminal.
+GiHub CLI is a command-line tool named :command:`gh` that allows you to interact with GitHub repositories and perform various tasks directly from the terminal.
 
 It is not required for this project, but it can be useful for managing issues, pull requests, and other GitHub-related tasks directly from the terminal.
 
 Find more information at `GitHub CLI <https://cli.github.com/>`_.
 
 
-Starting the development environment
-------------------------------------
+Setting up the development environment
+--------------------------------------
 
 The following steps are recommended to set up your development environment:
 
@@ -67,3 +67,21 @@ The following steps are recommended to set up your development environment:
 
 
 After completing these steps, your development environment is ready to go.
+
+
+Getting Docserv's Config Files
+------------------------------
+
+The ``docbuild`` tool relies on a central set of XML configuration files to
+build SUSE product documentation. These files, which define all products,
+docsets, and their deliverables, are managed in the ``susedoc/docserv-config``
+repository.
+
+To get started, clone this repository to your local machine (you need VPN access):
+
+.. code-block:: shell-session
+
+   $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
+
+You will later need to point ``docbuild`` to the location of this cloned
+repository in your configuration.

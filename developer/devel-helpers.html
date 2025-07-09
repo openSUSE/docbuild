@@ -413,11 +413,11 @@
                   
   <section id="helper-tools">
 <span id="devel-helpers"></span><h1>Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading">#</a></h1>
-<p>The directory <code class="code docutils literal notranslate"><span class="pre">devel/</span></code> contains some helper tools to make development easier:</p>
+<p>The directory <code class="file docutils literal notranslate"><span class="pre">devel/</span></code> contains some helper tools to make development easier:</p>
 <ul>
 <li><dl>
-<dt><strong class="command">activate-aliases.sh</strong></dt><dd><p>Activates helpful aliases for the development environment. It provides
-shortcuts for common commands:</p>
+<dt><strong class="command">activate-aliases.sh</strong></dt><dd><p>Activates helpful aliases for the development environment. You need
+the <strong class="command">uv</strong> command. It provides shortcuts for common commands:</p>
 <ul class="simple">
 <li><dl class="simple">
 <dt><strong class="command">docbuild</strong></dt><dd><p>The project’s main command.</p>
@@ -446,22 +446,19 @@ in the <code class="file docutils literal notranslate"><span class="pre">.ipytho
 </dl>
 </li>
 </ul>
-<p>It is recommended to enable the aliases in your shell by sourcing the shell script in the root directory of the project:</p>
+<p>It is recommended to enable the aliases in your shell by sourcing the shell script from the root directory of the project:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
 </div>
 </div>
-<p>Run the aliases in the root directory of the project to ensure they work correctly.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><strong class="command">bump-version.sh</strong></dt><dd><dl class="simple">
-<dt>Bumps the version of the project. To bump the minor version, use</dt><dd><p><code class="code docutils literal notranslate"><span class="pre">bump-version.sh</span> <span class="pre">minor</span></code>.</p>
-</dd>
-</dl>
+<dt><strong class="command">bump-version.sh</strong></dt><dd><p>Bumps the version of the project. To bump the minor version, use
+<code class="code docutils literal notranslate"><span class="pre">bump-version.sh</span> <span class="pre">minor</span></code>.</p>
 </dd>
 </dl>
 </li>

@@ -1,18 +1,22 @@
 Developer Guide
 ===============
 
+This guide provides all the necessary information for contributing to the project. It covers core concepts, design principles, and instructions for setting up your development environment. You will also find detailed procedures for testing, creating releases, and other common development tasks.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents
 
    concepts
    design
+   know-tools-config
    prepare-environment
-   list-dependencies
-   update-package
+   develop-project
    run-testsuite
-   run-ipython
-   update-changelog
+   update-package
+   bump-version
+   update-project
+   add-newsfragments
    create-release
    trigger-actions
    knowing-github-setup

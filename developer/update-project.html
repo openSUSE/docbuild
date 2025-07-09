@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preparing Your Development Environment &#8212; docbuild 0.10.0 documentation</title>
+    <title>Updating the Project &#8212; docbuild 0.10.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/prepare-environment';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/update-project';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Developing the Project" href="develop-project.html" />
-    <link rel="prev" title="Knowning the Tools Config Files" href="know-tools-config.html" />
+    <link rel="next" title="Adding News Fragments" href="add-newsfragments.html" />
+    <link rel="prev" title="Bumping the Version" href="bump-version.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -369,12 +369,12 @@
 <li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
 <li class="toctree-l1"><a class="reference internal" href="know-tools-config.html">Knowning the Tools Config Files</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Preparing Your Development Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updating the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
@@ -424,7 +424,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Preparing Your Development Environment</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Updating the Project</span></li>
   </ul>
 </nav>
 </div>
@@ -441,131 +441,16 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="preparing-your-development-environment">
-<span id="prepare-devel-env"></span><h1>Preparing Your Development Environment<a class="headerlink" href="#preparing-your-development-environment" title="Link to this heading">#</a></h1>
-<p>This document provides instructions for setting up a development environment for this project.</p>
-<div class="admonition-note-a-quick-word-on-virtual-environments admonition" id="note-uv-venv">
-<p class="admonition-title">Note: A Quick Word on Virtual Environments</p>
-<p>The <strong class="command">uv</strong> tool can work with or without activating a Python virtual environment (venv). When <strong class="command">uv</strong> finds a <code class="file docutils literal notranslate"><span class="pre">.venv</span></code> directory, it
-uses it automatically. There is no need to “activate” it.
-However, if you get used to activating your Python VENV’s, it’s
-possible to do so.</p>
-</div>
-<section id="helper-tools">
-<span id="devel-helpers"></span><h2>Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading">#</a></h2>
-<p>The directory <code class="file docutils literal notranslate"><span class="pre">devel/</span></code> contains some helper tools to make development easier:</p>
-<ul>
-<li><dl>
-<dt><strong class="command">activate-aliases.sh</strong></dt><dd><p>Activates helpful aliases for the development environment. You need
-the <strong class="command">uv</strong> command. It provides shortcuts for common commands:</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt><strong class="command">docbuild</strong></dt><dd><p>The project’s main command.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">makedocs</strong></dt><dd><p>Builds the project’s documentation.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">towncrier</strong></dt><dd><p>Manages changelog and news entries.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">upytest</strong></dt><dd><p>Runs the project’s test suite through pytest.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">uipython</strong></dt><dd><p>Starts an interactive IPython shell using start-up scripts
-in the <code class="file docutils literal notranslate"><span class="pre">.ipython/</span></code> directory.</p>
-</dd>
-</dl>
-</li>
-</ul>
-<p>It is recommended to enable the aliases in your shell by sourcing the shell script from the root directory of the project:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
+  <section id="updating-the-project">
+<span id="update-project"></span><h1>Updating the Project<a class="headerlink" href="#updating-the-project" title="Link to this heading">#</a></h1>
+<p>When you change the version of this project it should be reflected already in your VENV when you have installed it in “editable mode”.</p>
+<p>In some cases, it may be helpful to manually update the project.</p>
+<div class="literal-block-wrapper docutils container" id="uv-pip-update-project">
+<div class="code-block-caption"><span class="caption-text">Updating the project</span><a class="headerlink" href="#uv-pip-update-project" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
 </div>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">bump-version.sh</strong></dt><dd><p>Bumps the version of the project. To bump the minor version, use
-<code class="code docutils literal notranslate"><span class="pre">bump-version.sh</span> <span class="pre">minor</span></code>.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong class="command">lines-of-code.sh</strong></dt><dd><p>Prints a summary of code lines, comments, and blank lines in the project
-for each file type.</p>
-</dd>
-</dl>
-</li>
-</ul>
-<p>In this documentation, we will use the aliases from now on.</p>
-</section>
-<section id="github-cli">
-<h2>GitHub CLI<a class="headerlink" href="#github-cli" title="Link to this heading">#</a></h2>
-<p>GiHub CLI is a command-line tool named <strong class="command">gh</strong> that allows you to interact with GitHub repositories and perform various tasks directly from the terminal.</p>
-<p>It is not required for this project, but it can be useful for managing issues, pull requests, and other GitHub-related tasks directly from the terminal.</p>
-<p>Find more information at <a class="reference external" href="https://cli.github.com/">GitHub CLI</a>.</p>
-</section>
-<section id="setting-up-the-development-environment">
-<h2>Setting up the development environment<a class="headerlink" href="#setting-up-the-development-environment" title="Link to this heading">#</a></h2>
-<p>The following steps are recommended to set up your development environment:</p>
-<ol class="arabic">
-<li><p>Follow the steps in <a class="reference internal" href="../user/install.html#prepare-installation"><span class="std std-ref">Preparing for Installation</span></a> and <a class="reference internal" href="../user/install.html#id1"><span class="std std-ref">Installing the tool</span></a>.</p></li>
-<li><p>If you haven’t created a virtual environment, do so:</p>
-<div class="literal-block-wrapper docutils container" id="uv-venv">
-<div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
-</pre></div>
-</div>
-</div>
-<p>Keep in mind that the Python version used in the virtual environment should match the version specified in the <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
-<p>The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
-See file <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> in <code class="docutils literal notranslate"><span class="pre">project.requires-python</span></code> for the exact version.</p>
-</li>
-<li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
-<div class="literal-block-wrapper docutils container" id="uv-sync-devel">
-<div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen<span class="w"> </span>--group<span class="w"> </span>devel
-</pre></div>
-</div>
-</div>
-<p>The option <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.</p>
-</li>
-<li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
-<div class="literal-block-wrapper docutils container" id="activate-aliases">
-<div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
-</pre></div>
-</div>
-</div>
-</li>
-</ol>
-<p>After completing these steps, your development environment is ready to go.</p>
-</section>
-<section id="getting-docserv-s-config-files">
-<h2>Getting Docserv’s Config Files<a class="headerlink" href="#getting-docserv-s-config-files" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> tool relies on a central set of XML configuration files to
-build SUSE product documentation. These files, which define all products,
-docsets, and their deliverables, are managed in the <code class="docutils literal notranslate"><span class="pre">susedoc/docserv-config</span></code>
-repository.</p>
-<p>To get started, clone this repository to your local machine (you need VPN access):</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
-</pre></div>
-</div>
-<p>You will later need to point <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> to the location of this cloned
-repository in your configuration.</p>
-</section>
 </section>
 
 
@@ -579,20 +464,20 @@ repository in your configuration.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="know-tools-config.html"
+       href="bump-version.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Knowning the Tools Config Files</p>
+        <p class="prev-next-title">Bumping the Version</p>
       </div>
     </a>
     <a class="right-next"
-       href="develop-project.html"
+       href="add-newsfragments.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Developing the Project</p>
+        <p class="prev-next-title">Adding News Fragments</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -608,25 +493,10 @@ repository in your configuration.</p>
 
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-tools">Helper Tools</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-cli">GitHub CLI</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-development-environment">Setting up the development environment</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-docserv-s-config-files">Getting Docserv’s Config Files</a></li>
-</ul>
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/prepare-environment.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/update-project.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -642,7 +512,7 @@ repository in your configuration.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/prepare-environment.rst.txt"
+      <li><a href="../_sources/developer/update-project.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

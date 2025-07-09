@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Running IPython &#8212; docbuild 0.10.0 documentation</title>
+    <title>&lt;no title&gt; &#8212; docbuild 0.10.0 documentation</title>
   
   
   
@@ -49,8 +49,6 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/run-ipython';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Updating the Changelog" href="update-changelog.html" />
-    <link rel="prev" title="Running the Test Suite" href="run-testsuite.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -147,7 +145,7 @@
 </li>
 
 
-<li class="nav-item current active">
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="index.html">
     Developer Guide
   </a>
@@ -259,8 +257,10 @@
       
       
       
+        
+      
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
         
 
   
@@ -282,7 +282,7 @@
 </li>
 
 
-<li class="nav-item current active">
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="index.html">
     Developer Guide
   </a>
@@ -359,31 +359,6 @@
     
   </div>
   
-    <div class="sidebar-primary-items__start sidebar-primary__section">
-        <div class="sidebar-primary-item">
-<nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="list-dependencies.html">Listing dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Running IPython</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update-changelog.html">Updating the Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
-</ul>
-</div>
-</nav></div>
-    </div>
-  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
       <div class="sidebar-primary-item">
@@ -419,10 +394,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Running IPython</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">&lt;no title&gt;</span></li>
   </ul>
 </nav>
 </div>
@@ -439,20 +411,21 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="running-ipython">
-<h1>Running IPython<a class="headerlink" href="#running-ipython" title="Link to this heading">#</a></h1>
-<p><a class="reference external" href="https://ipython.org/">IPython</a> is a powerful interactive shell that can be used for development and testing of the code in this repository.</p>
-<p>This repository provides a convenient way to run IPython with the current environment, allowing you to easily import and test the code without needing to modify the Python path:</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Running IPython using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">uipython</span></a></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+  <p>This repository provides a convenient way to run <a class="reference internal" href="../glossary.html#term-IPython"><span class="xref std std-term">IPython</span></a>
+with the current environment, allowing you to easily import and
+test the code without needing to modify the Python path.</p>
+<p>To start an interactive IPython shell with pre-loaded project
+modules, use the <code class="docutils literal notranslate"><span class="pre">uipython</span></code> alias (see <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">Helper Tools</span></a>).
+This is useful for experimenting with the project’s code and for debugging.</p>
+<div class="literal-block-wrapper docutils container" id="sh-running-ipython">
+<div class="code-block-caption"><span class="caption-text">Running IPython using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">uipython</span></a></span><a class="headerlink" href="#sh-running-ipython" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uipython
 </pre></div>
 </div>
 </div>
-<p>If you are inside an interactive IPython session, you can use the normal
-import without changing the import path:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Interactive IPython session</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<p>After the IPython shell is loaded, you can use the normal import without changing the import path:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Interactive IPython session</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">[...]</span>
 <span class="go">In [1]: from docbuild.cli.context import Doctype</span>
 <span class="go">In [2]: Doctype</span>
@@ -460,7 +433,6 @@ import without changing the import path:</p>
 </pre></div>
 </div>
 </div>
-</section>
 
 
                 </article>
@@ -472,24 +444,6 @@ import without changing the import path:</p>
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="run-testsuite.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Running the Test Suite</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="update-changelog.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Updating the Changelog</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -500,6 +454,18 @@ import without changing the import path:</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

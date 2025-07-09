@@ -1,5 +1,7 @@
-Listing dependencies
-====================
+.. Listing dependencies
+   ====================
+
+.. -text-begin-
 
 If you want to get an overview of the dependencies used in the project, you can use the `uv` command to list them:
 

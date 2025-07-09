@@ -423,14 +423,19 @@
 <h1>Glossary<a class="headerlink" href="#glossary" title="Link to this heading">#</a></h1>
 <dl class="glossary">
 <dt id="term-Changelog">Changelog<a class="headerlink" href="#term-Changelog" title="Link to this term">#</a></dt><dd><p>A record of all notable changes made in a project.</p>
-<p>See also <a class="reference internal" href="developer/update-changelog.html#update-changelog"><span class="std std-ref">Updating the Changelog</span></a>.</p>
+<p>See also <a class="reference internal" href="developer/create-release.html#create-release"><span class="std std-ref">Creating a New Release</span></a>.</p>
 </dd>
 <dt id="term-DAPS">DAPS<a class="headerlink" href="#term-DAPS" title="Link to this term">#</a></dt><dd><p>The <em>Documentation and Publishing System</em> (DAPS) is a tool to build documentation from DocBook or ADoc files.
 It is used to generate various output formats such as HTML, PDF, and EPUB.</p>
+<p>See <a class="github reference external" href="https://github.com/openSUSE/daps">openSUSE/daps</a></p>
 </dd>
 <dt id="term-DC-File">DC File<a class="headerlink" href="#term-DC-File" title="Link to this term">#</a></dt><dd><p>The <em>DAPS Configuration File</em> (DC file) is a configuration file used by DAPS to define parameters for building documentation. For example, it contains information about the entry file, what stylesheets to use, and other build options.</p>
 </dd>
 <dt id="term-Deliverable">Deliverable<a class="headerlink" href="#term-Deliverable" title="Link to this term">#</a></dt><dd><p>The smallest unit of documentation that can be built. It’s mapped to a DC File. A deliverable is usually being built in different formats.</p>
+</dd>
+<dt id="term-DocBook">DocBook<a class="headerlink" href="#term-DocBook" title="Link to this term">#</a></dt><dd><p>A semantic markup language based on <a class="reference internal" href="#term-XML"><span class="xref std std-term">XML</span></a> used for writing
+and publishing technical documentation.</p>
+<p>See <a class="reference external" href="https://www.docbook.org">https://www.docbook.org</a></p>
 </dd>
 <dt id="term-Docset">Docset<a class="headerlink" href="#term-Docset" title="Link to this term">#</a></dt><dd><p>Usually a release or version of a project. For example, <code class="docutils literal notranslate"><span class="pre">15-SP6</span></code>.</p>
 </dd>
@@ -439,19 +444,68 @@ The syntax is <code class="docutils literal notranslate"><span class="pre">[PROD
 contains product, docset, lifecycles, and language.</p>
 <p>See also <a class="reference internal" href="user/build.html#doctype-syntax"><span class="std std-ref">Doctype syntax</span></a>.</p>
 </dd>
-<dt id="term-Lifecycle">Lifecycle<a class="headerlink" href="#term-Lifecycle" title="Link to this term">#</a></dt><dd><p>The state of a document in its lifecycle.
-For example, <code class="docutils literal notranslate"><span class="pre">supported</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">unsupported</span></code> or <code class="docutils literal notranslate"><span class="pre">hidden</span></code>.</p>
+<dt id="term-IPython">IPython<a class="headerlink" href="#term-IPython" title="Link to this term">#</a></dt><dd><p>An interactive command-line interface for Python that enhances
+the standard Python shell with additional features.</p>
+<p>See <a class="reference internal" href="developer/develop-project.html#use-ipython"><span class="std std-ref">Using IPython</span></a>.</p>
+</dd>
+<dt id="term-Lifecycle">Lifecycle<a class="headerlink" href="#term-Lifecycle" title="Link to this term">#</a></dt><dd><p>Describes the distinct stages a product goes through, from its initial introduction to the market until its eventual decline and retirement.</p>
+<p>This project defines the lifecycle stages <code class="docutils literal notranslate"><span class="pre">supported</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">unsupported</span></code> and <code class="docutils literal notranslate"><span class="pre">hidden</span></code>.</p>
 <p>See class <a class="reference internal" href="reference/_autoapi/docbuild/models/lifecycle/index.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a>.</p>
+</dd>
+<dt id="term-PEP">PEP<a class="headerlink" href="#term-PEP" title="Link to this term">#</a></dt><dd><p><em>Python Enhancement Proposal (PEP)</em> are design documents that
+describe a new feature for Python and documenting the design decisions.</p>
+<p>See <a class="reference external" href="https://peps.python.org/">https://peps.python.org/</a></p>
 </dd>
 <dt id="term-Product">Product<a class="headerlink" href="#term-Product" title="Link to this term">#</a></dt><dd><p>A abbreviated name for a SUSE product. For example, <code class="docutils literal notranslate"><span class="pre">sles</span></code>.</p>
 <p>See class <a class="reference internal" href="reference/_autoapi/docbuild/models/product/index.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a>.</p>
 </dd>
-<dt id="term-Virtual-Python-Environment-VENV">Virtual Python Environment (VENV)<a class="headerlink" href="#term-Virtual-Python-Environment-VENV" title="Link to this term">#</a></dt><dd><p>A self-contained and isolate directory that contains a Python
+<dt id="term-pyproject.toml"><code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code><a class="headerlink" href="#term-pyproject.toml" title="Link to this term">#</a></dt><dd><p>A configuration file used in Python project to define build system
+requirements and project metadata.</p>
+<p>See <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0518/"><strong>PEP 518</strong></a></p>
+</dd>
+<dt id="term-Pytest">Pytest<a class="headerlink" href="#term-Pytest" title="Link to this term">#</a></dt><dd><p>A testing framework. It’s used to write, organize, and run
+tests for your code, from simple unit tests to complex functional
+testing.</p>
+<p>See <a class="reference external" href="https://pytest.org">https://pytest.org</a></p>
+</dd>
+<dt id="term-Ruff">Ruff<a class="headerlink" href="#term-Ruff" title="Link to this term">#</a></dt><dd><p>A fast extensible linter and code formatter to improve code qualitiy
+and enforce style guidelines.</p>
+<p>See <a class="reference external" href="https://docs.astral.sh/ruff/">https://docs.astral.sh/ruff/</a></p>
+</dd>
+<dt id="term-SemVer">SemVer<a class="headerlink" href="#term-SemVer" title="Link to this term">#</a></dt><dt id="term-Semantic-Versioning">Semantic Versioning<a class="headerlink" href="#term-Semantic-Versioning" title="Link to this term">#</a></dt><dd><p>A formal convention for assinging version numbers to software
+releases in a <code class="docutils literal notranslate"><span class="pre">MAJOR.MINOR.PATCH</span></code> format.</p>
+<p>This structure conveys the nature of the changes, indicating
+if an update introduces incompatible API changes (<code class="docutils literal notranslate"><span class="pre">MAJOR</span></code>),
+adds backward-compatible features (<code class="docutils literal notranslate"><span class="pre">MINOR</span></code>), or contains
+backward-compatible bug fixes (<code class="docutils literal notranslate"><span class="pre">PATCH</span></code>).</p>
+<p>See <a class="reference external" href="https://semver.org">https://semver.org</a></p>
+</dd>
+<dt id="term-Sphinx">Sphinx<a class="headerlink" href="#term-Sphinx" title="Link to this term">#</a></dt><dd><p>A documentation generator for Python projects. It converts
+reStructuredText (reST or RST) files into various output formats
+such as HTML, PDF, or manual pages or more.</p>
+<p>See <a class="reference internal" href="developer/build-docs.html#build-docs"><span class="std std-ref">Building Documentation</span></a>.</p>
+</dd>
+<dt id="term-UV">UV<a class="headerlink" href="#term-UV" title="Link to this term">#</a></dt><dd><p>A fast package manager which simplifies the building, installing,
+and managing of this project.</p>
+<p>See <a class="reference external" href="https://docs.astral.sh/uv/">https://docs.astral.sh/uv/</a></p>
+</dd>
+<dt id="term-VENV">VENV<a class="headerlink" href="#term-VENV" title="Link to this term">#</a></dt><dt id="term-Virtual-Python-Environment">Virtual Python Environment<a class="headerlink" href="#term-Virtual-Python-Environment" title="Link to this term">#</a></dt><dd><p>An isolated and self-contained directory that contains a Python
 installation for a particular version of Python, plus several
-additional packages.
-It is used to avoid conflicts between package versions
-and to manage dependencies for different projects without
-affecting the global Python installation.</p>
+additional packages.</p>
+<p>This prevents dependency conflicts by keeping each project’s
+requirements separate from other projects and the main system
+installation.</p>
+<p>By convention, a project’s VENV is stored in a directory
+named <code class="file docutils literal notranslate"><span class="pre">.venv</span></code> located at the root of the project folder.</p>
+<p>See <a class="reference internal" href="developer/prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a>.</p>
+</dd>
+<dt id="term-XML">XML<a class="headerlink" href="#term-XML" title="Link to this term">#</a></dt><dd><p>The <em>eXtensible Markup Language</em> is a text-based markup
+language used to structure, store, and transport data in
+a format that is both human- and machine-readable.</p>
+</dd>
+<dt id="term-XSLT">XSLT<a class="headerlink" href="#term-XSLT" title="Link to this term">#</a></dt><dd><p>The <em>eXtensible Stylesheet Language for Transformations</em>
+is a language that transforms XML documents into other
+formats like HTML, plain text, or new XML structures.</p>
 </dd>
 </dl>
 </section>
