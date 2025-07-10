@@ -478,6 +478,75 @@ It covers the core principles that guide development, the overall project layout
 and the specific design patterns used for the command-line interface,
 configuration, and documentation. Understanding these concepts is key for
 making effective contributions.</p>
+<section id="high-level-build-workflow">
+<h2>High-level build workflow<a class="headerlink" href="#high-level-build-workflow" title="Link to this heading">#</a></h2>
+<p>The following diagram illustrates the high-level workflow of the <code class="docutils literal notranslate"><span class="pre">docbuild</span></code>
+tool, from parsing command-line arguments to generating the final documentation
+output. The core of the process involves concurrent tasks that are executed for
+each deliverable.</p>
+<figure class="align-center" id="fig-high-level-build-workflow">
+<div class="graphviz"><img src="../_images/graphviz-45d49fb9958019dddd8426e54d1e53509373150a.png" alt="digraph &quot;docbuild High-Level Workflow&quot; {
+   graph [rankdir=&quot;TB&quot;, splines=true, nodesep=0.6, ranksep=0.8];
+   node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#E6F2FF&quot;];
+   edge [fontname=&quot;Helvetica&quot;, fontsize=10];
+
+   // Inputs
+   CLI [label=&quot;Command-line Input&quot;, fillcolor=&quot;#DAE8FC&quot;];
+   XML_Configs [label=&quot;XML Configs&quot;, shape=cylinder, style=filled, fillcolor=&quot;#F5F5F5&quot;];
+   Jinja_Templates [label=&quot;Jinja Templates&quot;, shape=cylinder, style=filled, fillcolor=&quot;#F5F5F5&quot;];
+
+   // Processing Steps
+   Parse_CLI [label=&quot;Parse CLI &amp; Configs&quot;];
+   Read_XML [label=&quot;Read XML &amp; Get Deliverables&quot;];
+
+   subgraph cluster_async {
+       label=&quot;Concurrent Processing (per deliverable)&quot;;
+       style=&quot;dashed&quot;;
+       bgcolor=&quot;#FFFFE0&quot;;
+       node [fillcolor=&quot;#FFF2CC&quot;];
+
+       Extract_Metadata [label=&quot;Extract Metadata&quot;];
+       Build_Targets [label=&quot;Build Target Formats&quot;];
+       Combine_Info [label=&quot;Combine Info&quot;];
+       Render_Pages [label=&quot;Render Index Pages&quot;];
+       Fix_Canonicals [label=&quot;Fix Canonicals&quot;];
+   }
+
+   // Finalization Steps
+   Sync_Files [label=&quot;Sync Built Files&quot;];
+   Build_Sitemap [label=&quot;Build Sitemap&quot;];
+
+   // Output
+   Final_Docs [label=&quot;Final Documentation&quot;, shape=folder, fillcolor=&quot;#D5E8D4&quot;, style=filled];
+
+   // Edges
+   CLI -&gt; Parse_CLI;
+   XML_Configs -&gt; Read_XML;
+   Parse_CLI -&gt; Read_XML;
+
+   Read_XML -&gt; Extract_Metadata;
+   Read_XML -&gt; Build_Targets;
+
+   Extract_Metadata -&gt; Combine_Info;
+   Read_XML -&gt; Combine_Info [label=&quot;Config Info&quot;, style=dashed, constraint=false];
+
+   Combine_Info -&gt; Render_Pages;
+   Jinja_Templates -&gt; Render_Pages [style=dashed];
+
+   // Build_Targets -&gt; Sync_Files;
+   Build_Targets -&gt; Fix_Canonicals;
+   Render_Pages -&gt; Sync_Files;
+
+   Fix_Canonicals -&gt; Sync_Files;
+   // Fix_Canonicals -&gt; Build_Sitemap;
+   Build_Sitemap -&gt; Final_Docs;
+   Sync_Files -&gt; Final_Docs;
+}" class="graphviz" /></div>
+<figcaption>
+<p><span class="caption-text">High-level build workflow</span><a class="headerlink" href="#fig-high-level-build-workflow" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="principles">
 <h2>Principles<a class="headerlink" href="#principles" title="Link to this heading">#</a></h2>
 <p>The code is based on the following principles:</p>
@@ -586,6 +655,7 @@ making effective contributions.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#high-level-build-workflow">High-level build workflow</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#principles">Principles</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-design-structure">Project design structure</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commandline-design-patterns">Commandline design patterns</a></li>

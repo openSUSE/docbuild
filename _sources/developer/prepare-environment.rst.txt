@@ -14,6 +14,35 @@ This document provides instructions for setting up a development environment for
    possible to do so.
 
 
+High-level project overview
+---------------------------
+
+The following diagram illustrates the relationship between the main components of the project:
+
+.. graphviz::
+   :name: fig-high-level-overview
+   :align: center
+   :caption: High-level project overview
+
+   digraph "Project Components" {
+      rankdir="LR";
+      node [shape=box, style="rounded,filled", fillcolor="#E6F2FF"];
+
+      "pyproject" [label="pyproject.toml\nConfiguration"];
+      "uv" [label="uv\nPackage Manager"];
+      "src" [label="src/\nSource Code"];
+      "tests" [label="tests/\nTests"];
+      "docs" [label="docs/ and changelog.d/\nDocumentation"];
+      "towncrier" [label="towncrier\nChangelog Tool"];
+
+      "pyproject" -> "uv" [label="configures"];
+      "uv" -> {"src", "tests", "docs"} [label="manages dependencies for"];
+      "towncrier" -> "docs" [label="generates changelog in"];
+   }
+
+
+
+
 .. include:: devel-helpers.rst
 
 

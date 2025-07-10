@@ -10,7 +10,7 @@ docbuild.cli.cmd_repo.cmd_clone
    Pass any of the following URLs to clone:
 
    
-   * HTTPS URLs like https://github.com/org/repo.git
+   * HTTPS URLs like ``https://github.com/org/repo.git``
    * SSH URLS like git@github.com:org/repo.git
    * Abbreviated URLs like 'org/repo'
 

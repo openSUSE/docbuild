@@ -481,6 +481,30 @@ uses it automatically. There is no need to “activate” it.
 However, if you get used to activating your Python VENV’s, it’s
 possible to do so.</p>
 </div>
+<section id="high-level-project-overview">
+<h2>High-level project overview<a class="headerlink" href="#high-level-project-overview" title="Link to this heading">#</a></h2>
+<p>The following diagram illustrates the relationship between the main components of the project:</p>
+<figure class="align-center" id="fig-high-level-overview">
+<div class="graphviz"><img src="../_images/graphviz-7c15f83413532a54174bc23453480935efb38eea.png" alt="digraph &quot;Project Components&quot; {
+   rankdir=&quot;LR&quot;;
+   node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#E6F2FF&quot;];
+
+   &quot;pyproject&quot; [label=&quot;pyproject.toml\nConfiguration&quot;];
+   &quot;uv&quot; [label=&quot;uv\nPackage Manager&quot;];
+   &quot;src&quot; [label=&quot;src/\nSource Code&quot;];
+   &quot;tests&quot; [label=&quot;tests/\nTests&quot;];
+   &quot;docs&quot; [label=&quot;docs/ and changelog.d/\nDocumentation&quot;];
+   &quot;towncrier&quot; [label=&quot;towncrier\nChangelog Tool&quot;];
+
+   &quot;pyproject&quot; -&gt; &quot;uv&quot; [label=&quot;configures&quot;];
+   &quot;uv&quot; -&gt; {&quot;src&quot;, &quot;tests&quot;, &quot;docs&quot;} [label=&quot;manages dependencies for&quot;];
+   &quot;towncrier&quot; -&gt; &quot;docs&quot; [label=&quot;generates changelog in&quot;];
+}" class="graphviz" /></div>
+<figcaption>
+<p><span class="caption-text">High-level project overview</span><a class="headerlink" href="#fig-high-level-overview" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
 <section id="helper-tools">
 <span id="devel-helpers"></span><h2>Helper Tools<a class="headerlink" href="#helper-tools" title="Link to this heading">#</a></h2>
 <p>The directory <code class="file docutils literal notranslate"><span class="pre">devel/</span></code> contains some helper tools to make development easier:</p>
@@ -645,6 +669,7 @@ repository in your configuration.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#high-level-project-overview">High-level project overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-tools">Helper Tools</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-cli">GitHub CLI</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-development-environment">Setting up the development environment</a></li>

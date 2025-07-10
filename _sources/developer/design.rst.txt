@@ -8,6 +8,79 @@ configuration, and documentation. Understanding these concepts is key for
 making effective contributions.
 
 
+High-level build workflow
+-------------------------
+
+The following diagram illustrates the high-level workflow of the ``docbuild``
+tool, from parsing command-line arguments to generating the final documentation
+output. The core of the process involves concurrent tasks that are executed for
+each deliverable.
+
+
+.. graphviz::
+   :name: fig-high-level-build-workflow
+   :align: center
+   :caption: High-level build workflow
+
+   digraph "docbuild High-Level Workflow" {
+      graph [rankdir="TB", splines=true, nodesep=0.6, ranksep=0.8];
+      node [shape=box, style="rounded,filled", fillcolor="#E6F2FF"];
+      edge [fontname="Helvetica", fontsize=10];
+
+      // Inputs
+      CLI [label="Command-line Input", fillcolor="#DAE8FC"];
+      XML_Configs [label="XML Configs", shape=cylinder, style=filled, fillcolor="#F5F5F5"];
+      Jinja_Templates [label="Jinja Templates", shape=cylinder, style=filled, fillcolor="#F5F5F5"];
+
+      // Processing Steps
+      Parse_CLI [label="Parse CLI & Configs"];
+      Read_XML [label="Read XML & Get Deliverables"];
+
+      subgraph cluster_async {
+          label="Concurrent Processing (per deliverable)";
+          style="dashed";
+          bgcolor="#FFFFE0";
+          node [fillcolor="#FFF2CC"];
+
+          Extract_Metadata [label="Extract Metadata"];
+          Build_Targets [label="Build Target Formats"];
+          Combine_Info [label="Combine Info"];
+          Render_Pages [label="Render Index Pages"];
+          Fix_Canonicals [label="Fix Canonicals"];
+      }
+
+      // Finalization Steps
+      Sync_Files [label="Sync Built Files"];
+      Build_Sitemap [label="Build Sitemap"];
+
+      // Output
+      Final_Docs [label="Final Documentation", shape=folder, fillcolor="#D5E8D4", style=filled];
+
+      // Edges
+      CLI -> Parse_CLI;
+      XML_Configs -> Read_XML;
+      Parse_CLI -> Read_XML;
+
+      Read_XML -> Extract_Metadata;
+      Read_XML -> Build_Targets;
+
+      Extract_Metadata -> Combine_Info;
+      Read_XML -> Combine_Info [label="Config Info", style=dashed, constraint=false];
+
+      Combine_Info -> Render_Pages;
+      Jinja_Templates -> Render_Pages [style=dashed];
+
+      // Build_Targets -> Sync_Files;
+      Build_Targets -> Fix_Canonicals;
+      Render_Pages -> Sync_Files;
+
+      Fix_Canonicals -> Sync_Files;
+      // Fix_Canonicals -> Build_Sitemap;
+      Build_Sitemap -> Final_Docs;
+      Sync_Files -> Final_Docs;
+   }
+
+
 Principles
 ----------
 

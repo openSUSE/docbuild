@@ -449,7 +449,7 @@
 <p>All notable changes to this project will be documented in this file.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>, and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
-<a class="reference external" href="https://github.com/tomschr/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
+<a class="reference external" href="https://github.com/openSUSE/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
 <section id="version-0-10-0">
 <h2>Version 0.10.0<a class="headerlink" href="#version-0-10-0" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
@@ -537,12 +537,12 @@ it raises the respective parts. It respects the semver specification.</p></li>
 from helper files (like <code class="file docutils literal notranslate"><span class="pre">context.py</span></code> which isn’t a command).</p>
 </li>
 <li><p>Refactor Deliverable to use <code class="docutils literal notranslate"><span class="pre">.findtext()</span></code></p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> option in aliases to avoid updating <a href="#id4"><span class="problematic" id="id5">:filename:`uv.lock`</span></a>.
-Add new alias <strong class="command">towncrier</strong> (see <a href="#id6"><span class="problematic" id="id7">:filename:`devel/activate-aliases.sh`</span></a>).</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> option in aliases to avoid updating <code class="file docutils literal notranslate"><span class="pre">uv.lock</span></code>.
+Add new alias <strong class="command">towncrier</strong> (see <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code>).</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3>Code Refactoring<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Code Refactoring<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Refactor <code class="docutils literal notranslate"><span class="pre">replace_placeholders()</span></code> function</p>
 <ul>
@@ -565,8 +565,8 @@ This is now changed to <code class="docutils literal notranslate"><span class="p
 </li>
 </ul>
 </section>
-<section id="id9">
-<h3>Features<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Features<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add new list_all_deliverables for XML files</p>
 <p>Generator to yield all deliverables in XML format.</p>
@@ -586,8 +586,8 @@ XPath, and Git.</p>
 </section>
 <section id="version-0-7-0">
 <h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Link to this heading">#</a></h2>
-<section id="id10">
-<h3>Improved Documentation<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Improved Documentation<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add first docbuild documentation</p>
 <ul>
@@ -604,8 +604,8 @@ documentation standard</p></li>
 </li>
 </ul>
 </section>
-<section id="id11">
-<h3>Features<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>Features<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implement Deliverable &amp; Metadata classes</p>
 <ul>
@@ -618,8 +618,8 @@ an interface to extract important values from the XML config</p></li>
 </li>
 </ul>
 </section>
-<section id="id12">
-<h3>Infrastructure<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>Infrastructure<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add missing license file (GPL-3.0-or-later)</p></li>
 <li><p>Add py.typed in project and pyproject.toml</p></li>
@@ -705,18 +705,18 @@ these are renamed:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Code Refactoring</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Code Refactoring</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-8-0">Version 0.8.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#breaking-changes">Breaking Changes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Features</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-7-0">Version 0.7.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
 </ul>
 </li>
