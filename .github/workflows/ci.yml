@@ -16,15 +16,23 @@ permissions:
 
 jobs:
   test:
-    name: python
-    runs-on: ubuntu-latest
+    name: python (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install tools
+      - name: Install tools (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y jing libxml2-utils xsltproc
+
+      - name: Install tools (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install jing libxml2-utils xsltproc
 
       - name: Install the latest version of uv
         id: setup-uv
