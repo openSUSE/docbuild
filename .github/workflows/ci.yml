@@ -20,8 +20,11 @@ permissions:
 
 jobs:
   test:
-    name: python
-    runs-on: ubuntu-latest
+    name: python (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
       # image: ghcr.io/opensuse/docbuild/daps:latest
@@ -32,24 +35,28 @@ jobs:
 
       - name: Get dependencies
         run: |
-          rpm -q daps \
-            suse-xsl-stylesheets \
-            suse-xsl-stylesheets-sbp \
-            geekodoc \
-            docbook-xsl-stylesheets \
-            docbook-xsl-ns \
-            xmlgraphics-fop \
-            git \
+          rpm -q --qf '%-30{NAME} %{VERSION}\n' \
+            curl \
+            daps \
             ditaa \
+            docbook-xsl-ns-stylesheets \
+            docbook-xsl-stylesheets \
+            geekodoc \
+            git \
+            jq \
             libreoffice-draw \
             novdoc \
-            ruby2.5-rubygem-asciidoctor \
-            curl \
+            openssh-clients \
+            rsvg-convert \
+            ruby2.5 \
+            suse-xsl-stylesheets \
             tar \
             w3m \
-            jq \
-            rsvg-convert \
-            openssh-clients || true
+            xmlgraphics-fop || true
+
+      - name: Install tools (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install jing libxml2-utils xsltproc
 
       - name: Install the latest version of uv
         id: setup-uv
