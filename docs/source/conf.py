@@ -17,9 +17,12 @@ gh_user = 'openSUSE'
 gh_repo_url = f'https://github.com/{gh_user}/{project}'
 gh_repo_slug = f'{gh_user}/{project}'
 
+xml_config_repo = 'https://gitlab.suse.de/susedoc/docserv-config'
+xml_config_slug = '/'.join(xml_config_repo.rsplit('/', 2)[-2:])
 
 # --- Prolog configuration
 rst_prolog = f"""
+.. |daps| replace:: :command:`daps`
 .. |project| replace:: {project}
 .. |gh_repo_slug| replace:: {gh_repo_slug}
 .. |github_user| replace:: {gh_user}
@@ -27,6 +30,7 @@ rst_prolog = f"""
 .. |gh_repo_url| replace:: `{gh_repo_slug} <{gh_repo_url}>`__
 .. |uv| replace:: :command:`uv`
 .. |gh_release| replace:: `Releases <{gh_repo_url}/releases/>`__
+.. |gl_xmlconfig| replace:: `GL://{xml_config_slug} <{xml_config_repo}>`__
 """
 
 # -- General configuration
@@ -144,7 +148,7 @@ html_theme_options = {
     'icon_links': [
         {
             'name': 'GitLab susedoc/docserv-config',
-            'url': 'https://gitlab.suse.de/susedoc/docserv-config',
+            'url': xml_config_repo,
             'icon': 'fa-brands fa-square-gitlab',
             'type': 'fontawesome',
         },
