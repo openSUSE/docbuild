@@ -42,47 +42,16 @@ docbuild.cli.cmd_build
 
 
 
-Classes
--------
-
-.. toctree::
-   :hidden:
-
-   /reference/_autoapi/docbuild/cli/cmd_build/Doctype
-   /reference/_autoapi/docbuild/cli/cmd_build/DocBuildContext
-
-.. autoapisummary::
-
-   docbuild.cli.cmd_build.Doctype
-   docbuild.cli.cmd_build.DocBuildContext
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
-   docbuild.cli.cmd_build.validate_doctypes
    docbuild.cli.cmd_build.build
 
 
 Package Contents
 ----------------
-
-.. py:function:: validate_doctypes(ctx: click.Context, param: click.Parameter | None, doctypes: tuple[str, Ellipsis]) -> list[docbuild.models.doctype.Doctype]
-
-   Click callback function to validate a list of doctype strings.
-
-   Each string must conform to the format: PRODUCT/DOCSET@LIFECYCLE/LANGS
-   LANGS can be a single language code, a comma-separated list (no spaces),
-   or '*' for all.
-   Defaults and wildcards (*) are handled.
-
-   :param param: The click parameter that triggered this callback.
-   :param doctypes: A tuple of doctype strings to validate.
-   :return: A list of validated Doctype objects.
-   :raises click.Abort: If any doctype string is invalid, the command is aborted.
-
 
 .. py:function:: build(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype]) -> None
 

@@ -49,7 +49,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/cmd_build/index';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.cli.cmd_build.Doctype" href="Doctype.html" />
+    <link rel="next" title="docbuild.cli.cmd_c14n" href="../cmd_c14n/index.html" />
     <link rel="prev" title="docbuild.cli" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -390,53 +390,104 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../modules.html">docbuild</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../docbuild.html">docbuild Command Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../docbuild-cli.html">docbuild CLI</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../__about__/index.html">docbuild.__about__</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.cli</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">API Reference</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../__about__/index.html">docbuild.__about__</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
-<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">docbuild.cli</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.cli.cmd_build</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/index.html">docbuild.cli.cmd_repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_validate/index.html">docbuild.cli.cmd_validate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../config/index.html">docbuild.cli.config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../config/app/index.html">docbuild.config.app</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/load/index.html">docbuild.config.load</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/merge/index.html">docbuild.config.merge</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/xml/index.html">docbuild.config.xml</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../config/index.html">docbuild.cli.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../config/application/index.html">docbuild.cli.config.application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/environment/index.html">docbuild.cli.config.environment</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/doctype/index.html">docbuild.models.doctype</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/language/index.html">docbuild.models.language</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/repo/index.html">docbuild.models.repo</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../models/serverroles/index.html">docbuild.models.serverroles</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/index.html">docbuild.utils.decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../defaults/index.html">docbuild.cli.defaults</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../config/app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/load/index.html">docbuild.config.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config/merge/index.html">docbuild.config.merge</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../config/xml/index.html">docbuild.config.xml</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
 </ul>
 </details></li>
 </ul>
@@ -483,9 +534,6 @@
     </li>
     
     <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Reference</a></li>
-    
-    
-    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">API Reference</a></li>
     
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild</a></li>
@@ -544,30 +592,11 @@ Build all docsets that are supported and beta for German SLES.</p></li>
 Same as the previous one, but with comma as the separator between
 the lifecycle states.</p></li>
 </ul>
-<section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-</div>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="Doctype.html#docbuild.cli.cmd_build.Doctype" title="docbuild.cli.cmd_build.Doctype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Doctype</span></code></a></p></td>
-<td><p>A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="DocBuildContext.html#docbuild.cli.cmd_build.DocBuildContext" title="docbuild.cli.cmd_build.DocBuildContext"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DocBuildContext</span></code></a></p></td>
-<td><p>The CLI context shared between different subcommands.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.validate_doctypes" title="docbuild.cli.cmd_build.validate_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_doctypes</span></code></a>(→ list[docbuild.models.doctype.Doctype])</p></td>
-<td><p>Click callback function to validate a list of doctype strings.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.build" title="docbuild.cli.cmd_build.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.build" title="docbuild.cli.cmd_build.build"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build</span></code></a>(→ None)</p></td>
 <td><p>Subcommand build.</p></td>
 </tr>
 </tbody>
@@ -576,30 +605,6 @@ the lifecycle states.</p></li>
 </section>
 <section id="package-contents">
 <h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.cli.cmd_build.validate_doctypes">
-<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.</span></span><span class="sig-name descname"><span class="pre">validate_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.2.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Parameter" title="(in Click v8.2.x)"><span class="pre">click.Parameter</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.validate_doctypes" title="Link to this definition">#</a></dt>
-<dd><p>Click callback function to validate a list of doctype strings.</p>
-<p>Each string must conform to the format: <a class="reference external" href="mailto:PRODUCT/DOCSET&#37;&#52;&#48;LIFECYCLE/LANGS">PRODUCT/DOCSET<span>&#64;</span>LIFECYCLE/LANGS</a>
-LANGS can be a single language code, a comma-separated list (no spaces),
-or ‘*’ for all.
-Defaults and wildcards (*) are handled.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>param</strong> – The click parameter that triggered this callback.</p></li>
-<li><p><strong>doctypes</strong> – A tuple of doctype strings to validate.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of validated Doctype objects.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.2.x)"><strong>click.Abort</strong></a> – If any doctype string is invalid, the command is aborted.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_build.build">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.</span></span><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.2.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.build" title="Link to this definition">#</a></dt>
@@ -637,11 +642,11 @@ Defaults and wildcards (*) are handled.</p>
       </div>
     </a>
     <a class="right-next"
-       href="Doctype.html"
+       href="../cmd_c14n/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.cli.cmd_build.Doctype</p>
+        <p class="prev-next-title">docbuild.cli.cmd_c14n</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -664,10 +669,8 @@ Defaults and wildcards (*) are handled.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.validate_doctypes"><code class="docutils literal notranslate"><span class="pre">validate_doctypes()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.build"><code class="docutils literal notranslate"><span class="pre">build()</span></code></a></li>
 </ul>
 </li>

@@ -18,19 +18,6 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_validate/process/index
 
 
-Classes
--------
-
-.. toctree::
-   :hidden:
-
-   /reference/_autoapi/docbuild/cli/cmd_validate/DocBuildContext
-
-.. autoapisummary::
-
-   docbuild.cli.cmd_validate.DocBuildContext
-
-
 Functions
 ---------
 

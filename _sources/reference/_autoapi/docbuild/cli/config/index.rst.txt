@@ -24,27 +24,11 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.config.app
-   docbuild.cli.config.env
    docbuild.cli.config.config
 
 
 Package Contents
 ----------------
-
-.. py:function:: app(ctx: click.Context) -> None
-
-   Subcommand to show the application's configuration.
-
-   :param ctx: The Click context object.
-
-
-.. py:function:: env(ctx: click.Context) -> None
-
-   Subcommand to show the ENV configuration.
-
-   :param ctx: The Click context object.
-
 
 .. py:function:: config(ctx: click.Context) -> None
 

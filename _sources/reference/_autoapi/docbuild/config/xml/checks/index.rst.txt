@@ -171,14 +171,14 @@ Module Contents
 
    Make sure that deliverables with subdeliverables have only HTML formats enabled.
 
-   ... code-block:: xml
+   .. code-block:: xml
 
-       <deliverable>
+        <deliverable>
            <dc>DC-fake-all</dc>
            <!-- PDF enabled, but subdeliverables present: -->
-           <format epub="0" html="1" pdf="1" single-html="1"/>
+           <format epub="0" html="1" pdf="1" single-html="1" />
            <subdeliverable> ... </subdeliverable>
-       </deliverable>
+        </deliverable>
 
    :param tree: The XML tree to check.
    :return: True if all subdeliverables have at least one enabled format,
@@ -190,6 +190,7 @@ Module Contents
    Ensure that each language code appears only once within <category>.
 
    .. code-block:: xml
+
        <category categoryid="container">
            <language lang="en-us" title="..." />
            <language lang="en-us" title="..."/> <!-- Duplicate -->
@@ -204,6 +205,7 @@ Module Contents
    Ensure that each language code appears only once within <desc>.
 
    .. code-block:: xml
+
        <product>
           <!-- ... -->
           <desc lang="en-us">...</desc>
@@ -219,6 +221,7 @@ Module Contents
    Ensure that each language code appears only once within <docset>.
 
    .. code-block:: xml
+
        <docset setid="..." lifecycle="...">
            <!-- ... -->
            <builddocs>
@@ -237,6 +240,7 @@ Module Contents
    Ensure that each language code appears only once within <external>.
 
    .. code-block:: xml
+
        <external>
            <link>
                <language lang="en-us" default="1">...</language>
@@ -253,6 +257,7 @@ Module Contents
    Ensure that each language code appears only once within <overridedesc>.
 
    .. code-block:: xml
+
        <overridedesc>
            <language lang="en-us" default="1">...</language>
            <language lang="en-us" default="1">...</language> <!-- Duplicate -->
@@ -288,22 +293,22 @@ Module Contents
 
    .. code-block:: xml
 
-   <language default="1" lang="en-us">
-       <branch>main</branch>
-       <deliverable>
-         <dc>DC-SLES-all</dc>
-         <format epub="0" html="1" pdf="0" single-html="0"/>
-         <subdeliverable>book-rmt</subdeliverable>
-       </deliverable>
-   </language>
-   <language  lang="de-de">
-       <branch>main</branch>
-       <deliverable>
-         <dc>DC-SLES-all</dc>
-         <!-- This subdeliverable is not present in the default language: -->
-         <subdeliverable>book-abc</subdeliverable>
-       </deliverable>
-   </language>
+       <language default="1" lang="en-us">
+           <branch>main</branch>
+           <deliverable>
+           <dc>DC-SLES-all</dc>
+           <format epub="0" html="1" pdf="0" single-html="0"/>
+           <subdeliverable>book-rmt</subdeliverable>
+           </deliverable>
+       </language>
+       <language  lang="de-de">
+           <branch>main</branch>
+           <deliverable>
+           <dc>DC-SLES-all</dc>
+           <!-- This subdeliverable is not present in the default language: -->
+           <subdeliverable>book-abc</subdeliverable>
+           </deliverable>
+       </language>
 
    :param tree: The XML tree to check.
    :return: True if all deliverables have translations in all languages,
@@ -315,6 +320,7 @@ Module Contents
    Check that all languages are valid.
 
    .. code-block:: xml
+
        <language lang="en-us" default="1">...</language>
        <language lang="invalid-lang" default="0">...</language> <!-- Invalid -->
 

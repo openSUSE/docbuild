@@ -42,7 +42,7 @@ Module Contents
 
    :param name: Name of the timer.
    :param method: Method to use for measuring time, defaults
-       to :func:`time.perf_counter.
+       to :func:`time.perf_counter`.
    :return: A context manager that yields a dictionary with start, end,
        and elapsed time.
 

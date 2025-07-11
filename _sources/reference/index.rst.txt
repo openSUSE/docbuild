@@ -5,5 +5,5 @@ Reference
    :maxdepth: 2
    :caption: Contents
 
-   modules
-   _autoapi/index
+   docbuild-cli
+   _autoapi/docbuild/index
