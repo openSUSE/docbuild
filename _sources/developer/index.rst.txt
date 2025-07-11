@@ -14,6 +14,7 @@ This guide provides all the necessary information for contributing to the projec
    :maxdepth: 2
    :caption: Tasks
 
+   project-dependencies
    prepare-environment
    develop-project
    run-testsuite

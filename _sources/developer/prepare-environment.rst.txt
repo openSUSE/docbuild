@@ -46,6 +46,9 @@ The following diagram illustrates the relationship between the main components o
 .. include:: devel-helpers.rst
    :start-after: -text-begin-
 
+
+.. _github-cli:
+
 GitHub CLI
 ----------
 
@@ -61,9 +64,9 @@ Setting up the development environment
 
 The following steps are recommended to set up your development environment:
 
-1. Follow the steps in :ref:`prepare-installation` and :ref:`installing-docbuild`.
+#. Follow the steps in :ref:`prepare-installation` and :ref:`installing-docbuild`.
 
-2. If you haven't created a virtual environment, do so:
+#. If you haven't created a virtual environment, do so:
 
    .. code-block:: shell-session
       :caption: Creating a virtual environment with |uv|
@@ -76,7 +79,7 @@ The following steps are recommended to set up your development environment:
    The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
    See file :file:`pyproject.toml` in ``project.requires-python`` for the exact version.
 
-3. Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:
+#. Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:
 
    .. code-block:: shell-session
       :caption: Synchronizing the virtual environment with the development dependencies
@@ -86,7 +89,7 @@ The following steps are recommended to set up your development environment:
 
    The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
 
-4. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
+#. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
 
    .. code-block:: shell-session
       :caption: Activating the shell aliases for development

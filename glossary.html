@@ -446,8 +446,26 @@
   <section id="glossary">
 <h1>Glossary<a class="headerlink" href="#glossary" title="Link to this heading">#</a></h1>
 <dl class="glossary">
+<dt id="term-ADoc">ADoc<a class="headerlink" href="#term-ADoc" title="Link to this term">#</a></dt><dt id="term-ASCIIDoc">ASCIIDoc<a class="headerlink" href="#term-ASCIIDoc" title="Link to this term">#</a></dt><dd><p>A lightweight markup language, similar to Markdown, but with a more powerful and extensive syntax designed for writing complex technical documentation, articles, and books.</p>
+<p>See also <a class="reference internal" href="#term-DocBook"><span class="xref std std-term">DocBook</span></a>, <a class="reference external" href="https://docs.asciidoctor.org/asciidoc/latest/">https://docs.asciidoctor.org/asciidoc/latest/</a>.</p>
+</dd>
+<dt id="term-Argument">Argument<a class="headerlink" href="#term-Argument" title="Link to this term">#</a></dt><dd><ul class="simple">
+<li><p>Python: A value or object that you pass into a function/method.</p></li>
+<li><p>Command-line: Data that the command operates on, usually a file name, a directory path, a URL, or a string of text that the program needs to perform its primary function.</p></li>
+</ul>
+<p>See also <a class="reference internal" href="#term-Option"><span class="xref std std-term">Option</span></a>.</p>
+</dd>
+<dt id="term-Asynchronous-Programming">Asynchronous Programming<a class="headerlink" href="#term-Asynchronous-Programming" title="Link to this term">#</a></dt><dd><p>A style of concurrent programming that allows a program to start long-waiting operations (like a network request) and then perform other work while waiting for the original operation to complete.
+With the <code class="docutils literal notranslate"><span class="pre">async</span></code> and <code class="docutils literal notranslate"><span class="pre">await</span></code> keywords, this method prevents the application from blocking on slow I/O tasks, keeping it efficient and responsive.</p>
+</dd>
+<dt id="term-asyncio">asyncio<a class="headerlink" href="#term-asyncio" title="Link to this term">#</a></dt><dd><p>Python’s standard library for writing concurrent code using the <code class="docutils literal notranslate"><span class="pre">async</span></code>/<code class="docutils literal notranslate"><span class="pre">await</span></code> syntax.</p>
+<p>See also <a class="reference internal" href="#term-Asynchronous-Programming"><span class="xref std std-term">Asynchronous Programming</span></a></p>
+</dd>
 <dt id="term-Changelog">Changelog<a class="headerlink" href="#term-Changelog" title="Link to this term">#</a></dt><dd><p>A record of all notable changes made in a project.</p>
 <p>See also <a class="reference internal" href="developer/create-release.html#create-release"><span class="std std-ref">Creating a New Release</span></a>.</p>
+</dd>
+<dt id="term-Concurrency">Concurrency<a class="headerlink" href="#term-Concurrency" title="Link to this term">#</a></dt><dd><p>The ability of a system to manage and make progress on multiple tasks over an overlapping time period. It’s about dealing with many things at once, but not necessarily executing them at the exact same instant. A single CPU core can be concurrent by rapidly switching between tasks.</p>
+<p>See also <a class="reference internal" href="#term-Asynchronous-Programming"><span class="xref std std-term">Asynchronous Programming</span></a>, <a class="reference internal" href="#term-asyncio"><span class="xref std std-term">asyncio</span></a>, <a class="reference internal" href="#term-Parallelism"><span class="xref std std-term">Parallelism</span></a></p>
 </dd>
 <dt id="term-DAPS">DAPS<a class="headerlink" href="#term-DAPS" title="Link to this term">#</a></dt><dd><p>The <em>Documentation and Publishing System</em> (DAPS) is a tool to build documentation from DocBook or ADoc files.
 It is used to generate various output formats such as HTML, PDF, and EPUB.</p>
@@ -459,22 +477,44 @@ It is used to generate various output formats such as HTML, PDF, and EPUB.</p>
 </dd>
 <dt id="term-DocBook">DocBook<a class="headerlink" href="#term-DocBook" title="Link to this term">#</a></dt><dd><p>A semantic markup language based on <a class="reference internal" href="#term-XML"><span class="xref std std-term">XML</span></a> used for writing
 and publishing technical documentation.</p>
-<p>See <a class="reference external" href="https://www.docbook.org">https://www.docbook.org</a></p>
+<p>See also <a class="reference internal" href="#term-ADoc"><span class="xref std std-term">ADoc</span></a>, <a class="reference external" href="https://www.docbook.org">https://www.docbook.org</a></p>
 </dd>
 <dt id="term-Docset">Docset<a class="headerlink" href="#term-Docset" title="Link to this term">#</a></dt><dd><p>Usually a release or version of a project. For example, <code class="docutils literal notranslate"><span class="pre">15-SP6</span></code>.</p>
 </dd>
 <dt id="term-Doctype">Doctype<a class="headerlink" href="#term-Doctype" title="Link to this term">#</a></dt><dd><p>A formal syntax to identify one or many set of documents.
 The syntax is <code class="docutils literal notranslate"><span class="pre">[PRODUCT]/[DOCSET][&#64;LIFECYCLES]/LANGS</span></code> and
 contains product, docset, lifecycles, and language.</p>
-<p>See also <a class="reference internal" href="user/build.html#doctype-syntax"><span class="std std-ref">Doctype syntax</span></a>.</p>
+<p>See section <a class="reference internal" href="user/build.html#doctype-syntax"><span class="std std-ref">Doctype syntax</span></a>.</p>
+</dd>
+<dt id="term-GIL">GIL<a class="headerlink" href="#term-GIL" title="Link to this term">#</a></dt><dt id="term-Global-Interpreter-Lock">Global Interpreter Lock<a class="headerlink" href="#term-Global-Interpreter-Lock" title="Link to this term">#</a></dt><dd><p>A mutex (a lock) in the standard CPython interpreter that ensures only one thread can execute Python bytecode at any given time within a single process. This lock effectively prevents multi-threaded, CPU-bound Python programs from achieving true parallelism on multi-core processors, as only one thread can run on one core at a time.</p>
+<p>See also <a class="reference internal" href="#term-Mutex"><span class="xref std std-term">Mutex</span></a>.</p>
 </dd>
 <dt id="term-IPython">IPython<a class="headerlink" href="#term-IPython" title="Link to this term">#</a></dt><dd><p>An interactive command-line interface for Python that enhances
 the standard Python shell with additional features.</p>
-<p>See <a class="reference internal" href="developer/develop-project.html#use-ipython"><span class="std std-ref">Using IPython</span></a>.</p>
+<p>See section <a class="reference internal" href="developer/develop-project.html#use-ipython"><span class="std std-ref">Using IPython</span></a>.</p>
 </dd>
 <dt id="term-Lifecycle">Lifecycle<a class="headerlink" href="#term-Lifecycle" title="Link to this term">#</a></dt><dd><p>Describes the distinct stages a product goes through, from its initial introduction to the market until its eventual decline and retirement.</p>
-<p>This project defines the lifecycle stages <code class="docutils literal notranslate"><span class="pre">supported</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">unsupported</span></code> and <code class="docutils literal notranslate"><span class="pre">hidden</span></code>.</p>
 <p>See class <a class="reference internal" href="reference/_autoapi/docbuild/models/lifecycle/index.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a>.</p>
+</dd>
+<dt id="term-Module">Module<a class="headerlink" href="#term-Module" title="Link to this term">#</a></dt><dd><p>In Python context, a single Python file containing code.</p>
+<p>See also <a class="reference internal" href="#term-Package"><span class="xref std std-term">Package</span></a>.</p>
+</dd>
+<dt id="term-Mutex">Mutex<a class="headerlink" href="#term-Mutex" title="Link to this term">#</a></dt><dd><p>Short for <em>Mutual Exclusion</em>  is a locking mechanism in concurrent programming that ensures only one thread can access a shared resource at any given time. By requiring a thread to “acquire” the lock before using the resource and “release” it afterward, it prevents race conditions and protects shared data from being corrupted.</p>
+<p>See also <a class="reference internal" href="#term-Concurrency"><span class="xref std std-term">Concurrency</span></a>.</p>
+</dd>
+<dt id="term-Option">Option<a class="headerlink" href="#term-Option" title="Link to this term">#</a></dt><dd><ul class="simple">
+<li><p>Python: An optional settings that modify the function’s behavior.</p></li>
+<li><p>Command-line: a flag or switch that modifies a program’s execution or triggers a specific behavior.</p></li>
+</ul>
+<p>See also <a class="reference internal" href="#term-Argument"><span class="xref std std-term">Argument</span></a>.</p>
+</dd>
+<dt id="term-Package">Package<a class="headerlink" href="#term-Package" title="Link to this term">#</a></dt><dd><p>In Python context, a directory containing one or more Python modules.
+The Python interpreter treats a directory as a regular package if it contains a <code class="file docutils literal notranslate"><span class="pre">__init__.py</span></code> file.</p>
+<p>See also <a class="reference internal" href="#term-Module"><span class="xref std std-term">Module</span></a></p>
+</dd>
+<dt id="term-Parallelism">Parallelism<a class="headerlink" href="#term-Parallelism" title="Link to this term">#</a></dt><dd><p>The simultaneous execution of multiple tasks at the exact same instant, which requires a system with multiple hardware resources like CPU cores.</p>
+<p><em>Parallelism</em> is about executing multiple tasks simultaneously. This requires multiple CPU cores</p>
+<p>See also <a class="reference internal" href="#term-Concurrency"><span class="xref std std-term">Concurrency</span></a></p>
 </dd>
 <dt id="term-PEP">PEP<a class="headerlink" href="#term-PEP" title="Link to this term">#</a></dt><dd><p><em>Python Enhancement Proposal (PEP)</em> are design documents that
 describe a new feature for Python and documenting the design decisions.</p>
@@ -507,7 +547,7 @@ backward-compatible bug fixes (<code class="docutils literal notranslate"><span 
 <dt id="term-Sphinx">Sphinx<a class="headerlink" href="#term-Sphinx" title="Link to this term">#</a></dt><dd><p>A documentation generator for Python projects. It converts
 reStructuredText (reST or RST) files into various output formats
 such as HTML, PDF, or manual pages or more.</p>
-<p>See <a class="reference internal" href="developer/build-docs.html#build-docs"><span class="std std-ref">Building Documentation</span></a>.</p>
+<p>See section <a class="reference internal" href="developer/build-docs.html#build-docs"><span class="std std-ref">Building Documentation</span></a>.</p>
 </dd>
 <dt id="term-UV">UV<a class="headerlink" href="#term-UV" title="Link to this term">#</a></dt><dd><p>A fast package manager which simplifies the building, installing,
 and managing of this project.</p>
@@ -521,7 +561,7 @@ requirements separate from other projects and the main system
 installation.</p>
 <p>By convention, a project’s VENV is stored in a directory
 named <code class="file docutils literal notranslate"><span class="pre">.venv</span></code> located at the root of the project folder.</p>
-<p>See <a class="reference internal" href="developer/prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a>.</p>
+<p>See section <a class="reference internal" href="developer/prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a>.</p>
 </dd>
 <dt id="term-XML">XML<a class="headerlink" href="#term-XML" title="Link to this term">#</a></dt><dd><p>The <em>eXtensible Markup Language</em> is a text-based markup
 language used to structure, store, and transport data in
