@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Iterator
+from datetime import date
 import logging
 from pathlib import Path
 import tempfile
@@ -292,7 +293,15 @@ async def process(
     if successful_files_paths:
         try:
             log.info('Performing stitch-file validation...')
-            await create_stitchfile(successful_files_paths)
+            cachedir = paths.get('base_server_cache_dir', None)
+            tree = await create_stitchfile(successful_files_paths)
+            if cachedir is not None:
+                stitchfile = (
+                    Path(cachedir) / f'stitchfile-{date.today().isoformat()}.xml'
+                )
+                stitchfile.write_text(etree.tostring(tree, encoding='unicode'))
+                log.debug("Wrote stitchfile to %s", str(stitchfile))
+
             log.info('Stitch-file validation successful.')
 
         except ValueError as e:
@@ -309,7 +318,7 @@ async def process(
     failed_part = f'[red]{failed_files} file(s)[/red]'
     summary_msg = f'{successful_part} successfully validated, {failed_part} failed.'
 
-    if context.verbose > 0:
+    if context.verbose > 0:  # pragma: no cover
         console_out.print(f'Result: {summary_msg}')
 
     final_success = (failed_files == 0) and stitch_success

@@ -1,0 +1,1 @@
+Fix #26 and add missing checks for references in stitchfile

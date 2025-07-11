@@ -6,11 +6,15 @@ from collections.abc import Callable, Sequence
 from copy import deepcopy
 import importlib
 import inspect
+import logging
 from pathlib import Path
 
 from lxml import etree
 
 from ...constants import XMLDATADIR
+from .references import check_stitched_references
+
+log = logging.getLogger(__name__)
 
 
 def load_check_functions() -> list[Callable]:
@@ -30,21 +34,36 @@ def load_check_functions() -> list[Callable]:
 #     print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
 
 
+def check_stitchfile(tree: etree._Element | etree._ElementTree) -> bool:
+    """Check the stitchfile for unresolved references.
+
+    :param tree: The tree of the stitched XML file.
+    :returns: True if no unresolved references are found, False otherwise.
+    """
+    result = check_stitched_references(tree)
+
+    for err in result:
+        log.error(err)
+
+    return not bool(result)
+
+
 async def create_stitchfile(
     xmlfiles: Sequence[str | Path],
     *,
     xmlparser: etree.XMLParser | None = None,
+    with_ref_check: bool = True,
 ) -> etree._ElementTree:
     """Asynchronously create a stitch file from a list of XML files.
 
     :param xmlfiles: A sequence of XML file paths to stitch together.
     :param xmlparser: An optional XML parser to use.
+    :param with_ref_check: Whether to perform a reference check (=True) or not (=False).
     :return: all XML file stitched together into a
         :class:`lxml.etree.ElementTree` object.
     """
     # TODO: Should we retrieve them from the config file?
-    simplify_xslt = XMLDATADIR / 'simplify.xsl'
-    reference_xslt = XMLDATADIR / 'global-check-ref-list.xsl'
+    # simplify_xslt = XMLDATADIR / 'simplify.xsl'
 
     # TODO: Do we need the MD5 hashes? If so maybe store them
 
@@ -74,5 +93,9 @@ async def create_stitchfile(
         raise ValueError(f'Duplicate product IDs found: {", ".join(duplicates)}')
 
     # Step 3: Check references
+    if with_ref_check:
+        result = check_stitchfile(docservconfig)
+        if not result:
+            raise ValueError('Unresolved references found in stitch file')
 
     return etree.ElementTree(docservconfig)
