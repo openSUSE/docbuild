@@ -1,0 +1,1 @@
+Add project dependencies, add link to ``susedoc/docserv-config`` repo, and amend the glossary
