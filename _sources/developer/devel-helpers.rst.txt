@@ -1,6 +1,4 @@
-.. _devel-helpers:
-
-.. start-include-devel-helpers
+.. -text-begin-
 
 Helper Tools
 ------------

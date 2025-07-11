@@ -41,9 +41,10 @@ The following diagram illustrates the relationship between the main components o
    }
 
 
+.. _devel-helpers:
 
 .. include:: devel-helpers.rst
-   :start-after: .. start-include-devel-helpers
+   :start-after: -text-begin-
 
 GitHub CLI
 ----------
