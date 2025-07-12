@@ -42,6 +42,9 @@ def test_validate_doctypes_abort(monkeypatch):
 class DummyDoctype:
     def __init__(self, value):
         self.value = value
+        parts = value.split('/')
+        self.product = parts[0]
+        self.version = parts[1]
 
     def __eq__(self, other):
         return isinstance(other, DummyDoctype) and self.value == other.value
@@ -218,13 +221,12 @@ def test_validate_doctypes_merge_called(monkeypatch, ctx):
     ]
 
 
-def test_validate_doctypes_echo_outputs(ctx, capsys):
+def test_validate_doctypes_echo_outputs(ctx):
     """Test the echo statements in validate_doctypes."""
-    context = ctx(SimpleNamespace())
-    validate_doctypes(context, None, ('sles/15/en-us',))
+    context = ctx(SimpleNamespace(verbose=1))
+    result = validate_doctypes(context, None, ('sles/15/en-us',))
 
-    captured = capsys.readouterr()
-    assert 'Got sles/15' in captured.out
+    assert result[0].value == 'sles/15/en-us'
 
 
 def test_validate_doctypes_full_error_message(monkeypatch, capsys):
