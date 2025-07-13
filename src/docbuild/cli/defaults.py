@@ -18,8 +18,8 @@ DEFAULT_APP_CONFIG = {
         'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
     },
     'paths.tmp': {
-        'tmp_base_path': '/tmp',
-        'tmp_path': '{tmp_base_path}/doc-example-com',
+        'tmp_base_dir': '/tmp',
+        'tmp_dir': '{tmp_base_dir}/doc-example-com',
     },
 }
 """Default configuration for the application."""
@@ -32,8 +32,8 @@ DEFAULT_ENV_CONFIG = {
         'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
     },
     'paths.tmp': {
-        'tmp_base_path': f'/var/tmp/{APP_NAME}',
-        'tmp_path': '{tmp_base_path}/doc-example-com',
+        'tmp_base_dir': f'/var/tmp/{APP_NAME}',
+        'tmp_dir': '{tmp_base_dir}/doc-example-com',
     },
 }
 """Default configuration for the environment."""

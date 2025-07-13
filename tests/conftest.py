@@ -49,8 +49,8 @@ repo_dir = "/data/docserv/repos/permanent-full/"
 temp_repo_dir = "/data/docserv/repos/temporary-branches/"
 
 [paths.tmp]
-tmp_base_path = "/tmp"
-tmp_path = "{tmp_base_path}/doc-example-com"
+tmp_base_dir = "/tmp"
+tmp_path = "{tmp_base_dir}/doc-example-com"
 """
     default_env_config_filename.write_text(content)
     return default_env_config_filename

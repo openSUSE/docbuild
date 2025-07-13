@@ -1,3 +1,4 @@
+from typing import Any
 import re
 
 import pytest
@@ -15,14 +16,14 @@ def test_replace_placeholders():
         'server': {'name': 'example.com', 'url': 'https://{server.name}'},
         'paths': {
             'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_path': '/tmp/myapp'},
-            'full_tmp_path': '{paths.tmp.tmp_base_path}/session',
+            'tmp': {'tmp_base_dir': '/tmp/myapp'},
+            'full_tmp_path': '{paths.tmp.tmp_base_dir}/session',
         },
         'logging': {
             'log_dir': '{paths.config_dir}/logs',
-            'tmp_base_path': '/var/tmp',
+            'tmp_base_dir': '/var/tmp',
             # Should resolve within this section if key exists:
-            'temp_dir': '{tmp_base_path}',
+            'temp_dir': '{tmp_base_dir}',
         },
     }
 
@@ -30,12 +31,12 @@ def test_replace_placeholders():
         'server': {'name': 'example.com', 'url': 'https://example.com'},
         'paths': {
             'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_path': '/tmp/myapp'},
+            'tmp': {'tmp_base_dir': '/tmp/myapp'},
             'full_tmp_path': '/tmp/myapp/session',
         },
         'logging': {
             'log_dir': '/etc/myapp/logs',
-            'tmp_base_path': '/var/tmp',
+            'tmp_base_dir': '/var/tmp',
             'temp_dir': '/var/tmp',
         },
     }
@@ -69,7 +70,7 @@ def test_unresolved_key_in_config():
         'server': {'name': 'example.com', 'url': 'https://{server.name}'},
         'paths': {
             'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_path': '/tmp/myapp'},
+            'tmp': {'tmp_base_dir': '/tmp/myapp'},
             # 'session' is missing in this section
             'full_tmp_path': '{paths.tmp.session}/session',
         },
@@ -148,18 +149,18 @@ def test_chained_placeholder_resolution():
     data = {
         'paths': {
             'tmp': {
-                'tmp_base_path': '/tmp/docbuild',
-                'tmp_path': '{tmp_base_path}/doc-example-com',
-                'tmp_deliverable_path': '{tmp_path}/deliverable/',
+                'tmp_base_dir': '/tmp/docbuild',
+                'tmp_dir': '{tmp_base_dir}/doc-example-com',
+                'tmp_deliverable_dir': '{tmp_dir}/deliverable/',
             },
         },
     }
 
-    result = replace_placeholders(data)
+    result: dict[str, Any] = replace_placeholders(data)
     tmp = result['paths']['tmp']
-    assert tmp['tmp_base_path'] == '/tmp/docbuild'
-    assert tmp['tmp_path'] == '/tmp/docbuild/doc-example-com'
-    assert tmp['tmp_deliverable_path'] == '/tmp/docbuild/doc-example-com/deliverable/'
+    assert tmp['tmp_base_dir'] == '/tmp/docbuild'
+    assert tmp['tmp_dir'] == '/tmp/docbuild/doc-example-com'
+    assert tmp['tmp_deliverable_dir'] == '/tmp/docbuild/doc-example-com/deliverable/'
 
 
 def test_too_many_nested_placeholder_expansions():
@@ -178,12 +179,12 @@ def test_too_many_nested_placeholder_expansions():
 def test_chained_cross_section_placeholders():
     config = {
         'build': {
-            'output': '{paths.tmp_deliverable_path}',
+            'output': '{paths.tmp_deliverable_dir}',
         },
         'paths': {
-            'tmp_base_path': '/tmp/docbuild',
-            'tmp_path': '{tmp_base_path}/doc-example-com',
-            'tmp_deliverable_path': '{paths.tmp_path}/deliverable/',
+            'tmp_base_dir': '/tmp/docbuild',
+            'tmp_dir': '{tmp_base_dir}/doc-example-com',
+            'tmp_deliverable_dir': '{paths.tmp_dir}/deliverable/',
         },
     }
 

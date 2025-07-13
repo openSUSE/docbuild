@@ -67,8 +67,8 @@ def test_showconfig_env_role_option(
             'repo_dir': '/data/docserv/repos/permanent-full/',
             'temp_repo_dir': '/data/docserv/repos/temporary-branches/',
             'tmp': {
-                'tmp_base_path': '/tmp',
-                'tmp_path': '/tmp/doc-example-com',
+                'tmp_base_dir': '/tmp',
+                'tmp_dir': '/tmp/doc-example-com',
             },
         },
     }
