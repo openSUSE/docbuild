@@ -1,6 +1,14 @@
 Glossary
 ========
 
+:term:`A <ADoc>` | :term:`C <Changelog>` | :term:`D <DAPS>` | :term:`G <GIL>` | :term:`I <IPython>` | :term:`L <Lifecycle>` | :term:`M <Module>` | :term:`O <Option>` | :term:`P <Package>` | :term:`R <Ruff>` | :term:`S <SemVer>` | :term:`U <UV>` | :term:`V <VENV>` | :term:`X <XML>`
+
+For Python specific terms, look into:
+
+* https://docs.python.org/3/glossary.html
+* https://realpython.com/ref/glossary
+
+
 .. glossary::
    :sorted:
 
@@ -141,7 +149,7 @@ Glossary
 
    SemVer
    Semantic Versioning
-      A formal convention for assinging version numbers to software
+      A formal convention for assiging version numbers to software
       releases in a ``MAJOR.MINOR.PATCH`` format.
 
       This structure conveys the nature of the changes, indicating
