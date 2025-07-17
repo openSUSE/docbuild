@@ -38,23 +38,40 @@ rst_prolog = f"""
 
 extensions = [
     # Include documentation from docstrings
+    # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
     'sphinx.ext.autodoc',
+    #
     # Link to other projects' documentation
+    # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
     'sphinx.ext.intersphinx',
+    #
     # Test code snippets in the documentation
+    # https://www.sphinx-doc.org/en/master/usage/extensions/doctest.html
     'sphinx.ext.doctest',
+    #
     # Create short aliases for external links
+    # https://www.sphinx-doc.org/en/master/usage/extensions/extlinks.html
     'sphinx.ext.extlinks',
-    # Document Click command-line interfaces
-    'sphinx_click',
-    # Add a "copy" button to code blocks
-    'sphinx_copybutton',
-    # Render type hints in signatures
-    'sphinx_autodoc_typehints',
-    # Generate API documentation from source code
-    'autoapi.extension',
+    #
     # Embed Graphviz graphs
+    # https://www.sphinx-doc.org/en/master/usage/extensions/graphviz.html
     'sphinx.ext.graphviz',
+    #
+    # Document Click command-line interfaces
+    # https://sphinx-click.readthedocs.io/en/latest/
+    'sphinx_click',
+    #
+    # Add a "copy" button to code blocks
+    # https://sphinx-copybutton.readthedocs.io/en/latest/
+    'sphinx_copybutton',
+    #
+    # Render type hints in signatures
+    # https://github.com/tox-dev/sphinx-autodoc-typehints
+    'sphinx_autodoc_typehints',
+    #
+    # Generate API documentation from source code
+    # https://sphinx-autoapi.readthedocs.io/en/latest/
+    'autoapi.extension',
 ]
 
 templates_path = ['_templates']

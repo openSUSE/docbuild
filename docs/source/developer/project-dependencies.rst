@@ -58,12 +58,3 @@ External tools
 * :command:`make` is used to build the documentation.
 * :command:`jing`: for validation the XML configuration files.
 * :command:`gh`: optional tool for interacting with GitHub, see :ref:`github-cli`.
-
-
-
-XML configuration
------------------
-
-Formerly known as the *Docserv XML configs*. These configuration files defines the :term:`products <Product>`, their :term:`releases <Docset>`, their :term:`lifecycle <Lifecycle>` status and more.
-
-Clone the |gl_xmlconfig| or use the RNC schema from :gh_tree:`src/docbuild/config/xml/data/` to create this configuration.

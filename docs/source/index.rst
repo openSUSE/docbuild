@@ -11,7 +11,7 @@ This is the documentation for the |project| project, hosted at |gh_repo|.
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents
 
    user/index

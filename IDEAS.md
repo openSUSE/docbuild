@@ -16,9 +16,24 @@ This is a unsorted collection of ideas what could be implemented.
 
 * Implement a "check environment" function.
   Before we really do anything, this check some prerequisites:
-   * Checks if certain commands are available (e.g. `git`, `jing`)
-   * Check if commands have a minimum version
-   * Check if the available space is enough (can be customized in the envconfig)
-   * More...?
+  * Checks if certain commands are available (e.g. `git`, `jing`)
+  * Check if commands have a minimum version
+  * Check if the available space is enough (can be customized in the envconfig)
+  * More...?
   
   This should help that it breaks in the middle of, for example, a build operation.
+
+* An async `anext()` function (resembles the original `next()` function both
+  in terms of interface and behavior):
+
+    ```python
+    NOT_SET = object()
+
+    async def anext(async_generator_expression, default=NOT_SET):
+        try:
+            return await async_generator_expression.__anext__()
+        except StopAsyncIteration:
+            if default is NOT_SET:
+                raise
+            return default
+    ```

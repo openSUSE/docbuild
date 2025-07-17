@@ -3,11 +3,13 @@ Installing docbuild
 
 To install the docbuild tool, follow these steps:
 
-1. :ref:`prepare-installation` - Prepare your environment for installation.
+#. :ref:`prepare-installation` - Prepare your environment for installation.
 
-2. :ref:`installing-docbuild` - Install the docbuild tool itself.
+#. :ref:`installing-docbuild` - Install the docbuild tool itself.
 
-3. :ref:`configuring-docbuild` - Configure the docbuild tool to suit your needs.
+#. :ref:`get-xml-config` - Get the XML configuration files required for building documentation.
+
+#. :ref:`configuring-docbuild` - Configure the docbuild tool to suit your needs.
 
 
 .. _prepare-installation:
@@ -45,7 +47,7 @@ There are different methods to install the :command:`uv` package manager
 
    You should see the version of :command:`uv` printed in the terminal.
 
-3. **Install Python 3.13 or higher**
+3. **Install Python 3.12 or higher**
 
    As of the time of writing, the docbuild tool requires Python 3.12 or higher. Install the Python version using :command:`uv`:
 
@@ -53,7 +55,7 @@ There are different methods to install the :command:`uv` package manager
 
       $ uv python install 3.13
 
-   This command will download Python 3.13 and install it in the directory :file:`~/.local/share/uv/python/<VERSION>`.
+   The previous command downloads Python 3.13 and install it in the directory :file:`~/.local/share/uv/python/<VERSION>`.
 
 4. **Check the available Python versions**
 
@@ -105,3 +107,16 @@ Installing the tool
       Resolved 29 packages in 586ms
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
+
+
+.. _get-xml-config:
+
+Getting the XML configuration
+-----------------------------
+
+Formerly known as the *Docserv XML configs*. These configuration files defines the :term:`products <Product>`, their :term:`releases <Docset>`, their :term:`lifecycle <Lifecycle>` status and more.
+
+The tool needs the XML configuration to build the documentation correctly. The XML configuration is not part of the docbuild tool itself, but it is required to run the tool.
+
+Clone the |gl_xmlconfig| to your machine where you can access it easily.
+As an alternative, use the RNC schema from :gh_tree:`src/docbuild/config/xml/data/` to create your own configuration.
