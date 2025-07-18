@@ -20,6 +20,46 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.11.0
+==============
+
+Bug Fixes
+---------
+
+- Fix #26 and add missing checks for references in stitchfile (:gh:`41`)
+- Make keys in TOML env file consistent (:gh:`43`)
+
+
+Improved Documentation
+----------------------
+
+- Improve developer documentation
+
+  * Add more glossary terms
+  * Use ``:term:`` macro to link to glossary terms
+  * Add new sections:
+    * "Bumping the Version"
+    * "Updating the Project"
+    * "Knowning the Tools Config Files"
+    * "Developing the Project"
+  * Rename "Updating Changelog" -> "Adding News Fragments"
+  * Rephrase section about IPython and :file:`devel/README.rst` (:gh:`34`)
+- Fix doc warnings from Sphinx
+
+  * Have Sphinx warnings written to :file:`docs/sphinx-warnings.log`.
+  * Disable ``inherited-members`` option (it creates warnings from a different docstring format).
+  * Slightly restructured Reference guide a bit. "Docbuild CLI" is on the top level now, making :file:`modules.rst` obsolete.
+  *  Fix some ReST problems in :file:`checks.py` docstrings (mainly missing linebreaks) (:gh:`38`)
+- Add project dependencies, add link to ``susedoc/docserv-config`` repo, and amend the glossary (:gh:`40`)
+- Rename ``issue`` macro to ``gh``
+
+
+Infrastructure
+--------------
+
+- Improve release workflow (:gh:`45`)
+
+
 Version 0.10.0
 ==============
 

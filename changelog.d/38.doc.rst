@@ -1,6 +1,0 @@
-Fix doc warnings from Sphinx
-
-* Have Sphinx warnings written to :file:`docs/sphinx-warnings.log`.
-* Disable ``inherited-members`` option (it creates warnings from a different docstring format).
-* Slightly restructured Reference guide a bit. "Docbuild CLI" is on the top level now, making :file:`modules.rst` obsolete.
-*  Fix some ReST problems in :file:`checks.py` docstrings (mainly missing linebreaks)
