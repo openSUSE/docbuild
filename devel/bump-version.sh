@@ -89,7 +89,7 @@ esac
 new_version="${major}.${minor}.${patch}"
 
 # 4. Write the new version back to the file
-message="Bumping version: ${old_version} -> ${new_version}"
+message="Bumping version: ${old_version} → ${new_version}"
 echo "${message}"
 sed -i "s/__version__ = ${quote_char}${old_version}${quote_char}/__version__ = ${quote_char}${new_version}${quote_char}/" "${ABOUT_FILE}"
 
