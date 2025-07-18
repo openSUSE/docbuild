@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a New Release &#8212; docbuild 0.10.0 documentation</title>
+    <title>Creating a New Release &#8212; docbuild 0.11.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=82662543"></script>
+    <script src="../_static/documentation_options.js?v=f3b36f1a"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,7 +50,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Triggering Actions Manually" href="trigger-actions.html" />
-    <link rel="prev" title="Adding News Fragments" href="add-newsfragments.html" />
+    <link rel="prev" title="Building the Changelog" href="build-changelog.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -403,6 +403,7 @@
 <li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-changelog.html">Building the Changelog</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
@@ -475,32 +476,15 @@
   <section id="creating-a-new-release">
 <span id="create-release"></span><h1>Creating a New Release<a class="headerlink" href="#creating-a-new-release" title="Link to this heading">#</a></h1>
 <p>To create a new release, follow these steps:</p>
-<ol class="arabic">
+<ol class="arabic simple">
 <li><p>Ensure that you have the latest changes from the main branch of the repository.</p></li>
-<li><p>Create a new branch for your release. The branch name should follow the format: <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p></li>
+<li><p>Create a new branch named <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p></li>
 <li><p><a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">Bump the version</span></a>.</p></li>
 <li><p><a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Update the project</span></a>.</p></li>
-<li><p>Build the changelog file from all news fragments:</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Build a combined changelog from news fragment</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>towncrier<span class="w"> </span>build<span class="w"> </span><span class="o">[</span>--yes<span class="o">]</span>
-</pre></div>
-</div>
-</div>
-</li>
-<li><p>Commit your changes with a message that describes the release.</p></li>
+<li><p><a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">Build the changelog</span></a>.</p></li>
 <li><p>Wait for the CI to pass. If it fails, fix the issues and commit again.</p></li>
-<li><p>If the CI passes, (squash-)merge your release branch into the main branch.</p></li>
-<li><p>Tag the commit in the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch with the version number. The release process is triggered by this tag in the format <code class="docutils literal notranslate"><span class="pre">MAJOR.MINOR.PATCH</span></code>.</p>
-<p>For example, if you are releasing version 1.1.0, you would tag the commit as follows:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Tag the release commit</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp"> $ </span>git<span class="w"> </span>tag<span class="w"> </span><span class="m">1</span>.1.0
-<span class="gp"> $ </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span><span class="m">1</span>.1.0
-</pre></div>
-</div>
-</div>
-</li>
+<li><p>If the CI passes, (squash-)merge your release branch into the main branch.
+The GitHub Action workflow will automatically create a new release based on the name of the release branch.</p></li>
 <li><p>Find the release in the GitHub repository under the <a class="reference external" href="https://github.com/openSUSE/docbuild/releases/">Releases</a> section.</p></li>
 </ol>
 </section>
@@ -516,12 +500,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="add-newsfragments.html"
+       href="build-changelog.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Adding News Fragments</p>
+        <p class="prev-next-title">Building the Changelog</p>
       </div>
     </a>
     <a class="right-next"

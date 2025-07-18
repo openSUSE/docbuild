@@ -22,6 +22,7 @@ This guide provides all the necessary information for contributing to the projec
    bump-version
    update-project
    add-newsfragments
+   build-changelog
    create-release
    trigger-actions
    
