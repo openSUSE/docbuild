@@ -1,21 +1,73 @@
-name: Create Release
+name: Release on Merge
 
 on:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
-
-permissions:
-  contents: write
-  # discussions: write
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
-  create_release:
+  check-release-branch:
     runs-on: ubuntu-latest
+    # This if clause ensures the job only runs when the PR is merged
+    # and the branch starts with release/
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'release/')
+
+    outputs:
+      valid_release: ${{ steps.validate.outputs.valid_release }}
+      version: ${{ steps.validate.outputs.version }}
+
     steps:
-      - name: Generate GitHub Release
+      - name: Validate release branch and extract version
+        id: validate
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          if [[ "$BRANCH" =~ ^release/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            VERSION="${BASH_REMATCH[1]}"
+            echo "valid_release=true" >> "$GITHUB_OUTPUT"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "Branch name valid for release: $BRANCH"
+          else
+            echo "valid_release=false" >> "$GITHUB_OUTPUT"
+            echo "version=" >> "$GITHUB_OUTPUT"
+            echo "Branch '$BRANCH' does not match release/X.Y.Z (semver) pattern. Skipping release."
+          fi
+
+  do-release:
+    needs: check-release-branch
+    if: needs.check-release-branch.outputs.valid_release == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.check-release-branch.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v1
+
+      - name: Print the installed version
+        run: |
+          echo "uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Tag new release
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git tag "${{ env.VERSION }}"
+          git push origin "${{ env.VERSION }}"
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Generate GitHub Release & Upload wheel
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.VERSION }}
           generate_release_notes: true
+          files: dist/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
