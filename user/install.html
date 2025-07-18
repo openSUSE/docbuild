@@ -31,8 +31,8 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
   
   <!-- So that users can add custom icons -->
@@ -467,6 +467,7 @@
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#prepare-installation"><span class="std std-ref">Preparing for Installation</span></a> - Prepare your environment for installation.</p></li>
 <li><p><a class="reference internal" href="#id1"><span class="std std-ref">Installing the tool</span></a> - Install the docbuild tool itself.</p></li>
+<li><p><a class="reference internal" href="#get-xml-config"><span class="std std-ref">Getting the XML configuration</span></a> - Get the XML configuration files required for building documentation.</p></li>
 <li><p><a class="reference internal" href="config.html#configuring-docbuild"><span class="std std-ref">Configuring the Tool</span></a> - Configure the docbuild tool to suit your needs.</p></li>
 </ol>
 <section id="preparing-for-installation">
@@ -492,12 +493,12 @@
 </div>
 <p>You should see the version of <strong class="command">uv</strong> printed in the terminal.</p>
 </li>
-<li><p><strong>Install Python 3.13 or higher</strong></p>
+<li><p><strong>Install Python 3.12 or higher</strong></p>
 <p>As of the time of writing, the docbuild tool requires Python 3.12 or higher. Install the Python version using <strong class="command">uv</strong>:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
 </pre></div>
 </div>
-<p>This command will download Python 3.13 and install it in the directory <code class="file docutils literal notranslate"><span class="pre">~/.local/share/uv/python/&lt;VERSION&gt;</span></code>.</p>
+<p>The previous command downloads Python 3.13 and install it in the directory <code class="file docutils literal notranslate"><span class="pre">~/.local/share/uv/python/&lt;VERSION&gt;</span></code>.</p>
 </li>
 <li><p><strong>Check the available Python versions</strong></p>
 <p>To see the installed Python versions, run:</p>
@@ -542,6 +543,13 @@ Run the following command:</p>
 </div>
 </li>
 </ol>
+</section>
+<section id="getting-the-xml-configuration">
+<span id="get-xml-config"></span><h2>Getting the XML configuration<a class="headerlink" href="#getting-the-xml-configuration" title="Link to this heading">#</a></h2>
+<p>Formerly known as the <em>Docserv XML configs</em>. These configuration files defines the <a class="reference internal" href="../glossary.html#term-Product"><span class="xref std std-term">products</span></a>, their <a class="reference internal" href="../glossary.html#term-Docset"><span class="xref std std-term">releases</span></a>, their <a class="reference internal" href="../glossary.html#term-Lifecycle"><span class="xref std std-term">lifecycle</span></a> status and more.</p>
+<p>The tool needs the XML configuration to build the documentation correctly. The XML configuration is not part of the docbuild tool itself, but it is required to run the tool.</p>
+<p>Clone the <a class="reference external" href="https://gitlab.suse.de/susedoc/docserv-config">GL://susedoc/docserv-config</a> to your machine where you can access it easily.
+As an alternative, use the RNC schema from <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/src/docbuild/config/xml/data/">src/docbuild/config/xml/data/</a> to create your own configuration.</p>
 </section>
 </section>
 
@@ -594,6 +602,7 @@ Run the following command:</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-for-installation">Preparing for Installation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-the-tool">Installing the tool</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-xml-configuration">Getting the XML configuration</a></li>
 </ul>
   </nav></div>
 

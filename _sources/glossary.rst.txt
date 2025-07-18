@@ -132,7 +132,7 @@ For Python specific terms, look into:
       A configuration file used in Python project to define build system
       requirements and project metadata.
 
-      See :pep:`518`
+      See :pep:`518`, :term:`TOML`
 
    Pytest
       A testing framework. It's used to write, organize, and run
@@ -165,6 +165,12 @@ For Python specific terms, look into:
       such as HTML, PDF, or manual pages or more.
 
       See section :ref:`build-docs`.
+
+   TOML
+      *Tom's Obvious, Minimal Language* is a configuration file format
+      used to define environment settings for the docbuild tool.
+
+      See https://toml.io/en/
 
    UV
       A fast package manager which simplifies the building, installing,
