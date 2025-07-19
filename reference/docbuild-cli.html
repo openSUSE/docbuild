@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; docbuild 0.11.0 documentation</title>
+    <title>docbuild CLI &#8212; docbuild 0.11.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=f3b36f1a"></script>
+    <script src="../_static/documentation_options.js?v=57cbeb03"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -398,6 +398,10 @@
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
@@ -696,6 +700,20 @@ with the following properties:</p>
 </div>
 </section>
 </section>
+<section id="docbuild-metadata">
+<h3>metadata<a class="headerlink" href="#docbuild-metadata" title="Link to this heading">#</a></h3>
+<p>Extracts metadata from deliverables.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>metadata<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DOCTYPES<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-metadata-arg-DOCTYPES">
+<span class="sig-name descname"><span class="pre">DOCTYPES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-metadata-arg-DOCTYPES" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
 <section id="docbuild-repo">
 <h3>repo<a class="headerlink" href="#docbuild-repo" title="Link to this heading">#</a></h3>
 <p>Manage repositories.</p>
@@ -809,6 +827,7 @@ with the following properties:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-env">env</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-metadata">metadata</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-repo">repo</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-repo-clone">clone</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-repo-dir">dir</a></li>

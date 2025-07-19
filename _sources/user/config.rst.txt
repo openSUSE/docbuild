@@ -1,4 +1,4 @@
-.. _configuring-docbuild:
+.. _config-docbuild:
 
 Configuring the Tool
 ---------------------

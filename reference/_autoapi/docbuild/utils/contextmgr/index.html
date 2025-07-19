@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.contextmgr &#8212; docbuild 0.11.0 documentation</title>
+    <title>docbuild.utils.contextmgr &#8212; docbuild 0.11.1 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=f3b36f1a"></script>
+    <script src="../../../../../_static/documentation_options.js?v=57cbeb03"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -398,6 +398,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
@@ -579,7 +583,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.contextmgr.make_timer" title="docbuild.utils.contextmgr.make_timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_timer</span></code></a>(name[, method])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.contextmgr.make_timer" title="docbuild.utils.contextmgr.make_timer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_timer</span></code></a>(→ collections.abc.Callable[[], ...)</p></td>
 <td><p>Create independant context managers to measure elapsed time.</p></td>
 </tr>
 </tbody>
@@ -590,7 +594,7 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.utils.contextmgr.make_timer">
-<span class="sig-prename descclassname"><span class="pre">docbuild.utils.contextmgr.</span></span><span class="sig-name descname"><span class="pre">make_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><span class="pre">collections.abc.Callable</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">time.perf_counter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.utils.contextmgr.make_timer" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.contextmgr.</span></span><span class="sig-name descname"><span class="pre">make_timer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><span class="pre">collections.abc.Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">time.perf_counter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.13)"><span class="pre">collections.abc.Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/contextlib.html#contextlib.AbstractContextManager" title="(in Python v3.13)"><span class="pre">contextlib.AbstractContextManager</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="TimerData.html#docbuild.utils.contextmgr.TimerData" title="docbuild.utils.contextmgr.TimerData"><span class="pre">TimerData</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.make_timer" title="Link to this definition">#</a></dt>
 <dd><p>Create independant context managers to measure elapsed time.</p>
 <p>Each timer is independent and can be used in a context manager.
 The name is used to identify the timer.</p>
@@ -598,13 +602,13 @@ The name is used to identify the timer.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – Name of the timer.</p></li>
-<li><p><strong>method</strong> – Method to use for measuring time, defaults
-to <a class="reference external" href="https://docs.python.org/3/library/time.html#time.perf_counter" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.perf_counter()</span></code></a>.</p></li>
+<li><p><strong>method</strong> – A callable that returns a float, used for measuring time.
+Defaults to <a class="reference external" href="https://docs.python.org/3/library/time.html#time.perf_counter" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">time.perf_counter()</span></code></a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A context manager that yields a dictionary with start, end,
-and elapsed time.</p>
+<dd class="field-even"><p>A callable that returns a context manager. The context manager
+yields a <a class="reference internal" href="TimerData.html#docbuild.utils.contextmgr.TimerData" title="docbuild.utils.contextmgr.TimerData"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimerData</span></code></a> object.</p>
 </dd>
 </dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timer</span> <span class="o">=</span> <span class="n">make_timer</span><span class="p">(</span><span class="s1">&#39;example_timer&#39;</span><span class="p">)</span>
