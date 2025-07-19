@@ -1,0 +1,2 @@
+Add new context manager :class:`~docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory`.
+It is derived from :class:`tempfile.TemporaryDirectory`and has a similar behavior, but it does not delete the temporary directory on exit if an exception occurs.

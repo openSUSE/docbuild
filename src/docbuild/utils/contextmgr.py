@@ -3,7 +3,21 @@
 from collections.abc import Callable, Iterator
 from contextlib import AbstractContextManager, contextmanager
 from dataclasses import dataclass
+import logging
+from pathlib import Path
+import shutil
+import tempfile
 import time
+from types import TracebackType
+import weakref as _weakref
+
+# Type aliases for exception handling
+type ExcType = type[BaseException] | None
+type ExcVal = BaseException | None
+type ExcTback = TracebackType | None
+
+# Logging
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -53,3 +67,63 @@ def make_timer(
             data.elapsed = data.end - data.start
 
     return wrapper
+
+
+class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
+    """Delete temporary directory only if no exception occurs.
+
+    It is similar to :class:`tempfile.TemporaryDirectory`, but it does not
+    delete the directory if an exception occurs. This is useful for debugging
+    or when you want to inspect the contents of the directory after an error.
+
+    .. code-block:: python
+
+        with PersistentOnErrorTemporaryDirectory() as temp_dir:
+            # Do something with the temporary directory, it's a Path object
+
+    Optional arguments:
+    :param suffix: A str suffix for the directory name.  (see mkdtemp)
+    :param prefix: A str prefix for the directory name.  (see mkdtemp)
+    :param dir: A directory to create this temp dir in.  (see mkdtemp)
+    """
+
+    def __init__(
+        self,
+        suffix: str | None = None,
+        prefix: str | None = None,
+        dir: str | Path | None = None,  # noqa: A002
+    ) -> None:
+        # Call the parent constructor. We don't need the
+        # `ignore_cleanup_errors` flag as we implement our own cleanup.
+        super().__init__(suffix=suffix, prefix=prefix, dir=dir)
+
+    def __enter__(self) -> Path:
+        """Enter the runtime context and create the temporary directory.
+
+        :returns: Path to the created temporary directory.
+        """
+        # The parent __enter__ returns a string, so we override it
+        # to return a Path object for consistency with your original class.
+        return Path(self.name)
+
+    def __exit__(self, exc_type: ExcType, exc_val: ExcVal, exc_tb: ExcTback) -> None:
+        """Exit the runtime context and delete the directory if no exception occurred.
+
+        :param exc_type: Exception type, if any.
+        :param exc_val: Exception instance, if any.
+        :param exc_tb: Traceback, if any.
+        """
+        # CRITICAL: We must always detach the finalizer. If we don't,
+        # and an error occurred, the directory would still be deleted
+        # upon garbage collection, which is not what we want.
+        self._finalizer.detach()
+
+        if exc_type is None:
+            # No exception occurred in the `with` block, so we clean up.
+            try:
+                shutil.rmtree(self.name)
+
+            except OSError as e:
+                # Your custom logging is more informative than the parent's
+                # `ignore_errors=True`, so we replicate it here.
+                log.exception('Failed to delete temp dir %s: %s', self.name, e)

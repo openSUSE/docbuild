@@ -1,9 +1,12 @@
 import math
+from pathlib import Path
 import time
+from unittest.mock import patch
 
 import pytest
 
-from docbuild.utils.contextmgr import make_timer
+import docbuild.utils.contextmgr as contextmgr
+from docbuild.utils.contextmgr import PersistentOnErrorTemporaryDirectory, make_timer
 
 
 def test_timer_has_correct_attributes():
@@ -64,3 +67,60 @@ def test_timer_for_nan_as_default():
         assert timer_data.start > 0
         assert math.isnan(timer_data.end)
         assert math.isnan(timer_data.elapsed)
+
+
+# ----
+@pytest.fixture
+def fake_temp_path() -> str:
+    return '/mock/temp/dir'
+
+
+def test_temp_dir_deleted_on_success(fake_temp_path: str) -> None:
+    """Ensure the directory is deleted if no exception occurs."""
+    with (
+        patch.object(contextmgr.tempfile,
+            'mkdtemp',
+            return_value=fake_temp_path,
+        ),
+        patch.object(contextmgr.shutil, 'rmtree') as mock_rmtree,
+    ):
+        with PersistentOnErrorTemporaryDirectory() as temp_path:
+            assert temp_path == Path(fake_temp_path)
+
+        mock_rmtree.assert_called_once_with(fake_temp_path)
+
+
+def test_temp_dir_preserved_on_exception(fake_temp_path: str) -> None:
+    """Ensure the directory is preserved if an exception occurs."""
+    with (
+        patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
+        patch.object(contextmgr.shutil, 'rmtree') as mock_rmtree,
+    ):
+        with pytest.raises(RuntimeError):
+            with PersistentOnErrorTemporaryDirectory() as temp_path:
+                assert temp_path == Path(fake_temp_path)
+                raise RuntimeError('Simulated failure')
+
+        mock_rmtree.assert_not_called()
+
+
+def test_temp_dir_deletion_failure_is_logged(fake_temp_path: str) -> None:
+    """Ensure that an OSError during directory deletion is logged."""
+    mock_error = OSError('Permission denied')
+
+    with (
+        patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
+        patch.object(contextmgr.shutil, 'rmtree', side_effect=mock_error)
+        as mock_rmtree,
+        patch.object(contextmgr.log, 'exception') as mock_log_exception,
+    ):
+        # The __exit__ method should catch the OSError and not re-raise it.
+        with PersistentOnErrorTemporaryDirectory() as temp_path:
+            assert temp_path == Path(fake_temp_path)
+
+        # Verify that rmtree was called, which triggered the error
+        mock_rmtree.assert_called_once_with(fake_temp_path)
+        # Verify that the exception was logged with the correct message.
+        mock_log_exception.assert_called_once_with(
+            'Failed to delete temp dir %s: %s', fake_temp_path, mock_error
+        )
