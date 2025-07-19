@@ -1,4 +1,5 @@
 import math
+import asyncio
 from pathlib import Path
 import time
 from unittest.mock import patch
@@ -78,7 +79,8 @@ def fake_temp_path() -> str:
 def test_temp_dir_deleted_on_success(fake_temp_path: str) -> None:
     """Ensure the directory is deleted if no exception occurs."""
     with (
-        patch.object(contextmgr.tempfile,
+        patch.object(
+            contextmgr.tempfile,
             'mkdtemp',
             return_value=fake_temp_path,
         ),
@@ -110,8 +112,9 @@ def test_temp_dir_deletion_failure_is_logged(fake_temp_path: str) -> None:
 
     with (
         patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
-        patch.object(contextmgr.shutil, 'rmtree', side_effect=mock_error)
-        as mock_rmtree,
+        patch.object(
+            contextmgr.shutil, 'rmtree', side_effect=mock_error
+        ) as mock_rmtree,
         patch.object(contextmgr.log, 'exception') as mock_log_exception,
     ):
         # The __exit__ method should catch the OSError and not re-raise it.
@@ -121,6 +124,54 @@ def test_temp_dir_deletion_failure_is_logged(fake_temp_path: str) -> None:
         # Verify that rmtree was called, which triggered the error
         mock_rmtree.assert_called_once_with(fake_temp_path)
         # Verify that the exception was logged with the correct message.
+        mock_log_exception.assert_called_once_with(
+            'Failed to delete temp dir %s: %s', fake_temp_path, mock_error
+        )
+
+
+async def test_async_temp_dir_deleted_on_success(fake_temp_path: str) -> None:
+    """Ensure the directory is deleted if no exception occurs in an async context."""
+    with (
+        patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
+        patch.object(contextmgr.shutil, 'rmtree') as mock_rmtree,
+    ):
+        async with PersistentOnErrorTemporaryDirectory() as temp_path:
+            assert temp_path == Path(fake_temp_path)
+
+        await asyncio.sleep(0)  # Allow event loop to run the thread
+        mock_rmtree.assert_called_once_with(fake_temp_path)
+
+
+async def test_async_temp_dir_preserved_on_exception(fake_temp_path: str) -> None:
+    """Ensure the directory is preserved if an exception occurs in an async context."""
+    with (
+        patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
+        patch.object(contextmgr.shutil, 'rmtree') as mock_rmtree,
+    ):
+        with pytest.raises(RuntimeError):
+            async with PersistentOnErrorTemporaryDirectory() as temp_path:
+                assert temp_path == Path(fake_temp_path)
+                raise RuntimeError('Simulated failure')
+
+        await asyncio.sleep(0)
+        mock_rmtree.assert_not_called()
+
+
+async def test_async_temp_dir_deletion_failure_is_logged(fake_temp_path: str) -> None:
+    """Ensure that an OSError during async directory deletion is logged."""
+    mock_error = OSError('Permission denied')
+    with (
+        patch.object(contextmgr.tempfile, 'mkdtemp', return_value=fake_temp_path),
+        patch.object(
+            contextmgr.shutil, 'rmtree', side_effect=mock_error
+        ) as mock_rmtree,
+        patch.object(contextmgr.log, 'exception') as mock_log_exception,
+    ):
+        async with PersistentOnErrorTemporaryDirectory() as temp_path:
+            assert temp_path == Path(fake_temp_path)
+
+        await asyncio.sleep(0)
+        mock_rmtree.assert_called_once_with(fake_temp_path)
         mock_log_exception.assert_called_once_with(
             'Failed to delete temp dir %s: %s', fake_temp_path, mock_error
         )

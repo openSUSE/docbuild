@@ -16,6 +16,8 @@ ALLOWED_LANGUAGES = frozenset(
 )
 """The languages supported by the documentation portal."""
 
+DEFAULT_DELIVERABLES = '*/@supported/en-us'
+"""The default deliverables when no specific doctype is provided."""
 
 # SERVER_ROLES = (
 #     "production", "prod", "p",

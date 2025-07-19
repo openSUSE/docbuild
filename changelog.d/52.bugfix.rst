@@ -1,0 +1,1 @@
+Correct ``log.error`` call with arguments

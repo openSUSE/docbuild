@@ -3,6 +3,7 @@
 from collections.abc import Callable, Iterator
 from contextlib import AbstractContextManager, contextmanager
 from dataclasses import dataclass
+import asyncio
 import logging
 from pathlib import Path
 import shutil
@@ -70,16 +71,26 @@ def make_timer(
 
 
 class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
-    """Delete temporary directory only if no exception occurs.
+    """A temporary directory that supports both sync and async usage.
 
-    It is similar to :class:`tempfile.TemporaryDirectory`, but it does not
-    delete the directory if an exception occurs. This is useful for debugging
-    or when you want to inspect the contents of the directory after an error.
+    It deletes the temporary directory only if no exception occurs within the
+    context block. This is useful for debugging, as it preserves the directory
+    and its contents for inspection after an error.
+
+    It is a subclass of :class:`tempfile.TemporaryDirectory` and mimics its
+    initializer.
 
     .. code-block:: python
 
+        # Synchronous usage
         with PersistentOnErrorTemporaryDirectory() as temp_dir:
-            # Do something with the temporary directory, it's a Path object
+            # temp_dir is a Path object
+            ...
+
+        # Asynchronous usage
+        async with PersistentOnErrorTemporaryDirectory() as temp_dir:
+            # temp_dir is a Path object
+            ...
 
     Optional arguments:
     :param suffix: A str suffix for the directory name.  (see mkdtemp)
@@ -106,6 +117,14 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
         # to return a Path object for consistency with your original class.
         return Path(self.name)
 
+    async def __aenter__(self) -> Path:
+        """Enter the async runtime context and create the temporary directory.
+
+        :returns: Path to the created temporary directory.
+        """
+        # The underlying directory creation is synchronous.
+        return self.__enter__()
+
     def __exit__(self, exc_type: ExcType, exc_val: ExcVal, exc_tb: ExcTback) -> None:
         """Exit the runtime context and delete the directory if no exception occurred.
 
@@ -113,6 +132,8 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
         :param exc_val: Exception instance, if any.
         :param exc_tb: Traceback, if any.
         """
+        # DEPENDENCY: this is being called in async context from __aexit__.
+        #
         # CRITICAL: We must always detach the finalizer. If we don't,
         # and an error occurred, the directory would still be deleted
         # upon garbage collection, which is not what we want.
@@ -127,3 +148,19 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
                 # Your custom logging is more informative than the parent's
                 # `ignore_errors=True`, so we replicate it here.
                 log.exception('Failed to delete temp dir %s: %s', self.name, e)
+
+    async def __aexit__(self,
+        exc_type: ExcType,
+        exc_val: ExcVal,
+        exc_tb: ExcTback
+    ) -> None:
+        """Asynchronously clean up the directory on successful exit.
+
+        Async exit the runtime context and delete the directory if no
+        exception occurred.
+
+        :param exc_type: Exception type, if any.
+        :param exc_val: Exception instance, if any.
+        :param exc_tb: Traceback, if any.
+        """
+        await asyncio.to_thread(self.__exit__, exc_type, exc_val, exc_tb)

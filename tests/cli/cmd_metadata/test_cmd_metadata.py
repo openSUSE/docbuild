@@ -1,3 +1,4 @@
+from docbuild.constants import DEFAULT_DELIVERABLES
 """Unit tests for metadata command helper functions."""
 
 from collections.abc import Iterator
@@ -551,7 +552,7 @@ class TestProcessEmptyDoctypes:
         # Assert
         assert result == 0
         mock_create_stitchfile.assert_awaited_once()
-        default_doctype = Doctype.from_str('//en-us')
+        default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
         mock_process_doctype.assert_awaited_once_with(
             mock_stitch_node, context, default_doctype
         )
