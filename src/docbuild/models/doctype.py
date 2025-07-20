@@ -7,7 +7,7 @@ from typing import ClassVar, Self
 from pydantic import BaseModel, Field, field_validator
 
 from .language import LanguageCode
-from .lifecycle import BaseLifecycleFlag, LifecycleFlag
+from .lifecycle import LifecycleFlag
 from .product import Product
 
 
@@ -185,7 +185,7 @@ class Doctype(BaseModel):
 
     @field_validator('lifecycle', mode='before')
     @classmethod
-    def coerce_lifecycle(cls, value: str | LifecycleFlag) -> BaseLifecycleFlag:
+    def coerce_lifecycle(cls, value: str | LifecycleFlag) -> LifecycleFlag:
         """Convert a string into a LifecycleFlag."""
         # value = "" if value is None else value
         if isinstance(value, str):
@@ -261,7 +261,7 @@ class Doctype(BaseModel):
             [
                 f'@lifecycle={lc.name!r}'
                 for lc in self.lifecycle
-                if lc != LifecycleFlag.UNKNOWN
+                if lc != LifecycleFlag.unknown
             ]
         )
         if lifecycle:
