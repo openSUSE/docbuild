@@ -1,0 +1,23 @@
+{
+  // See https://code.visualstudio.com/docs/editor/extension-marketplace#_workspace-recommended-extensions
+  "recommendations": [
+    // EditorConfig extension for VS Code
+    "editorconfig.editorconfig",
+    // Python extension for VS Code
+    "ms-python.python",
+    "ms-python.vscode-python-envs",
+    "ms-python.debugpy",
+    // A Python language server, powered by pyrefly
+    "meta.pyrefly",
+    // TOML support for VS Code
+    "tamasfe.even-better-toml",
+    // RST/ReST linter, preview, IntelliSense and more
+    "lextudio.restructuredtext",
+    // support for the Ruff linter and formatter.
+    "charliermarsh.ruff",
+    // Improve your code commenting by annotating with alert, informational, TODOs, and more!
+    "aaron-bond.better-comments",
+    // Syntax highlighting for jinja(2) including HTML, Markdown etc.
+    "samuelcolvin.jinjahtml",
+  ]
+}

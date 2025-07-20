@@ -3,10 +3,23 @@ root = true
 
 [*]
 end_of_line = lf
+indent_size = 2
 charset = utf-8
 max_line_length = 99
+insert_final_newline = true
+trim_trailing_whitespace = true
 
-[*.py]
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# Python files
+[*.{py,pyi}]
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
@@ -14,3 +27,10 @@ insert_final_newline = true
 
 [docs/Makefile]
 indent_style = tab
+
+[.github/workflows/*.yml]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true

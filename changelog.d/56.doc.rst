@@ -1,0 +1,1 @@
+Add instructions how to install VSCode editor
