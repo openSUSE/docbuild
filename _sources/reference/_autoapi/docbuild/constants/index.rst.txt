@@ -17,6 +17,7 @@ Attributes
    docbuild.constants.APP_NAME
    docbuild.constants.DEFAULT_LANGS
    docbuild.constants.ALLOWED_LANGUAGES
+   docbuild.constants.DEFAULT_DELIVERABLES
    docbuild.constants.SERVER_ROLES
    docbuild.constants.DEFAULT_LIFECYCLE
    docbuild.constants.ALLOWED_LIFECYCLES
@@ -60,6 +61,13 @@ Module Contents
 .. py:data:: ALLOWED_LANGUAGES
 
    The languages supported by the documentation portal.
+
+
+.. py:data:: DEFAULT_DELIVERABLES
+   :value: '*/@supported/en-us'
+
+
+   The default deliverables when no specific doctype is provided.
 
 
 .. py:data:: SERVER_ROLES

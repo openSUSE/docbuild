@@ -573,16 +573,25 @@
 <dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.utils.contextmgr.</span></span><span class="sig-name descname"><span class="pre">PersistentOnErrorTemporaryDirectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a></p>
-<div class="graphviz"><img src="../../../../../_images/inheritance-433a49421b0a0ad1d68f2f19b73b65bc70408036.png" alt="Inheritance diagram of docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" usemap="#inheritanceb38d8aa828" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../../../../../_images/inheritance-af12c788f89c5bc4c943947ccd8666772556be23.png" alt="Inheritance diagram of docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" usemap="#inheritanceb38d8aa828" class="inheritance graphviz" /></div>
 <map id="inheritanceb38d8aa828" name="inheritanceb38d8aa828">
-<area shape="rect" id="node1" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" target="_top" title="Delete temporary directory only if no exception occurs." alt="" coords="204,5,469,31"/>
+<area shape="rect" id="node1" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" target="_top" title="A temporary directory that supports both sync and async usage." alt="" coords="204,5,469,31"/>
 <area shape="rect" id="node2" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" target="_top" title="Create and return a temporary directory. &#160;This has the same" alt="" coords="5,5,156,31"/>
-</map><p>Delete temporary directory only if no exception occurs.</p>
-<p>It is similar to <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a>, but it does not
-delete the directory if an exception occurs. This is useful for debugging
-or when you want to inspect the contents of the directory after an error.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">PersistentOnErrorTemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
-    <span class="c1"># Do something with the temporary directory, it&#39;s a Path object</span>
+</map><p>A temporary directory that supports both sync and async usage.</p>
+<p>It deletes the temporary directory only if no exception occurs within the
+context block. This is useful for debugging, as it preserves the directory
+and its contents for inspection after an error.</p>
+<p>It is a subclass of <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a> and mimics its
+initializer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Synchronous usage</span>
+<span class="k">with</span> <span class="n">PersistentOnErrorTemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+    <span class="c1"># temp_dir is a Path object</span>
+    <span class="o">...</span>
+
+<span class="c1"># Asynchronous usage</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">PersistentOnErrorTemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+    <span class="c1"># temp_dir is a Path object</span>
+    <span class="o">...</span>
 </pre></div>
 </div>
 <p>Optional arguments:
@@ -601,9 +610,37 @@ or when you want to inspect the contents of the directory after an error.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aenter__">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__aenter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aenter__" title="Link to this definition">#</a></dt>
+<dd><p>Enter the async runtime context and create the temporary directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the created temporary directory.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__">
 <span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcVal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcTback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__" title="Link to this definition">#</a></dt>
 <dd><p>Exit the runtime context and delete the directory if no exception occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exc_type</strong> – Exception type, if any.</p></li>
+<li><p><strong>exc_val</strong> – Exception instance, if any.</p></li>
+<li><p><strong>exc_tb</strong> – Traceback, if any.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aexit__">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__aexit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcVal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcTback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aexit__" title="Link to this definition">#</a></dt>
+<dd><p>Asynchronously clean up the directory on successful exit.</p>
+<p>Async exit the runtime context and delete the directory if no
+exception occurred.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -668,7 +705,9 @@ or when you want to inspect the contents of the directory after an error.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aenter__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aenter__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aexit__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__aexit__()</span></code></a></li>
 </ul>
 </li>
 </ul>
