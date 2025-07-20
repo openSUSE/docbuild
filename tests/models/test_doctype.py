@@ -85,6 +85,10 @@ def test_multiplestrings_langs_in_doctype():
             (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
         ),
         (
+            '/*/*/en-us',
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+        ),
+        (
             '*//en-us',
             (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
         ),
@@ -107,6 +111,18 @@ def test_multiplestrings_langs_in_doctype():
         (
             'sles/*@beta/en-us',
             (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+        ),
+        (
+            '/sles/*@beta/en-us',
+            (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+        ),
+        (
+            '/*/*@supported/*',
+            (Product.ALL, ['*'], LifecycleFlag.supported, [LanguageCode('*')]),
+        ),
+        (
+            '/*/*/*',
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('*')]),
         ),
     ],
 )

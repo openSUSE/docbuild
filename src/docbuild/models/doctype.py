@@ -15,6 +15,19 @@ from .product import Product
 class Doctype(BaseModel):
     """A "doctype" that comprises of a product, docset, lifecycle, and language.
 
+    The format has the following syntax:
+
+    .. code-block:: text
+
+       [/]?[PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+
+    The placeholders mean the following:
+
+    * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
+    * ``DOCSETS``: one or more docsets of the mentioned product, separated by comma
+    * ``LIFECYCLES``: one or more lifecycles, separated by comma or pipe
+    * ``LANGS``: one or more languages, separated by comma
+
     >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
     >>> doctype.product
     <Product.sles: 'sles'>
@@ -80,7 +93,7 @@ class Doctype(BaseModel):
     # This leads to None in the result if that group isn't matched
     _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
         r'^'  # start
-        r'(?:([^/@]+|\*))?'  # optional product (group 1)
+        r'(?:/?([^/@]+|\*))?'  # optional product (group 1)
         r'/(?:([^/@]+|\*))?'  # optional docset (group 2)
         r'(?:@([a-z]+(?:[,|][a-z]+)*))?'  # optional lifecycle (group 3)
         r'/(\*|[\w-]+(?:,[\w-]+)*)$',  # required langs (group 4)
@@ -198,19 +211,7 @@ class Doctype(BaseModel):
 
     @classmethod
     def from_str(cls, doctype_str: str) -> Self:
-        """Parse a string that adheres to the doctype format.
-
-        The format has the following syntax::
-
-            [PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
-
-        Plural means you can have one or more items:
-
-        * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
-        * ``DOCSETS``: separated by comma
-        * ``LIFECYCLES``: separated by comma or pipe
-        * ``LANGS``: separated by comma
-        """
+        """Parse a string that adheres to the doctype format."""
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
         if not match:

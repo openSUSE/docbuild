@@ -1,0 +1,2 @@
+Allow optional slash in Doctype syntax.
+Now it's allowed to write instead of ``"*/*/*"`` the syntax ``"/*/*/*"`` and all variations of it. It's the same, but helps to avoid accidental errors.
