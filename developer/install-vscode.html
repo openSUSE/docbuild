@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bumping the Version &#8212; docbuild 0.12.0 documentation</title>
+    <title>Installing Visual Studio Code Editor &#8212; docbuild 0.12.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/bump-version';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/install-vscode';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Updating the Project" href="update-project.html" />
-    <link rel="prev" title="Updating a specific package" href="update-package.html" />
+    <link rel="next" title="Developing the Project" href="develop-project.html" />
+    <link rel="prev" title="Preparing Your Development Environment" href="prepare-environment.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -397,11 +397,11 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="project-dependencies.html">Project Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install-vscode.html">Installing Visual Studio Code Editor</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installing Visual Studio Code Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Bumping the Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-changelog.html">Building the Changelog</a></li>
@@ -457,7 +457,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Bumping the Version</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Installing Visual Studio Code Editor</span></li>
   </ul>
 </nav>
 </div>
@@ -474,31 +474,23 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="bumping-the-version">
-<span id="bump-version"></span><h1>Bumping the Version<a class="headerlink" href="#bumping-the-version" title="Link to this heading">#</a></h1>
-<p>This project follows <a class="reference internal" href="../glossary.html#term-SemVer"><span class="xref std std-term">Semantic Versioning</span></a>. To bump the version, use the alias <strong class="command">bump-version.sh</strong>
-(see <a class="reference internal" href="prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a>). For example, if you want to create the next minor release, run:</p>
-<div class="literal-block-wrapper docutils container" id="sh-bump-version">
-<div class="code-block-caption"><span class="caption-text">Bumping the minor part</span><a class="headerlink" href="#sh-bump-version" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./devel/bump-version.sh<span class="w"> </span>minor
-</pre></div>
-</div>
-</div>
-<p>This script automates the versioning process with the following actions:</p>
-<ol class="arabic simple">
-<li><p>Validates that all required files and arguments are present and correctly formatted, ensuring the version string adheres to the MAJOR.MINOR.PATCH (Semantic Versioning) format.</p></li>
-</ol>
-<ol class="arabic simple">
-<li><p>Increments the version according to the <a class="reference internal" href="../glossary.html#term-SemVer"><span class="xref std std-term">SemVer</span></a> rules:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">major</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">MAJOR</span></code> number and resets <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> and <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> to zero.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">minor</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> number and resets the <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> part to zero.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">patch</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> number.</p></li>
-</ul>
+  <section id="installing-visual-studio-code-editor">
+<span id="install-vscode"></span><h1>Installing Visual Studio Code Editor<a class="headerlink" href="#installing-visual-studio-code-editor" title="Link to this heading">#</a></h1>
+<p>Visual Studio Code (VSCode) is a popular code editor that can be customized for Python development. Basically you can use any editor you like, but VSCode
+is supported by this project.</p>
+<p>Follow these steps to set up VSCode for working with this project:</p>
+<ol class="arabic">
+<li><p>Install Visual Studio Code</p>
+<p>Download and install VSCode from the official website: <a class="reference external" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></p>
 </li>
-</ol>
-<ol class="arabic simple">
-<li><p>It writes back the version and commits the change.</p></li>
+<li><p>Install the recommended extensions</p>
+<p>Open VSCode and go to the Extensions view by clicking on the Extensions icon.
+In the text field, enter <code class="docutils literal notranslate"><span class="pre">&#64;recommended</span></code> to see the list of recommended extensions for this project.</p>
+</li>
+<li><p>Click the cloud icon next to the <span class="guilabel">Workspace Recommendations</span> header to <a class="reference external" href="https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_workspace-recommended-extensions">install all recommended extensions</a>.</p>
+<p>Alternatively, you can install the extensions one by one by clicking on the install button next to each extension.</p>
+<img alt="VSCode Extensions view with highlighted cloud icon" src="../_images/vscode-install-ext.png" />
+</li>
 </ol>
 </section>
 
@@ -513,20 +505,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="update-package.html"
+       href="prepare-environment.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Updating a specific package</p>
+        <p class="prev-next-title">Preparing Your Development Environment</p>
       </div>
     </a>
     <a class="right-next"
-       href="update-project.html"
+       href="develop-project.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Updating the Project</p>
+        <p class="prev-next-title">Developing the Project</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -545,7 +537,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/bump-version.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/install-vscode.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -561,7 +553,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/bump-version.rst.txt"
+      <li><a href="../_sources/developer/install-vscode.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

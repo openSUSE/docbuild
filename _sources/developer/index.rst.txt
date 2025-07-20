@@ -16,6 +16,7 @@ This guide provides all the necessary information for contributing to the projec
 
    project-dependencies
    prepare-environment
+   install-vscode
    develop-project
    run-testsuite
    update-package
