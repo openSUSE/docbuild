@@ -1,0 +1,2 @@
+Rename ``docbuild.cli.config`` -> ``docbuild.cli.cmd_config`` to
+make it consistent with other CLI commands.

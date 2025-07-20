@@ -21,7 +21,7 @@ from .cmd_c14n import c14n
 from .cmd_metadata import metadata
 from .cmd_repo import repo
 from .cmd_validate import validate
-from .config import config
+from .cmd_config import config
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 
