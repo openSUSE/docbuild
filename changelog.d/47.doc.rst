@@ -1,2 +1,0 @@
-Improve user documentation.
-Move "XML configuration" section to user guide. Also change title, set an anchor, and make it clear why we need that. Revise "Configuring the Tool" section.

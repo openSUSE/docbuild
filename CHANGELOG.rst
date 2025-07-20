@@ -20,6 +20,34 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.12.0
+==============
+
+Bug Fixes
+---------
+
+- Fix result of ``process_doctype``. (:gh:`51`)
+- Correct ``log.error`` call with arguments (:gh:`52`)
+
+
+Improved Documentation
+----------------------
+
+- Improve user documentation.
+  Move "XML configuration" section to user guide. Also change title, set an anchor, and make it clear why we need that. Revise "Configuring the Tool" section. (:gh:`47`)
+
+
+Features
+--------
+
+- Implement metadata from a ``daps metadata`` command. (:gh:`16`)
+- Add new context manager :class:`~docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory`.
+  It is derived from :class:`tempfile.TemporaryDirectory` and has a similar behavior, but it does not delete the temporary directory on exit if an exception occurs. (:gh:`49`)
+- Allow optional slash in Doctype syntax.
+  Now it's allowed to write instead of ``"*/*/*"`` the syntax ``"/*/*/*"`` and all variations of it. It's the same, but helps to avoid accidental errors. (:gh:`50`)
+- Implement async-aware context manager (:gh:`52`)
+
+
 Version 0.11.0
 ==============
 

@@ -1,1 +1,0 @@
-Fix result of ``process_doctype``.
