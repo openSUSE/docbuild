@@ -16,10 +16,12 @@ Classes
    :hidden:
 
    /reference/_autoapi/docbuild/utils/contextmgr/TimerData
+   /reference/_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory
 
 .. autoapisummary::
 
    docbuild.utils.contextmgr.TimerData
+   docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory
 
 
 Functions

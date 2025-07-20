@@ -484,6 +484,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
@@ -576,6 +577,17 @@
 <map id="inheritancef7ccbd15aa" name="inheritancef7ccbd15aa">
 <area shape="rect" id="node2" href="#docbuild.models.doctype.Doctype" target="_top" title="A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language." alt="" coords="148,5,224,31"/>
 </map><p>A “doctype” that comprises of a product, docset, lifecycle, and language.</p>
+<p>The format has the following syntax:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[/]?[PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+</pre></div>
+</div>
+<p>The placeholders mean the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PRODUCT</span></code>: a lowercase acronym of a SUSE product, e.g. <code class="docutils literal notranslate"><span class="pre">sles</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DOCSETS</span></code>: one or more docsets of the mentioned product, separated by comma</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code>: one or more lifecycles, separated by comma or pipe</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code>: one or more languages, separated by comma</p></li>
+</ul>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">product</span>
 <span class="go">&lt;Product.sles: &#39;sles&#39;&gt;</span>
@@ -676,17 +688,6 @@
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.from_str">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctype_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.from_str" title="Link to this definition">#</a></dt>
 <dd><p>Parse a string that adheres to the doctype format.</p>
-<p>The format has the following syntax:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">PRODUCT</span><span class="p">]</span><span class="o">/</span><span class="p">[</span><span class="n">DOCSETS</span><span class="p">][</span><span class="nd">@LIFECYCLES</span><span class="p">]</span><span class="o">/</span><span class="n">LANGS</span>
-</pre></div>
-</div>
-<p>Plural means you can have one or more items:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PRODUCT</span></code>: a lowercase acronym of a SUSE product, e.g. <code class="docutils literal notranslate"><span class="pre">sles</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DOCSETS</span></code>: separated by comma</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code>: separated by comma or pipe</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code>: separated by comma</p></li>
-</ul>
 </dd></dl>
 
 <dl class="py method">

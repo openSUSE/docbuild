@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.defaults &#8212; docbuild 0.11.1 documentation</title>
+    <title>docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory &#8212; docbuild 0.11.1 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/defaults/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory';</script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.config" href="../../config/index.html" />
-    <link rel="prev" title="docbuild.cli.context.DocBuildContext" href="../context/DocBuildContext.html" />
+    <link rel="next" title="docbuild.utils.convert" href="../convert/index.html" />
+    <link rel="prev" title="docbuild.utils.contextmgr.TimerData" href="TimerData.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -394,35 +394,35 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.cli</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../cmd_build/index.html">docbuild.cli.cmd_build</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../config/index.html">docbuild.cli.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../config/application/index.html">docbuild.cli.config.application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../config/environment/index.html">docbuild.cli.config.environment</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/config/index.html">docbuild.cli.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/config/application/index.html">docbuild.cli.config.application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/config/environment/index.html">docbuild.cli.config.environment</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">docbuild.cli.defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/defaults/index.html">docbuild.cli.defaults</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -481,19 +481,19 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.utils.contextmgr</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../paths/index.html">docbuild.utils.paths</a></li>
 </ul>
 </details></li>
 </ul>
@@ -545,9 +545,12 @@
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.cli</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.utils</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.cli.defaults</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">docbuild.utils.contextmgr</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</span></li>
   </ul>
 </nav>
 </div>
@@ -564,42 +567,56 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-docbuild.cli.defaults">
-<span id="docbuild-cli-defaults"></span><h1>docbuild.cli.defaults<a class="headerlink" href="#module-docbuild.cli.defaults" title="Link to this heading">#</a></h1>
-<p>Defaults for the CLI and environment configuration.</p>
-<p>These are hardcoded defaults for the application and environment configurations.
-They are used when no configuration files are provided or when the configuration
-files do not contain the necessary settings.</p>
-<p>They can be overridden by the user through configuration files or command-line options.</p>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.defaults.DEFAULT_APP_CONFIG" title="docbuild.cli.defaults.DEFAULT_APP_CONFIG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_APP_CONFIG</span></code></a></p></td>
-<td><p>Default configuration for the application.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.defaults.DEFAULT_ENV_CONFIG" title="docbuild.cli.defaults.DEFAULT_ENV_CONFIG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG</span></code></a></p></td>
-<td><p>Default configuration for the environment.</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="docbuild-utils-contextmgr-persistentonerrortemporarydirectory">
+<h1>docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory<a class="headerlink" href="#docbuild-utils-contextmgr-persistentonerrortemporarydirectory" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.utils.contextmgr.</span></span><span class="sig-name descname"><span class="pre">PersistentOnErrorTemporaryDirectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a></p>
+<div class="graphviz"><img src="../../../../../_images/inheritance-433a49421b0a0ad1d68f2f19b73b65bc70408036.png" alt="Inheritance diagram of docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" usemap="#inheritanceb38d8aa828" class="inheritance graphviz" /></div>
+<map id="inheritanceb38d8aa828" name="inheritanceb38d8aa828">
+<area shape="rect" id="node1" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" target="_top" title="Delete temporary directory only if no exception occurs." alt="" coords="204,5,469,31"/>
+<area shape="rect" id="node2" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" target="_top" title="Create and return a temporary directory. &#160;This has the same" alt="" coords="5,5,156,31"/>
+</map><p>Delete temporary directory only if no exception occurs.</p>
+<p>It is similar to <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a>, but it does not
+delete the directory if an exception occurs. This is useful for debugging
+or when you want to inspect the contents of the directory after an error.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">PersistentOnErrorTemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">temp_dir</span><span class="p">:</span>
+    <span class="c1"># Do something with the temporary directory, it&#39;s a Path object</span>
+</pre></div>
 </div>
-</section>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.cli.defaults.DEFAULT_APP_CONFIG">
-<span class="sig-prename descclassname"><span class="pre">docbuild.cli.defaults.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_APP_CONFIG</span></span><a class="headerlink" href="#docbuild.cli.defaults.DEFAULT_APP_CONFIG" title="Link to this definition">#</a></dt>
-<dd><p>Default configuration for the application.</p>
+<p>Optional arguments:
+:param suffix: A str suffix for the directory name.  (see mkdtemp)
+:param prefix: A str prefix for the directory name.  (see mkdtemp)
+:param dir: A directory to create this temp dir in.  (see mkdtemp)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__">
+<span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__" title="Link to this definition">#</a></dt>
+<dd><p>Enter the runtime context and create the temporary directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the created temporary directory.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.cli.defaults.DEFAULT_ENV_CONFIG">
-<span class="sig-prename descclassname"><span class="pre">docbuild.cli.defaults.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_ENV_CONFIG</span></span><a class="headerlink" href="#docbuild.cli.defaults.DEFAULT_ENV_CONFIG" title="Link to this definition">#</a></dt>
-<dd><p>Default configuration for the environment.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__">
+<span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcVal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_tb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExcTback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__" title="Link to this definition">#</a></dt>
+<dd><p>Exit the runtime context and delete the directory if no exception occurred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exc_type</strong> – Exception type, if any.</p></li>
+<li><p><strong>exc_val</strong> – Exception instance, if any.</p></li>
+<li><p><strong>exc_tb</strong> – Traceback, if any.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-</section>
+</dd></dl>
+
 </section>
 
 
@@ -613,20 +630,20 @@ files do not contain the necessary settings.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../context/DocBuildContext.html"
+       href="TimerData.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.cli.context.DocBuildContext</p>
+        <p class="prev-next-title">docbuild.utils.contextmgr.TimerData</p>
       </div>
     </a>
     <a class="right-next"
-       href="../../config/index.html"
+       href="../convert/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.config</p>
+        <p class="prev-next-title">docbuild.utils.convert</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -649,10 +666,9 @@ files do not contain the necessary settings.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.defaults.DEFAULT_APP_CONFIG"><code class="docutils literal notranslate"><span class="pre">DEFAULT_APP_CONFIG</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.defaults.DEFAULT_ENV_CONFIG"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__enter__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__"><code class="docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory.__exit__()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -662,7 +678,7 @@ files do not contain the necessary settings.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/cli/defaults/index.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -678,7 +694,7 @@ files do not contain the necessary settings.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/cli/defaults/index.rst.txt"
+      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

@@ -11,6 +11,19 @@ docbuild.models.doctype.Doctype
 
    A "doctype" that comprises of a product, docset, lifecycle, and language.
 
+   The format has the following syntax:
+
+   .. code-block:: text
+
+      [/]?[PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+
+   The placeholders mean the following:
+
+   * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
+   * ``DOCSETS``: one or more docsets of the mentioned product, separated by comma
+   * ``LIFECYCLES``: one or more lifecycles, separated by comma or pipe
+   * ``LANGS``: one or more languages, separated by comma
+
    >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
    >>> doctype.product
    <Product.sles: 'sles'>
@@ -133,17 +146,6 @@ docbuild.models.doctype.Doctype
 
 
       Parse a string that adheres to the doctype format.
-
-      The format has the following syntax::
-
-          [PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
-
-      Plural means you can have one or more items:
-
-      * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
-      * ``DOCSETS``: separated by comma
-      * ``LIFECYCLES``: separated by comma or pipe
-      * ``LANGS``: separated by comma
 
 
 
