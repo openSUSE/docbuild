@@ -212,7 +212,7 @@ async def process_doctype(
     ]
     results = await asyncio.gather(*tasks)
 
-    return True
+    return all(results)
 
 
 async def process(
