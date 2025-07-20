@@ -3,6 +3,7 @@
 from pathlib import Path
 import re
 
+from .models.lifecycle import LifecycleFlag
 from .models.serverroles import ServerRole
 
 APP_NAME = 'docbuild'
@@ -24,14 +25,20 @@ DEFAULT_DELIVERABLES = '*/@supported/en-us'
 #     "testing", "test", "t",
 #     "staging", "stage", "s",
 # )
-SERVER_ROLES = tuple([role.value for role in ServerRole])
+SERVER_ROLES = tuple(
+    [role.value for role in ServerRole]  # type: ignore[call-arg]
+)
 """The different server roles, including long and short spelling."""
 
 DEFAULT_LIFECYCLE = 'supported'
 """The default lifecycle state for a docset."""
 
-ALLOWED_LIFECYCLES = ('supported', 'beta', 'hidden', 'unsupported')
-"""The available lifecycle states for a docset."""
+ALLOWED_LIFECYCLES: tuple[str] = tuple(
+    lc.name
+    for lc in LifecycleFlag
+)
+# ('supported', 'beta', 'hidden', 'unsupported')
+"""The available lifecycle states for a docset (without 'unknown')."""
 
 
 # All product acronyms and their names
@@ -141,7 +148,7 @@ used in production."""
 # --- State and Logging Constants (Refactored) ---
 
 BASE_STATE_DIR = Path.home() / '.local' / 'state' / APP_NAME
-"""The directory where application state, logs, and locks are stored, 
+"""The directory where application state, logs, and locks are stored,
 per XDG Base Directory Specification."""
 
 GITLOGGER_NAME = "docbuild.git"

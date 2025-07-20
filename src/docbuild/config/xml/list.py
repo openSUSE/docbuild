@@ -39,7 +39,7 @@ def list_all_deliverables(
             if '*' not in dt.docset:
                 xpath += '[' + ' or '.join([f'@setid={d!r}' for d in dt.docset]) + ']'
 
-            if LifecycleFlag.UNKNOWN != dt.lifecycle:  # type: ignore
+            if LifecycleFlag.unknown != dt.lifecycle:  # type: ignore
                 xpath += (
                     '['
                     + ' or '.join([f'@lifecycle={lc.name!r}' for lc in dt.lifecycle])

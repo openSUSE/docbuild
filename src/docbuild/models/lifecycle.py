@@ -1,29 +1,51 @@
 """Lifecycle model for docbuild."""
 
-from enum import Flag
+from enum import Flag, auto
 import re
-
-from ..constants import ALLOWED_LIFECYCLES
-
-_SEPARATOR = re.compile(r'[|,]')
+from typing import ClassVar, Self
 
 
-class BaseLifecycleFlag(Flag):
-    """Base class for LifecycleFlag."""
+class LifecycleFlag(Flag):
+    """LifecycleFlag represents the lifecycle of a product."""
+
+    # Order is important here
+    unknown = 0
+    # UNKNOWN = 0
+    """Unknown lifecycle state."""
+
+    supported = auto()
+    """Supported lifecycle state."""
+
+    beta = auto()
+    """Beta lifecycle state."""
+
+    hidden = auto()
+    """Hidden lifecycle state."""
+
+    unsupported = auto()
+    """Unsupported lifecycle state."""
+
+    # NOTE: Putting a compiled regex (or other helper) as a class
+    # variable on an Enum/Flag is error-prone:
+    # the Enum metaclass treats class attributes specially and may
+    # convert them into members or otherwise interfere.
+    #
+    # Solution: This class variable will be attached after class creation.
+    # _SEPARATOR = re.compile(r'[|,]')  # Static class variable
 
     @classmethod
-    def from_str(cls, value: str) -> 'BaseLifecycleFlag':
+    def from_str(cls: 'LifecycleFlag', value: str) -> 'LifecycleFlag':
         """Convert a string to a LifecycleFlag object.
 
         The string accepts the values 'supported', 'beta', 'hidden',
         'unsupported', or a combination of them separated by a comma or pipe.
-        Addtionally, the class knows the values "UNKNOWN" and "unknown".
-        An empty string, "", is equivalent to "UNKNOWN".
+        Addtionally, the class knows the values "unknown".
+        An empty string, "", is equivalent to "unknown".
 
         Examples:
         >>> LifecycleFlag.from_str("supported")
         <LifecycleFlag.supported: 2>
-        >>> LifecycleFlag.from_str("supported|beta")
+        >>> LifecycleFlag.from_str("supported,beta")
         <LifecycleFlag.supported|beta: 6>
         >>> LifecycleFlag.from_str("beta,supported|beta")
         <LifecycleFlag.supported|beta: 6>
@@ -31,14 +53,15 @@ class BaseLifecycleFlag(Flag):
         <LifecycleFlag.unknown: 0>
 
         """
+        separator = cls._SEPARATOR  # will exist after we attach it
         try:
             flag = cls(0)  # Start with an empty flag
-            parts = [v.strip() for v in _SEPARATOR.split(value) if v.strip()]
+            parts = [v.strip() for v in separator.split(value) if v.strip()]
             if not parts:
                 return cls(0)
 
             for part_name in parts:
-                flag |= cls[part_name]
+                flag |= cls.__members__[part_name]
 
             return flag
 
@@ -48,12 +71,12 @@ class BaseLifecycleFlag(Flag):
                 f'Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}',
             ) from err
 
-    def __contains__(self, other: str | Flag) -> bool:
+    def __contains__(self: Self, other: str | Flag) -> bool:
         """Return True if self has at least one of same flags set as other.
 
-        >>> "supported" in Lifecycle.beta
+        >>> "supported" in LifecycleFlag.beta
         False
-        >>> "supported|beta" in Lifecycle.beta
+        >>> "supported|beta" in LifecycleFlag.beta
         True
         """
         if isinstance(other, str):
@@ -68,13 +91,5 @@ class BaseLifecycleFlag(Flag):
         return (self & item_flag) == item_flag
 
 
-# Lifecycle is implemented as a Flag as different states can be combined
-# An additional "unknown" state could be used if the state is unknown or not yet
-# retrieved.
-# TODO: Should we allow weird combination like "supported|unsupported"
-LifecycleFlag = BaseLifecycleFlag(
-    'LifecycleFlag',
-    {'unknown': 0, 'UNKNOWN': 0}
-    | {item: (2 << index) for index, item in enumerate(ALLOWED_LIFECYCLES, 0)},
-)
-"""LifecycleFlag represents the lifecycle of a product."""
+# attach after class creation so EnumMeta doesn't touch it
+LifecycleFlag._SEPARATOR: ClassVar[re.Pattern] = re.compile(r'[|,]')
