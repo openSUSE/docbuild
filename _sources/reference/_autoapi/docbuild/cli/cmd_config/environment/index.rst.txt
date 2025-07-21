@@ -1,7 +1,7 @@
-docbuild.cli.config.environment
-===============================
+docbuild.cli.cmd_config.environment
+===================================
 
-.. py:module:: docbuild.cli.config.environment
+.. py:module:: docbuild.cli.cmd_config.environment
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.config.environment.env
+   docbuild.cli.cmd_config.environment.env
 
 
 Module Contents

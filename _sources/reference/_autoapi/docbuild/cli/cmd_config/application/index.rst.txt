@@ -1,7 +1,7 @@
-docbuild.cli.config.application
-===============================
+docbuild.cli.cmd_config.application
+===================================
 
-.. py:module:: docbuild.cli.config.application
+.. py:module:: docbuild.cli.cmd_config.application
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.config.application.app
+   docbuild.cli.cmd_config.application.app
 
 
 Module Contents

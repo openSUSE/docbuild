@@ -476,13 +476,19 @@
                   
   <section id="creating-a-new-release">
 <span id="create-release"></span><h1>Creating a New Release<a class="headerlink" href="#creating-a-new-release" title="Link to this heading">#</a></h1>
-<p>To create a new release, follow these steps:</p>
-<ol class="arabic simple">
+<p>When you are ready to release a new version of the project, start with creating a new release branch. There you bump the version, build the changelog, and adjust minor things like the documentation. Avoid commiting changes that introduces new features or add breaking changes.</p>
+<p>Follow these steps:</p>
+<ol class="arabic">
 <li><p>Ensure that you have the latest changes from the main branch of the repository.</p></li>
 <li><p>Create a new branch named <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p></li>
 <li><p><a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">Bump the version</span></a>.</p></li>
 <li><p><a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Update the project</span></a>.</p></li>
 <li><p><a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">Build the changelog</span></a>.</p></li>
+<li><p>In your current branch, push the branch to the remote repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push origin HEAD</span>
+</pre></div>
+</div>
+</li>
 <li><p>Wait for the CI to pass. If it fails, fix the issues and commit again.</p></li>
 <li><p>If the CI passes, (squash-)merge your release branch into the main branch.
 The GitHub Action workflow will automatically create a new release based on the name of the release branch.</p></li>

@@ -1,7 +1,7 @@
-docbuild.cli.config
-===================
+docbuild.cli.cmd_config
+=======================
 
-.. py:module:: docbuild.cli.config
+.. py:module:: docbuild.cli.cmd_config
 
 .. autoapi-nested-parse::
 
@@ -15,8 +15,8 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /reference/_autoapi/docbuild/cli/config/application/index
-   /reference/_autoapi/docbuild/cli/config/environment/index
+   /reference/_autoapi/docbuild/cli/cmd_config/application/index
+   /reference/_autoapi/docbuild/cli/cmd_config/environment/index
 
 
 Functions
@@ -24,7 +24,7 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.config.config
+   docbuild.cli.cmd_config.config
 
 
 Package Contents
