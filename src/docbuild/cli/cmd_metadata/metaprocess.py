@@ -4,7 +4,6 @@ import asyncio
 import logging
 from pathlib import Path
 import shlex
-import tempfile
 
 from lxml import etree
 from rich.console import Console
@@ -14,6 +13,7 @@ from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
+from ..commands import run_daps, run_git
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
@@ -91,59 +91,53 @@ async def process_deliverable(
     outputdir.mkdir(parents=True, exist_ok=True)
 
     prefix = (
-        f'{deliverable.productid}-{deliverable.docsetid}-'
-        f'{deliverable.lang}--{deliverable.dcfile}'
+        f'clone-{deliverable.productid}-{deliverable.docsetid}-'
+        f'{deliverable.lang}--{deliverable.dcfile}_'
     )
 
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(temp_repo_dir),
-            prefix=f'clone-{prefix}_',
+            prefix=prefix,
         ) as worktree_dir:
             # 1. Create a temporary clone from the bare repo and checkout a branch.
-            clone_cmd = [
-                'git',
+            result = await run_git(
                 'clone',
                 '--local',
                 f'--branch={deliverable.branch}',
                 str(bare_repo_path),
                 str(worktree_dir),
-            ]
-            clone_process = await asyncio.create_subprocess_exec(
-                *clone_cmd,
                 stdin=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE,
             )
-            _, stderr = await clone_process.communicate()
-            if clone_process.returncode != 0:
-                # Raise an exception on failure to let the context manager know.
+            if result.returncode != 0:
                 raise RuntimeError(
-                    f'Failed to clone {bare_repo_path}: {stderr.decode().strip()}'
+                    f'Failed to clone {bare_repo_path}: {result.stderr.strip()}'
                 )
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
 
             # 2. Run the daps command
-            cmd = shlex.split(
+            # ! Keep in mind that the config entry does not need the "daps"
+            # ! command just the arguments.
+            # TODO: Check for both cases, with and without the command?
+            args = shlex.split(
                 dapstmpl.format(
                     builddir=str(worktree_dir),
                     dcfile=str(worktree_dir / dcfile_path),
                     output=str(outputdir / deliverable.dcfile),
                 )
             )
-            console_out.print(f'  command: {cmd}')
-            daps_process = await asyncio.create_subprocess_exec(
-                *cmd,
+            result = await run_daps(
+                *args,
                 stdin=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE,
             )
-            _, stderr = await daps_process.communicate()
-            if daps_process.returncode != 0:
-                # Raise an exception on failure.
+            if result.returncode != 0:
                 raise RuntimeError(
                     f'DAPS command failed for {deliverable.full_id}: '
-                    f'{stderr.decode().strip()}'
+                    f'{result.stderr.strip()}'
                 )
 
         console_out.print(f'> Processed deliverable: {deliverable.pdlangdc}')
