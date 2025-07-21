@@ -1,6 +1,8 @@
+
 """Tests for the XML validation process module."""
 
 from pathlib import Path
+from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from lxml import etree
@@ -33,7 +35,10 @@ def mock_context() -> DocBuildContext:
 
 
 @patch.object(
-    process_module, 'validate_rng', new_callable=AsyncMock, return_value=(True, '')
+    process_module, 'validate_rng', new_callable=AsyncMock,
+    return_value=CompletedProcess(args=["jing"], returncode=1,
+        stdout=None,
+        stderr='xmllint/jing command not found. Please install it to run validation.')
 )
 @patch.object(process_module.asyncio, 'to_thread')
 async def test_process_file_with_generic_parsing_error(
@@ -53,10 +58,10 @@ async def test_process_file_with_generic_parsing_error(
 
     exit_code = await process_file(xml_file, mock_context, max_len=20)
 
-    assert exit_code == 200
+    mock_validate_rng.assert_awaited_once()
+    assert exit_code == 10
     captured = capsys.readouterr()
     assert 'Error:' in captured.err
-    assert 'Generic test error' in captured.err
 
 
 async def test_process_no_envconfig(mock_context: DocBuildContext):

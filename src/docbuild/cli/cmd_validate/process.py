@@ -1,11 +1,12 @@
 """Module for processing XML validation in DocBuild."""
 
 import asyncio
+import logging
+import subprocess
+import tempfile
 from collections.abc import Iterator
 from datetime import date
-import logging
 from pathlib import Path
-import tempfile
 
 from lxml import etree
 from rich.console import Console
@@ -15,6 +16,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...constants import XMLDATADIR
 from ...utils.decorators import RegistryDecorator
 from ...utils.paths import calc_max_len
+from ..commands import run_command
 from ..context import DocBuildContext
 
 # Cast to help with type checking
@@ -76,37 +78,12 @@ def display_results(
                     console_err.print(f'      {message}')
 
 
-async def run_command(
-    *args: str, env: dict[str, str] | None = None
-) -> tuple[int, str, str]:
-    """Run an external command and capture its output.
-
-    :param args: The command and its arguments separated as tuple elements.
-    :param env: A dictionary of environment variables for the new process.
-    :return: A tuple of (returncode, stdout, stderr).
-    :raises FileNotFoundError: if the command is not found.
-    """
-    process = await asyncio.create_subprocess_exec(
-        *args,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        env=env,
-    )
-    stdout, stderr = await process.communicate()
-
-    # After .communicate() returns, the process has terminated and the
-    # returncode is guaranteed to be set to an integer.
-    assert process.returncode is not None
-
-    return process.returncode, stdout.decode(), stderr.decode()
-
-
 async def validate_rng(
     xmlfile: Path,
     rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
     *,
     xinclude: bool = True,
-) -> tuple[bool, str]:
+) -> subprocess.CompletedProcess:
     """Validate an XML file against a RELAX NG schema using jing.
 
     If `xinclude` is True (the default), this function resolves XIncludes by
@@ -117,7 +94,7 @@ async def validate_rng(
     :param rng_schema_path: The path to the RELAX NG schema file. It supports
         both RNC and RNG formats.
     :param xinclude: If True, resolve XIncludes with `xmllint` before validation.
-    :return: A tuple containing a boolean success status and any output message.
+    :return: A subprocess.CompletedProcess containing args, returncode, stdout, stderr.
     """
     jing_cmd = ['jing']
     if rng_schema_path.suffix == '.rnc':
@@ -126,9 +103,6 @@ async def validate_rng(
 
     try:
         if xinclude:
-            # Use a temporary file to store the output of xmllint.
-            # This is more robust than piping, especially if jing doesn't
-            # correctly handle stdin (the command "jing schema.rng -" does NOT work.)
             with tempfile.NamedTemporaryFile(
                 prefix='jing-validation',
                 suffix='.xml',
@@ -137,34 +111,56 @@ async def validate_rng(
                 encoding='utf-8',
             ) as tmp_file:
                 tmp_filepath = Path(tmp_file.name)
-
                 # 1. Run xmllint to resolve XIncludes and save to temp file
-                returncode, _, stderr = await run_command(
-                    'xmllint', '--xinclude', '--output', str(tmp_filepath), str(xmlfile)
+                process = await run_command(
+                    'xmllint',
+                    '--xinclude',
+                    '--output',
+                    str(tmp_filepath),
+                    str(xmlfile),
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
                 )
-                if returncode != 0:
-                    return False, f'xmllint failed: {stderr.strip()}'
-
+                if process.returncode != 0:
+                    return subprocess.CompletedProcess(
+                        args=['xmllint'],
+                        returncode=process.returncode,
+                        stdout=process.stdout,
+                        stderr=process.stderr,
+                    )
                 # 2. Run jing on the resolved temporary file
                 jing_cmd.append(str(tmp_filepath))
-                returncode, stdout, stderr = await run_command(*jing_cmd)
-                if returncode != 0:
-                    return False, (stdout + stderr).strip()
-
-                return True, ''
+                process = await run_command(
+                    *jing_cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                )
+                return subprocess.CompletedProcess(
+                    args=jing_cmd,
+                    returncode=process.returncode,
+                    stdout=process.stdout,
+                    stderr=process.stderr,
+                )
         else:
-            # Validate directly with jing, no XInclude resolution.
             jing_cmd.append(str(xmlfile))
-            returncode, stdout, stderr = await run_command(*jing_cmd)
-            if returncode == 0:
-                return True, ''
-            return False, (stdout + stderr).strip()
-
+            process = await run_command(
+                *jing_cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            return subprocess.CompletedProcess(
+                args=jing_cmd,
+                returncode=process.returncode,
+                stdout=process.stdout,
+                stderr=process.stderr,
+            )
     except FileNotFoundError as e:
         tool = e.filename or 'xmllint/jing'
-        return (
-            False,
-            f'{tool} command not found. Please install it to run validation.',
+        return subprocess.CompletedProcess(
+            args=[tool],
+            returncode=127,
+            stdout='',
+            stderr=f'{tool} command not found. Please install it to run validation.',
         )
 
 
@@ -206,40 +202,31 @@ async def process_file(
         '/'.join(path_obj.parts[-2:]) if len(path_obj.parts) >= 2 else str(filepath)
     )
 
-    # IDEA: Should we replace jing and validate with etree.RelaxNG?
-
     # 1. RNG Validation
-    rng_success, rng_output = await validate_rng(path_obj)
-    if not rng_success:
+    rng_result = await validate_rng(path_obj)
+    if rng_result.returncode != 0:
         console_err.print(
             f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
         )
-        if rng_output:
-            console_err.print(f'  [bold red]Error:[/] {rng_output}')
+        if rng_result.stderr:
+            console_err.print(f'  [bold red]Error:[/] {rng_result.stderr.strip()}')
         return 10  # Specific error code for RNG failure
 
     # 2. Python-based checks
     try:
         tree = await asyncio.to_thread(etree.parse, str(filepath), parser=None)
-
     except etree.XMLSyntaxError as err:
-        # This can happen if xmllint passes but lxml's parser is stricter.
         console_err.print(
             f'{shortname:<{max_len}}: XML Syntax Error => [red]failed[/red]'
         )
         console_err.print(f'  [bold red]Error:[/] {err}')
         return 20
-
     except Exception as err:
         console_err.print(f'  [bold red]Error:[/] {err}')
         return 200
 
-    # Run all checks for this file
     check_results = await run_python_checks(tree)
-
-    # Display results based on verbosity level
     display_results(shortname, check_results, context.verbose, max_len)
-
     return 0 if all(result.success for _, result in check_results) else 1
 
 
@@ -284,7 +271,9 @@ async def process(
 
     # Filter for files that passed the initial validation
     successful_files_paths = [
-        xmlfile for xmlfile, result in zip(xmlfiles, results, strict=False) if result == 0
+        xmlfile
+        for xmlfile, result in zip(xmlfiles, results, strict=False)
+        if result == 0
     ]
 
     # After validating individual files, perform a stitch validation to

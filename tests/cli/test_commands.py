@@ -1,5 +1,6 @@
 """Tests for the command execution helper functions."""
 
+import asyncio
 from pathlib import Path
 from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, Mock, patch
@@ -11,6 +12,26 @@ from docbuild.cli import commands as commands_module
 
 class TestRunCommand:
     """Tests for the run_command function."""
+
+    async def test_run_command(self):
+        """Test the run_command function."""
+        # Use a simple command that is guaranteed to exist
+        command = ['echo', 'Hello, World!']
+
+        process = await commands_module.run_command(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+        returncode, stdout, stderr = process.returncode, process.stdout, process.stderr
+
+        # Assert the return code is 0 (success)
+        assert returncode == 0, f'Expected return code 0, got {returncode}'
+
+        # Assert the stdout contains the expected output
+        assert stdout == 'Hello, World!\n', f'Unexpected stdout: {stdout}'
+
+        # Assert stderr is empty
+        assert stderr is None, f'Unexpected stderr: {stderr}'
 
     @patch.object(
         commands_module.asyncio, 'create_subprocess_exec', new_callable=AsyncMock
