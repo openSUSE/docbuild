@@ -13,6 +13,6 @@ To build the documentation for this project, use the following steps:
       :caption: Building the documentation
       :name: makedocs
 
-      $ makedocs
+      makedocs
 
 #. Find the generated documentation in the :file:`docs/build/html` directory.

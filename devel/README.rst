@@ -24,7 +24,7 @@ The directory :file:`devel/` contains some helper tools to make development easi
     .. code-block:: shell-session
        :caption: Activating development aliases
 
-       $ source devel/activate-aliases.sh
+       source devel/activate-aliases.sh
 
 * :command:`bump-version.sh`
    Bumps the version of the project. To bump the minor version, use

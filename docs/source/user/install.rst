@@ -29,7 +29,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ curl -sSfL https://astral.sh/uv/install.sh | sh
+      curl -sSfL https://astral.sh/uv/install.sh | sh
 
 
    This will install two commands :command:`uv` and :command:`uvx` in :file:`~/.local/bin/`. Make sure this directory is in your :envvar:`PATH` environment variable.
@@ -40,9 +40,9 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ type uv
+      type uv
       uv is hashed (/home/tux/.local/bin/uv)
-      $ uv --version
+      uv --version
       ...
 
    You should see the version of :command:`uv` printed in the terminal.
@@ -53,7 +53,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ uv python install 3.13
+      uv python install 3.13
 
    The previous command downloads Python 3.13 and install it in the directory :file:`~/.local/share/uv/python/<VERSION>`.
 
@@ -63,7 +63,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ uv python list
+      uv python list
       cpython-3.14.0b1-linux-x86_64-gnu                 <download available>
       cpython-3.14.0b1+freethreaded-linux-x86_64-gnu    <download available>
       cpython-3.13.4-linux-x86_64-gnu                   /home/tux/.local/share/uv/python/cpython-3.13.4-linux-x86_64-gnu/bin/python3.13
@@ -83,8 +83,8 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ git clone https://github.com/openSUSE/docbuild.git
-      $ cd docbuild
+      git clone https://github.com/openSUSE/docbuild.git
+      cd docbuild
 
 2. **Create a virtual environment**
 
@@ -93,7 +93,7 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ uv venv --prompt "venv313" .venv
+      uv venv --prompt "venv313" .venv
 
    This will create a virtual environment in the directory `.venv`.
 
@@ -103,7 +103,7 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ uv sync --frozen
+      uv sync --frozen
       Resolved 29 packages in 586ms
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
