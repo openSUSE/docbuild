@@ -20,7 +20,7 @@ Preparing for Installation
 It is highly recommended to use the `package and project manager uv <https://docs.astral.sh/uv>`_ to install the docbuild tool. This ensures that all dependencies are managed correctly and that the installation is reproducible across different environments.
 
 There are different methods to install the :command:`uv` package manager
-(see `Installing uv <https://docs.astral.sh/uv/getting-started/installation/>`_.). In this case, use the standalone installer:
+(see `Installing uv <https://docs.astral.sh/uv/getting-started/installation/>`_). In this case, use the standalone installer:
 
 
 1. **Install uv**
@@ -119,4 +119,4 @@ Formerly known as the *Docserv XML configs*. These configuration files defines t
 The tool needs the XML configuration to build the documentation correctly. The XML configuration is not part of the docbuild tool itself, but it is required to run the tool.
 
 Clone the |gl_xmlconfig| to your machine where you can access it easily.
-As an alternative, use the RNC schema from :gh_tree:`src/docbuild/config/xml/data/` to create your own configuration.
+As an alternative, use the `RNC schema <https://www.oasis-open.org/committees/relax-ng/compact-20021121.html>_` from :gh_tree:`src/docbuild/config/xml/data/` to create your own configuration.
