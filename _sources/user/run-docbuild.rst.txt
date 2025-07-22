@@ -6,10 +6,10 @@ If you have installed the docbuild tool from the source code, run it using
 
 .. code-block:: shell-session
 
-   $ uv run docbuild --help
+   uv run docbuild --help
 
 In case you have installed different Python versions using :command:`uv python install` (see :ref:`prepare-installation`), specify the Python version to use with the ``-P``/``--python <VERSION>`` option:
 
 .. code-block:: shell-session
 
-   $ uv run --python 3.14 docbuild --help
+   uv run --python 3.14 docbuild --help

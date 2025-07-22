@@ -13,7 +13,7 @@ The project's repository is structured in a way that allows for easy navigation 
 
 * **pyproject.toml**
 
-  The :file:`pyproject.toml` file is used to define the project's metadata, dependencies, and build system requirements. It is a standardized way to configure Python projects and is used by tools such as :command:`uv`.
+  The :file:`pyproject.toml` file is used to define the project's metadata, dependencies, and build system requirements. It is a standardized way to configure Python projects and is used by tools such as :command:`uv` (see `uv docs <https://docs.astral.sh/uv/>`_).
   The :command:`uv` create a lock file :file:`uv.lock` based on the dependencies defined in :file:`pyproject.toml`. This lock file ensures that the same versions of dependencies are used across different environments, providing consistency and reliability.
 
 * **uv**
@@ -23,4 +23,4 @@ The project's repository is structured in a way that allows for easy navigation 
 
 * **Documentation**
 
-  The documentation is built using reStructuredText and Sphinx. The source files for the documentation are located in the :file:`docs/` directory. The documentation targets users and developers, providing information on how to use the project, its features, and how to change it.
+  The documentation is built using `reStructuredText <https://docutils.sourceforge.io/rst.html>`_ and `Sphinx <https://www.sphinx-doc.org/en/master/>`_. The source files for the documentation are located in the :file:`docs/` directory. The documentation targets users and developers, providing information on how to use the project, its features, and how to change it.

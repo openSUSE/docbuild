@@ -17,7 +17,7 @@ If you want to override the default search strategy, use the ``--app-config`` op
 .. code-block:: shell-session
    :caption: Showing configuration files
 
-   $ docbuild config app
+   docbuild config app
    # Application config files '/home/tux/repos/GH/opensuse/docbuild/.config.toml'
    [ ... content ...]
 

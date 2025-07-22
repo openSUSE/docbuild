@@ -72,7 +72,7 @@ The following steps are recommended to set up your development environment:
       :caption: Creating a virtual environment with |uv|
       :name: uv-venv
 
-      $ uv venv --prompt venv313 --python 3.13 .venv
+      uv venv --prompt venv313 --python 3.13 .venv
 
    Keep in mind that the Python version used in the virtual environment should match the version specified in the :file:`pyproject.toml` file.
    
@@ -85,7 +85,7 @@ The following steps are recommended to set up your development environment:
       :caption: Synchronizing the virtual environment with the development dependencies
       :name: uv-sync-devel
 
-      $ uv sync --frozen --group devel
+      uv sync --frozen --group devel
 
    The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
 
@@ -95,7 +95,7 @@ The following steps are recommended to set up your development environment:
       :caption: Activating the shell aliases for development
       :name: activate-aliases
 
-      $ source devel/activate-aliases.sh
+      source devel/activate-aliases.sh
 
 
 After completing these steps, your development environment is ready to go.
@@ -113,7 +113,7 @@ To get started, clone this repository to your local machine (you need VPN access
 
 .. code-block:: shell-session
 
-   $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
+   git clone https://gitlab.suse.de/susedoc/docserv-config.git
 
 You will later need to point ``docbuild`` to the location of this cloned
 repository in your configuration.

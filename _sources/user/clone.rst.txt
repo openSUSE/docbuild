@@ -8,7 +8,7 @@ During the process of building documentation, the script clones Git repositores 
 .. code-block:: shell
    :caption: Synopsis of :command:`docbuild repo clone`
 
-   $ docbuild repo clone [OPTIONS] REPO [REPO ...]
+   docbuild repo clone [OPTIONS] REPO [REPO ...]
 
 The ``REPO`` argument can be specified in various formats, such as:
 
@@ -34,10 +34,10 @@ For example, to clone the ``https://github.com/SUSE/doc-modular.git`` repository
    :caption: Example of cloning a repository
    :name: docbuild-repo-clone
 
-   $ docbuild repo clone https://github.com/SUSE/doc-modular.git
-   $ docbuild repo clone gh://SUSE/doc-modular
-   $ docbuild repo clone gh://suse/doc-modular
-   $ docbuild repo clone SUSE/doc-modular
+   docbuild repo clone https://github.com/SUSE/doc-modular.git
+   docbuild repo clone gh://SUSE/doc-modular
+   docbuild repo clone gh://suse/doc-modular
+   docbuild repo clone SUSE/doc-modular
 
 The command will clone the repository into the permanent storage directory.
 You can find the exact path by running:
@@ -46,7 +46,7 @@ You can find the exact path by running:
    :caption: Find the permanent storage directory
    :name: docbuild-repo-dir
 
-   $ docbuild repo dir
+   docbuild repo dir
    /var/cache/docbuild/repos/permanent-full/
 
 To get a list of all available repositories in the permanent storage, use:
@@ -55,4 +55,4 @@ To get a list of all available repositories in the permanent storage, use:
    :caption: List all repositories in permanent storage
    :name: docbuild-repo-list
 
-   $ docbuild repo list
+   docbuild repo list

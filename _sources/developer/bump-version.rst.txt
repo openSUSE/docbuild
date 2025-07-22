@@ -10,7 +10,7 @@ This project follows :term:`Semantic Versioning <SemVer>`. To bump the version, 
    :caption: Bumping the minor part
    :name: sh-bump-version
 
-   $ ./devel/bump-version.sh minor
+   ./devel/bump-version.sh minor
 
 This script automates the versioning process with the following actions:
 

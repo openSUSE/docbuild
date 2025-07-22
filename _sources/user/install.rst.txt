@@ -20,7 +20,7 @@ Preparing for Installation
 It is highly recommended to use the `package and project manager uv <https://docs.astral.sh/uv>`_ to install the docbuild tool. This ensures that all dependencies are managed correctly and that the installation is reproducible across different environments.
 
 There are different methods to install the :command:`uv` package manager
-(see `Installing uv <https://docs.astral.sh/uv/getting-started/installation/>`_.). In this case, use the standalone installer:
+(see `Installing uv <https://docs.astral.sh/uv/getting-started/installation/>`_). In this case, use the standalone installer:
 
 
 1. **Install uv**
@@ -29,7 +29,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ curl -sSfL https://astral.sh/uv/install.sh | sh
+      curl -sSfL https://astral.sh/uv/install.sh | sh
 
 
    This will install two commands :command:`uv` and :command:`uvx` in :file:`~/.local/bin/`. Make sure this directory is in your :envvar:`PATH` environment variable.
@@ -40,9 +40,9 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ type uv
+      type uv
       uv is hashed (/home/tux/.local/bin/uv)
-      $ uv --version
+      uv --version
       ...
 
    You should see the version of :command:`uv` printed in the terminal.
@@ -53,7 +53,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ uv python install 3.13
+      uv python install 3.13
 
    The previous command downloads Python 3.13 and install it in the directory :file:`~/.local/share/uv/python/<VERSION>`.
 
@@ -63,7 +63,7 @@ There are different methods to install the :command:`uv` package manager
 
    .. code-block:: shell-session
 
-      $ uv python list
+      uv python list
       cpython-3.14.0b1-linux-x86_64-gnu                 <download available>
       cpython-3.14.0b1+freethreaded-linux-x86_64-gnu    <download available>
       cpython-3.13.4-linux-x86_64-gnu                   /home/tux/.local/share/uv/python/cpython-3.13.4-linux-x86_64-gnu/bin/python3.13
@@ -83,8 +83,8 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ git clone https://github.com/openSUSE/docbuild.git
-      $ cd docbuild
+      git clone https://github.com/openSUSE/docbuild.git
+      cd docbuild
 
 2. **Create a virtual environment**
 
@@ -93,7 +93,7 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ uv venv --prompt "venv313" .venv
+      uv venv --prompt "venv313" .venv
 
    This will create a virtual environment in the directory `.venv`.
 
@@ -103,11 +103,12 @@ Installing the tool
 
    .. code-block:: shell-session
 
-      $ uv sync --frozen
+      uv sync --frozen
       Resolved 29 packages in 586ms
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
 
+   The `--frozen` flag is used here to ensure that `uv` installs dependencies exactly as specified in the `uv.lock` file. This is crucial for **reproducible builds** and maintaining a **consistent environment** across different machines or deployments, as it prevents `uv` from attempting to resolve and potentially update dependency versions.
 
 .. _get-xml-config:
 
@@ -119,4 +120,4 @@ Formerly known as the *Docserv XML configs*. These configuration files defines t
 The tool needs the XML configuration to build the documentation correctly. The XML configuration is not part of the docbuild tool itself, but it is required to run the tool.
 
 Clone the |gl_xmlconfig| to your machine where you can access it easily.
-As an alternative, use the RNC schema from :gh_tree:`src/docbuild/config/xml/data/` to create your own configuration.
+As an alternative, use the `RNC schema <https://www.oasis-open.org/committees/relax-ng/compact-20021121.html>_` from :gh_tree:`src/docbuild/config/xml/data/` to create your own configuration.

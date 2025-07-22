@@ -16,7 +16,7 @@ To build the changelog, make sure you have:
    .. code-block:: shell-session
       :caption: Build a combined changelog from news fragments
 
-      $ towncrier build [--yes]
+      towncrier build [--yes]
 
    After this command, the :file:`CHANGELOG.rst` file in the root directory is updated and all news fragments are removed from the directory :file:`changelog.d/`.
 

@@ -10,7 +10,7 @@ Follow these steps to set up VSCode for working with this project:
 
 #. Install Visual Studio Code
 
-   Download and install VSCode from the official website: https://code.visualstudio.com/
+   Download and install VSCode from the `official website <https://code.visualstudio.com/>`_.
 
 #. Install the recommended extensions
 

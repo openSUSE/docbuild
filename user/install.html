@@ -475,20 +475,20 @@
 <span id="prepare-installation"></span><h2>Preparing for Installation<a class="headerlink" href="#preparing-for-installation" title="Link to this heading">#</a></h2>
 <p>It is highly recommended to use the <a class="reference external" href="https://docs.astral.sh/uv">package and project manager uv</a> to install the docbuild tool. This ensures that all dependencies are managed correctly and that the installation is reproducible across different environments.</p>
 <p>There are different methods to install the <strong class="command">uv</strong> package manager
-(see <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">Installing uv</a>.). In this case, use the standalone installer:</p>
+(see <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">Installing uv</a>). In this case, use the standalone installer:</p>
 <ol class="arabic">
 <li><p><strong>Install uv</strong></p>
 <p>Run the following command in your terminal:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sSfL<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">curl -sSfL https://astral.sh/uv/install.sh | sh</span>
 </pre></div>
 </div>
 <p>This will install two commands <strong class="command">uv</strong> and <strong class="command">uvx</strong> in <code class="file docutils literal notranslate"><span class="pre">~/.local/bin/</span></code>. Make sure this directory is in your <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</p>
 </li>
 <li><p><strong>Check the installation</strong></p>
 <p>After the installation, verify that <strong class="command">uv</strong> is installed correctly by running:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">type</span><span class="w"> </span>uv
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">type uv</span>
 <span class="go">uv is hashed (/home/tux/.local/bin/uv)</span>
-<span class="gp">$ </span>uv<span class="w"> </span>--version
+<span class="go">uv --version</span>
 <span class="go">...</span>
 </pre></div>
 </div>
@@ -496,14 +496,14 @@
 </li>
 <li><p><strong>Install Python 3.12 or higher</strong></p>
 <p>As of the time of writing, the docbuild tool requires Python 3.12 or higher. Install the Python version using <strong class="command">uv</strong>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv python install 3.13</span>
 </pre></div>
 </div>
 <p>The previous command downloads Python 3.13 and install it in the directory <code class="file docutils literal notranslate"><span class="pre">~/.local/share/uv/python/&lt;VERSION&gt;</span></code>.</p>
 </li>
 <li><p><strong>Check the available Python versions</strong></p>
 <p>To see the installed Python versions, run:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>list
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv python list</span>
 <span class="go">cpython-3.14.0b1-linux-x86_64-gnu                 &lt;download available&gt;</span>
 <span class="go">cpython-3.14.0b1+freethreaded-linux-x86_64-gnu    &lt;download available&gt;</span>
 <span class="go">cpython-3.13.4-linux-x86_64-gnu                   /home/tux/.local/share/uv/python/cpython-3.13.4-linux-x86_64-gnu/bin/python3.13</span>
@@ -519,15 +519,15 @@
 <ol class="arabic">
 <li><p><strong>Clone the repository</strong></p>
 <p>Open your terminal and run the following command to clone the docbuild repository from GitHub:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/openSUSE/docbuild.git
-<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>docbuild
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/openSUSE/docbuild.git</span>
+<span class="go">cd docbuild</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Create a virtual environment</strong></p>
 <p>It is recommended to create a virtual environment to isolate the docbuild tool and its dependencies from your system Python environment.
 Run the following command:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;venv313&quot;</span><span class="w"> </span>.venv
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv venv --prompt &quot;venv313&quot; .venv</span>
 </pre></div>
 </div>
 <p>This will create a virtual environment in the directory <cite>.venv</cite>.</p>
@@ -536,12 +536,13 @@ Run the following command:</p>
 <ol class="arabic" start="4">
 <li><p><strong>Install dependencies</strong></p>
 <p>Ensure you have Python 3.12 or higher installed, then install the required dependencies using pip:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv sync --frozen</span>
 <span class="go">Resolved 29 packages in 586ms</span>
 <span class="go">Built docbuild @ file:///.../docbuild</span>
 <span class="go">Installed 15 packages in 2.11s</span>
 </pre></div>
 </div>
+<p>The <cite>–frozen</cite> flag is used here to ensure that <cite>uv</cite> installs dependencies exactly as specified in the <cite>uv.lock</cite> file. This is crucial for <strong>reproducible builds</strong> and maintaining a <strong>consistent environment</strong> across different machines or deployments, as it prevents <cite>uv</cite> from attempting to resolve and potentially update dependency versions.</p>
 </li>
 </ol>
 </section>
@@ -550,7 +551,7 @@ Run the following command:</p>
 <p>Formerly known as the <em>Docserv XML configs</em>. These configuration files defines the <a class="reference internal" href="../glossary.html#term-Product"><span class="xref std std-term">products</span></a>, their <a class="reference internal" href="../glossary.html#term-Docset"><span class="xref std std-term">releases</span></a>, their <a class="reference internal" href="../glossary.html#term-Lifecycle"><span class="xref std std-term">lifecycle</span></a> status and more.</p>
 <p>The tool needs the XML configuration to build the documentation correctly. The XML configuration is not part of the docbuild tool itself, but it is required to run the tool.</p>
 <p>Clone the <a class="reference external" href="https://gitlab.suse.de/susedoc/docserv-config">GL://susedoc/docserv-config</a> to your machine where you can access it easily.
-As an alternative, use the RNC schema from <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/src/docbuild/config/xml/data/">src/docbuild/config/xml/data/</a> to create your own configuration.</p>
+As an alternative, use the <cite>RNC schema &lt;https://www.oasis-open.org/committees/relax-ng/compact-20021121.html&gt;_</cite> from <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/src/docbuild/config/xml/data/">src/docbuild/config/xml/data/</a> to create your own configuration.</p>
 </section>
 </section>
 

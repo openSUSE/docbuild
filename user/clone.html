@@ -467,7 +467,7 @@
 <p>During the process of building documentation, the script clones Git repositores into the permanent storage directory as needed. In case you need to clone repositories manually, you can use the following commands:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Synopsis of <strong class="command">docbuild repo clone</strong></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REPO<span class="w"> </span><span class="o">[</span>REPO<span class="w"> </span>...<span class="o">]</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>REPO<span class="w"> </span><span class="o">[</span>REPO<span class="w"> </span>...<span class="o">]</span>
 </pre></div>
 </div>
 </div>
@@ -492,10 +492,10 @@
 <p>For example, to clone the <code class="docutils literal notranslate"><span class="pre">https://github.com/SUSE/doc-modular.git</span></code> repository, the following notations are equivalent:</p>
 <div class="literal-block-wrapper docutils container" id="docbuild-repo-clone">
 <div class="code-block-caption"><span class="caption-text">Example of cloning a repository</span><a class="headerlink" href="#docbuild-repo-clone" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>https://github.com/SUSE/doc-modular.git
-$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>gh://SUSE/doc-modular
-$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>gh://suse/doc-modular
-$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>SUSE/doc-modular
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>https://github.com/SUSE/doc-modular.git
+docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>gh://SUSE/doc-modular
+docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>gh://suse/doc-modular
+docbuild<span class="w"> </span>repo<span class="w"> </span>clone<span class="w"> </span>SUSE/doc-modular
 </pre></div>
 </div>
 </div>
@@ -503,7 +503,7 @@ $<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </
 You can find the exact path by running:</p>
 <div class="literal-block-wrapper docutils container" id="docbuild-repo-dir">
 <div class="code-block-caption"><span class="caption-text">Find the permanent storage directory</span><a class="headerlink" href="#docbuild-repo-dir" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>dir
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>repo<span class="w"> </span>dir
 /var/cache/docbuild/repos/permanent-full/
 </pre></div>
 </div>
@@ -511,7 +511,7 @@ You can find the exact path by running:</p>
 <p>To get a list of all available repositories in the permanent storage, use:</p>
 <div class="literal-block-wrapper docutils container" id="docbuild-repo-list">
 <div class="code-block-caption"><span class="caption-text">List all repositories in permanent storage</span><a class="headerlink" href="#docbuild-repo-list" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docbuild<span class="w"> </span>repo<span class="w"> </span>list
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>repo<span class="w"> </span>list
 </pre></div>
 </div>
 </div>

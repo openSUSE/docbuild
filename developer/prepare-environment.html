@@ -546,7 +546,7 @@ in the <code class="file docutils literal notranslate"><span class="pre">.ipytho
 <p>It is recommended to enable the aliases in your shell by sourcing the shell script from the root directory of the project:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">source devel/activate-aliases.sh</span>
 </pre></div>
 </div>
 </div>
@@ -582,7 +582,7 @@ for each file type.</p>
 <li><p>If you haven’t created a virtual environment, do so:</p>
 <div class="literal-block-wrapper docutils container" id="uv-venv">
 <div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv venv --prompt venv313 --python 3.13 .venv</span>
 </pre></div>
 </div>
 </div>
@@ -593,7 +593,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
 <div class="literal-block-wrapper docutils container" id="uv-sync-devel">
 <div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen<span class="w"> </span>--group<span class="w"> </span>devel
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv sync --frozen --group devel</span>
 </pre></div>
 </div>
 </div>
@@ -602,7 +602,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
 <div class="literal-block-wrapper docutils container" id="activate-aliases">
 <div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">source devel/activate-aliases.sh</span>
 </pre></div>
 </div>
 </div>
@@ -617,7 +617,7 @@ build SUSE product documentation. These files, which define all products,
 docsets, and their deliverables, are managed in the <code class="docutils literal notranslate"><span class="pre">susedoc/docserv-config</span></code>
 repository.</p>
 <p>To get started, clone this repository to your local machine (you need VPN access):</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://gitlab.suse.de/susedoc/docserv-config.git</span>
 </pre></div>
 </div>
 <p>You will later need to point <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> to the location of this cloned

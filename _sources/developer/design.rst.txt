@@ -112,7 +112,7 @@ The project follows a modular design structure, with the following main componen
 
 * **Documentation directory**: The documentation is stored in the :file:`docs` directory, which contains the Sphinx documentation source files.
 
-* **Changelog**: The project maintains a :file:`CHANGELOG.rst` file, which documents the changes made in each version of the project. The changelog is automatically generated using the towncrier tool. It uses the :file:`changelog.d` directory to store individual change files.
+* **Changelog**: The project maintains a :file:`CHANGELOG.rst` file, which documents the changes made in each version of the project. The changelog is automatically generated using the `towncrier <https://towncrier.readthedocs.io/en/stable/>`_ tool. It uses the :file:`changelog.d` directory to store individual change files.
 
 
 

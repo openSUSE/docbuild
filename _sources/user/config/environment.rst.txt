@@ -10,7 +10,7 @@ If you want to override the default, use the ``--env-config`` option to specify 
 .. code-block:: shell-session
    :caption: Showing env configuration content
 
-   $ docbuild --env-config env.develop.toml config env
+   docbuild --env-config env.develop.toml config env
    # ENV Config file '/home/tux/repos/GH/opensuse/docbuild/env.production.toml'
    [ ... content ...]
 

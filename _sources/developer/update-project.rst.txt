@@ -13,5 +13,5 @@ In some cases, it may be helpful to manually update the project.
    :caption: Updating the project
    :name: uv-pip-update-project
 
-   $ uv pip install --upgrade -e .
+   uv pip install --upgrade -e .
 
