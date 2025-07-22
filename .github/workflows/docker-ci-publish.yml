@@ -27,17 +27,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase repository name
+        id: repo
+        run: echo "repo=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
       - name: Build Docker image
+        env:
+          DOCKER_BUILDKIT: 1
         run: |
-          docker build -f ci/Dockerfile -t ghcr.io/${{ github.repository }}/daps:${{ github.sha }} .
+          docker build -f ci/Dockerfile -t ghcr.io/${{ steps.repo.outputs.repo }}/daps:${{ github.sha }} .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository }}/daps:${{ github.sha }}
+          docker push ghcr.io/${{ steps.repo.outputs.repo }}/daps:${{ github.sha }}
 
       # (Optional) Tag as latest if on main
       - name: Tag latest image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker tag ghcr.io/${{ github.repository }}/daps:${{ github.sha }} ghcr.io/${{ github.repository }}/daps:latest
-          docker push ghcr.io/${{ github.repository }}/daps:latest
+          docker tag ghcr.io/${{ steps.repo.outputs.repo }}/daps:${{ github.sha }} ghcr.io/${{ steps.repo.outputs.repo }}/daps:latest
+          docker push ghcr.io/${{ steps.repo.outputs.repo }}/daps:latest

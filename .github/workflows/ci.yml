@@ -16,6 +16,7 @@ concurrency:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   test:
@@ -23,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
+      # image: ghcr.io/opensuse/docbuild/daps:latest
 
     steps:
       - name: Checkout repository
