@@ -108,6 +108,7 @@ Installing the tool
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
 
+   The `--frozen` flag is used here to ensure that `uv` installs dependencies exactly as specified in the `uv.lock` file. This is crucial for **reproducible builds** and maintaining a **consistent environment** across different machines or deployments, as it prevents `uv` from attempting to resolve and potentially update dependency versions.
 
 .. _get-xml-config:
 
