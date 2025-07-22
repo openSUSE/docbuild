@@ -27,7 +27,7 @@ All of the above points (except for the last one) are defined in the :file:`pypr
 Operating System
 ----------------
 
-The code is developed on openSUSE, but should work on any Linux distribution.
+The code is developed on `openSUSE <https://www.opensuse.org/>`_, but should work on any Linux distribution.
 The project will support MacOS too. It's currently not planned to support Windows.
 
 
@@ -41,7 +41,7 @@ The project will support MacOS too. It's currently not planned to support Window
 Python
 ------
 
-The minimal Python version is defined in the :file:`pyproject.toml` file. It's strongly recommended to have the Python versions managed by |uv|.
+The minimal Python version is defined in the :file:`pyproject.toml` file. It is strongly recommended to have the Python versions managed by |uv|.
 
 
 Editor
@@ -53,8 +53,8 @@ You can use any editor you like. Rudimentary support is available for `VSCode <h
 External tools
 --------------
 
-* |daps|: our tool to build documentation. This is an obligatory requirement. This adds other dependencies.
-* |uv|, the Python package manager. This is explained in :ref:`devel-helpers`.
-* :command:`make` is used to build the documentation.
-* :command:`jing`: for validation the XML configuration files.
-* :command:`gh`: optional tool for interacting with GitHub, see :ref:`github-cli`.
+* |daps|: Our tool to build documentation. This is an obligatory requirement. This adds other dependencies.
+* |uv|: The Python package and project manager. This is explained in :ref:`devel-helpers`.
+* :command:`make`: Used to orchestrate the documentation build process.
+* `jing <https://jing.nu/>`: For validating the XML configuration files against their RNC schema.
+* `gh <https://cli.github.com/>`: The GitHub CLI, an optional tool for GitHub interactions. See :ref:`github-cli`.
