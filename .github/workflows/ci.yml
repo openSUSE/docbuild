@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'tests/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,13 +21,33 @@ jobs:
   test:
     name: python
     runs-on: ubuntu-latest
+    container:
+      image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install tools
-        run: sudo apt-get update && sudo apt-get install -y jing libxml2-utils xsltproc
+      - name: Get dependencies
+        run: |
+          rpm -q daps \
+            suse-xsl-stylesheets \
+            suse-xsl-stylesheets-sbp \
+            geekodoc \
+            docbook-xsl-stylesheets \
+            docbook-xsl-ns \
+            xmlgraphics-fop \
+            git \
+            ditaa \
+            libreoffice-draw \
+            novdoc \
+            ruby2.5-rubygem-asciidoctor \
+            curl \
+            tar \
+            w3m \
+            jq \
+            rsvg-convert \
+            openssh-clients || true
 
       - name: Install the latest version of uv
         id: setup-uv
