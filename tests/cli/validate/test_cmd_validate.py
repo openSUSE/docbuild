@@ -5,6 +5,7 @@ from os import PathLike
 from pathlib import Path
 import tempfile
 from unittest.mock import AsyncMock, Mock, patch
+import subprocess
 
 import pytest
 
@@ -102,11 +103,15 @@ class TestProcessValidation:
     @pytest.fixture
     def invalid_xml_file(self):
         """Create a temporary invalid XML file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
-            f.write('<?xml version="1.0"?><root><unclosed-tag></root>')
-            f.flush()
-            yield Path(f.name)
-        Path(f.name).unlink(missing_ok=True)
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode='w', suffix='.xml', delete=False
+            ) as f:
+                f.write('<?xml version="1.0"?><root><unclosed-tag></root>')
+                f.flush()
+                yield Path(f.name)
+        finally:
+            Path(f.name).unlink(missing_ok=True)
 
     async def test_process_no_envconfig(self):
         """Test process raises ValueError when no envconfig."""
@@ -160,7 +165,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_registry, mock_context, valid_xml_file: PathLike
     ):
         """Test processing when a check raises an exception."""
-        mock_validate_rng.return_value = (True, '')
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         # Create a mock check that raises an exception
         mock_check = Mock()
         mock_check.__name__ = 'failing_check'
@@ -177,7 +184,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_registry, mock_context, valid_xml_file
     ):
         """Test processing with successful checks returns 0."""
-        mock_validate_rng.return_value = (True, '')
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         # Create a mock check that succeeds
         mock_check = Mock()
         mock_check.__name__ = 'passing_check'
@@ -194,7 +203,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_registry, mock_context, valid_xml_file
     ):
         """Test processing with failed checks returns 1."""
-        mock_validate_rng.return_value = (True, '')
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         # Create a mock check that fails
         mock_check = Mock()
         mock_check.__name__ = 'failing_check'
@@ -210,7 +221,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_context, valid_xml_file
     ):
         """Test that shortname is generated correctly for display."""
-        mock_validate_rng.return_value = (True, '')
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         with patch.object(process_mod, 'registry') as mock_registry:
             mock_registry.registry = []
 
@@ -225,7 +238,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_context, valid_xml_file
     ):
         """Test that processing multiple files works with an iterator."""
-        mock_validate_rng.return_value = (True, '')
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         with patch.object(process_mod, 'registry') as mock_registry:
             mock_registry.registry = []
 
@@ -240,8 +255,9 @@ class TestProcessValidation:
         self, mock_validate_rng, mock_context, tmp_path, capsys
     ):
         """Test `process` fails if stitch validation finds duplicate product IDs."""
-        mock_validate_rng.return_value = (True, '')
-
+        mock_validate_rng.return_value = subprocess.CompletedProcess(
+            args=['jing'], returncode=0, stdout='', stderr=''
+        )
         file1: Path = tmp_path / 'file1.xml'
         file1.write_text('<product productid="sles"><docset setid="15-sp4"/></product>')
         file2: Path = tmp_path / 'file2.xml'
