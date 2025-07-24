@@ -33,6 +33,11 @@ For Python specific terms, look into:
 
       See also :term:`Asynchronous Programming`
 
+   CI/CD
+     A set of automated practices for integrating code changes, testing, and deploying software quickly and reliably.
+
+     See also :term:`GitHub Action`
+
    Changelog
       A record of all notable changes made in a project.
 
@@ -53,7 +58,7 @@ For Python specific terms, look into:
       The *DAPS Configuration File* (DC file) is a configuration file used by DAPS to define parameters for building documentation. For example, it contains information about the entry file, what stylesheets to use, and other build options.
 
    Deliverable
-      The smallest unit of documentation that can be built. It's mapped to a DC File. A deliverable is usually being built in different formats. 
+      The smallest unit of documentation that can be built. It's mapped to a DC File. A deliverable is usually being built in different formats.
 
    DocBook
       A semantic markup language based on :term:`XML` used for writing
@@ -76,6 +81,11 @@ For Python specific terms, look into:
       A mutex (a lock) in the standard CPython interpreter that ensures only one thread can execute Python bytecode at any given time within a single process. This lock effectively prevents multi-threaded, CPU-bound Python programs from achieving true parallelism on multi-core processors, as only one thread can run on one core at a time.
 
       See also :term:`Mutex`.
+
+   GitHub Action
+      Is a GitHub feature that enables automation of workflows such as building, testing, and deploying code directly from a repository using configurable YAML files.
+
+      See also :term:`CI/CD`
 
    IPython
       An interactive command-line interface for Python that enhances
