@@ -1,5 +1,6 @@
 # Version control
 .git
+.github/
 .gitignore
 
 # Dependencies & build artifacts
@@ -12,6 +13,26 @@ build
 *.pyd
 
 # Development files
+.cache
+.config.toml
+.config
+.coverage
+.coveragerc
+ci/
+devel/
+Dockerfile*
+.dockerignore
+.editorconfig
+env.*.toml
+etc/
+.ipython/
+LICENSE
+.pytest_cache
+.pytest.ini
+.python-Version
+.ruff_cache
+.ruff.toml
+towncrier.toml
 contrib/
 tmp/
 .env
@@ -19,7 +40,9 @@ tmp/
 *.log
 coverage
 .venv
-
+.venv-*
+*.patch
+*.diff
 
 # IDE files
 .vscode
