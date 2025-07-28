@@ -1,6 +1,7 @@
 """Main CLI tool for document operations."""
 
 from pathlib import Path
+import sys
 
 import click
 
@@ -18,13 +19,16 @@ from ..constants import (
 from ..logging import setup_logging
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_config import config
 from .cmd_metadata import metadata
 from .cmd_repo import repo
 from .cmd_validate import validate
-from .cmd_config import config
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 
+PYTHON_VERSION = (
+    f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
+)
 
 @click.group(
     name=APP_NAME,
@@ -34,8 +38,9 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 )
 @click.version_option(
     __version__,
-    # package_name=,
-    prog_name=__package__,
+    # package_name=__package__,
+    prog_name=APP_NAME,
+    message=f"%(prog)s, version %(version)s running Python {PYTHON_VERSION}",
 )
 @click.option('-v', '--verbose', count=True, help='Increase verbosity')
 @click.option('--dry-run', is_flag=True, help='Run without making changes')
