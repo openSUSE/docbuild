@@ -50,7 +50,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Updating a specific package" href="update-package.html" />
-    <link rel="prev" title="Developing the Project" href="develop-project.html" />
+    <link rel="prev" title="Create Pull Requests" href="create-pullrequests.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -399,6 +399,7 @@
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install-vscode.html">Installing Visual Studio Code Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-pullrequests.html">Create Pull Requests</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
@@ -475,8 +476,10 @@
                 <article class="bd-article">
                   
   <section id="running-the-test-suite">
-<h1>Running the Test Suite<a class="headerlink" href="#running-the-test-suite" title="Link to this heading">#</a></h1>
+<span id="run-testsuite"></span><h1>Running the Test Suite<a class="headerlink" href="#running-the-test-suite" title="Link to this heading">#</a></h1>
 <p>To run the test suite for this project, you need to have completed the setup of your development environment as described in the <a class="reference internal" href="prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a> topic.</p>
+<section id="running-the-full-test-suite">
+<h2>Running the full test suite<a class="headerlink" href="#running-the-full-test-suite" title="Link to this heading">#</a></h2>
 <p>To run the full test suite, use the following command:</p>
 <div class="literal-block-wrapper docutils container" id="running-pytest-with-uv">
 <div class="code-block-caption"><span class="caption-text">Running pytest directly with <strong class="command">uv</strong></span><a class="headerlink" href="#running-pytest-with-uv" title="Link to this code">#</a></div>
@@ -492,15 +495,21 @@
 </div>
 </div>
 <p>This command will execute all the tests defined in the project. The test suite is designed to ensure that all components of the project are functioning correctly and to catch any regressions.</p>
+</section>
+<section id="running-specific-tests">
+<h2>Running specific tests<a class="headerlink" href="#running-specific-tests" title="Link to this heading">#</a></h2>
 <p>In case you want to run a specific test or a subset of tests, specify the path to the test file or the test function. For example:</p>
-<div class="literal-block-wrapper docutils container" id="running-specific-tests">
-<div class="code-block-caption"><span class="caption-text">Running specific tests</span><a class="headerlink" href="#running-specific-tests" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Running specific tests</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">upytest tests/test_module.py</span>
 <span class="go">upytest tests/test_module.py::test_function_name</span>
 </pre></div>
 </div>
 </div>
 <p>In the first example, all tests in <cite>test_module.py</cite> will be executed, while in the second example, only the specific test function <cite>test_function_name</cite> will be run.</p>
+</section>
+<section id="running-failed-tests-only">
+<h2>Running failed tests only<a class="headerlink" href="#running-failed-tests-only" title="Link to this heading">#</a></h2>
 <p>If one of the test fails and you want to repeat the test run after you have fixed the issue, use the <code class="docutils literal notranslate"><span class="pre">--lf</span></code>/<code class="docutils literal notranslate"><span class="pre">--last-failed</span></code> option. For example:</p>
 <div class="literal-block-wrapper docutils container" id="running-last-failed-tests">
 <div class="code-block-caption"><span class="caption-text">Running only the last failed tests</span><a class="headerlink" href="#running-last-failed-tests" title="Link to this code">#</a></div>
@@ -508,6 +517,27 @@
 </pre></div>
 </div>
 </div>
+</section>
+<section id="interpreting-coverage">
+<span id="interprete-coverage"></span><h2>Interpreting coverage<a class="headerlink" href="#interpreting-coverage" title="Link to this heading">#</a></h2>
+<p>Coverage is a measure of how much of your code is executed during the tests. The coverage report is only generated when all tests pass.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Coverate report</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[...]
+src/docbuild/cli/cmd_validate/process.py  142      3     42      2  97.3%   217-&gt;219, 299-303
+[...]
+src/docbuild/utils/doc.py                  20      0      0      0 100.0%
+src/docbuild/utils/merge.py                74      0     34      0 100.0%
+src/docbuild/utils/paths.py                13      0      6      0 100.0%
+--------------------------------------------------------------------------
+TOTAL                                    1866     23    478      6  98.6%
+</pre></div>
+</div>
+</div>
+<p>If you look through the report, you will see which lines are not covered by tests indicated by a test coverage lower than 100%. The numbers in the report indicate the line numbers where the code is not executed during the tests.</p>
+<p>In this example, the coverage report shows that 98.6% of the code is covered by tests. The file <code class="file docutils literal notranslate"><span class="pre">src/docbuild/cli/cmd_validate/process.py</span></code> has a coverage of 97.3%, meaning that some lines in this file are not executed during the tests. These lines are indicated by the numbers in the report, such as <code class="docutils literal notranslate"><span class="pre">217-&gt;219</span></code> and <code class="docutils literal notranslate"><span class="pre">299-303</span></code>.</p>
+<p>Depending on your code, you might want to improve the test coverage by adding more tests for the uncovered lines. This will help ensure that your code is thoroughly tested and behaves as expected.</p>
+</section>
 </section>
 
 
@@ -521,12 +551,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="develop-project.html"
+       href="create-pullrequests.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Developing the Project</p>
+        <p class="prev-next-title">Create Pull Requests</p>
       </div>
     </a>
     <a class="right-next"
@@ -548,6 +578,21 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-full-test-suite">Running the full test suite</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-specific-tests">Running specific tests</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-failed-tests-only">Running failed tests only</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpreting-coverage">Interpreting coverage</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

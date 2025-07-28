@@ -18,6 +18,7 @@ This guide provides all the necessary information for contributing to the projec
    prepare-environment
    install-vscode
    develop-project
+   create-pullrequests
    run-testsuite
    update-package
    bump-version
@@ -26,7 +27,7 @@ This guide provides all the necessary information for contributing to the projec
    build-changelog
    create-release
    trigger-actions
-   
+
    build-docs
    howto
 

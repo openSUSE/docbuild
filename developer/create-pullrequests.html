@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Howto &#8212; docbuild 0.12.0 documentation</title>
+    <title>Create Pull Requests &#8212; docbuild 0.12.0 documentation</title>
   
   
   
@@ -46,11 +46,11 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/howto';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/create-pullrequests';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Knowning the Tools Config Files" href="know-tools-config.html" />
-    <link rel="prev" title="Building Documentation" href="build-docs.html" />
+    <link rel="next" title="Running the Test Suite" href="run-testsuite.html" />
+    <link rel="prev" title="Developing the Project" href="develop-project.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -399,7 +399,7 @@
 <li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install-vscode.html">Installing Visual Studio Code Editor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="create-pullrequests.html">Create Pull Requests</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Create Pull Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a specific package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
@@ -409,7 +409,7 @@
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Howto</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul class="nav bd-sidenav">
@@ -458,7 +458,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Howto</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Create Pull Requests</span></li>
   </ul>
 </nav>
 </div>
@@ -475,30 +475,43 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="howto">
-<h1>Howto<a class="headerlink" href="#howto" title="Link to this heading">#</a></h1>
-<p>This section contains various how-to instructions for developers working with the project.</p>
-<section id="adding-or-removing-a-new-product">
-<h2>Adding or removing a new product<a class="headerlink" href="#adding-or-removing-a-new-product" title="Link to this heading">#</a></h2>
-<p>Product names are checked against typos. Whenever you change a product acronym,
-you need to update the constant <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.VALID_PRODUCTS" title="docbuild.constants.VALID_PRODUCTS"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.VALID_PRODUCTS</span></code></a>.</p>
-</section>
-<section id="changing-the-language-set">
-<h2>Changing the language set<a class="headerlink" href="#changing-the-language-set" title="Link to this heading">#</a></h2>
-<p>When you want to add or remove a language, adjust the constant <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ALLOWED_LANGUAGES" title="docbuild.constants.ALLOWED_LANGUAGES"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.ALLOWED_LANGUAGES</span></code></a>.</p>
-</section>
-<section id="changing-the-lifecycle-set">
-<h2>Changing the lifecycle set<a class="headerlink" href="#changing-the-lifecycle-set" title="Link to this heading">#</a></h2>
-<p>When you want to add or remove a lifecycle, adjust the constant <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ALLOWED_LIFECYCLES" title="docbuild.constants.ALLOWED_LIFECYCLES"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.ALLOWED_LIFECYCLES</span></code></a>.</p>
-</section>
-<section id="changing-the-app-s-config-paths">
-<h2>Changing the app’s config paths<a class="headerlink" href="#changing-the-app-s-config-paths" title="Link to this heading">#</a></h2>
-<p>When you want to change the default paths where the app looks for its configuration files, adjust the constant <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.CONFIG_PATHS" title="docbuild.constants.CONFIG_PATHS"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.CONFIG_PATHS</span></code></a>.</p>
-</section>
-<section id="changing-the-app-s-config-file-names">
-<h2>Changing the app’s config file names<a class="headerlink" href="#changing-the-app-s-config-file-names" title="Link to this heading">#</a></h2>
-<p>When you want to change the default names of the app’s configuration files, adjust the constant <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.APP_CONFIG_BASENAMES" title="docbuild.constants.APP_CONFIG_BASENAMES"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.APP_CONFIG_BASENAMES</span></code></a>, <a class="reference internal" href="../reference/_autoapi/docbuild/constants/index.html#docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES" title="docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES"><code class="xref py py-data docutils literal notranslate"><span class="pre">docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES</span></code></a>, or both.</p>
-</section>
+  <section id="create-pull-requests">
+<span id="create-prs"></span><h1>Create Pull Requests<a class="headerlink" href="#create-pull-requests" title="Link to this heading">#</a></h1>
+<p>This section outlines the steps for creating pull requests (PRs) for this project.</p>
+<p>It is assumed that you already cloned or forked this repostitory and have a working development environment set up.</p>
+<p>Follow these steps to create a pull request:</p>
+<ol class="arabic">
+<li><p>On the GitHub project, find a bug or feature you want to work on.</p></li>
+<li><p>In your local repository, create a new branch for your changes.</p>
+<p>It’s recommended to use the issue number and a descriptive name for the branch that reflects the changes you plan to make.</p>
+</li>
+<li><p>Make your changes in the codebase.</p>
+<ul class="simple">
+<li><p>Ensure that you <a class="reference internal" href="run-testsuite.html#run-testsuite"><span class="std std-ref">run the test suite</span></a>.</p></li>
+<li><p>Watch for the <a class="reference internal" href="run-testsuite.html#interprete-coverage"><span class="std std-ref">coverage report</span></a> and try to keep the coverage high.</p></li>
+<li><p>Enhance the documentation if it’s a user-facing change.</p></li>
+</ul>
+</li>
+<li><p>Commit your changes with a clear and concise commit message.</p>
+<ul class="simple">
+<li><p>Include the issue number if applicable and add phrases like <code class="docutils literal notranslate"><span class="pre">Fixes</span> <span class="pre">#123</span></code>.</p></li>
+<li><p>It’s enough to have a high-level description of the changes.</p></li>
+<li><p>The message should explain <em>why</em> these changes were necessary.</p></li>
+</ul>
+</li>
+<li><p>Push your changes and create a pull request On GitHub. GitHub creates a pull request number for you.</p></li>
+<li><p>If useful, <a class="reference internal" href="add-newsfragments.html#add-newsfragments"><span class="std std-ref">create a news fragment</span></a> of your changes.</p>
+<p>This is important for the changelog generation. Push the news fragment to the same branch as your changes.</p>
+</li>
+<li><p>On GitHub, request a review.</p></li>
+<li><p>Address any feedback from the review.</p>
+<ul class="simple">
+<li><p>Make additional commits to your branch as needed.</p></li>
+<li><p>Ensure that the test suite passes after your changes.</p></li>
+</ul>
+</li>
+<li><p>Once the review is complete and all tests pass, squash merge your branch into the main branch.</p></li>
+</ol>
 </section>
 
 
@@ -512,20 +525,20 @@ you need to update the constant <a class="reference internal" href="../reference
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="build-docs.html"
+       href="develop-project.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Building Documentation</p>
+        <p class="prev-next-title">Developing the Project</p>
       </div>
     </a>
     <a class="right-next"
-       href="know-tools-config.html"
+       href="run-testsuite.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Knowning the Tools Config Files</p>
+        <p class="prev-next-title">Running the Test Suite</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -541,26 +554,10 @@ you need to update the constant <a class="reference internal" href="../reference
 
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-or-removing-a-new-product">Adding or removing a new product</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-the-language-set">Changing the language set</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-the-lifecycle-set">Changing the lifecycle set</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-the-app-s-config-paths">Changing the app’s config paths</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-the-app-s-config-file-names">Changing the app’s config file names</a></li>
-</ul>
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/howto.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/create-pullrequests.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -576,7 +573,7 @@ you need to update the constant <a class="reference internal" href="../reference
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/howto.rst.txt"
+      <li><a href="../_sources/developer/create-pullrequests.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
