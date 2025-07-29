@@ -20,6 +20,38 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.13.0
+==============
+
+Improved Documentation
+----------------------
+
+- Add instructions how to install VSCode editor (:gh:`56`)
+- Clarify some steps when creating a release. (:gh:`59`)
+- Improve documentation clarity and usability:
+
+  * Update external links for ``uv``, ``towncrier``, ``reStructuredText``, Sphinx, ``jing``, and RNC schema to official resources.
+  * Remove ``$`` prefixes from shell command examples for easier copy-pasting.
+  * Add a brief explanation for the ``--frozen`` flag usage with :command:`uv sync`.
+  * Enhance descriptions and links in the "External tools" section. (:gh:`62`)
+- Add new glossary terms (:gh:`68`)
+- Add new topic about creating pull requests (:gh:`71`)
+
+
+Infrastructure
+--------------
+
+- Use openSUSE image for GH Action (:gh:`65`)
+- Fix docker build/push with lowercase GH repo (:gh:`66`)
+
+
+Code Refactoring
+----------------
+
+- Rename ``docbuild.cli.config`` -> ``docbuild.cli.cmd_config`` to
+  make it consistent with other CLI commands. (:gh:`57`)
+
+
 Version 0.12.0
 ==============
 

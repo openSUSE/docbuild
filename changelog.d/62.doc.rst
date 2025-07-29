@@ -1,6 +1,0 @@
-Improved documentation clarity and usability:
-
-* Updated external links for ``uv``, ``towncrier``, ``reStructuredText``, Sphinx, ``jing``, and RNC schema to official resources.
-* Removed ``$`` prefixes from shell command examples for easier copy-pasting.
-* Added a brief explanation for the ``--frozen`` flag usage with :command:`uv sync`.
-* Enhanced descriptions and added links in the "External tools" section.

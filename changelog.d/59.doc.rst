@@ -1,1 +1,0 @@
-Clarify some steps when creating a release.
