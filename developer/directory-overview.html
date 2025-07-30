@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Knowning the Tools Config Files &#8212; docbuild 0.12.0 documentation</title>
+    <title>Project Overview &#8212; docbuild 0.13.0 documentation</title>
   
   
   
@@ -41,16 +41,16 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=61ccb1f1"></script>
+    <script src="../_static/documentation_options.js?v=1019fba8"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/know-tools-config';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/directory-overview';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Knowing GitHub Project Setup" href="knowing-github-setup.html" />
-    <link rel="prev" title="Howto" href="howto.html" />
+    <link rel="next" title="Project Dependencies" href="project-dependencies.html" />
+    <link rel="prev" title="Design" href="design.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -389,9 +389,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Project Overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
 <ul class="nav bd-sidenav">
@@ -412,8 +413,7 @@
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Knowning the Tools Config Files</a></li>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
 </ul>
 </div>
@@ -458,7 +458,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Knowning the Tools Config Files</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Project Overview</span></li>
   </ul>
 </nav>
 </div>
@@ -475,43 +475,91 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="knowning-the-tools-config-files">
-<span id="know-tools-config"></span><h1>Knowning the Tools Config Files<a class="headerlink" href="#knowning-the-tools-config-files" title="Link to this heading">#</a></h1>
-<p>This project uses several configuration files to manage its settings. While it
-is possible to consolidate many tool settings into the <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
-file, this project intentionally keeps most configurations in separate,
-dedicated files. This approach promotes clarity and modularity, making it
-easier to understand and manage the settings for each specific tool.</p>
-<ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">.gitignore</span></code>
-This file tells Git which files and directories to ignore.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
-This is the central configuration file for the project, based on <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0621/"><strong>PEP 621</strong></a>. It
-primarily defines project metadata (like name, version, and dependencies) and
-build system requirements for the <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> build backend.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">.pytest.ini</span></code>
-This file contains configuration for the <a class="reference internal" href="../glossary.html#term-Pytest"><span class="xref std std-term">Pytest</span></a> testing framework. It
-specifies options such as test paths, Python path for imports, and default
-command-line arguments for running tests, including coverage analysis and
-doctest settings.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">.ruff.toml</span></code>
-This file configures the Ruff linter and formatter. It defines the
-target Python version, line length, which linting rules to enable or
-disable, and any per-file rule overrides.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">towncrier.toml</span></code>
-This file configures Towncrier, the tool used to generate the project’s
-<a class="reference internal" href="../glossary.html#term-Changelog"><span class="xref std std-term">Changelog</span></a>. It specifies the location of news fragments, the
-changelog file itself, and the different types of changes.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">uv.toml</span></code>
-This file provides project-specific configuration for the <strong class="command">uv</strong> package
-manager.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">.vscode/</span></code>
-This directory contains workspace-specific settings for Visual Studio Code.
-It can include recommended extensions (<code class="file docutils literal notranslate"><span class="pre">extensions.json</span></code>), debug
-configurations (<code class="file docutils literal notranslate"><span class="pre">launch.json</span></code>), and shared workspace settings
-(<code class="file docutils literal notranslate"><span class="pre">settings.json</span></code>) to ensure a consistent development experience for
-all contributors using this editor.</p></li>
+  <section id="project-overview">
+<span id="dir-overview"></span><h1>Project Overview<a class="headerlink" href="#project-overview" title="Link to this heading">#</a></h1>
+<p>This project is organized into several key directories and files that serve specific purposes. Understanding the structure of the project is essential for effective development and contribution.</p>
+<section id="directory-structure">
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">#</a></h2>
+<p>The repository of this project contains the following directories:</p>
+<ul>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.github/</span></code></p>
+<p>Contains GitHub-specific files, such as issue templates and workflows.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.ipython/</span></code></p>
+<p>Contains IPython configuration files, which are used for interactive development.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.vscode/</span></code></p>
+<p>Contains Visual Studio Code configuration files, including settings and extensions specific to the project.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code></p>
+<p>Contains directories for <a class="reference internal" href="add-newsfragments.html#add-newsfragments"><span class="std std-ref">news fragments</span></a> that are used to generate the <a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">changelog</span></a>.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">devel/</span></code></p>
+<p>Contains development-related files, including scripts and configurations for setting up the <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">development environment</span></a>.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">docs/</span></code></p>
+<p>Contains the documentation for the project, including guides for developers and users.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">etc/</span></code></p>
+<p>Contains configuration files for the project.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">src/</span></code></p>
+<p>Contains the source code of the project, organized into modules and packages.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">tests/</span></code></p>
+<p>Contains <a class="reference internal" href="run-testsuite.html#run-testsuite"><span class="std std-ref">unit tests</span></a> for the project.</p>
+</li>
 </ul>
+</section>
+<section id="file-structure">
+<h2>File Structure<a class="headerlink" href="#file-structure" title="Link to this heading">#</a></h2>
+<p>The repository also contains several important files:</p>
+<ul>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.coveragerc</span></code></p>
+<p>Configuration file for the coverage tool, which is used to measure <a class="reference internal" href="run-testsuite.html#interprete-coverage"><span class="std std-ref">code coverage</span></a> during testing.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.dockerignore</span></code></p>
+<p>Specifies files and directories that should be ignored by Docker when building images.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.editorconfig</span></code></p>
+<p>Configuration file for code editors to maintain consistent coding styles across different editors.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.gitignore</span></code></p>
+<p>Specifies files and directories that should be ignored by Git.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.pytest.ini</span></code></p>
+<p>Configuration file for the <a class="reference internal" href="../glossary.html#term-Pytest"><span class="xref std std-term">Pytest</span></a> testing framework, which is used for <a class="reference internal" href="run-testsuite.html#run-testsuite"><span class="std std-ref">running tests</span></a>.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.ruff.toml</span></code></p>
+<p>Configuration file for Ruff, a linter and formatter for Python code.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code></p>
+<p>The main changelog file, which is generated from the news fragments in <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code>.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">Dockerfile</span></code></p>
+<p>The Dockerfile used to build the Docker image for the project.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">LICENSE</span></code></p>
+<p>The license file for the project, specifying the terms under which the code can be used and distributed.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code></p>
+<p>The main configuration file for the project based on <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0621/"><strong>PEP 621</strong></a>.
+It contains metadata about the project, specifies dependencies, build system requirements, and other project metadata.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">README.rst</span></code></p>
+<p>The main README file for the project.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">towncrier.toml</span></code></p>
+<p>Configuration file for Towncrier, the tool used to <a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">generate the changelog</span></a> from news fragments.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">uv.lock</span></code></p>
+<p>A lock file generated by the package manager, which specifies the exact versions of dependencies used in the project.</p>
+</li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">uv.toml</span></code></p>
+<p>Configuration file for the package manager, specifying project dependencies and settings.</p>
+</li>
+</ul>
+</section>
 </section>
 
 
@@ -525,20 +573,20 @@ all contributors using this editor.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="howto.html"
+       href="design.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Howto</p>
+        <p class="prev-next-title">Design</p>
       </div>
     </a>
     <a class="right-next"
-       href="knowing-github-setup.html"
+       href="project-dependencies.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Knowing GitHub Project Setup</p>
+        <p class="prev-next-title">Project Dependencies</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -554,10 +602,23 @@ all contributors using this editor.</p></li>
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-structure">Directory Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-structure">File Structure</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/know-tools-config.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/directory-overview.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -573,7 +634,7 @@ all contributors using this editor.</p></li>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/developer/know-tools-config.rst.txt"
+      <li><a href="../_sources/developer/directory-overview.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

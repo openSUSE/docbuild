@@ -9,6 +9,7 @@ This guide provides all the necessary information for contributing to the projec
 
    overview
    design
+   directory-overview
 
 .. toctree::
    :maxdepth: 2
@@ -35,5 +36,4 @@ This guide provides all the necessary information for contributing to the projec
    :maxdepth: 2
    :caption: Appendix
 
-   know-tools-config
    knowing-github-setup
