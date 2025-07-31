@@ -86,8 +86,8 @@ jobs:
         run: |
           pip install uv
           uv sync --frozen --group devel
-          pip install pytest-cov # Add pytest-cov for coverage reports if needed
-
+          pip install pytest-cov click
+          
       - name: Install external tools (macOS)
         run: |
           # Download jing tool directly and place it in the PATH.
@@ -106,8 +106,8 @@ jobs:
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
           chmod +x jing
-
-          # Use the modern way to add to PATH
+          
+          # Use the correct, modern way to add to PATH
           echo "$(pwd)" >> $GITHUB_PATH
 
       - name: Run tests
