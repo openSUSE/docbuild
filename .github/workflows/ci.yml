@@ -60,7 +60,9 @@ jobs:
             cache-suffix: "docbuild"
 
       - name: Print the installed version
-        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+        run: |
+          # Use uv to get version info
+          uv --version
 
       - name: Install dependencies
         run: uv sync --frozen --group devel
@@ -84,36 +86,34 @@ jobs:
 
       - name: Install uv and dependencies
         run: |
-          pip install uv
-          uv sync --frozen --group devel
-          pip install pytest-cov click
+          # Use a single pip command to install all dependencies from the pyproject.toml
+          pip install --no-cache-dir -e .
+          pip install pytest-asyncio pytest-cov click
           
       - name: Install external tools (macOS)
         run: |
-          # Download jing tool directly and place it in the PATH.
+          # Use Homebrew on macOS to install tools.
+          brew install libxml2 libxslt openjdk
+        
           JING_VERSION="20181222" # Use a known stable version
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
           
-          # Install external tools on macOS using Homebrew
-          brew install libxml2 libxslt
+          # Use a dedicated step to set up jing
+          curl -sL -o jing.jar $JING_URL
           
-          # Add the keg-only Homebrew paths to the PATH for the current shell session
+          if [ ! -f jing.jar ]; then
+              echo "Error: Failed to download jing.jar"
+              exit 1
+          fi
+
+          # Set up the jing executable and add it to the path
+          echo '#!/bin/bash' > jing
+          echo 'java -jar jing.jar "$@"' >> jing
+          chmod +x jing
+          echo "$(pwd)" >> $GITHUB_PATH
+          echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
-          
-          # Set up the jing executable
-          curl -sL -f $JING_URL -o jing.jar
-          if [ ! -f jing.jar ]; then
-            echo "Error: Failed to download jing.jar"
-            exit 1
-          fi
-          
-          echo '#!/bin/bash' > jing
-          echo '/usr/bin/java -jar jing.jar "$@"' >> jing
-          chmod +x jing
-          
-          # Use the correct, modern way to add to PATH
-          echo "$(pwd)" >> $GITHUB_PATH
 
       - name: Run tests
         run: |
