@@ -24,20 +24,46 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
+      # image: ghcr.io/opensuse/docbuild/daps:latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install pip
+      - name: Get dependencies
         run: |
-          zypper refresh
-          zypper install -y python3-pip
+          rpm -q daps \
+            suse-xsl-stylesheets \
+            suse-xsl-stylesheets-sbp \
+            geekodoc \
+            docbook-xsl-stylesheets \
+            docbook-xsl-ns \
+            xmlgraphics-fop \
+            git \
+            ditaa \
+            libreoffice-draw \
+            novdoc \
+            ruby2.5-rubygem-asciidoctor \
+            curl \
+            tar \
+            w3m \
+            jq \
+            rsvg-convert \
+            openssh-clients || true
 
-      - name: Install uv and dependencies
-        run: |
-          pip install uv
-          uv sync --frozen --group devel
+      - name: Install the latest version of uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+            version: "latest"
+            enable-cache: true
+            cache-suffix: "docbuild"
+
+      - name: Print the installed version
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group devel
 
       - name: Run tests
         run: |
@@ -64,12 +90,18 @@ jobs:
 
       - name: Install external tools (macOS)
         run: |
-          # Use Homebrew on macOS to install tools, correcting "xsltproc" to "libxslt".
-          brew install libxml2 libxslt
-          
           # Download jing tool directly and place it in the PATH.
           JING_VERSION="20181222" # Use a known stable version
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
+          
+          # Install external tools on macOS using Homebrew
+          brew install libxml2 libxslt
+          
+          # Add the keg-only Homebrew paths to the PATH for the current shell session
+          echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
+          echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
+          
+          # Set up the jing executable
           curl -sL $JING_URL -o jing.jar
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
