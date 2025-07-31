@@ -106,9 +106,9 @@ jobs:
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
           chmod +x jing
-          
-          # Add the current directory to the PATH to find jing
-          echo "::add-path::$(pwd)"
+
+          # Use the modern way to add to PATH
+          echo "$(pwd)" >> $GITHUB_PATH
 
       - name: Run tests
         run: |
