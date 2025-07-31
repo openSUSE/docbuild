@@ -104,7 +104,7 @@ jobs:
           # Set up the jing executable
           curl -sL $JING_URL -o jing.jar
           echo '#!/bin/bash' > jing
-          echo 'java -jar jing.jar "$@"' >> jing
+          echo '/usr/bin/java -jar jing.jar "$@"' >> jing
           chmod +x jing
           
           # Use the correct, modern way to add to PATH
