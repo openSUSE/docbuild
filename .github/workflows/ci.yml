@@ -93,8 +93,8 @@ jobs:
           
       - name: Install external tools (macOS)
         run: |
-          brew install libxml2 libxslt 
-         
+          brew install libxml2 libxslt openjdk
+          
           JING_VERSION="20181222" # Use a known stable version
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
           
@@ -105,12 +105,10 @@ jobs:
               exit 1
           fi
 
-          # Set up the jing executable and add it to the path
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
           chmod +x jing
           
-          # Use the correct, modern way to add to PATH for all necessary tools.
           echo "$(pwd)" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
