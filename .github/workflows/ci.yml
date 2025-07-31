@@ -102,7 +102,12 @@ jobs:
           echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
           
           # Set up the jing executable
-          curl -sL $JING_URL -o jing.jar
+          curl -sL -f $JING_URL -o jing.jar
+          if [ ! -f jing.jar ]; then
+            echo "Error: Failed to download jing.jar"
+            exit 1
+          fi
+          
           echo '#!/bin/bash' > jing
           echo '/usr/bin/java -jar jing.jar "$@"' >> jing
           chmod +x jing
@@ -112,4 +117,5 @@ jobs:
 
       - name: Run tests
         run: |
+          stty cols 120 
           pytest -vv
