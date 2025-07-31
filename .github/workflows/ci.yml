@@ -29,6 +29,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Add a step to install pip since it is not in the container
+      - name: Install pip
+        run: |
+          apt-get update
+          apt-get install -y python3-pip
+
       - name: Install uv and dependencies
         run: |
           pip install uv
@@ -60,10 +66,10 @@ jobs:
       - name: Install external tools (macOS)
         run: |
           # Use Homebrew on macOS to install tools
-          brew install libxml2-utils xsltproc
+          brew install libxml2 xsltproc
           
           # Download jing tool directly and place it in the PATH.
-          JING_VERSION="20181222" 
+          JING_VERSION="20181222" # Use a known stable version
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
           curl -sL $JING_URL -o jing.jar
           echo '#!/bin/bash' > jing
