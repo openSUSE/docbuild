@@ -86,19 +86,18 @@ jobs:
 
       - name: Install uv and dependencies
         run: |
-          pip install uv
-          uv sync --frozen --group devel
-          pip install pytest-cov click
+          # Use a single pip command to install all dependencies from the pyproject.toml
+          pip install --no-cache-dir -e .
+          pip install pytest-asyncio pytest-cov click
           
       - name: Install external tools (macOS)
         run: |
           # Use Homebrew on macOS to install tools.
-          brew install libxml2 libxslt openjdk
+          brew install libxml2 libxslt 
           
           JING_VERSION="20181222" # Use a known stable version
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
           
-          # Use a dedicated step to set up jing. 
           curl -sL -f $JING_URL -o jing.jar
           
           if [ ! -f jing.jar ]; then
