@@ -84,9 +84,9 @@ jobs:
 
       - name: Install uv and dependencies
         run: |
-          pip install uv
-          uv sync --frozen --group devel
-          pip install pytest-cov click
+          # Use a single pip command to install all dependencies from the pyproject.toml
+          pip install --no-cache-dir -e .
+          pip install pytest-asyncio pytest-cov click
           
       - name: Install external tools (macOS)
         run: |
