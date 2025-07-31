@@ -94,8 +94,8 @@ jobs:
         run: |
           # Use Homebrew on macOS to install tools.
           brew install libxml2 libxslt openjdk
-        
-          JING_VERSION="20181222" # Use a known stable version
+          
+          JING_VERSION="20181222" 
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
           
           # Use a dedicated step to set up jing
@@ -117,5 +117,4 @@ jobs:
 
       - name: Run tests
         run: |
-          stty cols 120
           pytest -vv
