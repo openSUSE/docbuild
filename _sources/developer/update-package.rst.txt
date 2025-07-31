@@ -1,4 +1,6 @@
-Updating a specific package
+.. _update-package:
+
+Updating a Specific Package
 ===========================
 
 If you want to update a specific package in your project, but at the same
