@@ -86,13 +86,12 @@ jobs:
 
       - name: Install uv and dependencies
         run: |
-          # Use a single pip command to install all dependencies from the pyproject.toml
-          pip install --no-cache-dir -e .
-          pip install pytest-asyncio pytest-cov click
+          pip install uv
+          uv sync --frozen --group devel
+          pip install pytest-cov click
           
       - name: Install external tools (macOS)
         run: |
-          # Use Homebrew on macOS to install tools.
           brew install libxml2 libxslt 
           
           JING_VERSION="20181222" # Use a known stable version
