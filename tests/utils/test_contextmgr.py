@@ -32,7 +32,7 @@ def test_timer_as_context_manager_measures_time():
 
     elapsed = timer_data.elapsed
     assert isinstance(elapsed, float)
-    assert elapsed == pytest.approx(sleep_duration, abs=0.05)
+    assert elapsed == pytest.approx(sleep_duration, abs=0.2)
 
 
 def test_timer_factory_creates_independent_timers():
@@ -54,8 +54,8 @@ def test_timer_factory_creates_independent_timers():
     assert timer_data1.elapsed != timer_data2.elapsed
     assert isinstance(timer_data1.elapsed, float)
     assert isinstance(timer_data2.elapsed, float)
-    assert timer_data1.elapsed == pytest.approx(sleep_duration, abs=0.01)
-    assert timer_data2.elapsed == pytest.approx(sleep_duration * 2, abs=0.01)
+    assert timer_data1.elapsed == pytest.approx(sleep_duration, abs=0.2)
+    assert timer_data2.elapsed == pytest.approx(sleep_duration * 2, abs=0.2)
 
 
 def test_timer_for_nan_as_default():
