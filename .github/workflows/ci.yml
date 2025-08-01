@@ -1,5 +1,4 @@
 name: CI/Test
-
 on:
   workflow_dispatch:
   pull_request:
@@ -9,27 +8,23 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   packages: read
 
 jobs:
   test-ubuntu:
-    name: ubuntu-latest
+    name: python
     runs-on: ubuntu-latest
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
       # image: ghcr.io/opensuse/docbuild/daps:latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Get dependencies
         run: |
           rpm -q daps \
@@ -50,7 +45,6 @@ jobs:
             jq \
             rsvg-convert \
             openssh-clients || true
-
       - name: Install the latest version of uv
         id: setup-uv
         uses: astral-sh/setup-uv@v6
@@ -60,16 +54,12 @@ jobs:
             cache-suffix: "docbuild"
 
       - name: Print the installed version
-        run: |
-          # Use uv to get version info
-          uv --version
-
+        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
       - name: Install dependencies
-        run: uv pip sync pyproject.toml --group devel
-
+        run: uv sync --frozen --group devel
       - name: Run tests
         run: |
-           uv run pytest -vv
+           uv run --frozen pytest -vv
 
   test-macos:
     name: macos-latest
