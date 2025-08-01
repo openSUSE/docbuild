@@ -89,12 +89,13 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --editable . --dev
+          uv pip install --editable .
+          uv pip sync pyproject.toml --group devel
           
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
-          
+
           JING_VERSION="20091111"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
           
@@ -108,7 +109,7 @@ jobs:
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
           chmod +x jing
-          
+
           echo "$(pwd)" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
