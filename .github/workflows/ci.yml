@@ -89,8 +89,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --editable .
-          uv pip sync pyproject.toml --group devel
+          uv pip install --no-deps -e .
           
       - name: Install external tools (macOS)
         run: |
