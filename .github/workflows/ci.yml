@@ -89,7 +89,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --no-deps -e . --dev
+          uv pip install --no-deps -e .
           
       - name: Install external tools (macOS)
         run: |
