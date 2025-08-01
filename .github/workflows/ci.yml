@@ -87,7 +87,7 @@ jobs:
       - name: Install uv and dependencies
         run: |
           pip install uv
-          uv pip sync --group devel
+          uv pip sync pyproject.toml --group devel
           
       - name: Install external tools (macOS)
         run: |
