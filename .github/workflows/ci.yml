@@ -84,18 +84,18 @@ jobs:
         with:
           python-version: '3.12'
       
-      - name: Create venv and install dependencies
+      - name: Install uv and dependencies
         run: |
           pip install uv
-          uv pip install --no-deps -e . --dev
+          uv pip sync --frozen --group devel
           
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
-          
+        
           JING_VERSION="20091111"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
-          
+ 
           curl -sL -f $JING_URL -o jing.jar
           
           if [ ! -f jing.jar ]; then
@@ -114,5 +114,4 @@ jobs:
 
       - name: Run tests
         run: |
-          source .venv/bin/activate
           pytest -vv
