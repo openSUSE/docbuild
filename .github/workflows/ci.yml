@@ -88,15 +88,14 @@ jobs:
         run: |
           pip install uv
           uv sync --frozen --group devel
-          pip install --no-cache-dir -e .
-          pip install pytest-asyncio pytest-cov click
+          pip install pytest-cov click
           
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
           
-          JING_VERSION="20181222" # Use a known stable version
-          JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
+          JING_VERSION="20091111"
+          JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
           
           curl -sL -f $JING_URL -o jing.jar
           
