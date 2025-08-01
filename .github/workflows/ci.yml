@@ -87,7 +87,7 @@ jobs:
       - name: Install uv and dependencies
         run: |
           pip install uv
-          uv install --no-deps -e . --dev
+          uv pip install --no-deps -e . --dev
           
       - name: Install external tools (macOS)
         run: |
