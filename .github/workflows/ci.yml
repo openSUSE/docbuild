@@ -51,21 +51,10 @@ jobs:
             rsvg-convert \
             openssh-clients || true
 
-      - name: Install the latest version of uv
-        id: setup-uv
-        uses: astral-sh/setup-uv@v6
-        with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "docbuild"
-
-      - name: Print the installed version
+      - name: Install uv and dependencies
         run: |
-          # Use uv to get version info
-          uv --version
-
-      - name: Install dependencies
-        run: uv pip sync pyproject.toml --group devel
+          pip install uv
+          uv pip install . --group devel
 
       - name: Run tests
         run: |
@@ -84,17 +73,18 @@ jobs:
         with:
           python-version: '3.12'
       
-      - name: Create venv and install dependencies
+      - name: Create venv, install dependencies and run tests
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
           uv pip install --no-deps -e .
+          pytest -vv
           
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
-
+          
           JING_VERSION="20091111"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
           
@@ -108,13 +98,8 @@ jobs:
           echo '#!/bin/bash' > jing
           echo 'java -jar jing.jar "$@"' >> jing
           chmod +x jing
-
+          
           echo "$(pwd)" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
-
-      - name: Run tests
-        run: |
-          source .venv/bin/activate
-          pytest -vv
