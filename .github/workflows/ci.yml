@@ -87,13 +87,12 @@ jobs:
       - name: Install uv and dependencies
         run: |
           pip install uv
-          uv sync --frozen --group devel
-          pip install pytest-cov click pydantic
+          uv install --no-deps -e . --dev
           
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
-
+          
           JING_VERSION="20091111"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
           
