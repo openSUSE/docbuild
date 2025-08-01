@@ -87,7 +87,7 @@ jobs:
       - name: Install uv and dependencies
         run: |
           pip install uv
-          uv pip sync --frozen --group devel
+          uv pip sync --group devel
           
       - name: Install external tools (macOS)
         run: |
