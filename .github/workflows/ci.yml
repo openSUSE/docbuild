@@ -65,11 +65,11 @@ jobs:
           uv --version
 
       - name: Install dependencies
-        run: uv pip sync --frozen --group devel
+        run: uv pip sync pyproject.toml --group devel
 
       - name: Run tests
         run: |
-           uv run --frozen pytest -vv
+           uv run pytest -vv
 
   test-macos:
     name: macos-latest
@@ -84,7 +84,7 @@ jobs:
         with:
           python-version: '3.12'
       
-      - name: Install uv and dependencies
+      - name: Create venv and install dependencies
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
@@ -94,10 +94,10 @@ jobs:
       - name: Install external tools (macOS)
         run: |
           brew install libxml2 libxslt openjdk
-        
+          
           JING_VERSION="20091111"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
- 
+          
           curl -sL -f $JING_URL -o jing.jar
           
           if [ ! -f jing.jar ]; then
@@ -116,4 +116,5 @@ jobs:
 
       - name: Run tests
         run: |
+          source .venv/bin/activate
           pytest -vv
