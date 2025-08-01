@@ -65,7 +65,7 @@ jobs:
           uv --version
 
       - name: Install dependencies
-        run: uv sync --frozen --group devel
+        run: uv pip sync --frozen --group devel
 
       - name: Run tests
         run: |
@@ -83,13 +83,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
-      - name: Install uv and dependencies
+      
+      - name: Create venv and install dependencies
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --no-deps -e .
+          uv pip install --no-deps -e . --dev
+          pip install pytest-asyncio pytest-cov click pydantic
           
       - name: Install external tools (macOS)
         run: |
@@ -116,4 +117,5 @@ jobs:
 
       - name: Run tests
         run: |
+          source .venv/bin/activate
           pytest -vv
