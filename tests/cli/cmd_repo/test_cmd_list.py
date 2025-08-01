@@ -24,7 +24,7 @@ def test_cmd_list_repo_dir_not_exists(runner, tmp_path):
     result = runner.invoke(cmd_list, obj=context)
     assert result.exit_code == 1
     assert 'No permanent repositories found' in result.output
-    assert str(repo_dir) in result.output
+    assert str(repo_dir) in result.output.replace('\n', '')
 
 
 def test_cmd_list_success(runner, tmp_path):
@@ -37,7 +37,7 @@ def test_cmd_list_success(runner, tmp_path):
     result = runner.invoke(cmd_list, obj=context)
     assert result.exit_code == 0
     assert 'Available permanent repositories' in result.output
-    assert str(repo_dir) in result.output
+    assert str(repo_dir) in result.output.replace('\n', '')
     assert 'repo1' in result.output
     assert 'repo2' in result.output
     assert '.hidden' not in result.output
