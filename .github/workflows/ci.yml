@@ -84,12 +84,13 @@ jobs:
         with:
           python-version: '3.12'
       
-      - name: Create venv and install dependencies
+      - name: Create venv, install dependencies and run tests
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
           uv pip sync pyproject.toml --group devel
+          pytest -vv
           
       - name: Install external tools (macOS)
         run: |
@@ -113,8 +114,3 @@ jobs:
           echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
           echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
-
-      - name: Run tests
-        run: |
-          source .venv/bin/activate
-          pytest -vv
