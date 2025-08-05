@@ -1,6 +1,11 @@
 name: CI/Test
 on:
   workflow_dispatch:
+    inputs:
+      JING_VERSION:
+        description: "Jing version to use"
+        required: false
+        default: "20091111"  # Default value
   pull_request:
   push:
     branches:
@@ -88,16 +93,16 @@ jobs:
         run: |
           brew install libxml2 libxslt openjdk
 
-          # Define the version and URL for jing.jar
-          JING_VERSION="20091111"
-          JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/20091111/jing-20091111.jar"
+          # Define the version and URL for jing.jar, using the input version from workflow_dispatch
+          JING_VERSION="${{ github.event.inputs.JING_VERSION }}"
+          JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
 
           # Download jing.jar file for XML validation
           curl -sL -f $JING_URL -o jing.jar
           
           # Ensures the jar file is successfully downloaded, else exit with error
           if [ ! -f jing.jar ]; then
-              echo "Error: Failed to download jing.jar"
+              echo "::error file=$JING_URL:: Failed to download jing.jar"
               exit 1
           fi
 
