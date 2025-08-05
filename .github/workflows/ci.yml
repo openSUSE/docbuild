@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
-      # image: ghcr.io/opensuse/docbuild/daps:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -94,7 +93,7 @@ jobs:
           brew install libxml2 libxslt openjdk
 
           # Define the version and URL for jing.jar, using the input version from workflow_dispatch
-          JING_VERSION="${{ github.event.inputs.JING_VERSION }}"
+          JING_VERSION="${{ github.event.inputs.JING_VERSION || '20091111' }}"
           JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
 
           # Download jing.jar file for XML validation
