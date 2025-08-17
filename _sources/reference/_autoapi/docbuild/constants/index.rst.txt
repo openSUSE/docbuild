@@ -26,8 +26,6 @@ Attributes
    docbuild.constants.SINGLE_LANG_REGEX
    docbuild.constants.MULTIPLE_LANG_REGEX
    docbuild.constants.LIFECYCLES_STR
-   docbuild.constants.SEPARATORS
-   docbuild.constants.RE_SEPARATORS
    docbuild.constants.PROJECT_DIR
    docbuild.constants.USER_CONFIG_DIR
    docbuild.constants.SYSTEM_CONFIG_DIR
@@ -115,18 +113,6 @@ Module Contents
 
 
    Regex for lifecycle states, separated by pipe (|).
-
-
-.. py:data:: SEPARATORS
-   :value: '[ :;]+'
-
-
-   Regex string for separators used in doctype strings.
-
-
-.. py:data:: RE_SEPARATORS
-
-   Compiled regex for separators used in doctype strings.
 
 
 .. py:data:: PROJECT_DIR
