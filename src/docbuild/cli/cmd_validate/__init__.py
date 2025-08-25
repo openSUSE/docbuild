@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
     '--validation-method',
     type=click.Choice(['jing', 'lxml'], case_sensitive=False),
     default='jing',
-    help="Choose validation method: 'jing' (default) or 'lxml'",
+    help="Choose validation method: 'jing' or 'lxml'",
 )
 @click.pass_context
 def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path], validation_method: str) -> None:

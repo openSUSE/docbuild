@@ -184,13 +184,11 @@ def validate_rng_lxml(
     """
     try:
         # Parse the RELAX NG schema from .rng file
-        with open(rng_schema_path, 'rb') as f:
-            relaxng_doc = etree.parse(f)
+        relaxng_doc = etree.parse(rng_schema_path)
         relaxng = etree.RelaxNG(relaxng_doc)
 
         # Parse the XML file to validate
-        with open(xmlfile, 'rb') as f:
-            xml_doc = etree.parse(f)
+        xml_doc = etree.parse(xmlfile)
 
         # Perform validation
         is_valid = relaxng.validate(xml_doc)
@@ -200,9 +198,16 @@ def validate_rng_lxml(
             # Return validation error log as string
             return False, str(relaxng.error_log)
 
+    # Catch specific exceptions for better error handling
+    except etree.XMLSyntaxError as e:
+        # This handles syntax errors in either the XML or the RNG file
+        return False, f'XML or RNG syntax error: {e}'
+    except etree.RelaxNGParseError as e:
+        # This handles errors in parsing the RNG schema itself
+        return False, f'RELAX NG schema parsing error: {e}'
     except Exception as e:
-        # Catch and report unexpected errors during parsing or validation
-        return False, f'lxml validation error: {e}'
+        # This catch-all is a fallback for any other unexpected issues
+        return False, f'An unexpected error occurred during validation: {e}'
 
 
 async def run_python_checks(
@@ -246,7 +251,7 @@ async def process_file(
     # IDEA: Should we replace jing and validate with etree.RelaxNG?
 
     # 1. RNG Validation
-    validation_method = getattr(context, 'validation_method', 'jing')
+    validation_method = context.validation_method
 
     if validation_method == 'lxml':
         # Use lxml-based validator (requires .rng schema)
