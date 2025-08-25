@@ -168,6 +168,43 @@ async def validate_rng(
         )
 
 
+def validate_rng_lxml(
+    xmlfile: Path,
+    rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
+) -> tuple[bool, str]:
+    """
+    Validate an XML file against a RELAX NG (.rng) schema using lxml.
+
+    This function uses lxml.etree.RelaxNG, which supports only the XML syntax
+    of RELAX NG schemas (i.e., .rng files, not .rnc files).
+
+    :param xmlfile: Path to the XML file to validate.
+    :param rng_schema_path: Path to the RELAX NG (.rng) schema file.
+    :return: Tuple of (is_valid: bool, error_message: str)
+    """
+    try:
+        # Parse the RELAX NG schema from .rng file
+        with open(rng_schema_path, 'rb') as f:
+            relaxng_doc = etree.parse(f)
+        relaxng = etree.RelaxNG(relaxng_doc)
+
+        # Parse the XML file to validate
+        with open(xmlfile, 'rb') as f:
+            xml_doc = etree.parse(f)
+
+        # Perform validation
+        is_valid = relaxng.validate(xml_doc)
+        if is_valid:
+            return True, ''
+        else:
+            # Return validation error log as string
+            return False, str(relaxng.error_log)
+
+    except Exception as e:
+        # Catch and report unexpected errors during parsing or validation
+        return False, f'lxml validation error: {e}'
+
+
 async def run_python_checks(
     tree: etree._ElementTree,
 ) -> list[tuple[str, CheckResult]]:
@@ -209,7 +246,26 @@ async def process_file(
     # IDEA: Should we replace jing and validate with etree.RelaxNG?
 
     # 1. RNG Validation
-    rng_success, rng_output = await validate_rng(path_obj)
+    validation_method = getattr(context, 'validation_method', 'jing')
+
+    if validation_method == 'lxml':
+        # Use lxml-based validator (requires .rng schema)
+        rng_success, rng_output = await asyncio.to_thread(
+            validate_rng_lxml,
+            path_obj,
+            XMLDATADIR / 'product-config-schema.rng',  
+        )
+    elif validation_method == 'jing':
+        # Use existing jing-based validator (.rnc or .rng)
+        rng_success, rng_output = await validate_rng(path_obj)
+    else:
+        console_err.print(
+            f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
+        )
+        console_err.print(f'  [bold red]Error:[/] Unknown validation method: {validation_method}')
+        return 11  # Custom error code for unknown validation method
+
+    # Handle validation result
     if not rng_success:
         console_err.print(
             f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'

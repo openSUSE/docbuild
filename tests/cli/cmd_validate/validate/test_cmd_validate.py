@@ -88,6 +88,7 @@ class TestProcessValidation:
         context = Mock(spec=DocBuildContext)
         context.envconfig = {'paths': {'config_dir': '/test/config'}}
         context.verbose = 1
+        context.validation_method = "jing"
         return context
 
     @pytest.fixture

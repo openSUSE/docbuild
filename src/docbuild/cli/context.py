@@ -40,3 +40,6 @@ class DocBuildContext:
 
     debug: bool = False
     """If set, enable debug mode"""
+
+    validation_method: str = "jing"
+    """Method used to validate XML files: 'jing' (default) or 'lxml'"""

@@ -19,15 +19,26 @@ log = logging.getLogger(__name__)
     nargs=-1,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
+@click.option(
+    '--validation-method',
+    type=click.Choice(['jing', 'lxml'], case_sensitive=False),
+    default='jing',
+    help="Choose validation method: 'jing' (default) or 'lxml'",
+)
 @click.pass_context
-def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path]) -> None:
+def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path], validation_method: str) -> None:
     """Subcommand to validate XML configuration files.
 
     :param ctx: The Click context object.
+    :param xmlfiles: XML files to validate, if empty all XMLs in config dir are used.
+    :param validation_method: Validation method to use, 'jing' or 'lxml'.
     """
     context: DocBuildContext = ctx.obj
+
+    # Set the chosen validation method in the context for downstream use
+    context.validation_method = validation_method.lower()
+
     if context.envconfig is None:
-        # log.critical('No envconfig found in context.')
         raise ValueError('No envconfig found in context.')
 
     if (paths := ctx.obj.envconfig.get('paths')) is None:
@@ -44,7 +55,7 @@ def validate(ctx: click.Context, xmlfiles: tuple | Iterator[Path]) -> None:
     else:
         xml_files_to_process = xmlfiles
 
-    log.info('Validating XML configuration files')
+    log.info(f'Validating XML configuration files using {validation_method} method')
 
     result = asyncio.run(process_mod.process(context, xmlfiles=xml_files_to_process))
 
