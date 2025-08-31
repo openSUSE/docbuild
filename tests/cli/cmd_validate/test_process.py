@@ -12,6 +12,7 @@ from docbuild.cli.cmd_validate.process import (
     process_file,
     registry,
     run_python_checks,
+    validate_rng,
     validate_rng_lxml,
 )
 from docbuild.cli.context import DocBuildContext
@@ -113,3 +114,58 @@ async def test_process_file_with_unknown_validation_method(mock_context, tmp_pat
     exit_code = await process_file(xml_file, mock_context, max_len=20)
 
     assert exit_code == 11
+
+
+@patch.object(process_module, 'run_command', new_callable=AsyncMock)
+@pytest.mark.asyncio
+async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
+    """Test that validate_rng with idcheck=True succeeds for a valid XML."""
+    mock_run_command.return_value = (0, '', '')
+    xml_file = tmp_path / 'valid.xml'
+    xml_file.touch()
+    rng_schema = tmp_path / 'schema.rnc'
+    rng_schema.touch()
+
+    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
+
+    assert is_valid is True
+    assert message == ''
+    # Ensure -i flag is passed to jing
+    assert '-i' in mock_run_command.call_args[0]
+
+
+@patch.object(process_module, 'run_command', new_callable=AsyncMock)
+@pytest.mark.asyncio
+async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp_path):
+    """Test that validate_rng with idcheck=True fails for a duplicate ID."""
+    mock_run_command.return_value = (1, '', 'error: duplicate ID "test-id"')
+    xml_file = tmp_path / 'duplicate_id.xml'
+    xml_file.touch()
+    rng_schema = tmp_path / 'schema.rnc'
+    rng_schema.touch()
+
+    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=True)
+
+    assert is_valid is False
+    assert 'duplicate ID' in message
+    # Ensure -i flag is passed to jing
+    assert '-i' in mock_run_command.call_args[0]
+
+
+@patch.object(process_module, 'run_command', new_callable=AsyncMock)
+@pytest.mark.asyncio
+async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
+    """Test that validate_rng with idcheck=False succeeds despite a duplicate ID."""
+    mock_run_command.return_value = (0, '', '')
+    xml_file = tmp_path / 'duplicate_id.xml'
+    xml_file.touch()
+    rng_schema = tmp_path / 'schema.rnc'
+    rng_schema.touch()
+
+    is_valid, message = await validate_rng(xml_file, rng_schema, xinclude=False, idcheck=False)
+
+    assert is_valid is True
+    assert message == ''
+    # Ensure -i flag is NOT passed to jing
+    assert '-i' not in mock_run_command.call_args[0]
+    

@@ -106,6 +106,7 @@ async def validate_rng(
     rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
     *,
     xinclude: bool = True,
+    idcheck: bool = True
 ) -> tuple[bool, str]:
     """Validate an XML file against a RELAX NG schema using jing.
 
@@ -114,12 +115,14 @@ async def validate_rng(
     more robust for complex XInclude statements, including those with XPointer.
 
     :param xmlfile: The path to the XML file to validate.
-    :param rng_schema_path: The path to the RELAX NG schema file. It supports
-        both RNC and RNG formats.
+    :param rng_schema_path: The path to the RELAX NG schema file. It supports both RNC and RNG formats.
     :param xinclude: If True, resolve XIncludes with `xmllint` before validation.
+    :param idcheck: If True, perform ID uniqueness checks.
     :return: A tuple containing a boolean success status and any output message.
     """
     jing_cmd = ['jing']
+    if idcheck: 
+        jing_cmd.append('-i')
     if rng_schema_path.suffix == '.rnc':
         jing_cmd.append('-c')
     jing_cmd.append(str(rng_schema_path))
@@ -262,7 +265,7 @@ async def process_file(
         )
     elif validation_method == 'jing':
         # Use existing jing-based validator (.rnc or .rng)
-        rng_success, rng_output = await validate_rng(path_obj)
+        rng_success, rng_output = await validate_rng(path_obj, idcheck=True)
     else:
         console_err.print(
             f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'

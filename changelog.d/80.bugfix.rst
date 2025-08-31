@@ -1,0 +1,1 @@
+Fixes incorrect jing command arguments in validate_rng function.

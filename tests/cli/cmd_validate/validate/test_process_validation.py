@@ -99,19 +99,19 @@ async def test_validate_rng_jing_failure():
     rng_schema = MagicMock(spec=Path)
     xmlfile.__str__.return_value = '/mocked/path/to/file.xml'
     rng_schema.__str__.return_value = '/mocked/path/to/schema.rng'
-
+ 
     with patch.object(
         process_mod,
         'run_command',
         new=AsyncMock(return_value=(1, 'Error in jing', '')),
     ) as mock_run_command:
         success, output = await process_mod.validate_rng(
-            xmlfile, rng_schema_path=rng_schema, xinclude=False
+            xmlfile, rng_schema_path=rng_schema, xinclude=False, idcheck=False
         )
-
+ 
         assert not success, 'Expected validation to fail.'
         assert output == 'Error in jing', f'Unexpected output: {output}'
-
+ 
         mock_run_command.assert_called_once_with('jing', str(rng_schema), str(xmlfile))
 
 
