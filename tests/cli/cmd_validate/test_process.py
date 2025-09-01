@@ -117,7 +117,6 @@ async def test_process_file_with_unknown_validation_method(mock_context, tmp_pat
 
 
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
-@pytest.mark.asyncio
 async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=True succeeds for a valid XML."""
     mock_run_command.return_value = (0, '', '')
@@ -135,7 +134,6 @@ async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
 
 
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
-@pytest.mark.asyncio
 async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=True fails for a duplicate ID."""
     mock_run_command.return_value = (1, '', 'error: duplicate ID "test-id"')
@@ -153,7 +151,6 @@ async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp
 
 
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
-@pytest.mark.asyncio
 async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=False succeeds despite a duplicate ID."""
     mock_run_command.return_value = (0, '', '')
@@ -168,4 +165,3 @@ async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
     assert message == ''
     # Ensure -i flag is NOT passed to jing
     assert '-i' not in mock_run_command.call_args[0]
-    
