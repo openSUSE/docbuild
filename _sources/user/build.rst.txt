@@ -37,10 +37,13 @@ The fields in the doctype have the following meanings:
 
 Some common examples of doctypes are:
 
-* ``//en-us``: Matches all supported deliverables in English.
-* ``sles/*/en-us``: Matches all SLES deliverables in English, regardless of the docset or lifecycle.
+* ``sles/15-SP6/en-us``: Matches the English deliverables for SLES 15-SP6, regardless of the lifecycle.
+* ``*/*/de-de``: Matches all deliverables in German, regardless of the product, docset, or lifecycle.
+* ``//en-us``: Matches all deliverables in English, regardless of product, docset, or lifecycle. This is a shorter version of ``*/*/en-us``.
+* ``sles//en-us``: Matches all English SLES deliverables, regardless of the docset or lifecycle.
 * ``sle-ha//@unsupported/en-us,de-de``: Matches all SLE-HA deliverables in English and German that are in the unsupported lifecycle, regardless of the docset.
-* ``"*/@beta,supported/de-de"``: Matches all SLES deliverables in German that are in the beta or supported lifecycle, regardless of the product.
+* ``*/@beta,supported/de-de``: Matches all SLES deliverables in German that are in the beta or supported lifecycle, regardless of the product.
+* ``//``: Matches all deliverables in all languages, regardless of the product, docset, or lifecycle. This is the simplest doctype and matches everything.
 
 
 Minimal set of doctypes

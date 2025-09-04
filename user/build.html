@@ -494,10 +494,13 @@ You can omit this field if the language is not relevant for the document or you 
 </ul>
 <p>Some common examples of doctypes are:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">//en-us</span></code>: Matches all supported deliverables in English.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sles/*/en-us</span></code>: Matches all SLES deliverables in English, regardless of the docset or lifecycle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sles/15-SP6/en-us</span></code>: Matches the English deliverables for SLES 15-SP6, regardless of the lifecycle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*/*/de-de</span></code>: Matches all deliverables in German, regardless of the product, docset, or lifecycle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">//en-us</span></code>: Matches all deliverables in English, regardless of product, docset, or lifecycle. This is a shorter version of <code class="docutils literal notranslate"><span class="pre">*/*/en-us</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sles//en-us</span></code>: Matches all English SLES deliverables, regardless of the docset or lifecycle.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sle-ha//&#64;unsupported/en-us,de-de</span></code>: Matches all SLE-HA deliverables in English and German that are in the unsupported lifecycle, regardless of the docset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;*/&#64;beta,supported/de-de&quot;</span></code>: Matches all SLES deliverables in German that are in the beta or supported lifecycle, regardless of the product.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*/&#64;beta,supported/de-de</span></code>: Matches all SLES deliverables in German that are in the beta or supported lifecycle, regardless of the product.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">//</span></code>: Matches all deliverables in all languages, regardless of the product, docset, or lifecycle. This is the simplest doctype and matches everything.</p></li>
 </ul>
 </section>
 <section id="minimal-set-of-doctypes">
