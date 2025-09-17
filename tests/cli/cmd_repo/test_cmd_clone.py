@@ -9,6 +9,8 @@ from docbuild.cli.cmd_repo.cmd_clone import clone
 import docbuild.cli.cmd_repo.process as mod_process
 from docbuild.cli.context import DocBuildContext
 
+log = logging.getLogger(__name__)
+
 #
 # @pytest.fixture
 # def process_mock() -> AsyncMock:
