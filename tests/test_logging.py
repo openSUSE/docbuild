@@ -9,6 +9,9 @@ import copy
 from typing import Any, Dict, Optional
 from docbuild.constants import APP_NAME, BASE_LOG_DIR
 
+log = logging.getLogger(__name__)
+
+
 def test_console_verbosity_levels(caplog):
     """
     Tests that the console handler's output correctly

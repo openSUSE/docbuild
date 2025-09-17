@@ -16,8 +16,9 @@ import click
 from ...cli.context import DocBuildContext
 from .process import process
 
-git_logger = logging.getLogger("docbuild.git")
+log = logging.getLogger(__name__)
 
+git_logger = logging.getLogger("docbuild.git")
 
 @click.command(help=__doc__)
 @click.argument(

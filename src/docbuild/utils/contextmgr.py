@@ -20,7 +20,6 @@ type ExcTback = TracebackType | None
 # Logging
 log = logging.getLogger(__name__)
 
-
 @dataclass
 class TimerData:
     """Data structure to hold timer information."""

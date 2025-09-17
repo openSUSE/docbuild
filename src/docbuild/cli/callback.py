@@ -6,7 +6,6 @@ from pydantic import Field, ValidationError
 from ..models.doctype import Doctype
 from ..utils.merge import merge_doctypes
 
-#
 log = logging.getLogger(__name__)
 
 
