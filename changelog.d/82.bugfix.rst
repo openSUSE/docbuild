@@ -1,0 +1,1 @@
+Fixed a bug where `INFO` and `DEBUG` level logs were not written to the log file. The logging system is now non-blocking and fully configurable via `pyproject.toml`.

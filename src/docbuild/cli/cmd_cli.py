@@ -2,8 +2,12 @@
 
 from pathlib import Path
 import sys
-
+import logging
 import click
+import rich.console
+import rich.logging
+from rich.pretty import install
+from rich.traceback import install as install_traceback
 
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
@@ -29,6 +33,14 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 PYTHON_VERSION = (
     f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
 )
+# Global instance of Rich Console
+CONSOLE = rich.console.Console(stderr=True, highlight=False)
+
+def _setup_console() -> None:
+    """Configures the rich console."""
+    install_traceback(console=CONSOLE, show_locals=True)
+    # The Rich console is now handled by the logging setup.
+    # install(console=CONSOLE)
 
 @click.group(
     name=APP_NAME,
@@ -38,7 +50,6 @@ PYTHON_VERSION = (
 )
 @click.version_option(
     __version__,
-    # package_name=__package__,
     prog_name=APP_NAME,
     message=f"%(prog)s, version %(version)s running Python {PYTHON_VERSION}",
 )
@@ -97,6 +108,7 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
+    # Phase 1: Basic logging setup.
     setup_logging(cliverbosity=verbose)
 
     if ctx.invoked_subcommand is None:
@@ -126,6 +138,10 @@ def cli(
         DEFAULT_APP_CONFIG,
     )
     context.appconfig = replace_placeholders(context.appconfig)
+
+    # Phase 2: Advanced logging setup with user configuration.
+    logging_config = context.appconfig.get('logging', {})
+    setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
     (
         context.envconfigfiles,

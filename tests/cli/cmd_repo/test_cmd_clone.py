@@ -8,7 +8,6 @@ import pytest
 from docbuild.cli.cmd_repo.cmd_clone import clone
 import docbuild.cli.cmd_repo.process as mod_process
 from docbuild.cli.context import DocBuildContext
-from docbuild.logging import GITLOGGERNAME
 
 #
 # @pytest.fixture
@@ -35,7 +34,7 @@ def mock_subprocess(monkeypatch) -> AsyncMock:
 
 def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
     """Test cloning repositories defined in an XML configuration file."""
-    caplog.set_level(logging.INFO, logger=GITLOGGERNAME)
+    caplog.set_level(logging.INFO, logger="docbuild.git")
     config_dir = tmp_path / 'config'
     config_dir.mkdir()
     repo_dir = tmp_path / 'repos'

@@ -6,11 +6,10 @@ from pathlib import Path
 
 from ...cli.context import DocBuildContext
 from ...config.xml.stitch import create_stitchfile
-from ...logging import GITLOGGERNAME
 from ...models.repo import Repo
 from ...utils.contextmgr import make_timer
 
-log = logging.getLogger(GITLOGGERNAME)
+git_logger = logging.getLogger("docbuild.git")
 
 
 async def clone_repo(repo: Repo, base_dir: Path) -> bool:
