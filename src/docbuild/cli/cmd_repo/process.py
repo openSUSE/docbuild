@@ -9,7 +9,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...models.repo import Repo
 from ...utils.contextmgr import make_timer
 
-git_logger = logging.getLogger("docbuild.git")
+log = logging.getLogger("docbuild.git")
 
 
 async def clone_repo(repo: Repo, base_dir: Path) -> bool:
