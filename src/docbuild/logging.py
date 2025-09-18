@@ -7,12 +7,11 @@ import logging
 import logging.handlers
 import os
 import queue
+import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
-
-from .constants import APP_NAME, BASE_LOG_DIR
-
+from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
 # --- Default Logging Configuration ---
 # This dictionary provides a flexible, default setup that can be easily
@@ -34,35 +33,32 @@ DEFAULT_LOGGING_CONFIG = {
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "standard",
-            "level": "INFO",  # Will be set dynamically based on verbosity
+            "level": "INFO",
         },
         "file": {
-            "class": "logging.handlers.TimedRotatingFileHandler",
+            "class": "logging.FileHandler",
             "formatter": "standard",
-            "filename": "",  # Set dynamically in the setup_logging function
-            "when": "midnight",
-            "backupCount": 4,
-            "level": "DEBUG", # All messages are written to the file
+            "filename": "",
+            "level": "DEBUG",
         },
     },
     "loggers": {
         APP_NAME: {
             "handlers": ["console", "file"],
-            "level": "DEBUG",  # All messages pass through this logger
+            "level": "DEBUG",
             "propagate": False,
         },
-        f"{APP_NAME}.git": {
+        GITLOGGER_NAME: { # Use the constant here
             "handlers": ["console", "file"],
-            "level": "DEBUG", # All git messages pass through this logger
+            "level": "DEBUG",
             "propagate": False,
         },
     },
     "root": {
         "handlers": ["console", "file"],
-        "level": "DEBUG", # CRITICAL: All messages from root and children pass through
+        "level": "DEBUG",
     },
 }
-
 
 LOGLEVELS = {
     0: logging.WARNING,
@@ -70,13 +66,19 @@ LOGLEVELS = {
     2: logging.DEBUG,
 }
 
-
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
-    """Creates the base log directory."""
+    """Create the base log directory if it doesn't exist.
+
+    This directory is typically located at :file:`~/.local/state/docbuild/logs`
+    as per the XDG Base Directory Specification.
+
+    :param base_log_dir: The base directory where logs should be stored.
+        Considers the `XDG_STATE_HOME` environment variable if set.
+    :return: The path to the base log directory.
+    """
     log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
-
 
 def _resolve_class(path: str):
     """Dynamically imports and returns a class from a string path."""
@@ -84,12 +86,15 @@ def _resolve_class(path: str):
     module = importlib.import_module(module_name)
     return getattr(module, class_name)
 
-
 def setup_logging(
     cliverbosity: int,
-    user_config: Optional[Dict[str, Any]] = None,
+    user_config: dict[str, Any] | None = None,
 ) -> None:
-    """Sets up a non-blocking, configurable logging system."""
+    """Sets up a non-blocking, configurable logging system.
+    
+    :param cliverbosity: ...
+    :param user_config: ...
+    """
     config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
     if user_config and "logging" in user_config:
@@ -109,24 +114,21 @@ def setup_logging(
     config["handlers"]["console"]["level"] = logging.getLevelName(verbosity_level)
 
     log_dir = create_base_log_dir()
-    log_path = log_dir / f"{APP_NAME}.log"
+    # Use a timestamp to generate a unique filename for each run.
+    timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = f"{APP_NAME}_{timestamp}.log"
+    log_path = log_dir / log_filename
     config["handlers"]["file"]["filename"] = str(log_path)
 
     # --- Handler and Listener Initialization ---
     built_handlers = []
     for hname, hconf in config["handlers"].items():
-        # Correctly resolve the class from the configuration
         cls = _resolve_class(hconf["class"])
-        
-        # We must not pass 'level' or 'formatter' to the handler's constructor.
-        # They are set using .setLevel() and .setFormatter() methods.
         handler_args = {
             k: v for k, v in hconf.items() if k not in ["class", "formatter", "level"]
         }
-        
         handler = cls(**handler_args)
-
-        # Set the level and formatter separately using their methods
+        
         handler.setLevel(hconf.get("level", "NOTSET"))
         fmt_conf = config["formatters"][hconf["formatter"]]
         handler.setFormatter(logging.Formatter(fmt_conf["format"], fmt_conf.get("datefmt")))
@@ -141,6 +143,7 @@ def setup_logging(
     atexit.register(listener.stop)
 
     # --- Logger Initialization ---
+    # Attach the QueueHandler to all loggers and set their levels.
     for lname, lconf in config["loggers"].items():
         logger = logging.getLogger(lname)
         logger.setLevel(lconf["level"])

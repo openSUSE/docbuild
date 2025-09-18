@@ -108,8 +108,6 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
-    # Phase 1: Basic logging setup.
-    setup_logging(cliverbosity=verbose)
 
     if ctx.invoked_subcommand is None:
         # If no subcommand is invoked, show the help message

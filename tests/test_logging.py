@@ -1,15 +1,11 @@
 import logging
 import pytest
 from docbuild.logging import setup_logging
-
-# New imports and functions to help with the test
 import atexit
 import queue
 import copy
 from typing import Any, Dict, Optional
 from docbuild.constants import APP_NAME, BASE_LOG_DIR
-
-log = logging.getLogger(__name__)
 
 
 def test_console_verbosity_levels(caplog):
@@ -54,9 +50,9 @@ def test_file_logs_all_levels(caplog):
     Tests that the file handler captures all messages
     (INFO and DEBUG) regardless of console verbosity.
     """
-    # Temporarily add a handler to the logger that writes to caplog.
-    temp_handler = caplog.handler
+    # Temporarily add the caplog handler to the logger
     logger = logging.getLogger("docbuild.cli")
+    temp_handler = caplog.handler
     logger.addHandler(temp_handler)
     
     # Reset logger level to DEBUG so all messages are emitted
@@ -94,6 +90,7 @@ def test_setup_with_user_config(caplog):
         }
     }
     
+    # Temporarily add the caplog handler to the logger
     logger = logging.getLogger("docbuild.cli")
     temp_handler = caplog.handler
     logger.addHandler(temp_handler)
@@ -110,4 +107,5 @@ def test_setup_with_user_config(caplog):
     assert "An error." in caplog.text
     assert "A warning." not in caplog.text
     
+    # Clean up the handler
     logger.removeHandler(temp_handler)

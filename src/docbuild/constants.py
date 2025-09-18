@@ -139,6 +139,9 @@ DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
 used in production."""
 
 # --- Logging constants ---
+GITLOGGER_NAME = "docbuild.git"
+"""The standardized name for the Git-related logger."""
+
 BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
 """The directory where log files will be stored, typically at
 :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
