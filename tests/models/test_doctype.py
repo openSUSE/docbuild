@@ -14,7 +14,7 @@ def test_valid_doctype():
     assert doctype.product == Product.sles
     assert doctype.docset == ['15-SP6']
     assert doctype.lifecycle == LifecycleFlag.supported
-    assert doctype.langs == [LanguageCode('en-us')]
+    assert doctype.langs == [LanguageCode(language='en-us')]
 
 
 def test_str_in_doctype():
@@ -46,7 +46,7 @@ def test_string_langs_in_doctype():
         lifecycle='supported',
         langs='en-us',
     )
-    assert doctype.langs == [LanguageCode('en-us')]
+    assert doctype.langs == [LanguageCode(language='en-us')]
 
 
 def test_multiplestrings_langs_in_doctype():
@@ -56,7 +56,7 @@ def test_multiplestrings_langs_in_doctype():
         lifecycle='supported',
         langs='en-us,de-de',
     )
-    assert doctype.langs == [LanguageCode('de-de'), LanguageCode('en-us')]
+    assert doctype.langs == [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
 
 
 @pytest.mark.parametrize(
@@ -68,7 +68,7 @@ def test_multiplestrings_langs_in_doctype():
                 Product.sles,
                 ['15-SP6'],
                 LifecycleFlag.unknown,
-                [LanguageCode('en-us')],
+                [LanguageCode(language='en-us')],
             ),
         ),
         (
@@ -77,52 +77,52 @@ def test_multiplestrings_langs_in_doctype():
                 Product.sles,
                 ['15-SP5', '15-SP6'],
                 LifecycleFlag.unknown,
-                [LanguageCode('en-us')],
+                [LanguageCode(language='en-us')],
             ),
         ),
         (
             '//en-us',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='en-us')]),
         ),
         (
             '/*/*/en-us',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='en-us')]),
         ),
         (
             '*//en-us',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='en-us')]),
         ),
         (
             '/*/en-us',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='en-us')]),
         ),
         (
             '*/*/en-us',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='en-us')]),
         ),
         (
             '*/@beta/en-us',
-            (Product.ALL, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.beta, [LanguageCode(language='en-us')]),
         ),
         (
             '*/*@beta/en-us',
-            (Product.ALL, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+            (Product.ALL, ['*'], LifecycleFlag.beta, [LanguageCode(language='en-us')]),
         ),
         (
             'sles/*@beta/en-us',
-            (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+            (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode(language='en-us')]),
         ),
         (
             '/sles/*@beta/en-us',
-            (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode('en-us')]),
+            (Product.sles, ['*'], LifecycleFlag.beta, [LanguageCode(language='en-us')]),
         ),
         (
             '/*/*@supported/*',
-            (Product.ALL, ['*'], LifecycleFlag.supported, [LanguageCode('*')]),
+            (Product.ALL, ['*'], LifecycleFlag.supported, [LanguageCode(language='*')]),
         ),
         (
             '/*/*/*',
-            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode('*')]),
+            (Product.ALL, ['*'], LifecycleFlag.unknown, [LanguageCode(language='*')]),
         ),
     ],
 )
@@ -200,9 +200,9 @@ def test_sorted_docsets_in_doctype():
 def test_sorted_langs_in_doctype():
     dt1 = Doctype.from_str('sles/15-SP6/en-us,zh-cn,de-de')
     assert dt1.langs == [
-        'de-de',
-        'en-us',
-        'zh-cn',
+        LanguageCode(language='de-de'),
+        LanguageCode(language='en-us'),
+        LanguageCode(language='zh-cn'),
     ]
 
 
@@ -224,7 +224,7 @@ def test_sorted_langs_in_doctype_instantiation():
         lifecycle=LifecycleFlag.supported,
         langs=langs,
     )
-    assert dt1.langs == sorted([LanguageCode(lang) for lang in langs])
+    assert dt1.langs == sorted([LanguageCode(language=lang) for lang in langs])
 
 
 @pytest.mark.parametrize(

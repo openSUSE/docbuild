@@ -5,6 +5,8 @@ from docbuild.utils.merge import _dedup_doctypes, merge_doctypes
 
 
 def dt(s: str) -> Doctype:
+    """Helper function to create a Doctype instance from a string."""
+    # The fix: call the classmethod from_str directly, or use a keyword argument.
     return Doctype.from_str(s)
 
 
@@ -87,7 +89,7 @@ def test_dedup_doctypes_duplicates():
     d = dt('sles/1/en-us')
     result = _dedup_doctypes([d, d, d])
     assert result == [d]
-    assert result != [d, d, d]  # Ensure deduplication occurred
+    assert result != [d, d, d]
 
 
 def test_dedup_doctypes_single():
@@ -100,7 +102,7 @@ def test_dedup_doctypes_distinct():
     dt1 = dt('sles/1/en-us')
     dt2 = dt('sles/2/en-us')
     result = _dedup_doctypes([dt1, dt2])
-    assert result == [dt1, dt2] or result == [dt2, dt1]  # Order not guaranteed
+    assert set(result) == {dt1, dt2}
 
 
 def test_dedup_doctypes_order_preserved():

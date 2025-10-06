@@ -30,7 +30,7 @@ def _merge_langs(
     :return: Merged sorted list of LanguageCode objects.
     """
     if '*' in langs1 or '*' in langs2:
-        return [LanguageCode('*')]
+        return [LanguageCode(language='*')]
     return sorted(set(chain(langs1, langs2)))  # sorted(set(langs1 + langs2))
 
 

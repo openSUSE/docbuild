@@ -204,7 +204,7 @@ class Doctype(BaseModel):
             value = sorted(value.split(','))
         return sorted(
             [
-                lang if isinstance(lang, LanguageCode) else LanguageCode(lang)
+                lang if isinstance(lang, LanguageCode) else LanguageCode(language=lang)
                 for lang in value
             ]
         )
