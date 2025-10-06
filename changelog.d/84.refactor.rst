@@ -1,0 +1,1 @@
+Refactored the `LanguageCode` model to be more idiomatic to Pydantic by removing a custom `__init__` and using a `model_validator` for string parsing.
