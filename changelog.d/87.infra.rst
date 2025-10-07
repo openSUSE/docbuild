@@ -1,0 +1,1 @@
+Aligned the 'uv' setup in the CI workflow for macOS and Ubuntu to ensure consistent and reliable dependency management across platforms. This resolves a 'docker: command not found' error on the macOS runner.
