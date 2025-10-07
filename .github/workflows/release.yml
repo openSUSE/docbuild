@@ -45,6 +45,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check Version Consistency
+        id: version_check
+        run: |
+          BRANCH_VERSION="${{ env.VERSION }}"
+          
+          # Safely extract __version__ from the file (for example, '1.0.0' from __version__ = '1.0.0')
+          CODE_VERSION=$(grep '__version__' src/docbuild/__about__.py | awk -F "'" '{print $2}')
+          
+          echo "Branch version: $BRANCH_VERSION"
+          echo "Code version:   $CODE_VERSION"
+
+          if [ "$BRANCH_VERSION" != "$CODE_VERSION" ]; then
+            echo "::error file=src/docbuild/__about__.py::Release branch version ($BRANCH_VERSION) does not match code version ($CODE_VERSION) in __about__.py."
+            echo "ERROR: Version mismatch detected! The release branch name must exactly match the __version__ in the code."
+            exit 1
+          fi
+          echo "Version check passed: $BRANCH_VERSION matches $CODE_VERSION."
+
       - name: Setup uv
         id: setup-uv
         uses: astral-sh/setup-uv@v6
