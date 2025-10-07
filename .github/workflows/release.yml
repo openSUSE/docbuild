@@ -53,8 +53,8 @@ jobs:
           # Safely extract __version__ from the file (for example, '1.0.0' from __version__ = '1.0.0')
           CODE_VERSION=$(grep '__version__' src/docbuild/__about__.py | awk -F "'" '{print $2}')
           
-          echo "Branch version: $BRANCH_VERSION"
-          echo "Code version:   $CODE_VERSION"
+          echo ":notice title=Branch version::$BRANCH_VERSION"
+          echo ":notice title=Code version::$CODE_VERSION"
 
           if [ "$BRANCH_VERSION" != "$CODE_VERSION" ]; then
             echo "::error file=src/docbuild/__about__.py::Release branch version ($BRANCH_VERSION) does not match code version ($CODE_VERSION) in __about__.py."
