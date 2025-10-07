@@ -1,6 +1,6 @@
 """Language model for representing language codes."""
 
-from functools import total_ordering
+from functools import total_ordering, cached_property
 import re
 from typing import Any, ClassVar
 
@@ -40,7 +40,7 @@ class LanguageCode(BaseModel):
         {'*'} | ALLOWED_LANGUAGES,
     )
     """Class variable containing all allowed languages."""
-    
+
     @model_validator(mode='before')
     @classmethod
     def _convert_str_to_dict(cls, data: Any) -> Any:
@@ -140,6 +140,24 @@ class LanguageCode(BaseModel):
             )
         return value
 
+    @cached_property
+    def _parts(self) -> tuple[str, str] | tuple[str]:
+        """Split the `language` code into language and country.
+
+        This method parses the :attr:`language` string into its parts
+        and caches the result per instance to avoid redundant parsing operations.
+
+        :returns: A tuple containing:
+          - ``(language, country)`` if both parts are present.
+          - ``('*',)`` if the language code is ``"*"``
+        """
+        if self.language == '*':
+            return ('*',)
+        
+        # Use split('-') as the separator is already normalized
+        parts = self.language.split('-')
+        return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
+
     @computed_field(
         repr=False,
         title='The language part of the language code',
@@ -147,9 +165,7 @@ class LanguageCode(BaseModel):
     )
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
-        if self.language == '*':
-            return '*'
-        return re.split(r'[_-]', self.language)[0]
+        return self._parts[0]
 
     @computed_field(
         repr=False,
@@ -158,6 +174,4 @@ class LanguageCode(BaseModel):
     )
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
-        if self.language == '*':
-            return '*'
-        return re.split(r'[_-]', self.language)[1]
+        return self._parts[1] if len(self._parts) > 1 else '*'
