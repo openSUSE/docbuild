@@ -49,21 +49,31 @@ jobs:
             jq \
             rsvg-convert \
             openssh-clients || true
-      - name: Install the latest version of uv
-        id: setup-uv
-        uses: astral-sh/setup-uv@v6
+            
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "docbuild"
+          python-version: '3.12'
+
+      - name: Install uv
+        id: setup-uv
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip install uv
 
       - name: Print the installed version
-        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+        run: echo "Installed uv version is $(.venv/bin/uv --version)"
+
       - name: Install dependencies
-        run: uv sync --frozen --group devel
+        run: |
+          source .venv/bin/activate
+          uv sync --frozen --group devel
+
       - name: Run tests
         run: |
-           uv run --frozen pytest -vv
+          source .venv/bin/activate
+          pytest -vv
 
   test-macos:
     name: macos-latest
