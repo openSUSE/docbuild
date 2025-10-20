@@ -56,5 +56,5 @@ External tools
 * |daps|: Our tool to build documentation. This is an obligatory requirement. This adds other dependencies.
 * |uv|: The Python package and project manager. This is explained in :ref:`devel-helpers`.
 * :command:`make`: Used to orchestrate the documentation build process.
-* `jing <https://jing.nu/>`: For validating the XML configuration files against their RNC schema.
-* `gh <https://cli.github.com/>`: The GitHub CLI, an optional tool for GitHub interactions. See :ref:`github-cli`.
+* `jing <https://jing.nu/>`_: For validating the XML configuration files against their RNC schema.
+* `gh <https://cli.github.com/>`_: The GitHub CLI, an optional tool for GitHub interactions. See :ref:`github-cli`.

@@ -631,10 +631,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME" title="docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></p></td>
 <td><p>The default filename for the environment's config file, typically</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
+<td><p>The standardized name for the Git-related logger.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
 <td><p>The directory where log files will be stored, typically at</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
 <td><p>Directory where additional files (RNC, XSLT) for XML processing are stored.</p></td>
 </tr>
 </tbody>
@@ -687,7 +690,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.VALID_PRODUCTS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">VALID_PRODUCTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docbuild.constants.VALID_PRODUCTS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">VALID_PRODUCTS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docbuild.constants.VALID_PRODUCTS" title="Link to this definition">#</a></dt>
 <dd><p>A dictionary of valid products acronyms and their full names.</p>
 </dd></dl>
 
@@ -771,6 +774,12 @@ order of priority.</p>
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'env.production.toml'</span></em><a class="headerlink" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME" title="Link to this definition">#</a></dt>
 <dd><p>The default filename for the environment’s config file, typically
 used in production.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.GITLOGGER_NAME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">GITLOGGER_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild.git'</span></em><a class="headerlink" href="#docbuild.constants.GITLOGGER_NAME" title="Link to this definition">#</a></dt>
+<dd><p>The standardized name for the Git-related logger.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -860,6 +869,7 @@ Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.APP_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">APP_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GITLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 </ul>

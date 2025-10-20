@@ -571,7 +571,7 @@
 <h1>docbuild.models.repo.Repo<a class="headerlink" href="#docbuild-models-repo-repo" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
 <dd><p>A repository model that can be initialized from a URL or a short name.</p>
 <p>This model can be compared directly with strings, which will check
 against the repository’s abbreviated name (e.g., ‘org/repo’).</p>
@@ -579,56 +579,56 @@ against the repository’s abbreviated name (e.g., ‘org/repo’).</p>
 regardless of the original URL (HTTPS vs. SSH).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.DEFAULT_HOST">
-<span class="sig-name descname"><span class="pre">DEFAULT_HOST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://github.com'</span></em><a class="headerlink" href="#docbuild.models.repo.Repo.DEFAULT_HOST" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_HOST</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://github.com'</span></em><a class="headerlink" href="#docbuild.models.repo.Repo.DEFAULT_HOST" title="Link to this definition">#</a></dt>
 <dd><p>The default host to use when constructing a URL from a short name.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.url">
-<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.url" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.url" title="Link to this definition">#</a></dt>
 <dd><p>The full URL of the repository.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.surl">
-<span class="sig-name descname"><span class="pre">surl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.surl" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">surl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.surl" title="Link to this definition">#</a></dt>
 <dd><p>The shortened URL version of the repository, for example gh://org/repo for
 a GitHub repo.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.name" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.name" title="Link to this definition">#</a></dt>
 <dd><p>The abbreviated name of the repository (e.g., ‘org/repo’).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__eq__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__eq__" title="Link to this definition">#</a></dt>
 <dd><p>Compare Repo with another Repo (by name) or a string (by name).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__str__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__str__" title="Link to this definition">#</a></dt>
 <dd><p>Return the canonical URL of the repository.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__hash__">
-<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__hash__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__hash__" title="Link to this definition">#</a></dt>
 <dd><p>Hash the Repo object based on its canonical derived name.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__contains__">
-<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__contains__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__contains__" title="Link to this definition">#</a></dt>
 <dd><p>Check if a string is part of the repository’s abbreviated name.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.slug">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slug</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.slug" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slug</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.repo.Repo.slug" title="Link to this definition">#</a></dt>
 <dd><p>Return the slug name of the repository.</p>
 </dd></dl>
 

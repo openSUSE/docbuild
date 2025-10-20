@@ -564,23 +564,6 @@
   <section id="module-docbuild.logging">
 <span id="docbuild-logging"></span><h1>docbuild.logging<a class="headerlink" href="#module-docbuild.logging" title="Link to this heading">#</a></h1>
 <p>Set up logging for the documentation build process.</p>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.LOGGERNAME" title="docbuild.logging.LOGGERNAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOGGERNAME</span></code></a></p></td>
-<td><p>Name of the main logger for the application.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.LOGFILE" title="docbuild.logging.LOGFILE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOGFILE</span></code></a></p></td>
-<td><p>Filename for the main log file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.KEEP_LOGS" title="docbuild.logging.KEEP_LOGS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KEEP_LOGS</span></code></a></p></td>
-<td><p>Number of log files to keep before rolling over.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -589,10 +572,7 @@
 <td><p>Create the base log directory if it doesn't exist.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.setup_logging" title="docbuild.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>(→ None)</p></td>
-<td><p>Set up logging for the application.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.get_effective_level" title="docbuild.logging.get_effective_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_effective_level</span></code></a>(→ int)</p></td>
-<td><p>Return a valid log level, clamped safely.</p></td>
+<td><p>Sets up a non-blocking, configurable logging system.</p></td>
 </tr>
 </tbody>
 </table>
@@ -600,27 +580,9 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.logging.LOGGERNAME">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">LOGGERNAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild'</span></em><a class="headerlink" href="#docbuild.logging.LOGGERNAME" title="Link to this definition">#</a></dt>
-<dd><p>Name of the main logger for the application.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.logging.LOGFILE">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">LOGFILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild.log'</span></em><a class="headerlink" href="#docbuild.logging.LOGFILE" title="Link to this definition">#</a></dt>
-<dd><p>Filename for the main log file.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.logging.KEEP_LOGS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">KEEP_LOGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#docbuild.logging.KEEP_LOGS" title="Link to this definition">#</a></dt>
-<dd><p>Number of log files to keep before rolling over.</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.logging.create_base_log_dir">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">create_base_log_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_log_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">BASE_LOG_DIR</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.logging.create_base_log_dir" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">create_base_log_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_log_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">BASE_LOG_DIR</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.logging.create_base_log_dir" title="Link to this definition">#</a></dt>
 <dd><p>Create the base log directory if it doesn’t exist.</p>
 <p>This directory is typically located at <code class="file docutils literal notranslate"><span class="pre">~/.local/state/docbuild/logs</span></code>
 as per the XDG Base Directory Specification.</p>
@@ -637,35 +599,16 @@ Considers the <cite>XDG_STATE_HOME</cite> environment variable if set.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.logging.setup_logging">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliverbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'[%(levelname)s]</span> <span class="pre">%(funcName)s:</span> <span class="pre">%(message)s'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_logdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.13)"><span class="pre">pathlib.Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">BASE_LOG_DIR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.setup_logging" title="Link to this definition">#</a></dt>
-<dd><p>Set up logging for the application.</p>
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliverbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.setup_logging" title="Link to this definition">#</a></dt>
+<dd><p>Sets up a non-blocking, configurable logging system.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cliverbosity</strong> – The verbosity level from the command line.</p></li>
-<li><p><strong>fmt</strong> – The format string for log messages.</p></li>
-<li><p><strong>logdir</strong> – The directory where log files should be stored.</p></li>
-<li><p><strong>default_logdir</strong> – The default directory for logs.</p></li>
-<li><p><strong>use_queue</strong> – Whether to use QueueHandler and QueueListener (for production).</p></li>
+<li><p><strong>cliverbosity</strong> – <p>…</p>
+</p></li>
+<li><p><strong>user_config</strong> – <p>…</p>
+</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.logging.get_effective_level">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">get_effective_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.logging.get_effective_level" title="Link to this definition">#</a></dt>
-<dd><p>Return a valid log level, clamped safely.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>verbosity</strong> – The verbosity level, typically from command
-line arguments (range 0..8)</p></li>
-<li><p><strong>offset</strong> – An offset to apply to the verbosity level.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The effective log level.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -720,15 +663,10 @@ line arguments (range 0..8)</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.LOGGERNAME"><code class="docutils literal notranslate"><span class="pre">LOGGERNAME</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.LOGFILE"><code class="docutils literal notranslate"><span class="pre">LOGFILE</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.KEEP_LOGS"><code class="docutils literal notranslate"><span class="pre">KEEP_LOGS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.create_base_log_dir"><code class="docutils literal notranslate"><span class="pre">create_base_log_dir()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.get_effective_level"><code class="docutils literal notranslate"><span class="pre">get_effective_level()</span></code></a></li>
 </ul>
 </li>
 </ul>
