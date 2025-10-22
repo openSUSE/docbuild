@@ -21,6 +21,7 @@ from ..constants import (
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
+from ..utils.pidlock import PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_config import config
@@ -33,7 +34,7 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 PYTHON_VERSION = (
     f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
 )
-# Global instance of Rich Console
+log = logging.getLogger(__name__) # Ensure logger is available globally
 CONSOLE = rich.console.Console(stderr=True, highlight=False)
 
 def _setup_console() -> None:
@@ -152,10 +153,35 @@ def cli(
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,
     )
+    # The environment config file path is the resource ID for the lock.
+    # The path is in context.envconfigfiles, which is a tuple of paths.
+    
+    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
+    
+    # --- CONCURRENCY CONTROL ---
+    if env_config_path:
+        # Wrap the core execution in the PidFileLock context manager
+        # If the lock cannot be acquired, a RuntimeError is raised, which exits the program.
+        try:
+            # Acquire the lock using the environment config file path as the resource ID
+            ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
+            ctx.obj.env_lock.acquire()
+            log.info(f"Acquired lock for environment config: {env_config_path.name}")
+        except RuntimeError as e:
+            # If the lock is already held, log the error and exit gracefully.
+            log.error(str(e))
+            ctx.exit(1)
+        except Exception as e:
+            # Catch all other potential issues during lock acquisition/setup
+            log.error(f"Failed to set up environment lock: {e}")
+            ctx.exit(1)
+
+    # Final config processing must happen outside the lock acquisition check
     context.envconfig = replace_placeholders(
         context.envconfig,
     )
-
+    
+    # The acquired lock will be automatically released when the program exits via the atexit.register call in PidFileLock.acquire().
 
 # Add subcommand
 cli.add_command(build)

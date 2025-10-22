@@ -149,3 +149,7 @@ Directory Specification."""
 
 XMLDATADIR = Path(__file__).parent / 'config' / 'xml' / 'data'
 """Directory where additional files (RNC, XSLT) for XML processing are stored."""
+
+# --- Locking constants ---
+BASE_LOCK_DIR = BASE_LOG_DIR.parent / 'locks' 
+"""The directory where PID lock files will be stored."""
