@@ -188,6 +188,8 @@ html_theme_options = {
 
 html_logo = '_static/logo.png'
 
+html_favicon = '_static/logo.png'
+
 # -- Options for intersphinx extension ---------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
