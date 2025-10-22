@@ -166,14 +166,14 @@ def cli(
             # Acquire the lock using the environment config file path as the resource ID
             ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
             ctx.obj.env_lock.acquire()
-            log.info(f"Acquired lock for environment config: {env_config_path.name}")
+            log.info("Acquired lock for environment config: %r", env_config_path.name)
         except RuntimeError as e:
             # If the lock is already held, log the error and exit gracefully.
             log.error(str(e))
             ctx.exit(1)
         except Exception as e:
             # Catch all other potential issues during lock acquisition/setup
-            log.error(f"Failed to set up environment lock: {e}")
+            log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
 
     # Final config processing must happen outside the lock acquisition check

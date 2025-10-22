@@ -31,6 +31,10 @@ class PidFileLock:
         self.lock_path: Path = self._generate_lock_name() 
         self._lock_acquired: bool = False
 
+    @property
+    def lock(self):
+        return self._lock_acquired
+    
     def __enter__(self) -> Self:
         """Acquire the lock."""
         self.acquire()
@@ -70,7 +74,7 @@ class PidFileLock:
                 else:
                     # Stale lock: file exists but process is dead. Remove it.
                     log.warning(
-                        f"Found stale lock file at {self.lock_path} (PID {pid_str}). Removing."
+                        "Found stale lock file at %s (PID %s). Removing.", (self.lock_path, pid_str)
                     )
                     self.lock_path.unlink()
             
@@ -81,11 +85,11 @@ class PidFileLock:
                 pass
             except OSError as e: 
                 # Catching OSError for general I/O problems during read/unlink
-                log.error(f"Non-critical error while checking lock file: {e}")
+                log.error("Non-critical error while checking lock file: %s", e)
                 pass 
             except ValueError:
                 # Catching ValueError if the PID file content is not an integer
-                log.warning(f"Lock file at {self.lock_path} contains invalid PID. Removing.")
+                log.warning("Lock file at %s contains invalid PID. Removing.", self.lock_path)
                 try:
                     self.lock_path.unlink()
                 except OSError:
@@ -108,24 +112,28 @@ class PidFileLock:
             try:
                 self.lock_path.unlink()
                 self._lock_acquired = False
-                log.debug(f"Released lock at {self.lock_path}.")
+                log.debug("Released lock at %s.", self.lock_path)
                 
                 # Unregister the cleanup function
                 # This must be done to prevent the lock from being released twice
                 # (once manually, once at program exit)
                 atexit.unregister(self.release)
             except OSError as e:
-                log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
+                log.error("Failed to remove lock file at %s: %s", (self.lock_path, e))
 
     @staticmethod
     def _is_pid_running(pid: int) -> bool:
-        """Check if a process with the given PID is currently running."""
-        if pid <= 0:
-            return False
+        """Check if a process with the given PID is currently running.
+        
+        :param pid: The PID to check
+        :return: True, if the process with the given PID is running,
+                 False otherwise
+        """
         try:
-            # The signal 0 check raises OSError if the PID does not exist.
+            # Sending signal 0 will raise an OSError exception if the pid is
+            # not running. Do nothing otherwise.
             os.kill(pid, 0)
+            return True
         except OSError as err:
             # Check for ESRCH (No such process)
             return err.errno != errno.ESRCH
-        return True

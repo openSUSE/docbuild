@@ -72,7 +72,7 @@ def test_acquire_and_release_success(lock_setup):
         assert lock.lock_path.read_text().strip() == str(current_pid)
 
     # Verify lock file is released (deleted)
-    assert lock._lock_acquired is False
+    assert lock.lock is False
     assert not lock.lock_path.exists()
 
 

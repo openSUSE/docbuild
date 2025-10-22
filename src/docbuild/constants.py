@@ -138,18 +138,21 @@ DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
 """The default filename for the environment's config file, typically
 used in production."""
 
-# --- Logging constants ---
+# --- State and Logging Constants (Refactored) ---
+
+BASE_STATE_DIR = Path.home() / '.local' / 'state' / APP_NAME
+"""The directory where application state, logs, and locks are stored, 
+per XDG Base Directory Specification."""
+
 GITLOGGER_NAME = "docbuild.git"
 """The standardized name for the Git-related logger."""
 
-BASE_LOG_DIR = Path.home() / '.local' / 'state' / APP_NAME / 'logs'
-"""The directory where log files will be stored, typically at
-:file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
-Directory Specification."""
+BASE_LOG_DIR = BASE_STATE_DIR / 'logs'
+"""The directory where log files will be stored."""
+
+# --- Locking constants ---
+BASE_LOCK_DIR = BASE_STATE_DIR / 'locks'
+"""The directory where PID lock files will be stored."""
 
 XMLDATADIR = Path(__file__).parent / 'config' / 'xml' / 'data'
 """Directory where additional files (RNC, XSLT) for XML processing are stored."""
-
-# --- Locking constants ---
-BASE_LOCK_DIR = BASE_LOG_DIR.parent / 'locks' 
-"""The directory where PID lock files will be stored."""
