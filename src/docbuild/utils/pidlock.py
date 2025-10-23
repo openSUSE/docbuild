@@ -5,6 +5,7 @@ import hashlib
 import logging
 import os
 import errno
+import os
 from pathlib import Path
 from typing import Self, Any
 
@@ -18,7 +19,7 @@ class PidFileLock:
 
     The lock file is named based on a hash of the environment config file path.
     """
-
+    
     def __init__(self, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> None:
         """Initialize the lock manager.
 
@@ -26,13 +27,26 @@ class PidFileLock:
         :param lock_dir: The base directory for lock files.
         """
         self.resource_path = resource_path.resolve()
-        self.lock_dir = lock_dir
-        # The lock_path is already calculated here, fixing the AttributeError in test_acquire_and_release_success
-        self.lock_path: Path = self._generate_lock_name() 
+        
+        # Converted public attributes to private attributes
+        self._lock_dir: Path = lock_dir
+        self._lock_path: Path = self._generate_lock_name()
+        
         self._lock_acquired: bool = False
 
     @property
-    def lock(self):
+    def lock_dir(self) -> Path:
+        """The directory where PID lock files are stored."""
+        return self._lock_dir
+
+    @property
+    def lock_path(self) -> Path:
+        """The full path to the lock file."""
+        return self._lock_path
+    
+    @property
+    def lock(self) -> bool:
+        """Return the current lock acquisition state."""
         return self._lock_acquired
     
     def __enter__(self) -> Self:
@@ -50,15 +64,14 @@ class PidFileLock:
         """Generate a unique lock file name based on the resource path."""
         # SHA256 hash of the absolute path is used to ensure a unique, safe filename.
         path_hash = hashlib.sha256(str(self.resource_path).encode('utf-8')).hexdigest()
-        return self.lock_dir / f'docbuild-{path_hash}.pid'
+        return self._lock_dir / f'docbuild-{path_hash}.pid'
 
     def acquire(self) -> None:
         """Acquire the lock atomically, or diagnose an existing lock."""
         self.lock_dir.mkdir(parents=True, exist_ok=True)
-        self.lock_path = self._generate_lock_name()
         current_pid = os.getpid()
 
-        # 1. Attempt to acquire the lock file atomically (O_CREAT | O_EXCL)
+        # 1. Attempt to acquire the lock file atomically (O_CREAT | os.O_EXCL)
         try:
             # os.O_WRONLY | os.O_CREAT | os.O_EXCL ensures file is created ONLY if it doesn't exist.
             # 0o644 sets the file permissions (read/write for owner, read for others).
@@ -125,18 +138,16 @@ class PidFileLock:
 
     def release(self) -> None:
         """Release the lock file."""
-        if self._lock_acquired and self.lock_path and self.lock_path.exists():
+        if self._lock_acquired and self.lock_path.exists():
             try:
                 self.lock_path.unlink()
                 self._lock_acquired = False
                 log.debug("Released lock at %s.", self.lock_path)
                 
                 # Unregister the cleanup function
-                # This must be done to prevent the lock from being released twice
-                # (once manually, once at program exit)
                 atexit.unregister(self.release)
             except OSError as e:
-                log.error("Failed to remove lock file at %s: %s", (self.lock_path, e))
+                log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
 
     @staticmethod
     def _is_pid_running(pid: int) -> bool:
@@ -146,6 +157,8 @@ class PidFileLock:
         :return: True, if the process with the given PID is running,
                  False otherwise
         """
+        if pid <= 0:
+            return False
         try:
             # Sending signal 0 will raise an OSError exception if the pid is
             # not running. Do nothing otherwise.
