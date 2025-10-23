@@ -1,0 +1,57 @@
+docbuild.utils.pidlock.PidFileLock
+==================================
+
+.. py:class:: docbuild.utils.pidlock.PidFileLock(resource_path: pathlib.Path, lock_dir: pathlib.Path = BASE_LOCK_DIR)
+
+   Manages a PID lock file to ensure only one instance of an environment runs.
+
+   The lock file is named based on a hash of the environment config file path.
+
+
+   .. py:property:: lock_dir
+      :type: pathlib.Path
+
+
+      The directory where PID lock files are stored.
+
+
+
+   .. py:property:: lock_path
+      :type: pathlib.Path
+
+
+      The full path to the lock file.
+
+
+
+   .. py:property:: lock
+      :type: bool
+
+
+      Return the current lock acquisition state.
+
+
+
+   .. py:method:: __enter__() -> Self
+
+      Acquire the lock.
+
+
+
+   .. py:method:: __exit__(exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: Any) -> None
+
+      Release the lock.
+
+
+
+   .. py:method:: acquire() -> None
+
+      Acquire the lock atomically, or diagnose an existing lock.
+
+
+
+   .. py:method:: release() -> None
+
+      Release the lock file.
+
+

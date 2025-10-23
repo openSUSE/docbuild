@@ -20,5 +20,6 @@ Submodules
    /reference/_autoapi/docbuild/utils/decorators/index
    /reference/_autoapi/docbuild/utils/merge/index
    /reference/_autoapi/docbuild/utils/paths/index
+   /reference/_autoapi/docbuild/utils/pidlock/index
 
 

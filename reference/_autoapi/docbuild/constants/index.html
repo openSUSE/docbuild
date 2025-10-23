@@ -47,6 +47,7 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/constants/index';</script>
+    <link rel="icon" href="../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="docbuild.logging" href="../logging/index.html" />
@@ -494,6 +495,10 @@
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../utils/merge/index.html">docbuild.utils.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../utils/paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 </ul>
@@ -631,11 +636,17 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME" title="docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></p></td>
 <td><p>The default filename for the environment's config file, typically</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_STATE_DIR" title="docbuild.constants.BASE_STATE_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></p></td>
+<td><p>The directory where application state, logs, and locks are stored,</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
 <td><p>The standardized name for the Git-related logger.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
-<td><p>The directory where log files will be stored, typically at</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
+<td><p>The directory where log files will be stored.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOCK_DIR" title="docbuild.constants.BASE_LOCK_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></p></td>
+<td><p>The directory where PID lock files will be stored.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
 <td><p>Directory where additional files (RNC, XSLT) for XML processing are stored.</p></td>
@@ -777,6 +788,13 @@ used in production.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.BASE_STATE_DIR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_STATE_DIR</span></span><a class="headerlink" href="#docbuild.constants.BASE_STATE_DIR" title="Link to this definition">#</a></dt>
+<dd><p>The directory where application state, logs, and locks are stored,
+per XDG Base Directory Specification.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.GITLOGGER_NAME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">GITLOGGER_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild.git'</span></em><a class="headerlink" href="#docbuild.constants.GITLOGGER_NAME" title="Link to this definition">#</a></dt>
 <dd><p>The standardized name for the Git-related logger.</p>
@@ -785,9 +803,13 @@ used in production.</p>
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.BASE_LOG_DIR">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_LOG_DIR</span></span><a class="headerlink" href="#docbuild.constants.BASE_LOG_DIR" title="Link to this definition">#</a></dt>
-<dd><p>The directory where log files will be stored, typically at
-<code class="file docutils literal notranslate"><span class="pre">~/.local/state/docbuild/logs</span></code> as recommended by the XDG Base
-Directory Specification.</p>
+<dd><p>The directory where log files will be stored.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.BASE_LOCK_DIR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_LOCK_DIR</span></span><a class="headerlink" href="#docbuild.constants.BASE_LOCK_DIR" title="Link to this definition">#</a></dt>
+<dd><p>The directory where PID lock files will be stored.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -869,8 +891,10 @@ Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.APP_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">APP_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_STATE_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GITLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOCK_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 </ul>
 </li>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.language &#8212; docbuild 0.13.0 documentation</title>
+    <title>docbuild.utils.pidlock &#8212; docbuild 0.13.0 documentation</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/models/language/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/utils/pidlock/index';</script>
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.models.language.LanguageCode" href="LanguageCode.html" />
-    <link rel="prev" title="docbuild.models.doctype.Doctype" href="../doctype/Doctype.html" />
+    <link rel="next" title="docbuild.utils.pidlock.PidFileLock" href="PidFileLock.html" />
+    <link rel="prev" title="docbuild.utils.paths" href="../paths/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -446,57 +446,57 @@
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.models.language</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../lifecycle/BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../repo/Repo.html">docbuild.models.repo.Repo</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/convert/index.html">docbuild.utils.convert</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.utils.pidlock</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
 </ul>
 </details></li>
 </ul>
@@ -550,9 +550,9 @@
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.models</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.utils</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.models.language</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.utils.pidlock</span></li>
   </ul>
 </nav>
 </div>
@@ -569,17 +569,17 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-docbuild.models.language">
-<span id="docbuild-models-language"></span><h1>docbuild.models.language<a class="headerlink" href="#module-docbuild.models.language" title="Link to this heading">#</a></h1>
-<p>Language model for representing language codes.</p>
+  <section id="module-docbuild.utils.pidlock">
+<span id="docbuild-utils-pidlock"></span><h1>docbuild.utils.pidlock<a class="headerlink" href="#module-docbuild.utils.pidlock" title="Link to this heading">#</a></h1>
+<p>PID file locking utility.</p>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 </div>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LanguageCode</span></code></a></p></td>
-<td><p>The language in the format language-country (all lowercase).</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="PidFileLock.html#docbuild.utils.pidlock.PidFileLock" title="docbuild.utils.pidlock.PidFileLock"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PidFileLock</span></code></a></p></td>
+<td><p>Manages a PID lock file to ensure only one instance of an environment runs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -598,20 +598,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../doctype/Doctype.html"
+       href="../paths/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.models.doctype.Doctype</p>
+        <p class="prev-next-title">docbuild.utils.paths</p>
       </div>
     </a>
     <a class="right-next"
-       href="LanguageCode.html"
+       href="PidFileLock.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.language.LanguageCode</p>
+        <p class="prev-next-title">docbuild.utils.pidlock.PidFileLock</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -642,7 +642,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/models/language/index.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/utils/pidlock/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -658,7 +658,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/models/language/index.rst.txt"
+      <li><a href="../../../../../_sources/reference/_autoapi/docbuild/utils/pidlock/index.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
