@@ -65,7 +65,7 @@ def test_acquire_and_release_success(lock_setup):
     
     # Acquire lock via context manager
     with lock:
-        assert lock._lock_acquired is True
+        assert lock.lock is True
         assert lock.lock_path.exists()
         
         # Verify content is the current PID
@@ -92,7 +92,7 @@ def test_stale_lock_is_cleaned_up(lock_setup, mock_pid_dead):
     lock.acquire()
     
     # 3. Verify the stale lock was removed and a new one was acquired
-    assert lock._lock_acquired is True
+    assert lock.lock is True
     assert lock.lock_path.exists()
     assert lock.lock_path.read_text().strip() == str(os.getpid())
     log.info("Stale lock successfully cleaned and re-acquired.")
@@ -117,7 +117,7 @@ def test_concurrent_instance_raises_runtime_error(lock_setup, mock_pid_running):
     assert f"docbuild instance already running (PID: {running_pid})" in str(excinfo.value)
     
     # 4. Verify the lock was NOT acquired or removed
-    assert lock._lock_acquired is False
+    assert lock.lock is False
     assert lock_path.exists()
     assert lock_path.read_text().strip() == str(running_pid)
 
@@ -143,7 +143,7 @@ def test_lock_release_cleans_up_atexit_registration(mock_atexit, lock_setup):
     mock_atexit.unregister.assert_called_once_with(lock.release)
     
     # Check lock state
-    assert lock._lock_acquired is False
+    assert lock.lock is False
     assert not lock.lock_path.exists()
 
 
@@ -157,7 +157,7 @@ def test_lock_acquiring_without_dir_exists(lock_setup):
 
     lock = PidFileLock(resource_path, lock_dir)
     with lock:
-        assert lock._lock_acquired is True
+        assert lock.lock is True
         assert lock.lock_path.exists()
         assert lock_dir.is_dir() # Verify directory was created
     
