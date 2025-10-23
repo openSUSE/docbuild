@@ -1,0 +1,1 @@
+Implemented Pydantic validation for the application configuration (AppConfig). This ensures early discovery of typos, incorrect types, and placeholder errors in the configuration files at startup.
