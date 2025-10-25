@@ -15,18 +15,30 @@ class App_LoggingConfig(BaseModel):
     This structure is validated for existence of core sections, but allows
     for the flexible structure required by logging.config.dictConfig.
     """
-    # These attributes are required by Python's logging dictConfig schema
     version: int = 1
     disable_existing_loggers: bool = False
     
-    # We define core sections as dicts to allow any arbitrary content inside,
-    # as defined by the user's logging schema.
-    formatters: dict[str, Any] = Field(default_factory=dict)
-    handlers: dict[str, Any] = Field(default_factory=dict)
-    loggers: dict[str, Any] = Field(default_factory=dict)
-    root: dict[str, Any] = Field(default_factory=dict)
+    formatters: dict[str, Any] = Field(
+        default_factory=dict,
+        title="Formatters Dictionary",
+        description="Defines the format strings and styles for log messages."
+    )
+    handlers: dict[str, Any] = Field(
+        default_factory=dict,
+        title="Handlers Dictionary",
+        description="Defines how log messages are distributed (e.g., console, file, etc.)."
+    )
+    loggers: dict[str, Any] = Field(
+        default_factory=dict,
+        title="Loggers Dictionary",
+        description="Defines specific loggers by name, overriding settings from the root logger."
+    )
+    root: dict[str, Any] = Field(
+        default_factory=dict,
+        title="Root Logger Configuration",
+        description="Defines the global fallback settings for all loggers (level and handlers)."
+    )
     
-    # Allow extra keys, although the root model should usually cover them.
     model_config = ConfigDict(extra='allow')
 
 
