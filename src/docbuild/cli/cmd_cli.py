@@ -8,10 +8,12 @@ import rich.console
 import rich.logging
 from rich.pretty import install
 from rich.traceback import install as install_traceback
+from pydantic import ValidationError
 
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
 from ..config.load import handle_config
+from ..models.config_model.app import AppConfig
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
@@ -124,10 +126,13 @@ def cli(
     context.verbose = verbose
     context.dry_run = dry_run
     context.debug = debug
-    # Set the defaults. Will be overridden if config files are provided.
+    
+    # --- PHASE 1: Load and Validate Application Config ---
+    
+    # 1. Load the raw application config dictionary
     (
         context.appconfigfiles,
-        context.appconfig,
+        raw_appconfig, # Store config as raw dictionary
         context.appconfig_from_defaults,
     ) = handle_config(
         app_config,
@@ -136,12 +141,25 @@ def cli(
         None,
         DEFAULT_APP_CONFIG,
     )
-    context.appconfig = replace_placeholders(context.appconfig)
 
-    # Phase 2: Advanced logging setup with user configuration.
-    logging_config = context.appconfig.get('logging', {})
+    # 2. Validate the raw config dictionary using Pydantic
+    try:
+        # Pydantic validation also handles placeholder replacement via @model_validator
+        context.appconfig = AppConfig.from_dict(raw_appconfig)
+    except (ValueError, ValidationError) as e:
+        log.error("Application configuration failed validation:")
+        log.error("Error in config file(s): %s", context.appconfigfiles)
+        log.error(e)
+        ctx.exit(1)
+
+    # 3. Setup logging using the validated config object
+    # Use model_dump(by_alias=True) to ensure the 'class' alias is used.
+    logging_config = context.appconfig.logging.model_dump(by_alias=True, exclude_none=True)
     setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
+    # --- PHASE 2: Load Environment Config and Acquire Lock ---
+    
+    # Load Environment Config (still returns raw dict)
     (
         context.envconfigfiles,
         context.envconfig,
@@ -153,8 +171,6 @@ def cli(
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,
     )
-    # The environment config file path is the resource ID for the lock.
-    # The path is in context.envconfigfiles, which is a tuple of paths.
     
     env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
     
@@ -177,6 +193,7 @@ def cli(
             ctx.exit(1)
 
     # Final config processing must happen outside the lock acquisition check
+    # Note: Placeholder replacement is still necessary here because EnvConfig is not validated yet.
     context.envconfig = replace_placeholders(
         context.envconfig,
     )
