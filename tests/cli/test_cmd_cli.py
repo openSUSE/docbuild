@@ -4,7 +4,7 @@ import click
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
-from docbuild.config.app_model import AppConfig 
+from docbuild.models.config_model.app import AppConfig
 
 cli = cli_mod.cli
 

@@ -13,7 +13,7 @@ from pydantic import ValidationError
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
 from ..config.load import handle_config
-from ..config.app_model import AppConfig
+from ..models.config_model.app import AppConfig
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
@@ -148,7 +148,7 @@ def cli(
         context.appconfig = AppConfig.from_dict(raw_appconfig)
     except (ValueError, ValidationError) as e:
         log.error("Application configuration failed validation:")
-        log.error(f"Error in config file(s): {context.appconfigfiles}")
+        log.error("Error in config file(s): %s", context.appconfigfiles)
         log.error(e)
         ctx.exit(1)
 
