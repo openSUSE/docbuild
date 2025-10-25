@@ -1,1 +1,1 @@
-Implemented Pydantic validation for the application configuration (AppConfig). This ensures early discovery of typos, incorrect types, and placeholder errors in the configuration files at startup.
+Implemented strict Pydantic validation for the Application Configuration (AppConfig), including a precise, nested schema for all logging parameters (formatters, handlers, loggers). This prevents runtime errors due to configuration typos and ensures data integrity at startup.

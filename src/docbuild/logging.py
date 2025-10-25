@@ -9,13 +9,12 @@ import os
 import queue
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
 # --- Default Logging Configuration ---
-# This dictionary provides a flexible, default setup that can be easily
-# overridden by a user's configuration file.
+# This dictionary provides the minimal required configuration structure.
 DEFAULT_LOGGING_CONFIG = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -48,7 +47,7 @@ DEFAULT_LOGGING_CONFIG = {
             "level": "DEBUG",
             "propagate": False,
         },
-        GITLOGGER_NAME: { # Use the constant here
+        GITLOGGER_NAME: {
             "handlers": ["console", "file"],
             "level": "DEBUG",
             "propagate": False,
@@ -67,15 +66,7 @@ LOGLEVELS = {
 }
 
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
-    """Create the base log directory if it doesn't exist.
-
-    This directory is typically located at :file:`~/.local/state/docbuild/logs`
-    as per the XDG Base Directory Specification.
-
-    :param base_log_dir: The base directory where logs should be stored.
-        Considers the `XDG_STATE_HOME` environment variable if set.
-    :return: The path to the base log directory.
-    """
+    """Create the base log directory if it doesn't exist."""
     log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
@@ -92,14 +83,14 @@ def setup_logging(
 ) -> None:
     """Sets up a non-blocking, configurable logging system.
     
-    :param cliverbosity: ...
-    :param user_config: ...
+    This function merges the default logging configuration with the validated
+    user configuration and sets up the asynchronous handlers.
     """
     config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
     if user_config and "logging" in user_config:
         # Use a more robust deep merge approach
-        def deep_merge(target, source):
+        def deep_merge(target: dict, source: dict) -> None:
             for k, v in source.items():
                 if k in target and isinstance(target[k], dict) and isinstance(v, dict):
                     deep_merge(target[k], v)
@@ -109,31 +100,63 @@ def setup_logging(
         deep_merge(config, user_config.get("logging", {}))
 
     # --- Verbosity & Log File Path Setup ---
-    # The handler's level determines what gets printed/written.
     verbosity_level = LOGLEVELS.get(min(cliverbosity, 2), logging.WARNING)
     config["handlers"]["console"]["level"] = logging.getLevelName(verbosity_level)
 
     log_dir = create_base_log_dir()
-    # Use a timestamp to generate a unique filename for each run.
     timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
     log_filename = f"{APP_NAME}_{timestamp}.log"
     log_path = log_dir / log_filename
     config["handlers"]["file"]["filename"] = str(log_path)
 
+    built_handlers = []
+    
     # --- Handler and Listener Initialization ---
     built_handlers = []
+    
+    # Required keys to ignore when instantiating a handler (they are for dictConfig lookup)
+    HANDLER_INTERNAL_KEYS = ["class", "formatter", "level", "class_name"]
+    FORMATTER_INTERNAL_KEYS = ["class", "formatter", "level", "class_name", "validate"] # Added 'validate'
+
     for hname, hconf in config["handlers"].items():
         cls = _resolve_class(hconf["class"])
+        
         handler_args = {
-            k: v for k, v in hconf.items() if k not in ["class", "formatter", "level"]
+            k: v for k, v in hconf.items() if k not in HANDLER_INTERNAL_KEYS
         }
+        
         handler = cls(**handler_args)
         
         handler.setLevel(hconf.get("level", "NOTSET"))
-        fmt_conf = config["formatters"][hconf["formatter"]]
-        handler.setFormatter(logging.Formatter(fmt_conf["format"], fmt_conf.get("datefmt")))
+        
+        formatter_name = hconf.get("formatter")
+        if formatter_name and formatter_name in config["formatters"]:
+            fmt_conf = config["formatters"][formatter_name]
+            
+            # --- FIX APPLIED HERE ---
+            # Filter out keys that are Pydantic metadata/aliases (like 'class_name')
+            # We specifically filter out 'format' because the Formatter.__init__
+            # expects 'fmt' or uses 'style', not 'format' directly as a kwarg.
+            formatter_kwargs = {
+                k: v for k, v in fmt_conf.items() 
+                if k not in FORMATTER_INTERNAL_KEYS and k not in ['format']
+            }
+            
+            # Pass 'fmt' instead of 'format' to the standard Formatter constructor
+            formatter_kwargs['fmt'] = fmt_conf.get("format")
+            formatter_kwargs['datefmt'] = fmt_conf.get("datefmt")
+            formatter_kwargs['style'] = fmt_conf.get("style") # Should pass style if present
+            
+            # Remove keys that are None
+            formatter_kwargs = {k: v for k, v in formatter_kwargs.items() if v is not None}
+            
+            fmt_cls = _resolve_class(fmt_conf.get("class", "logging.Formatter"))
+            
+            handler.setFormatter(fmt_cls(**formatter_kwargs))
+        
         built_handlers.append(handler)
     
+    # --- Asynchronous Queue Setup ---
     log_queue = queue.Queue(-1)
     queue_handler = logging.handlers.QueueHandler(log_queue)
     listener = logging.handlers.QueueListener(
@@ -143,7 +166,6 @@ def setup_logging(
     atexit.register(listener.stop)
 
     # --- Logger Initialization ---
-    # Attach the QueueHandler to all loggers and set their levels.
     for lname, lconf in config["loggers"].items():
         logger = logging.getLogger(lname)
         logger.setLevel(lconf["level"])

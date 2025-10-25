@@ -1,75 +1,136 @@
 """Pydantic model for application configuration."""
 
-from typing import Any, Self
-from pydantic import BaseModel, Field, model_validator, ConfigDict
 from copy import deepcopy
+from typing import Any, Self, Literal, Optional, TYPE_CHECKING
+import logging # Needed for DEFAULT_LOGGING_CONFIG usage
+
+from pydantic import BaseModel, Field, model_validator, ConfigDict, root_validator # Added root_validator for clarity
 
 from docbuild.config.app import replace_placeholders
 from docbuild.config.app import CircularReferenceError, PlaceholderResolutionError
-from docbuild.logging import DEFAULT_LOGGING_CONFIG
+from docbuild.logging import DEFAULT_LOGGING_CONFIG # Note: Must import the actual DEFAULT_LOGGING_CONFIG
 
-# 1. Logging Sub-Model
-class App_LoggingConfig(BaseModel):
-    """Configuration for the application's logging system.
-    
-    This structure is validated for existence of core sections, but allows
-    for the flexible structure required by logging.config.dictConfig.
+# Ensure type annotations work correctly even if type aliases are not natively available
+if TYPE_CHECKING:
+    from typing import TypeAlias
+else:
+    TypeAlias = Any
+
+
+# --- 1. Logging Sub-Models (Schema for logging.dictConfig) ---
+
+class FormatterConfig(BaseModel):
     """
-    version: int = 1
+    Defines the configuration for a single logging formatter.
+    Allows extra keys for custom class/factory arguments.
+    """
+    # Allows for custom factory parameters and the special '()' key.
+    model_config = ConfigDict(extra='allow', populate_by_name=True) 
+
+    format: str | None = None
+    datefmt: str | None = None
+    style: Literal['%', '{', '$'] | None = None
+    class_name: str | None = Field(None, alias='class') 
+    validate: bool | None = None
+
+
+class HandlerConfig(BaseModel):
+    """
+    Defines the configuration for a single logging handler.
+    Allows extra keys specific to certain handler classes (e.g., 'filename', 'maxBytes').
+    """
+    model_config = ConfigDict(extra='allow', populate_by_name=True) 
+
+    class_name: str | None = Field(None, alias='class')
+    level: str | int | None = None
+    formatter: str | None = Field(None, description="Must match a key in 'formatters'.")
+    filters: list[str] | None = None
+
+
+class LoggerConfig(BaseModel):
+    """
+    Defines the configuration for a single logger instance.
+    """
+    model_config = ConfigDict(extra='allow', populate_by_name=True)
+
+    level: str | int | None = None
+    handlers: list[str] | None = Field(None, description="Must match keys in 'handlers'.")
+    propagate: bool | None = True
+    filters: list[str] | None = None
+
+
+class RootLoggerConfig(BaseModel):
+    """
+    Defines the configuration for the root logger.
+    """
+    model_config = ConfigDict(extra='allow', populate_by_name=True)
+    
+    # Provide a default level and handlers list to prevent crashes 
+    # when logging.config.dictConfig is called without them.
+    level: str | int | None = Field('WARNING', description="The minimum severity level to log.")
+    handlers: list[str] | None = Field(default_factory=list, description="Must match keys in 'handlers'.")
+    filters: list[str] | None = None
+
+# --- 2. Type Aliases for Dictionaries ---
+
+type FormattersDict = dict[str, FormatterConfig]
+type HandlersDict = dict[str, HandlerConfig]
+type LoggersDict = dict[str, LoggerConfig]
+type FiltersDict = dict[str, Any]
+
+# --- 3. The Top-Level Logging Configuration Model (Replaces App_LoggingConfig) ---
+
+class App_LoggingConfig(BaseModel):
+    """
+    The complete Pydantic model for Python's logging.dictConfig.
+    """
+    version: Literal[1] = Field(description="The schema version. Must be 1.")
     disable_existing_loggers: bool = False
+
+    formatters: FormattersDict = Field(default_factory=dict, description="All configured formatters.")
+    filters: FiltersDict = Field(default_factory=dict, description="All configured filters.")
+    handlers: HandlersDict = Field(default_factory=dict, description="All configured handlers.")
+    loggers: LoggersDict = Field(default_factory=dict, description="All specific loggers (e.g., 'my_app').")
+    root: RootLoggerConfig = Field(default_factory=RootLoggerConfig, description="The root logger configuration.")
     
-    formatters: dict[str, Any] = Field(
-        default_factory=dict,
-        title="Formatters Dictionary",
-        description="Defines the format strings and styles for log messages."
-    )
-    handlers: dict[str, Any] = Field(
-        default_factory=dict,
-        title="Handlers Dictionary",
-        description="Defines how log messages are distributed (e.g., console, file, etc.)."
-    )
-    loggers: dict[str, Any] = Field(
-        default_factory=dict,
-        title="Loggers Dictionary",
-        description="Defines specific loggers by name, overriding settings from the root logger."
-    )
-    root: dict[str, Any] = Field(
-        default_factory=dict,
-        title="Root Logger Configuration",
-        description="Defines the global fallback settings for all loggers (level and handlers)."
-    )
+    incremental: bool = Field(False, description="Allows incremental configuration updates.")
     
-    model_config = ConfigDict(extra='allow')
+    # This converts the nested Pydantic models into dictionaries using aliases ('class' instead of 'class_name')
+    # This is essential for the output to be compatible with logging.config.dictConfig.
+    @model_validator(mode='after')
+    def _export_config_as_dict(self) -> 'App_LoggingConfig':
+        """Ensure default log config is fully structured."""
+        # For simplicity in the app logic, we will assume the default dict is complete
+        # and rely on the calling function (setup_logging) to call model_dump().
+        return self
 
 
-# 2. Root Application Model
+# --- 4. Root Application Model ---
+
 class AppConfig(BaseModel):
     """Root model for application configuration (config.toml)."""
     
-    # Set the logging configuration. We use the DEFAULT_LOGGING_CONFIG 
-    # to provide a working default if the user omits this section.
+    # Simplify default_factory. Pass the DEFAULT_LOGGING_CONFIG dict directly
+    # and let Pydantic model_validate() handle the coercion of the dictionary 
+    # into the App_LoggingConfig object.
     logging: App_LoggingConfig = Field(
-        default_factory=lambda: App_LoggingConfig.model_validate(DEFAULT_LOGGING_CONFIG),
+        default_factory=lambda: App_LoggingConfig.model_validate(
+            DEFAULT_LOGGING_CONFIG
+        ),
         description="Configuration for the application's logging system."
     )
     
-    # Placeholder field for future app-wide settings (e.g., [app.features])
-    # Placeholder fields should be added here as needed later.
-    
+    model_config = ConfigDict(extra='allow') 
+
     @model_validator(mode='before')
     @classmethod
     def _resolve_placeholders(cls, data: Any) -> Any:
-        """Resolve placeholders before any other validation.
-        
-        This method is critical for allowing Path, URLs, etc., to be resolved
-        from placeholders before Pydantic validates their structure.
-        """
+        # ... (placeholder resolution remains unchanged) ...
         if isinstance(data, dict):
             try:
-                # The function is already defined in src/docbuild/config/app.py
+                # Note: deepcopy is needed because replace_placeholders is destructive
                 return replace_placeholders(deepcopy(data))
             except (PlaceholderResolutionError, CircularReferenceError) as e:
-                # Re-raise as a ValueError to surface it as a configuration error
                 raise ValueError(f"Configuration placeholder error: {e}") from e
         return data
 

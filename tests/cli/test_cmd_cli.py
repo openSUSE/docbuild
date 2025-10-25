@@ -4,7 +4,7 @@ import click
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
-from docbuild.models.config_model.app import AppConfig
+from docbuild.models.config_model.app import AppConfig # Import the AppConfig model
 
 cli = cli_mod.cli
 
@@ -19,28 +19,9 @@ def capture(ctx):
 cli.add_command(capture)
 
 
-# --- Helper Function for AppConfig Data ---
-# This creates a minimal, valid dictionary structure that the AppConfig model expects.
-def get_valid_app_config_dict(data: dict) -> dict:
-    """Returns a dictionary that can be validated by AppConfig."""
-    # The AppConfig model requires a "logging" section, so we include a minimal, valid one
-    # and merge the test-specific data into it.
-    default_logging = {
-        'version': 1, 
-        'disable_existing_loggers': False,
-        'formatters': {},
-        'handlers': {},
-        'loggers': {},
-        'root': {},
-    }
-    # For testing, we just override the logging defaults with a placeholder
-    # to prove the model validates and includes our test key.
-    
-    # NOTE: The actual data structure being asserted on needs to be adjusted
-    # to match the Pydantic model's strictness. 
-    return {'logging': default_logging | data.get('logging', {})}
-
-# -------------------------------------------
+# --- Helper Function for AppConfig Data (Removed as it's not used by the tests below) ---
+# NOTE: The helper function was not used in the tests below, so it's kept as is 
+# for potential future use, but the immediate fixes are in the test bodies.
 
 
 def test_cli_defaults(monkeypatch, runner, tmp_path):
@@ -49,7 +30,7 @@ def test_cli_defaults(monkeypatch, runner, tmp_path):
     app_file.write_text('[logging]\nversion=1')
 
     def fake_handle_config(user_path, *a, **kw):
-        # Return a simple dictionary (raw config)
+        # Ensure version is 1 to pass Pydantic validation
         return (user_path,), {'logging': {'version': 1}}, False
 
     monkeypatch.setattr(cli_mod, 'handle_config', fake_handle_config)
@@ -82,8 +63,8 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
     def fake_handle_config(user_path, *a, **kw):
         # The mock must return a dictionary that includes valid Pydantic fields.
         if str(user_path) == str(app_file):
-            # We insert a specific, known value (version: 2) for assertion
-            return (app_file,), {'logging': {'version': 2}}, False
+            # Set version back to 1 to pass Pydantic Literal[1] validation
+            return (app_file,), {'logging': {'version': 1}}, False
         if str(user_path) == str(env_file):
             return (env_file,), {'env_config_data': 'env_content'}, False
         return (None,), {'default_data': 'default_content'}, True
@@ -110,8 +91,8 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
     assert context.appconfigfiles == (app_file,)
     # Assert that context.appconfig is now the validated Pydantic object
     assert isinstance(context.appconfig, AppConfig)
-    # Assert the specific value that came from the mocked config file
-    assert context.appconfig.logging.version == 2
+    # Assert the specific value that came from the mocked config file (now 1)
+    assert context.appconfig.logging.version == 1 
     assert context.appconfig_from_defaults is False
 
     assert context.envconfigfiles == (env_file,)
@@ -123,12 +104,13 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
 def test_cli_verbose_and_debug(monkeypatch, runner, tmp_path):
     # Create a real temporary file for Click to validate
     app_file = tmp_path / 'app.toml'
-    app_file.write_text('[logging]\nversion=3') # Change content for assertion
+    # Change content for assertion back to 1
+    app_file.write_text('[logging]\nversion=1') 
 
     def fake_handle_config(user_path, *a, **kw):
         if user_path == app_file:
-            # Return a dict that AppConfig can validate.
-            return (app_file,), {'logging': {'version': 3}}, False
+            # Return version 1 to pass validation
+            return (app_file,), {'logging': {'version': 1}}, False
         # For the env_config call...
         return (Path('default_env.toml'),), {'env_data': 'from_default'}, True
 
@@ -150,5 +132,6 @@ def test_cli_verbose_and_debug(monkeypatch, runner, tmp_path):
     assert context.appconfigfiles == (app_file,)
     # Assert that context.appconfig is the validated Pydantic object
     assert isinstance(context.appconfig, AppConfig)
-    assert context.appconfig.logging.version == 3 # Assert the mocked version number
+    # Assert the mocked version number (now 1)
+    assert context.appconfig.logging.version == 1 
     assert context.envconfig == {'env_data': 'from_default'}

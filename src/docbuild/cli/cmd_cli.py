@@ -153,8 +153,8 @@ def cli(
         ctx.exit(1)
 
     # 3. Setup logging using the validated config object
-    # logging.model_dump() converts the App_LoggingConfig model back to a dict
-    logging_config = context.appconfig.logging.model_dump()
+    # Use model_dump(by_alias=True) to ensure the 'class' alias is used.
+    logging_config = context.appconfig.logging.model_dump(by_alias=True, exclude_none=True)
     setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
     # --- PHASE 2: Load Environment Config and Acquire Lock ---
