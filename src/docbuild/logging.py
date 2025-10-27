@@ -66,7 +66,14 @@ LOGLEVELS = {
 }
 
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
-    """Create the base log directory if it doesn't exist."""
+    """Create the base log directory if it doesn't exist.
+    
+    This directory is typically located at :file:`~/.local/state/docbuild/logs`		
+    as per the XDG Base Directory Specification.
+    :param base_log_dir: The base directory where logs should be stored.
+        Considers the `XDG_STATE_HOME` environment variable if set.
+    :return: The path to the base log directory.
+    """
     log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
