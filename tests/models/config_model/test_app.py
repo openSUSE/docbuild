@@ -4,21 +4,23 @@ import logging
 import pytest
 from pathlib import Path
 from typing import Any
-from unittest.mock import Mock, patch # ADDED Mock import
+from unittest.mock import Mock, patch 
 
 from pydantic import ValidationError, BaseModel
 from docbuild.models.config_model.app import AppConfig
-from docbuild.config.app import PlaceholderResolutionError
+from docbuild.config.app import PlaceholderResolutionError, replace_placeholders
 
 
 # --- Helper Fixtures ---
 
-# The test now imports Mock and uses the function name directly
 @pytest.fixture
 def mock_replace_placeholders(monkeypatch):
     """Mocks the replace_placeholders utility to confirm it was called."""
     mock = Mock(wraps=lambda d: d)  # Retains original behavior but tracks calls
-    monkeypatch.setattr('docbuild.models.config_model.app.replace_placeholders', mock)
+    
+    # Use the object reference for monkeypatch.setattr for safety (Reviewer's feedback)
+    monkeypatch.setattr(replace_placeholders, mock) 
+    
     return mock
 
 
@@ -34,7 +36,7 @@ def test_appconfig_initializes_with_defaults():
     assert config.logging.version == 1
     # Check that one of the nested list types is defaulted correctly
     assert isinstance(config.logging.root.handlers, list)
-    # The default root level is DEBUG (from DEFAULT_LOGGING_CONFIG), not WARNING.
+    # The default root level is DEBUG (from DEFAULT_LOGGING_CONFIG)
     assert config.logging.root.level == 'DEBUG'
 
 
@@ -44,16 +46,22 @@ def test_appconfig_accepts_valid_data():
         'logging': {
             'version': 1,
             'handlers': {
+                # This tests that FormatterConfig and HandlerConfig can be instantiated
                 'file_handler': {'class': 'logging.FileHandler', 'level': 'INFO'}
+            },
+            'formatters': {
+                'simple': {'format': '(%s)'}
+            },
+            'loggers': {
+                'app_logger': {'handlers': ['file_handler']}
             }
         }
     }
     config = AppConfig.from_dict(valid_data)
     
     assert config.logging.version == 1
-    # Check that the handler was correctly coerced into a HandlerConfig object
-    assert isinstance(config.logging.handlers['file_handler'], BaseModel)
     assert config.logging.handlers['file_handler'].level == 'INFO'
+    assert config.logging.loggers['app_logger'].handlers == ['file_handler']
 
 
 def test_appconfig_placeholder_resolution_is_called(mock_replace_placeholders):
@@ -106,13 +114,81 @@ def test_appconfig_rejects_unresolved_placeholder():
         'path': '{UNRESOLVED_VAR}'
     }
     
-    # We no longer mock the function and rely on Pydantic's internal
-    # error propagation, asserting against the specific Pydantic error message
-    
     # The real AppConfig model is designed to catch the ValueError raised by 
     # replace_placeholders and re-raise it as a Pydantic Validation Error.
-    # The original test's expected match was close enough for the fix.
-    
-    # We remove the mock setup and just assert the raised exception type/message.
+    # We assert the raised exception type/message.
     with pytest.raises(ValueError, match='Configuration placeholder error'):
         AppConfig.from_dict(unresolved_data)
+
+
+# --- CROSS-REFERENCE VALIDATION TESTS ---
+
+def test_appconfig_valid_cross_reference():
+    """Tests that a logger/handler setup with valid references passes validation."""
+    valid_cross_ref_data = {
+        'logging': {
+            'version': 1,
+            'handlers': {
+                'h1': {'class': 'logging.StreamHandler'},
+                'h2': {'class': 'logging.FileHandler'},
+            },
+            'loggers': {
+                'app_logger': {'level': 'DEBUG', 'handlers': ['h1', 'h2']}
+            },
+            'root': {
+                'level': 'INFO',
+                'handlers': ['h2']
+            }
+        }
+    }
+    
+    # Should initialize without raising an error
+    config = AppConfig.from_dict(valid_cross_ref_data)
+    assert config.logging.loggers['app_logger'].handlers == ['h1', 'h2']
+    assert config.logging.root.handlers == ['h2']
+
+
+def test_appconfig_rejects_missing_handler_reference():
+    """Tests that validation fails when a logger references a non-existent handler."""
+    missing_ref_data = {
+        'logging': {
+            'version': 1,
+            'handlers': {
+                'h1': {'class': 'logging.StreamHandler'}
+            },
+            'loggers': {
+                'app_logger': {
+                    'level': 'DEBUG',
+                    # 'file_log' is referenced but missing in 'handlers'
+                    'handlers': ['h1', 'file_log'] 
+                }
+            }
+        }
+    }
+    
+    # Expect ValueError raised by the _validate_cross_references method
+    with pytest.raises(ValueError, match="logger 'app_logger': The following handler names are referenced but not defined: file_log"):
+        AppConfig.from_dict(missing_ref_data)
+
+
+def test_appconfig_rejects_missing_formatter_reference():
+    """Tests that validation fails when a handler references a non-existent formatter."""
+    missing_formatter_data = {
+        'logging': {
+            'version': 1,
+            'formatters': {
+                'simple': {'format': '%(message)s'}
+            },
+            'handlers': {
+                'h1': {
+                    'class': 'logging.StreamHandler',
+                    # 'detailed' is referenced but missing in 'formatters'
+                    'formatter': 'detailed' 
+                }
+            }
+        }
+    }
+    
+    # Expect ValueError raised by the _validate_cross_references method
+    with pytest.raises(ValueError, match="Configuration error in handler 'h1': Formatter 'detailed' is referenced but not defined"):
+        AppConfig.from_dict(missing_formatter_data)

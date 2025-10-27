@@ -80,7 +80,7 @@ class App_LoggingConfig(BaseModel):
     
     # --- CROSS-REFERENCE VALIDATION ---
     @model_validator(mode='after')
-    def _validate_cross_references(self) -> 'App_LoggingConfig':
+    def _validate_cross_references(self) -> Self:
         """
         Validates that all loggers and handlers refer to defined components.
         This prevents runtime errors when logging.config.dictConfig is called.
