@@ -86,16 +86,18 @@ def test_stale_lock_is_cleaned_up(lock_setup, mock_pid_dead):
     lock_path = PidFileLock(resource_path, lock_dir).lock_path
     lock_path.write_text(str(stale_pid))
     
-    # 2. Attempt to acquire the lock
+    # 2. Attempt to acquire the lock using a context manager to ensure release
     lock = PidFileLock(resource_path, lock_dir)
-    # We acquire the lock and then manually release it later in the test teardown
-    lock.acquire()
-    
-    # 3. Verify the stale lock was removed and a new one was acquired
-    assert lock.lock is True
-    assert lock.lock_path.exists()
-    assert lock.lock_path.read_text().strip() == str(os.getpid())
-    log.info("Stale lock successfully cleaned and re-acquired.")
+    with lock:
+        # 3. Verify the stale lock was removed and a new one was acquired
+        assert lock.lock is True
+        assert lock.lock_path.exists()
+        assert lock.lock_path.read_text().strip() == str(os.getpid())
+        log.info("Stale lock successfully cleaned and re-acquired.")
+
+    # 4. Verify the lock is released after the context manager exits
+    assert lock.lock is False
+    assert not lock.lock_path.exists()
 
 
 def test_concurrent_instance_raises_runtime_error(lock_setup, mock_pid_running):
