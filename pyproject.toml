@@ -87,6 +87,7 @@ devel = [
   {include-group = "docs"},
   {include-group = "repl"},
   # {include-group = "publish"},
+  "cython>=3.1.6",
 ]
 
 
