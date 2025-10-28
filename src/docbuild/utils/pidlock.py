@@ -148,6 +148,9 @@ class PidFileLock:
                 atexit.unregister(self.release)
             except OSError as e:
                 log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
+            except ValueError:
+                # This can happen during interpreter shutdown.
+                pass
 
     @staticmethod
     def _is_pid_running(pid: int) -> bool:
