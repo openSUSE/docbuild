@@ -6,9 +6,10 @@ from pathlib import Path
 
 from ...cli.context import DocBuildContext
 from ...config.xml.stitch import create_stitchfile
+from ...constants import GITLOGGER_NAME
 from ...models.repo import Repo
 from ...utils.contextmgr import make_timer
-from ...constants import GITLOGGER_NAME
+from ..commands import run_git
 
 log = logging.getLogger(GITLOGGER_NAME)
 
@@ -29,7 +30,7 @@ async def clone_repo(repo: Repo, base_dir: Path) -> bool:
     # Use create_subprocess_exec for security (avoids shell injection)
     # and pass arguments as a sequence.
     cmd_args = [
-        'git',
+        # 'git',
         '-c',
         'color.ui=never',
         'clone',
@@ -38,11 +39,9 @@ async def clone_repo(repo: Repo, base_dir: Path) -> bool:
         str(repo),
         str(repo_path),
     ]
-
-    process = await asyncio.create_subprocess_exec(
+    process = await run_git(
         *cmd_args,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
+        cwd=base_dir,
         env={
             'LANG': 'C',
             'LC_ALL': 'C',
@@ -50,9 +49,6 @@ async def clone_repo(repo: Repo, base_dir: Path) -> bool:
             'GIT_PROGRESS_FORCE': '1',
         },
     )
-
-    # Wait for the process to finish and capture output
-    stdout, stderr = await process.communicate()
 
     if process.returncode == 0:
         log.info("Cloned '%s' successfully", repo)
@@ -63,9 +59,9 @@ async def clone_repo(repo: Repo, base_dir: Path) -> bool:
             repo,
             process.returncode,
         )
-        if stderr:
+        if process.stderr:
             # Log each line of stderr with a prefix for better readability
-            error_output = stderr.decode().strip()
+            error_output = process.stderr.strip()
             for line in error_output.splitlines():
                 log.error('  [git] %s', line)
         return False
