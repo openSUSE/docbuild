@@ -22,8 +22,14 @@ permissions:
 
 jobs:
   test-ubuntu:
-    name: ubuntu-python
+    name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: &python-matrix
+          - '3.12'
+          - '3.13'
+          - '3.14'
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
     steps:
@@ -53,7 +59,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install uv
         id: setup-uv
@@ -76,18 +82,21 @@ jobs:
           pytest -vv
 
   test-macos:
-    name: macos-latest
+    name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: *python-matrix
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      # Set up Python 3.12 on macOS environment
+      # Set up Python on macOS environment
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
       
       # Install uv and project dependencies inside a virtual environment
       - name: Install uv and dependencies
