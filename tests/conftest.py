@@ -29,6 +29,16 @@ from tests.common import changedir
 # Existing fixtures
 # ---------------------------
 
+class SafeStreamHandler(logging.StreamHandler):
+    def emit(self, record):
+        try:
+            super().emit(record)
+        except ValueError:
+            pass
+
+logging.root.handlers = [SafeStreamHandler()]
+logging.root.setLevel(logging.INFO)
+
 @pytest.fixture(scope='function')
 def runner() -> CliRunner:
     """Provide a CliRunner instance for testing."""
