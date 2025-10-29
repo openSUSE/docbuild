@@ -12,7 +12,7 @@ T = TypeVar("T", bound="PidFileLock")
 
 from ..constants import BASE_LOCK_DIR
 
-log = logging.getLogger("docbuild.utils.pidlock")
+log = logging.getLogger(__name__)
 log.propagate = True  # Ensure logs reach caplog in tests
 
 T = TypeVar("T", bound="PidFileLock")
