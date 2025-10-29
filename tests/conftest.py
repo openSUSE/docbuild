@@ -1,4 +1,4 @@
-"""Pytest fixtures.
+"""Pytest fixtures and thread-safe logging setup.
 
 Naming conventions:
 - `runner`: provides a `CliRunner` instance for testing CLI commands.
@@ -13,10 +13,11 @@ from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any, NamedTuple
 from unittest.mock import MagicMock, Mock
-
 from click.testing import CliRunner
 import pytest
-
+import logging
+import logging.handlers
+import queue
 import docbuild.cli as cli_module
 import docbuild.cli.cmd_cli as cli
 from docbuild.cli.context import DocBuildContext
@@ -24,6 +25,9 @@ from docbuild.config import load as load_mod
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 from tests.common import changedir
 
+# ---------------------------
+# Existing fixtures
+# ---------------------------
 
 @pytest.fixture(scope='function')
 def runner() -> CliRunner:
@@ -90,48 +94,16 @@ def context() -> DocBuildContext:
 # --- Mocking fixtures
 class MockEnvConfig(NamedTuple):
     """Named tuple to hold the fake env file and mock."""
-
     fakefile: Path
     mock: MagicMock
 
 
 class MockCombinedConfig(NamedTuple):
     """Named tuple to hold the fake validate_options."""
-
     fakefile: Path
     mock: MagicMock
     mock_load_and_merge_configs: MagicMock
     mock_load_single_config: MagicMock
-
-
-def make_path_mock(**members: Any | Callable[[], Any]) -> MagicMock:
-    """Create a MagicMock object that mimics a pathlib.Path.
-
-      Use with preconfigured attributes and methods.
-
-    - If the value is callable, it's used as the return_value of a method.
-    - If the value is not callable, it's set as a plain attribute.
-
-    Example:
-        mock_path = make_path_mock(
-            name="example.txt",
-            suffix=".txt",
-            exists=lambda: True,
-            read_text=lambda: "file contents"
-        )
-
-    """
-    mock = MagicMock(spec=Path)
-
-    for name, value in members.items():
-        if callable(value):
-            # Assume it's meant to mock a method
-            getattr(mock, name).return_value = value()
-        else:
-            # Mock an attribute
-            setattr(mock, name, value)
-
-    return mock
 
 
 def make_path_mock(
@@ -202,12 +174,6 @@ def fake_envfile(
         },
     )
 
-    # mock_path = MagicMock(spec=Path)
-    # mock_path.name = 'fake_envfile'
-    # mock_path.exists.return_value = True
-    # mock_path.is_file.return_value = True
-    # mock_path.suffix = '.txt'
-
     mock = MagicMock()
     mock.return_value = mock_path
 
@@ -232,11 +198,7 @@ def fake_confiles(
         mock = MagicMock(
             return_value=(
                 [fakefile],
-                {
-                    # Example return value,
-                    # can be customized with fake_confiles.mock.return_value
-                    'fake_config_key': 'fake_config_value',
-                },
+                {'fake_config_key': 'fake_config_value'},
             ),
         )
         monkeypatch.setattr(
@@ -252,19 +214,12 @@ def fake_validate_options(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> Generator[MockCombinedConfig, None, None]:
-    """Patch the `docbuild.cli.validate_options` function.
-
-    Use a temporary directory to simulate the environment.
-    """
+    """Patch the `docbuild.cli.validate_options` function."""
     with changedir(tmp_path):
         fakefile = Path('fake_validate_options.toml').absolute()
 
         mock = MagicMock()
-        # This function does not return anything
         mock.return_value = None
-        # monkeypatch.setattr(
-        #    cli_module, 'validate_options', mock,
-        # )
 
         mock_load_and_merge_configs = MagicMock()
         mock_load_and_merge_configs.return_value = (
@@ -291,3 +246,44 @@ def fake_validate_options(
             mock_load_and_merge_configs,
             mock_load_single_config,
         )
+
+# ---------------------------
+# Thread-safe logging setup
+# ---------------------------
+
+_log_queue = queue.Queue(-1)
+_log_listener = None
+
+def pytest_configure(config):
+    """Set up thread-safe logging for all tests."""
+    global _log_listener
+
+    # File handler
+    file_handler = logging.FileHandler("test.log", mode="w")
+    file_handler.setFormatter(
+        logging.Formatter('%(asctime)s - %(levelname)s - %(threadName)s - %(message)s')
+    )
+
+    # Queue listener for thread safety
+    _log_listener = logging.handlers.QueueListener(_log_queue, file_handler)
+    _log_listener.start()
+
+    # Optional: print to console as well
+    # console_handler = logging.StreamHandler()
+    # console_handler.setFormatter(logging.Formatter('%(levelname)s - %(threadName)s - %(message)s'))
+    # _log_listener = logging.handlers.QueueListener(_log_queue, file_handler, console_handler)
+    # _log_listener.start()
+
+    # Root logger uses QueueHandler
+    queue_handler = logging.handlers.QueueHandler(_log_queue)
+    root_logger = logging.getLogger()
+    root_logger.handlers = []  # remove existing handlers
+    root_logger.addHandler(queue_handler)
+    root_logger.setLevel(logging.DEBUG)
+
+
+def pytest_unconfigure(config):
+    """Stop the logging queue listener."""
+    global _log_listener
+    if _log_listener:
+        _log_listener.stop()
