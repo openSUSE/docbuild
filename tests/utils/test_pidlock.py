@@ -21,26 +21,25 @@ def test_acquire_and_release_creates_lock_file(lock_setup):
     lock_dir.mkdir()
     lock = PidFileLock(resource_path, lock_dir)
 
-    # Acquire lock
-    lock.acquire()
-    assert lock.lock_path.exists()
-    assert lock._lock_acquired
+    # Acquire lock using context manager
+    with lock:
+        assert lock.lock_path.exists()
+        assert lock.lock
 
-    # Release lock
-    lock.release()
+    # After context manager, lock should be released
     assert not lock.lock_path.exists()
-    assert not lock._lock_acquired
+    assert not lock.lock
 
 
 def test_context_manager(lock_setup):
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
     with PidFileLock(resource_path, lock_dir) as lock:
-        assert lock._lock_acquired
+        assert lock.lock
         assert lock.lock_path.exists()
     # After exit, lock should be released
     assert not lock.lock_path.exists()
-    assert not lock._lock_acquired
+    assert not lock.lock
 
 
 def test_double_acquire_raises(lock_setup):
@@ -59,10 +58,13 @@ def test_stale_lock_is_cleaned_up(lock_setup):
     lock_dir.mkdir()
     lock = PidFileLock(resource_path, lock_dir)
     lock.lock_path.write_text("999999")  # Fake PID
-    lock.acquire()
-    assert lock.lock_path.exists()
-    lock.release()
+
+    with lock:
+        assert lock.lock_path.exists()
+        assert lock.lock
+
     assert not lock.lock_path.exists()
+    assert not lock.lock
 
 
 def test_acquire_with_invalid_pid_file(lock_setup):
@@ -71,9 +73,13 @@ def test_acquire_with_invalid_pid_file(lock_setup):
     lock_dir.mkdir()
     lock = PidFileLock(resource_path, lock_dir)
     lock.lock_path.write_text("notanumber")
-    lock.acquire()
-    assert lock.lock_path.exists()
-    lock.release()
+
+    with lock:
+        assert lock.lock_path.exists()
+        assert lock.lock
+
+    assert not lock.lock_path.exists()
+    assert not lock.lock
 
 
 def test_acquire_non_critical_oserror_on_read(lock_setup, monkeypatch):
@@ -103,8 +109,8 @@ def test_acquire_non_critical_oserror_on_read(lock_setup, monkeypatch):
     logger.addHandler(handler)
     logger.setLevel(logging.ERROR)
 
-    lock.acquire()
-    lock.release()
+    with lock:
+        pass
 
     logger.removeHandler(handler)
     assert any("Non-critical error while checking lock file" in msg for msg in log_messages)
@@ -116,6 +122,8 @@ def test_release_without_acquire(lock_setup):
     lock_dir.mkdir()
     lock = PidFileLock(resource_path, lock_dir)
     lock.release()  # Should not raise
+    assert not lock.lock
+    assert not lock.lock_path.exists()
 
 
 def test_release_with_unlink_error(lock_setup, monkeypatch):
@@ -123,13 +131,18 @@ def test_release_with_unlink_error(lock_setup, monkeypatch):
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
     lock = PidFileLock(resource_path, lock_dir)
-    lock.acquire()
 
-    def mocked_unlink(path):
-        raise OSError(errno.EACCES, "Permission denied")
+    with lock:
+        def mocked_unlink(path):
+            raise OSError(errno.EACCES, "Permission denied")
 
-    monkeypatch.setattr(os, "unlink", mocked_unlink)
-    lock.release()  # Should log error but not raise
+        monkeypatch.setattr(os, "unlink", mocked_unlink)
+        # Release should log error but not raise
+        lock.release()
+
+    # Internal state should be cleared even if unlink failed
+    assert not lock.lock
+    assert lock.lock_file is None
 
 
 def test_acquire_noncritical_oserror(monkeypatch, tmp_path):
@@ -176,6 +189,10 @@ def test_acquire_when_lock_dir_missing(tmp_path):
     resource_file.write_text("dummy")
     lock_dir = tmp_path / "locks"
     lock = PidFileLock(resource_file, lock_dir)
-    lock.acquire()
-    assert lock.lock_path.exists()
-    lock.release()
+
+    with lock:
+        assert lock.lock_path.exists()
+        assert lock.lock
+
+    assert not lock.lock_path.exists()
+    assert not lock.lock
