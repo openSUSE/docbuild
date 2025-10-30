@@ -3,7 +3,7 @@
 import atexit
 import hashlib
 import logging
-import os
+import os as _os  # renamed for safe monkeypatching
 import errno
 from pathlib import Path
 from typing import TypeVar
@@ -19,6 +19,7 @@ class PidFileLock:
     """Manages a PID lock file to ensure only one instance of an environment runs."""
 
     lock_file: Path | None = None  # Exposed for testing and static type checkers
+    os = _os  # Expose os under class for reliable monkeypatching in tests
 
     def __init__(self, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> None:
         self.resource_path = resource_path.resolve()
@@ -52,15 +53,15 @@ class PidFileLock:
     def acquire(self) -> None:
         """Acquire the lock atomically, or diagnose an existing lock."""
         self.lock_dir.mkdir(parents=True, exist_ok=True)
-        current_pid = os.getpid()
+        current_pid = self.os.getpid()
 
         while True:
             # Step 1: Try atomic creation
             try:
-                lock_fd = os.open(
-                    self.lock_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644
+                lock_fd = self.os.open(
+                    self.lock_path, self.os.O_WRONLY | self.os.O_CREAT | self.os.O_EXCL, 0o644
                 )
-                with os.fdopen(lock_fd, "w") as f:
+                with open(lock_fd, "w") as f:
                     f.write(f"{current_pid}\n")
                 self._lock_acquired = True
                 self.lock_file = self.lock_path
@@ -68,7 +69,6 @@ class PidFileLock:
                 atexit.register(self.release)
                 return
             except FileExistsError:
-                # File exists; we’ll check if the process is still running below
                 pass
             except OSError as e:
                 raise RuntimeError(
@@ -79,7 +79,7 @@ class PidFileLock:
 
             # Step 2: Handle existing lock file
             if not self.lock_path.exists():
-                continue  # Retry loop
+                continue
 
             try:
                 with self.lock_path.open("r") as f:
@@ -92,7 +92,6 @@ class PidFileLock:
                         f"for configuration: {self.resource_path}"
                     )
 
-                # Stale lock: clean and retry
                 log.warning(
                     f"Found stale lock file at {self.lock_path} (PID {pid}). Removing and retrying acquisition."
                 )
@@ -110,12 +109,11 @@ class PidFileLock:
                     self.lock_path.unlink(missing_ok=True)
                 except Exception:
                     pass
-                # Attempt one last atomic creation
                 try:
-                    lock_fd = os.open(
-                        self.lock_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644
+                    lock_fd = self.os.open(
+                        self.lock_path, self.os.O_WRONLY | self.os.O_CREAT | self.os.O_EXCL, 0o644
                     )
-                    with os.fdopen(lock_fd, "w") as f:
+                    with open(lock_fd, "w") as f:
                         f.write(f"{current_pid}\n")
                     self._lock_acquired = True
                     self.lock_file = self.lock_path
@@ -132,13 +130,11 @@ class PidFileLock:
             return
 
         try:
-            # First, unregister cleanup callback
             try:
                 atexit.unregister(self.release)
             except (ValueError, AttributeError):
                 log.debug("atexit.unregister failed or unavailable.")
 
-            # Then remove the lock file
             if self.lock_path.exists():
                 self.lock_path.unlink()
                 log.debug("Released lock at %s.", self.lock_path)
@@ -147,7 +143,6 @@ class PidFileLock:
             log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
 
         finally:
-            # Always clear internal state
             self._lock_acquired = False
             self.lock_file = None
 
@@ -156,7 +151,7 @@ class PidFileLock:
         if pid <= 0:
             return False
         try:
-            os.kill(pid, 0)
+            _os.kill(pid, 0)
             return True
         except OSError as err:
             return err.errno != errno.ESRCH
