@@ -33,44 +33,54 @@ class SafeStreamHandler(logging.StreamHandler):
                 return
             raise
 
-
 # Global queue and listener for thread-safe logging
-_log_queue = queue.Queue(-1)
-_log_listener = None
-
+_log_queue: queue.Queue = queue.Queue(-1)
+_log_listener: logging.handlers.QueueListener | None = None
 
 def pytest_configure(config):
     """Configure logging for all tests (thread-safe, teardown-safe)."""
     global _log_listener
 
-    # File handler
+    # -----------------
+    # File Handler
+    # -----------------
     file_handler = logging.FileHandler("test.log", mode="w")
     file_handler.setFormatter(
         logging.Formatter("%(asctime)s - %(levelname)s - %(threadName)s - %(message)s")
     )
 
-    # Safe console handler (fixes teardown ValueError on macOS/Python 3.13)
+    # -----------------
+    # Safe Console Handler
+    # -----------------
     console_handler = SafeStreamHandler()
     console_handler.setFormatter(
         logging.Formatter("%(levelname)s - %(threadName)s - %(message)s")
     )
 
-    # Queue listener
+    # -----------------
+    # Queue Listener
+    # -----------------
     _log_listener = logging.handlers.QueueListener(_log_queue, file_handler, console_handler)
     _log_listener.start()
 
-    # Queue handler
+    # -----------------
+    # Queue Handler
+    # -----------------
     queue_handler = logging.handlers.QueueHandler(_log_queue)
     root_logger = logging.getLogger()
     root_logger.handlers = []
     root_logger.addHandler(queue_handler)
     root_logger.setLevel(logging.DEBUG)
 
+    # -----------------
     # Suppress overly verbose third-party loggers
+    # -----------------
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-    # --- Apply Safe Handler for pidlock logger during pytest/CI ---
+    # -----------------
+    # Apply Safe Handler for pidlock logger during pytest/CI
+    # -----------------
     if os.getenv("CI") or os.getenv("PYTEST_CURRENT_TEST"):
         pidlock_logger = logging.getLogger("docbuild.utils.pidlock")
         for h in list(pidlock_logger.handlers):
@@ -80,17 +90,20 @@ def pytest_configure(config):
         pidlock_logger.addHandler(safe_handler)
         pidlock_logger.propagate = False
 
-
 def pytest_unconfigure(config):
     """Stop the logging queue listener safely at test teardown."""
     global _log_listener
     if _log_listener:
         try:
             _log_listener.stop()
+        except ValueError as e:
+            if "I/O operation on closed file" in str(e):
+                # Ignore harmless teardown error
+                pass
         except Exception:
-            # Prevent "I/O operation on closed file" during pytest shutdown
+            # Catch-all for unexpected issues during pytest shutdown
             pass
-
+        _log_listener = None
 
 # ---------------------------
 # Fixtures
@@ -101,14 +114,12 @@ def runner() -> CliRunner:
     """Provide a CliRunner instance for testing."""
     return CliRunner()
 
-
 @pytest.fixture(scope="function")
 def default_env_config_filename(tmp_path: Path) -> Path:
     """Provide a default env config file path."""
     envfile = tmp_path / DEFAULT_ENV_CONFIG_FILENAME
     envfile.write_text("")
     return envfile
-
 
 @pytest.fixture(scope="function")
 def env_content(default_env_config_filename: Path) -> Path:
@@ -126,14 +137,12 @@ tmp_path = "{tmp_base_dir}/doc-example-com"
     default_env_config_filename.write_text(content)
     return default_env_config_filename
 
-
 @pytest.fixture
 def mock_context() -> DocBuildContext:
     """Mock DocBuildContext."""
     context = Mock(spec=DocBuildContext)
     context.verbose = 2
     return context
-
 
 class DummyCtx:
     """A dummy context class."""
@@ -144,18 +153,15 @@ class DummyCtx:
         self.envconfigfiles = None
         self.role = None
 
-
 @pytest.fixture
 def ctx() -> type[DummyCtx]:
     """Provide a dummy context object for testing."""
     return DummyCtx
 
-
 @pytest.fixture
 def context() -> DocBuildContext:
     """Provide a DocBuildContext instance for testing."""
     return DocBuildContext()
-
 
 # --- Mocking Fixtures ---
 
@@ -164,14 +170,12 @@ class MockEnvConfig(NamedTuple):
     fakefile: Path
     mock: MagicMock
 
-
 class MockCombinedConfig(NamedTuple):
     """Named tuple to hold the fake validate_options."""
     fakefile: Path
     mock: MagicMock
     mock_load_and_merge_configs: MagicMock
     mock_load_single_config: MagicMock
-
 
 def make_path_mock(
     path: str = "",
@@ -223,7 +227,6 @@ def make_path_mock(
 
     return mock
 
-
 @pytest.fixture
 def fake_envfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[MockEnvConfig, None, None]:
     """Patch the `docbuild.cli.cli.process_envconfig` function."""
@@ -241,7 +244,6 @@ def fake_envfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[M
     with changedir(tmp_path):
         yield MockEnvConfig(mock_path, mock)
 
-
 @pytest.fixture
 def fake_confiles(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[MockEnvConfig, None, None]:
     """Patch the `docbuild.cli.cli.load_and_merge_configs` function."""
@@ -252,7 +254,6 @@ def fake_confiles(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[
         )
         monkeypatch.setattr(cli, "load_and_merge_configs", mock)
         yield MockEnvConfig(fakefile, mock)
-
 
 @pytest.fixture
 def fake_validate_options(
