@@ -2,7 +2,7 @@
 
 from collections.abc import Generator
 from pathlib import Path
-from typing import Any, NamedTuple, Optional, Callable, Dict
+from typing import Any, NamedTuple, Optional, Callable
 from unittest.mock import MagicMock, Mock
 from click.testing import CliRunner
 import pytest
@@ -20,52 +20,78 @@ from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 from tests.common import changedir
 
 # ---------------------------
-# Thread-safe Logging for Pytest
+# Safe Logging for Pytest
 # ---------------------------
-
-_log_queue: queue.Queue = queue.Queue(-1)
-_log_listener: Optional[logging.handlers.QueueListener] = None
-_log_file: Optional[Path] = None
 
 class SafeStreamHandler(logging.StreamHandler):
     """Logging handler that ignores 'I/O operation on closed file' errors."""
     def emit(self, record):
         try:
-            super().emit(record)
+            if self.stream:
+                super().emit(record)
         except ValueError as e:
             if "I/O operation on closed file" in str(e):
                 return
             raise
+        except Exception:
+            # Suppress any other stream-related errors in CI
+            return
+
+# Global queue and listener
+_log_queue: queue.Queue = queue.Queue(-1)
+_log_listener: logging.handlers.QueueListener | None = None
+_log_file: Path | None = None
 
 def pytest_configure(config):
     """Configure thread-safe logging for all tests."""
     global _log_listener, _log_file
 
-    _log_file = Path(tempfile.gettempdir()) / f"pytest_{os.getpid()}.log" \
-        if ("CI" in os.environ or "PYTEST_CURRENT_TEST" in os.environ) else Path("test.log")
+    # Determine log file location
+    if "CI" in os.environ or "PYTEST_CURRENT_TEST" in os.environ:
+        tmp_dir = Path(tempfile.gettempdir())
+        _log_file = tmp_dir / f"pytest_{os.getpid()}.log"
+    else:
+        _log_file = Path("test.log")
 
-    file_handler = SafeStreamHandler(open(_log_file, "w"))
-    file_handler.setFormatter(logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(threadName)s - %(message)s"
-    ))
+    # -----------------
+    # Handlers
+    # -----------------
+    file_handler = logging.FileHandler(_log_file, mode="w")
+    file_handler = SafeStreamHandler(file_handler.stream)
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(levelname)s - %(threadName)s - %(message)s")
+    )
 
     console_handler = SafeStreamHandler()
-    console_handler.setFormatter(logging.Formatter(
-        "%(levelname)s - %(threadName)s - %(message)s"
-    ))
+    console_handler.setFormatter(
+        logging.Formatter("%(levelname)s - %(threadName)s - %(message)s")
+    )
 
+    # QueueListener
     _log_listener = logging.handlers.QueueListener(_log_queue, file_handler, console_handler)
     _log_listener.start()
 
+    # QueueHandler
     queue_handler = logging.handlers.QueueHandler(_log_queue)
     root_logger = logging.getLogger()
-    root_logger.handlers.clear()
+    root_logger.handlers = []
     root_logger.addHandler(queue_handler)
     root_logger.setLevel(logging.DEBUG)
 
     # Suppress noisy third-party loggers
     logging.getLogger("asyncio").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+    # CI-safe pidlock logger
+    if os.getenv("CI") or os.getenv("PYTEST_CURRENT_TEST"):
+        pidlock_logger = logging.getLogger("docbuild.utils.pidlock")
+        for h in list(pidlock_logger.handlers):
+            pidlock_logger.removeHandler(h)
+        safe_handler = SafeStreamHandler()
+        safe_handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+        pidlock_logger.addHandler(safe_handler)
+        pidlock_logger.propagate = False
+
 
 def pytest_unconfigure(config):
     """Stop queue listener safely during pytest teardown."""
@@ -74,6 +100,7 @@ def pytest_unconfigure(config):
         try:
             _log_listener.stop()
         except Exception:
+            # Suppress any errors caused by closed handlers
             pass
         _log_listener = None
 
@@ -86,6 +113,7 @@ def runner() -> CliRunner:
     """Provide a CliRunner instance for testing."""
     return CliRunner()
 
+
 @pytest.fixture(scope="function")
 def default_env_config_filename(tmp_path: Path) -> Path:
     """Provide a default env config file path."""
@@ -93,9 +121,10 @@ def default_env_config_filename(tmp_path: Path) -> Path:
     envfile.write_text("")
     return envfile
 
+
 @pytest.fixture(scope="function")
 def env_content(default_env_config_filename: Path) -> Path:
-    """Provide default content for the env config file."""
+    """Provide a default content for the env config file."""
     content = """# Test file
 [paths]
 config_dir = "/etc/docbuild"
@@ -109,6 +138,7 @@ tmp_path = "{tmp_base_dir}/doc-example-com"
     default_env_config_filename.write_text(content)
     return default_env_config_filename
 
+
 @pytest.fixture
 def mock_context() -> DocBuildContext:
     """Mock DocBuildContext."""
@@ -116,24 +146,28 @@ def mock_context() -> DocBuildContext:
     context.verbose = 2
     return context
 
+
 class DummyCtx:
     """A dummy context class."""
-    def __init__(self, obj: Any = None) -> None:
+    def __init__(self, obj: Any = None) -> None:  # noqa: ANN401
         self.obj = obj
         self.dry_run = None
         self.verbose = None
         self.envconfigfiles = None
         self.role = None
 
+
 @pytest.fixture
 def ctx() -> type[DummyCtx]:
     """Provide a dummy context object for testing."""
     return DummyCtx
 
+
 @pytest.fixture
 def context() -> DocBuildContext:
     """Provide a DocBuildContext instance for testing."""
     return DocBuildContext()
+
 
 # --- Mocking Fixtures ---
 
@@ -142,6 +176,7 @@ class MockEnvConfig(NamedTuple):
     fakefile: Path
     mock: MagicMock
 
+
 class MockCombinedConfig(NamedTuple):
     """Named tuple to hold the fake validate_options."""
     fakefile: Path
@@ -149,11 +184,12 @@ class MockCombinedConfig(NamedTuple):
     mock_load_and_merge_configs: MagicMock
     mock_load_single_config: MagicMock
 
+
 def make_path_mock(
     path: str = "",
-    return_values: Optional[Dict[str, Any]] = None,
-    side_effects: Optional[Dict[str, Callable]] = None,
-    attributes: Optional[Dict[str, Any]] = None,
+    return_values: Optional[dict[str, Any]] = None,
+    side_effects: Optional[dict[str, Callable]] = None,
+    attributes: Optional[dict[str, Any]] = None,
 ) -> MagicMock:
     """Helper to create a MagicMock that mimics pathlib.Path."""
     path_obj = Path(path) if path else Path("mocked")
@@ -182,28 +218,26 @@ def make_path_mock(
         for name, value in attributes.items():
             setattr(mock, name, value)
 
-    # Set method return values
+    # Set method return values safely
     if return_values:
         for method, value in return_values.items():
-            # Ensure the attribute is a MagicMock
             attr = getattr(mock, method, None)
-            if not isinstance(attr, MagicMock):
-                attr = MagicMock()
-                setattr(mock, method, attr)
-            attr.return_value = value
+            if isinstance(attr, MagicMock):
+                attr.return_value = value
+            else:
+                setattr(mock, method, MagicMock(return_value=value))
 
-    # Set method side effects
+    # Set method side effects safely
     if side_effects:
         for method, func in side_effects.items():
-            # Ensure the attribute is a MagicMock
             attr = getattr(mock, method, None)
-            if not isinstance(attr, MagicMock):
-                attr = MagicMock()
-                setattr(mock, method, attr)
-            attr.side_effect = func
-
+            if isinstance(attr, MagicMock):
+                attr.side_effect = func
+            else:
+                setattr(mock, method, MagicMock(side_effect=func))
 
     return mock
+
 
 @pytest.fixture
 def fake_envfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[MockEnvConfig, None, None]:
@@ -214,31 +248,44 @@ def fake_envfile(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[M
         side_effects={"read_text": lambda: "dynamic content"},
         attributes={"name": "file.txt"},
     )
-    mock = MagicMock(return_value=mock_path)
+    mock = MagicMock()
+    mock.return_value = mock_path
+
     monkeypatch.setattr(load_mod, "process_envconfig", mock)
+
     with changedir(tmp_path):
         yield MockEnvConfig(mock_path, mock)
+
 
 @pytest.fixture
 def fake_confiles(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[MockEnvConfig, None, None]:
     """Patch the `docbuild.cli.cli.load_and_merge_configs` function."""
     with changedir(tmp_path):
         fakefile = Path("fake_config.toml")
-        mock = MagicMock(return_value=([fakefile], {"fake_config_key": "fake_config_value"}))
+        mock = MagicMock(
+            return_value=([fakefile], {"fake_config_key": "fake_config_value"})
+        )
         monkeypatch.setattr(cli, "load_and_merge_configs", mock)
         yield MockEnvConfig(fakefile, mock)
 
+
 @pytest.fixture
-def fake_validate_options(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Generator[MockCombinedConfig, None, None]:
+def fake_validate_options(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> Generator[MockCombinedConfig, None, None]:
     """Patch the `docbuild.cli.validate_options` function."""
     with changedir(tmp_path):
         fakefile = Path("fake_validate_options.toml").absolute()
-        mock = MagicMock(return_value=None)
 
-        mock_load_and_merge_configs = MagicMock(return_value=([fakefile], {"fake_key": "fake_value"}))
+        mock = MagicMock()
+        mock.return_value = None
+
+        mock_load_and_merge_configs = MagicMock()
+        mock_load_and_merge_configs.return_value = ([fakefile], {"fake_key": "fake_value"})
         monkeypatch.setattr(cli_module, "load_and_merge_configs", mock_load_and_merge_configs)
 
-        mock_load_single_config = MagicMock(return_value={"fake_key": "fake_value"})
+        mock_load_single_config = MagicMock()
+        mock_load_single_config.return_value = {"fake_key": "fake_value"}
         monkeypatch.setattr(cli_module, "load_single_config", mock_load_single_config)
 
         yield MockCombinedConfig(
