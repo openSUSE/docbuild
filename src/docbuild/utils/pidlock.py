@@ -8,38 +8,12 @@ import errno
 from pathlib import Path
 from typing import TypeVar
 
-T = TypeVar("T", bound="PidFileLock")
-
 from ..constants import BASE_LOCK_DIR
 
-# --- Safe Logging Setup for CI / Pytest (prevents teardown ValueErrors) ---
-
-class _SafeStreamHandler(logging.StreamHandler):
-    """A logging handler that ignores 'I/O operation on closed file' errors during teardown."""
-    def emit(self, record):
-        try:
-            super().emit(record)
-        except ValueError as e:
-            if "I/O operation on closed file" in str(e):
-                # Ignore harmless teardown errors (common in Python 3.13 + pytest)
-                return
-            raise
-
+T = TypeVar("T", bound="PidFileLock")
 
 log = logging.getLogger(__name__)
-log.propagate = True  # Allow pytest's caplog to capture messages
-
-# Apply safe handler in CI or pytest only
-if os.getenv("CI") or os.getenv("PYTEST_CURRENT_TEST"):
-    for h in list(log.handlers):
-        log.removeHandler(h)
-    _safe_handler = _SafeStreamHandler()
-    _safe_handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-    log.addHandler(_safe_handler)
-    log.propagate = False
-
-
-# --- Core PID Lock Implementation ---
+log.propagate = True  # Allow external capture (e.g., pytest's caplog)
 
 class PidFileLock:
     """Manages a PID lock file to ensure only one instance of an environment runs."""
@@ -94,9 +68,14 @@ class PidFileLock:
                 atexit.register(self.release)
                 return
             except FileExistsError:
+                # File exists; we’ll check if the process is still running below
                 pass
             except OSError as e:
-                raise RuntimeError(f"Failed to create lock file at {self.lock_path}: {e}")
+                raise RuntimeError(
+                    "Same instance is already running. "
+                    "Either wait until the first instance is complete or cancel it. "
+                    f"PID={current_pid}, lock file at {self.lock_path}: {e}"
+                )
 
             # Step 2: Handle existing lock file
             if not self.lock_path.exists():
@@ -149,18 +128,28 @@ class PidFileLock:
 
     def release(self) -> None:
         """Release the lock file."""
-        if self._lock_acquired and self.lock_path.exists():
+        if not self._lock_acquired:
+            return
+
+        try:
+            # First, unregister cleanup callback
             try:
+                atexit.unregister(self.release)
+            except (ValueError, AttributeError):
+                log.debug("atexit.unregister failed or unavailable.")
+
+            # Then remove the lock file
+            if self.lock_path.exists():
                 self.lock_path.unlink()
-                self._lock_acquired = False
-                self.lock_file = None
                 log.debug("Released lock at %s.", self.lock_path)
-                try:
-                    atexit.unregister(self.release)
-                except (ValueError, AttributeError):
-                    log.debug("atexit.unregister failed or unavailable.")
-            except OSError as e:
-                log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
+
+        except OSError as e:
+            log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
+
+        finally:
+            # Always clear internal state
+            self._lock_acquired = False
+            self.lock_file = None
 
     @staticmethod
     def _is_pid_running(pid: int) -> bool:
