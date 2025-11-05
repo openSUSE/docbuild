@@ -95,12 +95,18 @@ def pytest_configure(config):
 
 def pytest_unconfigure(config):
     """Stop queue listener safely during pytest teardown."""
-    global _log_listener
+    global _log_listener, _log_queue # Ensure _log_queue is global
     if _log_listener:
         try:
+            # Explicitly drain the queue before stopping the listener.
+            # This processes all remaining messages and prevents the I/O error.
+            while not _log_queue.empty():
+                 # Use a non-blocking get (timeout=0)
+                 _log_listener.handle(_log_queue.get(timeout=0))
+            
             _log_listener.stop()
         except Exception:
-            # Suppress any errors caused by closed handlers
+            # Suppress any errors caused by closed handlers during final stop
             pass
         _log_listener = None
 
