@@ -1,6 +1,7 @@
 """Tests for the PidFileLock utility."""
 
 import errno
+import os
 import pytest
 import logging
 from pathlib import Path
@@ -105,11 +106,12 @@ def test_acquire_non_critical_oserror_on_read(lock_setup, monkeypatch):
     logger.addHandler(handler)
     logger.setLevel(logging.ERROR)
 
+    # Should still acquire lock because acquire uses _real_os_open
     with lock:
-        pass
+        assert lock.lock
 
     logger.removeHandler(handler)
-    assert any("Non-critical error while checking lock file" in msg for msg in log_messages)
+    assert any("Non-critical error while reading lock file" in msg for msg in log_messages)
 
 
 def test_release_without_acquire(lock_setup):
@@ -130,7 +132,7 @@ def test_release_with_unlink_error(lock_setup, monkeypatch):
         def mocked_unlink(path):
             raise OSError(errno.EACCES, "Permission denied")
 
-        monkeypatch.setattr(PidFileLock.os, "unlink", mocked_unlink)
+        monkeypatch.setattr(os, "unlink", mocked_unlink)
         lock.release()
 
     assert not lock.lock
@@ -141,14 +143,16 @@ def test_acquire_noncritical_oserror(monkeypatch, tmp_path):
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
     lock_file = tmp_path / "resource.txt"
+    lock_file.write_text("dummy")
     lock = PidFileLock(lock_file, lock_dir)
 
     def mocked_os_open(path, flags, *args, **kwargs):
-        if flags & PidFileLock.os.O_WRONLY:
+        # Only raise for read/write attempts to simulate non-critical error
+        if flags & (os.O_RDWR | os.O_CREAT):
             raise OSError(errno.EPERM, "Permission denied")
-        return PidFileLock.os.open(path, flags, *args, **kwargs)
+        return os.open(path, flags, *args, **kwargs)
 
-    monkeypatch.setattr(PidFileLock.os, "open", mocked_os_open)
+    monkeypatch.setattr(os, "open", mocked_os_open)
 
     with pytest.raises(RuntimeError) as exc_info:
         lock.acquire()
@@ -160,12 +164,13 @@ def test_acquire_critical_oserror(monkeypatch, tmp_path):
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
     lock_file = tmp_path / "resource.txt"
+    lock_file.write_text("dummy")
     lock = PidFileLock(lock_file, lock_dir)
 
     def mocked_os_open(path, flags, *args, **kwargs):
         raise OSError(errno.EACCES, "Access denied")
 
-    monkeypatch.setattr(PidFileLock.os, "open", mocked_os_open)
+    monkeypatch.setattr(os, "open", mocked_os_open)
 
     with pytest.raises(RuntimeError) as exc_info:
         lock.acquire()
