@@ -1,32 +1,23 @@
-"""PID file locking utility."""
-
-import atexit
-import hashlib
-import logging
-import sys
-import os as _os  # renamed for safe monkeypatching
 import errno
+import fcntl
+import io
+import logging
+import os
 from pathlib import Path
-from typing import TypeVar
+from typing import Optional, Self
 
 from ..constants import BASE_LOCK_DIR
 
-T = TypeVar("T", bound="PidFileLock")
-
 log = logging.getLogger(__name__)
-log.propagate = True  # Allow external capture (e.g., pytest's caplog)
+
 
 class PidFileLock:
-    """Manages a PID lock file to ensure only one instance of an environment runs."""
-
-    lock_file: Path | None = None  # Exposed for testing and static type checkers
-    os = _os  # Expose os under class for reliable monkeypatching in tests
-
     def __init__(self, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> None:
         self.resource_path = resource_path.resolve()
-        self._lock_dir: Path = lock_dir
-        self._lock_path: Path = self._generate_lock_name()
+        self._lock_dir = lock_dir
+        self._lock_path = self._generate_lock_name()
         self._lock_acquired: bool = False
+        self._handle: Optional[io.TextIOWrapper] = None
 
     @property
     def lock_dir(self) -> Path:
@@ -40,7 +31,11 @@ class PidFileLock:
     def lock(self) -> bool:
         return self._lock_acquired
 
-    def __enter__(self: T) -> T:
+    @property
+    def lock_file(self):
+        return getattr(self, "_handle", None)
+
+    def __enter__(self) -> Self:
         self.acquire()
         return self
 
@@ -48,117 +43,101 @@ class PidFileLock:
         self.release()
 
     def _generate_lock_name(self) -> Path:
+        import hashlib
+
         path_hash = hashlib.sha256(str(self.resource_path).encode("utf-8")).hexdigest()
         return self._lock_dir / f"docbuild-{path_hash}.pid"
 
     def acquire(self) -> None:
-        """Acquire the lock atomically, or diagnose an existing lock."""
-        self.lock_dir.mkdir(parents=True, exist_ok=True)
-        current_pid = self.os.getpid()
+        if self._lock_acquired:
+            raise RuntimeError("Lock already acquired")
 
-        while True:
-            # Step 1: Try atomic creation
+        self._lock_dir.mkdir(parents=True, exist_ok=True)
+
+        # Check for existing lock file
+        if self._lock_path.exists():
             try:
-                lock_fd = self.os.open(
-                    self.lock_path, self.os.O_WRONLY | self.os.O_CREAT | self.os.O_EXCL, 0o644
-                )
-                with open(lock_fd, "w") as f:
-                    f.write(f"{current_pid}\n")
-                self._lock_acquired = True
-                self.lock_file = self.lock_path
-                log.debug(f"Acquired lock for {self.resource_path} at PID {current_pid}.")
-                atexit.register(self.release)
-                return
-            except FileExistsError:
-                pass
+                with self._lock_path.open("r") as f:
+                    try:
+                        pid = int(f.read().strip())
+                        try:
+                            os.kill(pid, 0)
+                            raise RuntimeError(
+                                f"Resource is locked by PID {pid} (file {self._lock_path})"
+                            )
+                        except ProcessLookupError:
+                            self._lock_path.unlink()
+                        except PermissionError:
+                            log.error("Non-critical error while checking lock file: permission denied")
+                        except OSError as e:
+                            log.error(f"Non-critical error while checking lock file: {e}")
+                    except ValueError:
+                        log.error(f"Invalid PID in lock file {self._lock_path}, removing")
+                        try:
+                            self._lock_path.unlink()
+                        except OSError:
+                            pass
             except OSError as e:
-                raise RuntimeError(
-                    "Same instance is already running. "
-                    "Either wait until the first instance is complete or cancel it. "
-                    f"PID={current_pid}, lock file at {self.lock_path}: {e}"
-                )
-
-            # Step 2: Handle existing lock file
-            if not self.lock_path.exists():
-                continue
-
-            try:
-                with self.lock_path.open("r") as f:
-                    pid_str = f.read().strip()
-                pid = int(pid_str)
-
-                if self._is_pid_running(pid):
-                    raise RuntimeError(
-                        f"docbuild instance already running (PID: {pid}) "
-                        f"for configuration: {self.resource_path}"
-                    )
-
-                log.warning(
-                    f"Found stale lock file at {self.lock_path} (PID {pid}). Removing and retrying acquisition."
-                )
-                self.lock_path.unlink()
-
-            except (FileNotFoundError, ValueError):
-                log.warning(
-                    f"Lock file at {self.lock_path} missing or invalid. Removing and retrying."
-                )
-                self.lock_path.unlink(missing_ok=True)
-
-            except OSError as e:
-                log.error(f"Non-critical error while checking lock file: {e}")
+                log.error(f"Non-critical error while reading lock file: {e}")
                 try:
-                    self.lock_path.unlink(missing_ok=True)
-                except Exception:
+                    self._lock_path.unlink()
+                except OSError:
                     pass
-                try:
-                    lock_fd = self.os.open(
-                        self.lock_path, self.os.O_WRONLY | self.os.O_CREAT | self.os.O_EXCL, 0o644
-                    )
-                    with open(lock_fd, "w") as f:
-                        f.write(f"{current_pid}\n")
-                    self._lock_acquired = True
-                    self.lock_file = self.lock_path
-                    atexit.register(self.release)
-                    return
-                except Exception as e2:
-                    raise RuntimeError(
-                        f"Failed to recover from non-critical lock read error: {e2}"
-                    )
-                
+
+        # Save the real os.open to prevent recursion in tests
+        _real_os_open = os.open
+
+        # Acquire the lock safely
+        try:
+            fd = _real_os_open(self._lock_path, os.O_RDWR | os.O_CREAT)
+            handle = os.fdopen(fd, "w+")
+        except OSError as e:
+            if e.errno in (errno.EACCES, errno.EPERM):
+                raise RuntimeError(f"Cannot acquire lock: {e}") from e
+            else:
+                log.error(f"Non-critical error while opening lock file: {e}")
+                # Fallback attempt
+                fd = _real_os_open(self._lock_path, os.O_RDWR | os.O_CREAT)
+                handle = os.fdopen(fd, "w+")
+
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as e:
+            handle.close()
+            raise RuntimeError(f"docbuild instance already running (lock {self._lock_path}): {e}") from e
+
+        try:
+            handle.seek(0)
+            handle.truncate()
+            handle.write(f"{os.getpid()}\n")
+            handle.flush()
+        except OSError as e:
+            log.warning(f"Failed to write PID to lock file: {e}")
+
+        self._handle = handle
+        self._lock_acquired = True
+        log.debug("Acquired fcntl lock for %s", self.resource_path)
 
     def release(self) -> None:
-        """Release the lock file."""
-        if not self._lock_acquired:
+        if not self._lock_acquired or self._handle is None:
             return
 
         try:
-            try:
-                atexit.unregister(self.release)
-            except (ValueError, AttributeError):
-                pass
+            fcntl.flock(self._handle, fcntl.LOCK_UN)
+        except Exception:
+            pass
 
-            # Safely remove the lock file
-            if self.lock_path.exists():
-                try:
-                    self.lock_path.unlink()
-                    # Only log if the interpreter is not finalizing
-                    if not getattr(sys, "is_finalizing", lambda: False)():
-                        log.debug("Released lock at %s.", self.lock_path)
-                except OSError as e:
-                    if not getattr(sys, "is_finalizing", lambda: False)():
-                        log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
-
-        finally:
-            self._lock_acquired = False
-            self.lock_file = None
-
-
-    @staticmethod
-    def _is_pid_running(pid: int) -> bool:
-        if pid <= 0:
-            return False
         try:
-            _os.kill(pid, 0)
-            return True
-        except OSError as err:
-            return err.errno != errno.ESRCH
+            self._handle.close()
+        except Exception:
+            pass
+
+        self._handle = None
+        self._lock_acquired = False
+
+        try:
+            self._lock_path.unlink(missing_ok=True)
+        except Exception:
+            log.warning(f"Failed to remove lock file {self._lock_path}")
+
+        log.debug("Released fcntl lock %s", self._lock_path)
