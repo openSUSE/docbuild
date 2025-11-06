@@ -3,6 +3,7 @@
 import atexit
 import hashlib
 import logging
+import sys
 import os as _os  # renamed for safe monkeypatching
 import errno
 from pathlib import Path
@@ -123,6 +124,7 @@ class PidFileLock:
                     raise RuntimeError(
                         f"Failed to recover from non-critical lock read error: {e2}"
                     )
+                
 
     def release(self) -> None:
         """Release the lock file."""
@@ -133,18 +135,23 @@ class PidFileLock:
             try:
                 atexit.unregister(self.release)
             except (ValueError, AttributeError):
-                log.debug("atexit.unregister failed or unavailable.")
+                pass
 
+            # Safely remove the lock file
             if self.lock_path.exists():
-                self.lock_path.unlink()
-                log.debug("Released lock at %s.", self.lock_path)
-
-        except OSError as e:
-            log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
+                try:
+                    self.lock_path.unlink()
+                    # Only log if the interpreter is not finalizing
+                    if not getattr(sys, "is_finalizing", lambda: False)():
+                        log.debug("Released lock at %s.", self.lock_path)
+                except OSError as e:
+                    if not getattr(sys, "is_finalizing", lambda: False)():
+                        log.error(f"Failed to remove lock file at {self.lock_path}: {e}")
 
         finally:
             self._lock_acquired = False
             self.lock_file = None
+
 
     @staticmethod
     def _is_pid_running(pid: int) -> bool:
