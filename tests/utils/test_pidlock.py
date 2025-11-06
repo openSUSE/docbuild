@@ -190,3 +190,20 @@ def test_acquire_when_lock_dir_missing(tmp_path):
 
     assert not lock.lock_path.exists()
     assert not lock.lock
+
+
+def test_singleton_behavior(lock_setup):
+    """Ensure PidFileLock returns the same instance for the same resource path and lock dir."""
+    resource_path, lock_dir = lock_setup
+    lock_dir.mkdir()
+
+    lock1 = PidFileLock(resource_path, lock_dir)
+    lock2 = PidFileLock(resource_path, lock_dir)
+
+    assert lock1 is lock2
+    with lock1:
+        assert lock1.lock
+        assert lock2.lock  # Both references reflect the same lock
+
+    assert not lock1.lock
+    assert not lock2.lock

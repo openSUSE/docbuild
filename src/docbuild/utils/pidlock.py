@@ -4,7 +4,7 @@ import io
 import logging
 import os
 from pathlib import Path
-from typing import Optional, Self
+from typing import Optional, ClassVar, Dict, Self, cast
 
 from ..constants import BASE_LOCK_DIR
 
@@ -12,10 +12,31 @@ log = logging.getLogger(__name__)
 
 
 class PidFileLock:
+    """Context manager for process-safe file locking using fcntl.
+
+    Ensures only one process can hold a lock for a given resource.
+    Implements a per-path singleton pattern: each lock_path has at most one instance.
+    """
+
+    _instances: ClassVar[Dict[Path, "PidFileLock"]] = {}
+
+    def __new__(cls, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> Self:
+        lock_path = cls._generate_lock_name(resource_path, lock_dir)
+        if lock_path in cls._instances:
+            return cast(Self, cls._instances[lock_path])  # type: ignore
+
+        instance = super().__new__(cls)
+        cls._instances[lock_path] = instance
+        return instance
+
     def __init__(self, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> None:
+        # Prevent multiple initializations
+        if hasattr(self, "_lock_path"):
+            return
+
         self.resource_path = resource_path.resolve()
         self._lock_dir = lock_dir
-        self._lock_path = self._generate_lock_name()
+        self._lock_path = self._generate_lock_name(resource_path, lock_dir)
         self._lock_acquired: bool = False
         self._handle: Optional[io.TextIOWrapper] = None
 
@@ -42,11 +63,12 @@ class PidFileLock:
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self.release()
 
-    def _generate_lock_name(self) -> Path:
+    @staticmethod
+    def _generate_lock_name(resource_path: Path, lock_dir: Path) -> Path:
         import hashlib
 
-        path_hash = hashlib.sha256(str(self.resource_path).encode("utf-8")).hexdigest()
-        return self._lock_dir / f"docbuild-{path_hash}.pid"
+        path_hash = hashlib.sha256(str(resource_path.resolve()).encode("utf-8")).hexdigest()
+        return Path(lock_dir) / f"docbuild-{path_hash}.pid"
 
     def acquire(self) -> None:
         if self._lock_acquired:
