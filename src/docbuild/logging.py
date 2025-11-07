@@ -13,6 +13,27 @@ from typing import Any
 
 from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
+# --- Defensive macOS-safe patch: prevent logging errors on closed streams ---
+# This prevents benign "ValueError: I/O operation on closed file" in background threads.
+logging.raiseExceptions = False  # Suppresses internal logging exception tracebacks.
+
+_original_emit = logging.StreamHandler.emit
+
+
+def _safe_emit(self, record):
+    try:
+        _original_emit(self, record)
+    except ValueError:
+        # Happens if a background thread logs after sys.stdout/stderr closed.
+        # Safe to ignore, since log messages are already handled elsewhere.
+        pass
+    except Exception:
+        # Avoid cascading secondary errors during interpreter shutdown.
+        pass
+
+
+logging.StreamHandler.emit = _safe_emit
+
 # --- Default Logging Configuration ---
 DEFAULT_LOGGING_CONFIG = {
     "version": 1,
