@@ -107,8 +107,10 @@ def pytest_unconfigure(config):
                 except queue.Empty:
                     break
             _log_listener.stop()
-        except Exception:
-            pass
+        except (ValueError, OSError) as e:
+            # Suppress errors caused by closed handlers during final stop
+            # For example, "I/O operation on closed file" or OS-level handler errors
+            logging.debug(f"Suppressed logging cleanup error: {e}")
         _log_listener = None
 
 

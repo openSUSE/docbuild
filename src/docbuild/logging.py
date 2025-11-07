@@ -9,8 +9,9 @@ import os
 import queue
 import threading
 import time
+import contextvars
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
@@ -79,19 +80,19 @@ DEFAULT_LOGGING_CONFIG = {
 
 LOGLEVELS = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 
-# --- Global state ---
-_LOGGING_STATE: dict[str, Any] = {
-    "listener": None,
-    "handlers": [],
-    "background_threads": [],
+# --- Context-aware global state ---
+_LOGGING_STATE: dict[str, contextvars.ContextVar] = {
+    "listener": contextvars.ContextVar("listener", default=None),
+    "handlers": contextvars.ContextVar("handlers", default=[]),
+    "background_threads": contextvars.ContextVar("background_threads", default=[]),
 }
 
 
 def _shutdown_logging():
     """Ensure all logging threads and handlers shut down cleanly."""
-    listener = _LOGGING_STATE.get("listener")
-    handlers = _LOGGING_STATE.get("handlers", [])
-    bg_threads = _LOGGING_STATE.get("background_threads", [])
+    listener = _LOGGING_STATE["listener"].get()
+    handlers: List[logging.Handler] = _LOGGING_STATE["handlers"].get()
+    bg_threads: List[threading.Thread] = _LOGGING_STATE["background_threads"].get()
 
     if listener:
         try:
@@ -113,14 +114,17 @@ def _shutdown_logging():
             except Exception:
                 pass
 
-    _LOGGING_STATE["listener"] = None
-    _LOGGING_STATE["handlers"] = []
-    _LOGGING_STATE["background_threads"] = []
-    
+    # Reset contextvars
+    _LOGGING_STATE["listener"].set(None)
+    _LOGGING_STATE["handlers"].set([])
+    _LOGGING_STATE["background_threads"].set([])
+
 
 def register_background_thread(thread: threading.Thread):
     """Register a thread to be joined on logging shutdown."""
-    _LOGGING_STATE.setdefault("background_threads", []).append(thread)
+    threads = _LOGGING_STATE["background_threads"].get()
+    threads.append(thread)
+    _LOGGING_STATE["background_threads"].set(threads)
 
 
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
@@ -208,6 +212,6 @@ def setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) 
     root_logger.addHandler(queue_handler)
 
     # --- Register graceful shutdown ---
-    _LOGGING_STATE["listener"] = listener
-    _LOGGING_STATE["handlers"] = built_handlers
+    _LOGGING_STATE["listener"].set(listener)
+    _LOGGING_STATE["handlers"].set(built_handlers)
     atexit.register(_shutdown_logging)

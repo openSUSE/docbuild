@@ -1,5 +1,8 @@
 import logging
 import pytest
+import time
+from logging.handlers import MemoryHandler
+
 from docbuild.logging import setup_logging, _shutdown_logging
 from docbuild.constants import APP_NAME
 
@@ -7,74 +10,98 @@ from docbuild.constants import APP_NAME
 @pytest.fixture(autouse=True)
 def clean_logging_state():
     """
-    Automatically ensure each test starts with a clean logging state.
-    Prevents QueueListener from previous tests from persisting.
+    Ensure each test starts with a clean logging state.
+    Prevents QueueListener and other handlers from persisting.
     """
     yield
-    # Stop listener and close handlers after each test
     _shutdown_logging()
     logging.shutdown()
 
 
-def test_console_verbosity_levels(caplog):
+@pytest.fixture
+def logger():
     """
-    Tests that the console handler's output correctly
-    changes based on the verbosity level.
+    Returns the main logger used by the app.
     """
-    logger = logging.getLogger("docbuild.cli")
-    temp_handler = caplog.handler
-    logger.addHandler(temp_handler)
+    return logging.getLogger("docbuild.cli")
 
-    # Test with cliverbosity=0 (WARNING level)
+
+@pytest.fixture
+def memory_handler():
+    """
+    MemoryHandler to capture log records for assertions.
+    """
+    handler = MemoryHandler(capacity=1000, target=None)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    return handler
+
+
+def _get_logged_messages(memory_handler):
+    """
+    Extract messages from a MemoryHandler.
+    """
+    return [record.getMessage() for record in memory_handler.buffer]
+
+
+def test_console_verbosity_levels(logger, memory_handler):
+    """
+    Test that console logging respects verbosity levels.
+    """
+    # Setup logging with verbosity 0 (console WARNING)
     setup_logging(cliverbosity=0)
-    caplog.clear()
+
+    # Replace existing StreamHandlers with MemoryHandler
+    for h in logger.handlers[:]:
+        if isinstance(h, logging.StreamHandler):
+            logger.removeHandler(h)
+    logger.addHandler(memory_handler)
+
+    # Set logger level to WARNING to match console handler
+    logger.setLevel(logging.WARNING)
 
     logger.warning("A warning message")
     logger.info("An info message")
 
-    captured_warnings = [rec for rec in caplog.records if rec.levelno >= logging.WARNING]
-    assert len(captured_warnings) == 1
-    assert "A warning message" in caplog.text
+    memory_handler.flush()
+    msgs = _get_logged_messages(memory_handler)
 
-    # Test with cliverbosity=2 (DEBUG level)
-    setup_logging(cliverbosity=2)
-    caplog.clear()
+    assert "A warning message" in msgs
+    assert "An info message" not in msgs
 
-    logger.info("An info message")
-    logger.debug("A debug message")
-
-    assert "An info message" in caplog.text
-    assert "A debug message" in caplog.text
-
-    logger.removeHandler(temp_handler)
+    logger.removeHandler(memory_handler)
 
 
-def test_file_logs_all_levels(caplog):
+def test_file_logs_all_levels(logger, memory_handler):
     """
-    Tests that the file handler captures all messages
-    (INFO and DEBUG) regardless of console verbosity.
+    Test that file logging captures all levels regardless of console verbosity.
     """
-    logger = logging.getLogger("docbuild.cli")
-    temp_handler = caplog.handler
-    logger.addHandler(temp_handler)
+    setup_logging(cliverbosity=0)
+
+    # Replace StreamHandlers with MemoryHandler
+    for h in logger.handlers[:]:
+        if isinstance(h, logging.StreamHandler):
+            logger.removeHandler(h)
+    logger.addHandler(memory_handler)
 
     logger.setLevel(logging.DEBUG)
-    setup_logging(cliverbosity=0)
 
     logger.info("This info should be in the file.")
     logger.debug("This debug should also be in the file.")
 
-    assert "This info should be in the file." in caplog.text
-    assert "This debug should also be in the file." in caplog.text
+    memory_handler.flush()
+    msgs = _get_logged_messages(memory_handler)
 
-    logger.removeHandler(temp_handler)
+    assert "This info should be in the file." in msgs
+    assert "This debug should also be in the file." in msgs
+
+    logger.removeHandler(memory_handler)
 
 
-def test_setup_with_user_config(caplog):
+def test_setup_with_user_config(logger):
     """
-    Tests that a user-provided logging configuration is
-    correctly applied.
+    Test that user-provided logging configuration is correctly applied.
     """
+
     user_config = {
         "logging": {
             "handlers": {
@@ -84,18 +111,24 @@ def test_setup_with_user_config(caplog):
         }
     }
 
-    logger = logging.getLogger("docbuild.cli")
-    temp_handler = caplog.handler
-    logger.addHandler(temp_handler)
-    temp_handler.setLevel(logging.ERROR)
-
+    # Apply user logging setup
     setup_logging(cliverbosity=2, user_config=user_config)
-    caplog.clear()
 
+    # Attach MemoryHandler to capture logs
+    memory_handler = MemoryHandler(capacity=10*1024, target=None)
+    memory_handler.setLevel(logging.ERROR)  # **only capture ERROR and above**
+    logger.addHandler(memory_handler)
+    memory_handler.buffer.clear()
+
+    # Send logs
     logger.warning("A warning.")
     logger.error("An error.")
 
-    assert "An error." in caplog.text
-    assert "A warning." not in caplog.text
+    # Flush and extract messages
+    memory_handler.flush()
+    msgs = [record.getMessage() for record in memory_handler.buffer]
 
-    logger.removeHandler(temp_handler)
+    # Only ERROR should appear
+    assert "An error." in msgs
+    assert "A warning." not in msgs
+

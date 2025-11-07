@@ -5,6 +5,7 @@ import logging
 import os
 from pathlib import Path
 from typing import Optional, ClassVar, Dict, Self, cast
+from contextlib import suppress
 
 from ..constants import BASE_LOCK_DIR
 
@@ -95,16 +96,12 @@ class PidFileLock:
                             log.error(f"Non-critical error while checking lock file: {e}")
                     except ValueError:
                         log.error(f"Invalid PID in lock file {self._lock_path}, removing")
-                        try:
+                        with suppress(OSError):
                             self._lock_path.unlink()
-                        except OSError:
-                            pass
             except OSError as e:
                 log.error(f"Non-critical error while reading lock file: {e}")
-                try:
+                with suppress(OSError):
                     self._lock_path.unlink()
-                except OSError:
-                    pass
 
         # Save the real os.open to prevent recursion in tests
         _real_os_open = os.open
