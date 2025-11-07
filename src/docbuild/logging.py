@@ -7,16 +7,15 @@ import logging
 import logging.handlers
 import os
 import queue
+import threading
 import time
 from pathlib import Path
 from typing import Any
 
 from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
 
-# --- Defensive macOS-safe patch: prevent logging errors on closed streams ---
-# This prevents benign "ValueError: I/O operation on closed file" in background threads.
-logging.raiseExceptions = False  # Suppresses internal logging exception tracebacks.
-
+# --- Defensive macOS-safe patch ---
+logging.raiseExceptions = False  # Suppress internal logging exception tracebacks
 _original_emit = logging.StreamHandler.emit
 
 
@@ -25,7 +24,6 @@ def _safe_emit(self, record):
         _original_emit(self, record)
     except ValueError:
         # Happens if a background thread logs after sys.stdout/stderr closed.
-        # Safe to ignore, since log messages are already handled elsewhere.
         pass
     except Exception:
         # Avoid cascading secondary errors during interpreter shutdown.
@@ -79,31 +77,27 @@ DEFAULT_LOGGING_CONFIG = {
     },
 }
 
+LOGLEVELS = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 
-LOGLEVELS = {
-    0: logging.WARNING,
-    1: logging.INFO,
-    2: logging.DEBUG,
-}
-
-
-# --- Global state to prevent premature GC and ensure clean shutdown ---
+# --- Global state ---
 _LOGGING_STATE: dict[str, Any] = {
     "listener": None,
     "handlers": [],
+    "background_threads": [],
 }
 
 
 def _shutdown_logging():
-    """Ensure that all logging threads and handlers shut down cleanly."""
+    """Ensure all logging threads and handlers shut down cleanly."""
     listener = _LOGGING_STATE.get("listener")
     handlers = _LOGGING_STATE.get("handlers", [])
+    bg_threads = _LOGGING_STATE.get("background_threads", [])
 
     if listener:
         try:
             listener.stop()
         except Exception:
-            pass  # Avoid cascading teardown errors
+            pass
 
     for handler in handlers:
         try:
@@ -111,19 +105,26 @@ def _shutdown_logging():
         except Exception:
             pass
 
+    # Join all registered background threads
+    for t in bg_threads:
+        if t.is_alive():
+            try:
+                t.join(timeout=5)
+            except Exception:
+                pass
+
     _LOGGING_STATE["listener"] = None
     _LOGGING_STATE["handlers"] = []
+    _LOGGING_STATE["background_threads"] = []
+    
+
+def register_background_thread(thread: threading.Thread):
+    """Register a thread to be joined on logging shutdown."""
+    _LOGGING_STATE.setdefault("background_threads", []).append(thread)
 
 
 def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
-    """Create the base log directory if it doesn't exist.
-
-    This directory is typically located at :file:`~/.local/state/docbuild/logs`
-    as per the XDG Base Directory Specification.
-    :param base_log_dir: The base directory where logs should be stored.
-        Considers the `XDG_STATE_HOME` environment variable if set.
-    :return: The path to the base log directory.
-    """
+    """Create the base log directory if it doesn't exist."""
     log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
     return log_dir
@@ -136,19 +137,11 @@ def _resolve_class(path: str):
     return getattr(module, class_name)
 
 
-def setup_logging(
-    cliverbosity: int,
-    user_config: dict[str, Any] | None = None,
-) -> None:
-    """Sets up a non-blocking, configurable logging system.
-
-    This function merges the default logging configuration with the validated
-    user configuration and sets up the asynchronous handlers.
-    """
+def setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) -> None:
+    """Sets up a non-blocking, configurable logging system."""
     config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
     if user_config and "logging" in user_config:
-        # Use a more robust deep merge approach
         def deep_merge(target: dict, source: dict) -> None:
             for k, v in source.items():
                 if k in target and isinstance(target[k], dict) and isinstance(v, dict):
@@ -170,40 +163,26 @@ def setup_logging(
 
     built_handlers = []
 
-    # --- Handler and Listener Initialization ---
+    # --- Handler Initialization ---
     HANDLER_INTERNAL_KEYS = ["class", "formatter", "level", "class_name"]
-    FORMATTER_INTERNAL_KEYS = [
-        "class",
-        "formatter",
-        "level",
-        "class_name",
-        "validate",
-    ]
+    FORMATTER_INTERNAL_KEYS = ["class", "formatter", "level", "class_name", "validate"]
 
     for hname, hconf in config["handlers"].items():
         cls = _resolve_class(hconf["class"])
-        handler_args = {
-            k: v for k, v in hconf.items() if k not in HANDLER_INTERNAL_KEYS
-        }
+        handler_args = {k: v for k, v in hconf.items() if k not in HANDLER_INTERNAL_KEYS}
         handler = cls(**handler_args)
         handler.setLevel(hconf.get("level", "NOTSET"))
 
         formatter_name = hconf.get("formatter")
         if formatter_name and formatter_name in config["formatters"]:
             fmt_conf = config["formatters"][formatter_name]
-
             formatter_kwargs = {
-                k: v
-                for k, v in fmt_conf.items()
-                if k not in FORMATTER_INTERNAL_KEYS and k not in ["format"]
+                k: v for k, v in fmt_conf.items() if k not in FORMATTER_INTERNAL_KEYS and k not in ["format"]
             }
             formatter_kwargs["fmt"] = fmt_conf.get("format")
             formatter_kwargs["datefmt"] = fmt_conf.get("datefmt")
             formatter_kwargs["style"] = fmt_conf.get("style")
-            formatter_kwargs = {
-                k: v for k, v in formatter_kwargs.items() if v is not None
-            }
-
+            formatter_kwargs = {k: v for k, v in formatter_kwargs.items() if v is not None}
             fmt_cls = _resolve_class(fmt_conf.get("class", "logging.Formatter"))
             handler.setFormatter(fmt_cls(**formatter_kwargs))
 
@@ -224,7 +203,6 @@ def setup_logging(
         logger.addHandler(queue_handler)
         logger.propagate = lconf.get("propagate", False)
 
-    # Configure the root logger separately
     root_logger = logging.getLogger()
     root_logger.setLevel(config["root"]["level"])
     root_logger.addHandler(queue_handler)
