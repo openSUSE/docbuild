@@ -9,6 +9,7 @@ import rich.logging
 from rich.pretty import install
 from rich.traceback import install as install_traceback
 from pydantic import ValidationError
+from typing import Any, cast 
 
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
@@ -23,7 +24,7 @@ from ..constants import (
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
-from ..utils.pidlock import PidFileLock
+from ..utils.pidlock import PidFileLock, LockAcquisitionError
 from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_config import config
@@ -36,14 +37,12 @@ from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 PYTHON_VERSION = (
     f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}'
 )
-log = logging.getLogger(__name__) # Ensure logger is available globally
+log = logging.getLogger(__name__)
 CONSOLE = rich.console.Console(stderr=True, highlight=False)
 
 def _setup_console() -> None:
     """Configures the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
-    # The Rich console is now handled by the logging setup.
-    # install(console=CONSOLE)
 
 @click.group(
     name=APP_NAME,
@@ -127,7 +126,7 @@ def cli(
     context.dry_run = dry_run
     context.debug = debug
     
-    # --- PHASE 1: Load and Validate Application Config ---
+    # --- PHASE 1: Load and Validate Application Config (and setup logging) ---
     
     # 1. Load the raw application config dictionary
     (
@@ -141,6 +140,9 @@ def cli(
         None,
         DEFAULT_APP_CONFIG,
     )
+
+    # Explicitly cast the raw_appconfig type to silence Pylance
+    raw_appconfig = cast(dict[str, Any], raw_appconfig)
 
     # 2. Validate the raw config dictionary using Pydantic
     try:
@@ -174,32 +176,38 @@ def cli(
     
     env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
     
-    # --- CONCURRENCY CONTROL ---
+    # Explicitly cast the context.envconfig type to silence Pylance
+    context.envconfig = cast(dict[str, Any], context.envconfig)
+    
+    # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
     if env_config_path:
-        # Wrap the core execution in the PidFileLock context manager
-        # If the lock cannot be acquired, a RuntimeError is raised, which exits the program.
+        # 1. Instantiate the lock object
+        ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
+        
         try:
-            # Acquire the lock using the environment config file path as the resource ID
-            ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
-            ctx.obj.env_lock.acquire()
+            # 2. Acquire the lock by explicitly calling the __enter__ method.
+            ctx.obj.env_lock.__enter__()
             log.info("Acquired lock for environment config: %r", env_config_path.name)
-        except RuntimeError as e:
-            # If the lock is already held, log the error and exit gracefully.
+
+        except LockAcquisitionError as e:
+            # Handles lock contention
             log.error(str(e))
             ctx.exit(1)
         except Exception as e:
-            # Catch all other potential issues during lock acquisition/setup
+            # Handles critical errors
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
-
+        
+        # 3. Register the lock's __exit__ method to be called when the context terminates.
+        # We use a lambda to supply the three mandatory positional arguments (None)
+        # expected by __exit__, satisfying the click.call_on_close requirement.
+        ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
+    
     # Final config processing must happen outside the lock acquisition check
-    # Note: Placeholder replacement is still necessary here because EnvConfig is not validated yet.
     context.envconfig = replace_placeholders(
         context.envconfig,
     )
     
-    # The acquired lock will be automatically released when the program exits via the atexit.register call in PidFileLock.acquire().
-
 # Add subcommand
 cli.add_command(build)
 cli.add_command(c14n)

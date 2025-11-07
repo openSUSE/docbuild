@@ -26,9 +26,6 @@ def _safe_emit(self, record):
     except ValueError:
         # Happens if a background thread logs after sys.stdout/stderr closed.
         pass
-    except Exception:
-        # Avoid cascading secondary errors during interpreter shutdown.
-        pass
 
 
 logging.StreamHandler.emit = _safe_emit
