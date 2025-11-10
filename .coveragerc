@@ -1,6 +1,7 @@
 [run]
 concurrency = multiprocessing
 parallel = true
+branch = true
 
 [report]
 precision = 1
