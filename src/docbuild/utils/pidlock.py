@@ -6,7 +6,7 @@ import io
 import logging
 import os
 from pathlib import Path
-from typing import ClassVar, Dict, Self, cast
+from typing import ClassVar, Self, cast
 
 from ..constants import BASE_LOCK_DIR
 
@@ -34,7 +34,7 @@ class PidFileLock:
     Implements a per-path singleton pattern: each lock_path has at most one instance within this process.
     """
 
-    _instances: ClassVar[Dict[Path, "PidFileLock"]] = {}
+    _instances: ClassVar[dict[Path, "PidFileLock"]] = {}
 
     def __new__(cls, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> Self:
         lock_path = cls._generate_lock_name(resource_path, lock_dir)
@@ -71,13 +71,14 @@ class PidFileLock:
             raise RuntimeError("Lock already acquired by this PidFileLock instance.")
 
         self._lock_dir.mkdir(parents=True, exist_ok=True)
-        
+
         handle = None
         try:
             # 1. Open the file (creates it if needed)
             # Use os.open/os.fdopen for low-level file descriptor access needed by fcntl
-            fd = os.open(self._lock_path, os.O_RDWR | os.O_CREAT)
-            handle = os.fdopen(fd, "w+")
+            # fd = os.open(self._lock_path, os.O_RDWR | os.O_CREAT)
+            # handle = os.fdopen(fd, "w+")
+            handle = open(self._lock_path, 'w+')
 
             # 2. Acquire the exclusive, non-blocking fcntl lock. This is the atomic check.
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -102,7 +103,7 @@ class PidFileLock:
                 raise LockAcquisitionError(
                     f"Resource is locked by another process (lock file {self._lock_path})"
                 ) from e
-            
+
             # Check for permission/access errors during file open (critical failure)
             elif e.errno in (errno.EACCES, errno.EPERM):
                  raise RuntimeError(f"Cannot acquire lock: {e}") from e

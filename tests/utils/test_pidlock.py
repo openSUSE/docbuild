@@ -35,10 +35,10 @@ def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_e
         with lock:
             # 1. Signal that lock is held (by touching the file)
             lock_path.touch()
-            
+
             # 2. Wait indefinitely for the parent's signal (Event)
             done_event.wait()
-            
+
         # The lock's __exit__ runs here, releasing the lock cleanly.
     except Exception:
         # Ignore exceptions to ensure clean process exit
@@ -67,7 +67,7 @@ def test_context_manager(lock_setup):
     """Simple test for the context manager usage."""
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
-    
+
     with PidFileLock(resource_path, lock_dir) as lock:
         assert lock.lock_path.exists()
 
@@ -77,21 +77,21 @@ def test_context_manager(lock_setup):
 @skip_macos # <--- APPLIED CONDITIONAL SKIP
 def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     """Test that two separate processes cannot acquire the same lock simultaneously."""
-    
+
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
     lock_path = PidFileLock(resource_path, lock_dir).lock_path
-    
+
     # Create an Event to signal the child process to release the lock
-    done_event = mp.Event() 
+    done_event = mp.Event()
 
     # Start a background process to hold the lock
     lock_holder = mp.Process(
-        target=_mp_lock_holder, 
+        target=_mp_lock_holder,
         args=(resource_path, lock_dir, lock_path, done_event)
     )
     lock_holder.start()
-    
+
     # Wait for the lock holder to acquire the lock (check for lock file existence)
     timeout_start = time.time()
     while not lock_path.exists():
@@ -103,7 +103,7 @@ def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     lock_attempt = PidFileLock(resource_path, lock_dir)
     with pytest.raises(LockAcquisitionError):
         with lock_attempt:
-            pass 
+            pass
 
     # Cleanup: Signal the child process to exit cleanly and wait for it
     done_event.set()
@@ -126,10 +126,10 @@ def test_lock_is_reentrant_per_process(lock_setup):
     """
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
-    
+
     lock1 = PidFileLock(resource_path, lock_dir)
     lock2 = PidFileLock(resource_path, lock_dir)
-    
+
     assert lock1 is lock2 # Same instance
 
     with lock1:
@@ -137,7 +137,7 @@ def test_lock_is_reentrant_per_process(lock_setup):
         with pytest.raises(RuntimeError, match="Lock already acquired by this PidFileLock instance."):
             with lock2:
                 pass
-    
+
     assert not lock1.lock_path.exists()
 
 
@@ -147,7 +147,7 @@ def test_acquire_when_lock_dir_missing(lock_setup):
     # lock_dir is *not* created here
 
     lock = PidFileLock(resource_path, lock_dir)
-    
+
     with lock:
         # Check using the directory's path derived from lock_path
         assert lock.lock_path.parent.is_dir()
@@ -165,7 +165,7 @@ def test_release_handles_missing_file_on_unlink(lock_setup):
     with lock:
         # Manually delete the lock file while the lock is still held (by the handle)
         lock.lock_path.unlink()
-        
+
     # __exit__ should run without raising an error due to missing_ok=True
     assert not lock.lock_path.exists()
 
@@ -177,20 +177,18 @@ def test_acquire_critical_oserror(monkeypatch, tmp_path):
     lock_file = tmp_path / "resource.txt"
     lock_file.write_text("dummy")
     lock = PidFileLock(lock_file, lock_dir)
-    
-    # Mock os.open to fail with EACCES during the critical step
-    def mocked_os_open(path, flags, *args, **kwargs):
-        if path == lock.lock_path:
-            raise OSError(errno.EACCES, "Access denied")
-        return os.open(path, flags, *args, **kwargs)
 
-    monkeypatch.setattr(os, "open", mocked_os_open)
+    # Mock the built-in open to fail with EACCES, simulating a permissions error
+    def mocked_builtin_open(path, mode):
+        raise OSError(errno.EACCES, "Access denied")
+
+    monkeypatch.setattr("builtins.open", mocked_builtin_open)
 
     with pytest.raises(RuntimeError) as exc_info:
         with lock:
             pass
 
-    # Checks for the key phrases since the errno might be included
+    # Check that the RuntimeError message contains the expected text
     error_message = str(exc_info.value)
     assert "Cannot acquire lock:" in error_message
     assert "Access denied" in error_message
