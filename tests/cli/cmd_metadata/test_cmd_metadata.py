@@ -150,6 +150,7 @@ def test_xmlconfig_falsy_params_provide_default(xmlconfig):
     """
     ],
     indirect=True,
+    ids=["xmlconfig"],
 )
 def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     """Verify an empty list is returned when a language has no deliverables."""
@@ -183,6 +184,7 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     """
     ],
     indirect=True,
+    ids=["xmlconfig"]
 )
 def test_get_deliverable_from_doctype_no_match(xmlconfig):
     """Verify an empty list is returned when the doctype doesn't match any node."""
@@ -237,6 +239,7 @@ def test_get_deliverable_from_doctype_no_match(xmlconfig):
     """
     ],
     indirect=True,
+    ids=['xmlconfig'],
 )
 def test_get_deliverable_from_doctype_with_wildcard(xmlconfig):
     """Verify deliverables are correctly extracted using a wildcard doctype."""
