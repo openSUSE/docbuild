@@ -14,6 +14,7 @@ from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
+from ...utils.shell.git import clone_from_repo
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
@@ -100,26 +101,13 @@ async def process_deliverable(
             dir=str(temp_repo_dir),
             prefix=f'clone-{prefix}_',
         ) as worktree_dir:
+
             # 1. Create a temporary clone from the bare repo and checkout a branch.
-            clone_cmd = [
-                'git',
-                'clone',
-                '--local',
-                f'--branch={deliverable.branch}',
-                str(bare_repo_path),
-                str(worktree_dir),
-            ]
-            clone_process = await asyncio.create_subprocess_exec(
-                *clone_cmd,
-                stdin=asyncio.subprocess.DEVNULL,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            _, stderr = await clone_process.communicate()
-            if clone_process.returncode != 0:
-                # Raise an exception on failure to let the context manager know.
-                raise RuntimeError(
-                    f'Failed to clone {bare_repo_path}: {stderr.decode().strip()}'
-                )
+            await clone_from_repo(
+                bare_repo_path,
+                worktree_dir,
+                deliverable.branch,
+                is_local=True)
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
@@ -147,12 +135,15 @@ async def process_deliverable(
                 )
 
         console_out.print(f'> Processed deliverable: {deliverable.pdlangdc}')
-        return True
+        result=True
 
     except RuntimeError as e:
         # console_err.print(f'Error processing {deliverable.full_id}: {e}')
         log.error('Error processing %s: %s', deliverable.full_id, str(e) )
-        return False
+        result=False
+
+    log.info("Finished processing %s", deliverable.full_id)
+    return result
 
 
 async def process_doctype(
@@ -240,6 +231,7 @@ async def process(
         configured correctly.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
+    # Step 1: Extract paths from config
     if context.envconfig is None:
         raise ValueError('No envconfig found in context.')
 
@@ -249,10 +241,13 @@ async def process(
     configdir = Path(configdir).expanduser()
     console_out.print(f'Config path: {configdir}')
     xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
-    stitchnode = await create_stitchfile(xmlconfigs)
+
+    # Step 2: Create stitch file and check it:
+    stitchnode = await create_stitchfile(xmlconfigs, with_ref_check=False)
     console_out.print(f'Stitch node: {stitchnode.getroot().tag}')
     console_out.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
+    # Step 3: Process the doctypes
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
