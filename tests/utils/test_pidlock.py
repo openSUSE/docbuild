@@ -29,20 +29,11 @@ def lock_setup(tmp_path):
 
 # --- Helper function for multiprocessing tests (Must be top-level/global) ---
 
-# In tests/utils/test_pidlock.py, near the top:
-# Keep current imports:
-import coverage
-from multiprocessing import Event 
-
-
-# --- Helper function for multiprocessing tests (Must be top-level/global) ---
-
 def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event): # type: ignore
     """Acquire and hold a lock in a separate process, waiting for an event to release."""
     
-    # Instantiate coverage. We suppress the specific error because Pylance struggles
-    # to read the full list of supported arguments from the coverage library stubs.
-    cov = coverage.Coverage(auto_start=False, data_suffix=True) # type: ignore[reportCallIssue]
+    # FIX: Removed 'auto_start=False' to avoid TypeError crash in CI subprocess
+    cov = coverage.Coverage(data_suffix=True)
     cov.start()
     
     lock = PidFileLock(resource_path, lock_dir)
@@ -194,6 +185,9 @@ def test_acquire_critical_oserror(monkeypatch, tmp_path):
 
     # Mock the built-in open to fail with EACCES, simulating a permissions error
     def mocked_builtin_open(path, mode):
+        # We now rely on monkeypatching os.open directly in pidlock.py, 
+        # but for this test, we mock builtins.open if os.open is not used directly.
+        # Since pidlock.py now uses open(self._lock_path, 'w+'), mocking builtins.open is correct
         raise OSError(errno.EACCES, "Access denied")
 
     monkeypatch.setattr("builtins.open", mocked_builtin_open)
