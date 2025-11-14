@@ -24,7 +24,7 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15 # ADDED: Job timeout for stability
+    timeout-minutes: 15
     strategy:
       matrix:
         python-version: &python-matrix
@@ -78,10 +78,11 @@ jobs:
           uv sync --frozen --group devel
 
       - name: Run tests
+        # CRITICAL FIX: Use coverage run -m pytest for robust collection in parallel environments
         run: |
           source .venv/bin/activate
-          pytest -vv
-        env: # ADDED: Multiprocessing stability fix
+          .venv/bin/python -m coverage run -m pytest -vv 
+        env:
           PYTHONSTARTMETHOD: spawn
 
   test-macos:
@@ -143,5 +144,5 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest -vv
-        env: # ADDED: Multiprocessing stability fix for macOS too (good practice)
+        env:
           PYTHONSTARTMETHOD: spawn
