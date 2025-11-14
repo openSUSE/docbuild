@@ -24,6 +24,7 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15 # ADDED: Job timeout for stability
     strategy:
       matrix:
         python-version: &python-matrix
@@ -80,6 +81,8 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest -vv
+        env: # ADDED: Multiprocessing stability fix
+          PYTHONSTARTMETHOD: spawn
 
   test-macos:
     name: macos-python-${{ matrix.python-version }}
@@ -140,3 +143,5 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest -vv
+        env: # ADDED: Multiprocessing stability fix for macOS too (good practice)
+          PYTHONSTARTMETHOD: spawn

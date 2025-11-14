@@ -7,6 +7,7 @@ import logging
 import multiprocessing as mp
 import time
 import platform
+import coverage
 from pathlib import Path
 from docbuild.utils.pidlock import PidFileLock, LockAcquisitionError
 from multiprocessing import Event
@@ -28,22 +29,35 @@ def lock_setup(tmp_path):
 
 # --- Helper function for multiprocessing tests (Must be top-level/global) ---
 
+# In tests/utils/test_pidlock.py, near the top:
+# Keep current imports:
+import coverage
+from multiprocessing import Event 
+
+
+# --- Helper function for multiprocessing tests (Must be top-level/global) ---
+
 def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event): # type: ignore
     """Acquire and hold a lock in a separate process, waiting for an event to release."""
+    
+    # Instantiate coverage. We suppress the specific error because Pylance struggles
+    # to read the full list of supported arguments from the coverage library stubs.
+    cov = coverage.Coverage(auto_start=False, data_suffix=True) # type: ignore[reportCallIssue]
+    cov.start()
+    
     lock = PidFileLock(resource_path, lock_dir)
     try:
         with lock:
-            # 1. Signal that lock is held (by touching the file)
             lock_path.touch()
-
-            # 2. Wait indefinitely for the parent's signal (Event)
             done_event.wait()
-
-        # The lock's __exit__ runs here, releasing the lock cleanly.
+            
     except Exception:
-        # Ignore exceptions to ensure clean process exit
         pass
-
+    
+    # --- Stop coverage and save data ---
+    cov.stop()
+    cov.save()
+    
 
 # -----------------------------------------------------------------------------
 # Core PidFileLock Tests
@@ -74,7 +88,7 @@ def test_context_manager(lock_setup):
     assert not lock.lock_path.exists()
 
 
-@skip_macos # <--- APPLIED CONDITIONAL SKIP
+@skip_macos 
 def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     """Test that two separate processes cannot acquire the same lock simultaneously."""
 
