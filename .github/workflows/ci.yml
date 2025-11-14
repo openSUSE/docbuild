@@ -82,9 +82,8 @@ jobs:
       - name: Run tests and Report Coverage
         run: |
           source .venv/bin/activate
-          pytest --cov=src -vv
-          python -m coverage combine || true
-          python -m coverage report || true
+          # FINAL FIX: Include both src/ and tests/ in the coverage calculation
+          pytest --cov=src --cov=tests -vv 
         env:
           PYTHONSTARTMETHOD: spawn
           
