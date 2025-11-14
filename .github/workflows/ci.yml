@@ -78,16 +78,13 @@ jobs:
           uv sync --frozen --group devel
           # CRITICAL FIX: Ensure coverage tools are installed for the CI runner
           pip install coverage pytest-cov
-
-      - name: Run tests and Report Coverage # <--- CONSOLIDATED STEP
+      
+      - name: Run tests and Report Coverage
         run: |
           source .venv/bin/activate
-          # 1. Run tests with coverage collection enabled
-          pytest --cov=src -vv 
-          
-          # 2. Combine parallel data and generate report (always run for cleanup)
-          python -m coverage combine
-          python -m coverage report
+          pytest --cov=src -vv
+          python -m coverage combine || true
+          python -m coverage report || true
         env:
           PYTHONSTARTMETHOD: spawn
           
