@@ -24,6 +24,7 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         python-version: &python-matrix
@@ -71,16 +72,26 @@ jobs:
       - name: Print the installed version
         run: echo "Installed uv version is $(.venv/bin/uv --version)"
 
-      - name: Install dependencies
+      - name: Install dependencies and Coverage Tools
         run: |
           source .venv/bin/activate
           uv sync --frozen --group devel
+          # CRITICAL FIX: Ensure coverage tools are installed for the CI runner
+          pip install coverage pytest-cov
 
-      - name: Run tests
+      - name: Run tests and Report Coverage # Unified step for test execution and reporting
         run: |
           source .venv/bin/activate
-          pytest -vv
-
+          # 1. Run tests and collect coverage for src/ and tests/
+          pytest --cov=src --cov=tests --cov-report=term-missing -vv 
+          
+          # 2. Combine and report data (needed after parallel execution)
+          python -m coverage combine --append || true
+          python -m coverage report
+          python -m coverage erase # Final cleanup
+        env:
+          PYTHONSTARTMETHOD: spawn
+          
   test-macos:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
@@ -139,4 +150,6 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest -vv
+          pytest --cov=src -vv 
+        env:
+          PYTHONSTARTMETHOD: spawn

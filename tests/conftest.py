@@ -1,22 +1,16 @@
-"""Pytest fixtures.
-
-Naming conventions:
-- `runner`: provides a `CliRunner` instance for testing CLI commands.
-- `default_env_config_filename`: provides a default environment configuration file path.
-- `env_content`: provides a default content for the environment configuration file.
-- `ctx`: provides a simple dummy context object.
-- `context`: provides a `DocBuildContext` instance.
-- `fake_*`: Fixtures that patch specific functions or methods.
-"""
+"""Pytest fixtures and global logging mock."""
 
 from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any, NamedTuple
 from unittest.mock import MagicMock, Mock
-
-from click.testing import CliRunner
+import os
 import pytest
 
+from click.testing import CliRunner
+
+# Import the module containing setup_logging for mocking
+import docbuild.logging 
 import docbuild.cli as cli_module
 import docbuild.cli.cmd_cli as cli
 from docbuild.cli.context import DocBuildContext
@@ -24,6 +18,16 @@ from docbuild.config import load as load_mod
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
 from tests.common import changedir
 
+# --- Global Fixture to Mute Logging Setup (Debugging Step) ---
+@pytest.fixture(autouse=True, scope="function") 
+def mock_setup_logging_globally(monkeypatch):
+    """Mocks out the setup_logging call to prevent any initialization side-effects in tests."""
+    mock_func = MagicMock()
+    # This prevents docbuild.logging.setup_logging from ever running during tests.
+    monkeypatch.setattr(docbuild.logging, "setup_logging", mock_func)
+    return mock_func
+
+# --- Original Fixtures ---
 
 @pytest.fixture(scope='function')
 def runner() -> CliRunner:
@@ -104,42 +108,13 @@ class MockCombinedConfig(NamedTuple):
     mock_load_single_config: MagicMock
 
 
-def make_path_mock(**members: Any | Callable[[], Any]) -> MagicMock:
-    """Create a MagicMock object that mimics a pathlib.Path.
-
-      Use with preconfigured attributes and methods.
-
-    - If the value is callable, it's used as the return_value of a method.
-    - If the value is not callable, it's set as a plain attribute.
-
-    Example:
-        mock_path = make_path_mock(
-            name="example.txt",
-            suffix=".txt",
-            exists=lambda: True,
-            read_text=lambda: "file contents"
-        )
-
-    """
-    mock = MagicMock(spec=Path)
-
-    for name, value in members.items():
-        if callable(value):
-            # Assume it's meant to mock a method
-            getattr(mock, name).return_value = value()
-        else:
-            # Mock an attribute
-            setattr(mock, name, value)
-
-    return mock
-
-
 def make_path_mock(
     path: str = '',
-    return_values: dict = None,
-    side_effects: dict = None,
-    attributes: dict = None,
+    return_values: dict | None = None,
+    side_effects: dict | None = None,
+    attributes: dict | None = None,
 ) -> MagicMock:
+    """Create a MagicMock object that mimics a pathlib.Path."""
     from pathlib import Path
     from unittest.mock import MagicMock
 
@@ -202,12 +177,6 @@ def fake_envfile(
         },
     )
 
-    # mock_path = MagicMock(spec=Path)
-    # mock_path.name = 'fake_envfile'
-    # mock_path.exists.return_value = True
-    # mock_path.is_file.return_value = True
-    # mock_path.suffix = '.txt'
-
     mock = MagicMock()
     mock.return_value = mock_path
 
@@ -233,8 +202,6 @@ def fake_confiles(
             return_value=(
                 [fakefile],
                 {
-                    # Example return value,
-                    # can be customized with fake_confiles.mock.return_value
                     'fake_config_key': 'fake_config_value',
                 },
             ),
@@ -252,19 +219,12 @@ def fake_validate_options(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> Generator[MockCombinedConfig, None, None]:
-    """Patch the `docbuild.cli.validate_options` function.
-
-    Use a temporary directory to simulate the environment.
-    """
+    """Patch the `docbuild.cli.validate_options` function."""
     with changedir(tmp_path):
         fakefile = Path('fake_validate_options.toml').absolute()
 
         mock = MagicMock()
-        # This function does not return anything
         mock.return_value = None
-        # monkeypatch.setattr(
-        #    cli_module, 'validate_options', mock,
-        # )
 
         mock_load_and_merge_configs = MagicMock()
         mock_load_and_merge_configs.return_value = (

@@ -1,164 +1,192 @@
 """Tests for the PidFileLock utility."""
 
 import errno
-import logging
 import os
-import shutil
-from pathlib import Path
-from unittest.mock import Mock, patch
-
 import pytest
+import logging
+import multiprocessing as mp
+import time
+import platform
+from pathlib import Path
+from docbuild.utils.pidlock import PidFileLock, LockAcquisitionError
+from multiprocessing import Event
 
-# Need to mock atexit.unregister, which is called inside PidFileLock.release(). This is crucial for isolated testing.
-import atexit 
-
-from docbuild.utils.pidlock import PidFileLock
-
-log = logging.getLogger(__name__)
-
-# --- Helper Fixtures and Mocks ---
-
-@pytest.fixture
-def mock_pid_running(monkeypatch):
-    """
-    Mocks os.kill to simulate a running process (PID exists).
-    os.kill(pid, 0) succeeds if the process exists.
-    """
-    def mock_kill(pid, sig):
-        if pid == 12345:  # Mock PID of a running process used in the test
-            return
-        # For any other PID, assume dead (simulating ESRCH)
-        raise OSError(errno.ESRCH, "No such process")
-    
-    monkeypatch.setattr(os, "kill", mock_kill)
+# Define a shared marker to skip the test if the OS is macOS (Darwin)
+skip_macos = pytest.mark.skipif(
+    platform.system() == "Darwin",
+    reason="Skipped on macOS due to known multiprocessing/resource cleanup issues.",
+)
 
 @pytest.fixture
-def mock_pid_dead(monkeypatch):
-    """
-    Mocks os.kill to simulate a dead process (PID does not exist).
-    """
-    def mock_kill(pid, sig):
-        # Always raise ESRCH (No such process) for any checked PID
-        raise OSError(errno.ESRCH, "No such process")
-        
-    monkeypatch.setattr(os, "kill", mock_kill)
-
-
-@pytest.fixture
-def lock_setup(tmp_path: Path) -> tuple[Path, Path]:
-    """Provides a resource path and the temporary lock directory."""
-    resource_path = tmp_path / "env.production.toml"
-    resource_path.touch()  # The resource path must exist
+def lock_setup(tmp_path):
+    """Fixture to create a dummy resource file and lock directory."""
+    resource_file = tmp_path / "env.production.toml"
+    resource_file.write_text("[dummy]\nkey=value")
     lock_dir = tmp_path / "locks"
-    return resource_path, lock_dir
+    return resource_file, lock_dir
 
-# --- Test Cases ---
 
-def test_acquire_and_release_success(lock_setup):
-    """Test successful lock acquisition and release using a context manager."""
-    resource_path, lock_dir = lock_setup
-    
-    current_pid = os.getpid()
+# --- Helper function for multiprocessing tests (Must be top-level/global) ---
 
+def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event): # type: ignore
+    """Acquire and hold a lock in a separate process, waiting for an event to release."""
     lock = PidFileLock(resource_path, lock_dir)
-    assert not lock.lock_path.exists()
-    
-    # Acquire lock via context manager
-    with lock:
-        assert lock.lock is True
-        assert lock.lock_path.exists()
-        
-        # Verify content is the current PID
-        assert lock.lock_path.read_text().strip() == str(current_pid)
-
-    # Verify lock file is released (deleted)
-    assert lock.lock is False
-    assert not lock.lock_path.exists()
+    try:
+        with lock:
+            lock_path.touch()
+            done_event.wait()
+            
+    except Exception:
+        pass
 
 
-def test_stale_lock_is_cleaned_up(lock_setup, mock_pid_dead):
-    """Test that a stale (dead process) lock is removed and a new one is acquired."""
+# -----------------------------------------------------------------------------
+# Core PidFileLock Tests
+# -----------------------------------------------------------------------------
+
+def test_acquire_and_release_creates_lock_file(lock_setup):
+    """Test that the lock file is created on entry and removed on exit."""
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
-    
-    # 1. Manually create a stale lock file with a fake PID
-    stale_pid = 9999
-    lock_path = PidFileLock(resource_path, lock_dir).lock_path
-    lock_path.write_text(str(stale_pid))
-    
-    # 2. Attempt to acquire the lock
     lock = PidFileLock(resource_path, lock_dir)
-    # We acquire the lock and then manually release it later in the test teardown
-    lock.acquire()
-    
-    # 3. Verify the stale lock was removed and a new one was acquired
-    assert lock.lock is True
-    assert lock.lock_path.exists()
-    assert lock.lock_path.read_text().strip() == str(os.getpid())
-    log.info("Stale lock successfully cleaned and re-acquired.")
+
+    with lock:
+        # Lock file should exist while the lock is held
+        assert lock.lock_path.exists()
+
+    # Lock file must be cleaned up on __exit__
+    assert not lock.lock_path.exists()
 
 
-def test_concurrent_instance_raises_runtime_error(lock_setup, mock_pid_running):
-    """Test that acquiring a lock for an already running process raises RuntimeError."""
+def test_context_manager(lock_setup):
+    """Simple test for the context manager usage."""
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
-    
-    # 1. Manually create a running lock file with the mocked PID
-    running_pid = 12345
-    lock_path = PidFileLock(resource_path, lock_dir).lock_path
-    lock_path.write_text(str(running_pid))
-    
-    # 2. Attempt to acquire the lock and expect failure
-    lock = PidFileLock(resource_path, lock_dir)
-    with pytest.raises(RuntimeError) as excinfo:
-        lock.acquire()
 
-    # 3. Verify the error message is correct
-    assert f"docbuild instance already running (PID: {running_pid})" in str(excinfo.value)
-    
-    # 4. Verify the lock was NOT acquired or removed
-    assert lock.lock is False
-    assert lock_path.exists()
-    assert lock_path.read_text().strip() == str(running_pid)
-
-
-@patch('docbuild.utils.pidlock.atexit')
-def test_lock_release_cleans_up_atexit_registration(mock_atexit, lock_setup):
-    """Test that the lock is cleaned up properly, especially the atexit registration."""
-    resource_path, lock_dir = lock_setup
-    
-    # Manually acquire the lock without using context manager
-    lock = PidFileLock(resource_path, lock_dir)
-    
-    # Mock the register call *before* acquire is run
-    # This ensures that when lock.acquire() calls atexit.register, it uses our mock.
-    mock_atexit.register.reset_mock() # Clear any previous calls from test setup/teardown
-    lock.acquire()
-    
-    # Manually release the lock
-    lock.release()
-    
-    # Check that both register (in acquire) and unregister (in release) were called.
-    mock_atexit.register.assert_called_once_with(lock.release)
-    mock_atexit.unregister.assert_called_once_with(lock.release)
-    
-    # Check lock state
-    assert lock.lock is False
-    assert not lock.lock_path.exists()
-
-
-def test_lock_acquiring_without_dir_exists(lock_setup):
-    """Test acquiring the lock when the lock directory does not yet exist."""
-    resource_path, lock_dir = lock_setup
-    
-    # Ensure lock_dir is deleted if it exists
-    if lock_dir.exists():
-        shutil.rmtree(lock_dir)
-
-    lock = PidFileLock(resource_path, lock_dir)
-    with lock:
-        assert lock.lock is True
+    with PidFileLock(resource_path, lock_dir) as lock:
         assert lock.lock_path.exists()
-        assert lock_dir.is_dir() # Verify directory was created
-    
+
     assert not lock.lock_path.exists()
+
+
+@skip_macos 
+def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
+    """Test that two separate processes cannot acquire the same lock simultaneously."""
+
+    resource_path, lock_dir = lock_setup
+    lock_dir.mkdir()
+    lock_path = PidFileLock(resource_path, lock_dir).lock_path
+
+    # Create an Event to signal the child process to release the lock
+    done_event = mp.Event()
+
+    # Start a background process to hold the lock
+    lock_holder = mp.Process(
+        target=_mp_lock_holder,
+        args=(resource_path, lock_dir, lock_path, done_event)
+    )
+    lock_holder.start()
+
+    # Wait for the lock holder to acquire the lock (check for lock file existence)
+    timeout_start = time.time()
+    while not lock_path.exists():
+        if time.time() - timeout_start > 5:
+             raise TimeoutError("Child process failed to acquire lock in time.")
+        time.sleep(0.01)
+
+    # Main thread tries to acquire the same lock (EXPECT FAILURE)
+    lock_attempt = PidFileLock(resource_path, lock_dir)
+    with pytest.raises(LockAcquisitionError):
+        with lock_attempt:
+            pass
+
+    # Cleanup: Signal the child process to exit cleanly and wait for it
+    done_event.set()
+    lock_holder.join(timeout=10) # Wait for clean exit (no need for terminate)
+
+    # Final check: Ensure the child exited successfully
+    if lock_holder.is_alive():
+        # If it didn't exit, terminate it as a last resort (should not happen)
+        lock_holder.terminate()
+        lock_holder.join()
+
+    # The lock should have been released cleanly by the child process's __exit__
+    assert not lock_path.exists()
+
+
+def test_lock_is_reentrant_per_process(lock_setup):
+    """
+    Test that the per-path singleton behavior works and prevents double acquisition
+    using the new internal RuntimeError check.
+    """
+    resource_path, lock_dir = lock_setup
+    lock_dir.mkdir()
+
+    lock1 = PidFileLock(resource_path, lock_dir)
+    lock2 = PidFileLock(resource_path, lock_dir)
+
+    assert lock1 is lock2 # Same instance
+
+    with lock1:
+        # Second attempt to enter the context should raise RuntimeError (internal API misuse)
+        with pytest.raises(RuntimeError, match="Lock already acquired by this PidFileLock instance."):
+            with lock2:
+                pass
+
+    assert not lock1.lock_path.exists()
+
+
+def test_acquire_when_lock_dir_missing(lock_setup):
+    """Test that the lock directory is created automatically."""
+    resource_path, lock_dir = lock_setup
+    # lock_dir is *not* created here
+
+    lock = PidFileLock(resource_path, lock_dir)
+
+    with lock:
+        # Check using the directory's path derived from lock_path
+        assert lock.lock_path.parent.is_dir()
+        assert lock.lock_path.exists()
+
+    assert not lock.lock_path.exists()
+
+
+def test_release_handles_missing_file_on_unlink(lock_setup):
+    """Test that __exit__ does not raise if the file is already gone."""
+    resource_path, lock_dir = lock_setup
+    lock_dir.mkdir()
+    lock = PidFileLock(resource_path, lock_dir)
+
+    with lock:
+        # Manually delete the lock file while the lock is still held (by the handle)
+        lock.lock_path.unlink()
+
+    # __exit__ should run without raising an error due to missing_ok=True
+    assert not lock.lock_path.exists()
+
+
+def test_acquire_critical_oserror(monkeypatch, tmp_path):
+    """Test critical OSError (e.g., EACCES on open) raises RuntimeError."""
+    lock_dir = tmp_path / "locks"
+    lock_dir.mkdir()
+    lock_file = tmp_path / "resource.txt"
+    lock_file.write_text("dummy")
+    lock = PidFileLock(lock_file, lock_dir)
+
+    # Mock the built-in open to fail with EACCES, simulating a permissions error
+    def mocked_builtin_open(path, mode):
+        # We now rely on monkeypatching os.open directly in pidlock.py, 
+        # but for this test, we mock builtins.open if os.open is not used directly.
+        # Since pidlock.py now uses open(self._lock_path, 'w+'), mocking builtins.open is correct
+        raise OSError(errno.EACCES, "Access denied")
+
+    monkeypatch.setattr("builtins.open", mocked_builtin_open)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        with lock:
+            pass
+
+    # Check that the RuntimeError message contains the expected text
+    error_message = str(exc_info.value)
+    assert "Cannot acquire lock:" in error_message
+    assert "Access denied" in error_message

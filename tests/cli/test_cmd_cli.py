@@ -37,7 +37,8 @@ def test_cli_defaults(monkeypatch, runner, tmp_path):
     result = runner.invoke(
         cli, 
         ['--app-config', str(app_file), 'capture'],
-        obj=context # Pass the context object
+        obj=context, # Pass the context object
+        catch_exceptions=False
     )
     
     assert result.exit_code == 0
@@ -75,8 +76,11 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path):
             'capture',
         ],
         obj=context,
+        # *** DEBUGGING CHANGE: Add to reveal underlying exception ***
+        catch_exceptions=False, 
     )
     
+    # Check for success and context variables
     assert result.exit_code == 0
     assert 'capture' in result.output.strip()
 
@@ -105,6 +109,8 @@ def test_cli_verbose_and_debug(monkeypatch, runner, tmp_path):
         cli,
         ['-vvv', '--debug', '--app-config', str(app_file), 'capture'],
         obj=context,
+        # *** DEBUGGING CHANGE: Add to reveal underlying exception ***
+        catch_exceptions=False,
     )
     
     # Check for success and context variables
