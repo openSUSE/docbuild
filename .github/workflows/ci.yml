@@ -77,13 +77,23 @@ jobs:
           source .venv/bin/activate
           uv sync --frozen --group devel
 
-      - name: Run tests
-        # CRITICAL FIX: Use coverage run -m pytest for robust collection in parallel environments
+      - name: Run tests (collects parallel data)
         run: |
           source .venv/bin/activate
-          .venv/bin/python -m coverage run -m pytest -vv 
+          # FIX: Reverting to standard pytest command, relying on pytest-cov plugin
+          pytest -vv
         env:
           PYTHONSTARTMETHOD: spawn
+          
+      # ADDED STEP: Required to combine coverage data from main and subprocesses
+      - name: Combine Coverage Data
+        if: always()
+        run: |
+          source .venv/bin/activate
+          # 'coverage combine' merges data from the main process and all parallel subprocesses
+          .venv/bin/python -m coverage combine
+          .venv/bin/python -m coverage report
+          
 
   test-macos:
     name: macos-python-${{ matrix.python-version }}

@@ -7,7 +7,6 @@ import logging
 import multiprocessing as mp
 import time
 import platform
-import coverage
 from pathlib import Path
 from docbuild.utils.pidlock import PidFileLock, LockAcquisitionError
 from multiprocessing import Event
@@ -31,11 +30,6 @@ def lock_setup(tmp_path):
 
 def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event): # type: ignore
     """Acquire and hold a lock in a separate process, waiting for an event to release."""
-    
-    # FIX: Removed 'auto_start=False' to avoid TypeError crash in CI subprocess
-    cov = coverage.Coverage(data_suffix=True)
-    cov.start()
-    
     lock = PidFileLock(resource_path, lock_dir)
     try:
         with lock:
@@ -44,11 +38,7 @@ def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_e
             
     except Exception:
         pass
-    
-    # --- Stop coverage and save data ---
-    cov.stop()
-    cov.save()
-    
+
 
 # -----------------------------------------------------------------------------
 # Core PidFileLock Tests
