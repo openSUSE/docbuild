@@ -22,10 +22,12 @@ console_out = Console()
     nargs=-1,
     callback=validate_doctypes,
 )
+@click.option('--exitfirst', is_flag=True, help='Exit on first failed deliverable.')
 @click.pass_context
 def metadata(
     ctx: click.Context,
     doctypes: tuple[Doctype],
+    exitfirst: bool,
 ) -> None:
     """Subcommand to create metadata files.
 
@@ -44,7 +46,7 @@ def metadata(
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(process(context, doctypes))
+            result = asyncio.run(process(context, doctypes, exitfirst=exitfirst))
     finally:
         if t and not math.isnan(t.elapsed):
             console_out.print(f'Elapsed time {t.elapsed:0.2f}s')
