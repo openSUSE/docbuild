@@ -278,8 +278,9 @@ async def process_file(
     # Run all checks for this file
     check_results = await run_python_checks(tree)
 
-    # Display results based on verbosity level
-    display_results(shortname, check_results, context.verbose, max_len)
+    if check_results:
+        # Display results based on verbosity level
+        display_results(shortname, check_results, context.verbose, max_len)
 
     return 0 if all(result.success for _, result in check_results) else 1
 
@@ -358,11 +359,14 @@ async def process(
     # Display summary
     successful_part = f'[green]{successful_files}/{total_files} files(s)[/green]'
     failed_part = f'[red]{failed_files} file(s)[/red]'
-    summary_msg = f'{successful_part} successfully validated, {failed_part} failed.'
+    summary_msg = (
+        f'{successful_part} successfully validated, {failed_part} failed. '
+        f'Stitch validation [blue]{stitch_success}[/blue]'
+    )
+
+    final_success = (failed_files == 0) and stitch_success
 
     if context.verbose > 0:  # pragma: no cover
         console_out.print(f'Result: {summary_msg}')
-
-    final_success = (failed_files == 0) and stitch_success
 
     return 0 if final_success else 1

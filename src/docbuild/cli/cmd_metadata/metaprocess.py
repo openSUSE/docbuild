@@ -107,7 +107,9 @@ async def process_deliverable(
                 bare_repo_path,
                 worktree_dir,
                 deliverable.branch,
-                is_local=True)
+                is_local=True,
+                stderr=asyncio.subprocess.PIPE,
+            )
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
@@ -120,10 +122,12 @@ async def process_deliverable(
                     output=str(outputdir / deliverable.dcfile),
                 )
             )
-            console_out.print(f'  command: {cmd}')
+            # console_out.print(f'  command: {cmd}')
+            log.debug("Command %s", cmd)
             daps_process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdin=asyncio.subprocess.DEVNULL,
+                stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE,
             )
             _, stderr = await daps_process.communicate()
@@ -165,6 +169,11 @@ async def process_doctype(
     # print("XPath: ", xpath)
     console_out.print(f'XPath: {doctype.xpath()}', markup=False)
 
+    if not context.envconfig:
+        raise RuntimeError('No envconfig found in context. Maybe no config provided?')
+    else:
+        env = context.envconfig
+
     deliverables = await asyncio.to_thread(
         get_deliverable_from_doctype,
         root,
@@ -172,19 +181,19 @@ async def process_doctype(
         doctype,
     )
     console_out.print(f'Found deliverables: {len(deliverables)}')
-    dapsmetatmpl = context.envconfig.get('build', {}).get('daps', {}).get('meta', None)
+    dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
 
     console_out.print(f'daps command: {dapsmetatmpl}', markup=False)
 
-    repo_dir = context.envconfig.get('paths', {}).get('repo_dir', None)
-    base_cache_dir = context.envconfig.get('paths', {}).get('base_cache_dir', None)
+    repo_dir = env.get('paths', {}).get('repo_dir', None)
+    base_cache_dir = env.get('paths', {}).get('base_cache_dir', None)
     # We retrieve the path.meta_cache_dir and fall back to path.base_cache_dir
     # if not available:
-    meta_cache_dir = context.envconfig.get('paths', {}).get(
+    meta_cache_dir = env.get('paths', {}).get(
         'meta_cache_dir', base_cache_dir
     )
     # Cloned temporary repo:
-    temp_repo_dir = context.envconfig.get('paths', {}).get('temp_repo_dir', None)
+    temp_repo_dir = env.get('paths', {}).get('temp_repo_dir', None)
 
     # Check all paths:
     if not all((repo_dir, base_cache_dir, temp_repo_dir, meta_cache_dir)):

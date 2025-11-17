@@ -28,10 +28,12 @@ def load_check_functions() -> list[Callable]:
     ]
 
 
-# def log_memory_usage():
-#     import psutil
-#     process = psutil.Process(os.getpid())
-#     print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
+def log_memory_usage() -> None:
+    import os
+
+    import psutil
+    process = psutil.Process(os.getpid())
+    print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
 
 
 def check_stitchfile(tree: etree._Element | etree._ElementTree) -> bool:
@@ -84,7 +86,7 @@ async def create_stitchfile(
         docservconfig.append(deepcopy(tree.getroot()))
         del tree  # Explicitly delete the tree to free memory
 
-    # log_memory_usage()
+    log_memory_usage()
 
     # Step 2: Check for unique IDs
     product_ids = docservconfig.xpath('//@productid')
@@ -96,6 +98,9 @@ async def create_stitchfile(
     if with_ref_check:
         result = check_stitchfile(docservconfig)
         if not result:
-            raise ValueError('Unresolved references found in stitch file')
+            raise ValueError(
+                'Unresolved references found in stitch file. '
+                'Run the validate subcommand'
+            )
 
     return etree.ElementTree(docservconfig)
