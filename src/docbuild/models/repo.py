@@ -52,7 +52,7 @@ class Repo:
     """The abbreviated name of the repository (e.g., 'org/repo')."""
 
     def __init__(self, value: str) -> None:
-        """Initialize a repository.
+        """Initialize a repository model from a URL or a short name.
 
         This initializer understands:
 

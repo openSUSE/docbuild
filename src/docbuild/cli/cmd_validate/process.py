@@ -15,6 +15,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...constants import XMLDATADIR
 from ...utils.decorators import RegistryDecorator
 from ...utils.paths import calc_max_len
+from ...utils.shell import run_command
 from ..context import DocBuildContext
 
 # Cast to help with type checking
@@ -76,31 +77,6 @@ def display_results(
                     console_err.print(f'      {message}')
 
 
-async def run_command(
-    *args: str, env: dict[str, str] | None = None
-) -> tuple[int, str, str]:
-    """Run an external command and capture its output.
-
-    :param args: The command and its arguments separated as tuple elements.
-    :param env: A dictionary of environment variables for the new process.
-    :return: A tuple of (returncode, stdout, stderr).
-    :raises FileNotFoundError: if the command is not found.
-    """
-    process = await asyncio.create_subprocess_exec(
-        *args,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        env=env,
-    )
-    stdout, stderr = await process.communicate()
-
-    # After .communicate() returns, the process has terminated and the
-    # returncode is guaranteed to be set to an integer.
-    assert process.returncode is not None
-
-    return process.returncode, stdout.decode(), stderr.decode()
-
-
 async def validate_rng(
     xmlfile: Path,
     rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
@@ -121,7 +97,7 @@ async def validate_rng(
     :return: A tuple containing a boolean success status and any output message.
     """
     jing_cmd = ['jing']
-    if idcheck: 
+    if idcheck:
         jing_cmd.append('-i')
     if rng_schema_path.suffix == '.rnc':
         jing_cmd.append('-c')
@@ -261,7 +237,7 @@ async def process_file(
         rng_success, rng_output = await asyncio.to_thread(
             validate_rng_lxml,
             path_obj,
-            XMLDATADIR / 'product-config-schema.rng',  
+            XMLDATADIR / 'product-config-schema.rng',
         )
     elif validation_method == 'jing':
         # Use existing jing-based validator (.rnc or .rng)
