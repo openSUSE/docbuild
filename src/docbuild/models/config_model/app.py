@@ -23,7 +23,12 @@ class FormatterConfig(BaseModel):
     class_name: str | None = Field(None, alias='class',
                                    description='The fully qualified name of the handler class',
                                    ) 
-    validate: bool | None = None
+    # Renamed to avoid shadowing the BaseModel.validate() method.
+    validation_enabled: bool | None = Field(
+        None, 
+        alias='validate', # IMPORTANT: Keep the original key name for external config files
+        description='If specified, controls whether configuration is validated.'
+    )
 
 
 class HandlerConfig(BaseModel):
