@@ -24,7 +24,7 @@ class FormatterConfig(BaseModel):
                                    description='The fully qualified name of the handler class',
                                    ) 
     # Renamed to avoid shadowing the BaseModel.validate() method.
-    validation_enabled: bool | None = Field(
+    validation: bool | None = Field(
         None, 
         alias='validate', # IMPORTANT: Keep the original key name for external config files
         description='If specified, controls whether configuration is validated.'
