@@ -18,8 +18,8 @@ from ...utils.shell.git import clone_from_repo
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
-console_out = Console()
-console_err = Console(stderr=True)
+stdout = Console()
+console_err = Console(stderr=True, style='red')
 
 # Set up logging
 log = logging.getLogger(__name__)
@@ -37,8 +37,8 @@ def get_deliverable_from_doctype(
     :param doctype: The Doctype object to process.
     :return: A list of deliverables for the given doctype.
     """
-    console_out.print(f'Getting deliverable for doctype: {doctype}')
-    console_out.print(f'XPath for {doctype}: {doctype.xpath()}')
+    stdout.print(f'Getting deliverable for doctype: {doctype}')
+    stdout.print(f'XPath for {doctype}: {doctype.xpath()}')
     languages = root.getroot().xpath(f'./{doctype.xpath()}')
 
     return [
@@ -57,7 +57,7 @@ async def process_deliverable(
     meta_cache_dir: Path,
     dapstmpl: str,
 ) -> bool:
-    """Process a single deliverable.
+    """Process a single deliverable asynchronously.
 
     This function creates a temporary clone of the deliverable's repository,
     checks out the correct branch, and then executes the DAPS command to
@@ -77,7 +77,7 @@ async def process_deliverable(
     :return: True if successful, False otherwise.
     :raises ValueError: If required configuration paths are missing.
     """
-    console_out.print(f'> Processing deliverable: {deliverable.full_id}')
+    stdout.print(f'> Processing deliverable: {deliverable.full_id}')
 
     meta_cache_dir = Path(meta_cache_dir)
 
@@ -138,12 +138,12 @@ async def process_deliverable(
                     f'{stderr.decode().strip()}'
                 )
 
-        console_out.print(f'> Processed deliverable: {deliverable.pdlangdc}')
+        stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         result=True
 
     except RuntimeError as e:
         # console_err.print(f'Error processing {deliverable.full_id}: {e}')
-        log.error('Error processing %s: %s', deliverable.full_id, str(e) )
+        log.error('Error processing %r: %s', deliverable.full_id, str(e) )
         result=False
 
     log.info("Finished processing %s", deliverable.full_id)
@@ -154,20 +154,22 @@ async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
     doctype: Doctype,
-) -> bool:
+    exitfirst: bool,
+) -> list[Deliverable]:
     """Process the doctypes and create metadata files.
 
     :param root: The stitched XML node containing configuration.
     :param context: The DocBuildContext containing environment configuration.
-    :param doctypes: A tuple of Doctype objects to process.
+    :param doctype: A Doctype object to process.
+    :param exitfirst: If True, stop processing on the first failure.
     """
     # Here you would implement the logic to process the doctypes
     # and create metadata files based on the stitchnode and context.
     # This is a placeholder for the actual implementation.
-    console_out.print(f'Processing doctypes: {doctype}')
+    stdout.print(f'Processing doctypes: {doctype}')
     # xpath = doctype.xpath()
     # print("XPath: ", xpath)
-    console_out.print(f'XPath: {doctype.xpath()}', markup=False)
+    stdout.print(f'XPath: {doctype.xpath()}', markup=False)
 
     if not context.envconfig:
         raise RuntimeError('No envconfig found in context. Maybe no config provided?')
@@ -180,10 +182,10 @@ async def process_doctype(
         context,
         doctype,
     )
-    console_out.print(f'Found deliverables: {len(deliverables)}')
+    stdout.print(f'Found deliverables: {len(deliverables)}')
     dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
 
-    console_out.print(f'daps command: {dapsmetatmpl}', markup=False)
+    stdout.print(f'daps command: {dapsmetatmpl}', markup=False)
 
     repo_dir = env.get('paths', {}).get('repo_dir', None)
     base_cache_dir = env.get('paths', {}).get('base_cache_dir', None)
@@ -212,7 +214,7 @@ async def process_doctype(
     base_cache_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
 
-    tasks = [
+    coroutines = [
         process_deliverable(
             deliverable,
             repo_dir=repo_dir,
@@ -223,14 +225,43 @@ async def process_doctype(
         )
         for deliverable in deliverables
     ]
-    results = await asyncio.gather(*tasks)
+    tasks = [asyncio.create_task(coro) for coro in coroutines]
 
-    return all(results)
+    failed_deliverables: list[Deliverable] = []
+
+    if exitfirst:
+        # Fail-fast behavior
+        for task in asyncio.as_completed(tasks):
+            result = await task
+            if not result:
+                # The task failed, so we find which deliverable it was
+                # This is a bit indirect but works with the current `process_deliverable`
+                # A better approach would be for `process_deliverable` to return the deliverable on failure
+                failed_deliverables.extend(
+                    d for d, t in zip(deliverables, tasks) if t is task
+                )
+                # Cancel remaining tasks
+                for t in tasks:
+                    if not t.done():
+                        t.cancel()
+                # Wait for cancellations to propagate
+                await asyncio.gather(*tasks, return_exceptions=True)
+                break  # Exit the loop on first failure
+    else:
+        # Run all and collect all results
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        failed_deliverables.extend(
+            deliverable for deliverable, success in zip(deliverables, results) if not success
+        )
+
+    return failed_deliverables
 
 
 async def process(
     context: DocBuildContext,
     doctypes: tuple[Doctype],
+    *,
+    exitfirst: bool = False,
 ) -> int:
     """Asynchronous function to process metadata retrieval.
 
@@ -238,6 +269,7 @@ async def process(
     :param xmlfiles: A tuple or iterator of XML file paths to validate.
     :raises ValueError: If no envconfig is found or if paths are not
         configured correctly.
+    :param exitfirst: If True, abort processing on the first failure.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
     # Step 1: Extract paths from config
@@ -248,19 +280,28 @@ async def process(
     if configdir is None:
         raise ValueError('Could not get a value from envconfig.paths.config_dir')
     configdir = Path(configdir).expanduser()
-    console_out.print(f'Config path: {configdir}')
+    stdout.print(f'Config path: {configdir}')
     xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
 
     # Step 2: Create stitch file and check it:
     stitchnode = await create_stitchfile(xmlconfigs, with_ref_check=False)
-    console_out.print(f'Stitch node: {stitchnode.getroot().tag}')
-    console_out.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
+    stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
+    stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
     # Step 3: Process the doctypes
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt) for dt in doctypes]
-    results = await asyncio.gather(*tasks)
-    console_out.print(f'Results: {results}')
+    tasks = [process_doctype(stitchnode, context, dt, exitfirst) for dt in doctypes]
+    results_per_doctype = await asyncio.gather(*tasks)
+
+    all_failed_deliverables = [
+        d for failed_list in results_per_doctype for d in failed_list
+    ]
+
+    if all_failed_deliverables:
+        console_err.print(f'Found {len(all_failed_deliverables)} failed deliverables:')
+        for d in all_failed_deliverables:
+            console_err.print(f'- {d.full_id}')
+        return 1
     return 0
