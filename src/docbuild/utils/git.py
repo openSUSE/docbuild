@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+from typing import Self
 
 from ..constants import GITLOGGER_NAME
 from ..models.repo import Repo
@@ -13,7 +14,7 @@ log = logging.getLogger(GITLOGGER_NAME)
 class ManagedGitRepo:
     """Manages a bare repository and its temporary worktrees."""
 
-    def __init__(self, remote_url: str, permanent_root: Path) -> None:
+    def __init__(self: Self, remote_url: str, permanent_root: Path) -> None:
         """Initialize the managed repository.
 
         :param remote_url: The remote URL of the repository.
@@ -26,7 +27,7 @@ class ManagedGitRepo:
         # Initialize attribute for output:
         self.stdout = self.stderr = None
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         """Return a string representation of the ManagedGitRepo."""
         return (
             f'{self.__class__.__name__}(remote_url={self.remote_url!r}, '
@@ -34,21 +35,21 @@ class ManagedGitRepo:
         )
 
     @property
-    def slug(self) -> str:
+    def slug(self: Self) -> str:
         """Return the slug of the repository."""
         return self._repo_model.slug
 
     @property
-    def remote_url(self) -> str:
+    def remote_url(self: Self) -> str:
         """Return the remote URL of the repository."""
         return self._repo_model.url
 
     @property
-    def permanent_root(self) -> Path:
+    def permanent_root(self: Self) -> Path:
         """Return the permanent root directory for the repository."""
         return self._permanent_root
 
-    async def clone_bare(self) -> bool:
+    async def clone_bare(self: Self) -> bool:
         """Clone the remote repository as a bare repository.
 
         If the repository already exists, it logs a message and returns.
@@ -76,7 +77,7 @@ class ManagedGitRepo:
             return False
 
     async def create_worktree(
-        self,
+        self: Self,
         target_dir: Path,
         branch: str,
         *,
