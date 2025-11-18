@@ -67,8 +67,9 @@ async def test_managed_repo_clone_bare_exists(
 
     result = await repo.clone_bare()
 
-    assert result is True
-    mock_execute_git.assert_not_awaited()
+    mock_execute_git.assert_awaited_once_with(
+        'fetch', '--all', cwd=repo.bare_repo_path
+    )
 
 
 async def test_managed_repo_clone_bare_failure(
