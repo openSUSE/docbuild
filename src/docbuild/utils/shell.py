@@ -66,6 +66,7 @@ async def execute_git_command(
         'LANG': 'C',
         'LC_ALL': 'C',
         'GIT_TERMINAL_PROMPT': '0',
+        'GIT_PROGRESS_FORCE': '1',
     }
 
     # Merge environments, allowing kwargs to override defaults
