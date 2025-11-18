@@ -204,3 +204,47 @@ def test_managed_git_repo_permanent_root_property(tmp_path: Path):
     permanent_root = tmp_path / 'permanent_repos'
     repo = ManagedGitRepo(remote_url, permanent_root)
     assert repo.permanent_root == permanent_root
+
+
+async def test_fetch_updates_success(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test fetch_updates successfully fetches updates."""
+    repo = ManagedGitRepo('http://a.b/c.git', tmp_path)
+    # Simulate bare repo exists
+    monkeypatch.setattr(Path, 'exists', lambda self: True)
+
+    result = await repo.fetch_updates()
+
+    assert result is True
+    mock_execute_git.assert_awaited_once_with(
+        'fetch', '--all', cwd=repo.bare_repo_path
+    )
+
+
+async def test_fetch_updates_no_repo(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test fetch_updates fails if the bare repository does not exist."""
+    repo = ManagedGitRepo('http://a.b/c.git', tmp_path)
+    # Simulate bare repo does not exist
+    monkeypatch.setattr(Path, 'exists', lambda self: False)
+
+    result = await repo.fetch_updates()
+
+    assert result is False
+    mock_execute_git.assert_not_awaited()
+
+
+async def test_fetch_updates_failure(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test fetch_updates when the git command fails."""
+    repo = ManagedGitRepo('http://a.b/c.git', tmp_path)
+    # Simulate bare repo exists
+    monkeypatch.setattr(Path, 'exists', lambda self: True)
+    mock_execute_git.side_effect = RuntimeError('Git fetch failed')
+
+    result = await repo.fetch_updates()
+
+    assert result is False

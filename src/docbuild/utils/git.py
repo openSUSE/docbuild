@@ -102,3 +102,29 @@ class ManagedGitRepo:
         self.stdout, self.stderr = await execute_git_command(
             *clone_args, cwd=target_dir.parent
         )
+
+    async def fetch_updates(self: Self) -> bool:
+        """Fetch updates from the remote to the bare repository.
+
+        :return: True if successful, False otherwise.
+        """
+        if not self.bare_repo_path.exists():
+            log.warning(
+                'Cannot fetch updates: Bare repository does not exist at %s',
+                self.bare_repo_path
+            )
+            return False
+
+        log.info("Fetching updates for '%s'", self.slug)
+        try:
+            self.stdout, self.stderr = await execute_git_command(
+                'fetch',
+                '--all',
+                cwd=self.bare_repo_path
+            )
+            log.info("Successfully fetched updates for '%s'", self.slug)
+            return True
+
+        except RuntimeError as e:
+            log.error("Failed to fetch updates for '%s': %s", self.slug, e)
+            return False
