@@ -57,7 +57,7 @@ class ManagedGitRepo:
         url = self._repo_model.url
         if self.bare_repo_path.exists():
             log.info('Repository already exists at %s', self.bare_repo_path)
-            return True
+            return await self.fetch_updates()
 
         log.info("Cloning '%s' into '%s'...", url, self.bare_repo_path)
         try:
