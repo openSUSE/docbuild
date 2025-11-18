@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Self
+from typing import ClassVar, Self
 
 from ..constants import GITLOGGER_NAME
 from ..models.repo import Repo
@@ -13,6 +13,9 @@ log = logging.getLogger(GITLOGGER_NAME)
 
 class ManagedGitRepo:
     """Manages a bare repository and its temporary worktrees."""
+
+    #: Class variable to indicate the update state of a repo
+    _is_updated: ClassVar[dict[Repo, bool]] = {}
 
     def __init__(self: Self, remote_url: str, permanent_root: Path) -> None:
         """Initialize the managed repository.
@@ -26,6 +29,8 @@ class ManagedGitRepo:
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
         # Initialize attribute for output:
         self.stdout = self.stderr = None
+        # Add repo into class variable
+        type(self)._is_updated.setdefault(self._repo_model, False)
 
     def __repr__(self: Self) -> str:
         """Return a string representation of the ManagedGitRepo."""
@@ -49,17 +54,15 @@ class ManagedGitRepo:
         """Return the permanent root directory for the repository."""
         return self._permanent_root
 
-    async def clone_bare(self: Self) -> bool:
-        """Clone the remote repository as a bare repository.
+    async def _initial_clone(self: Self) -> bool:
+        """Execute the initial 'git clone --bare' command.
 
-        If the repository already exists, it logs a message and returns.
+        This is a helper for `clone_bare` and assumes the destination
+        directory does not exist.
+
+        :returns: True if the clone was successful, False on error.
         """
         url = self._repo_model.url
-        if self.bare_repo_path.exists():
-            log.info('Repository already exists at %s', self.bare_repo_path)
-            return await self.fetch_updates()
-
-        log.info("Cloning '%s' into '%s'...", url, self.bare_repo_path)
         try:
             self.stdout, self.stderr = await execute_git_command(
                 'clone',
@@ -75,6 +78,36 @@ class ManagedGitRepo:
         except RuntimeError as e:
             log.error("Failed to clone '%s': %s", url, e)
             return False
+
+    async def clone_bare(self: Self) -> bool:
+        """Clone the remote repository as a bare repository.
+
+        If the repository already exists, it logs a message and returns.
+
+        :returns: True if successful, False otherwise.
+        """
+        url = self._repo_model.url
+        cls = type(self)
+
+        if cls._is_updated.get(self._repo_model, False):
+            log.info('Repository %r already processed this run.', self._repo_model.name)
+            return True
+
+        result = False
+        if self.bare_repo_path.exists():
+            log.info(
+                'Repository already exists, fetching updates for %r',
+                self._repo_model.name,
+            )
+            result = await self.fetch_updates()
+        else:
+            log.info("Cloning '%s' into '%s'...", url, self.bare_repo_path)
+            result = await self._initial_clone()
+
+        if result:
+            cls._is_updated[self._repo_model] = True
+
+        return result
 
     async def create_worktree(
         self: Self,
@@ -111,16 +144,14 @@ class ManagedGitRepo:
         if not self.bare_repo_path.exists():
             log.warning(
                 'Cannot fetch updates: Bare repository does not exist at %s',
-                self.bare_repo_path
+                self.bare_repo_path,
             )
             return False
 
         log.info("Fetching updates for '%s'", self.slug)
         try:
             self.stdout, self.stderr = await execute_git_command(
-                'fetch',
-                '--all',
-                cwd=self.bare_repo_path
+                'fetch', '--all', cwd=self.bare_repo_path
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True

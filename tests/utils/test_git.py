@@ -36,6 +36,12 @@ def mock_execute_git(monkeypatch) -> AsyncMock:
     return mock
 
 
+@pytest.fixture(autouse=True)
+def clear_managed_repo_cache():
+    """Clear the ManagedGitRepo._is_updated cache before each test."""
+    ManagedGitRepo._is_updated.clear()
+
+
 async def test_managed_repo_clone_bare_new(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
@@ -67,9 +73,7 @@ async def test_managed_repo_clone_bare_exists(
 
     result = await repo.clone_bare()
 
-    mock_execute_git.assert_awaited_once_with(
-        'fetch', '--all', cwd=repo.bare_repo_path
-    )
+    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
 
 
 async def test_managed_repo_clone_bare_failure(
@@ -218,9 +222,7 @@ async def test_fetch_updates_success(
     result = await repo.fetch_updates()
 
     assert result is True
-    mock_execute_git.assert_awaited_once_with(
-        'fetch', '--all', cwd=repo.bare_repo_path
-    )
+    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
 
 
 async def test_fetch_updates_no_repo(
@@ -249,3 +251,32 @@ async def test_fetch_updates_failure(
     result = await repo.fetch_updates()
 
     assert result is False
+
+
+async def test_managed_repo_clone_bare_already_processed(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test clone_bare when the repository has been processed in this run."""
+    repo = ManagedGitRepo('http://a.b/c.git', tmp_path)
+    # Simulate repo does not exist for the first call
+    monkeypatch.setattr(Path, 'exists', lambda self: False)
+
+    # First call, should perform a clone
+    result1 = await repo.clone_bare()
+
+    assert result1 is True
+    mock_execute_git.assert_awaited_once_with(
+        'clone',
+        '--bare',
+        '--progress',
+        'http://a.b/c.git',
+        str(repo.bare_repo_path),
+        cwd=tmp_path,
+    )
+
+    # Second call, should do nothing because it's already processed
+    result2 = await repo.clone_bare()
+
+    assert result2 is True
+    # The mock should still have only been called once
+    mock_execute_git.assert_awaited_once()
