@@ -22,7 +22,7 @@ def test_unknown_lifecycle():
 
 def test_lifecycle_flag_from_str_with_empty_string():
     instance = LifecycleFlag.from_str('')
-    assert instance == LifecycleFlag.UNKNOWN
+    assert instance == LifecycleFlag.unknown
     assert instance.name == 'unknown'
     assert instance.value == 0
 
