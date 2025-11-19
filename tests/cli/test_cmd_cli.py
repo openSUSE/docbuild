@@ -114,8 +114,7 @@ def test_cli_with_app_and_env_config(monkeypatch, runner, tmp_path, mock_config_
         if str(user_path) == str(app_file):
             return (app_file,), {'logging': {'version': 1}}, False
         if str(user_path) == str(env_file):
-            return (env_file,), {'server': {'host': '1.2.3.4'}}, False # Return raw dict for Pydantic
-        # This path shouldn't be hit with explicit args, but acts as a safe default
+            return (env_file,), {'server': {'host': '1.2.3.4'}}, False
         return (None,), {'default_data': 'default_content'}, True 
 
     monkeypatch.setattr(cli_mod, 'handle_config', fake_handle_config)

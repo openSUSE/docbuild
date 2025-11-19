@@ -1,7 +1,7 @@
 """Pydantic models for application and environment configuration."""
 
 from copy import deepcopy
-from typing import Any, Self, Annotated, Literal # Removed Sequence as it's not strictly needed here
+from typing import Any, Self, Annotated, Literal 
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict
@@ -257,7 +257,6 @@ class EnvConfig(BaseModel):
         # This is the exact pattern used in your AppConfig
         if isinstance(data, dict):
             try:
-                # Ensure you are using replace_placeholders from your existing utility
                 return replace_placeholders(deepcopy(data))
             except (PlaceholderResolutionError, CircularReferenceError) as e:
                 raise ValueError(f"Configuration placeholder error: {e}") from e
