@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from docbuild.utils.shell.git import clone_from_repo
+from docbuild.utils.git import ManagedGitRepo
 
 
 async def test_clone_from_repo_success(tmp_path: Path):
