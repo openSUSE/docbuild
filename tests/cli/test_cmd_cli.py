@@ -28,12 +28,10 @@ def mock_config_models(monkeypatch):
     """
     Fixture to mock AppConfig.from_dict and EnvConfig.from_dict.
     
-    IMPORTANT FIX: Ensures the mock AppConfig instance has the necessary
+    Ensures the mock AppConfig instance has the necessary
     logging attributes and methods (.logging.model_dump) that the CLI calls
     during setup_logging.
     """
-    
-    # --- FIX 1: Provide Mock AppConfig with Logging Attribute ---
     
     # Mock the nested logging attribute and its model_dump method
     mock_logging_dump = Mock(return_value={'version': 1, 'log_setup': True})
@@ -177,9 +175,6 @@ def test_cli_config_validation_failure(
     # Define the simple error structure that the CLI error formatting relies on:
     MOCK_ERROR_DETAIL = {
         'loc': ('server', 'port'), 
-        # The 'msg' key doesn't exist in the core Pydantic error, but we need
-        # to ensure the CLI's formatting logic can find the error detail.
-        # Since the CLI's error loop relies on *some* message, we simplify.
         'msg': 'value is not a valid integer (mocked)', 
         'input': 'not_an_int'
     }
