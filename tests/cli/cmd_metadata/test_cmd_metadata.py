@@ -150,7 +150,6 @@ def test_xmlconfig_falsy_params_provide_default(xmlconfig):
     """
     ],
     indirect=True,
-    ids=["xmlconfig"],
 )
 def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     """Verify an empty list is returned when a language has no deliverables."""
@@ -159,7 +158,7 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     doctype = Doctype.from_str('sles/15-sp6/en-us')
 
     # Act
-    with patch('docbuild.cli.cmd_metadata.console_out'):
+    with patch.object(metaprocess_pkg, 'stdout'):
         deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
 
     # Assert
@@ -184,7 +183,6 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     """
     ],
     indirect=True,
-    ids=["xmlconfig"]
 )
 def test_get_deliverable_from_doctype_no_match(xmlconfig):
     """Verify an empty list is returned when the doctype doesn't match any node."""
@@ -194,8 +192,7 @@ def test_get_deliverable_from_doctype_no_match(xmlconfig):
     doctype = Doctype.from_str('sles/1.0/en-us')
 
     # Act
-    with patch('docbuild.cli.cmd_metadata.console_out'):
-        # with patch.object(cmd_metadata, 'console_out')
+    with patch.object(metaprocess_pkg, 'stdout'):
         deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
 
     # Assert
@@ -239,7 +236,6 @@ def test_get_deliverable_from_doctype_no_match(xmlconfig):
     """
     ],
     indirect=True,
-    ids=['xmlconfig'],
 )
 def test_get_deliverable_from_doctype_with_wildcard(xmlconfig):
     """Verify deliverables are correctly extracted using a wildcard doctype."""
@@ -549,7 +545,7 @@ class TestProcessEmptyDoctypes:
         mock_process_doctype.return_value = True
 
         # Act and suppress console output during the test
-        with patch.object(metaprocess_pkg, 'console_out'):
+        with patch.object(metaprocess_pkg, 'stdout'):
             result = await process(context, doctypes=tuple())
 
         # Assert
