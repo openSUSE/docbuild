@@ -14,7 +14,6 @@ from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
-from ...utils.shell.git import clone_from_repo
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
