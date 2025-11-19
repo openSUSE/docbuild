@@ -100,15 +100,26 @@ async def process_deliverable(
             dir=str(temp_repo_dir),
             prefix=f'clone-{prefix}_',
         ) as worktree_dir:
-
             # 1. Create a temporary clone from the bare repo and checkout a branch.
-            await clone_from_repo(
-                bare_repo_path,
-                worktree_dir,
-                deliverable.branch,
-                is_local=True,
+            clone_cmd = [
+                'git',
+                'clone',
+                '--local',
+                f'--branch={deliverable.branch}',
+                str(bare_repo_path),
+                str(worktree_dir),
+            ]
+            clone_process = await asyncio.create_subprocess_exec(
+                *clone_cmd,
+                stdin=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE,
             )
+            _, stderr = await clone_process.communicate()
+            if clone_process.returncode != 0:
+                # Raise an exception on failure to let the context manager know.
+                raise RuntimeError(
+                    f'Failed to clone {bare_repo_path}: {stderr.decode().strip()}'
+                )
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
@@ -121,12 +132,10 @@ async def process_deliverable(
                     output=str(outputdir / deliverable.dcfile),
                 )
             )
-            # console_out.print(f'  command: {cmd}')
-            log.debug("Command %s", cmd)
+            stdout.print(f'  command: {cmd}')
             daps_process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdin=asyncio.subprocess.DEVNULL,
-                stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.PIPE,
             )
             _, stderr = await daps_process.communicate()
@@ -138,29 +147,24 @@ async def process_deliverable(
                 )
 
         stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
-        result=True
+        return True
 
     except RuntimeError as e:
         # console_err.print(f'Error processing {deliverable.full_id}: {e}')
-        log.error('Error processing %r: %s', deliverable.full_id, str(e) )
-        result=False
-
-    log.info("Finished processing %s", deliverable.full_id)
-    return result
+        log.error('Error processing %s: %s', deliverable.full_id, str(e) )
+        return False
 
 
 async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
     doctype: Doctype,
-    exitfirst: bool,
-) -> list[Deliverable]:
+) -> bool:
     """Process the doctypes and create metadata files.
 
     :param root: The stitched XML node containing configuration.
     :param context: The DocBuildContext containing environment configuration.
-    :param doctype: A Doctype object to process.
-    :param exitfirst: If True, stop processing on the first failure.
+    :param doctypes: A tuple of Doctype objects to process.
     """
     # Here you would implement the logic to process the doctypes
     # and create metadata files based on the stitchnode and context.
@@ -170,11 +174,6 @@ async def process_doctype(
     # print("XPath: ", xpath)
     stdout.print(f'XPath: {doctype.xpath()}', markup=False)
 
-    if not context.envconfig:
-        raise RuntimeError('No envconfig found in context. Maybe no config provided?')
-    else:
-        env = context.envconfig
-
     deliverables = await asyncio.to_thread(
         get_deliverable_from_doctype,
         root,
@@ -182,19 +181,19 @@ async def process_doctype(
         doctype,
     )
     stdout.print(f'Found deliverables: {len(deliverables)}')
-    dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
+    dapsmetatmpl = context.envconfig.get('build', {}).get('daps', {}).get('meta', None)
 
     stdout.print(f'daps command: {dapsmetatmpl}', markup=False)
 
-    repo_dir = env.get('paths', {}).get('repo_dir', None)
-    base_cache_dir = env.get('paths', {}).get('base_cache_dir', None)
+    repo_dir = context.envconfig.get('paths', {}).get('repo_dir', None)
+    base_cache_dir = context.envconfig.get('paths', {}).get('base_cache_dir', None)
     # We retrieve the path.meta_cache_dir and fall back to path.base_cache_dir
     # if not available:
-    meta_cache_dir = env.get('paths', {}).get(
+    meta_cache_dir = context.envconfig.get('paths', {}).get(
         'meta_cache_dir', base_cache_dir
     )
     # Cloned temporary repo:
-    temp_repo_dir = env.get('paths', {}).get('temp_repo_dir', None)
+    temp_repo_dir = context.envconfig.get('paths', {}).get('temp_repo_dir', None)
 
     # Check all paths:
     if not all((repo_dir, base_cache_dir, temp_repo_dir, meta_cache_dir)):
@@ -213,7 +212,7 @@ async def process_doctype(
     base_cache_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
 
-    coroutines = [
+    tasks = [
         process_deliverable(
             deliverable,
             repo_dir=repo_dir,
@@ -224,43 +223,14 @@ async def process_doctype(
         )
         for deliverable in deliverables
     ]
-    tasks = [asyncio.create_task(coro) for coro in coroutines]
+    results = await asyncio.gather(*tasks)
 
-    failed_deliverables: list[Deliverable] = []
-
-    if exitfirst:
-        # Fail-fast behavior
-        for task in asyncio.as_completed(tasks):
-            result = await task
-            if not result:
-                # The task failed, so we find which deliverable it was
-                # This is a bit indirect but works with the current `process_deliverable`
-                # A better approach would be for `process_deliverable` to return the deliverable on failure
-                failed_deliverables.extend(
-                    d for d, t in zip(deliverables, tasks) if t is task
-                )
-                # Cancel remaining tasks
-                for t in tasks:
-                    if not t.done():
-                        t.cancel()
-                # Wait for cancellations to propagate
-                await asyncio.gather(*tasks, return_exceptions=True)
-                break  # Exit the loop on first failure
-    else:
-        # Run all and collect all results
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        failed_deliverables.extend(
-            deliverable for deliverable, success in zip(deliverables, results) if not success
-        )
-
-    return failed_deliverables
+    return all(results)
 
 
 async def process(
     context: DocBuildContext,
     doctypes: tuple[Doctype],
-    *,
-    exitfirst: bool = False,
 ) -> int:
     """Asynchronous function to process metadata retrieval.
 
@@ -268,10 +238,8 @@ async def process(
     :param xmlfiles: A tuple or iterator of XML file paths to validate.
     :raises ValueError: If no envconfig is found or if paths are not
         configured correctly.
-    :param exitfirst: If True, abort processing on the first failure.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
-    # Step 1: Extract paths from config
     if context.envconfig is None:
         raise ValueError('No envconfig found in context.')
 
@@ -281,26 +249,14 @@ async def process(
     configdir = Path(configdir).expanduser()
     stdout.print(f'Config path: {configdir}')
     xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
-
-    # Step 2: Create stitch file and check it:
-    stitchnode = await create_stitchfile(xmlconfigs, with_ref_check=False)
+    stitchnode = await create_stitchfile(xmlconfigs)
     stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
     stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
-    # Step 3: Process the doctypes
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt, exitfirst) for dt in doctypes]
-    results_per_doctype = await asyncio.gather(*tasks)
-
-    all_failed_deliverables = [
-        d for failed_list in results_per_doctype for d in failed_list
-    ]
-
-    if all_failed_deliverables:
-        console_err.print(f'Found {len(all_failed_deliverables)} failed deliverables:')
-        for d in all_failed_deliverables:
-            console_err.print(f'- {d.full_id}')
-        return 1
+    tasks = [process_doctype(stitchnode, context, dt) for dt in doctypes]
+    results = await asyncio.gather(*tasks)
+    stdout.print(f'Results: {results}')
     return 0
