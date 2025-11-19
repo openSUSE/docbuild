@@ -10,32 +10,7 @@ from ..constants import DEFAULT_ENV_CONFIG_FILENAME
 from .merge import deep_merge
 
 
-def process_envconfig(envconfigfile: str | Path | None) -> tuple[Path, dict[str, Any]]:
-    """Process the env config.
-
-    Note: This function now returns the raw dictionary. Validation and
-    placeholder replacement should be done by the caller using a Pydantic model
-    (e.g., EnvConfig).
-
-    :param envconfigfile: Path to the env TOML config file.
-    :return: Tuple of the env config file path and the config object (raw dict).
-    :raise ValueError: If neither envconfigfile nor role is provided.
-    """
-    if envconfigfile:
-        envconfigfile = Path(envconfigfile)
-
-    # If we don't have a envconfigfile, we need to find the default one.
-    # We will look for the default env config file in the current directory.
-    elif (rfile := Path(DEFAULT_ENV_CONFIG_FILENAME)).exists():
-        envconfigfile = rfile
-
-    else:
-        raise ValueError(
-            'Could not find default ENV configuration file.',
-        )
-
-    rawconfig = load_single_config(envconfigfile)
-    return envconfigfile, rawconfig
+# --- REMOVED THE OBSOLETE `process_envconfig` FUNCTION ---
 
 
 def load_single_config(configfile: str | Path) -> dict[str, Any]:

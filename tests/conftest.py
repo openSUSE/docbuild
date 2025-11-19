@@ -92,6 +92,8 @@ def context() -> DocBuildContext:
 
 
 # --- Mocking fixtures
+# NOTE: MockEnvConfig and MockCombinedConfig tuples are kept as long as other tests rely on them
+
 class MockEnvConfig(NamedTuple):
     """Named tuple to hold the fake env file and mock."""
 
@@ -157,38 +159,9 @@ def make_path_mock(
     return mock
 
 
-@pytest.fixture
-def fake_envfile(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> Generator[MockEnvConfig, None, None]:
-    """Patch the `docbuild.cli.cli.process_envconfig` function."""
-    mock_path = make_path_mock(
-        '/home/tux',
-        return_values={
-            'exists': True,
-            'is_file': True,
-        },
-        side_effects={
-            'read_text': lambda: 'dynamic content',
-        },
-        attributes={
-            'name': 'file.txt',
-        },
-    )
-
-    mock = MagicMock()
-    mock.return_value = mock_path
-
-    monkeypatch.setattr(
-        load_mod,
-        'process_envconfig',
-        mock,
-    )
-
-    with changedir(tmp_path):
-        yield MockEnvConfig(mock_path, mock)
-
+# --- REMOVED OBSOLETE FIXTURES ---
+# The fake_envfile fixture is removed as it patched the non-existent process_envconfig.
+# The fake_confiles fixture is kept as it patches load_and_merge_configs, which may be needed elsewhere.
 
 @pytest.fixture
 def fake_confiles(
@@ -206,6 +179,7 @@ def fake_confiles(
                 },
             ),
         )
+        # Note: This is patching the attribute on the cli module, not load_mod
         monkeypatch.setattr(
             cli,
             'load_and_merge_configs',
