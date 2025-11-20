@@ -6,8 +6,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict
 
-from docbuild.config.app import replace_placeholders
-from docbuild.config.app import CircularReferenceError, PlaceholderResolutionError
+from ...config.app import replace_placeholders
+from ...config.app import CircularReferenceError, PlaceholderResolutionError
 
 
 class LanguageCode(str):
@@ -41,7 +41,7 @@ class Env_Server(BaseModel):
     name: str = Field(
         title="Server Name",
         description="A human-readable identifier for the environment/server.",
-        examples=["Production-EU", "Dev-Local"],
+        examples=["documentation-suse-com", "docserv-suse-de"],
     )
     "The descriptive name of the server."
 
@@ -59,14 +59,6 @@ class Env_Server(BaseModel):
     )
     "The host address for the server."
 
-    port: int | None = Field(
-        None,
-        title="Server Port",
-        description="The port number on which the server is listening.",
-        examples=[8080, 443],
-    )
-    "The port used by the server, or None if inferred."
-
     enable_mail: bool = Field(
         title="Enable Email",
         description="Flag to enable email sending features (e.g., build notifications).",
@@ -83,14 +75,14 @@ class Env_GeneralConfig(BaseModel):
     default_lang: LanguageCode = Field( 
         title="Default Language",
         description="The primary language code (e.g., 'en') used for non-localized content.",
-        examples=["en"],
+        examples=["en-us", "de-de", "ja-jp"],
     )
     "The default language code."
 
     languages: list[LanguageCode] = Field( 
         title="Supported Languages",
         description="A list of all language codes supported by this documentation instance.",
-        examples=[["en", "de", "fr"]],
+        examples=[["en-us", "de-de", "fr-fr"]],
     )
     "A list of supported language codes."
 
@@ -110,43 +102,49 @@ class Env_TmpPaths(BaseModel):
     tmp_base_path: Path = Field(
         title="Temporary Base Path",
         description="The root directory for all temporary build artifacts.",
-        examples=["/tmp/docbuild/"],
+        examples=["/var/tmp/docbuild/"],
     )
     "Root path for temporary files."
 
     tmp_path: Path = Field(
-        title="General Temporary Path",
-        description="A general-purpose subdirectory within the base temporary path.",
+        title="General Temporary Path for specific server",
+        description="A general-purpose subdirectory within the base temporary path to distinguish between different servers.",
+        examples=["/var/tmp/docbuild/doc-example-com"],
     )
     "General temporary path."
     
     tmp_deliverable_path: Path = Field(
         title="Temporary Deliverable Path",
         description="The directory where deliverable repositories are cloned and processed.",
+        examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
     )
     "Path for temporary deliverable clones."
 
     tmp_build_dir: Path = Field(
         title="Temporary Build Directory",
-        description="The directory where Sphinx/DAPS builds intermediate files.",
+        description="Temporary directory for intermediate files (contains placeholders).",
+        examples=["/var/tmp/docbuild/doc-example-com/build/{{product}}-{{docset}}-{{lang}}"],
     )
     "Temporary build output directory."
 
     tmp_out_path: Path = Field(
         title="Temporary Output Path",
         description="The final temporary directory where built artifacts land before deployment.",
+        examples=["/var/tmp/docbuild/doc-example-com/out/"],
     )
     "Temporary final output path."
 
     log_path: Path = Field(
         title="Log Path",
         description="The directory where build logs and application logs are stored.",
+        examples=["/var/tmp/docbuild/doc-example-com/log"],
     )
     "Path for log files."
 
     tmp_deliverable_name: str = Field(
         title="Temporary Deliverable Name",
         description="The name used for the current deliverable being built (e.g., branch name or version).",
+        examples=["{{product}}_{{docset}}_{{lang}}_XXXXXX"],
     )
     "Temporary deliverable name."
 
@@ -157,15 +155,15 @@ class Env_TargetPaths(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
     target_path: str = Field(
-        title="Target Deployment Path",
-        description="The final destination for the built documentation (e.g., an NFS mount point or S3 bucket name).",
-        examples=["/srv/www/docs/"],
+        title="Target Server Deployment Path",
+        description="The final remote destination for the built documentation",
+        examples=["doc@10.100.100.100:/srv/docs"],
     )
     "The destination path for final built documentation."
 
     backup_path: Path = Field(
-        title="Backup Path",
-        description="The location where older versions or builds are archived.",
+        title="Build Server Path",
+        description="The location on the build server before it is synced to the target path.",
     )
     "Path for backups."
 
@@ -177,37 +175,36 @@ class Env_PathsConfig(BaseModel):
 
     config_dir: Path = Field(
         title="Configuration Directory",
-        description="The root directory containing application configuration files (e.g., app.toml).",
+        description="The configuration directory containing application and environment files (e.g. app.toml)",
+        examples=["/etc/docbuild"],
     )
     "Path to configuration files."
 
     repo_dir: Path = Field(
         title="Permanent Repository Directory",
         description="The directory where permanent bare Git repositories are stored.",
+        examples=["/var/cache/docbuild/repos/permanent-full/"],
     )
     "Path for permanent bare Git repositories."
 
     temp_repo_dir: Path = Field(
         title="Temporary Repository Directory",
         description="The directory used for temporary working copies cloned from the permanent bare repositories.",
+        examples=["/var/cache/docbuild/repos/temporary-branches/"],
     )
     "Path for temporary working copies."
 
     base_cache_dir: Path = Field(
         title="Base Cache Directory",
         description="The root directory for all application-level caches.",
+        examples=["/var/cache/docserv"],
     )
     "Base path for all caches."
-
-    cache_dir: Path = Field(
-        title="General Cache Directory",
-        description="General cache directory for miscellaneous build data.",
-    )
-    "General cache path."
 
     meta_cache_dir: Path = Field(
         title="Metadata Cache Directory",
         description="Cache directory specifically for repository and deliverable metadata.",
+        examples=["/var/cache/docbuild/doc-example-com/meta"],
     )
     "Metadata cache path."
 
@@ -245,7 +242,7 @@ class EnvConfig(BaseModel):
         default_factory=dict,
         alias='xslt-params',
         title="XSLT Parameters",
-        description="Custom parameters passed directly to the DAPS XSLT processor.",
+        description="Custom XSLT parameters passed directly to DAPS.",
     )
     "XSLT processing parameters."
 

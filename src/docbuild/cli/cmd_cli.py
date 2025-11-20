@@ -16,7 +16,6 @@ from ..config.app import replace_placeholders
 from ..config.load import handle_config
 from ..models.config_model.app import AppConfig
 from ..models.config_model.env import EnvConfig 
-# ----------------------------------------------
 
 from ..constants import (
     APP_CONFIG_BASENAMES,
@@ -186,9 +185,11 @@ def cli(
         # The result is the validated Pydantic object, stored in context.envconfig
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
     except (ValueError, ValidationError) as e:
-        log.error("Environment configuration failed validation:")
-        log.error("Error in config file(s): %s", context.envconfigfiles)
-        log.error(e)
+        log.error(
+             "Environment configuration failed validation: "
+             "Error in config file(s): %s %s",
+             context.envconfigfiles, e
+        )
         ctx.exit(1)
     
     env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
