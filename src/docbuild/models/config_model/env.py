@@ -1,20 +1,16 @@
 """Pydantic models for application and environment configuration."""
 
 from copy import deepcopy
-from typing import Any, Self, Annotated, Literal 
+from typing import Any, Self, Annotated 
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict
 
 from ...config.app import replace_placeholders
 from ...config.app import CircularReferenceError, PlaceholderResolutionError
-
-
-class LanguageCode(str):
-    """Placeholder for the LanguageCode type."""
-    @classmethod
-    def __get_pydantic_core_schema__(cls, source_type: Any, handler: Any):
-        return handler(str)
+from ..language import LanguageCode 
+from ..serverroles import ServerRole 
+from ..path import EnsureWritableDirectory
 
 
 # --- Custom Types and Utilities ---
@@ -45,7 +41,8 @@ class Env_Server(BaseModel):
     )
     "The descriptive name of the server."
 
-    role: Literal["development", "production", "staging"] = Field(
+    # Replaced hardcoded Literal with imported ServerRole Enum
+    role: ServerRole = Field( 
         title="Server Role",
         description="The operational role of the environment.",
         examples=["production"],
@@ -99,42 +96,43 @@ class Env_TmpPaths(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
 
-    tmp_base_path: Path = Field(
+    # All Path types are replaced with the custom EnsureWritableDirectory type.
+    tmp_base_path: EnsureWritableDirectory = Field(
         title="Temporary Base Path",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
     )
     "Root path for temporary files."
 
-    tmp_path: Path = Field(
+    tmp_path: EnsureWritableDirectory = Field(
         title="General Temporary Path for specific server",
         description="A general-purpose subdirectory within the base temporary path to distinguish between different servers.",
         examples=["/var/tmp/docbuild/doc-example-com"],
     )
     "General temporary path."
     
-    tmp_deliverable_path: Path = Field(
+    tmp_deliverable_path: EnsureWritableDirectory = Field(
         title="Temporary Deliverable Path",
         description="The directory where deliverable repositories are cloned and processed.",
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
     )
     "Path for temporary deliverable clones."
 
-    tmp_build_dir: Path = Field(
+    tmp_build_dir: EnsureWritableDirectory = Field(
         title="Temporary Build Directory",
         description="Temporary directory for intermediate files (contains placeholders).",
         examples=["/var/tmp/docbuild/doc-example-com/build/{{product}}-{{docset}}-{{lang}}"],
     )
     "Temporary build output directory."
 
-    tmp_out_path: Path = Field(
+    tmp_out_path: EnsureWritableDirectory = Field(
         title="Temporary Output Path",
         description="The final temporary directory where built artifacts land before deployment.",
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
     )
     "Temporary final output path."
 
-    log_path: Path = Field(
+    log_path: EnsureWritableDirectory = Field(
         title="Log Path",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
@@ -251,7 +249,6 @@ class EnvConfig(BaseModel):
     @classmethod
     def _resolve_placeholders(cls, data: Any) -> Any:
         """Resolve placeholders before any other validation."""
-        # This is the exact pattern used in your AppConfig
         if isinstance(data, dict):
             try:
                 return replace_placeholders(deepcopy(data))

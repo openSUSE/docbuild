@@ -1,0 +1,97 @@
+"""Custom Pydantic path types for robust configuration validation."""
+
+import os
+from pathlib import Path
+from typing import Any, Self
+from pydantic import GetCoreSchemaHandler
+from pydantic.fields import Field
+from pydantic_core import core_schema 
+
+
+class EnsureWritableDirectory:
+    """
+    A Pydantic custom type that ensures a directory exists and is writable.
+
+    Behavior:
+    1. Expands user paths (e.g., "~/data" -> "/home/user/data").
+    2. Validates input is a path.
+    3. If path DOES NOT exist: It creates it (including parents).
+    4. If path DOES exist (or was just created): It checks is_dir() and R/W/X permissions.
+    """
+    
+    # Store the actual Path object internally
+    _path: Path
+
+    def __init__(self, path: str | Path) -> None:
+        # The validation process ensures this path is already expanded and resolved.
+        self._path = Path(path)
+
+    # --- Pydantic V2 Core Schema ---
+
+    @classmethod
+    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
+        """Defines the validation chain for Pydantic V2."""
+        
+        # Chain 1: Validate input as a Path object first (handles string -> Path coercion)
+        # Chain 2: Run our custom validation and creation logic
+        return core_schema.chain_schema(
+            [
+                handler(Path),
+                core_schema.no_info_plain_validator_function(cls.validate_and_create)
+            ]
+        )
+
+    # --- Validation & Creation Logic ---
+
+    @classmethod
+    def validate_and_create(cls, path: Path) -> Self:
+        """
+        Expands user, checks if path exists. If not, creates it. Then checks permissions.
+        """
+
+        # 0. Expand User (Handle ~) and Resolve (Make absolute)
+        path = path.expanduser().resolve()
+
+        # 1. Auto-Creation Logic
+        if not path.exists():
+            try:
+                # parents=True: creates /tmp/a/b even if /tmp/a doesn't exist
+                # exist_ok=True: prevents race conditions
+                path.mkdir(parents=True, exist_ok=True)
+                # NOTE: Removed print statement as it's not desirable in library code
+            except OSError as e:
+                raise ValueError(f"Could not create directory '{path}': {e}")
+
+        # 2. Type Check
+        if not path.is_dir():
+            raise ValueError(f"Path exists but is not a directory: '{path}'")
+
+        # 3. Permission Checks (R/W/X)
+        missing_perms = []
+        if not os.access(path, os.R_OK): missing_perms.append("READ")
+        if not os.access(path, os.W_OK): missing_perms.append("WRITE")
+        if not os.access(path, os.X_OK): missing_perms.append("EXECUTE")
+
+        if missing_perms:
+            raise ValueError(
+                f"Insufficient permissions for directory '{path}'. "
+                f"Missing: {', '.join(missing_perms)}"
+            )
+
+        # Return an instance of the custom type
+        return cls(path)
+
+    # --- Usability Methods ---
+
+    def __str__(self) -> str:
+        return str(self._path)
+    
+    def __repr__(self) -> str:
+        return f"EnsureWritableDirectory('{self._path}')"
+    
+    # Allows access to methods/attributes of the underlying Path object (e.g., .joinpath)
+    def __getattr__(self, name: str) -> Any:
+        # Avoid recursion on self._path
+        if name.startswith('_'):
+            raise AttributeError(name)
+        return getattr(self._path, name)
