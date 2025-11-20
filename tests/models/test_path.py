@@ -4,6 +4,7 @@ import os
 import stat
 from pathlib import Path
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 from pydantic import BaseModel, ValidationError
@@ -59,21 +60,21 @@ def test_writable_directory_path_expansion(monkeypatch, tmp_path: Path):
     fake_home.mkdir()
     
     test_path_str = '~/test_output'
-    expected_resolved_path = (fake_home / 'test_output').resolve()
     
     # 2. Mock Path.expanduser() to return the resolved path
+    expected_resolved_path = (fake_home / 'test_output').resolve()
+    
     def fake_expanduser(self):
-        # Check if the path being called on is the one with '~'
+        # When called on the '~' string path, return the mocked, resolved home path.
         if str(self) == test_path_str:
             return expected_resolved_path
-        # For other calls during validation (like .resolve()), return self
+        # Otherwise, return self to allow .resolve() to function correctly on other Path objects
         return self
         
     # Patch the actual method on the Path class
     monkeypatch.setattr(Path, 'expanduser', fake_expanduser) # type: ignore
     
     # 3. Validation should resolve "~" before creation
-    # The Pydantic validation calls the mocked expanduser method.
     model = PathTestModel(writable_dir=test_path_str) # type: ignore
     
     # 4. Assertions
@@ -92,13 +93,25 @@ def test_writable_directory_failure_not_a_directory(tmp_path: Path):
     assert 'Path exists but is not a directory' in excinfo.value.errors()[0]['msg']
 
 
-def test_writable_directory_failure_not_writable(tmp_path: Path):
-    """Test failure when the directory lacks write permission."""
+def test_writable_directory_failure_not_writable(tmp_path: Path, monkeypatch):
+    """Test failure when the directory lacks write permission (robust against root user)."""
     read_only_dir = tmp_path / 'read_only_dir'
     read_only_dir.mkdir()
     
-    # Change permissions to read-only (0o444)
-    original_perms = read_only_dir.stat().st_mode
+    _original_os_access = os.access 
+    
+    # Patch os.access() to always report write permission is MISSING on this directory
+    def fake_access(path, mode):
+        # If we are checking the specific read_only directory for WRITE permission, fail it.
+        if path == read_only_dir.resolve() and mode == os.W_OK:
+            return False 
+        
+        # Otherwise, call the safely stored original function.
+        return _original_os_access(path, mode)
+
+    monkeypatch.setattr(os, 'access', fake_access)
+    
+    # The actual chmod is now primarily symbolic, the mock forces the logic path
     read_only_dir.chmod(0o444) 
     
     try:
@@ -108,18 +121,29 @@ def test_writable_directory_failure_not_writable(tmp_path: Path):
         assert 'Insufficient permissions for directory' in excinfo.value.errors()[0]['msg']
         assert 'WRITE' in excinfo.value.errors()[0]['msg']
     finally:
-        # Restore permissions to allow cleanup (0o755 or 0o666)
-        read_only_dir.chmod(original_perms | stat.S_IWUSR)
+        # Restore permissions to ensure cleanup (Crucial for CI)
+        read_only_dir.chmod(0o777) 
 
 
-def test_writable_directory_failure_not_executable(tmp_path: Path):
-    """Test failure when the directory lacks execute/search permission (rare)."""
+def test_writable_directory_failure_not_executable(tmp_path: Path, monkeypatch):
+    """Test failure when the directory lacks execute/search permission (robust against root user)."""
     no_exec_dir = tmp_path / 'no_exec_dir'
     no_exec_dir.mkdir()
     
-    # Change permissions to read/write only (0o666)
-    original_perms = no_exec_dir.stat().st_mode
-    no_exec_dir.chmod(0o666)
+    _original_os_access = os.access
+
+    # Patch os.access() to always report execute permission is MISSING
+    def fake_access(path, mode):
+        if path == no_exec_dir.resolve() and mode == os.X_OK:
+            return False # Force failure on execute check
+        
+        # Otherwise, call the safely stored original function.
+        return _original_os_access(path, mode)
+
+    monkeypatch.setattr(os, 'access', fake_access)
+    
+    # The actual chmod is now primarily symbolic, the mock forces the logic path
+    no_exec_dir.chmod(0o666) 
     
     try:
         with pytest.raises(ValidationError) as excinfo:
@@ -129,7 +153,7 @@ def test_writable_directory_failure_not_executable(tmp_path: Path):
         assert 'EXECUTE' in excinfo.value.errors()[0]['msg']
     finally:
         # Restore permissions
-        no_exec_dir.chmod(original_perms | stat.S_IXUSR)
+        no_exec_dir.chmod(0o777)
 
 
 def test_writable_directory_attribute_access(tmp_path: Path):
