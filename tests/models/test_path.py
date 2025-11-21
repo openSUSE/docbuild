@@ -156,6 +156,32 @@ def test_writable_directory_failure_not_executable(tmp_path: Path, monkeypatch):
         no_exec_dir.chmod(0o777)
 
 
+def test_writable_directory_failure_mkdir_os_error(monkeypatch, tmp_path: Path):
+    """
+    Test that an OSError raised during directory creation (mkdir) is correctly 
+    caught and re-raised as a ValueError (100% coverage).
+    """
+    
+    # 1. Mock Path.mkdir to always raise an OSError when called
+    def mock_mkdir(*args, **kwargs):
+        raise OSError(13, 'Simulated permission denied for mkdir')
+        
+    monkeypatch.setattr(Path, 'mkdir', mock_mkdir)
+    
+    # Create a Path object that is guaranteed not to exist yet
+    non_existent_path = tmp_path / "new_path" / "fail"
+    
+    # 2. Action & Assertions
+    with pytest.raises(ValidationError) as excinfo:
+        PathTestModel(writable_dir=non_existent_path) # type: ignore
+        
+    # Assert that the error is correctly wrapped in a ValueError/ValidationError
+    error_msg = excinfo.value.errors()[0]['msg']
+    assert 'Value error' in error_msg
+    assert 'Could not create directory' in error_msg
+    assert 'Simulated permission denied' in error_msg
+
+
 def test_writable_directory_attribute_access(tmp_path: Path):
     """Test that attributes of the underlying Path object are accessible via __getattr__."""
     test_dir = tmp_path / 'test_attributes'

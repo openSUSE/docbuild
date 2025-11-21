@@ -26,11 +26,7 @@ class EnsureWritableDirectory:
         creation and permission checks.
         """
 
-        if not isinstance(path, Path):
-            path = Path(path)
-
-        self._path: Path = path.expanduser().resolve()
-
+        self._path: Path = Path(path).expanduser().resolve()
 
     # --- Pydantic V2 Core Schema ---
 
