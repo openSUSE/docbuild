@@ -15,6 +15,8 @@ from ..__about__ import __version__
 from ..config.app import replace_placeholders
 from ..config.load import handle_config
 from ..models.config_model.app import AppConfig
+from ..models.config_model.env import EnvConfig 
+
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
@@ -159,12 +161,12 @@ def cli(
     logging_config = context.appconfig.logging.model_dump(by_alias=True, exclude_none=True)
     setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
-    # --- PHASE 2: Load Environment Config and Acquire Lock ---
+    # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
     
-    # Load Environment Config (still returns raw dict)
+    # 1. Load raw Environment Config
     (
         context.envconfigfiles,
-        context.envconfig,
+        raw_envconfig, # Renaming context.envconfig to raw_envconfig locally
         context.envconfig_from_defaults,
     ) = handle_config(
         env_config,
@@ -174,10 +176,23 @@ def cli(
         DEFAULT_ENV_CONFIG,
     )
     
-    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
+    # Explicitly cast the raw_envconfig type to silence Pylance
+    raw_envconfig = cast(dict[str, Any], raw_envconfig)
     
-    # Explicitly cast the context.envconfig type to silence Pylance
-    context.envconfig = cast(dict[str, Any], context.envconfig)
+    # 2. VALIDATE the raw environment config dictionary using Pydantic
+    try:
+        # Pydantic validation handles placeholder replacement via @model_validator
+        # The result is the validated Pydantic object, stored in context.envconfig
+        context.envconfig = EnvConfig.from_dict(raw_envconfig)
+    except (ValueError, ValidationError) as e:
+        log.error(
+             "Environment configuration failed validation: "
+             "Error in config file(s): %s %s",
+             context.envconfigfiles, e
+        )
+        ctx.exit(1)
+    
+    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
     
     # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
     if env_config_path:
@@ -202,11 +217,6 @@ def cli(
         # We use a lambda to supply the three mandatory positional arguments (None)
         # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
-    
-    # Final config processing must happen outside the lock acquisition check
-    context.envconfig = replace_placeholders(
-        context.envconfig,
-    )
     
 # Add subcommand
 cli.add_command(build)
