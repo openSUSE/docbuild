@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 from typing import Any, Self
 from pydantic import GetCoreSchemaHandler
-from pydantic.fields import Field
 from pydantic_core import core_schema 
 
 
@@ -18,13 +17,20 @@ class EnsureWritableDirectory:
     3. If path DOES NOT exist: It creates it (including parents).
     4. If path DOES exist (or was just created): It checks is_dir() and R/W/X permissions.
     """
-    
-    # Store the actual Path object internally
-    _path: Path
+
 
     def __init__(self, path: str | Path) -> None:
-        # The validation process ensures this path is already expanded and resolved.
-        self._path = Path(path)
+        """
+        Initializes the instance with the fully resolved and expanded path.
+        Assumes the validation step (validate_and_create) has already handled
+        creation and permission checks.
+        """
+
+        if not isinstance(path, Path):
+            path = Path(path)
+
+        self._path: Path = path.expanduser().resolve()
+
 
     # --- Pydantic V2 Core Schema ---
 
@@ -49,16 +55,12 @@ class EnsureWritableDirectory:
         Expands user, checks if path exists. If not, creates it. Then checks permissions.
         """
 
-        # 0. Expand User (Handle ~) and Resolve (Make absolute)
-        path = path.expanduser().resolve()
-
         # 1. Auto-Creation Logic
         if not path.exists():
             try:
                 # parents=True: creates /tmp/a/b even if /tmp/a doesn't exist
                 # exist_ok=True: prevents race conditions
                 path.mkdir(parents=True, exist_ok=True)
-                # NOTE: Removed print statement as it's not desirable in library code
             except OSError as e:
                 raise ValueError(f"Could not create directory '{path}': {e}")
 
@@ -78,7 +80,7 @@ class EnsureWritableDirectory:
                 f"Missing: {', '.join(missing_perms)}"
             )
 
-        # Return an instance of the custom type
+        # Return an instance of the custom type (the __init__ method runs next)
         return cls(path)
 
     # --- Usability Methods ---
@@ -87,11 +89,8 @@ class EnsureWritableDirectory:
         return str(self._path)
     
     def __repr__(self) -> str:
-        return f"EnsureWritableDirectory('{self._path}')"
+        return f"{self.__class__.__name__}('{self._path}')"
     
     # Allows access to methods/attributes of the underlying Path object (e.g., .joinpath)
     def __getattr__(self, name: str) -> Any:
-        # Avoid recursion on self._path
-        if name.startswith('_'):
-            raise AttributeError(name)
         return getattr(self._path, name)
