@@ -1,7 +1,7 @@
 """Pydantic models for application and environment configuration."""
 
 from copy import deepcopy
-from typing import Any, Self, Annotated 
+from typing import Any, Self, Annotated, Literal 
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict
@@ -27,6 +27,35 @@ DomainName = Annotated[
 ]
 
 
+# --- Build Sub-Models (To allow extra sections in env.toml) ---
+
+class Env_BuildDaps(BaseModel):
+    """Configuration for daps command execution."""
+
+    # Allows extra keys from the TOML file that aren't yet defined in the model schema.
+    model_config = ConfigDict(extra='allow') 
+    
+    command: str = Field(..., description="The base daps command.")
+    meta: str = Field(..., description="The daps metadata command.")
+
+
+class Env_BuildContainer(BaseModel):
+    """Configuration for container usage."""
+
+    model_config = ConfigDict(extra='allow')
+    
+    container: str = Field(..., description="The container registry path/name.")
+
+
+class Env_Build(BaseModel):
+    """General build configuration."""
+
+    model_config = ConfigDict(extra='forbid') 
+    
+    daps: Env_BuildDaps
+    container: Env_BuildContainer
+
+
 # --- Configuration Models ---
 
 class Env_Server(BaseModel):
@@ -41,7 +70,6 @@ class Env_Server(BaseModel):
     )
     "The descriptive name of the server."
 
-    # Replaced hardcoded Literal with imported ServerRole Enum
     role: ServerRole = Field( 
         title="Server Role",
         description="The operational role of the environment.",
@@ -96,9 +124,9 @@ class Env_TmpPaths(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
 
-    # All Path types are replaced with the custom EnsureWritableDirectory type.
-    tmp_base_path: EnsureWritableDirectory = Field(
-        title="Temporary Base Path",
+    # Renamed from tmp_base_path to tmp_base_dir to match config input
+    tmp_base_dir: EnsureWritableDirectory = Field( 
+        title="Temporary Base Directory",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
     )
@@ -235,6 +263,13 @@ class EnvConfig(BaseModel):
         description="All file system path definitions.",
     )
     "File system paths."
+    
+    # Build section integration
+    build: Env_Build = Field(
+        title="Build Configuration",
+        description="Settings for DAPS command execution and containerization.",
+    )
+    "Build process settings."
 
     xslt_params: dict[str, str | int] = Field(
         default_factory=dict,
