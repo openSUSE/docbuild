@@ -159,12 +159,15 @@ async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
     doctype: Doctype,
-) -> bool:
+    exitfirst: bool,
+) -> list[Deliverable]:
     """Process the doctypes and create metadata files.
 
     :param root: The stitched XML node containing configuration.
     :param context: The DocBuildContext containing environment configuration.
     :param doctypes: A tuple of Doctype objects to process.
+    :param exitfirst: If True, stop processing on the first failure.
+    :return: True if all files passed validation, False otherwise
     """
     # Here you would implement the logic to process the doctypes
     # and create metadata files based on the stitchnode and context.
@@ -173,6 +176,11 @@ async def process_doctype(
     # xpath = doctype.xpath()
     # print("XPath: ", xpath)
     stdout.print(f'XPath: {doctype.xpath()}', markup=False)
+
+    if not context.envconfig:
+        raise RuntimeError('No envconfig found in context. Maybe no config provided?')
+    #else:
+    #    env = context.envconfig
 
     deliverables = await asyncio.to_thread(
         get_deliverable_from_doctype,
@@ -212,7 +220,7 @@ async def process_doctype(
     base_cache_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
 
-    tasks = [
+    coroutines = [
         process_deliverable(
             deliverable,
             repo_dir=repo_dir,
@@ -223,19 +231,53 @@ async def process_doctype(
         )
         for deliverable in deliverables
     ]
-    results = await asyncio.gather(*tasks)
 
-    return all(results)
+    tasks = [asyncio.create_task(coro) for coro in coroutines]
+    failed_deliverables: list[Deliverable] = []
+
+    if exitfirst:
+        # Fail-fast behavior
+        for task in asyncio.as_completed(tasks):
+            result = await task
+            if not result:
+                # The task failed, so we find which deliverable it was
+                # This is a bit indirect but works with the current `process_deliverable`
+                # A better approach would be for `process_deliverable` to
+                # return the deliverable on failure
+                failed_deliverables.extend(
+                    d for d, t in zip(deliverables, tasks) if t is task
+                )
+                # Cancel remaining tasks
+                for t in tasks:
+                    if not t.done():
+                        t.cancel()
+                # Wait for cancellations to propagate
+                await asyncio.gather(*tasks, return_exceptions=True)
+                break  # Exit the loop on first failure
+
+    else:
+        # Run all and collect all results
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        failed_deliverables.extend(
+            deliverable
+            for deliverable, success in zip(deliverables, results)
+            if not success
+        )
+
+    return failed_deliverables
 
 
 async def process(
     context: DocBuildContext,
     doctypes: tuple[Doctype],
+    *,
+    exitfirst: bool,
 ) -> int:
     """Asynchronous function to process metadata retrieval.
 
     :param context: The DocBuildContext containing environment configuration.
-    :param xmlfiles: A tuple or iterator of XML file paths to validate.
+    :param doctype: A Doctype object to process.
+    :param exitfirst: If True, stop processing on the first failure.
     :raises ValueError: If no envconfig is found or if paths are not
         configured correctly.
     :return: 0 if all files passed validation, 1 if any failures occurred.
@@ -256,7 +298,17 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt) for dt in doctypes]
-    results = await asyncio.gather(*tasks)
-    stdout.print(f'Results: {results}')
+    tasks = [process_doctype(stitchnode, context, dt, exitfirst) for dt in doctypes]
+    results_per_doctype = await asyncio.gather(*tasks)
+
+    all_failed_deliverables = [
+        d for failed_list in results_per_doctype for d in failed_list
+    ]
+
+    if all_failed_deliverables:
+        console_err.print(f'Found {len(all_failed_deliverables)} failed deliverables:')
+        for d in all_failed_deliverables:
+            console_err.print(f'- {d.full_id}')
+        return 1
+
     return 0
