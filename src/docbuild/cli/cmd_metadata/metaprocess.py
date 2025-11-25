@@ -36,8 +36,8 @@ def get_deliverable_from_doctype(
     :param doctype: The Doctype object to process.
     :return: A list of deliverables for the given doctype.
     """
-    stdout.print(f'Getting deliverable for doctype: {doctype}')
-    stdout.print(f'XPath for {doctype}: {doctype.xpath()}')
+    # stdout.print(f'Getting deliverable for doctype: {doctype}')
+    # stdout.print(f'XPath for {doctype}: {doctype.xpath()}')
     languages = root.getroot().xpath(f'./{doctype.xpath()}')
 
     return [
@@ -76,7 +76,7 @@ async def process_deliverable(
     :return: True if successful, False otherwise.
     :raises ValueError: If required configuration paths are missing.
     """
-    stdout.print(f'> Processing deliverable: {deliverable.full_id}')
+    log.info('> Processing deliverable: %s', deliverable.full_id)
 
     meta_cache_dir = Path(meta_cache_dir)
 
@@ -132,10 +132,11 @@ async def process_deliverable(
                     output=str(outputdir / deliverable.dcfile),
                 )
             )
-            stdout.print(f'  command: {cmd}')
+            # stdout.print(f'  command: {cmd}')
             daps_process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdin=asyncio.subprocess.DEVNULL,
+                stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
             _, stderr = await daps_process.communicate()
@@ -146,7 +147,7 @@ async def process_deliverable(
                     f'{stderr.decode().strip()}'
                 )
 
-        stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
+        # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         return True
 
     except RuntimeError as e:
@@ -172,15 +173,15 @@ async def process_doctype(
     # Here you would implement the logic to process the doctypes
     # and create metadata files based on the stitchnode and context.
     # This is a placeholder for the actual implementation.
-    stdout.print(f'Processing doctypes: {doctype}')
+    # stdout.print(f'Processing doctypes: {doctype}')
     # xpath = doctype.xpath()
     # print("XPath: ", xpath)
-    stdout.print(f'XPath: {doctype.xpath()}', markup=False)
+    # stdout.print(f'XPath: {doctype.xpath()}', markup=False)
 
     if not context.envconfig:
         raise RuntimeError('No envconfig found in context. Maybe no config provided?')
-    #else:
-    #    env = context.envconfig
+    else:
+        env = context.envconfig
 
     deliverables = await asyncio.to_thread(
         get_deliverable_from_doctype,
@@ -188,20 +189,20 @@ async def process_doctype(
         context,
         doctype,
     )
-    stdout.print(f'Found deliverables: {len(deliverables)}')
-    dapsmetatmpl = context.envconfig.get('build', {}).get('daps', {}).get('meta', None)
+    # stdout.print(f'Found deliverables: {len(deliverables)}')
+    dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
 
-    stdout.print(f'daps command: {dapsmetatmpl}', markup=False)
+    # stdout.print(f'daps command: {dapsmetatmpl}', markup=False)
 
-    repo_dir = context.envconfig.get('paths', {}).get('repo_dir', None)
-    base_cache_dir = context.envconfig.get('paths', {}).get('base_cache_dir', None)
+    repo_dir = env.get('paths', {}).get('repo_dir', None)
+    base_cache_dir = env.get('paths', {}).get('base_cache_dir', None)
     # We retrieve the path.meta_cache_dir and fall back to path.base_cache_dir
     # if not available:
-    meta_cache_dir = context.envconfig.get('paths', {}).get(
+    meta_cache_dir = env.get('paths', {}).get(
         'meta_cache_dir', base_cache_dir
     )
     # Cloned temporary repo:
-    temp_repo_dir = context.envconfig.get('paths', {}).get('temp_repo_dir', None)
+    temp_repo_dir = env.get('paths', {}).get('temp_repo_dir', None)
 
     # Check all paths:
     if not all((repo_dir, base_cache_dir, temp_repo_dir, meta_cache_dir)):
@@ -289,11 +290,11 @@ async def process(
     if configdir is None:
         raise ValueError('Could not get a value from envconfig.paths.config_dir')
     configdir = Path(configdir).expanduser()
-    stdout.print(f'Config path: {configdir}')
+    # stdout.print(f'Config path: {configdir}')
     xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
     stitchnode = await create_stitchfile(xmlconfigs)
-    stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
-    stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
+    # stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
+    # stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]

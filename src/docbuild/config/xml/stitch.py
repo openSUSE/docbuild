@@ -33,7 +33,8 @@ def log_memory_usage() -> None:
 
     import psutil
     process = psutil.Process(os.getpid())
-    print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
+    log.debug('Memory usage: %.1f MB', process.memory_info().rss / 1024**2)
+    # print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
 
 
 def check_stitchfile(tree: etree._Element | etree._ElementTree) -> bool:
