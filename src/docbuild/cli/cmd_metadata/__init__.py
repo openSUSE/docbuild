@@ -13,7 +13,8 @@ from ..context import DocBuildContext
 from .metaprocess import process
 
 # Set up rich consoles for output
-console_out = Console()
+stdout = Console()
+console_err = Console(stderr=True, style='red')
 
 
 @click.command(help=__doc__)
@@ -49,6 +50,6 @@ def metadata(
             result = asyncio.run(process(context, doctypes, exitfirst=exitfirst))
     finally:
         if t and not math.isnan(t.elapsed):
-            console_out.print(f'Elapsed time {t.elapsed:0.2f}s')
+            stdout.print(f'Elapsed time {t.elapsed:0.2f}s')
 
     ctx.exit(result)
