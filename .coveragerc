@@ -2,6 +2,8 @@
 concurrency = multiprocessing
 parallel = true
 branch = true
+omit =
+    tests/*
 
 [report]
 precision = 1
