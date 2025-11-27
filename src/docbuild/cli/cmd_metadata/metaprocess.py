@@ -14,6 +14,7 @@ from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
+from ...utils.git import ManagedGitRepo
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
@@ -156,6 +157,28 @@ async def process_deliverable(
         return False
 
 
+async def update_repositories(deliverables: list[Deliverable], bare_repo_dir: Path) -> bool:
+    """Update all Git repositories associated with the deliverables.
+
+    :param deliverables: A list of Deliverable objects.
+    :param bare_repo_dir: The root directory for storing permanent bare clones.
+    """
+    log.info('Updating Git repositories...')
+    unique_urls = {d.git.url for d in deliverables}
+    repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
+
+    tasks = [repo.clone_bare() for repo in repos]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    res = True
+    for repo, result in zip(repos, results):
+        if isinstance(result, Exception) or not result:
+            log.error('Failed to update repository %s', repo.slug)
+            res = False
+
+    return res
+
+
 async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
@@ -183,43 +206,45 @@ async def process_doctype(
     else:
         env = context.envconfig
 
-    deliverables = await asyncio.to_thread(
-        get_deliverable_from_doctype,
-        root,
-        context,
-        doctype,
-    )
-    # stdout.print(f'Found deliverables: {len(deliverables)}')
-    dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
-
-    # stdout.print(f'daps command: {dapsmetatmpl}', markup=False)
-
-    repo_dir = env.get('paths', {}).get('repo_dir', None)
-    base_cache_dir = env.get('paths', {}).get('base_cache_dir', None)
+    repo_dir_str = env.get('paths', {}).get('repo_dir', None)
+    base_cache_dir_str = env.get('paths', {}).get('base_cache_dir', None)
     # We retrieve the path.meta_cache_dir and fall back to path.base_cache_dir
     # if not available:
-    meta_cache_dir = env.get('paths', {}).get(
-        'meta_cache_dir', base_cache_dir
+    meta_cache_dir_str = env.get('paths', {}).get(
+        'meta_cache_dir', base_cache_dir_str
     )
     # Cloned temporary repo:
-    temp_repo_dir = env.get('paths', {}).get('temp_repo_dir', None)
+    temp_repo_dir_str = env.get('paths', {}).get('temp_repo_dir', None)
 
     # Check all paths:
-    if not all((repo_dir, base_cache_dir, temp_repo_dir, meta_cache_dir)):
+    if not all((repo_dir_str, base_cache_dir_str, temp_repo_dir_str, meta_cache_dir_str)):
         raise ValueError(
             'Missing required paths in configuration: '
-            f'{repo_dir=}, {base_cache_dir=}, {temp_repo_dir=}, {meta_cache_dir=}'
+            f'repo_dir={repo_dir_str}, base_cache_dir={base_cache_dir_str}, '
+            f'temp_repo_dir={temp_repo_dir_str}, meta_cache_dir={meta_cache_dir_str}'
         )
 
     # Ensure base directories exist
-    temp_repo_dir = Path(temp_repo_dir)
-    meta_cache_dir = Path(meta_cache_dir)
-    base_cache_dir = Path(base_cache_dir)
-    repo_dir = Path(repo_dir)
+    temp_repo_dir = Path(temp_repo_dir_str)
+    meta_cache_dir = Path(meta_cache_dir_str)
+    base_cache_dir = Path(base_cache_dir_str)
+    repo_dir = Path(repo_dir_str)
     temp_repo_dir.mkdir(parents=True, exist_ok=True)
     meta_cache_dir.mkdir(parents=True, exist_ok=True)
     base_cache_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
+
+    deliverables = await asyncio.to_thread(
+         get_deliverable_from_doctype,
+         root,
+         context,
+         doctype,
+     )
+
+    await update_repositories(deliverables, repo_dir)
+
+    # stdout.print(f'Found deliverables: {len(deliverables)}')
+    dapsmetatmpl = env.get('build', {}).get('daps', {}).get('meta', None)
 
     coroutines = [
         process_deliverable(
@@ -299,7 +324,8 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt, exitfirst) for dt in doctypes]
+    tasks = [process_doctype(stitchnode, context, dt, exitfirst)
+             for dt in doctypes]
     results_per_doctype = await asyncio.gather(*tasks)
 
     all_failed_deliverables = [
