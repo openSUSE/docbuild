@@ -89,7 +89,7 @@ class ManagedGitRepo:
     async def clone_bare(self: Self) -> bool:
         """Clone the remote repository as a bare repository.
 
-        If the repository already exists, it logs a message and returns.
+        If the repository already exists, it updates the repo
 
         :returns: True if successful, False otherwise.
         """
