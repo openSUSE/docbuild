@@ -151,10 +151,10 @@ class ManagedGitRepo:
             )
             return False
 
-        log.info("Fetching updates for '%s'", self.slug)
+        log.info("Trying to fetch updates for '%s'", self.slug)
         try:
             self.stdout, self.stderr = await execute_git_command(
-                'fetch', '--all', cwd=self.bare_repo_path
+                'fetch', 'origin', 'main:main', cwd=self.bare_repo_path
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True
