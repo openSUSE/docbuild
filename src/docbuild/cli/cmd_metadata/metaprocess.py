@@ -101,26 +101,25 @@ async def process_deliverable(
             dir=str(temp_repo_dir),
             prefix=f'clone-{prefix}_',
         ) as worktree_dir:
-            # 1. Create a temporary clone from the bare repo and checkout a branch.
-            clone_cmd = [
-                'git',
-                'clone',
-                '--local',
-                f'--branch={deliverable.branch}',
-                str(bare_repo_path),
-                str(worktree_dir),
-            ]
-            clone_process = await asyncio.create_subprocess_exec(
-                *clone_cmd,
-                stdin=asyncio.subprocess.DEVNULL,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            _, stderr = await clone_process.communicate()
-            if clone_process.returncode != 0:
-                # Raise an exception on failure to let the context manager know.
+            # 1. Ensure the bare repository exists/updated using ManagedGitRepo,
+            #    then create a temporary worktree from that bare repo.
+            mg = ManagedGitRepo(deliverable.git.url, repo_dir)
+
+            cloned = await mg.clone_bare()
+            if not cloned:
                 raise RuntimeError(
-                    f'Failed to clone {bare_repo_path}: {stderr.decode().strip()}'
+                    'Failed to ensure bare repository for '
+                    f'{deliverable.full_id} ({deliverable.git.url})'
                 )
+
+            try:
+                # create_worktree expects a Path target_dir and branch name
+                await mg.create_worktree(worktree_dir, deliverable.branch)
+
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to create worktree for {deliverable.full_id}: {e}"
+                ) from e
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
@@ -220,7 +219,9 @@ async def process_doctype(
     temp_repo_dir_str = env.get('paths', {}).get('temp_repo_dir', None)
 
     # Check all paths:
-    if not all((repo_dir_str, base_cache_dir_str, temp_repo_dir_str, meta_cache_dir_str)):
+    if not all(
+        (repo_dir_str, base_cache_dir_str, temp_repo_dir_str, meta_cache_dir_str)
+    ):
         raise ValueError(
             'Missing required paths in configuration: '
             f'repo_dir={repo_dir_str}, base_cache_dir={base_cache_dir_str}, '
