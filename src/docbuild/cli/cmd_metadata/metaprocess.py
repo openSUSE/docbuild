@@ -144,7 +144,7 @@ async def process_deliverable(
             if daps_process.returncode != 0:
                 # Raise an exception on failure.
                 raise RuntimeError(
-                    f'DAPS command failed for {deliverable.full_id}: '
+                    f'DAPS command {" ".join(cmd)!r} failed for {deliverable.full_id}: '
                     f'{stderr.decode().strip()}'
                 )
 
