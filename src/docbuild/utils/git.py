@@ -29,7 +29,7 @@ class ManagedGitRepo:
            (=None, use the default config from etc/gitconfig)
         """
         self._repo_model = Repo(remote_url)
-        self._permanent_root = permanent_root
+        self._permanent_root = rootdir
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
         # Initialize attribute for output:
@@ -89,7 +89,10 @@ class ManagedGitRepo:
     async def clone_bare(self: Self) -> bool:
         """Clone the remote repository as a bare repository.
 
-        If the repository already exists, it updates the repo
+        If the repository already exists, it updates the repo. Once the repo is
+        updated, its status is stored. Further calls won't update the repo
+        again to maintain a consistent state. This avoids different states betwen
+        different times.
 
         :returns: True if successful, False otherwise.
         """
