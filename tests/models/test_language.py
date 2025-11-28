@@ -139,3 +139,27 @@ def test_compare_with_unknown_type():
 def test_language_matches():
     lang1 = LanguageCode(language='de-de')
     assert lang1.matches('*')
+
+
+def test_language_code_init_with_invalid_type_raises_error():
+    """Test LanguageCode initialization with a non-string, non-dict value.
+
+    This covers the non-string path in the `_normalize_language_separator`
+    field validator (line 128) and ensures Pydantic's internal validation
+    raises the expected error.
+    """
+    with pytest.raises(ValueError):
+        LanguageCode(language=123)
+
+
+def test_convert_str_to_dict_accepts_string() -> None:
+    """LanguageCode should accept a plain string and populate .language."""
+    # Use Pydantic v2 entrypoint that accepts raw input so the
+    # `@model_validator(mode='before')` runs and converts the string.
+    lc = LanguageCode.model_validate("en-us")
+    assert isinstance(lc, LanguageCode)
+    assert lc.language == "en-us"
+    # ensure computed properties work as expected
+    assert lc.lang == "en"
+    assert lc.country == "us"
+

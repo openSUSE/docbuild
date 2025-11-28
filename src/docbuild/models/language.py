@@ -1,10 +1,9 @@
 """Language model for representing language codes."""
 
-from functools import total_ordering, cached_property
-import re
+from functools import cached_property, total_ordering
 from typing import Any, ClassVar
 
-from pydantic import BaseModel, Field, computed_field, model_validator, field_validator
+from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 from pydantic.config import ConfigDict
 
 from ..constants import ALLOWED_LANGUAGES
@@ -118,7 +117,7 @@ class LanguageCode(BaseModel):
         return (
             self.language == '*' or other_value == '*' or self.language == other_value
         )
-    
+
     @field_validator('language', mode='before')
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
@@ -153,7 +152,7 @@ class LanguageCode(BaseModel):
         """
         if self.language == '*':
             return ('*',)
-        
+
         # Use split('-') as the separator is already normalized
         parts = self.language.split('-')
         return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
