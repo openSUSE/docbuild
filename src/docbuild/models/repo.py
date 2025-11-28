@@ -78,9 +78,8 @@ class Repo:
         ssh_match = self._SSH_PATTERN.match(value)
 
         if 'https://' in value or 'http://' in value:
-            parsed_original = urlparse(value)
-            name = parsed_original.path.strip('/').lower().rsplit('.git', 1)[0]
-            name = name.rstrip('/')
+            parsed_original = urlparse(value.lower())
+            name = parsed_original.path.strip('/').rsplit('.git', 1)[0]
             url = f'{parsed_original.scheme}://{parsed_original.netloc}/{name}.git'
             host = f'{parsed_original.scheme}://{parsed_original.netloc}'
             surl = f'{self._MAP_URL2SERVICE.get(host, "gh")}://{name}'

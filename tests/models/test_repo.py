@@ -3,9 +3,12 @@ import pytest
 from docbuild.models.repo import Repo
 
 
-@pytest.fixture
-def repo_url() -> str:
-    return 'https://github.com/org/repo.git'
+# Use different spellings/casings of the same URL to test normalization
+@pytest.fixture(
+    params=['https://github.com/org/repo.git', 'https://GitHub.com/ORG/repo.git']
+)
+def repo_url(request) -> str:
+    return request.param
 
 
 @pytest.mark.parametrize(
@@ -26,6 +29,12 @@ def repo_url() -> str:
         # 5
         (
             'https://github.com/ORG/repo_git.git/',
+            'org/repo_git',
+            'https://github.com/org/repo_git.git',
+        ),
+        # 6
+        (
+            'https://GitHub.com/ORG/repo_git.git/',
             'org/repo_git',
             'https://github.com/org/repo_git.git',
         ),
@@ -51,6 +60,12 @@ def test_repo_https(input_value, name, url):
         # 5
         (
             'git@github.com:org/repo_git/',
+            'org/repo_git',
+            'https://github.com/org/repo_git.git',
+        ),
+        # 6
+        (
+            'git@GitHub.com:org/repo_git/',
             'org/repo_git',
             'https://github.com/org/repo_git.git',
         ),
@@ -106,6 +121,8 @@ def test_repo_abbreviation(input_value, name, url):
         ('gh://org/repo.git', 'gh://org/repo'),
         # 8
         ('gh://ORG/repo_git.git', 'gh://org/repo_git'),
+        # 9
+        ('GH://ORG/repo_git.git', 'gh://org/repo_git'),
     ],
 )
 def test_repo_with_surl(input_value, surl):
@@ -177,4 +194,4 @@ def test_repo_surl(repo_url):
 
 def test_repo_str(repo_url):
     repo = Repo(repo_url)
-    assert str(repo) == repo_url
+    assert str(repo) == repo_url.lower()
