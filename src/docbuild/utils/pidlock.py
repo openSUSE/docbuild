@@ -122,23 +122,30 @@ class PidFileLock:
 
         # 1. Release the fcntl lock
         try:
-            # Must use the file descriptor (handle.fileno()) for fcntl.flock
+            # Must use the file descriptor (handle.fileno()) for fcntl.flockq
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
-        except Exception:
-            # Non-critical, but log if needed
-            pass
+        except OSError as e:
+            # Log OS-level failures releasing the lock; don't raise from __exit__
+            log.warning(
+                "Failed to release fcntl lock for %s: %s", self.resource_path, e
+            )
 
         # 2. Close the file handle
         try:
             handle.close()
-        except Exception:
-            pass
+        except (OSError, ValueError) as e:
+            # Only handle known close-related errors (OS-level errors and ValueError
+            # if the file object is in an invalid state). Allow other unexpected
+            # exceptions to propagate.
+            log.warning("Failed to close lock file handle %s: %s", self._lock_path, e)
 
         # 3. Remove the lock file
         try:
             self._lock_path.unlink(missing_ok=True)
             log.debug("Released fcntl lock and removed file %s", self._lock_path)
-        except Exception as e:
+        except OSError as e:
+            # Only catch OS-level errors from unlink (e.g. permission issues);
+            # allow other unexpected exceptions to propagate.
             log.warning(f"Failed to remove lock file {self._lock_path}: {e}")
 
         self._handle = None
