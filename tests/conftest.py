@@ -92,6 +92,7 @@ def context() -> DocBuildContext:
 
 
 # --- Mocking fixtures
+
 class MockEnvConfig(NamedTuple):
     """Named tuple to hold the fake env file and mock."""
 
@@ -158,39 +159,6 @@ def make_path_mock(
 
 
 @pytest.fixture
-def fake_envfile(
-    monkeypatch: pytest.MonkeyPatch,
-    tmp_path: Path,
-) -> Generator[MockEnvConfig, None, None]:
-    """Patch the `docbuild.cli.cli.process_envconfig` function."""
-    mock_path = make_path_mock(
-        '/home/tux',
-        return_values={
-            'exists': True,
-            'is_file': True,
-        },
-        side_effects={
-            'read_text': lambda: 'dynamic content',
-        },
-        attributes={
-            'name': 'file.txt',
-        },
-    )
-
-    mock = MagicMock()
-    mock.return_value = mock_path
-
-    monkeypatch.setattr(
-        load_mod,
-        'process_envconfig',
-        mock,
-    )
-
-    with changedir(tmp_path):
-        yield MockEnvConfig(mock_path, mock)
-
-
-@pytest.fixture
 def fake_confiles(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
@@ -207,7 +175,7 @@ def fake_confiles(
             ),
         )
         monkeypatch.setattr(
-            cli,
+            load_mod,
             'load_and_merge_configs',
             mock,
         )
