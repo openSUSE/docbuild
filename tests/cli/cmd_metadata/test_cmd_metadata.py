@@ -158,7 +158,7 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
     doctype = Doctype.from_str('sles/15-sp6/en-us')
 
     # Act
-    with patch('docbuild.cli.cmd_metadata.console_out'):
+    with patch.object(metaprocess_pkg, 'stdout'):
         deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
 
     # Assert
@@ -192,8 +192,7 @@ def test_get_deliverable_from_doctype_no_match(xmlconfig):
     doctype = Doctype.from_str('sles/1.0/en-us')
 
     # Act
-    with patch('docbuild.cli.cmd_metadata.console_out'):
-        # with patch.object(cmd_metadata, 'console_out')
+    with patch.object(metaprocess_pkg, 'stdout'):
         deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
 
     # Assert
@@ -443,13 +442,19 @@ class TestProcessDoctype:
     ):
         """Test successful processing when deliverables are found."""
         doctype = Doctype.from_str('sles/15/en-us')
-        mock_deliverables = [Mock(spec=Deliverable), Mock(spec=Deliverable)]
+        mock_deliverable = Mock(spec=Deliverable)
+        mock_deliverable.git.url = 'gh://SUSE/doc-test'
+        mock_deliverables = [
+            mock_deliverable, mock_deliverable
+        ]
         mock_get_deliverables.return_value = mock_deliverables
         mock_process_deliverable.return_value = True
 
-        result = await process_doctype(mock_root, mock_context, doctype)
+        result = await process_doctype(
+            mock_root, mock_context, doctype, exitfirst=False
+        )
 
-        assert result is True
+        assert not result
         mock_get_deliverables.assert_called_once_with(mock_root, mock_context, doctype)
         assert mock_process_deliverable.call_count == 2
 
@@ -468,7 +473,7 @@ class TestProcessDoctype:
 
         result = await process_doctype(mock_root, mock_context, doctype)
 
-        assert result is True
+        assert not result
         mock_get_deliverables.assert_called_once_with(mock_root, mock_context, doctype)
         mock_process_deliverable.assert_not_called()
 
@@ -543,10 +548,10 @@ class TestProcessEmptyDoctypes:
 
         mock_stitch_node = etree.ElementTree(etree.Element('docservconfig'))
         mock_create_stitchfile.return_value = mock_stitch_node
-        mock_process_doctype.return_value = True
+        mock_process_doctype.return_value = []
 
         # Act and suppress console output during the test
-        with patch.object(metaprocess_pkg, 'console_out'):
+        with patch.object(metaprocess_pkg, 'stdout'):
             result = await process(context, doctypes=tuple())
 
         # Assert
@@ -554,5 +559,5 @@ class TestProcessEmptyDoctypes:
         mock_create_stitchfile.assert_awaited_once()
         default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
         mock_process_doctype.assert_awaited_once_with(
-            mock_stitch_node, context, default_doctype
+            mock_stitch_node, context, default_doctype, exitfirst=False
         )
