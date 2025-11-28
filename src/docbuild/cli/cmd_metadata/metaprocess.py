@@ -157,7 +157,9 @@ async def process_deliverable(
         return False
 
 
-async def update_repositories(deliverables: list[Deliverable], bare_repo_dir: Path) -> bool:
+async def update_repositories(
+    deliverables: list[Deliverable], bare_repo_dir: Path
+) -> bool:
     """Update all Git repositories associated with the deliverables.
 
     :param deliverables: A list of Deliverable objects.
@@ -183,7 +185,8 @@ async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
     doctype: Doctype,
-    exitfirst: bool,
+    *,
+    exitfirst: bool = False,
 ) -> list[Deliverable]:
     """Process the doctypes and create metadata files.
 
@@ -297,7 +300,7 @@ async def process(
     context: DocBuildContext,
     doctypes: tuple[Doctype],
     *,
-    exitfirst: bool,
+    exitfirst: bool=False,
 ) -> int:
     """Asynchronous function to process metadata retrieval.
 
@@ -324,7 +327,7 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt, exitfirst)
+    tasks = [process_doctype(stitchnode, context, dt, exitfirst=exitfirst)
              for dt in doctypes]
     results_per_doctype = await asyncio.gather(*tasks)
 
