@@ -23,7 +23,13 @@ console_err = Console(stderr=True, style='red')
     nargs=-1,
     callback=validate_doctypes,
 )
-@click.option('--exitfirst', is_flag=True, help='Exit on first failed deliverable.')
+@click.option(
+    '--exitfirst',
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help='Exit on first failed deliverable.',
+)
 @click.pass_context
 def metadata(
     ctx: click.Context,
