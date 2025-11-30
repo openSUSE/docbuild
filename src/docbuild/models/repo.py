@@ -14,7 +14,8 @@ class Repo:
     against the repository's abbreviated name (e.g., 'org/repo').
 
     Two Repo objects are considered equal if their derived names are the same,
-    regardless of the original URL (HTTPS vs. SSH).
+    regardless of the original URL (HTTPS vs. SSH). Additionally, the class
+    treats URLs in a case-insensitive manner for hostnames and repository names.
     """
 
     DEFAULT_HOST: ClassVar[str] = 'https://github.com'
@@ -42,7 +43,7 @@ class Repo:
     )
 
     url: str = field(repr=False)
-    """The full URL of the repository."""
+    """The full URL of the repository in lowercase."""
 
     surl: str
     """The shortened URL version of the repository, for example gh://org/repo for
