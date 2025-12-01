@@ -408,3 +408,28 @@ def test_enter_open_eacces_on_fresh_instance(tmp_path):
         with pytest.raises(RuntimeError, match="Cannot acquire lock"):
             with PidFileLock(resource, lock_dir=lock_dir):
                 pass
+
+
+def test_enter_flock_eagain_no_handle(tmp_path):
+    """
+    Simulate EAGAIN/EWOULDBLOCK being raised when 'handle' is None to hit the
+    'if handle: handle.close()' branch where 'handle' is None.
+    """
+
+    resource = tmp_path / 'resource.txt'
+    lock_dir = tmp_path / 'locks'
+
+    # Mock open to return a handle
+    real_handle = open(tmp_path / 'lockfile.tmp', 'w+')
+
+    # Using two mocks: one for open to succeed, one for flock to fail.
+    # Patch 'open' in a way that allows controlling the assignment of 'handle'.
+
+    # Simulate open failing with EAGAIN directly, which also forces 'handle' to be None.
+    def fake_open_with_eagain(*args, **kwargs):
+        raise OSError(errno.EAGAIN, 'Simulated open error matching flock failure')
+
+    with patch.object(pidlock_mod, 'open', fake_open_with_eagain):
+        with pytest.raises(LockAcquisitionError, match='Resource is locked'):
+            with PidFileLock(resource, lock_dir=lock_dir):
+                pass
