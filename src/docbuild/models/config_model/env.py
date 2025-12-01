@@ -124,8 +124,7 @@ class Env_TmpPaths(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
 
-    # Renamed from tmp_base_path to tmp_base_dir to match config input
-    tmp_base_dir: EnsureWritableDirectory = Field( 
+    tmp_base_dir: EnsureWritableDirectory = Field(
         title="Temporary Base Directory",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
@@ -136,6 +135,7 @@ class Env_TmpPaths(BaseModel):
         title="General Temporary Path for specific server",
         description="A general-purpose subdirectory within the base temporary path to distinguish between different servers.",
         examples=["/var/tmp/docbuild/doc-example-com"],
+        alias='tmp_dir', 
     )
     "General temporary path."
     
@@ -143,10 +143,11 @@ class Env_TmpPaths(BaseModel):
         title="Temporary Deliverable Path",
         description="The directory where deliverable repositories are cloned and processed.",
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
+        alias='tmp_deliverable_dir', 
     )
     "Path for temporary deliverable clones."
 
-    tmp_build_dir: EnsureWritableDirectory = Field(
+    tmp_build_dir: str = Field(
         title="Temporary Build Directory",
         description="Temporary directory for intermediate files (contains placeholders).",
         examples=["/var/tmp/docbuild/doc-example-com/build/{{product}}-{{docset}}-{{lang}}"],
@@ -157,6 +158,7 @@ class Env_TmpPaths(BaseModel):
         title="Temporary Output Path",
         description="The final temporary directory where built artifacts land before deployment.",
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
+        alias='tmp_out_dir', 
     )
     "Temporary final output path."
 
@@ -164,6 +166,7 @@ class Env_TmpPaths(BaseModel):
         title="Log Path",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
+        alias='log_dir', 
     )
     "Path for log files."
 
@@ -184,12 +187,14 @@ class Env_TargetPaths(BaseModel):
         title="Target Server Deployment Path",
         description="The final remote destination for the built documentation",
         examples=["doc@10.100.100.100:/srv/docs"],
+        alias='target_dir', 
     )
     "The destination path for final built documentation."
 
     backup_path: Path = Field(
         title="Build Server Path",
         description="The location on the build server before it is synced to the target path.",
+        alias='backup_dir', 
     )
     "Path for backups."
 
