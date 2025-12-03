@@ -1,7 +1,7 @@
 """CLI interface to showsthe configuration of the environment files."""
 
 import click
-from rich import print  # noqa: A004
+from rich import print 
 from rich.pretty import Pretty
 
 
@@ -14,6 +14,15 @@ def env(ctx: click.Context) -> None:
 
     :param ctx: The Click context object.
     """
-    path = ', '.join(str(path) for path in ctx.obj.envconfigfiles)
+
+    # Check if envconfigfiles is None (which it is when the default config is used)
+    if ctx.obj.envconfigfiles is None:
+        path = '(Default configuration used)'
+    else:
+        path = ', '.join(str(path) for path in ctx.obj.envconfigfiles)
+        
     click.secho(f"# ENV Config file '{path}'", fg='blue')
-    print(Pretty(ctx.obj.envconfig, expand_all=True))
+    
+    serialized_config = ctx.obj.envconfig.model_dump()
+    
+    print(Pretty(serialized_config, expand_all=True))
