@@ -14,6 +14,7 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.logging.register_background_thread
    docbuild.logging.create_base_log_dir
    docbuild.logging.setup_logging
 
@@ -21,23 +22,18 @@ Functions
 Module Contents
 ---------------
 
+.. py:function:: register_background_thread(thread: threading.Thread)
+
+   Register a thread to be joined on logging shutdown.
+
+
 .. py:function:: create_base_log_dir(base_log_dir: str | pathlib.Path = BASE_LOG_DIR) -> pathlib.Path
 
    Create the base log directory if it doesn't exist.
-
-   This directory is typically located at :file:`~/.local/state/docbuild/logs`
-   as per the XDG Base Directory Specification.
-
-   :param base_log_dir: The base directory where logs should be stored.
-       Considers the `XDG_STATE_HOME` environment variable if set.
-   :return: The path to the base log directory.
 
 
 .. py:function:: setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) -> None
 
    Sets up a non-blocking, configurable logging system.
-
-   :param cliverbosity: ...
-   :param user_config: ...
 
 

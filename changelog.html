@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; docbuild 0.13.0 documentation</title>
+    <title>Change Log &#8212; docbuild 0.14.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=1019fba8"></script>
+    <script src="_static/documentation_options.js?v=9e420a66"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Glossary" href="glossary.html" />
-    <link rel="prev" title="docbuild.utils.pidlock.PidFileLock" href="reference/_autoapi/docbuild/utils/pidlock/PidFileLock.html" />
+    <link rel="prev" title="docbuild.utils.shell" href="reference/_autoapi/docbuild/utils/shell/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -452,10 +452,65 @@
 and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
 <a class="reference external" href="https://github.com/openSUSE/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
-<section id="version-0-13-0">
-<h2>Version 0.13.0<a class="headerlink" href="#version-0-13-0" title="Link to this heading">#</a></h2>
+<section id="version-0-14-0">
+<h2>Version 0.14.0<a class="headerlink" href="#version-0-14-0" title="Link to this heading">#</a></h2>
+<section id="bug-fixes">
+<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<ul>
+<li><p>Fixes incorrect jing command arguments in validate_rng function. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/80">GH #80</a>)</p></li>
+<li><p>Fixed a bug where <cite>INFO</cite> and <cite>DEBUG</cite> level logs were not written to the log file. The logging system is now non-blocking and fully configurable via <cite>pyproject.toml</cite>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/83">GH #83</a>)</p></li>
+<li><p>Fix regression in lock files (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/93">GH #93</a>)</p></li>
+<li><p>GHA: Test for different Python versions (3.12 and 3.13) (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/94">GH #94</a>)</p></li>
+<li><p>The application now features comprehensive validation for the Environment Configuration (<cite>env.toml</cite>) using Pydantic. This ensures all configuration files strictly adhere to the required schema, enforcing correct data types for fields (for example, paths, URLs, network addresses) and immediately catching errors like missing keys or incorrect values. This change stabilizes the configuration loading process and eliminates runtime errors caused by misconfigured environments. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/101">GH #101</a>)</p></li>
+<li><p>Fix case sensitivity in <a class="reference internal" href="reference/_autoapi/docbuild/models/repo/Repo.html#docbuild.models.repo.Repo" title="docbuild.models.repo.Repo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code></a> handling.</p>
+<p>Previously, the model treated URLs with different casing (e.g., <code class="docutils literal notranslate"><span class="pre">github.com</span></code>
+vs <code class="docutils literal notranslate"><span class="pre">GitHub.com</span></code>) as unequal. This commit normalizes URLs to ensure that
+casing differences do not result in duplicate or distinct records for the
+same repository. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/107">GH #107</a>)</p>
+</li>
+</ul>
+</section>
 <section id="improved-documentation">
 <h3>Improved Documentation<a class="headerlink" href="#improved-documentation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Explain project overview of files and directories (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/74">GH #74</a>)</p></li>
+<li><p>Add new examples to improves the documentation for the docbuild build command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/81">GH #81</a>)</p></li>
+</ul>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Display current Python version when calling <strong class="command">docbuild --version</strong> (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/70">GH #70</a>)</p></li>
+<li><p>Support additional RNG validation with lxml. This provides an alternative when jing is not available or preferred. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/79">GH #79</a>)</p></li>
+<li><p>Implemented concurrency control to prevent multiple <cite>docbuild</cite> instances from running simultaneously using the same environment configuration file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/89">GH #89</a>)</p></li>
+<li><p>Implemented strict Pydantic validation for the Application Configuration (AppConfig), including a precise, nested schema for all logging parameters (formatters, handlers, loggers). This prevents runtime errors due to configuration typos and ensures data integrity at startup. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/91">GH #91</a>)</p></li>
+<li><p>Centralize Git and shell operations for better code reuse across modules (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/99">GH #99</a>)</p></li>
+</ul>
+</section>
+<section id="infrastructure">
+<h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Added macOS to the test CI workflow. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/76">GH #76</a>)</p></li>
+<li><p>Added a check to the release workflow to ensure the branch version matches the code’s __version__ string. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/86">GH #86</a>)</p></li>
+<li><p>Aligned the ‘uv’ setup in the CI workflow for macOS and Ubuntu to ensure consistent and reliable dependency management across platforms. This resolves a ‘docker: command not found’ error on the macOS runner. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/87">GH #87</a>)</p></li>
+</ul>
+</section>
+<section id="code-refactoring">
+<h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Refactor <a class="reference internal" href="reference/_autoapi/docbuild/models/lifecycle/LifecycleFlag.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a>.
+Dynamically created class didn’t work well with VSCode and
+attribute access. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/53">GH #53</a>)</p></li>
+<li><p>Rename cli command test directories to make it consistent with the
+<code class="file docutils literal notranslate"><span class="pre">src/docbuild/cli</span></code> directory. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/73">GH #73</a>)</p></li>
+<li><p>Refactored the <a class="reference internal" href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageCode</span></code></a> model to be more idiomatic to Pydantic by removing a custom <code class="docutils literal notranslate"><span class="pre">__init__</span></code> initializer and using a <code class="xref py py-meth docutils literal notranslate"><span class="pre">model_validator()</span></code> method for string parsing. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/85">GH #85</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-13-0">
+<h2>Version 0.13.0<a class="headerlink" href="#version-0-13-0" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h3>Improved Documentation<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add instructions how to install VSCode editor (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/56">GH #56</a>)</p></li>
 <li><p>Clarify some steps when creating a release. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/59">GH #59</a>)</p></li>
@@ -472,15 +527,15 @@ Sphinx, <code class="docutils literal notranslate"><span class="pre">jing</span>
 <li><p>Add new topic about creating pull requests (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/71">GH #71</a>)</p></li>
 </ul>
 </section>
-<section id="infrastructure">
-<h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3>Infrastructure<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Use openSUSE image for GH Action (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/65">GH #65</a>)</p></li>
 <li><p>Fix docker build/push with lowercase GH repo (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/66">GH #66</a>)</p></li>
 </ul>
 </section>
-<section id="code-refactoring">
-<h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>Code Refactoring<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">docbuild.cli.config</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">docbuild.cli.cmd_config</span></code> to
 make it consistent with other CLI commands. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/57">GH #57</a>)</p></li>
@@ -489,22 +544,22 @@ make it consistent with other CLI commands. (<a class="extlink-gh reference exte
 </section>
 <section id="version-0-12-0">
 <h2>Version 0.12.0<a class="headerlink" href="#version-0-12-0" title="Link to this heading">#</a></h2>
-<section id="bug-fixes">
-<h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Bug Fixes<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix result of <code class="docutils literal notranslate"><span class="pre">process_doctype</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/51">GH #51</a>)</p></li>
 <li><p>Correct <code class="docutils literal notranslate"><span class="pre">log.error</span></code> call with arguments (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/52">GH #52</a>)</p></li>
 </ul>
 </section>
-<section id="id1">
-<h3>Improved Documentation<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Improved Documentation<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improve user documentation.
 Move “XML configuration” section to user guide. Also change title, set an anchor, and make it clear why we need that. Revise “Configuring the Tool” section. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/47">GH #47</a>)</p></li>
 </ul>
 </section>
-<section id="features">
-<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Features<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implement metadata from a <code class="docutils literal notranslate"><span class="pre">daps</span> <span class="pre">metadata</span></code> command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/16">GH #16</a>)</p></li>
 <li><p>Add new context manager <a class="reference internal" href="reference/_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory.html#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" title="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">PersistentOnErrorTemporaryDirectory</span></code></a>.
@@ -517,15 +572,15 @@ Now it’s allowed to write instead of <code class="docutils literal notranslate
 </section>
 <section id="version-0-11-0">
 <h2>Version 0.11.0<a class="headerlink" href="#version-0-11-0" title="Link to this heading">#</a></h2>
-<section id="id2">
-<h3>Bug Fixes<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>Bug Fixes<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix #26 and add missing checks for references in stitchfile (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/41">GH #41</a>)</p></li>
 <li><p>Make keys in TOML env file consistent (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/43">GH #43</a>)</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Improved Documentation<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>Improved Documentation<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improve developer documentation</p>
 <ul>
@@ -552,8 +607,8 @@ Now it’s allowed to write instead of <code class="docutils literal notranslate
 <li><p>Rename <code class="docutils literal notranslate"><span class="pre">issue</span></code> macro to <code class="docutils literal notranslate"><span class="pre">gh</span></code></p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Infrastructure<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Infrastructure<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improve release workflow (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/45">GH #45</a>)</p></li>
 </ul>
@@ -561,8 +616,8 @@ Now it’s allowed to write instead of <code class="docutils literal notranslate
 </section>
 <section id="version-0-10-0">
 <h2>Version 0.10.0<a class="headerlink" href="#version-0-10-0" title="Link to this heading">#</a></h2>
-<section id="id5">
-<h3>Bug Fixes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Bug Fixes<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Replace placeholders in <strong class="command">cli</strong> main command. This ensures that the placeholders in the environment or application configuration are replaced before the subcommands are executed. This is necessary because the subcommands might rely on these placeholders being resolved. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/20">GH #20</a>)</p></li>
 <li><p>Correctly convert <code class="docutils literal notranslate"><span class="pre">'*'</span></code> for products in <code class="xref py py-func docutils literal notranslate"><span class="pre">docbuild.model.doctype.Doctype.xpath()</span></code></p>
@@ -571,14 +626,14 @@ additional and unnecessary <code class="docutils literal notranslate"><span clas
 </li>
 </ul>
 </section>
-<section id="id6">
-<h3>Improved Documentation<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>Improved Documentation<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Docs: Improve development and user docs (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/18">GH #18</a>)</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3>Features<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Features<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Implement cloning of Git repositories</p>
 <p>All repos are “bare” clones, meaning they do not have a working directory.
@@ -596,8 +651,8 @@ This is useful for debugging and manual operations.</p></li>
 <li><p>Support <code class="docutils literal notranslate"><span class="pre">.xpath</span></code> method in <code class="xref py py-class docutils literal notranslate"><span class="pre">Doctype</span></code> (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/23">GH #23</a>)</p></li>
 </ul>
 </section>
-<section id="id8">
-<h3>Code Refactoring<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Code Refactoring<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Introduce new <code class="file docutils literal notranslate"><span class="pre">callback.py</span></code> file to separate <code class="xref py py-func docutils literal notranslate"><span class="pre">validate_doctypes()</span></code> function from the build command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/19">GH #19</a>)</p></li>
 <li><p>Refactor subcommands into packages (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/30">GH #30</a>)</p></li>
@@ -606,8 +661,8 @@ This is useful for debugging and manual operations.</p></li>
 </section>
 <section id="version-0-9-0">
 <h2>Version 0.9.0<a class="headerlink" href="#version-0-9-0" title="Link to this heading">#</a></h2>
-<section id="id9">
-<h3>Bug Fixes<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Bug Fixes<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Fix problem in logging test</p>
 <p>The test suite reported a ValueError with I/O operations on closed files.
@@ -615,14 +670,14 @@ The fix ensures that we clean all handlers before and after the respective test.
 </li>
 </ul>
 </section>
-<section id="id10">
-<h3>Improved Documentation<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id15">
+<h3>Improved Documentation<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Extend design chapter</p></li>
 </ul>
 </section>
-<section id="id11">
-<h3>Features<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Features<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Implement <strong class="command">validate</strong> subcommand</p>
 <p>This subcommand is used to validate XML configuration files against a RelaxNG schema. It checks both the structure and semantic correctness of the XML files to ensure they conform to the expected format. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/5">GH #5</a>)</p>
@@ -630,8 +685,8 @@ The fix ensures that we clean all handlers before and after the respective test.
 <li><p>Implement a timer contextmanager factory in <a class="reference internal" href="reference/_autoapi/docbuild/utils/contextmgr/index.html#docbuild.utils.contextmgr.make_timer" title="docbuild.utils.contextmgr.make_timer"><code class="xref py py-func docutils literal notranslate"><span class="pre">docbuild.utils.contextmgr.make_timer()</span></code></a>.</p></li>
 </ul>
 </section>
-<section id="id12">
-<h3>Infrastructure<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Infrastructure<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Create issue templates for bug report, feature request, and
 documentation update. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/6">GH #6</a>)</p></li>
@@ -650,8 +705,8 @@ from helper files (like <code class="file docutils literal notranslate"><span cl
 Add new alias <strong class="command">towncrier</strong> (see <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code>).</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>Code Refactoring<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>Code Refactoring<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Refactor <code class="docutils literal notranslate"><span class="pre">replace_placeholders()</span></code> function</p>
 <ul>
@@ -674,8 +729,8 @@ This is now changed to <code class="docutils literal notranslate"><span class="p
 </li>
 </ul>
 </section>
-<section id="id14">
-<h3>Features<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3>Features<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add new list_all_deliverables for XML files</p>
 <p>Generator to yield all deliverables in XML format.</p>
@@ -695,8 +750,8 @@ XPath, and Git.</p>
 </section>
 <section id="version-0-7-0">
 <h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Link to this heading">#</a></h2>
-<section id="id15">
-<h3>Improved Documentation<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h3>Improved Documentation<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add first docbuild documentation</p>
 <ul>
@@ -713,8 +768,8 @@ documentation standard</p></li>
 </li>
 </ul>
 </section>
-<section id="id16">
-<h3>Features<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id21">
+<h3>Features<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implement Deliverable &amp; Metadata classes</p>
 <ul>
@@ -727,8 +782,8 @@ an interface to extract important values from the XML config</p></li>
 </li>
 </ul>
 </section>
-<section id="id17">
-<h3>Infrastructure<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id22">
+<h3>Infrastructure<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Add missing license file (GPL-3.0-or-later)</p></li>
 <li><p>Add py.typed in project and pyproject.toml</p></li>
@@ -765,12 +820,12 @@ these are renamed:</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="reference/_autoapi/docbuild/utils/pidlock/PidFileLock.html"
+       href="reference/_autoapi/docbuild/utils/shell/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.utils.pidlock.PidFileLock</p>
+        <p class="prev-next-title">docbuild.utils.shell</p>
       </div>
     </a>
     <a class="right-next"
@@ -801,48 +856,56 @@ these are renamed:</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-13-0">Version 0.13.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-14-0">Version 0.14.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-documentation">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-refactoring">Code Refactoring</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-12-0">Version 0.12.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-13-0">Version 0.13.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Code Refactoring</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-12-0">Version 0.12.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Bug Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Features</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-11-0">Version 0.11.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Bug Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Bug Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Infrastructure</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-10-0">Version 0.10.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Bug Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Code Refactoring</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Bug Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Code Refactoring</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-9-0">Version 0.9.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Bug Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Infrastructure</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Code Refactoring</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Bug Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Code Refactoring</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-8-0">Version 0.8.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#breaking-changes">Breaking Changes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">Features</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-7-0">Version 0.7.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Improved Documentation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Infrastructure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">Improved Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
 </ul>
 </li>

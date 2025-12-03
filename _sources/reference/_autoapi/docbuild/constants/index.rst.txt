@@ -84,10 +84,9 @@ Module Contents
 
 
 .. py:data:: ALLOWED_LIFECYCLES
-   :value: ('supported', 'beta', 'hidden', 'unsupported')
+   :type:  tuple[str]
 
-
-   The available lifecycle states for a docset.
+   The available lifecycle states for a docset (without 'unknown').
 
 
 .. py:data:: VALID_PRODUCTS
@@ -177,7 +176,7 @@ Module Contents
 
 .. py:data:: BASE_STATE_DIR
 
-   The directory where application state, logs, and locks are stored, 
+   The directory where application state, logs, and locks are stored,
    per XDG Base Directory Specification.
 
 

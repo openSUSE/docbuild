@@ -15,7 +15,6 @@ Functions
 .. autoapisummary::
 
    docbuild.cli.cmd_validate.process.display_results
-   docbuild.cli.cmd_validate.process.run_command
    docbuild.cli.cmd_validate.process.validate_rng
    docbuild.cli.cmd_validate.process.validate_rng_lxml
    docbuild.cli.cmd_validate.process.run_python_checks
@@ -34,18 +33,6 @@ Module Contents
    :param check_results: List of tuples containing check names and their results.
    :param verbose: Verbosity level (0, 1, 2)
    :param max_len: Maximum length for formatting the output.
-
-
-.. py:function:: run_command(*args: str, env: dict[str, str] | None = None) -> tuple[int, str, str]
-   :async:
-
-
-   Run an external command and capture its output.
-
-   :param args: The command and its arguments separated as tuple elements.
-   :param env: A dictionary of environment variables for the new process.
-   :return: A tuple of (returncode, stdout, stderr).
-   :raises FileNotFoundError: if the command is not found.
 
 
 .. py:function:: validate_rng(xmlfile: pathlib.Path, rng_schema_path: pathlib.Path = PRODUCT_CONFIG_SCHEMA, *, xinclude: bool = True, idcheck: bool = True) -> tuple[bool, str]

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.lifecycle &#8212; docbuild 0.13.0 documentation</title>
+    <title>docbuild.models.lifecycle &#8212; docbuild 0.14.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=1019fba8"></script>
+    <script src="../../../../../_static/documentation_options.js?v=9e420a66"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,7 +50,7 @@
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.models.lifecycle.BaseLifecycleFlag" href="BaseLifecycleFlag.html" />
+    <link rel="next" title="docbuild.models.lifecycle.LifecycleFlag" href="LifecycleFlag.html" />
     <link rel="prev" title="docbuild.models.language.LanguageCode" href="../language/LanguageCode.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -447,6 +447,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../config_model/index.html">docbuild.models.config_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../config_model/app/index.html">docbuild.models.config_model.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config_model/env/index.html">docbuild.models.config_model.env</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
@@ -460,11 +465,15 @@
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.models.lifecycle</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -493,12 +502,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/LockAcquisitionError.html">docbuild.utils.pidlock.LockAcquisitionError</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/shell/index.html">docbuild.utils.shell</a></li>
 </ul>
 </details></li>
 </ul>
@@ -572,38 +587,18 @@
   <section id="module-docbuild.models.lifecycle">
 <span id="docbuild-models-lifecycle"></span><h1>docbuild.models.lifecycle<a class="headerlink" href="#module-docbuild.models.lifecycle" title="Link to this heading">#</a></h1>
 <p>Lifecycle model for docbuild.</p>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a></p></td>
-<td><p>LifecycleFlag represents the lifecycle of a product.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 </div>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="BaseLifecycleFlag.html#docbuild.models.lifecycle.BaseLifecycleFlag" title="docbuild.models.lifecycle.BaseLifecycleFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseLifecycleFlag</span></code></a></p></td>
-<td><p>Base class for LifecycleFlag.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="LifecycleFlag.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a></p></td>
+<td><p>LifecycleFlag represents the lifecycle of a product.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-</section>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.models.lifecycle.LifecycleFlag">
-<span class="sig-prename descclassname"><span class="pre">docbuild.models.lifecycle.</span></span><span class="sig-name descname"><span class="pre">LifecycleFlag</span></span><a class="headerlink" href="#docbuild.models.lifecycle.LifecycleFlag" title="Link to this definition">#</a></dt>
-<dd><p>LifecycleFlag represents the lifecycle of a product.</p>
-</dd></dl>
-
 </section>
 </section>
 
@@ -627,11 +622,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="BaseLifecycleFlag.html"
+       href="LifecycleFlag.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.lifecycle.BaseLifecycleFlag</p>
+        <p class="prev-next-title">docbuild.models.lifecycle.LifecycleFlag</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -654,12 +649,7 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.lifecycle.LifecycleFlag"><code class="docutils literal notranslate"><span class="pre">LifecycleFlag</span></code></a></li>
-</ul>
-</li>
 </ul>
   </nav></div>
 

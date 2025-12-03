@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.app.CircularReferenceError &#8212; docbuild 0.13.0 documentation</title>
+    <title>docbuild.config.app.CircularReferenceError &#8212; docbuild 0.14.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=1019fba8"></script>
+    <script src="../../../../../_static/documentation_options.js?v=9e420a66"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -447,6 +447,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/config_model/index.html">docbuild.models.config_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/app/index.html">docbuild.models.config_model.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/env/index.html">docbuild.models.config_model.env</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
@@ -460,11 +465,15 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -493,12 +502,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/LockAcquisitionError.html">docbuild.utils.pidlock.LockAcquisitionError</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/shell/index.html">docbuild.utils.shell</a></li>
 </ul>
 </details></li>
 </ul>

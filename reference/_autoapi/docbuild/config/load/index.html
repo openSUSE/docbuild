@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.load &#8212; docbuild 0.13.0 documentation</title>
+    <title>docbuild.config.load &#8212; docbuild 0.14.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=1019fba8"></script>
+    <script src="../../../../../_static/documentation_options.js?v=9e420a66"></script>
     <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -447,6 +447,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/config_model/index.html">docbuild.models.config_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/app/index.html">docbuild.models.config_model.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/config_model/env/index.html">docbuild.models.config_model.env</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
@@ -460,11 +465,15 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/BaseLifecycleFlag.html">docbuild.models.lifecycle.BaseLifecycleFlag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../models/lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../models/path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../models/path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -493,12 +502,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/merge/index.html">docbuild.utils.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/paths/index.html">docbuild.utils.paths</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/LockAcquisitionError.html">docbuild.utils.pidlock.LockAcquisitionError</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/shell/index.html">docbuild.utils.shell</a></li>
 </ul>
 </details></li>
 </ul>
@@ -576,16 +591,13 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.load.process_envconfig" title="docbuild.config.load.process_envconfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_envconfig</span></code></a>(→ tuple[pathlib.Path, dict[str, Any]])</p></td>
-<td><p>Process the env config.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.load.load_single_config" title="docbuild.config.load.load_single_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_single_config</span></code></a>(→ dict[str, Any])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.load.load_single_config" title="docbuild.config.load.load_single_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_single_config</span></code></a>(→ dict[str, Any])</p></td>
 <td><p>Load a single TOML config file and return its content.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.load.load_and_merge_configs" title="docbuild.config.load.load_and_merge_configs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_and_merge_configs</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.load.load_and_merge_configs" title="docbuild.config.load.load_and_merge_configs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_and_merge_configs</span></code></a>(...)</p></td>
 <td><p>Load config files and merge all content regardless of the nesting level.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.load.handle_config" title="docbuild.config.load.handle_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_config</span></code></a>(→ tuple[tuple[pathlib.Path, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.load.handle_config" title="docbuild.config.load.handle_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_config</span></code></a>(→ tuple[tuple[pathlib.Path, ...)</p></td>
 <td><p>Return (config_files, config, from_defaults) for config file handling.</p></td>
 </tr>
 </tbody>
@@ -594,23 +606,6 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.load.process_envconfig">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.load.</span></span><span class="sig-name descname"><span class="pre">process_envconfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">envconfigfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.load.process_envconfig" title="Link to this definition">#</a></dt>
-<dd><p>Process the env config.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>envconfigfile</strong> – Path to the env TOML config file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Tuple of the env config file path and the config object.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If neither envconfigfile nor role is provided.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.config.load.load_single_config">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.load.</span></span><span class="sig-name descname"><span class="pre">load_single_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">configfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.load.load_single_config" title="Link to this definition">#</a></dt>
@@ -649,7 +644,7 @@ in the paths</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the found config files and the merged dictionary</p>
+<dd class="field-even"><p>the found config files and the merged dictionary (raw dict)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -658,6 +653,8 @@ in the paths</p></li>
 <dt class="sig sig-object py" id="docbuild.config.load.handle_config">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.load.</span></span><span class="sig-name descname"><span class="pre">handle_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_dirs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basenames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.load.handle_config" title="Link to this definition">#</a></dt>
 <dd><p>Return (config_files, config, from_defaults) for config file handling.</p>
+<p>Note: The returned configuration is the <strong>raw loaded dictionary</strong>. No
+placeholder replacement or validation has been performed on it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -736,7 +733,6 @@ configuration is provided.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.process_envconfig"><code class="docutils literal notranslate"><span class="pre">process_envconfig()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.load_single_config"><code class="docutils literal notranslate"><span class="pre">load_single_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.load_and_merge_configs"><code class="docutils literal notranslate"><span class="pre">load_and_merge_configs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.load.handle_config"><code class="docutils literal notranslate"><span class="pre">handle_config()</span></code></a></li>

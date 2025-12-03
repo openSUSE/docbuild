@@ -125,7 +125,7 @@ docbuild.models.doctype.Doctype
 
 
 
-   .. py:method:: coerce_lifecycle(value: str | docbuild.models.lifecycle.LifecycleFlag) -> docbuild.models.lifecycle.BaseLifecycleFlag
+   .. py:method:: coerce_lifecycle(value: str | docbuild.models.lifecycle.LifecycleFlag) -> docbuild.models.lifecycle.LifecycleFlag
       :classmethod:
 
 

@@ -14,7 +14,6 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.config.load.process_envconfig
    docbuild.config.load.load_single_config
    docbuild.config.load.load_and_merge_configs
    docbuild.config.load.handle_config
@@ -22,15 +21,6 @@ Functions
 
 Module Contents
 ---------------
-
-.. py:function:: process_envconfig(envconfigfile: str | pathlib.Path | None) -> tuple[pathlib.Path, dict[str, Any]]
-
-   Process the env config.
-
-   :param envconfigfile: Path to the env TOML config file.
-   :return: Tuple of the env config file path and the config object.
-   :raise ValueError: If neither envconfigfile nor role is provided.
-
 
 .. py:function:: load_single_config(configfile: str | pathlib.Path) -> dict[str, Any]
 
@@ -55,12 +45,15 @@ Module Contents
    :param defaults: a sequence of base filenames (without path!) to look for
                     in the paths
    :param paths: the paths to look for config files (without the filename!)
-   :return: the found config files and the merged dictionary
+   :return: the found config files and the merged dictionary (raw dict)
 
 
 .. py:function:: handle_config(user_path: pathlib.Path | str | None, search_dirs: collections.abc.Iterable[str | pathlib.Path], basenames: collections.abc.Iterable[str] | None, default_filename: str | None = None, default_config: object | None = None) -> tuple[tuple[pathlib.Path, Ellipsis] | None, object | dict, bool]
 
    Return (config_files, config, from_defaults) for config file handling.
+
+   Note: The returned configuration is the **raw loaded dictionary**. No
+   placeholder replacement or validation has been performed on it.
 
    :param user_path: Path to the user-defined config file, if any.
    :param search_dirs: Iterable of directories to search for config files.

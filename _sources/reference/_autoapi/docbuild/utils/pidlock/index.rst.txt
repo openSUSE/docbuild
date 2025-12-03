@@ -9,6 +9,19 @@ docbuild.utils.pidlock
 
 
 
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/pidlock/LockAcquisitionError
+
+.. autoapisummary::
+
+   docbuild.utils.pidlock.LockAcquisitionError
+
+
 Classes
 -------
 
