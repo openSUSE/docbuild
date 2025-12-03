@@ -146,6 +146,14 @@ class Env_TmpPaths(BaseModel):
         alias='tmp_deliverable_dir', 
     )
     "Path for temporary deliverable clones."
+    
+    tmp_metadata_dir: EnsureWritableDirectory = Field(
+        title="Temporary Metadata Directory",
+        description="Temporary directory for metadata files.",
+        examples=["/var/tmp/docbuild/doc-example-com/metadata"],
+    )
+    "Temporary metadata directory."
+
 
     tmp_build_dir: str = Field(
         title="Temporary Build Directory",
@@ -211,6 +219,27 @@ class Env_PathsConfig(BaseModel):
     )
     "Path to configuration files."
 
+    root_config_dir: Path = Field(
+        title="Root Configuration Directory",
+        description="The highest-level configuration directory containing common configuration files.",
+        examples=["/etc/docbuild"],
+    )
+    "Path to the root configuration files."
+
+    jinja_dir: Path = Field(
+        title="Jinja Template Directory",
+        description="Directory containing environment-specific Jinja templates.",
+        examples=["/etc/docbuild/jinja-doc-suse-com"],
+    )
+    "Path for Jinja templates."
+
+    server_rootfiles_dir: Path = Field(
+        title="Server Root Files Directory",
+        description="Directory for files that should be placed in the root of the server deployment.",
+        examples=["/etc/docbuild/server-root-files-doc-suse-com"],
+    )
+    "Path for server root files."
+    
     repo_dir: Path = Field(
         title="Permanent Repository Directory",
         description="The directory where permanent bare Git repositories are stored.",
@@ -232,12 +261,26 @@ class Env_PathsConfig(BaseModel):
     )
     "Base path for all caches."
 
+    base_server_cache_dir: Path = Field(
+        title="Base Server Cache Directory",
+        description="The base directory for server-specific caches.",
+        examples=["/var/cache/docserv/doc-example-com"],
+    )
+    "Base path for server caches."
+
     meta_cache_dir: Path = Field(
         title="Metadata Cache Directory",
         description="Cache directory specifically for repository and deliverable metadata.",
         examples=["/var/cache/docbuild/doc-example-com/meta"],
     )
     "Metadata cache path."
+
+    base_tmp_dir: EnsureWritableDirectory = Field(
+        title="Base Temporary Directory (System Wide)",
+        description="The root directory for all temporary artifacts (used for placeholder resolution).",
+        examples=["/var/tmp/docbuild"],
+    )
+    "Base system temporary path."
 
     tmp: Env_TmpPaths
     "Temporary build paths."
@@ -276,7 +319,7 @@ class EnvConfig(BaseModel):
     )
     "Build process settings."
 
-    xslt_params: dict[str, str | int] = Field(
+    xslt_params: dict[str, Any] = Field( 
         default_factory=dict,
         alias='xslt-params',
         title="XSLT Parameters",
