@@ -4,7 +4,7 @@ from copy import deepcopy
 from typing import Any, Self, Annotated, Literal 
 from pathlib import Path
 
-from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict
+from pydantic import BaseModel, Field, HttpUrl, IPvAnyAddress, model_validator, ConfigDict, field_serializer 
 
 from ...config.app import replace_placeholders
 from ...config.app import CircularReferenceError, PlaceholderResolutionError
@@ -117,6 +117,18 @@ class Env_GeneralConfig(BaseModel):
         examples=["https://docs.example.com"],
     )
     "The canonical domain for URLs."
+
+    # --- NEW: Custom Serialization for LanguageCode Models ---
+    @field_serializer('default_lang')
+    def serialize_default_lang(self, lang_obj: LanguageCode) -> str:
+        """Serializes the LanguageCode model back to a simple string (e.g., 'en-us')."""
+        # Assumes LanguageCode has a 'language' attribute containing the full code.
+        return lang_obj.language
+
+    @field_serializer('languages')
+    def serialize_languages(self, lang_list: list[LanguageCode]) -> list[str]:
+        """Serializes the list of LanguageCode models back to a list of strings."""
+        return [lang_obj.language for lang_obj in lang_list]
 
 
 class Env_TmpPaths(BaseModel):
