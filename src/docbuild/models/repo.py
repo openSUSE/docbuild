@@ -41,6 +41,8 @@ class Repo:
         r'^(?P<abbr>[a-z]{2,4}):/{1,2}(?P<repo>.+?)(?:\.git)?$', re.IGNORECASE
     )
 
+    _SCHEMA_PATTERN: ClassVar[re.Pattern] = re.compile(r'(?P<schema>https?)://')
+
     url: str = field(repr=False)
     """The full URL of the repository."""
 
@@ -68,6 +70,7 @@ class Repo:
           - ``ghe`` for GitHub Enterprise
         * An abbreviated name like ``org/repo`` which defaults to GitHub.
         """
+        cls = type(self)
         if not value:
             raise ValueError('Repository value cannot be empty.')
 
@@ -77,7 +80,7 @@ class Repo:
         service_match = self._SERVICE_PATTERN.match(value)
         ssh_match = self._SSH_PATTERN.match(value)
 
-        if 'https://' in value or 'http://' in value:
+        if cls._SCHEMA_PATTERN.match(value):
             parsed_original = urlparse(value.lower())
             name = parsed_original.path.strip('/').rsplit('.git', 1)[0]
             url = f'{parsed_original.scheme}://{parsed_original.netloc}/{name}.git'

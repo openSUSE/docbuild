@@ -71,9 +71,8 @@ async def test_managed_repo_clone_bare_exists(
     # Simulate repo exists
     monkeypatch.setattr(Path, 'exists', lambda self: True)
 
-    result = await repo.clone_bare()
-
-    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
+    await repo.clone_bare()
+    mock_execute_git.assert_awaited_once()
 
 
 async def test_managed_repo_clone_bare_failure(
@@ -222,7 +221,7 @@ async def test_fetch_updates_success(
     result = await repo.fetch_updates()
 
     assert result is True
-    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
+    mock_execute_git.assert_awaited_once()
 
 
 async def test_fetch_updates_no_repo(

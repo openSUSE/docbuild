@@ -6,6 +6,7 @@ import math
 import click
 from rich.console import Console
 
+from ...config.app import PlaceholderResolutionError
 from ...models.doctype import Doctype
 from ...utils.contextmgr import make_timer
 from ..callback import validate_doctypes
@@ -13,7 +14,8 @@ from ..context import DocBuildContext
 from .metaprocess import process
 
 # Set up rich consoles for output
-console_out = Console()
+stdout = Console()
+console_err = Console(stderr=True, style='red')
 
 
 @click.command(help=__doc__)
@@ -22,10 +24,18 @@ console_out = Console()
     nargs=-1,
     callback=validate_doctypes,
 )
+@click.option(
+    '--exitfirst',
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help='Exit on first failed deliverable.',
+)
 @click.pass_context
 def metadata(
     ctx: click.Context,
     doctypes: tuple[Doctype],
+    exitfirst: bool,
 ) -> None:
     """Subcommand to create metadata files.
 
@@ -44,9 +54,22 @@ def metadata(
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(process(context, doctypes))
+            result = asyncio.run(
+                process(context, doctypes, exitfirst=exitfirst)
+            )
+
+    except PlaceholderResolutionError as e:
+        log.fatal(e)
+        ctx.exit(10)
+
     finally:
         if t and not math.isnan(t.elapsed):
-            console_out.print(f'Elapsed time {t.elapsed:0.2f}s')
+            stdout.print(f'Elapsed time {t.elapsed:0.2f}s')
 
+    # base_cache_dir_str = context.envconfig.get(
+    #    'paths', {}).get('base_cache_dir', None)
+    meta_cache_dir_str = context.envconfig.get(
+        'paths', {}).get('meta_cache_dir', None)
+    stdout.print(f'Find your files in meta directory: {meta_cache_dir_str}')
+    #
     ctx.exit(result)

@@ -17,14 +17,14 @@ class ManagedGitRepo:
     #: Class variable to indicate the update state of a repo
     _is_updated: ClassVar[dict[Repo, bool]] = {}
 
-    def __init__(self: Self, remote_url: str, permanent_root: Path) -> None:
+    def __init__(self: Self, remote_url: str, rootdir: Path) -> None:
         """Initialize the managed repository.
 
         :param remote_url: The remote URL of the repository.
-        :param permanent_root: The root directory for storing permanent bare clones.
+        :param rootdir: The root directory for storing permanent bare clones.
         """
         self._repo_model = Repo(remote_url)
-        self._permanent_root = permanent_root
+        self._permanent_root = rootdir
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
         # Initialize attribute for output:
@@ -82,7 +82,10 @@ class ManagedGitRepo:
     async def clone_bare(self: Self) -> bool:
         """Clone the remote repository as a bare repository.
 
-        If the repository already exists, it logs a message and returns.
+        If the repository already exists, it updates the repo. Once the repo is
+        updated, its status is stored. Further calls won't update the repo
+        again to maintain a consistent state. This avoids different states betwen
+        different times.
 
         :returns: True if successful, False otherwise.
         """
@@ -148,10 +151,10 @@ class ManagedGitRepo:
             )
             return False
 
-        log.info("Fetching updates for '%s'", self.slug)
+        log.info("Trying to fetch updates for '%s'", self.slug)
         try:
             self.stdout, self.stderr = await execute_git_command(
-                'fetch', '--all', cwd=self.bare_repo_path
+                'fetch', 'origin', 'main:main', cwd=self.bare_repo_path
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True
