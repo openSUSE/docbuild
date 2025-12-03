@@ -15,6 +15,7 @@ from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
+from ...utils.shell import execute_git_command, run_command
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
@@ -102,25 +103,13 @@ async def process_deliverable(
             prefix=f'clone-{prefix}_',
         ) as worktree_dir:
             # 1. Create a temporary clone from the bare repo and checkout a branch.
-            clone_cmd = [
-                'git',
+            await execute_git_command(
                 'clone',
                 '--local',
                 f'--branch={deliverable.branch}',
                 str(bare_repo_path),
                 str(worktree_dir),
-            ]
-            clone_process = await asyncio.create_subprocess_exec(
-                *clone_cmd,
-                stdin=asyncio.subprocess.DEVNULL,
-                stderr=asyncio.subprocess.PIPE,
             )
-            _, stderr = await clone_process.communicate()
-            if clone_process.returncode != 0:
-                # Raise an exception on failure to let the context manager know.
-                raise RuntimeError(
-                    f'Failed to clone {bare_repo_path}: {stderr.decode().strip()}'
-                )
 
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
@@ -133,19 +122,13 @@ async def process_deliverable(
                     output=str(outputdir / deliverable.dcfile),
                 )
             )
-            # stdout.print(f'  command: {cmd}')
-            daps_process = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdin=asyncio.subprocess.DEVNULL,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            _, stderr = await daps_process.communicate()
-            if daps_process.returncode != 0:
+
+            rc, _, stderr = await run_command(*cmd)
+            if rc != 0:
                 # Raise an exception on failure.
                 raise RuntimeError(
                     f'DAPS command {" ".join(cmd)!r} failed for {deliverable.full_id}: '
-                    f'{stderr.decode().strip()}'
+                    f'{stderr}'
                 )
 
         # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
