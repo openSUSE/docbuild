@@ -15,8 +15,8 @@ Functions
 .. autoapisummary::
 
    docbuild.cli.cmd_validate.process.display_results
-   docbuild.cli.cmd_validate.process.run_command
    docbuild.cli.cmd_validate.process.validate_rng
+   docbuild.cli.cmd_validate.process.validate_rng_lxml
    docbuild.cli.cmd_validate.process.run_python_checks
    docbuild.cli.cmd_validate.process.process_file
    docbuild.cli.cmd_validate.process.process
@@ -35,19 +35,7 @@ Module Contents
    :param max_len: Maximum length for formatting the output.
 
 
-.. py:function:: run_command(*args: str, env: dict[str, str] | None = None) -> tuple[int, str, str]
-   :async:
-
-
-   Run an external command and capture its output.
-
-   :param args: The command and its arguments separated as tuple elements.
-   :param env: A dictionary of environment variables for the new process.
-   :return: A tuple of (returncode, stdout, stderr).
-   :raises FileNotFoundError: if the command is not found.
-
-
-.. py:function:: validate_rng(xmlfile: pathlib.Path, rng_schema_path: pathlib.Path = PRODUCT_CONFIG_SCHEMA, *, xinclude: bool = True) -> tuple[bool, str]
+.. py:function:: validate_rng(xmlfile: pathlib.Path, rng_schema_path: pathlib.Path = PRODUCT_CONFIG_SCHEMA, *, xinclude: bool = True, idcheck: bool = True) -> tuple[bool, str]
    :async:
 
 
@@ -58,10 +46,22 @@ Module Contents
    more robust for complex XInclude statements, including those with XPointer.
 
    :param xmlfile: The path to the XML file to validate.
-   :param rng_schema_path: The path to the RELAX NG schema file. It supports
-       both RNC and RNG formats.
+   :param rng_schema_path: The path to the RELAX NG schema file. It supports both RNC and RNG formats.
    :param xinclude: If True, resolve XIncludes with `xmllint` before validation.
+   :param idcheck: If True, perform ID uniqueness checks.
    :return: A tuple containing a boolean success status and any output message.
+
+
+.. py:function:: validate_rng_lxml(xmlfile: pathlib.Path, rng_schema_path: pathlib.Path = PRODUCT_CONFIG_SCHEMA) -> tuple[bool, str]
+
+   Validate an XML file against a RELAX NG (.rng) schema using lxml.
+
+   This function uses lxml.etree.RelaxNG, which supports only the XML syntax
+   of RELAX NG schemas (i.e., .rng files, not .rnc files).
+
+   :param xmlfile: Path to the XML file to validate.
+   :param rng_schema_path: Path to the RELAX NG (.rng) schema file.
+   :return: Tuple of (is_valid: bool, error_message: str)
 
 
 .. py:function:: run_python_checks(tree: lxml.etree._ElementTree) -> list[tuple[str, docbuild.config.xml.checks.CheckResult]]

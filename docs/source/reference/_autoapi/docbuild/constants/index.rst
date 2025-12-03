@@ -35,7 +35,10 @@ Attributes
    docbuild.constants.APP_CONFIG_FILENAME
    docbuild.constants.ENV_CONFIG_FILENAME
    docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME
+   docbuild.constants.BASE_STATE_DIR
+   docbuild.constants.GITLOGGER_NAME
    docbuild.constants.BASE_LOG_DIR
+   docbuild.constants.BASE_LOCK_DIR
    docbuild.constants.XMLDATADIR
 
 
@@ -81,10 +84,9 @@ Module Contents
 
 
 .. py:data:: ALLOWED_LIFECYCLES
-   :value: ('supported', 'beta', 'hidden', 'unsupported')
+   :type:  tuple[str]
 
-
-   The available lifecycle states for a docset.
+   The available lifecycle states for a docset (without 'unknown').
 
 
 .. py:data:: VALID_PRODUCTS
@@ -172,11 +174,27 @@ Module Contents
    used in production.
 
 
+.. py:data:: BASE_STATE_DIR
+
+   The directory where application state, logs, and locks are stored,
+   per XDG Base Directory Specification.
+
+
+.. py:data:: GITLOGGER_NAME
+   :value: 'docbuild.git'
+
+
+   The standardized name for the Git-related logger.
+
+
 .. py:data:: BASE_LOG_DIR
 
-   The directory where log files will be stored, typically at
-   :file:`~/.local/state/docbuild/logs` as recommended by the XDG Base
-   Directory Specification.
+   The directory where log files will be stored.
+
+
+.. py:data:: BASE_LOCK_DIR
+
+   The directory where PID lock files will be stored.
 
 
 .. py:data:: XMLDATADIR

@@ -1,7 +1,7 @@
 docbuild.models.language.LanguageCode
 =====================================
 
-.. py:class:: docbuild.models.language.LanguageCode(language: str, **kwargs: dict[Any, Any])
+.. py:class:: docbuild.models.language.LanguageCode(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 

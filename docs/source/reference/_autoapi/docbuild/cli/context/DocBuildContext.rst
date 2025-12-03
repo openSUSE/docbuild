@@ -95,3 +95,12 @@ docbuild.cli.context.DocBuildContext
       If set, enable debug mode
 
 
+
+   .. py:attribute:: validation_method
+      :type:  str
+      :value: 'jing'
+
+
+      Method used to validate XML files: 'jing' (default) or 'lxml'
+
+

@@ -29,10 +29,12 @@ Functions
 Package Contents
 ----------------
 
-.. py:function:: validate(ctx: click.Context, xmlfiles: tuple | collections.abc.Iterator[pathlib.Path]) -> None
+.. py:function:: validate(ctx: click.Context, xmlfiles: tuple | collections.abc.Iterator[pathlib.Path], validation_method: str) -> None
 
    Subcommand to validate XML configuration files.
 
    :param ctx: The Click context object.
+   :param xmlfiles: XML files to validate, if empty all XMLs in config dir are used.
+   :param validation_method: Validation method to use, 'jing' or 'lxml'.
 
 

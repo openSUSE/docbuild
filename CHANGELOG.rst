@@ -21,6 +21,61 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.14.0
+==============
+
+Bug Fixes
+---------
+
+- Fixes incorrect jing command arguments in validate_rng function. (:gh:`80`)
+- Fixed a bug where `INFO` and `DEBUG` level logs were not written to the log file. The logging system is now non-blocking and fully configurable via `pyproject.toml`. (:gh:`83`)
+- Fix regression in lock files (:gh:`93`)
+- GHA: Test for different Python versions (3.12 and 3.13) (:gh:`94`)
+- The application now features comprehensive validation for the Environment Configuration (`env.toml`) using Pydantic. This ensures all configuration files strictly adhere to the required schema, enforcing correct data types for fields (for example, paths, URLs, network addresses) and immediately catching errors like missing keys or incorrect values. This change stabilizes the configuration loading process and eliminates runtime errors caused by misconfigured environments. (:gh:`101`)
+- Fix case sensitivity in :class:`~docbuild.models.repo.Repo` handling.
+
+  Previously, the model treated URLs with different casing (e.g., ``github.com``
+  vs ``GitHub.com``) as unequal. This commit normalizes URLs to ensure that
+  casing differences do not result in duplicate or distinct records for the
+  same repository. (:gh:`107`)
+
+
+Improved Documentation
+----------------------
+
+- Explain project overview of files and directories (:gh:`74`)
+- Add new examples to improves the documentation for the docbuild build command. (:gh:`81`)
+
+
+Features
+--------
+
+- Display current Python version when calling :command:`docbuild --version` (:gh:`70`)
+- Support additional RNG validation with lxml. This provides an alternative when jing is not available or preferred. (:gh:`79`)
+- Implemented concurrency control to prevent multiple `docbuild` instances from running simultaneously using the same environment configuration file. (:gh:`89`)
+- Implemented strict Pydantic validation for the Application Configuration (AppConfig), including a precise, nested schema for all logging parameters (formatters, handlers, loggers). This prevents runtime errors due to configuration typos and ensures data integrity at startup. (:gh:`91`)
+- Centralize Git and shell operations for better code reuse across modules (:gh:`99`)
+
+
+Infrastructure
+--------------
+
+- Added macOS to the test CI workflow. (:gh:`76`)
+- Added a check to the release workflow to ensure the branch version matches the code's __version__ string. (:gh:`86`)
+- Aligned the 'uv' setup in the CI workflow for macOS and Ubuntu to ensure consistent and reliable dependency management across platforms. This resolves a 'docker: command not found' error on the macOS runner. (:gh:`87`)
+
+
+Code Refactoring
+----------------
+
+- Refactor :class:`~docbuild.models.lifecycle.LifecycleFlag`.
+  Dynamically created class didn't work well with VSCode and
+  attribute access. (:gh:`53`)
+- Rename cli command test directories to make it consistent with the
+  :file:`src/docbuild/cli` directory. (:gh:`73`)
+- Refactored the :class:`~docbuild.models.language.LanguageCode` model to be more idiomatic to Pydantic by removing a custom ``__init__`` initializer and using a :meth:`~docbuild.models.language.LanguageCode.model_validator` method for string parsing. (:gh:`85`)
+
+
 Version 0.13.0
 ==============
 

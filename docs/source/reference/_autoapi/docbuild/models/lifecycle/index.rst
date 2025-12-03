@@ -9,32 +9,16 @@ docbuild.models.lifecycle
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   docbuild.models.lifecycle.LifecycleFlag
-
-
 Classes
 -------
 
 .. toctree::
    :hidden:
 
-   /reference/_autoapi/docbuild/models/lifecycle/BaseLifecycleFlag
+   /reference/_autoapi/docbuild/models/lifecycle/LifecycleFlag
 
 .. autoapisummary::
 
-   docbuild.models.lifecycle.BaseLifecycleFlag
-
-
-Module Contents
----------------
-
-.. py:data:: LifecycleFlag
-
-   LifecycleFlag represents the lifecycle of a product.
+   docbuild.models.lifecycle.LifecycleFlag
 
 

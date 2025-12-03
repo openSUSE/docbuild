@@ -1,6 +1,0 @@
-Fix case sensitivity in :class:`~docbuild.models.repo.Repo` handling.
-
-Previously, the model treated URLs with different casing (e.g., ``github.com``
-vs ``GitHub.com``) as unequal. This commit normalizes URLs to ensure that
-casing differences do not result in duplicate or distinct records for the
-same repository.

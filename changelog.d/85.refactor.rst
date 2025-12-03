@@ -1,1 +1,0 @@
-Refactored the :class:`~docbuild.models.language.LanguageCode` model to be more idiomatic to Pydantic by removing a custom ``__init__`` initializer and using a :meth:`~docbuild.models.language.LanguageCode.model_validator` method for string parsing.

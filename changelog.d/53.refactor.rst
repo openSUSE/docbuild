@@ -1,3 +1,0 @@
-Refactor :class:`~docbuild.models.lifecycle.LifecycleFlag`.
-Dynamically created class didn't work well with VSCode and
-attribute access.

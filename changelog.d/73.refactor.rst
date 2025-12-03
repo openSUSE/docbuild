@@ -1,2 +1,0 @@
-Rename cli command test directories to make it consistent with the
-:file:`src/docbuild/cli` directory.

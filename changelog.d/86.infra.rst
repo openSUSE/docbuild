@@ -1,1 +1,0 @@
-Added a check to the release workflow to ensure the branch version matches the code's __version__ string.

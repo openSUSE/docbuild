@@ -1,1 +1,0 @@
-Support additional RNG validation with lxml. This provides an alternative when jing is not available or preferred.
