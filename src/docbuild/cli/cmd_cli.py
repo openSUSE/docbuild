@@ -1,21 +1,23 @@
 """Main CLI tool for document operations."""
 
+from docbuild.cli.cmd_metadata import stdout
+import logging
 from pathlib import Path
 import sys
-import logging
+from typing import Any, cast
+
 import click
+from pydantic import ValidationError
 import rich.console
 import rich.logging
 from rich.pretty import install
 from rich.traceback import install as install_traceback
-from pydantic import ValidationError
-from typing import Any, cast 
 
 from ..__about__ import __version__
-from ..config.app import replace_placeholders
+from ..config.app import PlaceholderResolutionError, replace_placeholders
 from ..config.load import handle_config
 from ..models.config_model.app import AppConfig
-from ..models.config_model.env import EnvConfig 
+from ..models.config_model.env import EnvConfig
 
 from ..constants import (
     APP_CONFIG_BASENAMES,
@@ -26,7 +28,8 @@ from ..constants import (
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
-from ..utils.pidlock import PidFileLock, LockAcquisitionError
+from ..models.config_model.app import AppConfig
+from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_config import config
@@ -127,9 +130,9 @@ def cli(
     context.verbose = verbose
     context.dry_run = dry_run
     context.debug = debug
-    
+
     # --- PHASE 1: Load and Validate Application Config (and setup logging) ---
-    
+
     # 1. Load the raw application config dictionary
     (
         context.appconfigfiles,
@@ -150,6 +153,7 @@ def cli(
     try:
         # Pydantic validation also handles placeholder replacement via @model_validator
         context.appconfig = AppConfig.from_dict(raw_appconfig)
+
     except (ValueError, ValidationError) as e:
         log.error("Application configuration failed validation:")
         log.error("Error in config file(s): %s", context.appconfigfiles)
@@ -162,7 +166,7 @@ def cli(
     setup_logging(cliverbosity=verbose, user_config={'logging': logging_config})
 
     # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
-    
+
     # 1. Load raw Environment Config
     (
         context.envconfigfiles,
@@ -175,10 +179,10 @@ def cli(
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,
     )
-    
+
     # Explicitly cast the raw_envconfig type to silence Pylance
     raw_envconfig = cast(dict[str, Any], raw_envconfig)
-    
+
     # 2. VALIDATE the raw environment config dictionary using Pydantic
     try:
         # Pydantic validation handles placeholder replacement via @model_validator
@@ -191,14 +195,14 @@ def cli(
              context.envconfigfiles, e
         )
         ctx.exit(1)
-    
+
     env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
-    
+
     # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
     if env_config_path:
         # 1. Instantiate the lock object
         ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
-        
+
         try:
             # 2. Acquire the lock by explicitly calling the __enter__ method.
             ctx.obj.env_lock.__enter__()
@@ -212,12 +216,12 @@ def cli(
             # Handles critical errors
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
-        
+
         # 3. Register the lock's __exit__ method to be called when the context terminates.
         # We use a lambda to supply the three mandatory positional arguments (None)
         # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
-    
+
 # Add subcommand
 cli.add_command(build)
 cli.add_command(c14n)

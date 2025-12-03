@@ -78,7 +78,7 @@ async def process_deliverable(
     :return: True if successful, False otherwise.
     :raises ValueError: If required configuration paths are missing.
     """
-    log.info('> Processing deliverable: %s', deliverable.full_id)
+    log.debug('> Processing deliverable: %s', deliverable.full_id)
 
     meta_cache_dir = Path(meta_cache_dir)
 
@@ -114,12 +114,13 @@ async def process_deliverable(
             # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
 
+            output = str((outputdir / deliverable.dcfile).with_suffix('.json'))
             # 2. Run the daps command
             cmd = shlex.split(
                 dapstmpl.format(
                     builddir=str(worktree_dir),
                     dcfile=str(worktree_dir / dcfile_path),
-                    output=str(outputdir / deliverable.dcfile),
+                    output=output,
                 )
             )
 
@@ -130,6 +131,7 @@ async def process_deliverable(
                     f'DAPS command {" ".join(cmd)!r} failed for {deliverable.full_id}: '
                     f'{stderr}'
                 )
+            log.info("Created metadata %s", output)
 
         # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         return True
@@ -210,7 +212,8 @@ async def process_doctype(
             f'temp_repo_dir={temp_repo_dir_str}, meta_cache_dir={meta_cache_dir_str}'
         )
 
-    # Ensure base directories exist
+    # Ensure base directories exist.
+    # This will become obsolete when PR#101 is merged
     temp_repo_dir = Path(temp_repo_dir_str)
     meta_cache_dir = Path(meta_cache_dir_str)
     base_cache_dir = Path(base_cache_dir_str)
@@ -324,4 +327,5 @@ async def process(
             console_err.print(f'- {d.full_id}')
         return 1
 
+    # log.info('Finished process.')
     return 0

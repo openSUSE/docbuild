@@ -6,6 +6,7 @@ import math
 import click
 from rich.console import Console
 
+from ...config.app import PlaceholderResolutionError
 from ...models.doctype import Doctype
 from ...utils.contextmgr import make_timer
 from ..callback import validate_doctypes
@@ -53,9 +54,22 @@ def metadata(
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(process(context, doctypes, exitfirst=exitfirst))
+            result = asyncio.run(
+                process(context, doctypes, exitfirst=exitfirst)
+            )
+
+    except PlaceholderResolutionError as e:
+        log.fatal(e)
+        ctx.exit(10)
+
     finally:
         if t and not math.isnan(t.elapsed):
             stdout.print(f'Elapsed time {t.elapsed:0.2f}s')
 
+    # base_cache_dir_str = context.envconfig.get(
+    #    'paths', {}).get('base_cache_dir', None)
+    meta_cache_dir_str = context.envconfig.get(
+        'paths', {}).get('meta_cache_dir', None)
+    stdout.print(f'Find your files in meta directory: {meta_cache_dir_str}')
+    #
     ctx.exit(result)
