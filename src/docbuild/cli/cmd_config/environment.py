@@ -3,6 +3,7 @@
 import click
 from rich import print 
 from rich.pretty import Pretty
+from rich import print_json
 
 
 @click.command(
@@ -23,6 +24,6 @@ def env(ctx: click.Context) -> None:
         
     click.secho(f"# ENV Config file '{path}'", fg='blue')
     
-    serialized_config = ctx.obj.envconfig.model_dump()
-    
-    print(Pretty(serialized_config, expand_all=True))
+    serialized_config = ctx.obj.envconfig.model_dump_json()
+
+    print_json(serialized_config)

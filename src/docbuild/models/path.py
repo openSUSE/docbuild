@@ -31,16 +31,28 @@ class EnsureWritableDirectory:
     # --- Pydantic V2 Core Schema ---
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, source_type: Any, handler: GetCoreSchemaHandler) -> core_schema.CoreSchema:
-        """Defines the validation chain for Pydantic V2."""
-        
-        # Chain 1: Validate input as a Path object first (handles string -> Path coercion)
-        # Chain 2: Run our custom validation and creation logic
-        return core_schema.chain_schema(
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        """Define Validation AND Serialization logic."""
+        # 1. Validation Logic (The Chain)
+        validation_schema = core_schema.chain_schema(
             [
                 handler(Path),
-                core_schema.no_info_plain_validator_function(cls.validate_and_create)
+                core_schema.no_info_plain_validator_function(cls.validate_and_create),
             ]
+        )
+        # 2. Serialization Logic (Convert to String)
+        # This tells Pydantic: "When dumping to JSON or Python, use str(instance)"
+        serialization_schema = core_schema.plain_serializer_function_ser_schema(
+            lambda instance: str(instance),
+            when_used='always',  # Apply to both JSON and Python (dict) dumps
+        )
+        # 3. Combine Validation and Serialization
+        return core_schema.json_or_python_schema(
+            json_schema=validation_schema,
+            python_schema=validation_schema,
+            serialization=serialization_schema,
         )
 
     # --- Validation & Creation Logic ---
