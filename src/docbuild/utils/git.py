@@ -148,7 +148,7 @@ class ManagedGitRepo:
         )
 
     async def fetch_updates(self: Self) -> bool:
-        """Fetch updates from the remote to the bare repository.
+        """Fetch updates for all branches from the remote.
 
         :return: True if successful, False otherwise.
         """
@@ -161,8 +161,11 @@ class ManagedGitRepo:
 
         log.info("Trying to fetch updates for '%s'", self.slug)
         try:
+            # To update *every* branch in the bare Git repo, we need to use
+            # this weird 'git fetch' command:
             self.stdout, self.stderr = await execute_git_command(
-                'fetch', 'origin', 'main:main', cwd=self.bare_repo_path
+                'fetch', 'origin', '+refs/heads/*:refs/heads/*', '-v', '--prune',
+                cwd=self.bare_repo_path
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True
