@@ -163,49 +163,72 @@ def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]
     assert str(config.server.host) == '192.168.1.1'
 
 
-def test_envconfig_strictness_extra_field_forbid(tmp_path: Path):
+def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
+
+    # This test checks for 'extra = forbid' behavior. The autouse mock for placeholder
+    # resolution interferes by replacing paths with non-existent ones, causing a
+    # premature validation failure. We override it with a simple pass-through.
+    monkeypatch.setattr(config_app_mod, 'replace_placeholders', lambda data: data)
+
+    # Prepare all directories that are validated for existence and writability.
+    # The EnvConfig model uses EnsureWritableDirectory for several path fields.
+    paths_to_create = [
+        tmp_path,
+        tmp_path / 'config',
+        tmp_path / 'deliverable',
+        tmp_path / 'metadata',
+        tmp_path / 'out',
+        tmp_path / 'log',
+        tmp_path / 'backup',
+    ]
+    for p in paths_to_create:
+        p.mkdir(exist_ok=True)
 
     raw_data = {
         'build': {
             'daps': {'command': 'daps', 'meta': 'daps meta'},
             'container': {'container': 'registry.example.com/container'},
         },
-        'server': {'name': 'D', 'role': 'production', 'host': '1.1.1.1', 'enable_mail': True},
+        'server': {
+            'name': 'D',
+            'role': 'production',
+            'host': '1.1.1.1',
+            'enable_mail': True,
+        },
         'config': {
             'default_lang': 'en-us',
             'languages': ['en-us'],
-            'canonical_url_domain': 'https://a.b'
+            'canonical_url_domain': 'https://a.b',
         },
         'paths': {
             'config_dir': str(tmp_path / 'config'),
-            'root_config_dir': '/tmp',
-            'jinja_dir': '/tmp',
-            'server_rootfiles_dir': '/tmp',
-            'base_server_cache_dir': '/tmp',
-            'base_tmp_dir': '/tmp',
-            'repo_dir': '/tmp',
-            'temp_repo_dir': '/tmp',
-            'base_cache_dir': '/tmp',
-            'meta_cache_dir': '/tmp',
-
+            'root_config_dir': str(tmp_path),
+            'jinja_dir': str(tmp_path),
+            'server_rootfiles_dir': str(tmp_path),
+            'repo_dir': str(tmp_path),
+            'temp_repo_dir': str(tmp_path),
+            'base_cache_dir': str(tmp_path),
+            'base_server_cache_dir': str(tmp_path),
+            'meta_cache_dir': str(tmp_path),
+            'base_tmp_dir': str(tmp_path),
             'tmp': {
-                'tmp_base_dir': '/tmp',
-                'tmp_dir': '/tmp',
-                'tmp_deliverable_dir': '/tmp/deliverable',
-                'tmp_metadata_dir': '/tmp/metadata',
-                'tmp_build_dir': '/tmp/build/{{product}}',
-                'tmp_out_dir': '/tmp/out',
-                'log_dir': '/tmp/log',
+                'tmp_base_dir': str(tmp_path),
+                'tmp_dir': str(tmp_path),
+                'tmp_deliverable_dir': str(tmp_path / 'deliverable'),
+                'tmp_metadata_dir': str(tmp_path / 'metadata'),
+                'tmp_build_dir': str(tmp_path / 'build/{{product}}'),
+                'tmp_out_dir': str(tmp_path / 'out'),
+                'log_dir': str(tmp_path / 'log'),
                 'tmp_deliverable_name': 'main',
             },
             'target': {
-                'target_dir': '/srv',
-                'backup_dir': '/mnt'
+                'target_dir': '/srv',  # Not validated for existence
+                'backup_dir': str(tmp_path / 'backup'),
             },
         },
         'xslt-params': {'test': 1},
-        'typo_section': {'key': 'value'}
+        'typo_section': {'key': 'value'},
     }
 
     with pytest.raises(ValidationError) as excinfo:
