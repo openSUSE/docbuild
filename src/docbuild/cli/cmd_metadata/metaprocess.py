@@ -147,10 +147,18 @@ async def process_deliverable(
                     f'{stderr.decode().strip()}'
                 )
 
+        fmt = deliverable.format
         with edit_json(outputjson) as jsonconfig:
-            # Update the JSON metadata with additional fields
+            # Update the JSON metadata for the format fields
+            # We have only one, single deliverable per file
             jsonconfig['docs'][0]['dcfile'] = deliverable.dcfile
-            # jsonconfig['docs'][0]['format']['html']
+            jsonconfig['docs'][0]['format']['html'] = deliverable.html_path
+            if fmt.get('pdf'):
+                jsonconfig['docs'][0]['format']['pdf'] = deliverable.pdf_path
+            if fmt.get('single-html'):
+                jsonconfig['docs'][0]['format']['single-html'] = (
+                    deliverable.singlehtml_path
+                )
 
         log.debug('Updated metadata JSON for %s at %s', deliverable.full_id, outputjson)
 
