@@ -1,11 +1,11 @@
-docbuild.models.config_model.app.App_LoggingConfig
+docbuild.models.config.app.App_LoggingConfig
 ==================================================
 
-.. py:class:: docbuild.models.config_model.app.App_LoggingConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.app.App_LoggingConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.app.App_LoggingConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.app.App_LoggingConfig
       :parts: 1
 
 

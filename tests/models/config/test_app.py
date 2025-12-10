@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import Mock
 from pydantic import ValidationError
 
-from docbuild.models.config_model.app import AppConfig
-from docbuild.models.config_model import app as app_module
+from docbuild.models.config.app import AppConfig
+from docbuild.models.config import app as app_module
 
 
 # --- Helper Fixtures ---

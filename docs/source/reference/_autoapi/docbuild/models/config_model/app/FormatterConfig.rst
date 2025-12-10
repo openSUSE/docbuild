@@ -1,11 +1,11 @@
-docbuild.models.config_model.app.FormatterConfig
+docbuild.models.config.app.FormatterConfig
 ================================================
 
-.. py:class:: docbuild.models.config_model.app.FormatterConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.app.FormatterConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.app.FormatterConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.app.FormatterConfig
       :parts: 1
 
 

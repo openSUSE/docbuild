@@ -1,7 +1,7 @@
-docbuild.models.config_model.app
+docbuild.models.config.app
 ================================
 
-.. py:module:: docbuild.models.config_model.app
+.. py:module:: docbuild.models.config.app
 
 .. autoapi-nested-parse::
 
@@ -24,11 +24,11 @@ Classes
 
 .. autoapisummary::
 
-   docbuild.models.config_model.app.FormatterConfig
-   docbuild.models.config_model.app.HandlerConfig
-   docbuild.models.config_model.app.LoggerConfig
-   docbuild.models.config_model.app.RootLoggerConfig
-   docbuild.models.config_model.app.App_LoggingConfig
-   docbuild.models.config_model.app.AppConfig
+   docbuild.models.config.app.FormatterConfig
+   docbuild.models.config.app.HandlerConfig
+   docbuild.models.config.app.LoggerConfig
+   docbuild.models.config.app.RootLoggerConfig
+   docbuild.models.config.app.App_LoggingConfig
+   docbuild.models.config.app.AppConfig
 
 

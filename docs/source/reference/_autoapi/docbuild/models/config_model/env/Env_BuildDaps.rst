@@ -1,11 +1,11 @@
-docbuild.models.config_model.env.Env_BuildDaps
+docbuild.models.config.env.Env_BuildDaps
 ==============================================
 
-.. py:class:: docbuild.models.config_model.env.Env_BuildDaps(/, **data: Any)
+.. py:class:: docbuild.models.config.env.Env_BuildDaps(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.env.Env_BuildDaps
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.Env_BuildDaps
       :parts: 1
 
 

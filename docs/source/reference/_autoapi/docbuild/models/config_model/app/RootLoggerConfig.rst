@@ -1,11 +1,11 @@
-docbuild.models.config_model.app.RootLoggerConfig
+docbuild.models.config.app.RootLoggerConfig
 =================================================
 
-.. py:class:: docbuild.models.config_model.app.RootLoggerConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.app.RootLoggerConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.app.RootLoggerConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.app.RootLoggerConfig
       :parts: 1
 
 

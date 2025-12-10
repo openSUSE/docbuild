@@ -9,7 +9,7 @@ import pytest
 from pydantic import ValidationError, HttpUrl, IPvAnyAddress
 from ipaddress import IPv4Address
 
-from docbuild.models.config_model.env import EnvConfig, Env_Server
+from docbuild.models.config.env import EnvConfig, Env_Server
 import docbuild.config.app as config_app_mod 
 
 

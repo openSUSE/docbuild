@@ -1,7 +1,7 @@
-docbuild.models.config_model
+docbuild.models.config
 ============================
 
-.. py:module:: docbuild.models.config_model
+.. py:module:: docbuild.models.config
 
 .. autoapi-nested-parse::
 

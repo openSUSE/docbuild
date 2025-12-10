@@ -1,11 +1,11 @@
-docbuild.models.config_model.app.HandlerConfig
+docbuild.models.config.app.HandlerConfig
 ==============================================
 
-.. py:class:: docbuild.models.config_model.app.HandlerConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.app.HandlerConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.app.HandlerConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.app.HandlerConfig
       :parts: 1
 
 

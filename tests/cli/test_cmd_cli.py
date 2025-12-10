@@ -7,8 +7,8 @@ from pydantic import ValidationError
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
-from docbuild.models.config_model.app import AppConfig
-from docbuild.models.config_model.env import EnvConfig 
+from docbuild.models.config.app import AppConfig
+from docbuild.models.config.env import EnvConfig 
 
 cli = cli_mod.cli
 
