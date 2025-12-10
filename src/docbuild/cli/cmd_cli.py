@@ -14,8 +14,8 @@ from typing import Any, cast
 from ..__about__ import __version__
 from ..config.app import replace_placeholders
 from ..config.load import handle_config
-from ..models.config_model.app import AppConfig
-from ..models.config_model.env import EnvConfig 
+from ..models.config.app import AppConfig
+from ..models.config.env import EnvConfig
 
 from ..constants import (
     APP_CONFIG_BASENAMES,
