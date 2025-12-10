@@ -27,13 +27,11 @@ log = logging.getLogger(__name__)
 
 def get_deliverable_from_doctype(
     root: etree._ElementTree,
-    context: DocBuildContext,
     doctype: Doctype,
 ) -> list[Deliverable]:
     """Get deliverable from doctype.
 
     :param root: The stitched XML node containing configuration.
-    :param context: The DocBuildContext containing environment configuration.
     :param doctype: The Doctype object to process.
     :return: A list of deliverables for the given doctype.
     """
@@ -238,12 +236,11 @@ async def process_doctype(
     base_cache_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
 
-    deliverables = await asyncio.to_thread(
-         get_deliverable_from_doctype,
-         root,
-         context,
-         doctype,
-     )
+    deliverables: list[Deliverable] = await asyncio.to_thread(
+        get_deliverable_from_doctype,
+        root,
+        doctype,
+    )
 
     await update_repositories(deliverables, repo_dir)
 
