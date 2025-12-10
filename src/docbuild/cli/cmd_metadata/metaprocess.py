@@ -13,7 +13,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
+from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ..context import DocBuildContext
 
@@ -94,6 +94,8 @@ async def process_deliverable(
         f'{deliverable.lang}--{deliverable.dcfile}'
     )
 
+    outputjson = outputdir / deliverable.dcfile
+
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(temp_repo_dir),
@@ -127,7 +129,7 @@ async def process_deliverable(
                 dapstmpl.format(
                     builddir=str(worktree_dir),
                     dcfile=str(worktree_dir / dcfile_path),
-                    output=str(outputdir / deliverable.dcfile),
+                    output=str(outputjson),
                 )
             )
             # stdout.print(f'  command: {cmd}')
@@ -144,6 +146,14 @@ async def process_deliverable(
                     f'DAPS command {" ".join(cmd)!r} failed for {deliverable.full_id}: '
                     f'{stderr.decode().strip()}'
                 )
+
+        with edit_json(outputjson) as jsonconfig:
+            # Update the JSON metadata with additional fields
+            jsonconfig['docs'][0]['dcfile'] = deliverable.dcfile
+            # jsonconfig['docs'][0]['format']['html']
+
+        log.debug('Updated metadata JSON for %s at %s', deliverable.full_id, outputjson)
+
 
         # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         return True
