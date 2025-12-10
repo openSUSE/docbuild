@@ -1,15 +1,18 @@
 """Provides context managers."""
 
-from collections.abc import Callable, Iterator
-from contextlib import AbstractContextManager, contextmanager
-from dataclasses import dataclass
 import asyncio
+from collections.abc import Callable, Iterator
+from contextlib import AbstractContextManager, contextmanager, suppress
+from dataclasses import dataclass
+import json
 import logging
+import os
 from pathlib import Path
 import shutil
 import tempfile
 import time
 from types import TracebackType
+from typing import Any
 import weakref as _weakref
 
 # Type aliases for exception handling
@@ -163,3 +166,97 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
         :param exc_tb: Traceback, if any.
         """
         await asyncio.to_thread(self.__exit__, exc_type, exc_val, exc_tb)
+
+
+@contextmanager
+def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
+    """Context manager for safely and atomically editing a JSON file.
+
+    This function implements a "read-modify-write" cycle with ACID-like properties.
+    It ensures that the file is either fully updated or remains strictly unchanged
+    (no partial writes or corruption) if an error occurs during modification or saving.
+
+    The operation follows three phases:
+
+    1. **Read**: The file is parsed into a Python dictionary.
+    2. **Modify** (Yield): Control is handed to the caller to modify the dictionary.
+    3. **Write**:
+       - If the block exits successfully, the data is written to a temporary file,
+         fsync-ed to disk, and atomically renamed over the original file.
+       - If an exception is raised within the block, the write phase is skipped
+         entirely.
+
+    :param path: The path to the JSON file to edit.
+    :yields: The content of the JSON file as a mutable dictionary.
+
+    :raises FileNotFoundError: If the specified ``path`` does not exist.
+    :raises json.JSONDecodeError: If the file exists but contains invalid JSON.
+    :raises OSError: If an I/O error occurs during reading, writing, or fsyncing.
+
+    Example usage:
+
+    .. code-block:: python
+
+        with edit_json('config.json') as data:
+            config["docs"][0]["dcfile"] = path.name
+            config["docs"][0]["format"]["html"] = "..."
+            # more modifications...
+    """
+    encoding = 'utf-8'
+    path = Path(path)
+    parent = path.parent
+
+    # Load JSON
+    with path.open('r', encoding=encoding) as f:
+        data = json.load(f)
+
+    # Hand control to the user
+    try:
+        yield data
+    except BaseException:
+        # Don't write anything; re-raise to preserve original exception
+        raise
+
+    # --- Commit phase (only reached if no exception occurred) ---
+
+    tmp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            'w',
+            encoding=encoding,
+            dir=str(parent),
+            delete=False,  # We manage deletion manually
+            prefix=f'.{path.stem}.',
+            suffix='.tmp',
+        ) as tmp_file:
+            tmp_path = Path(tmp_file.name)
+
+            # Write & Flush
+            json.dump(data, tmp_file, indent=4)
+            tmp_file.flush()
+            os.fsync(tmp_file.fileno())
+
+        # Permissions
+        with suppress(FileNotFoundError):
+            tmp_path.chmod(path.stat().st_mode)
+
+        # Atomic Replace
+        tmp_path.replace(path)
+
+        # Directory Sync (Durability) on POSIX
+        with suppress(OSError):
+            dir_fd = os.open(str(parent), os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+
+        # Mark as successful to skip cleanup
+        tmp_path = None
+
+    finally:
+        # Cleanup temporary file on failure
+        # If tmp_path is not None, it means we crashed before the replace.
+        if tmp_path and tmp_path.exists():
+            with suppress(OSError):
+                tmp_path.unlink()
