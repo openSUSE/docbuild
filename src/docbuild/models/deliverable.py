@@ -29,10 +29,16 @@ class Deliverable:
     _meta: Metadata | None = None
 
     @cached_property
-    def productid(self) -> str:
+    def productid(self) -> str|None:
         """Return the product ID."""
         # ancestor::product/@productid
-        return next(self._node.iterancestors('product')).attrib.get('productid')
+        return self.product_node.attrib.get('productid', None)
+
+    @cached_property
+    def productname(self) -> str|None:
+        """Return the product name."""
+        # ancestor::product/name
+        return self.product_node.findtext('name', default=None, namespaces=None)
 
     @cached_property
     def docsetid(self) -> str:
@@ -184,12 +190,6 @@ class Deliverable:
     def node(self) -> etree._Element:
         """Return the node of the deliverable."""
         return self._node
-
-    @cached_property
-    def productname(self) -> str:
-        """Return the product name or None if not found."""
-        # anecstor::product/name
-        return self.product_node.findtext('name', default=None, namespaces=None)
 
     @cached_property
     def acronym(self) -> str:
