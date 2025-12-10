@@ -447,9 +447,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.models</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 has-children"><a class="reference internal" href="../config_model/index.html">docbuild.models.config_model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../config_model/app/index.html">docbuild.models.config_model.app</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../config_model/env/index.html">docbuild.models.config_model.env</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../config/index.html">docbuild.models.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../config/app/index.html">docbuild.models.config.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/env/index.html">docbuild.models.config.env</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.models.deliverable</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -599,8 +599,14 @@ docset, language, branch, and other metadata related to the
 deliverable.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productid">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">productid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productid" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">productid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productid" title="Link to this definition">#</a></dt>
 <dd><p>Return the product ID.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productname">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">productname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productname" title="Link to this definition">#</a></dt>
+<dd><p>Return the product name.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -724,12 +730,6 @@ then in the current language node.</p>
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.node">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span></em><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.node" title="Link to this definition">#</a></dt>
 <dd><p>Return the node of the deliverable.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productname">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">productname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></em><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productname" title="Link to this definition">#</a></dt>
-<dd><p>Return the product name or None if not found.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -887,6 +887,7 @@ then in the current language node.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productname"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productname</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.docsetid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.docsetid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lang</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.language"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.language</span></code></a></li>
@@ -903,7 +904,6 @@ then in the current language node.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.basefile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.basefile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.format"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.format</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.node"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.node</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productname"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productname</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.acronym"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.acronym</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.version"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.version</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lifecycle"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lifecycle</span></code></a></li>

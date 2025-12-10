@@ -1,11 +1,11 @@
-docbuild.models.config_model.app.AppConfig
+docbuild.models.config.app.AppConfig
 ==========================================
 
-.. py:class:: docbuild.models.config_model.app.AppConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.app.AppConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.app.AppConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.app.AppConfig
       :parts: 1
 
 

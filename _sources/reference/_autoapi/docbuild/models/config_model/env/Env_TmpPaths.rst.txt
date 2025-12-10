@@ -1,11 +1,11 @@
-docbuild.models.config_model.env.Env_TmpPaths
+docbuild.models.config.env.Env_TmpPaths
 =============================================
 
-.. py:class:: docbuild.models.config_model.env.Env_TmpPaths(/, **data: Any)
+.. py:class:: docbuild.models.config.env.Env_TmpPaths(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config_model.env.Env_TmpPaths
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.Env_TmpPaths
       :parts: 1
 
 

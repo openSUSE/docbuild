@@ -1,7 +1,7 @@
-docbuild.models.config_model.env
+docbuild.models.config.env
 ================================
 
-.. py:module:: docbuild.models.config_model.env
+.. py:module:: docbuild.models.config.env
 
 .. autoapi-nested-parse::
 
@@ -27,14 +27,14 @@ Classes
 
 .. autoapisummary::
 
-   docbuild.models.config_model.env.Env_BuildDaps
-   docbuild.models.config_model.env.Env_BuildContainer
-   docbuild.models.config_model.env.Env_Build
-   docbuild.models.config_model.env.Env_Server
-   docbuild.models.config_model.env.Env_GeneralConfig
-   docbuild.models.config_model.env.Env_TmpPaths
-   docbuild.models.config_model.env.Env_TargetPaths
-   docbuild.models.config_model.env.Env_PathsConfig
-   docbuild.models.config_model.env.EnvConfig
+   docbuild.models.config.env.Env_BuildDaps
+   docbuild.models.config.env.Env_BuildContainer
+   docbuild.models.config.env.Env_Build
+   docbuild.models.config.env.Env_Server
+   docbuild.models.config.env.Env_GeneralConfig
+   docbuild.models.config.env.Env_TmpPaths
+   docbuild.models.config.env.Env_TargetPaths
+   docbuild.models.config.env.Env_PathsConfig
+   docbuild.models.config.env.EnvConfig
 
 

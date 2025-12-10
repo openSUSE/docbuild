@@ -12,10 +12,18 @@ docbuild.models.deliverable.Deliverable
 
 
    .. py:property:: productid
-      :type: str
+      :type: str | None
 
 
       Return the product ID.
+
+
+
+   .. py:property:: productname
+      :type: str | None
+
+
+      Return the product name.
 
 
 
@@ -158,14 +166,6 @@ docbuild.models.deliverable.Deliverable
 
 
       Return the node of the deliverable.
-
-
-
-   .. py:property:: productname
-      :type: str
-
-
-      Return the product name or None if not found.
 
 
 
