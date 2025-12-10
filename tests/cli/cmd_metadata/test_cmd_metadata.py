@@ -99,11 +99,10 @@ def mock_context_with_config_dir(tmp_path: Path) -> DocBuildContext:
 def test_get_deliverable_from_doctype_success(xmlconfig):
     """Verify deliverables are correctly extracted for a specific doctype."""
     # Arrange
-    mock_context = Mock(spec=DocBuildContext)
     doctype = Doctype.from_str('sles/15-SP7/en-us')
 
     # Act
-    deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
+    deliverables = get_deliverable_from_doctype(xmlconfig, doctype)
 
     # Assert
     assert len(deliverables) == 1
@@ -159,7 +158,7 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
 
     # Act
     with patch.object(metaprocess_pkg, 'stdout'):
-        deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
+        deliverables = get_deliverable_from_doctype(xmlconfig, doctype)
 
     # Assert
     assert deliverables == []
@@ -187,13 +186,12 @@ def test_get_deliverable_from_doctype_no_deliverables(xmlconfig):
 def test_get_deliverable_from_doctype_no_match(xmlconfig):
     """Verify an empty list is returned when the doctype doesn't match any node."""
     # Arrange
-    mock_context = Mock(spec=DocBuildContext)
     # This doctype does not exist in the XML
     doctype = Doctype.from_str('sles/1.0/en-us')
 
     # Act
     with patch.object(metaprocess_pkg, 'stdout'):
-        deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
+        deliverables = get_deliverable_from_doctype(xmlconfig, doctype)
 
     # Assert
     assert deliverables == []
@@ -240,11 +238,10 @@ def test_get_deliverable_from_doctype_no_match(xmlconfig):
 def test_get_deliverable_from_doctype_with_wildcard(xmlconfig):
     """Verify deliverables are correctly extracted using a wildcard doctype."""
     # Arrange
-    mock_context = Mock(spec=DocBuildContext)
     doctype = Doctype.from_str('//en-us')  # Wildcard for product and docset
 
     # Act
-    deliverables = get_deliverable_from_doctype(xmlconfig, mock_context, doctype)
+    deliverables = get_deliverable_from_doctype(xmlconfig, doctype)
 
     # Assert
     assert len(deliverables) == 3
@@ -463,7 +460,7 @@ class TestProcessDoctype:
         )
 
         assert not result
-        mock_get_deliverables.assert_called_once_with(mock_root, mock_context, doctype)
+        mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         assert mock_process_deliverable.call_count == 2
 
     @patch.object(metaprocess_pkg, 'process_deliverable', new_callable=AsyncMock)
@@ -482,7 +479,7 @@ class TestProcessDoctype:
         result = await process_doctype(mock_root, mock_context, doctype)
 
         assert not result
-        mock_get_deliverables.assert_called_once_with(mock_root, mock_context, doctype)
+        mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         mock_process_deliverable.assert_not_called()
 
     @patch.object(metaprocess_pkg, 'get_deliverable_from_doctype')
