@@ -2,6 +2,7 @@
 
 from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 from unittest.mock import AsyncMock, Mock, patch
 
 from lxml import etree
@@ -9,6 +10,7 @@ import pytest
 
 from docbuild.cli.cmd_metadata import metaprocess as metaprocess_pkg
 from docbuild.cli.cmd_metadata.metaprocess import (
+    collect_files_flat,
     get_deliverable_from_doctype,
     process,
     process_deliverable,
@@ -18,6 +20,7 @@ from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.models.repo import Repo
 
 
 @pytest.fixture
@@ -43,11 +46,15 @@ def mock_context_with_config_dir(tmp_path: Path) -> DocBuildContext:
     """Provide a mock DocBuildContext with a valid config_dir."""
     context = Mock(spec=DocBuildContext)
     config_dir = tmp_path / 'config'
+    meta_cache_dir = tmp_path / 'cache' / 'metadata'
     config_dir.mkdir()
+    meta_cache_dir.mkdir(parents=True)
     (config_dir / 'dummy.xml').write_text(
         '<docservconfig/>'
     )  # Ensure at least one XML file exists
-    context.envconfig = {'paths': {'config_dir': str(config_dir)}}
+    context.envconfig = {
+        'paths': {'config_dir': str(config_dir), 'meta_cache_dir': meta_cache_dir}
+    }
     return context
 
 
@@ -503,17 +510,42 @@ class TestProcessDoctype:
 class TestProcessEmptyDoctypes:
     """Tests for the case when no doctypes are passed to process."""
 
+    @patch.object(metaprocess_pkg, 'store_productdocset_json', new_callable=Mock)
+    @patch.object(metaprocess_pkg, 'collect_files_flat', new_callable=Mock)
     @patch.object(metaprocess_pkg, 'create_stitchfile', new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, 'process_doctype', new_callable=AsyncMock)
     async def test_process_empty_doctypes(
         self,
         mock_process_doctype: AsyncMock,
         mock_create_stitchfile: AsyncMock,
+        mock_collect_files_flat: Mock,
+        mock_store_json: Mock,
         mock_context_with_config_dir: DocBuildContext,
     ):
-        """Test process function with an empty tuple of doctypes."""
-        mock_stitch_node = etree.ElementTree(etree.Element('docservconfig'))
+        """Test process function with an empty tuple of doctypes.
+
+        This test ensures that when no doctypes are provided, the process
+        correctly uses the default doctype and finds the relevant configuration
+        files to proceed with metadata processing.
+        """
+        # This mock needs to represent the stitched XML config that
+        # `collect_files_flat` will traverse. It needs at least one product
+        # and docset to avoid the AttributeError.
+        xml_string = """
+        <docservconfig>
+            <product productid="sles">
+              <name>SUSE Linux Enterprise Server</name>
+              <acronym>SLES</acronym>
+              <docset setid="15-SP6"/>
+            </product>
+        </docservconfig>
+        """
+        mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
         mock_create_stitchfile.return_value = mock_stitch_node
+
+        mock_collect_files_flat.return_value = [
+            (Doctype.from_str(DEFAULT_DELIVERABLES), '*', [Path('dummy.xml')])
+        ]
 
         await process(mock_context_with_config_dir, doctypes=())
 
@@ -521,48 +553,186 @@ class TestProcessEmptyDoctypes:
         mock_create_stitchfile.assert_called_once()
         # Assert that process_doctype was called with the default doctype
         mock_process_doctype.assert_called()
+        # Assert that store_productdocset_json was called
+        mock_store_json.assert_called()
 
     async def test_no_config_dir_raises_error(self):
         """Test process raises ValueError if config_dir is missing from paths."""
+        # Arrange
         context = Mock(spec=DocBuildContext)
         context.envconfig = {'paths': {}}  # No config_dir in paths
 
+        # Act and assert
         with pytest.raises(
             ValueError, match='Could not get a value from envconfig.paths.config_dir'
         ):
             await process(context, doctypes=tuple())
 
+    @patch.object(metaprocess_pkg, 'store_productdocset_json', new_callable=Mock)
+    @patch.object(metaprocess_pkg, 'collect_files_flat', new_callable=Mock)
     @patch.object(metaprocess_pkg, 'create_stitchfile', new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, 'process_doctype', new_callable=AsyncMock)
     async def test_no_doctypes_uses_default(
         self,
         mock_process_doctype: AsyncMock,
         mock_create_stitchfile: AsyncMock,
-        tmp_path: Path,
+        mock_collect_files_flat: Mock,
+        mock_store_json: Mock,
+        mock_context_with_config_dir: DocBuildContext,
     ):
         """Test process uses a default doctype when none are provided.
 
         This test covers the successful execution path and the logic for handling
         an empty doctypes tuple.
         """
-        # Arrange
-        context = Mock(spec=DocBuildContext)
-        config_dir = tmp_path / 'config'
-        config_dir.mkdir()
-        context.envconfig = {'paths': {'config_dir': str(config_dir)}}
+        # Arrange (use the fixture for the context)
+        xml_string = """
+        <docservconfig>
+            <product productid="sles">
+              <name>SUSE Linux Enterprise Server</name>
+              <acronym>SLES</acronym>
+              <docset setid="15-SP6"/>
+            </product>
+        </docservconfig>
+        """
+        mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
 
-        mock_stitch_node = etree.ElementTree(etree.Element('docservconfig'))
         mock_create_stitchfile.return_value = mock_stitch_node
         mock_process_doctype.return_value = []
+        mock_collect_files_flat.return_value = [
+            (Doctype.from_str(DEFAULT_DELIVERABLES), '*', [Path('dummy.xml')])
+        ]
 
         # Act and suppress console output during the test
         with patch.object(metaprocess_pkg, 'stdout'):
-            result = await process(context, doctypes=tuple())
+            result = await process(mock_context_with_config_dir, doctypes=tuple())
 
         # Assert
         assert result == 0
         mock_create_stitchfile.assert_awaited_once()
+        mock_store_json.assert_called()
         default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
         mock_process_doctype.assert_awaited_once_with(
-            mock_stitch_node, context, default_doctype, exitfirst=False
+            mock_stitch_node, mock_context_with_config_dir, default_doctype, exitfirst=False
         )
+
+# ----
+def test_collect_dcfiles(tmp_path: Path):
+    """Verify that collect_files_flat finds all DC files."""
+    # Arrange
+    cache_dir = tmp_path / 'cache'
+    jsondir = cache_dir/ 'en-us' / 'sles' / '15-SP4'
+    jsondir.mkdir(parents=True)
+    (jsondir / 'DC-file1').touch()
+    (jsondir / 'DC-file2').touch()
+    # The following two files should be ignored
+    (jsondir / 'ignored-file.xml').touch()
+    (jsondir / 'not-an-dcfile.txt').touch()
+
+    doctypes = [Doctype.from_str('sles/15-SP4/en-us')]
+
+    # Act
+    # Doctype, Docset, List[Path]
+    result_generator = collect_files_flat(doctypes, cache_dir)
+    results = list(result_generator)
+
+    # Assert
+    assert len(results) == 1
+    doctype, docset, files = results[0]
+    assert doctype == doctypes[0]
+    assert docset == '15-SP4'
+    assert len(files) == 2
+    # Use set for order-independent comparison
+    assert {p.name for p in files} == {'DC-file1', 'DC-file2'}
+
+
+def test_collect_dciles_with_languages(tmp_path: Path):
+    """Verify that collect_files_flat finds all XML files recursively."""
+    # Arrange
+    product, docset = 'sles', '15-SP4'
+    langs = ('en-us', 'de-de')
+    cache_dir = tmp_path / 'cache'
+    for ll in langs:
+        jsondir = cache_dir / ll / product / docset
+        jsondir.mkdir(parents=True)
+        (jsondir / 'DC-file-bar').touch()
+        (jsondir / 'DC-file-foo').touch()
+
+    # Use different languages
+    doctypes = [Doctype.from_str(f'{product}/{docset}/{",".join(langs)}')]
+
+    # Act
+    # Doctype, Docset, List[Path]
+    result_generator = collect_files_flat(doctypes, cache_dir)
+    results = list(result_generator)
+
+    # Assert
+    assert len(results) == 1
+    doctype, docset, files = results[0]
+    assert doctype == doctypes[0]
+    assert docset == docset
+    assert len(files) == 2 * len(langs)
+    # Use set for order-independent comparison
+    assert {p.name for p in files} == {'DC-file-foo', 'DC-file-bar'}
+
+
+def test_collect_files_flat_no_files_found(tmp_path: Path):
+    """Verify that collect_files_flat yields nothing if no DC files are found."""
+    doctypes = [Doctype.from_str('sles/15-SP4/en-us')]
+    results = list(collect_files_flat(doctypes, tmp_path))
+    assert len(results) == 0
+
+
+@pytest.mark.asyncio
+class TestUpdateRepositories:
+    """Tests for the update_repositories function."""
+
+    @patch.object(metaprocess_pkg.ManagedGitRepo, 'clone_bare', new_callable=AsyncMock)
+    async def test_update_repositories_success(
+        self, mock_clone_bare: AsyncMock, tmp_path: Path
+    ):
+        """Verify that update_repositories successfully 'clones' a repo."""
+        # Arrange
+        mock_deliverable = Mock(spec=Deliverable)
+        mock_deliverable.git.url = 'gh://SUSE/doc-test'
+        mock_deliverable.git.slug = 'SUSE-doc-test'
+        deliverables = [mock_deliverable]
+        repo_dir = tmp_path / 'repos'
+        mock_clone_bare.return_value = True
+
+        from docbuild.cli.cmd_metadata.metaprocess import update_repositories
+
+        # Act
+        await update_repositories(deliverables, repo_dir)
+
+        # Assert
+        expected_path = repo_dir / mock_deliverable.git.slug
+        mock_clone_bare.assert_awaited_once()
+        # mock_clone_bare.assert_awaited_once_with(expected_path)
+
+    @patch.object(metaprocess_pkg.ManagedGitRepo, 'clone_bare', new_callable=AsyncMock)
+    async def test_update_repositories_failed(
+        self, mock_clone_bare: AsyncMock, tmp_path: Path, caplog
+    ):
+        """Verify that update_repositories handles a git clone failure."""
+        # Arrange
+        mock_deliverable = Mock(spec=Deliverable)
+        mock_deliverable.git.url = 'gh://SUSE/non-existent-repo'
+        mock_deliverable.git.slug = 'SUSE-non-existent-repo'
+        deliverables = [mock_deliverable]
+        repo_dir = tmp_path / 'repos'
+        mock_clone_bare.return_value = False
+
+        from docbuild.cli.cmd_metadata.metaprocess import update_repositories
+
+        # Mock a failed clone by raising an exception
+        # error_message = "fatal: repository not found"
+        # mock_clone_bare.side_effect = Exception(error_message)
+
+        # Act
+        await update_repositories(deliverables, repo_dir)
+
+        # Assert
+        mock_clone_bare.assert_awaited_once()
+        assert 'Failed to update' in caplog.text
+        # assert error_message in caplog.text
