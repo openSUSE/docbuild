@@ -183,7 +183,7 @@ def cli(
     try:
         # Pydantic validation handles placeholder replacement via @model_validator
         # The result is the validated Pydantic object, stored in context.envconfig
-        context.envconfig = EnvConfig.from_dict(raw_envconfig)
+        context.envconfig = EnvConfig.from_dict(raw_envconfig).model_dump(mode='json')
     except (ValueError, ValidationError) as e:
         log.error(
              "Environment configuration failed validation: "

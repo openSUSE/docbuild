@@ -41,6 +41,8 @@ class Repo:
         r'^(?P<abbr>[a-z]{2,4}):/{1,2}(?P<repo>.+?)(?:\.git)?$', re.IGNORECASE
     )
 
+    _SCHEMA_PATTERN: ClassVar[re.Pattern] = re.compile(r'(?P<schema>https?)://')
+
     url: str = field(repr=False)
     """The full URL of the repository."""
 
@@ -68,6 +70,7 @@ class Repo:
           - ``ghe`` for GitHub Enterprise
         * An abbreviated name like ``org/repo`` which defaults to GitHub.
         """
+        cls = type(self)
         if not value:
             raise ValueError('Repository value cannot be empty.')
 
