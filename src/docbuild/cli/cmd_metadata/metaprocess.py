@@ -1,10 +1,13 @@
 """Defines the handling of metadata extraction from deliverables."""
 
 import asyncio
+from collections.abc import Generator, Sequence
+import json
 import logging
 from pathlib import Path
 import shlex
 import tempfile
+from typing import Any
 
 from lxml import etree
 from rich.console import Console
@@ -44,6 +47,35 @@ def get_deliverable_from_doctype(
         for language in languages
         for node in language.findall('deliverable')
     ]
+
+
+def collect_files_flat(
+    doctypes: Sequence[Doctype], basedir: Path | str,
+) -> Generator[tuple[Doctype, str, list[Path]], Any, None]:
+    """Group files by (Product, Docset).
+
+    Yields (Doctype, Docset, List[Path]) using a flattened iteration strategy.
+    """
+    basedir = Path(basedir)
+    # 1. FLATTEN THE GROUPS
+    # Create a stream of (Doctype, Docset) pairs.
+    # This removes the nested loop over doctypes and docsets.
+    task_stream = ((dt, ds) for dt in doctypes for ds in dt.docset)
+
+    # 2. PROCESS EACH GROUP
+    for dt, docset in task_stream:
+        # 3. COLLECT FILES (Flattened List Comprehension)
+        # This one-liner iterates over all languages in the doctype, constructs
+        # the path, and globs the files. It handles the 'LanguageCode' object correctly.
+        files = [
+            f
+            for lang in dt.langs
+            for f in (basedir / lang.language / dt.product.value / docset).glob('DC-*')
+        ]
+
+        # Only yield if we found something
+        if files:
+            yield dt, docset, files
 
 
 async def process_deliverable(
@@ -159,9 +191,11 @@ async def process_deliverable(
                 jsonconfig['docs'][0]['format']['single-html'] = (
                     deliverable.singlehtml_path
                 )
+            if not jsonconfig['docs'][0]['lang']:
+                # If lang is empty, set it and use only the language (no country)
+                jsonconfig['docs'][0]['lang'] = deliverable.language
 
         log.debug('Updated metadata JSON for %s at %s', deliverable.full_id, outputjson)
-
 
         # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
         return True
@@ -312,9 +346,94 @@ async def process_doctype(
     return failed_deliverables
 
 
+def store_productdocset_json(context: DocBuildContext,
+        doctypes: Sequence[Doctype],
+        stitchnode: etree._ElementTree) -> None:
+    """Collect all JSON file for product/docset and create a single file.
+
+    :param context: Beschreibung
+    :param doctypes: Beschreibung
+    :param stitchnode: Beschreibung
+    """
+    meta_cache_dir = context.envconfig.get('paths', {}).get('meta_cache_dir', None)
+
+    for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
+        # files: list[Path]
+        product = doctype.product.value
+        stdout.print(f' > Processed group: {doctype} / {docset}')
+        productxpath = './product'
+        if product != '*':
+            productxpath += f'[@productid="{product}"]'
+
+        productnode = stitchnode.find(productxpath)
+        docsetxpath = './docset'
+        if docset != '*':
+            docsetxpath += f'[@docsetid="{docset}"]'
+
+        docsetnode = productnode.find(docsetxpath)
+
+        # Create a new structure for each group of product/docset
+        structure = {
+            'productname': productnode.find('name').text,
+            'acronym': product,
+            'version': docset,
+            'lifecycle': docsetnode.attrib.get('lifecycle'),
+            'hide-productname': False,
+            'descriptions': [
+                # TODO
+                # { "lang", "...",
+                #   "default": True|False,
+                #   "description": "..."
+                # }
+            ],
+            'categories': [
+                # TODO
+                # {
+                #  "categoryId": "...",
+                #  "rank": INT,
+                #  "translations": [
+                #    {
+                #      "lang", "...",
+                #      "default": True|False,
+                #      "title": "..."
+                #    }
+                #  ]
+            ],
+            'documents': [],  # Will be filled below
+            'archives': [
+                # TODO
+                # {
+                #   "lang": "...",
+                #   "default": True|False,
+                #   "zip": "LANG/PRODUCT/DOCSET/PRODUCT-DOCSET-LANG.zip",
+                # }
+            ],
+        }
+        for f in files:
+            stdout.print(f' {f}')
+            try:
+                with (meta_cache_dir / f).open() as fh:
+                    doc = json.load(fh)
+                if not doc:
+                    console_err.print(f'Warning: Empty metadata file {f}')
+                    continue
+
+                structure['documents'].extend(doc.get('docs', []))
+
+            except Exception as e:
+                console_err.print(f'Error reading metadata file {f}: {e}')
+
+        stdout.print(json.dumps(structure, indent=2))
+        jsondir = meta_cache_dir / product
+        jsondir.mkdir(parents=True, exist_ok=True)
+
+        with (jsondir / f'{docset}.json').open('w') as fh:
+            json.dump(structure, fh, indent=2)
+
+
 async def process(
     context: DocBuildContext,
-    doctypes: tuple[Doctype],
+    doctypes: Sequence[Doctype]|None,
     *,
     exitfirst: bool=False,
 ) -> int:
@@ -336,19 +455,22 @@ async def process(
     configdir = Path(configdir).expanduser()
     # stdout.print(f'Config path: {configdir}')
     xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
-    stitchnode = await create_stitchfile(xmlconfigs)
+    stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
     # stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
     # stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    tasks = [process_doctype(stitchnode, context, dt, exitfirst=exitfirst)
-             for dt in doctypes]
+    tasks = [
+        process_doctype(stitchnode, context, dt, exitfirst=exitfirst)
+        for dt in doctypes
+    ]
     results_per_doctype = await asyncio.gather(*tasks)
 
     all_failed_deliverables = [
-        d for failed_list in results_per_doctype for d in failed_list
+        d for failed_list in results_per_doctype
+        for d in failed_list
     ]
 
     if all_failed_deliverables:
@@ -356,5 +478,8 @@ async def process(
         for d in all_failed_deliverables:
             console_err.print(f'- {d.full_id}')
         return 1
+
+    # Collect all JSON files and merge them into a single file.
+    store_productdocset_json(context, doctypes, stitchnode)
 
     return 0
