@@ -60,6 +60,7 @@ async def test_managed_repo_clone_bare_new(
         'http://a.b/c.git',
         str(repo.bare_repo_path),
         cwd=tmp_path,
+        gitconfig=None,
     )
 
 
@@ -73,7 +74,12 @@ async def test_managed_repo_clone_bare_exists(
 
     result = await repo.clone_bare()
 
-    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
+    mock_execute_git.assert_awaited_once_with(
+        'fetch',
+        '--all',
+        cwd=repo.bare_repo_path,
+        gitconfig=None,
+    )
 
 
 async def test_managed_repo_clone_bare_failure(
@@ -109,6 +115,7 @@ async def test_managed_repo_create_worktree_success(
         str(repo.bare_repo_path),
         str(target_dir),
         cwd=target_dir.parent,
+        gitconfig=None,
     )
 
 
@@ -133,6 +140,7 @@ async def test_managed_repo_create_worktree_with_options(
         str(repo.bare_repo_path),
         str(target_dir),
         cwd=target_dir.parent,
+        gitconfig=None,
     )
 
 
@@ -170,6 +178,7 @@ async def test_managed_repo_create_worktree_not_local(
         str(repo.bare_repo_path),
         str(target_dir),
         cwd=target_dir.parent,
+        gitconfig=None,
     )
 
 
@@ -222,7 +231,9 @@ async def test_fetch_updates_success(
     result = await repo.fetch_updates()
 
     assert result is True
-    mock_execute_git.assert_awaited_once_with('fetch', '--all', cwd=repo.bare_repo_path)
+    mock_execute_git.assert_awaited_once_with(
+        'fetch', '--all', cwd=repo.bare_repo_path, gitconfig=None
+    )
 
 
 async def test_fetch_updates_no_repo(
@@ -272,6 +283,7 @@ async def test_managed_repo_clone_bare_already_processed(
         'http://a.b/c.git',
         str(repo.bare_repo_path),
         cwd=tmp_path,
+        gitconfig=None,
     )
 
     # Second call, should do nothing because it's already processed

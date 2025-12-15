@@ -99,7 +99,9 @@ docbuild = "docbuild.__main__:cli"
 package-dir = {"" = "src"}
 package-data = { "docbuild" = ["py.typed",
                                "config/xml/data/*.rnc",
-                               "config/xml/data/*.xsl"]}
+                               "config/xml/data/*.xsl",
+                               "etc/git/*"
+                               ]}
 include-package-data = true
 
 [tool.setuptools.dynamic]

@@ -4,7 +4,7 @@ import asyncio
 import logging
 from pathlib import Path
 
-from ..constants import GITLOGGER_NAME
+from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
 
 log = logging.getLogger(GITLOGGER_NAME)
 
@@ -42,6 +42,7 @@ async def execute_git_command(
     *args: str,
     cwd: Path | None = None,
     extra_env: dict[str, str] | None = None,
+    gitconfig: Path | None = None,
 ) -> tuple[str, str]:
     """Execute a Git command asynchronously in a given directory.
 
@@ -49,6 +50,8 @@ async def execute_git_command(
     :param cwd: The working directory for the Git command. If None, the
         current working directory is used.
     :param extra_env: Additional environment variables to set for the command.
+    :param gitconfig: The path to a separate Git configuration file. If None,
+        the default config from etc/git/gitconfig is used.
     :return: A tuple containing the decoded stdout and stderr of the command.
     :raises RuntimeError: If the command fails.
     :raises FileNotFoundError: If `cwd` is specified but does not exist.
@@ -56,9 +59,12 @@ async def execute_git_command(
     if cwd and not cwd.is_dir():
         raise FileNotFoundError(f'Git working directory not found: {cwd}')
 
+    # Determine which config file to use
+    gconfig = gitconfig if gitconfig else GIT_CONFIG_FILENAME
+
     # Default Git arguments for consistent behavior
-    default_git_args = ('-c', 'color.ui=never')
-    command = ('git', *default_git_args, *args)
+    git_config_args = ('-c', 'color.ui=never')
+    command = ('git', *git_config_args, *args)
     log.debug('Executing Git command: %s in %s', ' '.join(command), cwd)
 
     # Default environment for secure and non-interactive execution
@@ -67,6 +73,9 @@ async def execute_git_command(
         'LC_ALL': 'C',
         'GIT_TERMINAL_PROMPT': '0',
         'GIT_PROGRESS_FORCE': '1',
+        'GIT_CONFIG_SYSTEM': '/dev/null',
+        # 'GIT_CONFIG_NOSYSTEM': '1',  # For older Git versions
+        'GIT_CONFIG_GLOBAL': str(gconfig),
     }
 
     # Merge environments, allowing kwargs to override defaults

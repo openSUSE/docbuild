@@ -1,0 +1,1 @@
+Provide a project-defined Git config to prevent issues with user Git config.

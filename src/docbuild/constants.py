@@ -145,6 +145,9 @@ DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
 """The default filename for the environment's config file, typically
 used in production."""
 
+GIT_CONFIG_FILENAME = Path(__file__).parent / 'etc/git/gitconfig'
+"""The project-specific Git configuration file (relative to this project)"""
+
 # --- State and Logging Constants (Refactored) ---
 
 BASE_STATE_DIR = Path.home() / '.local' / 'state' / APP_NAME

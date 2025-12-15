@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import ClassVar, Self
 
-from ..constants import GITLOGGER_NAME
+from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
 from ..models.repo import Repo
 from ..utils.shell import execute_git_command
 
@@ -17,11 +17,16 @@ class ManagedGitRepo:
     #: Class variable to indicate the update state of a repo
     _is_updated: ClassVar[dict[Repo, bool]] = {}
 
-    def __init__(self: Self, remote_url: str, permanent_root: Path) -> None:
+    def __init__(self: Self,
+                 remote_url: str,
+                 permanent_root: Path,
+                 gitconfig: Path | None = None) -> None:
         """Initialize the managed repository.
 
         :param remote_url: The remote URL of the repository.
         :param permanent_root: The root directory for storing permanent bare clones.
+        :param gitconfig: The path to a separate Git configuration file
+           (=None, use the default config from etc/gitconfig)
         """
         self._repo_model = Repo(remote_url)
         self._permanent_root = permanent_root
@@ -29,6 +34,7 @@ class ManagedGitRepo:
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
         # Initialize attribute for output:
         self.stdout = self.stderr = None
+        self._gitconfig = gitconfig
         # Add repo into class variable
         type(self)._is_updated.setdefault(self._repo_model, False)
 
@@ -71,6 +77,7 @@ class ManagedGitRepo:
                 str(url),
                 str(self.bare_repo_path),
                 cwd=self._permanent_root,
+                gitconfig=self._gitconfig,
             )
             log.info("Cloned '%s' successfully", url)
             return True
@@ -133,7 +140,8 @@ class ManagedGitRepo:
         clone_args.extend([str(self.bare_repo_path), str(target_dir)])
 
         self.stdout, self.stderr = await execute_git_command(
-            *clone_args, cwd=target_dir.parent
+            *clone_args, cwd=target_dir.parent,
+            gitconfig=self._gitconfig,
         )
 
     async def fetch_updates(self: Self) -> bool:
@@ -151,7 +159,9 @@ class ManagedGitRepo:
         log.info("Fetching updates for '%s'", self.slug)
         try:
             self.stdout, self.stderr = await execute_git_command(
-                'fetch', '--all', cwd=self.bare_repo_path
+                'fetch', '--all',
+                cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True
