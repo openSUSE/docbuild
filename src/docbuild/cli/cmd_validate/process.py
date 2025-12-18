@@ -91,7 +91,8 @@ async def validate_rng(
     more robust for complex XInclude statements, including those with XPointer.
 
     :param xmlfile: The path to the XML file to validate.
-    :param rng_schema_path: The path to the RELAX NG schema file. It supports both RNC and RNG formats.
+    :param rng_schema_path: The path to the RELAX NG schema file.
+        It supports both RNC and RNG formats.
     :param xinclude: If True, resolve XIncludes with `xmllint` before validation.
     :param idcheck: If True, perform ID uniqueness checks.
     :return: A tuple containing a boolean success status and any output message.
@@ -118,26 +119,27 @@ async def validate_rng(
                 tmp_filepath = Path(tmp_file.name)
 
                 # 1. Run xmllint to resolve XIncludes and save to temp file
-                returncode, _, stderr = await run_command(
-                    'xmllint', '--xinclude', '--output', str(tmp_filepath), str(xmlfile)
+                process = await run_command(
+                    ['xmllint', '--xinclude', '--output',
+                     str(tmp_filepath), str(xmlfile)]
                 )
-                if returncode != 0:
-                    return False, f'xmllint failed: {stderr.strip()}'
+                if process.returncode != 0:
+                    return False, f'xmllint failed: {process.stderr}'
 
                 # 2. Run jing on the resolved temporary file
                 jing_cmd.append(str(tmp_filepath))
-                returncode, stdout, stderr = await run_command(*jing_cmd)
-                if returncode != 0:
-                    return False, (stdout + stderr).strip()
+                process = await run_command(jing_cmd)
+                if process.returncode != 0:
+                    return False, (process.stdout + process.stderr).strip()
 
                 return True, ''
         else:
             # Validate directly with jing, no XInclude resolution.
             jing_cmd.append(str(xmlfile))
-            returncode, stdout, stderr = await run_command(*jing_cmd)
-            if returncode == 0:
+            process = await run_command(jing_cmd)
+            if process.returncode == 0:
                 return True, ''
-            return False, (stdout + stderr).strip()
+            return False, (process.stdout + process.stderr).strip()
 
     except FileNotFoundError as e:
         tool = e.filename or 'xmllint/jing'
@@ -151,8 +153,7 @@ def validate_rng_lxml(
     xmlfile: Path,
     rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
 ) -> tuple[bool, str]:
-    """
-    Validate an XML file against a RELAX NG (.rng) schema using lxml.
+    """Validate an XML file against a RELAX NG (.rng) schema using lxml.
 
     This function uses lxml.etree.RelaxNG, which supports only the XML syntax
     of RELAX NG schemas (i.e., .rng files, not .rnc files).
@@ -324,7 +325,8 @@ async def process(
 
     # Filter for files that passed the initial validation
     successful_files_paths = [
-        xmlfile for xmlfile, result in zip(xmlfiles, results, strict=False) if result == 0
+        xmlfile for xmlfile, result in zip(xmlfiles, results, strict=False)
+        if result == 0
     ]
 
     # After validating individual files, perform a stitch validation to

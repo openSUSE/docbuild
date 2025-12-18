@@ -1,5 +1,6 @@
 """Tests for the XML validation process module."""
 
+from subprocess import CompletedProcess
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -33,7 +34,8 @@ def mock_context() -> DocBuildContext:
     return context
 
 
-@patch.object(process_module, 'validate_rng', new_callable=AsyncMock, return_value=(True, ''))
+@patch.object(process_module, 'validate_rng',
+              new_callable=AsyncMock, return_value=(True, ''))
 @patch.object(process_module.etree, 'parse', side_effect=ValueError('Generic test error'))
 async def test_process_file_with_generic_parsing_error(
     mock_etree_parse, mock_validate_rng, mock_context, tmp_path, capsys
@@ -119,7 +121,9 @@ async def test_process_file_with_unknown_validation_method(mock_context, tmp_pat
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
 async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=True succeeds for a valid XML."""
-    mock_run_command.return_value = (0, '', '')
+    mock_run_command.return_value = CompletedProcess(
+        args=["fake-command"], returncode=0, stdout='', stderr=''
+    )
     xml_file = tmp_path / 'valid.xml'
     xml_file.touch()
     rng_schema = tmp_path / 'schema.rnc'
@@ -130,13 +134,18 @@ async def test_validate_rng_with_idcheck_success(mock_run_command, tmp_path):
     assert is_valid is True
     assert message == ''
     # Ensure -i flag is passed to jing
-    assert '-i' in mock_run_command.call_args[0]
+    assert "-i" in mock_run_command.call_args.args[0]
 
 
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
 async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=True fails for a duplicate ID."""
-    mock_run_command.return_value = (1, '', 'error: duplicate ID "test-id"')
+    mock_run_command.return_value = CompletedProcess(
+        args=['fake-command'],
+        returncode=1,
+        stdout='',
+        stderr='error: duplicate ID "test-id"',
+    )
     xml_file = tmp_path / 'duplicate_id.xml'
     xml_file.touch()
     rng_schema = tmp_path / 'schema.rnc'
@@ -147,13 +156,18 @@ async def test_validate_rng_with_idcheck_duplicate_failure(mock_run_command, tmp
     assert is_valid is False
     assert 'duplicate ID' in message
     # Ensure -i flag is passed to jing
-    assert '-i' in mock_run_command.call_args[0]
+    assert '-i' in mock_run_command.call_args.args[0]
 
 
 @patch.object(process_module, 'run_command', new_callable=AsyncMock)
 async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
     """Test that validate_rng with idcheck=False succeeds despite a duplicate ID."""
-    mock_run_command.return_value = (0, '', '')
+    mock_run_command.return_value = CompletedProcess(
+        args=['fake-command'],
+        returncode=0,
+        stdout='',
+        stderr='',
+    )
     xml_file = tmp_path / 'duplicate_id.xml'
     xml_file.touch()
     rng_schema = tmp_path / 'schema.rnc'
@@ -164,4 +178,4 @@ async def test_validate_rng_without_idcheck_success(mock_run_command, tmp_path):
     assert is_valid is True
     assert message == ''
     # Ensure -i flag is NOT passed to jing
-    assert '-i' not in mock_run_command.call_args[0]
+    assert '-i' not in mock_run_command.call_args.args[0]

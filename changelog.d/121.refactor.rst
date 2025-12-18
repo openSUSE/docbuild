@@ -1,0 +1,2 @@
+Refactor the ``run_command`` and ``run_git_command`` to return :class:`~subprocess.CompletedProcess`
+instead of tuples. This makes the two commands more consistent.

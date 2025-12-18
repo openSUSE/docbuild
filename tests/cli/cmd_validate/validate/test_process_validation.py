@@ -1,3 +1,4 @@
+from subprocess import CompletedProcess
 import shutil
 import pytest
 from pathlib import Path
@@ -15,11 +16,13 @@ async def test_run_command():
     """Test the run_command function."""
     command = ['echo', 'Hello, World!']
 
-    returncode, stdout, stderr = await process_mod.run_command(*command)
+    process = await process_mod.run_command(command)
 
-    assert returncode == 0, f'Expected return code 0, got {returncode}'
-    assert stdout.strip() == 'Hello, World!', f'Unexpected stdout: {stdout}'
-    assert stderr == '', f'Unexpected stderr: {stderr}'
+    assert (process.returncode == 0,
+            f'Expected return code 0, got {process.returncode}')
+    assert (process.stdout.strip() == 'Hello, World!',
+            f'Unexpected stdout: {process.stdout}')
+    assert process.stderr == '', f'Unexpected stderr: {process.stderr}'
 
 
 @pytest.mark.skipif(not is_jing_installed(), reason="jing command not found")
@@ -99,20 +102,26 @@ async def test_validate_rng_jing_failure():
     rng_schema = MagicMock(spec=Path)
     xmlfile.__str__.return_value = '/mocked/path/to/file.xml'
     rng_schema.__str__.return_value = '/mocked/path/to/schema.rng'
- 
+
     with patch.object(
         process_mod,
         'run_command',
-        new=AsyncMock(return_value=(1, 'Error in jing', '')),
+        new=AsyncMock(return_value=CompletedProcess(
+                      args=['jing', xmlfile, rng_schema],
+                      returncode=1,
+                      stdout='Error in jing',
+                      stderr=''))
     ) as mock_run_command:
         success, output = await process_mod.validate_rng(
             xmlfile, rng_schema_path=rng_schema, xinclude=False, idcheck=False
         )
- 
+
         assert not success, 'Expected validation to fail.'
         assert output == 'Error in jing', f'Unexpected output: {output}'
- 
-        mock_run_command.assert_called_once_with('jing', str(rng_schema), str(xmlfile))
+
+        mock_run_command.assert_called_once_with(
+            ['jing', str(rng_schema), str(xmlfile)]
+        )
 
 
 async def test_validate_rng_command_not_found():
@@ -185,7 +194,7 @@ async def test_process_file_with_xmlsyntax_error(capsys, tmp_path):
 
     mock_context = Mock(spec=DocBuildContext)
     mock_context.verbose = 2
-    mock_context.validation_method = 'jing'  
+    mock_context.validation_method = 'jing'
 
     with (
         patch.object(

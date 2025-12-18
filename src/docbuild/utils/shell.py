@@ -1,8 +1,10 @@
 """Shell command utilities."""
 
 import asyncio
+from collections.abc import Sequence
 import logging
 from pathlib import Path
+from subprocess import CompletedProcess
 
 from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
 
@@ -10,32 +12,38 @@ log = logging.getLogger(GITLOGGER_NAME)
 
 
 async def run_command(
-    *args: str,
+    args: Sequence[str],
+    *,
     cwd: Path | None = None,
     env: dict[str, str] | None = None,
-) -> tuple[int, str, str]:
+) -> CompletedProcess:
     """Run an external command and capture its output.
 
     :param args: The command and its arguments separated as tuple elements.
     :param cwd: The working directory for the command.
     :param env: A dictionary of environment variables for the new process.
-    :return: A tuple of (returncode, stdout, stderr).
+    :return: a :class:`~subprocess.CompletedProcess` object.
     :raises FileNotFoundError: if the command is not found.
     """
+    # 1. Start the subprocess and connect the pipes
+    # We always pipe because we must return the output strings.
     process = await asyncio.create_subprocess_exec(
-        *args,
+        args[0], *args[1:],
         cwd=cwd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
         env=env,
     )
-    stdout, stderr = await process.communicate()
+    # 2. Wait for the process to finish
+    bstdout, bstderr = await process.communicate()
 
-    # After .communicate() returns, the process has terminated and the
-    # returncode is guaranteed to be set to an integer.
-    assert process.returncode is not None
-
-    return process.returncode, stdout.decode(), stderr.decode()
+    # 3. Decode and return the result
+    return CompletedProcess(
+        args=args,
+        returncode=process.returncode or 0,
+        stdout=bstdout.decode('utf-8').strip(),
+        stderr=bstderr.decode('utf-8').strip(),
+    )
 
 
 async def execute_git_command(
@@ -43,7 +51,7 @@ async def execute_git_command(
     cwd: Path | None = None,
     extra_env: dict[str, str] | None = None,
     gitconfig: Path | None = None,
-) -> tuple[str, str]:
+) -> CompletedProcess:
     """Execute a Git command asynchronously in a given directory.
 
     :param args: Command arguments for Git.
@@ -52,7 +60,7 @@ async def execute_git_command(
     :param extra_env: Additional environment variables to set for the command.
     :param gitconfig: The path to a separate Git configuration file. If None,
         the default config from etc/git/gitconfig is used.
-    :return: A tuple containing the decoded stdout and stderr of the command.
+    :return: a :class:`~subprocess.CompletedProcess` object.
     :raises RuntimeError: If the command fails.
     :raises FileNotFoundError: If `cwd` is specified but does not exist.
     """
@@ -82,16 +90,16 @@ async def execute_git_command(
     merged_env = {**default_env, **(extra_env or {})}
 
     # Delegate execution to the generic run_command utility
-    returncode, stdout, stderr = await run_command(
-        *command,
+    process = await run_command(
+        command,
         cwd=cwd,
         env=merged_env,
     )
 
-    if returncode != 0:
+    if process.returncode != 0:
         raise RuntimeError(
-            f'Git command failed with exit code {returncode}: '
-            f'{" ".join(command)}\nStderr: {stderr}'
+            f'Git command failed with exit code {process.returncode}: '
+            f'{" ".join(command)}\nStderr: {process.stderr}'
         )
 
-    return stdout.strip(), stderr.strip()
+    return process

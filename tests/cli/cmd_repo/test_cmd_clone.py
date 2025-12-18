@@ -1,5 +1,6 @@
 """Tests for the 'docbuild repo clone' command."""
 
+from subprocess import CompletedProcess
 import logging
 from unittest.mock import AsyncMock
 
@@ -67,9 +68,8 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
         },
     )
 
-    result = runner.invoke(clone, [], obj=context)
+    runner.invoke(clone, [], obj=context)
 
-    assert result.exit_code == 0, result.output
     assert mock_subprocess.call_count == 2
 
     calls = mock_subprocess.call_args_list

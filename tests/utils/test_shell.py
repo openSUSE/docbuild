@@ -4,13 +4,13 @@ from pathlib import Path
 
 import pytest
 
-from docbuild.constants import GIT_CONFIG_FILENAME
-from docbuild.utils.shell import execute_git_command
+from docbuild.utils.shell import execute_git_command, CompletedProcess
 
 
 async def test_execute_git_command_with_gitconfig(tmp_path):
-    """Verify that execute_git_command uses the config file provided in the
-    `gitconfig` parameter to replace the user's configuration.
+    """Verify that execute_git_command uses the config file.
+
+      This is provided in the`gitconfig` parameter to replace the user's configuration.
     """
     # The tmp_path fixture provides a temporary directory as a Path object
     repo_path = tmp_path
@@ -24,39 +24,40 @@ async def test_execute_git_command_with_gitconfig(tmp_path):
     project_config_path.write_text(config_content)
 
     # Execute 'git config' to read the value, passing the project config
-    stdout, _ = await execute_git_command(
+    process = await execute_git_command(
         "config", "--get", "user.name", cwd=repo_path, gitconfig=project_config_path
     )
 
     # Assert that the output matches the value from our project-specific config
-    assert stdout == "Test User From Project Config"
+    assert process.stdout == "Test User From Project Config"
 
 
 async def test_execute_git_command_without_gitconfig(tmp_path):
-    """
-    Verify that execute_git_command falls back to the default GIT_CONFIG_FILENAME
-    when the `gitconfig` parameter is not provided.
+    """Verify that execute_git_command falls back to the default.
+
+    Fall back to GIT_CONFIG_FILENAME when the `gitconfig` parameter is not
+    provided.
     """
     repo_path = tmp_path
 
     # Execute 'git config' to read the value from our default config file.
     # We call it without the `gitconfig` parameter to test the default behavior.
-    stdout, _ = await execute_git_command(
+    process = await execute_git_command(
         "config", "--get", "docbuild.name", cwd=repo_path
     )
 
     # This asserts that the value from 'etc/git/gitconfig' is read correctly.
-    assert stdout == "docbuild-project"
+    assert process.stdout == "docbuild-project"
 
 
 async def test_execute_git_command_with_nonexistent_cwd():
     with pytest.raises(FileNotFoundError):
-        stdout, _ = await execute_git_command(
+        await execute_git_command(
             'config', '--get', 'docbuild.name', cwd=Path("does-not-exist")
         )
 
 async def test_execute_git_command_with_failed_command():
     with pytest.raises(RuntimeError):
-        stdout, _ = await execute_git_command(
+        await execute_git_command(
             'foo',  # wrong git command
         )

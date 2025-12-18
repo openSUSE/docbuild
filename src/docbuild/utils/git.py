@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import ClassVar, Self
 
-from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
+from ..constants import GITLOGGER_NAME
 from ..models.repo import Repo
 from ..utils.shell import execute_git_command
 
