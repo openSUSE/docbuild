@@ -1,25 +1,35 @@
 """Pytest fixtures and global logging mock."""
 
 from collections.abc import Callable, Generator
+import os
 from pathlib import Path
 from typing import Any, NamedTuple
 from unittest.mock import MagicMock, Mock
-import os
-import pytest
 
 from click.testing import CliRunner
+import pytest
 
-# Import the module containing setup_logging for mocking
-import docbuild.logging 
 import docbuild.cli as cli_module
 import docbuild.cli.cmd_cli as cli
 from docbuild.cli.context import DocBuildContext
 from docbuild.config import load as load_mod
 from docbuild.constants import DEFAULT_ENV_CONFIG_FILENAME
+
+# Import the module containing setup_logging for mocking
+import docbuild.logging
 from tests.common import changedir
 
+
+# Adding info to test report header
+# https://docs.pytest.org/en/stable/example/simple.html#adding-info-to-test-report-header
+def pytest_report_header(config: pytest.Config):
+    from docbuild.__about__ import __version__
+
+    return f'DocBuild Version: {__version__}'
+
+
 # --- Global Fixture to Mute Logging Setup (Debugging Step) ---
-@pytest.fixture(autouse=True, scope="function") 
+@pytest.fixture(autouse=True, scope="function")
 def mock_setup_logging_globally(monkeypatch):
     """Mocks out the setup_logging call to prevent any initialization side-effects in tests."""
     mock_func = MagicMock()
