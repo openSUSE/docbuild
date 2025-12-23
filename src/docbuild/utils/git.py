@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+from subprocess import CompletedProcess
 from typing import ClassVar, Self
 
 from ..constants import GITLOGGER_NAME
@@ -19,7 +20,7 @@ class ManagedGitRepo:
 
     def __init__(self: Self,
                  remote_url: str,
-                 permanent_root: Path,
+                 rootdir: Path,
                  gitconfig: Path | None = None) -> None:
         """Initialize the managed repository.
 
@@ -32,8 +33,8 @@ class ManagedGitRepo:
         self._permanent_root = rootdir
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
-        # Initialize attribute for output:
-        self.stdout = self.stderr = None
+        # Initialize attribute for last subprocess result:
+        self.result: None | CompletedProcess[str] = None
         self._gitconfig = gitconfig
         # Add repo into class variable
         type(self)._is_updated.setdefault(self._repo_model, False)
@@ -70,7 +71,7 @@ class ManagedGitRepo:
         """
         url = self._repo_model.url
         try:
-            self.stdout, self.stderr = await execute_git_command(
+            self.proc = await execute_git_command(
                 'clone',
                 '--bare',
                 '--progress',
@@ -79,6 +80,8 @@ class ManagedGitRepo:
                 cwd=self._permanent_root,
                 gitconfig=self._gitconfig,
             )
+            # self.stdout = proc.stdout
+            # self.stderr = proc.stderr
             log.info("Cloned '%s' successfully", url)
             return True
 
@@ -142,7 +145,7 @@ class ManagedGitRepo:
             clone_args.extend(options)
         clone_args.extend([str(self.bare_repo_path), str(target_dir)])
 
-        self.stdout, self.stderr = await execute_git_command(
+        self.result = await execute_git_command(
             *clone_args, cwd=target_dir.parent,
             gitconfig=self._gitconfig,
         )
@@ -163,7 +166,7 @@ class ManagedGitRepo:
         try:
             # To update *every* branch in the bare Git repo, we need to use
             # this weird 'git fetch' command:
-            self.stdout, self.stderr = await execute_git_command(
+            self.result = await execute_git_command(
                 'fetch', 'origin', '+refs/heads/*:refs/heads/*', '-v', '--prune',
                 cwd=self.bare_repo_path
             )

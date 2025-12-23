@@ -401,7 +401,6 @@ class TestProcessDeliverable:
         deliverable: Deliverable,
         setup_paths: dict,
         mock_subprocess: AsyncMock,
-        caplog,
     ):
         """Test failure when the DAPS command fails."""
         clone_proc = AsyncMock(returncode=0)
