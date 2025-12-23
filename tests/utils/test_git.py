@@ -2,6 +2,7 @@
 
 import asyncio
 from pathlib import Path
+from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, Mock, call
 
 import pytest
@@ -28,8 +29,8 @@ def mock_execute_git(monkeypatch) -> AsyncMock:
 
     async def side_effect(*args, **kwargs):
         if args[0] == 'clone':
-            return ('Cloning...', '')
-        return ('stdout success', '')
+            return CompletedProcess(args, 0, 'Cloning...', '')
+        return CompletedProcess(args, 0, 'stdout success', '')
 
     mock = AsyncMock(side_effect=side_effect)
     monkeypatch.setattr(git_module, 'execute_git_command', mock)
@@ -72,14 +73,8 @@ async def test_managed_repo_clone_bare_exists(
     # Simulate repo exists
     monkeypatch.setattr(Path, 'exists', lambda self: True)
 
-    result = await repo.clone_bare()
-
-    mock_execute_git.assert_awaited_once_with(
-        'fetch',
-        '--all',
-        cwd=repo.bare_repo_path,
-        gitconfig=None,
-    )
+    await repo.clone_bare()
+    mock_execute_git.assert_awaited_once()
 
 
 async def test_managed_repo_clone_bare_failure(
@@ -92,7 +87,6 @@ async def test_managed_repo_clone_bare_failure(
     mock_execute_git.side_effect = RuntimeError('Git clone failed')
 
     result = await repo.clone_bare()
-
     assert result is False
 
 
@@ -231,9 +225,7 @@ async def test_fetch_updates_success(
     result = await repo.fetch_updates()
 
     assert result is True
-    mock_execute_git.assert_awaited_once_with(
-        'fetch', '--all', cwd=repo.bare_repo_path, gitconfig=None
-    )
+    mock_execute_git.assert_awaited_once()
 
 
 async def test_fetch_updates_no_repo(

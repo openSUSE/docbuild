@@ -51,7 +51,7 @@ async def execute_git_command(
     cwd: Path | None = None,
     extra_env: dict[str, str] | None = None,
     gitconfig: Path | None = None,
-) -> CompletedProcess:
+) -> CompletedProcess[str]:
     """Execute a Git command asynchronously in a given directory.
 
     :param args: Command arguments for Git.
