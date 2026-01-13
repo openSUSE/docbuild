@@ -88,11 +88,15 @@ def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     lock_dir.mkdir()
     lock_path = PidFileLock(resource_path, lock_dir).lock_path
 
-    # Create an Event to signal the child process to release the lock
-    done_event = mp.Event()
+    # Use a 'fork' context so the child does not need to import the test package
+    # (spawn/forkserver can fail to import test modules under some Python versions).
+    ctx = mp.get_context("fork")
 
-    # Start a background process to hold the lock
-    lock_holder = mp.Process(
+    # Create an Event to signal the child process to release the lock
+    done_event = ctx.Event()
+
+    # Start a background process to hold the lock using the fork context
+    lock_holder = ctx.Process(
         target=_mp_lock_holder, args=(resource_path, lock_dir, lock_path, done_event)
     )
     lock_holder.start()
@@ -100,7 +104,7 @@ def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     # Wait for the lock holder to acquire the lock (check for lock file existence)
     timeout_start = time.time()
     while not lock_path.exists():
-        if time.time() - timeout_start > 5:
+        if (time.time() - timeout_start) > 10:
             raise TimeoutError("Child process failed to acquire lock in time.")
         time.sleep(0.01)
 

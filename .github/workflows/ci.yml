@@ -40,7 +40,7 @@ jobs:
         python-version: &python-matrix
           - '3.12'
           - '3.13'
-          # - '3.14'
+          - '3.14'
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
     steps:
@@ -81,7 +81,7 @@ jobs:
           cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies and Coverage Tools
-        run: uv sync --group tests
+        run: uv sync --group github
 
       - name: Run tests and Report Coverage
         env:
@@ -189,7 +189,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --editable . --group devel
+          uv pip install --editable . --group github
 
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
