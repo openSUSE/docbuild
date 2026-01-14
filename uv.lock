@@ -297,6 +297,14 @@ formatting = [
     { name = "docformatter" },
     { name = "ruff" },
 ]
+github = [
+    { name = "docformatter" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
 repl = [
     { name = "ipython" },
 ]
@@ -349,6 +357,14 @@ docs = [
 ]
 formatting = [
     { name = "docformatter", specifier = ">=1.7.5" },
+    { name = "ruff", specifier = ">=0.11.12" },
+]
+github = [
+    { name = "docformatter", specifier = ">=1.7.5" },
+    { name = "pyright", specifier = ">=1.1.401" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "pytest-cov", specifier = ">=6.1.1" },
     { name = "ruff", specifier = ">=0.11.12" },
 ]
 repl = [{ name = "ipython", specifier = ">=9.3.0" }]
