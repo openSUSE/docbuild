@@ -90,7 +90,7 @@ devel = [
 ]
 github = [
   # {include-group = "typing"},
-  {include-group = "formatting"},
+  # {include-group = "formatting"},
   {include-group = "tests"},
 ]
 
