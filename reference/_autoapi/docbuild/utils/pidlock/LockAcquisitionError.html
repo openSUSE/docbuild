@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -593,10 +598,10 @@
 <dt class="sig sig-object py" id="docbuild.utils.pidlock.LockAcquisitionError">
 <em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.utils.pidlock.</span></span><span class="sig-name descname"><span class="pre">LockAcquisitionError</span></span><a class="headerlink" href="#docbuild.utils.pidlock.LockAcquisitionError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
-<div class="graphviz"><img src="../../../../../_images/inheritance-850038250d35f72a846def2559214e20934b9d15.png" alt="Inheritance diagram of docbuild.utils.pidlock.LockAcquisitionError" usemap="#inheritancec5f4693a52" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../../../../../_images/inheritance-bfa221e4b4c47f4bcea53e90fa5d17ad26d169df.png" alt="Inheritance diagram of docbuild.utils.pidlock.LockAcquisitionError" usemap="#inheritancec5f4693a52" class="inheritance graphviz" /></div>
 <map id="inheritancec5f4693a52" name="inheritancec5f4693a52">
-<area shape="rect" id="node1" href="#docbuild.utils.pidlock.LockAcquisitionError" target="_top" title="Raised when a process fails to acquire the PidFileLock because it is already held by another process." alt="" coords="5,5,160,31"/>
-</map><p>Raised when a process fails to acquire the PidFileLock because it is already held by another process.</p>
+<area shape="rect" id="node1" href="#docbuild.utils.pidlock.LockAcquisitionError" target="_top" title="Raised when a file lock cannot be acquired because it is already held." alt="" coords="5,5,160,31"/>
+</map><p>Raised when a file lock cannot be acquired because it is already held.</p>
 </dd></dl>
 
 </section>

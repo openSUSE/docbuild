@@ -52,7 +52,7 @@ docbuild.models.lifecycle.LifecycleFlag
 
       The string accepts the values 'supported', 'beta', 'hidden',
       'unsupported', or a combination of them separated by a comma or pipe.
-      Addtionally, the class knows the values "unknown".
+      Additionally, the class knows the values "unknown".
       An empty string, "", is equivalent to "unknown".
 
       Examples:

@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
     <link rel="next" title="docbuild.models.deliverable" href="../../deliverable/index.html" />
-    <link rel="prev" title="docbuild.models.config.env.Env_PathsConfig" href="Env_PathsConfig.html" />
+    <link rel="prev" title="docbuild.models.config.env.EnvPathsConfig" href="EnvPathsConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -596,9 +601,9 @@
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.config.env.</span></span><span class="sig-name descname"><span class="pre">EnvConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.config.env.EnvConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
-<div class="graphviz"><img src="../../../../../../_images/inheritance-ddeedbe3264657ec746480bd61f8bcb30676aac5.png" alt="Inheritance diagram of docbuild.models.config.env.EnvConfig" usemap="#inheritance69e446cc73" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../../../../../../_images/inheritance-d09ef6e884bec3b40e222d50461339d7442b030f.png" alt="Inheritance diagram of docbuild.models.config.env.EnvConfig" usemap="#inheritance69e446cc73" class="inheritance graphviz" /></div>
 <map id="inheritance69e446cc73" name="inheritance69e446cc73">
-<area shape="rect" id="node2" href="../../config_model/env/EnvConfig.html#docbuild.models.config.env.EnvConfig" target="_top" title="Root model for the environment configuration (env.toml)." alt="" coords="148,5,235,31"/>
+<area shape="rect" id="node2" href="#docbuild.models.config.env.EnvConfig" target="_top" title="Root model for the environment configuration (env.toml)." alt="" coords="148,5,235,31"/>
 </map><p>Root model for the environment configuration (env.toml).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.model_config">
@@ -608,25 +613,25 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.server">
-<span class="sig-name descname"><span class="pre">server</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../config_model/env/Env_Server.html#docbuild.models.config.env.Env_Server" title="docbuild.models.config.env.Env_Server"><span class="pre">Env_Server</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.server" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">server</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="EnvServer.html#docbuild.models.config.env.EnvServer" title="docbuild.models.config.env.EnvServer"><span class="pre">EnvServer</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.server" title="Link to this definition">#</a></dt>
 <dd><p>Server-related settings.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.config">
-<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../config_model/env/Env_GeneralConfig.html#docbuild.models.config.env.Env_GeneralConfig" title="docbuild.models.config.env.Env_GeneralConfig"><span class="pre">Env_GeneralConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.config" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="EnvGeneralConfig.html#docbuild.models.config.env.EnvGeneralConfig" title="docbuild.models.config.env.EnvGeneralConfig"><span class="pre">EnvGeneralConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.config" title="Link to this definition">#</a></dt>
 <dd><p>General application settings.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.paths">
-<span class="sig-name descname"><span class="pre">paths</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../config_model/env/Env_PathsConfig.html#docbuild.models.config.env.Env_PathsConfig" title="docbuild.models.config.env.Env_PathsConfig"><span class="pre">Env_PathsConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.paths" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">paths</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig" title="docbuild.models.config.env.EnvPathsConfig"><span class="pre">EnvPathsConfig</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.paths" title="Link to this definition">#</a></dt>
 <dd><p>File system paths.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.build">
-<span class="sig-name descname"><span class="pre">build</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../config_model/env/Env_Build.html#docbuild.models.config.env.Env_Build" title="docbuild.models.config.env.Env_Build"><span class="pre">Env_Build</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.build" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">build</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="EnvBuild.html#docbuild.models.config.env.EnvBuild" title="docbuild.models.config.env.EnvBuild"><span class="pre">EnvBuild</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.build" title="Link to this definition">#</a></dt>
 <dd><p>Build process settings.</p>
 </dd></dl>
 
@@ -639,7 +644,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.from_dict">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.from_dict" title="Link to this definition">#</a></dt>
-<dd><p>Convenience method to validate and return an instance.</p>
+<dd><p>Create an EnvConfig instance from a dictionary.</p>
 </dd></dl>
 
 </dd></dl>
@@ -657,12 +662,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Env_PathsConfig.html"
+       href="EnvPathsConfig.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.models.config.env.Env_PathsConfig</p>
+        <p class="prev-next-title">docbuild.models.config.env.EnvPathsConfig</p>
       </div>
     </a>
     <a class="right-next"

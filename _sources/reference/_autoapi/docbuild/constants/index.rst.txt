@@ -35,6 +35,7 @@ Attributes
    docbuild.constants.APP_CONFIG_FILENAME
    docbuild.constants.ENV_CONFIG_FILENAME
    docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME
+   docbuild.constants.GIT_CONFIG_FILENAME
    docbuild.constants.BASE_STATE_DIR
    docbuild.constants.GITLOGGER_NAME
    docbuild.constants.BASE_LOG_DIR
@@ -172,6 +173,11 @@ Module Contents
 
    The default filename for the environment's config file, typically
    used in production.
+
+
+.. py:data:: GIT_CONFIG_FILENAME
+
+   The project-specific Git configuration file (relative to this project)
 
 
 .. py:data:: BASE_STATE_DIR

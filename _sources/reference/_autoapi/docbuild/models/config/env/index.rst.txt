@@ -15,26 +15,26 @@ Classes
 .. toctree::
    :hidden:
 
-   /reference/_autoapi/docbuild/models/config/env/Env_BuildDaps
-   /reference/_autoapi/docbuild/models/config/env/Env_BuildContainer
-   /reference/_autoapi/docbuild/models/config/env/Env_Build
-   /reference/_autoapi/docbuild/models/config/env/Env_Server
-   /reference/_autoapi/docbuild/models/config/env/Env_GeneralConfig
-   /reference/_autoapi/docbuild/models/config/env/Env_TmpPaths
-   /reference/_autoapi/docbuild/models/config/env/Env_TargetPaths
-   /reference/_autoapi/docbuild/models/config/env/Env_PathsConfig
+   /reference/_autoapi/docbuild/models/config/env/EnvBuildDaps
+   /reference/_autoapi/docbuild/models/config/env/EnvBuildContainer
+   /reference/_autoapi/docbuild/models/config/env/EnvBuild
+   /reference/_autoapi/docbuild/models/config/env/EnvServer
+   /reference/_autoapi/docbuild/models/config/env/EnvGeneralConfig
+   /reference/_autoapi/docbuild/models/config/env/EnvTmpPaths
+   /reference/_autoapi/docbuild/models/config/env/EnvTargetPaths
+   /reference/_autoapi/docbuild/models/config/env/EnvPathsConfig
    /reference/_autoapi/docbuild/models/config/env/EnvConfig
 
 .. autoapisummary::
 
-   docbuild.models.config.env.Env_BuildDaps
-   docbuild.models.config.env.Env_BuildContainer
-   docbuild.models.config.env.Env_Build
-   docbuild.models.config.env.Env_Server
-   docbuild.models.config.env.Env_GeneralConfig
-   docbuild.models.config.env.Env_TmpPaths
-   docbuild.models.config.env.Env_TargetPaths
-   docbuild.models.config.env.Env_PathsConfig
+   docbuild.models.config.env.EnvBuildDaps
+   docbuild.models.config.env.EnvBuildContainer
+   docbuild.models.config.env.EnvBuild
+   docbuild.models.config.env.EnvServer
+   docbuild.models.config.env.EnvGeneralConfig
+   docbuild.models.config.env.EnvTmpPaths
+   docbuild.models.config.env.EnvTargetPaths
+   docbuild.models.config.env.EnvPathsConfig
    docbuild.models.config.env.EnvConfig
 
 

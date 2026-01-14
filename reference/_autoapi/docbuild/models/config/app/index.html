@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -596,23 +601,23 @@
 </div>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../config_model/app/FormatterConfig.html#docbuild.models.config.app.FormatterConfig" title="docbuild.models.config.app.FormatterConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FormatterConfig</span></code></a></p></td>
-<td><p>!!! abstract &quot;Usage Documentation&quot;</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="FormatterConfig.html#docbuild.models.config.app.FormatterConfig" title="docbuild.models.config.app.FormatterConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FormatterConfig</span></code></a></p></td>
+<td><p>A Pydantic model for logging formatter configuration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../config_model/app/HandlerConfig.html#docbuild.models.config.app.HandlerConfig" title="docbuild.models.config.app.HandlerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HandlerConfig</span></code></a></p></td>
-<td><p>!!! abstract &quot;Usage Documentation&quot;</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="HandlerConfig.html#docbuild.models.config.app.HandlerConfig" title="docbuild.models.config.app.HandlerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HandlerConfig</span></code></a></p></td>
+<td><p>A Pydantic model for logging handler configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../config_model/app/LoggerConfig.html#docbuild.models.config.app.LoggerConfig" title="docbuild.models.config.app.LoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoggerConfig</span></code></a></p></td>
-<td><p>!!! abstract &quot;Usage Documentation&quot;</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="LoggerConfig.html#docbuild.models.config.app.LoggerConfig" title="docbuild.models.config.app.LoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoggerConfig</span></code></a></p></td>
+<td><p>A Pydantic model for logging logger configuration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../config_model/app/RootLoggerConfig.html#docbuild.models.config.app.RootLoggerConfig" title="docbuild.models.config.app.RootLoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RootLoggerConfig</span></code></a></p></td>
-<td><p>!!! abstract &quot;Usage Documentation&quot;</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="RootLoggerConfig.html#docbuild.models.config.app.RootLoggerConfig" title="docbuild.models.config.app.RootLoggerConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RootLoggerConfig</span></code></a></p></td>
+<td><p>A Pydantic model for the root logger configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../../config_model/app/App_LoggingConfig.html#docbuild.models.config.app.App_LoggingConfig" title="docbuild.models.config.app.App_LoggingConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">App_LoggingConfig</span></code></a></p></td>
-<td><p>The complete Pydantic model for Python's logging.dictConfig.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="AppLoggingConfig.html#docbuild.models.config.app.AppLoggingConfig" title="docbuild.models.config.app.AppLoggingConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppLoggingConfig</span></code></a></p></td>
+<td><p>Pydantic model for the logging configuration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../../config_model/app/AppConfig.html#docbuild.models.config.app.AppConfig" title="docbuild.models.config.app.AppConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppConfig</span></code></a></p></td>
-<td><p>Root model for application configuration (config.toml).</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="AppConfig.html#docbuild.models.config.app.AppConfig" title="docbuild.models.config.app.AppConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AppConfig</span></code></a></p></td>
+<td><p>Root model for application configuration (<code class="file docutils literal notranslate"><span class="pre">config.toml</span></code>).</p></td>
 </tr>
 </tbody>
 </table>

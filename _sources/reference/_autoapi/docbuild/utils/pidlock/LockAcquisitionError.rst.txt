@@ -9,5 +9,5 @@ docbuild.utils.pidlock.LockAcquisitionError
       :parts: 1
 
 
-   Raised when a process fails to acquire the PidFileLock because it is already held by another process.
+   Raised when a file lock cannot be acquired because it is already held.
 

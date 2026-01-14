@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -588,14 +593,17 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.register_background_thread" title="docbuild.logging.register_background_thread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_background_thread</span></code></a>(thread)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.register_background_thread" title="docbuild.logging.register_background_thread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_background_thread</span></code></a>(→ None)</p></td>
 <td><p>Register a thread to be joined on logging shutdown.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.create_base_log_dir" title="docbuild.logging.create_base_log_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_base_log_dir</span></code></a>(→ pathlib.Path)</p></td>
 <td><p>Create the base log directory if it doesn't exist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.setup_logging" title="docbuild.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>(→ None)</p></td>
-<td><p>Sets up a non-blocking, configurable logging system.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.build_handlers_from_config" title="docbuild.logging.build_handlers_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_handlers_from_config</span></code></a>(→ list[logging.Handler])</p></td>
+<td><p>Build handler instances from a logging config dict without starting listeners.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.setup_logging" title="docbuild.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>(→ None)</p></td>
+<td><p>Set up a non-blocking, configurable logging system.</p></td>
 </tr>
 </tbody>
 </table>
@@ -605,7 +613,7 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.logging.register_background_thread">
-<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">register_background_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.14)"><span class="pre">threading.Thread</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.logging.register_background_thread" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">register_background_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.14)"><span class="pre">threading.Thread</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.register_background_thread" title="Link to this definition">#</a></dt>
 <dd><p>Register a thread to be joined on logging shutdown.</p>
 </dd></dl>
 
@@ -616,9 +624,18 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="docbuild.logging.build_handlers_from_config">
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">build_handlers_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Handler" title="(in Python v3.14)"><span class="pre">logging.Handler</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.logging.build_handlers_from_config" title="Link to this definition">#</a></dt>
+<dd><p>Build handler instances from a logging config dict without starting listeners.</p>
+<p>This is a small helper useful for unit tests: it constructs handler
+objects and attaches formatters according to the provided <cite>config</cite>
+but does not start any background listener or register global state.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="docbuild.logging.setup_logging">
 <span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">setup_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliverbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.setup_logging" title="Link to this definition">#</a></dt>
-<dd><p>Sets up a non-blocking, configurable logging system.</p>
+<dd><p>Set up a non-blocking, configurable logging system.</p>
 </dd></dl>
 
 </section>
@@ -675,6 +692,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.register_background_thread"><code class="docutils literal notranslate"><span class="pre">register_background_thread()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.create_base_log_dir"><code class="docutils literal notranslate"><span class="pre">create_base_log_dir()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.build_handlers_from_config"><code class="docutils literal notranslate"><span class="pre">build_handlers_from_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
 </ul>
 </li>

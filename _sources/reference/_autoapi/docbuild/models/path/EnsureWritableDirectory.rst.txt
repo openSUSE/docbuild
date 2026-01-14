@@ -9,10 +9,11 @@ docbuild.models.path.EnsureWritableDirectory
    1. Expands user paths (e.g., "~/data" -> "/home/user/data").
    2. Validates input is a path.
    3. If path DOES NOT exist: It creates it (including parents).
-   4. If path DOES exist (or was just created): It checks is_dir() and R/W/X permissions.
+   4. If path DOES exist (or was just created): It checks is_dir()
+      and R/W/X permissions.
 
 
-   .. py:method:: __get_pydantic_core_schema__(source_type: Any, handler: pydantic.GetCoreSchemaHandler) -> pydantic_core.core_schema.CoreSchema
+   .. py:method:: __get_pydantic_core_schema__(source_type: type[pathlib.Path], handler: pydantic.GetCoreSchemaHandler) -> pydantic_core.core_schema.CoreSchema
       :classmethod:
 
 
@@ -24,6 +25,38 @@ docbuild.models.path.EnsureWritableDirectory
       :classmethod:
 
 
-      Expands user, checks if path exists. If not, creates it. Then checks permissions.
+      Expand user, checks if path exists.
+
+      If not, creates it. Then checks permissions.
+
+
+
+   .. py:method:: __str__() -> str
+
+      Return the string representation of the path.
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Return the developer-friendly representation of the object.
+
+
+
+   .. py:method:: __truediv__(other: str) -> pathlib.Path
+
+      Implement the / operator to delegate to the underlying Path object.
+
+
+
+   .. py:method:: __getattr__(name: str) -> object
+
+      Delegate attribute access to the underlying Path object.
+
+
+
+   .. py:method:: __fspath__() -> str
+
+      Return the string path for os.PathLike compatibility.
 
 

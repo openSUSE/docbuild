@@ -50,7 +50,7 @@
     <link rel="icon" href="../../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="docbuild.models.config.app.App_LoggingConfig" href="App_LoggingConfig.html" />
+    <link rel="next" title="docbuild.models.config.app.AppLoggingConfig" href="AppLoggingConfig.html" />
     <link rel="prev" title="docbuild.models.config.app.LoggerConfig" href="LoggerConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -596,44 +601,10 @@
 <dt class="sig sig-object py" id="docbuild.models.config.app.RootLoggerConfig">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.models.config.app.</span></span><span class="sig-name descname"><span class="pre">RootLoggerConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.config.app.RootLoggerConfig" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel" title="(in Pydantic Validation v0.0.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></a></p>
-<div class="graphviz"><img src="../../../../../../_images/inheritance-7e46598f52a8ed563422d4a2978950c9292ba5b1.png" alt="Inheritance diagram of docbuild.models.config.app.RootLoggerConfig" usemap="#inheritancebf256ffc33" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../../../../../../_images/inheritance-c5ab5fede70fd0acc736ed84f91e747c2069aa8b.png" alt="Inheritance diagram of docbuild.models.config.app.RootLoggerConfig" usemap="#inheritancebf256ffc33" class="inheritance graphviz" /></div>
 <map id="inheritancebf256ffc33" name="inheritancebf256ffc33">
-<area shape="rect" id="node2" href="../../config_model/app/RootLoggerConfig.html#docbuild.models.config.app.RootLoggerConfig" target="_top" title="RootLoggerConfig" alt="" coords="148,5,285,31"/>
-</map><dl class="simple">
-<dt>!!! abstract “Usage Documentation”</dt><dd><p>[Models](../concepts/models.md)</p>
-</dd>
-</dl>
-<p>A base class for creating Pydantic models.</p>
-<dl>
-<dt>Attributes:</dt><dd><p>__class_vars__: The names of the class variables defined on the model.
-__private_attributes__: Metadata about the private attributes of the model.
-__signature__: The synthesized <cite>__init__</cite> [<cite>Signature</cite>][inspect.Signature] of the model.</p>
-<p>__pydantic_complete__: Whether model building is completed, or if there are still undefined fields.
-__pydantic_core_schema__: The core schema of the model.
-__pydantic_custom_init__: Whether the model has a custom <cite>__init__</cite> function.
-__pydantic_decorators__: Metadata containing the decorators defined on the model.</p>
-<blockquote>
-<div><p>This replaces <cite>Model.__validators__</cite> and <cite>Model.__root_validators__</cite> from Pydantic V1.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>__pydantic_generic_metadata__: Metadata for generic models; contains data used for a similar purpose to</dt><dd><p>__args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.</p>
-</dd>
-</dl>
-<p>__pydantic_parent_namespace__: Parent namespace of the model, used for automatic rebuilding of models.
-__pydantic_post_init__: The name of the post-init method for the model, if defined.
-__pydantic_root_model__: Whether the model is a [<cite>RootModel</cite>][pydantic.root_model.RootModel].
-__pydantic_serializer__: The <cite>pydantic-core</cite> <cite>SchemaSerializer</cite> used to dump instances of the model.
-__pydantic_validator__: The <cite>pydantic-core</cite> <cite>SchemaValidator</cite> used to validate instances of the model.</p>
-<p>__pydantic_fields__: A dictionary of field names and their corresponding [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo] objects.
-__pydantic_computed_fields__: A dictionary of computed field names and their corresponding [<cite>ComputedFieldInfo</cite>][pydantic.fields.ComputedFieldInfo] objects.</p>
-<dl class="simple">
-<dt>__pydantic_extra__: A dictionary containing extra values, if [<cite>extra</cite>][pydantic.config.ConfigDict.extra]</dt><dd><p>is set to <cite>‘allow’</cite>.</p>
-</dd>
-</dl>
-<p>__pydantic_fields_set__: The names of fields explicitly set during instantiation.
-__pydantic_private__: Values of private attributes set on the model instance.</p>
-</dd>
-</dl>
+<area shape="rect" id="node2" href="#docbuild.models.config.app.RootLoggerConfig" target="_top" title="A Pydantic model for the root logger configuration." alt="" coords="148,5,285,31"/>
+</map><p>A Pydantic model for the root logger configuration.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.app.RootLoggerConfig.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#docbuild.models.config.app.RootLoggerConfig.model_config" title="Link to this definition">#</a></dt>
@@ -664,11 +635,11 @@ __pydantic_private__: Values of private attributes set on the model instance.</p
       </div>
     </a>
     <a class="right-next"
-       href="App_LoggingConfig.html"
+       href="AppLoggingConfig.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.config.app.App_LoggingConfig</p>
+        <p class="prev-next-title">docbuild.models.config.app.AppLoggingConfig</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

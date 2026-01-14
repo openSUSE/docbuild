@@ -19,7 +19,7 @@ Classes
    /reference/_autoapi/docbuild/models/config/app/HandlerConfig
    /reference/_autoapi/docbuild/models/config/app/LoggerConfig
    /reference/_autoapi/docbuild/models/config/app/RootLoggerConfig
-   /reference/_autoapi/docbuild/models/config/app/App_LoggingConfig
+   /reference/_autoapi/docbuild/models/config/app/AppLoggingConfig
    /reference/_autoapi/docbuild/models/config/app/AppConfig
 
 .. autoapisummary::
@@ -28,7 +28,7 @@ Classes
    docbuild.models.config.app.HandlerConfig
    docbuild.models.config.app.LoggerConfig
    docbuild.models.config.app.RootLoggerConfig
-   docbuild.models.config.app.App_LoggingConfig
+   docbuild.models.config.app.AppLoggingConfig
    docbuild.models.config.app.AppConfig
 
 

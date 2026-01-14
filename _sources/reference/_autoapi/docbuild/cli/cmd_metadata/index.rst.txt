@@ -29,7 +29,7 @@ Functions
 Package Contents
 ----------------
 
-.. py:function:: metadata(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype]) -> None
+.. py:function:: metadata(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], exitfirst: bool, skip_repo_update: bool) -> None
 
    Subcommand to create metadata files.
 

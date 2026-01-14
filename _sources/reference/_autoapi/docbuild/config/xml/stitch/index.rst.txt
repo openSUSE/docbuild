@@ -15,6 +15,7 @@ Functions
 .. autoapisummary::
 
    docbuild.config.xml.stitch.load_check_functions
+   docbuild.config.xml.stitch.log_memory_usage
    docbuild.config.xml.stitch.check_stitchfile
    docbuild.config.xml.stitch.create_stitchfile
 
@@ -25,6 +26,13 @@ Module Contents
 .. py:function:: load_check_functions() -> list[collections.abc.Callable]
 
    Load all check functions from :mod:`docbuild.config.xml.checks`.
+
+
+.. py:function:: log_memory_usage() -> int
+
+   Determine the memory usage.
+
+   :return: memory usage in kilobytes
 
 
 .. py:function:: check_stitchfile(tree: lxml.etree._Element | lxml.etree._ElementTree) -> bool

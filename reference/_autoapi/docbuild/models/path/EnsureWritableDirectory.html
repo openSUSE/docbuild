@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -597,17 +602,51 @@
 1. Expands user paths (e.g., “~/data” -&gt; “/home/user/data”).
 2. Validates input is a path.
 3. If path DOES NOT exist: It creates it (including parents).
-4. If path DOES exist (or was just created): It checks is_dir() and R/W/X permissions.</p>
+4. If path DOES exist (or was just created): It checks is_dir()</p>
+<blockquote>
+<div><p>and R/W/X permissions.</p>
+</div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__get_pydantic_core_schema__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/annotated_handlers/#pydantic.annotated_handlers.GetCoreSchemaHandler" title="(in Pydantic Validation v0.0.0)"><span class="pre">pydantic.GetCoreSchemaHandler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic_core.core_schema.CoreSchema</span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__get_pydantic_core_schema__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/annotated_handlers/#pydantic.annotated_handlers.GetCoreSchemaHandler" title="(in Pydantic Validation v0.0.0)"><span class="pre">pydantic.GetCoreSchemaHandler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic_core.core_schema.CoreSchema</span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__" title="Link to this definition">#</a></dt>
 <dd><p>Define Validation AND Serialization logic.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.validate_and_create">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_and_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.validate_and_create" title="Link to this definition">#</a></dt>
-<dd><p>Expands user, checks if path exists. If not, creates it. Then checks permissions.</p>
+<dd><p>Expand user, checks if path exists.</p>
+<p>If not, creates it. Then checks permissions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__str__" title="Link to this definition">#</a></dt>
+<dd><p>Return the string representation of the path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__repr__" title="Link to this definition">#</a></dt>
+<dd><p>Return the developer-friendly representation of the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__truediv__">
+<span class="sig-name descname"><span class="pre">__truediv__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__truediv__" title="Link to this definition">#</a></dt>
+<dd><p>Implement the / operator to delegate to the underlying Path object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__getattr__">
+<span class="sig-name descname"><span class="pre">__getattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__getattr__" title="Link to this definition">#</a></dt>
+<dd><p>Delegate attribute access to the underlying Path object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__fspath__">
+<span class="sig-name descname"><span class="pre">__fspath__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__fspath__" title="Link to this definition">#</a></dt>
+<dd><p>Return the string path for os.PathLike compatibility.</p>
 </dd></dl>
 
 </dd></dl>
@@ -664,6 +703,11 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.validate_and_create"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.validate_and_create()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__str__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__str__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__repr__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__truediv__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__truediv__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__getattr__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__getattr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.EnsureWritableDirectory.__fspath__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.path.EnsureWritableDirectory.__fspath__()</span></code></a></li>
 </ul>
 </li>
 </ul>

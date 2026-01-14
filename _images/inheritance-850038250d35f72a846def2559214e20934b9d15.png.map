@@ -1,3 +1,0 @@
-<map id="inheritancec5f4693a52" name="inheritancec5f4693a52">
-<area shape="rect" id="node1" href="#docbuild.utils.pidlock.LockAcquisitionError" target="_top" title="Raised when a process fails to acquire the PidFileLock because it is already held by another process." alt="" coords="5,5,160,31"/>
-</map>

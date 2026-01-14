@@ -50,7 +50,7 @@
     <link rel="icon" href="../../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="docbuild.cli.context" href="../../context/index.html" />
+    <link rel="next" title="docbuild.cli.cmd_validate.process.ValidationResult" href="ValidationResult.html" />
     <link rel="prev" title="docbuild.cli.cmd_validate" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">docbuild.cli</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -590,6 +595,19 @@
   <section id="module-docbuild.cli.cmd_validate.process">
 <span id="docbuild-cli-cmd-validate-process"></span><h1>docbuild.cli.cmd_validate.process<a class="headerlink" href="#module-docbuild.cli.cmd_validate.process" title="Link to this heading">#</a></h1>
 <p>Module for processing XML validation in DocBuild.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="ValidationResult.html#docbuild.cli.cmd_validate.process.ValidationResult" title="docbuild.cli.cmd_validate.process.ValidationResult"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValidationResult</span></code></a></p></td>
+<td><p>Normalized result of RNG validation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -597,7 +615,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.display_results" title="docbuild.cli.cmd_validate.process.display_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">display_results</span></code></a>(→ None)</p></td>
 <td><p>Display validation results based on verbosity level using rich.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.validate_rng" title="docbuild.cli.cmd_validate.process.validate_rng"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_rng</span></code></a>(→ tuple[bool, str])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.validate_rng" title="docbuild.cli.cmd_validate.process.validate_rng"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_rng</span></code></a>(→ subprocess.CompletedProcess)</p></td>
 <td><p>Validate an XML file against a RELAX NG schema using jing.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.validate_rng_lxml" title="docbuild.cli.cmd_validate.process.validate_rng_lxml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_rng_lxml</span></code></a>(→ tuple[bool, str])</p></td>
@@ -605,6 +623,18 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.run_python_checks" title="docbuild.cli.cmd_validate.process.run_python_checks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_python_checks</span></code></a>(→ list[tuple[str, ...)</p></td>
 <td><p>Run all registered Python-based checks against a parsed XML tree.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.build_shortname" title="docbuild.cli.cmd_validate.process.build_shortname"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_shortname</span></code></a>(→ str)</p></td>
+<td><p>Return a shortened display name for <code class="docutils literal notranslate"><span class="pre">filepath</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.run_validation" title="docbuild.cli.cmd_validate.process.run_validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_validation</span></code></a>(→ ValidationResult)</p></td>
+<td><p>Run RNG validation using the selected method and normalize result.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.parse_tree" title="docbuild.cli.cmd_validate.process.parse_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_tree</span></code></a>(→ lxml.etree._ElementTree)</p></td>
+<td><p>Parse XML file using lxml in a background thread.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.run_checks_and_display" title="docbuild.cli.cmd_validate.process.run_checks_and_display"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_checks_and_display</span></code></a>(→ bool)</p></td>
+<td><p>Execute registered Python checks and print formatted results.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.process.process_file" title="docbuild.cli.cmd_validate.process.process_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_file</span></code></a>(→ int)</p></td>
 <td><p>Process a single file: RNG validation then Python checks.</p></td>
@@ -636,7 +666,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.validate_rng">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">validate_rng</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmlfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_schema_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PRODUCT_CONFIG_SCHEMA</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">xinclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idcheck</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.validate_rng" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">validate_rng</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmlfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_schema_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PRODUCT_CONFIG_SCHEMA</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">xinclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idcheck</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CompletedProcess" title="(in Python v3.14)"><span class="pre">subprocess.CompletedProcess</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.validate_rng" title="Link to this definition">#</a></dt>
 <dd><p>Validate an XML file against a RELAX NG schema using jing.</p>
 <p>If <cite>xinclude</cite> is True (the default), this function resolves XIncludes by
 running <cite>xmllint –xinclude</cite> and piping its output to <cite>jing</cite>. This is
@@ -645,7 +675,8 @@ more robust for complex XInclude statements, including those with XPointer.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xmlfile</strong> – The path to the XML file to validate.</p></li>
-<li><p><strong>rng_schema_path</strong> – The path to the RELAX NG schema file. It supports both RNC and RNG formats.</p></li>
+<li><p><strong>rng_schema_path</strong> – The path to the RELAX NG schema file.
+It supports both RNC and RNG formats.</p></li>
 <li><p><strong>xinclude</strong> – If True, resolve XIncludes with <cite>xmllint</cite> before validation.</p></li>
 <li><p><strong>idcheck</strong> – If True, perform ID uniqueness checks.</p></li>
 </ul>
@@ -685,6 +716,72 @@ of RELAX NG schemas (i.e., .rng files, not .rnc files).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of tuples containing check names and their results.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.build_shortname">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">build_shortname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.build_shortname" title="Link to this definition">#</a></dt>
+<dd><p>Return a shortened display name for <code class="docutils literal notranslate"><span class="pre">filepath</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – Path-like object to shorten.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shortened display name (last two path components or full path).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.run_validation">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">run_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="ValidationResult.html#docbuild.cli.cmd_validate.process.ValidationResult" title="docbuild.cli.cmd_validate.process.ValidationResult"><span class="pre">ValidationResult</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.run_validation" title="Link to this definition">#</a></dt>
+<dd><p>Run RNG validation using the selected method and normalize result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – Path to the XML file to validate.</p></li>
+<li><p><strong>method</strong> – Validation method name (“jing” or “lxml”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <a class="reference internal" href="ValidationResult.html#docbuild.cli.cmd_validate.process.ValidationResult" title="docbuild.cli.cmd_validate.process.ValidationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationResult</span></code></a> describing the outcome.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.parse_tree">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">parse_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">lxml.etree._ElementTree</span></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.parse_tree" title="Link to this definition">#</a></dt>
+<dd><p>Parse XML file using lxml in a background thread.</p>
+<p>Exceptions from <code class="xref py py-func docutils literal notranslate"><span class="pre">lxml.etree.parse()</span></code> (for example
+<code class="xref py py-class docutils literal notranslate"><span class="pre">lxml.etree.XMLSyntaxError</span></code>) are propagated to the caller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – Path to the XML file to parse.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parsed <code class="xref py py-class docutils literal notranslate"><span class="pre">lxml.etree._ElementTree</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.run_checks_and_display">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">run_checks_and_display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._ElementTree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shortname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../context/DocBuildContext.html#docbuild.cli.context.DocBuildContext" title="docbuild.cli.context.DocBuildContext"><span class="pre">docbuild.cli.context.DocBuildContext</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.run_checks_and_display" title="Link to this definition">#</a></dt>
+<dd><p>Execute registered Python checks and print formatted results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tree</strong> – Parsed XML tree to check.</p></li>
+<li><p><strong>shortname</strong> – Short name used for display output.</p></li>
+<li><p><strong>context</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">DocBuildContext</span></code> used to read verbosity.</p></li>
+<li><p><strong>max_len</strong> – Maximum length used for aligned output.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True when all checks succeeded (or when no checks are registered).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -752,11 +849,11 @@ configured correctly.</p>
       </div>
     </a>
     <a class="right-next"
-       href="../../context/index.html"
+       href="ValidationResult.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.cli.context</p>
+        <p class="prev-next-title">docbuild.cli.cmd_validate.process.ValidationResult</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -779,12 +876,17 @@ configured correctly.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.display_results"><code class="docutils literal notranslate"><span class="pre">display_results()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.validate_rng"><code class="docutils literal notranslate"><span class="pre">validate_rng()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.validate_rng_lxml"><code class="docutils literal notranslate"><span class="pre">validate_rng_lxml()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.run_python_checks"><code class="docutils literal notranslate"><span class="pre">run_python_checks()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.build_shortname"><code class="docutils literal notranslate"><span class="pre">build_shortname()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.run_validation"><code class="docutils literal notranslate"><span class="pre">run_validation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.parse_tree"><code class="docutils literal notranslate"><span class="pre">parse_tree()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.run_checks_and_display"><code class="docutils literal notranslate"><span class="pre">run_checks_and_display()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.process_file"><code class="docutils literal notranslate"><span class="pre">process_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.process"><code class="docutils literal notranslate"><span class="pre">process()</span></code></a></li>
 </ul>

@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -502,6 +503,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -597,10 +602,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.load_check_functions" title="docbuild.config.xml.stitch.load_check_functions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_check_functions</span></code></a>(→ list[collections.abc.Callable])</p></td>
 <td><p>Load all check functions from <a class="reference internal" href="../checks/index.html#module-docbuild.config.xml.checks" title="docbuild.config.xml.checks"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.config.xml.checks</span></code></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.check_stitchfile" title="docbuild.config.xml.stitch.check_stitchfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_stitchfile</span></code></a>(→ bool)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.log_memory_usage" title="docbuild.config.xml.stitch.log_memory_usage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_memory_usage</span></code></a>(→ int)</p></td>
+<td><p>Determine the memory usage.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.check_stitchfile" title="docbuild.config.xml.stitch.check_stitchfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_stitchfile</span></code></a>(→ bool)</p></td>
 <td><p>Check the stitchfile for unresolved references.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.create_stitchfile" title="docbuild.config.xml.stitch.create_stitchfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_stitchfile</span></code></a>(→ lxml.etree._ElementTree)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.stitch.create_stitchfile" title="docbuild.config.xml.stitch.create_stitchfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_stitchfile</span></code></a>(→ lxml.etree._ElementTree)</p></td>
 <td><p>Asynchronously create a stitch file from a list of XML files.</p></td>
 </tr>
 </tbody>
@@ -613,6 +621,17 @@
 <dt class="sig sig-object py" id="docbuild.config.xml.stitch.load_check_functions">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.stitch.</span></span><span class="sig-name descname"><span class="pre">load_check_functions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">collections.abc.Callable</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.stitch.load_check_functions" title="Link to this definition">#</a></dt>
 <dd><p>Load all check functions from <a class="reference internal" href="../checks/index.html#module-docbuild.config.xml.checks" title="docbuild.config.xml.checks"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.config.xml.checks</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.stitch.log_memory_usage">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.stitch.</span></span><span class="sig-name descname"><span class="pre">log_memory_usage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.stitch.log_memory_usage" title="Link to this definition">#</a></dt>
+<dd><p>Determine the memory usage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>memory usage in kilobytes</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -701,6 +720,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.stitch.load_check_functions"><code class="docutils literal notranslate"><span class="pre">load_check_functions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.stitch.log_memory_usage"><code class="docutils literal notranslate"><span class="pre">log_memory_usage()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.stitch.check_stitchfile"><code class="docutils literal notranslate"><span class="pre">check_stitchfile()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.stitch.create_stitchfile"><code class="docutils literal notranslate"><span class="pre">create_stitchfile()</span></code></a></li>
 </ul>

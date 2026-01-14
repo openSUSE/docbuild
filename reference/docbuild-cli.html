@@ -396,6 +396,7 @@
 <li class="toctree-l2"><a class="reference internal" href="_autoapi/docbuild/__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autoapi/docbuild/__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="_autoapi/docbuild/cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/callback/index.html">docbuild.cli.callback</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
@@ -500,6 +501,10 @@
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/utils/convert/index.html">docbuild.utils.convert</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -727,6 +732,29 @@ with the following properties:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>metadata<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DOCTYPES<span class="o">]</span>...
 </pre></div>
 </div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-metadata-E">
+<span id="cmdoption-docbuild-metadata-exitfirst"></span><span class="sig-name descname"><span class="pre">-E</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--exitfirst</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-metadata-E" title="Link to this definition">#</a></dt>
+<dd><p>Exit on first failed deliverable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-metadata-S">
+<span id="cmdoption-docbuild-metadata-skip-repo-update"></span><span class="sig-name descname"><span class="pre">-S</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--skip-repo-update</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-metadata-S" title="Link to this definition">#</a></dt>
+<dd><p>Skip updating git repositories before processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Arguments</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-docbuild-metadata-arg-DOCTYPES">
