@@ -29,6 +29,8 @@ env:
   UV_FROZEN: "1"
   # Needed for coverage/multiprocessing reliability
   PYTHONSTARTMETHOD: spawn
+  # The group to use for installing/testing dependencies
+  PYPROJECT_GROUP: tests
 
 jobs:
   test-ubuntu:
@@ -81,7 +83,7 @@ jobs:
           cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies and Coverage Tools
-        run: uv sync --group github
+        run: uv sync --group ${{ env.PYPROJECT_GROUP }}
 
       - name: Run tests and Report Coverage
         env:
@@ -189,7 +191,7 @@ jobs:
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --editable . --group github
+          uv pip install --editable . --group ${{ env.PYPROJECT_GROUP }}
 
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)

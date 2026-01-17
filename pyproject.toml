@@ -88,11 +88,6 @@ devel = [
   {include-group = "repl"},
   # {include-group = "publish"},
 ]
-github = [
-  # {include-group = "typing"},
-  # {include-group = "formatting"},
-  {include-group = "tests"},
-]
 
 [project.scripts]
 docbuild = "docbuild.__main__:cli"
