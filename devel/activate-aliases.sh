@@ -4,6 +4,9 @@
 # For testing:
 alias upytest="uv run --frozen pytest"
 
+# General Python command
+alias upython="uv run --frozen python"
+
 # For the interactive Python shell with the project's environment:
 alias uipython="uv run --frozen ipython --ipython-dir=.ipython"
 

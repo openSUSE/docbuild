@@ -25,16 +25,19 @@ class LifecycleFlag(Flag):
     unsupported = auto()
     """Unsupported lifecycle state."""
 
-    # NOTE: Putting a compiled regex (or other helper) as a class
-    # variable on an Enum/Flag is error-prone:
-    # the Enum metaclass treats class attributes specially and may
-    # convert them into members or otherwise interfere.
-    #
-    # Solution: This class variable will be attached after class creation.
-    # _SEPARATOR = re.compile(r'[|,]')  # Static class variable
+    @classmethod
+    def _missing_(cls: type[Self], value: object) -> Self | None:
+        """Handle missing values by attempting to parse strings."""
+        if isinstance(value, str):
+            try:
+                return cls.from_str(value)
+            except ValueError:
+                # Let the default error handling take over for invalid strings
+                return None
+        return super()._missing_(value)
 
     @classmethod
-    def from_str(cls: "LifecycleFlag", value: str) -> "LifecycleFlag":
+    def from_str(cls: type[Self], value: str) -> Self:
         """Convert a string to a LifecycleFlag object.
 
         The string accepts the values 'supported', 'beta', 'hidden',
@@ -53,7 +56,7 @@ class LifecycleFlag(Flag):
         <LifecycleFlag.unknown: 0>
 
         """
-        separator = cls._SEPARATOR  # will exist after we attach it
+        separator = cls._SEPARATOR  # type: ignore[attr-defined]
         try:
             flag = cls(0)  # Start with an empty flag
             parts = [v.strip() for v in separator.split(value) if v.strip()]
@@ -92,4 +95,40 @@ class LifecycleFlag(Flag):
 
 
 # attach after class creation so EnumMeta doesn't touch it
-LifecycleFlag._SEPARATOR: ClassVar[re.Pattern] = re.compile(r"[|,]")
+# NOTE: Putting a compiled regex (or other helper) as a class
+# variable on an Enum/Flag is error-prone:
+# the Enum metaclass treats class attributes specially and may convert them into members.
+LifecycleFlag._SEPARATOR: ClassVar[re.Pattern] = re.compile(r"[|,]")  # type: ignore[attr-defined]
+
+if __name__ == "__main__":  # pragma: nocover
+    from rich import print  # noqa: A004
+
+    # Example usage
+    lc = LifecycleFlag("supported,beta")
+    print(f"{lc=}")
+    print(f"{lc.name=}")
+    print(f"{lc.value=}")
+    print(f"{lc.supported=}")
+    print(f"{lc.beta=}")
+
+    print("=" * 20)
+
+    lc = LifecycleFlag.from_str("supported,beta")
+    print(f"{lc=}")
+    print(f"{lc.name=}")
+    print(f"{lc.value=}")
+    print(f"{lc.supported=}")
+    print(f"{lc.beta=}")
+
+    print("=" * 20)
+
+    lc = LifecycleFlag.from_str("supported|beta")
+    print(f"{lc=}")
+    print(f"{lc.name=}")
+    print(f"{lc.value=}")
+    print(f"{lc.supported=}")
+    print(f"{lc.beta=}")
+
+    print("=" * 20)
+    print(f"{dir(lc)=}")
+    # print(f"{lc.foo=}")

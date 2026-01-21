@@ -650,10 +650,22 @@ def test_store_productdocset_json_merges_and_writes(
     stitchnode: etree._ElementTree,
 ):
     """Merge docs from metadata files and write product/docset JSON."""
-    # Use the fixture's meta cache dir and create a metadata file there
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
     meta_file = Path(meta_cache_dir) / "meta1.json"
-    meta_file.write_text(json.dumps({"docs": [{"title": "Doc1"}]}), encoding="utf-8")
+    # Provide a valid document structure that passes Pydantic validation
+    doc_content = {
+        "docs": [
+            {
+                "title": "Doc1",
+                "dcfile": "DC-Doc1.xml",
+                "lang": "en-us",
+                "description": "A test document.",
+                "dateModified": "2024-01-01",
+                "format": {"html": "path/to/html"},
+            }
+        ]
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
@@ -670,13 +682,12 @@ def test_store_productdocset_json_merges_and_writes(
         )
 
     # Assert written JSON exists and contains merged document
-    out_file = (
-        Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
-    )
+    out_file = Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
-    assert "documents" in merged
-    assert merged["documents"][0]["title"] == "Doc1"
+    assert "documents" in merged # Check if the 'documents' key exists
+    assert merged["documents"][0]["docs"][0]["title"] == "Doc1"
+    assert merged["documents"][0]["docs"][0]["dcfile"] == "DC-Doc1.xml"
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(
@@ -684,9 +695,9 @@ def test_store_productdocset_json_warns_on_empty_metadata(
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
-    """If a metadata file is empty ({}), a warning is printed to console_err."""
+    """If a metadata file is empty ({}), a warning is logged."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    meta_file = Path(meta_cache_dir) / "empty.json"
+    meta_file = meta_cache_dir / "empty.json"
     meta_file.write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
@@ -699,22 +710,22 @@ def test_store_productdocset_json_warns_on_empty_metadata(
             "collect_files_flat",
             return_value=[(doctype, deliverable.docsetid, [Path("empty.json")])],
         ),
-        patch.object(metaprocess_pkg, "console_err") as mock_console_err,
+        patch.object(metaprocess_pkg, "log") as mock_log,
     ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
-    # Expect a warning printed
-    assert mock_console_err.print.called
+    # Expect a warning to be logged
+    mock_log.warning.assert_called_with("Empty metadata file %s", Path("empty.json"))
 
 
 def test_store_productdocset_json_handles_read_error(
     mock_context_with_config_dir: DocBuildContext,
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
-):
-    """If reading a metadata file raises, it should be caught and an error printed."""
+):  # sourcery skip: extract-duplicate-method
+    """If reading a metadata file raises, it should be caught and an error logged."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
     bad_file = Path(meta_cache_dir) / "bad.json"
     # Write invalid JSON to cause json.load to raise
@@ -730,13 +741,14 @@ def test_store_productdocset_json_handles_read_error(
             "collect_files_flat",
             return_value=[(doctype, deliverable.docsetid, [Path("bad.json")])],
         ),
-        patch.object(metaprocess_pkg, "console_err") as mock_console_err,
+        patch.object(metaprocess_pkg, "log") as mock_log,
     ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
-    assert mock_console_err.print.called
+    # Expect an error to be logged
+    mock_log.error.assert_called()
 
 
 @pytest.mark.parametrize(

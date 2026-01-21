@@ -100,7 +100,7 @@ class Doctype(BaseModel):
     )
 
     # dunder methods
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self: Self, other: object) -> bool:
         """Check equality with another Doctype, ignoring order in docset/langs."""
         if not isinstance(other, Doctype):
             return NotImplemented
@@ -112,7 +112,7 @@ class Doctype(BaseModel):
             and set(self.langs) == set(other.langs)
         )
 
-    def __lt__(self, other: object) -> bool:
+    def __lt__(self: Self, other: object) -> bool:
         """Check if this Doctype is less than another Doctype."""
         if not isinstance(other, Doctype):
             return NotImplemented
@@ -125,13 +125,13 @@ class Doctype(BaseModel):
             self.langs,  # we rely on sorted languages
         ) < (other.product, other.lifecycle, other.docset, other.langs)
 
-    def __str__(self) -> str:
+    def __str__(self: Self) -> str:
         """Implement str(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
-    def __repr__(self) -> str:
+    def __repr__(self: Self) -> str:
         """Implement repr(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
@@ -143,7 +143,7 @@ class Doctype(BaseModel):
             f")"
         )
 
-    def __contains__(self, other: "Doctype") -> bool:
+    def __contains__(self: Self, other: "Doctype") -> bool:
         """Return if bool(other in self).
 
         Every part of a Doctype is compared element-wise.
@@ -160,7 +160,7 @@ class Doctype(BaseModel):
             ],
         )
 
-    def __hash__(self) -> int:
+    def __hash__(self: Self) -> int:
         """Implement hash(self)."""
         return hash(
             (
@@ -183,21 +183,9 @@ class Doctype(BaseModel):
         """Convert a string into a list."""
         return sorted(value.split(",")) if isinstance(value, str) else sorted(value)
 
-    @field_validator("lifecycle", mode="before")
-    @classmethod
-    def coerce_lifecycle(cls, value: str | LifecycleFlag) -> LifecycleFlag:
-        """Convert a string into a LifecycleFlag."""
-        # value = "" if value is None else value
-        if isinstance(value, str):
-            # Delegate it to the LifecycleFlag to deal with
-            # the correct parsing and validation
-            lifecycles = LifecycleFlag.from_str(value)
-            return lifecycles
-        return LifecycleFlag(value)
-
     @field_validator("langs", mode="before")
     @classmethod
-    def coerce_langs(cls, value: str | list[str | LanguageCode]) -> list[LanguageCode]:
+    def coerce_langs(cls: type["Doctype"], value: str | list[str | LanguageCode]) -> list[LanguageCode]:
         """Convert a comma-separated string or a list of strings into LanguageCode."""
         # Allow list of strings or Language enums
         if isinstance(value, str):
@@ -210,7 +198,7 @@ class Doctype(BaseModel):
         )
 
     @classmethod
-    def from_str(cls, doctype_str: str) -> Self:
+    def from_str(cls: type["Doctype"], doctype_str: str) -> Self:
         """Parse a string that adheres to the doctype format."""
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
@@ -229,7 +217,7 @@ class Doctype(BaseModel):
             langs=langs,
         )
 
-    def xpath(self) -> str:
+    def xpath(self: Self) -> str:
         """Return an XPath expression for this Doctype to find all deliverables.
 
         >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
@@ -274,3 +262,21 @@ class Doctype(BaseModel):
             language = f"language[{language}]"
 
         return f"{product}/{docset}/builddocs/{language}"
+
+    def product_xpath_segment(self: Self) -> str:
+        """Return the XPath segment for the product node.
+
+        Example: "product[@productid='sles']" or "product"
+        """
+        if self.product != Product.ALL:
+            return f"product[@productid={self.product.value!r}]"
+        return "product"
+
+    def docset_xpath_segment(self: Self, docset: str) -> str:
+        """Return the XPath segment for the docset node.
+
+        Example: "docset[@setid='15-SP6']" or "docset"
+        """
+        if docset != "*":
+            return f"docset[@setid={docset!r}]"
+        return "docset"

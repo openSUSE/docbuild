@@ -9,12 +9,14 @@ import shlex
 from typing import Any
 
 from lxml import etree
+from pydantic import ValidationError
 from rich.console import Console
 
 from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
+from ...models.manifest import Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ..context import DocBuildContext
@@ -338,76 +340,51 @@ def store_productdocset_json(
         # files: list[Path]
         product = doctype.product.value
         stdout.print(f" > Processed group: {doctype} / {docset}")
-        # TODO: This XPath should be done in the Doctype model
-        # For the time being, it doesn't add to the coverage
-        productxpath = "./product"
-        if product != "*":  # pragma: no cover
-            productxpath += f'[@productid="{product}"]'
-
+        # The XPath logic is encapsulated within the Doctype model
+        productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
-        docsetxpath = "./docset"
-        if docset != "*":  # pragma: no cover
-            docsetxpath += f'[@setid="{docset}"]'
-
+        docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
-        # TODO: end
 
-        # Create a new structure for each group of product/docset
-        structure = {
-            "productname": productnode.find("name").text,
-            "acronym": product,
-            "version": docset,
-            "lifecycle": docsetnode.attrib.get("lifecycle"),
-            "hide-productname": False,
-            "descriptions": [
-                # TODO
-                # { "lang", "...",
-                #   "default": True|False,
-                #   "description": "..."
-                # }
-            ],
-            "categories": [
-                # TODO
-                # {
-                #  "categoryId": "...",
-                #  "rank": INT,
-                #  "translations": [
-                #    {
-                #      "lang", "...",
-                #      "default": True|False,
-                #      "title": "..."
-                #    }
-                #  ]
-            ],
-            "documents": [],  # Will be filled below
-            "archives": [
-                # TODO
-                # {
-                #   "lang": "...",
-                #   "default": True|False,
-                #   "zip": "LANG/PRODUCT/DOCSET/PRODUCT-DOCSET-LANG.zip",
-                # }
-            ],
-        }
+        manifest = Manifest(
+            productname=productnode.find("name").text,
+            acronym=product,
+            version=docset,
+            lifecycle=docsetnode.attrib.get("lifecycle") or "",
+            # * hide-productname is False by default in the Manifest model
+            # * descriptions, categories, archives are empty lists by default
+        )
+
         for f in files:
             stdout.print(f" {f}")
             try:
-                with (meta_cache_dir / f).open() as fh:
-                    doc = json.load(fh)
-                if not doc:
-                    console_err.print(f"Warning: Empty metadata file {f}")
+                with (meta_cache_dir / f).open(encoding="utf-8") as fh:
+                    loaded_doc_data = json.load(fh)
+                if not loaded_doc_data:
+                    log.warning("Empty metadata file %s", f)
                     continue
+                doc_model = Document.model_validate(loaded_doc_data)
+                manifest.documents.append(doc_model)
 
-                structure["documents"].extend(doc.get("docs", []))
+            except json.JSONDecodeError as e:
+                log.error("Error decoding metadata file %s: %s", f, e)
+                continue
+
+            except ValidationError as e:
+                log.error("Error validating metadata file %s: %s", f, e)
+                continue
 
             except Exception as e:
-                console_err.print(f"Error reading metadata file {f}: {e}")
+                log.error("Error reading metadata file %s: %s", f, e)
+                continue
 
         # stdout.print(json.dumps(structure, indent=2), markup=True)
         jsondir = meta_cache_dir / product
         jsondir.mkdir(parents=True, exist_ok=True)
-        jsonfile = jsondir / f"{docset}.json"
-        jsonfile.write_text(json.dumps(structure, indent=2))
+        jsonfile = (
+            jsondir / f"{docset}.json"
+        )  # e.g., /path/to/cache/product_id/docset_id.json
+        jsonfile.write_text(manifest.model_dump_json(indent=2, by_alias=True))
         log.info(
             "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
         )
