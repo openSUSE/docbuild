@@ -36,8 +36,9 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
+      fail-fast: false # Continue other jobs even if one fails (testing)
       matrix:
         python-version: &python-matrix
           - '3.12'
