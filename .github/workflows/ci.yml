@@ -6,15 +6,19 @@ on:
         description: "Jing version to use"
         required: false
         default: "20091111"  # Default value
-  pull_request_target: # Changed from pull_request to pull_request_target
+  pull_request_target:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/**' 
   push:
     branches:
       - main
     paths:
       - 'src/**'
       - 'tests/**'
-
+      - '.github/workflows/**'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
