@@ -27,7 +27,7 @@ def calc_max_len(files: tuple[Path | str, ...], last_parts: int = -2) -> int:
         path = Path(filepath)
         # Shorten the filename
         if len(path.parts) >= abs(last_parts):
-            shortname = '/'.join(path.parts[last_parts:])
+            shortname = "/".join(path.parts[last_parts:])
         else:
             shortname = str(filepath)
         lengths.append(len(shortname))

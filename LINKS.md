@@ -7,10 +7,18 @@ This document lists some links that may be helpful for this project.
 * [Design Patterns, Architectures & Idioms in 24 Languages](https://softwarepatternslexicon.com)
 * [Design Patterns](https://refactoring.guru/design-patterns/)
 
+## Infrastructure
+
+* [PEX](https://docs.pex-tool.org)
+
 ## Async I/O
 
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
 * [joblib](https://joblib.readthedocs.io)
+
+## Task Queues
+
+* [Taskiq](https://taskiq-python.github.io)
 
 ## Tests
 
@@ -27,3 +35,15 @@ This document lists some links that may be helpful for this project.
 * [pid](https://github.com/trbs/pid/)
 * [filelock](https://github.com/tox-dev/py-filelock)
 * [Portalocker](https://portalocker.readthedocs.io/en/latest/)
+
+## Databases
+
+* [TinyDB](https://tinydb.readthedocs.io/en/latest/)
+* [Sqlite](https://www.sqlite.org/index.html)
+* [aiosqlite](https://github.com/omnilib/aiosqlite)
+
+## Docserv
+
+* [Docserv Action steps](https://confluence.suse.com/spaces/documentation/pages/1137311916/Docserv+Action+steps)
+* [Docserv repo](https://github.com/openSUSE/docserv)
+

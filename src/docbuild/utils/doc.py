@@ -1,12 +1,12 @@
-""" """
+"""Utility decorators for docbuild."""
 
 from collections.abc import Callable
 import functools
 from typing import Any, ParamSpec, TypeVar
 
-T = TypeVar('T', bound=Callable[..., object])
-P = ParamSpec('P')
-R = TypeVar('R')
+T = TypeVar("T", bound=Callable[..., object])
+P = ParamSpec("P")
+R = TypeVar("R")
 FormatValue = str | int | bool
 
 
@@ -15,7 +15,7 @@ class SafeDict(dict):
 
     def __missing__(self, key: str) -> str:
         """Let missing keys stay as keys."""
-        return '{' + key + '}'
+        return "{" + key + "}"
 
 
 def docstring(
@@ -53,7 +53,7 @@ def docstring(
     """
 
     def decorator(func: Callable[P, R]) -> Callable[P, R]:
-        base_template = template if template is not None else func.__doc__ or ''
+        base_template = template if template is not None else func.__doc__ or ""
         formatted_doc = base_template.format_map(SafeDict(kwargs))
 
         @functools.wraps(func)

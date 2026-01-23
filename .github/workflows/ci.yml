@@ -13,12 +13,24 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 permissions:
   contents: read
   packages: read
+  pull-requests: write
+
+# GLOBAL ENV: Applies to ALL jobs (Linux & macOS)
+env:
+  # Strict lockfile checks for everyone, equivalent to passing --frozen to every command
+  UV_FROZEN: "1"
+  # Needed for coverage/multiprocessing reliability
+  PYTHONSTARTMETHOD: spawn
+  # The group to use for installing/testing dependencies
+  PYPROJECT_GROUP: tests
 
 jobs:
   test-ubuntu:
@@ -30,12 +42,13 @@ jobs:
         python-version: &python-matrix
           - '3.12'
           - '3.13'
-          # - '3.14'
+          - '3.14'
     container:
       image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Get dependencies
         run: |
           rpm -q daps \
@@ -56,7 +69,7 @@ jobs:
             jq \
             rsvg-convert \
             openssh-clients || true
-            
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -64,34 +77,95 @@ jobs:
 
       - name: Install uv
         id: setup-uv
-        run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install uv
-
-      - name: Print the installed version
-        run: echo "Installed uv version is $(.venv/bin/uv --version)"
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies and Coverage Tools
-        run: |
-          source .venv/bin/activate
-          uv sync --frozen --group devel
-          # CRITICAL FIX: Ensure coverage tools are installed for the CI runner
-          pip install coverage pytest-cov
+        run: uv sync --group ${{ env.PYPROJECT_GROUP }}
 
-      - name: Run tests and Report Coverage # Unified step for test execution and reporting
-        run: |
-          source .venv/bin/activate
-          # 1. Run tests and collect coverage for src/ and tests/
-          pytest --cov=src --cov=tests --cov-report=term-missing -vv 
-          
-          # 2. Combine and report data (needed after parallel execution)
-          python -m coverage combine --append || true
-          python -m coverage report
-          python -m coverage erase # Final cleanup
+      - name: Run tests and Report Coverage
         env:
-          PYTHONSTARTMETHOD: spawn
-          
+          UV_NO_SYNC: "1"  # Disable uv sync during test runs
+        run: |
+          # Using 'uv run' avoids the need to manually source .venv/bin/activate
+          uv run pytest --cov=src --cov=tests --cov-report=term-missing -vv
+
+          # Combine data
+          uv run python -m coverage combine --append || true
+
+          # Generate report
+          uv run python -m coverage report | tee coverage.txt
+
+          # Cleanup
+          uv run python -m coverage erase
+
+      - name: Create Coverage Comment for ${{ github.event.pull_request.head.sha || github.sha }}
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        env:
+          # Use the PR head if available, otherwise fallback to the workflow SHA
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          COVERAGE_THRESHOLD: 90
+        run: |
+          # Get the short SHA (e.g., a1b2c3d)
+          SHORT_SHA=${COMMIT_SHA::7}
+
+          # 1. Header
+          echo "## Coverage Report" > coverage_comment.txt
+          echo "For commit $SHORT_SHA" >>  coverage_comment.txt
+          echo "" >> coverage_comment.txt
+
+          # 2. Open the collapsible section
+          echo "<details><summary>Click to expand Coverage Report</summary>" >> coverage_comment.txt
+          echo "" >> coverage_comment.txt
+
+          # 3. Open a diff code block
+          echo "\`\`\`diff" >> coverage_comment.txt
+
+          # 4. Run awk to parse percentages and add colors
+          awk -v threshold="$COVERAGE_THRESHOLD" '{
+            # Flag to track if we found a percentage in this line
+            is_coverage_row = 0
+
+            # 1. Scan all fields to find the one ending in "%"
+            # (Crucial for "term-missing" where the last column might be line numbers "1-5")
+            for (i=1; i<=NF; i++) {
+                if ($i ~ /%$/) {
+                    # Remove "%" and force numeric type by adding 0
+                    val = $i
+                    gsub("%", "", val)
+                    val = val + 0 # Force numeric conversion
+                    is_coverage_row = 1
+                    break; # Stop once we find the percentage
+                }
+            }
+
+            # 2. Logic: Colorize rows with %, indent everything else
+            if (is_coverage_row) {
+               if (val < threshold) {
+                 print "- " $0; # Red
+               } else {
+                 print "+ " $0; # Green
+               }
+            } else {
+               # Headers and Separators (------) fall here.
+               # We add two spaces so they appear Gray and aligned.
+               print "  " $0;
+            }
+          }' coverage.txt >> coverage_comment.txt
+
+          # 5. Close the block
+          echo "\`\`\`" >> coverage_comment.txt
+          echo "</details>" >> coverage_comment.txt
+
+      - name: Post Coverage Comment
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: coverage_comment.txt
+          header: coverage
+
   test-macos:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
@@ -102,21 +176,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       # Set up Python on macOS environment
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       # Install uv and project dependencies inside a virtual environment
       - name: Install uv and dependencies
+        env:
+          UV_NO_SYNC: "1"  # Disable uv sync during test runs
         run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install uv
-          uv pip install --editable . --group devel
-      
+          uv pip install --editable . --group ${{ env.PYPROJECT_GROUP }}
+
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
         run: |
@@ -128,7 +204,7 @@ jobs:
 
           # Download jing.jar file for XML validation
           curl -sL -f $JING_URL -o jing.jar
-          
+
           # Ensures the jar file is successfully downloaded, else exit with error
           if [ ! -f jing.jar ]; then
               echo "::error file=$JING_URL:: Failed to download jing.jar"
@@ -150,6 +226,6 @@ jobs:
       - name: Run tests
         run: |
           source .venv/bin/activate
-          pytest --cov=src -vv 
+          pytest --cov=src -vv
         env:
           PYTHONSTARTMETHOD: spawn

@@ -8,13 +8,13 @@ def check_ref_to_subdeliverable(
     attrs: dict[str, str],
 ) -> str | None:
     """Check reference to a subdeliverable."""
-    product = attrs.get('product')
-    docset = attrs.get('docset')
-    dc = attrs.get('dc')
-    subdeliverable = attrs.get('subdeliverable')
+    product = attrs.get("product")
+    docset = attrs.get("docset")
+    dc = attrs.get("dc")
+    subdeliverable = attrs.get("subdeliverable")
     # Build the XPath
     xpath = (  # Use // to be more robust against nesting
-        f'//product[@productid = {product!r}]/docset[@setid = {docset!r}]'
+        f"//product[@productid = {product!r}]/docset[@setid = {docset!r}]"
         f"/builddocs/language[@default = 'true' or @default = 1]"
         f"/deliverable[dc = '{dc}'][subdeliverable = '{subdeliverable}']"
     )
@@ -24,26 +24,26 @@ def check_ref_to_subdeliverable(
             'concat(ancestor::product/@productid, "/",  ancestor::docset/@setid)'
         )
         return (
-            f'Failed reference from {origin!r} to '
-            f'{product}/{docset}:{dc}#{subdeliverable}: '
-            'Referenced subdeliverable does not exist.'
+            f"Failed reference from {origin!r} to "
+            f"{product}/{docset}:{dc}#{subdeliverable}: "
+            "Referenced subdeliverable does not exist."
         )
 
 
 def check_ref_to_deliverable(ref: etree._Element, attrs: dict[str, str]) -> str | None:
     """Check reference to a deliverable."""
-    product = attrs.get('product')
-    docset = attrs.get('docset')
-    dc = attrs.get('dc')
+    product = attrs.get("product")
+    docset = attrs.get("docset")
+    dc = attrs.get("dc")
 
     # Build the XPath
     base_xpath = (  # Use // to be more robust against nesting
-        f'//product[@productid = {product!r}]/docset[@setid = {docset!r}]'
+        f"//product[@productid = {product!r}]/docset[@setid = {docset!r}]"
         f"/builddocs/language[@default = 'true' or @default = 1]"
         f"/deliverable[dc = '{dc}']"
     )
-    xpath_has_sub = f'{base_xpath}[subdeliverable]'
-    xpath_hasnot_sub = f'{base_xpath}[not(subdeliverable)]'
+    xpath_has_sub = f"{base_xpath}[subdeliverable]"
+    xpath_hasnot_sub = f"{base_xpath}[not(subdeliverable)]"
     tree = ref.getroottree()
 
     origin = ref.xpath(
@@ -57,25 +57,25 @@ def check_ref_to_deliverable(ref: etree._Element, attrs: dict[str, str]) -> str 
     # If we are here, it's an invalid reference. We need to find out why.
     if tree.xpath(xpath_has_sub):
         return (
-            f'Failed reference from {origin!r} to {product}/{docset}:{dc}: '
-            'Referenced deliverable has subdeliverables, '
-            'you must choose a subdeliverable in your reference.'
+            f"Failed reference from {origin!r} to {product}/{docset}:{dc}: "
+            "Referenced deliverable has subdeliverables, "
+            "you must choose a subdeliverable in your reference."
         )
     else:
         return (
-            f'Failed reference from {origin!r} to {product}/{docset}:{dc}: '
-            'Referenced deliverable does not exist.'
+            f"Failed reference from {origin!r} to {product}/{docset}:{dc}: "
+            "Referenced deliverable does not exist."
         )
 
 
 def check_ref_to_link(ref: etree._Element, attrs: dict[str, str]) -> str | None:
     """Check ref to an external link."""
-    product = attrs.get('product')
-    docset = attrs.get('docset')
-    link = attrs.get('link')
+    product = attrs.get("product")
+    docset = attrs.get("docset")
+    link = attrs.get("link")
 
     xpath = (  # Use // to be more robust against nesting
-        f'//product[@productid = {product!r}]/docset[@setid = {docset!r}]'
+        f"//product[@productid = {product!r}]/docset[@setid = {docset!r}]"
         f"/builddocs/language[@default = 'true' or @default = 1]"
         f"/external/link[@linkid = '{link}']"
     )
@@ -86,17 +86,17 @@ def check_ref_to_link(ref: etree._Element, attrs: dict[str, str]) -> str | None:
             'concat(ancestor::product/@productid, "/",  ancestor::docset/@setid)'
         )
         return (
-            f'Failed reference from {origin!r} to {product}/{docset}@{link}: '
-            'Referenced external link does not exist.'
+            f"Failed reference from {origin!r} to {product}/{docset}@{link}: "
+            "Referenced external link does not exist."
         )
 
 
 def check_ref_to_docset(ref: etree._Element, attrs: dict[str, str]) -> str | None:
     """Check reference to a docset."""
-    product = attrs.get('product')
-    docset = attrs.get('docset')
+    product = attrs.get("product")
+    docset = attrs.get("docset")
     xpath = (  # Use // to be more robust against nesting
-        f'//product[@productid = {product!r}]/docset[@setid = {docset!r}]'
+        f"//product[@productid = {product!r}]/docset[@setid = {docset!r}]"
     )
 
     tree = ref.getroottree()
@@ -105,24 +105,24 @@ def check_ref_to_docset(ref: etree._Element, attrs: dict[str, str]) -> str | Non
             'concat(ancestor::product/@productid, "/",  ancestor::docset/@setid)'
         )
         return (
-            f'Failed reference from {origin!r} to {product}/{docset}: '
-            'Referenced docset does not exist.'
+            f"Failed reference from {origin!r} to {product}/{docset}: "
+            "Referenced docset does not exist."
         )
 
 
 def check_ref_to_product(ref: etree._Element, attrs: dict[str, str]) -> str | None:
     """Check reference to a product."""
-    product = attrs.get('product')
+    product = attrs.get("product")
 
-    xpath = f'//product[@productid = {product!r}]'  # Use // to be more robust
+    xpath = f"//product[@productid = {product!r}]"  # Use // to be more robust
     tree = ref.getroottree()
     if not tree.xpath(xpath):
         origin = ref.xpath(
             'concat(ancestor::product/@productid, "/",  ancestor::docset/@setid)'
         )
         return (
-            f'Failed reference from {origin!r} to {product}: '
-            'Referenced product does not exist.'
+            f"Failed reference from {origin!r} to {product}: "
+            "Referenced product does not exist."
         )
 
 
@@ -142,13 +142,13 @@ def check_stitched_references(tree: etree._ElementTree) -> list[str]:
     #       the processing of <ref> elements. Ensure thread safety when appending
     #       to the `errors` list, and handle exceptions raised during concurrent
     #       execution to avoid losing error messages.
-    for ref in tree.iter('ref'):
+    for ref in tree.iter("ref"):
         attrs = ref.attrib
-        product = attrs.get('product')
-        docset = attrs.get('docset')
-        dc = attrs.get('dc')
-        subdeliverable = attrs.get('subdeliverable')
-        link = attrs.get('link')
+        product = attrs.get("product")
+        docset = attrs.get("docset")
+        dc = attrs.get("dc")
+        subdeliverable = attrs.get("subdeliverable")
+        link = attrs.get("link")
 
         result = None
         # Case 1: Reference to a subdeliverable
@@ -177,9 +177,9 @@ def check_stitched_references(tree: etree._ElementTree) -> list[str]:
                 'concat(ancestor::product/@productid, "/",  ancestor::docset/@setid)'
             )
             result = (
-                f'Reference failed in {origin!r}. '
-                'This issue should have been caught by the RNC validation: '
-                'This is a docserv-stitch bug.'
+                f"Reference failed in {origin!r}. "
+                "This issue should have been caught by the RNC validation: "
+                "This is a docserv-stitch bug."
             )
 
         if result:

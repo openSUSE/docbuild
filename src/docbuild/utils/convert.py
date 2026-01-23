@@ -12,17 +12,17 @@ def convert2bool(value: str | bool) -> bool:
     :raises ValueError: If the value cannot be converted to a valid boolean
     """
     mapping = {
-        'yes': True,
-        'true': True,
-        '1': True,
-        'on': True,
-        'no': False,
-        'false': False,
-        '0': False,
-        'off': False,
+        "yes": True,
+        "true": True,
+        "1": True,
+        "on": True,
+        "no": False,
+        "false": False,
+        "0": False,
+        "off": False,
     }
     value = str(value).lower()
     if value in mapping:
         return mapping[value]
 
-    raise ValueError(f'Invalid boolean value: {value}')
+    raise ValueError(f"Invalid boolean value: {value}")

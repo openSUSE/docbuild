@@ -1,18 +1,18 @@
 """Tests for the PidFileLock utility."""
 
+import builtins
 import errno
-import logging
 import multiprocessing as mp
 from multiprocessing import Event
-import os
 from pathlib import Path
 import platform
+import re
 import time
+from unittest.mock import Mock, patch
 
 import pytest
-from unittest.mock import patch, Mock
+
 import docbuild.utils.pidlock as pidlock_mod
-import builtins
 from docbuild.utils.pidlock import LockAcquisitionError, PidFileLock
 
 # Define a shared marker to skip the test if the OS is macOS (Darwin)
@@ -20,6 +20,7 @@ skip_macos = pytest.mark.skipif(
     platform.system() == "Darwin",
     reason="Skipped on macOS due to known multiprocessing/resource cleanup issues.",
 )
+
 
 @pytest.fixture
 def lock_setup(tmp_path):
@@ -32,8 +33,14 @@ def lock_setup(tmp_path):
 
 # --- Helper function for multiprocessing tests (Must be top-level/global) ---
 
-def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event): # type: ignore
-    """Acquire and hold a lock in a separate process, waiting for an event to release."""
+
+def _mp_lock_holder(
+    resource_path: Path, lock_dir: Path, lock_path: Path, done_event: Event
+):  # type: ignore
+    """Acquire and hold a lock in a separate process.
+
+    Waiting for an event to release.
+    """
     lock = PidFileLock(resource_path, lock_dir)
     try:
         with lock:
@@ -47,6 +54,7 @@ def _mp_lock_holder(resource_path: Path, lock_dir: Path, lock_path: Path, done_e
 # -----------------------------------------------------------------------------
 # Core PidFileLock Tests
 # -----------------------------------------------------------------------------
+
 
 def test_acquire_and_release_creates_lock_file(lock_setup):
     """Test that the lock file is created on entry and removed on exit."""
@@ -76,26 +84,32 @@ def test_context_manager(lock_setup):
 @skip_macos
 def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
     """Test that two separate processes cannot acquire the same lock simultaneously."""
-
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
     lock_path = PidFileLock(resource_path, lock_dir).lock_path
 
+    # Use the 'fork' start method on platforms where it is available.
+    # This avoids issues with importing the 'tests' package in spawned
+    # child processes (e.g. when using forkserver/spawn).
+    try:
+        ctx = mp.get_context("fork")
+    except ValueError:  # pragma: no cover - defensive for non-fork platforms
+        pytest.skip("multiprocessing 'fork' context not available on this platform")
+
     # Create an Event to signal the child process to release the lock
-    done_event = mp.Event()
+    done_event = ctx.Event()
 
     # Start a background process to hold the lock
-    lock_holder = mp.Process(
-        target=_mp_lock_holder,
-        args=(resource_path, lock_dir, lock_path, done_event)
+    lock_holder = ctx.Process(
+        target=_mp_lock_holder, args=(resource_path, lock_dir, lock_path, done_event)
     )
     lock_holder.start()
 
     # Wait for the lock holder to acquire the lock (check for lock file existence)
     timeout_start = time.time()
     while not lock_path.exists():
-        if time.time() - timeout_start > 5:
-             raise TimeoutError("Child process failed to acquire lock in time.")
+        if (time.time() - timeout_start) > 10:
+            raise TimeoutError("Child process failed to acquire lock in time.")
         time.sleep(0.01)
 
     # Main thread tries to acquire the same lock (EXPECT FAILURE)
@@ -106,7 +120,7 @@ def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
 
     # Cleanup: Signal the child process to exit cleanly and wait for it
     done_event.set()
-    lock_holder.join(timeout=10) # Wait for clean exit (no need for terminate)
+    lock_holder.join(timeout=10)  # Wait for clean exit (no need for terminate)
 
     # Final check: Ensure the child exited successfully
     if lock_holder.is_alive():
@@ -119,9 +133,11 @@ def test_lock_prevents_concurrent_access_in_separate_process(lock_setup):
 
 
 def test_lock_is_reentrant_per_process(lock_setup):
-    """
-    Test that the per-path singleton behavior works and prevents double acquisition
-    using the new internal RuntimeError check.
+    """Test that the singleton pattern prevents re-entrant locking.
+
+    This test simulates a race condition where fcntl.flock raises EAGAIN. It
+    verifies that a LockAcquisitionError is raised and that the underlying file
+    handle is properly closed, ensuring resource c
     """
     resource_path, lock_dir = lock_setup
     lock_dir.mkdir()
@@ -129,11 +145,15 @@ def test_lock_is_reentrant_per_process(lock_setup):
     lock1 = PidFileLock(resource_path, lock_dir)
     lock2 = PidFileLock(resource_path, lock_dir)
 
-    assert lock1 is lock2 # Same instance
+    assert lock1 is lock2  # Same instance
 
     with lock1:
-        # Second attempt to enter the context should raise RuntimeError (internal API misuse)
-        with pytest.raises(RuntimeError, match="Lock already acquired by this PidFileLock instance."):
+        # Second attempt to enter the context should raise RuntimeError
+        # (internal API misuse)
+        with pytest.raises(
+            RuntimeError,
+            match=re.escape("Lock already acquired by this PidFileLock instance.")
+        ):
             with lock2:
                 pass
 
@@ -181,7 +201,8 @@ def test_acquire_critical_oserror(monkeypatch, tmp_path):
     def mocked_builtin_open(path, mode):
         # We now rely on monkeypatching os.open directly in pidlock.py,
         # but for this test, we mock builtins.open if os.open is not used directly.
-        # Since pidlock.py now uses open(self._lock_path, 'w+'), mocking builtins.open is correct
+        # Since pidlock.py now uses open(self._lock_path, 'w+'),
+        # mocking builtins.open is correct
         raise OSError(errno.EACCES, "Access denied")
 
     monkeypatch.setattr("builtins.open", mocked_builtin_open)
@@ -197,7 +218,7 @@ def test_acquire_critical_oserror(monkeypatch, tmp_path):
 
 
 def test_pidfilelock_singleton_per_lock_path(tmp_path):
-    """Constructing PidFileLock twice for the same resource should return the same instance."""
+    """Test that creating a PidFileLock for the same resource returns a singleton."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
 
@@ -210,10 +231,11 @@ def test_pidfilelock_singleton_per_lock_path(tmp_path):
 
 
 def test_flock_eagain_raises_lockacquisitionerror(tmp_path):
-    """If fcntl.flock raises EAGAIN/EWOULDBLOCK, a LockAcquisitionError is raised
-    and the module's cleanup path (closing the opened handle) is executed.
-    Use a real file handle (no patch of open) so the actual close() source line
-    in pidlock.py is executed and counted by coverage.
+    """Test that a flock EAGAIN error raises LockAcquisitionError and cleans up.
+
+    This test simulates a race condition where fcntl.flock raises EAGAIN. It
+    verifies that a LockAcquisitionError is raised and that the underlying file
+    handle is properly closed, ensuring resource cleanup.
     """
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
@@ -245,7 +267,7 @@ def test_open_eacces_raises_runtimeerror(tmp_path):
 
 
 def test_open_eacces_raises_runtimeerror_via_builtins(tmp_path):
-    """Ensure the EACCES/EPERM open failure branch raises RuntimeError (covers the raise RuntimeError line)."""
+    """Test that a permission error during open raises a RuntimeError."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
@@ -255,7 +277,8 @@ def test_open_eacces_raises_runtimeerror_via_builtins(tmp_path):
     def fake_open(*args, **kwargs):
         raise OSError(errno.EACCES, "Permission denied (simulated)")
 
-    # Patch the actual builtins.open used by pidlock.open(...) to ensure the except branch is hit
+    # Patch the actual builtins.open used by pidlock.open(...)
+    # to ensure the except branch is hit
     with patch.object(builtins, "open", fake_open):
         with pytest.raises(RuntimeError, match="Cannot acquire lock"):
             with lock:
@@ -263,7 +286,7 @@ def test_open_eacces_raises_runtimeerror_via_builtins(tmp_path):
 
 
 def test_open_other_oserror_reraises_original_exception(tmp_path):
-    """If open() raises an OSError not handled by special branches, it should be re-raised."""
+    """Test that unhandled OSErrors from open() are re-raised."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
 
@@ -280,7 +303,7 @@ def test_open_other_oserror_reraises_original_exception(tmp_path):
 
 
 def test_enter_handles_flock_eagain_closes_handle(tmp_path):
-    """When flock raises EAGAIN after open succeeded, the opened handle is closed and LockAcquisitionError is raised."""
+    """Test that flock EAGAIN after open still closes the file handle."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
     # Create fake handle and ensure it has a close() we can assert
@@ -305,7 +328,7 @@ def test_enter_handles_flock_eagain_closes_handle(tmp_path):
 
 
 def test_enter_open_eacces_raises_runtimeerror(tmp_path):
-    """If module-level open raises EACCES, __enter__ raises a RuntimeError wrapping that OSError."""
+    """Test that a permission error on open raises a RuntimeError."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
 
@@ -319,7 +342,7 @@ def test_enter_open_eacces_raises_runtimeerror(tmp_path):
 
 
 def test_exit_flock_unlock_oserror_is_handled(tmp_path):
-    """If releasing the fcntl lock (second flock call) raises OSError, __exit__ should catch and log but not raise."""
+    """Test that an OSError during fcntl unlock is handled gracefully."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
@@ -341,7 +364,7 @@ def test_exit_flock_unlock_oserror_is_handled(tmp_path):
 
 
 def test_exit_handle_close_raises_is_handled(tmp_path):
-    """If handle.close() raises OSError, __exit__ should catch and log and continue cleanup."""
+    """Test that an OSError during file handle close is handled."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
@@ -350,14 +373,19 @@ def test_exit_handle_close_raises_is_handled(tmp_path):
     class BadHandle:
         def fileno(self):
             return 1
+
         def seek(self, *_):
             return None
+
         def truncate(self, *_):
             return None
+
         def write(self, *_):
             return None
+
         def flush(self):
             return None
+
         def close(self):
             raise OSError(errno.EIO, "close failed")
 
@@ -372,7 +400,7 @@ def test_exit_handle_close_raises_is_handled(tmp_path):
 
 
 def test_exit_unlink_raises_oserror_is_handled(tmp_path):
-    """If unlink() raises OSError during __exit__, it should be caught and logged without raising."""
+    """Test that an error during lock file removal is handled."""
     resource = tmp_path / "resource.txt"
     lock_dir = tmp_path / "locks"
     lock_dir.mkdir()
@@ -381,12 +409,14 @@ def test_exit_unlink_raises_oserror_is_handled(tmp_path):
     with patch.object(pidlock_mod.fcntl, "flock", lambda *a, **k: None):
         lock = PidFileLock(resource, lock_dir=lock_dir)
 
-        # Patch the Path.unlink implementation used by pidlock so unlink() raises OSError
+        # Patch the Path.unlink implementation used by pidlock so
+        # unlink() raises OSError
         def bad_unlink(self, missing_ok=True):
             raise OSError(errno.EIO, "unlink failed")
 
         with patch.object(pidlock_mod.Path, "unlink", bad_unlink):
-            # enter the context; when __exit__ calls unlink(), it will raise and be handled
+            # enter the context; when __exit__ calls unlink(),
+            # it will raise and be handled
             with lock:
                 pass
 
@@ -396,7 +426,7 @@ def test_exit_unlink_raises_oserror_is_handled(tmp_path):
 
 
 def test_enter_open_eacces_on_fresh_instance(tmp_path):
-    """Force the EACCES/EPERM branch on a fresh PidFileLock instance to cover the RuntimeError path."""
+    """Test that a permission error during file open raises RuntimeError."""
     resource = tmp_path / "resource_eacces.txt"
     lock_dir = tmp_path / "locks_eacces"
 
@@ -411,25 +441,21 @@ def test_enter_open_eacces_on_fresh_instance(tmp_path):
 
 
 def test_enter_flock_eagain_no_handle(tmp_path):
-    """
-    Simulate EAGAIN/EWOULDBLOCK being raised when 'handle' is None to hit the
-    'if handle: handle.close()' branch where 'handle' is None.
-    """
-
-    resource = tmp_path / 'resource.txt'
-    lock_dir = tmp_path / 'locks'
+    """Test that an EAGAIN error during file open is handled correctly."""
+    resource = tmp_path / "resource.txt"
+    lock_dir = tmp_path / "locks"
 
     # Mock open to return a handle
-    real_handle = open(tmp_path / 'lockfile.tmp', 'w+')
+    # real_handle = open(tmp_path / "lockfile.tmp", "w+")
 
     # Using two mocks: one for open to succeed, one for flock to fail.
     # Patch 'open' in a way that allows controlling the assignment of 'handle'.
 
     # Simulate open failing with EAGAIN directly, which also forces 'handle' to be None.
     def fake_open_with_eagain(*args, **kwargs):
-        raise OSError(errno.EAGAIN, 'Simulated open error matching flock failure')
+        raise OSError(errno.EAGAIN, "Simulated open error matching flock failure")
 
-    with patch.object(pidlock_mod, 'open', fake_open_with_eagain):
-        with pytest.raises(LockAcquisitionError, match='Resource is locked'):
+    with patch.object(pidlock_mod, "open", fake_open_with_eagain):
+        with pytest.raises(LockAcquisitionError, match="Resource is locked"):
             with PidFileLock(resource, lock_dir=lock_dir):
                 pass

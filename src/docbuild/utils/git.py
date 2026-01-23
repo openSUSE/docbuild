@@ -1,7 +1,9 @@
 """Git helper function."""
 
+import asyncio
 import logging
 from pathlib import Path
+from subprocess import CompletedProcess
 from typing import ClassVar, Self
 
 from ..constants import GITLOGGER_NAME
@@ -16,6 +18,7 @@ class ManagedGitRepo:
 
     #: Class variable to indicate the update state of a repo
     _is_updated: ClassVar[dict[Repo, bool]] = {}
+    _locks: ClassVar[dict[Repo, asyncio.Lock]] = {}
 
     @classmethod
     def clear_cache(cls) -> None:
@@ -25,12 +28,12 @@ class ManagedGitRepo:
         to reset class-level state between test cases. It avoids
         tests touching the private `_is_updated` attribute directly.
         """
+        cls._locks.clear()
         cls._is_updated.clear()
 
-    def __init__(self: Self,
-                 remote_url: str,
-                 permanent_root: Path,
-                 gitconfig: Path | None = None) -> None:
+    def __init__(
+        self: Self, remote_url: str, rootdir: Path, gitconfig: Path | None = None
+    ) -> None:
         """Initialize the managed repository.
 
         :param remote_url: The remote URL of the repository.
@@ -39,11 +42,11 @@ class ManagedGitRepo:
            (=None, use the default config from etc/gitconfig)
         """
         self._repo_model = Repo(remote_url)
-        self._permanent_root = permanent_root
+        self._permanent_root = rootdir
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
-        # Initialize attribute for output:
-        self.stdout = self.stderr = None
+        # Initialize attribute for last subprocess result:
+        self.result: None | CompletedProcess[str] = None
         self._gitconfig = gitconfig
         # Add repo into class variable
         type(self)._is_updated.setdefault(self._repo_model, False)
@@ -51,7 +54,7 @@ class ManagedGitRepo:
     def __repr__(self: Self) -> str:
         """Return a string representation of the ManagedGitRepo."""
         return (
-            f'{self.__class__.__name__}(remote_url={self.remote_url!r}, '
+            f"{self.__class__.__name__}(remote_url={self.remote_url!r}, "
             f"bare_repo_path='{self.bare_repo_path!s}')"
         )
 
@@ -80,15 +83,17 @@ class ManagedGitRepo:
         """
         url = self._repo_model.url
         try:
-            self.stdout, self.stderr = await execute_git_command(
-                'clone',
-                '--bare',
-                '--progress',
+            self.result = await execute_git_command(
+                "clone",
+                "--bare",
+                "--progress",
                 str(url),
                 str(self.bare_repo_path),
                 cwd=self._permanent_root,
                 gitconfig=self._gitconfig,
             )
+            # self.stdout = proc.stdout
+            # self.stderr = proc.stderr
             log.info("Cloned '%s' successfully", url)
             return True
 
@@ -99,32 +104,41 @@ class ManagedGitRepo:
     async def clone_bare(self: Self) -> bool:
         """Clone the remote repository as a bare repository.
 
-        If the repository already exists, it logs a message and returns.
+        If the repository already exists, it updates the repo. Once the repo is
+        updated, its status is stored. Further calls won't update the repo
+        again to maintain a consistent state. This avoids different states betwen
+        different times.
 
         :returns: True if successful, False otherwise.
         """
         url = self._repo_model.url
-        cls = type(self)
+        repo_model = self._repo_model
 
-        if cls._is_updated.get(self._repo_model, False):
-            log.info('Repository %r already processed this run.', self._repo_model.name)
-            return True
+        # Ensure a lock exists for this specific repository
+        if repo_model not in self._locks:
+            self._locks[repo_model] = asyncio.Lock()
 
-        result = False
-        if self.bare_repo_path.exists():
-            log.info(
-                'Repository already exists, fetching updates for %r',
-                self._repo_model.name,
-            )
-            result = await self.fetch_updates()
-        else:
-            log.info("Cloning '%s' into '%s'...", url, self.bare_repo_path)
-            result = await self._initial_clone()
+        async with self._locks[repo_model]:
+            # Re-check the update status after acquiring the lock
+            if self._is_updated.get(repo_model, False):
+                log.info("Repository %r already processed this run.", repo_model.name)
+                return True
 
-        if result:
-            cls._is_updated[self._repo_model] = True
+            result = False
+            if self.bare_repo_path.exists():
+                log.info(
+                    "Repository already exists, fetching updates for %r",
+                    repo_model.name,
+                )
+                result = await self.fetch_updates()
+            else:
+                log.info("Cloning '%s' into '%s'...", url, self.bare_repo_path)
+                result = await self._initial_clone()
 
-        return result
+            if result:
+                self._is_updated[repo_model] = True
+
+            return result
 
     async def create_worktree(
         self: Self,
@@ -137,41 +151,47 @@ class ManagedGitRepo:
         """Create a temporary worktree from the bare repository."""
         if not self.bare_repo_path.exists():
             raise FileNotFoundError(
-                'Cannot create worktree. Bare repository does not exist at: '
-                f'{self.bare_repo_path}'
+                "Cannot create worktree. Bare repository does not exist at: "
+                f"{self.bare_repo_path}"
             )
 
-        clone_args = ['clone']
+        clone_args = ["clone"]
         if is_local:
-            clone_args.append('--local')
-        clone_args.extend(['--branch', branch])
+            clone_args.append("--local")
+        clone_args.extend(["--branch", branch])
         if options:
             clone_args.extend(options)
         clone_args.extend([str(self.bare_repo_path), str(target_dir)])
 
-        self.stdout, self.stderr = await execute_git_command(
-            *clone_args, cwd=target_dir.parent,
+        self.result = await execute_git_command(
+            *clone_args,
+            cwd=target_dir.parent,
             gitconfig=self._gitconfig,
         )
 
     async def fetch_updates(self: Self) -> bool:
-        """Fetch updates from the remote to the bare repository.
+        """Fetch updates for all branches from the remote.
 
         :return: True if successful, False otherwise.
         """
         if not self.bare_repo_path.exists():
             log.warning(
-                'Cannot fetch updates: Bare repository does not exist at %s',
+                "Cannot fetch updates: Bare repository does not exist at %s",
                 self.bare_repo_path,
             )
             return False
 
-        log.info("Fetching updates for '%s'", self.slug)
+        log.info("Trying to fetch updates for '%s'", self.slug)
         try:
-            self.stdout, self.stderr = await execute_git_command(
-                'fetch', '--all',
+            # To update *every* branch in the bare Git repo, we need to use
+            # this weird 'git fetch' command:
+            self.result = await execute_git_command(
+                "fetch",
+                "origin",
+                "+refs/heads/*:refs/heads/*",
+                "-v",
+                "--prune",
                 cwd=self.bare_repo_path,
-                gitconfig=self._gitconfig
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True

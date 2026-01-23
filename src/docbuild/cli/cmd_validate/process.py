@@ -2,14 +2,15 @@
 
 import asyncio
 from collections.abc import Iterator
+from dataclasses import dataclass
 from datetime import date
 import logging
 from pathlib import Path
+from subprocess import CompletedProcess
 import tempfile
 
 from lxml import etree
 from rich.console import Console
-from subprocess import CompletedProcess
 
 from ...config.xml.checks import CheckResult, register_check
 from ...config.xml.stitch import create_stitchfile
@@ -31,7 +32,7 @@ console_err = Console(stderr=True)
 
 
 # Default RELAX NG schema file for product configuration
-PRODUCT_CONFIG_SCHEMA = XMLDATADIR / 'product-config-schema.rnc'
+PRODUCT_CONFIG_SCHEMA = XMLDATADIR / "product-config-schema.rnc"
 
 
 def display_results(
@@ -56,26 +57,26 @@ def display_results(
 
     for check_name, result in check_results:
         if result.success:
-            symbols.append('[green].[/green]')
+            symbols.append("[green].[/green]")
         else:
-            symbols.append('[red]F[/red]')
+            symbols.append("[red]F[/red]")
             overall_success = False
             failed_checks.append((check_name, result))
 
-    status = '[green]success[/green]' if overall_success else '[red]failed[/red]'
+    status = "[green]success[/green]" if overall_success else "[red]failed[/red]"
 
     if verbose == 1:
-        console_out.print(f'{shortname:<{max_len}}: {status}')
+        console_out.print(f"{shortname:<{max_len}}: {status}")
     else:
-        dots = ''.join(symbols)
-        console_out.print(f'{shortname:<{max_len}}: {dots} => {status}')
+        dots = "".join(symbols)
+        console_out.print(f"{shortname:<{max_len}}: {dots} => {status}")
 
         # Show detailed error messages if any failures
         if failed_checks and verbose > 2:
             for check_name, result in failed_checks:
-                console_err.print(f'    [bold red]✗ {check_name}:[/bold red]')
+                console_err.print(f"    [bold red]✗ {check_name}:[/bold red]")
                 for message in result.messages:
-                    console_err.print(f'      {message}')
+                    console_err.print(f"      {message}")
 
 
 async def validate_rng(
@@ -83,7 +84,7 @@ async def validate_rng(
     rng_schema_path: Path = PRODUCT_CONFIG_SCHEMA,
     *,
     xinclude: bool = True,
-    idcheck: bool = True
+    idcheck: bool = True,
 ) -> CompletedProcess:
     """Validate an XML file against a RELAX NG schema using jing.
 
@@ -98,36 +99,42 @@ async def validate_rng(
     :param idcheck: If True, perform ID uniqueness checks.
     :return: A tuple containing a boolean success status and any output message.
     """
-    jing_cmd = ['jing']
+    jing_cmd = ["jing"]
     if idcheck:
-        jing_cmd.append('-i')
-    if rng_schema_path.suffix == '.rnc':
-        jing_cmd.append('-c')
+        jing_cmd.append("-i")
+    if rng_schema_path.suffix == ".rnc":
+        jing_cmd.append("-c")
     jing_cmd.append(str(rng_schema_path))
 
     try:
         if xinclude:
             # Use a temporary file to store the output of xmllint.
             with tempfile.NamedTemporaryFile(
-                prefix='jing-validation',
-                suffix='.xml',
-                mode='w',
+                prefix="jing-validation",
+                suffix=".xml",
+                mode="w",
                 delete=True,
-                encoding='utf-8',
+                encoding="utf-8",
             ) as tmp_file:
                 tmp_filepath = Path(tmp_file.name)
 
                 # 1. Run xmllint to resolve XIncludes and save to temp file
                 xmllint_proc = await run_command(
-                    ['xmllint', '--xinclude', '--output', str(tmp_filepath), str(xmlfile)]
+                    [
+                        "xmllint",
+                        "--xinclude",
+                        "--output",
+                        str(tmp_filepath),
+                        str(xmlfile),
+                    ]
                 )
                 if xmllint_proc.returncode != 0:
                     # Construct a CompletedProcess representing failure from xmllint
                     return CompletedProcess(
-                        args=['xmllint', str(xmlfile)],
+                        args=["xmllint", str(xmlfile)],
                         returncode=xmllint_proc.returncode,
                         stdout=xmllint_proc.stdout,
-                        stderr=f'xmllint failed: {xmllint_proc.stderr}',
+                        stderr=f"xmllint failed: {xmllint_proc.stderr}",
                     )
 
                 # 2. Run jing on the resolved temporary file
@@ -139,12 +146,12 @@ async def validate_rng(
             return await run_command(jing_cmd)
 
     except FileNotFoundError as e:
-        tool = e.filename or 'xmllint/jing'
+        tool = e.filename or "xmllint/jing"
         return CompletedProcess(
             args=[tool],
             returncode=1,
-            stdout='',
-            stderr=f'{tool} command not found. Please install it to run validation.',
+            stdout="",
+            stderr=f"{tool} command not found. Please install it to run validation.",
         )
 
 
@@ -172,7 +179,7 @@ def validate_rng_lxml(
         # Perform validation
         is_valid = relaxng.validate(xml_doc)
         if is_valid:
-            return True, ''
+            return True, ""
         else:
             # Return validation error log as string
             return False, str(relaxng.error_log)
@@ -180,13 +187,13 @@ def validate_rng_lxml(
     # Catch specific exceptions for better error handling
     except etree.XMLSyntaxError as e:
         # This handles syntax errors in either the XML or the RNG file
-        return False, f'XML or RNG syntax error: {e}'
+        return False, f"XML or RNG syntax error: {e}"
     except etree.RelaxNGParseError as e:
         # This handles errors in parsing the RNG schema itself
-        return False, f'RELAX NG schema parsing error: {e}'
+        return False, f"RELAX NG schema parsing error: {e}"
     except Exception as e:
         # This catch-all is a fallback for any other unexpected issues
-        return False, f'An unexpected error occurred during validation: {e}'
+        return False, f"An unexpected error occurred during validation: {e}"
 
 
 async def run_python_checks(
@@ -204,9 +211,88 @@ async def run_python_checks(
             check_results.append((check.__name__, result))
 
         except Exception as e:
-            error_result = CheckResult(success=False, messages=[f'error: {e}'])
+            error_result = CheckResult(success=False, messages=[f"error: {e}"])
             check_results.append((check.__name__, error_result))
     return check_results
+
+
+@dataclass
+class ValidationResult:
+    """Normalized result of RNG validation.
+
+    :ivar success: True when validation passed.
+    :ivar exit_code: Exit code to return when validation fails (0 for success).
+    :ivar message: Optional human-readable message describing the failure.
+    """
+
+    success: bool
+    exit_code: int
+    message: str = ""
+
+
+def build_shortname(filepath: Path | str) -> str:
+    """Return a shortened display name for ``filepath``.
+
+    :param filepath: Path-like object to shorten.
+    :returns: Shortened display name (last two path components or full path).
+    """
+    path_obj = Path(filepath)
+    return "/".join(path_obj.parts[-2:]) if len(path_obj.parts) >= 2 else str(filepath)
+
+
+async def run_validation(filepath: Path | str, method: str) -> ValidationResult:
+    """Run RNG validation using the selected method and normalize result.
+
+    :param filepath: Path to the XML file to validate.
+    :param method: Validation method name ("jing" or "lxml").
+    :returns: A :class:`ValidationResult` describing the outcome.
+    """
+    path_obj = Path(filepath)
+    if method == "lxml":
+        rng_success, rng_output = await asyncio.to_thread(
+            validate_rng_lxml, path_obj, XMLDATADIR / "product-config-schema.rng"
+        )
+        if rng_success:
+            return ValidationResult(True, 0, "")
+        return ValidationResult(False, 10, rng_output or "")
+
+    if method == "jing":
+        jing_result = await validate_rng(path_obj, idcheck=True)
+        if jing_result.returncode != 0:
+            output = (jing_result.stdout or "") + (jing_result.stderr or "")
+            return ValidationResult(False, 10, output.strip())
+        return ValidationResult(True, 0, "")
+
+    return ValidationResult(False, 11, f"Unknown validation method: {method}")
+
+
+async def parse_tree(filepath: Path | str) -> etree._ElementTree:
+    """Parse XML file using lxml in a background thread.
+
+    Exceptions from :func:`lxml.etree.parse` (for example
+    :class:`lxml.etree.XMLSyntaxError`) are propagated to the caller.
+
+    :param filepath: Path to the XML file to parse.
+    :returns: Parsed :class:`lxml.etree._ElementTree`.
+    """
+    return await asyncio.to_thread(etree.parse, str(filepath), parser=None)
+
+
+async def run_checks_and_display(
+    tree: etree._ElementTree, shortname: str, context: DocBuildContext, max_len: int
+) -> bool:
+    """Execute registered Python checks and print formatted results.
+
+    :param tree: Parsed XML tree to check.
+    :param shortname: Short name used for display output.
+    :param context: :class:`DocBuildContext` used to read verbosity.
+    :param max_len: Maximum length used for aligned output.
+    :returns: True when all checks succeeded (or when no checks are registered).
+    """
+    check_results = await run_python_checks(tree)
+    if check_results:
+        display_results(shortname, check_results, context.verbose, max_len)
+    return all(result.success for _, result in check_results)
 
 
 async def process_file(
@@ -222,78 +308,35 @@ async def process_file(
     :param rng_schema_path: Optional path to an RNG schema for validation.
     :return: An exit code (0 for success, non-zero for failure).
     """
-    # Shorten the filename to last two parts for display
-    path_obj = Path(filepath)
-    shortname = (
-        '/'.join(path_obj.parts[-2:]) if len(path_obj.parts) >= 2 else str(filepath)
-    )
+    shortname = build_shortname(filepath)
 
-    # IDEA: Should we replace jing and validate with etree.RelaxNG?
-    #
-    # 1. RNG Validation
-    validation_method = context.validation_method
-
-    if validation_method == 'lxml':
-        # Use lxml-based validator (requires .rng schema)
-        rng_success, rng_output = await asyncio.to_thread(
-            validate_rng_lxml,
-            path_obj,
-            XMLDATADIR / 'product-config-schema.rng',
-        )
-    elif validation_method == 'jing':
-        # Use existing jing-based validator (.rnc or .rng)
-        jing_result = await validate_rng(path_obj, idcheck=True)
-    else:
+    # 1. RNG Validation (normalized)
+    validation = await run_validation(filepath, context.validation_method)
+    if not validation.success:
         console_err.print(
-            f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
+            f"{shortname:<{max_len}}: RNG validation => [red]failed[/red]"
         )
-        console_err.print(f'  [bold red]Error:[/] Unknown validation method: {validation_method}')
-        return 11  # Custom error code for unknown validation method
+        if validation.message:
+            console_err.print(f"  [bold red]Error:[/] {validation.message}")
+        return validation.exit_code
 
-    # Handle validation result for jing
-    if validation_method == 'jing':
-        if jing_result.returncode != 0:
-            console_err.print(
-                f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
-            )
-            output = (jing_result.stdout or '') + (jing_result.stderr or '')
-            if output:
-                console_err.print(f'  [bold red]Error:[/] {output.strip()}')
-            return 10  # Specific error code for RNG failure
-
-    # Handle validation result for lxml
-    if validation_method == 'lxml':
-        if not rng_success:
-            console_err.print(
-                f'{shortname:<{max_len}}: RNG validation => [red]failed[/red]'
-            )
-            if rng_output:
-                console_err.print(f'  [bold red]Error:[/] {rng_output}')
-            return 10
-
-    # 2. Python-based checks
+    # 2. Parse XML and run Python checks
     try:
-        tree = await asyncio.to_thread(etree.parse, str(filepath), parser=None)
+        tree = await parse_tree(filepath)
 
     except etree.XMLSyntaxError as err:
-        # This can happen if xmllint passes but lxml's parser is stricter.
         console_err.print(
-            f'{shortname:<{max_len}}: XML Syntax Error => [red]failed[/red]'
+            f"{shortname:<{max_len}}: XML Syntax Error => [red]failed[/red]"
         )
-        console_err.print(f'  [bold red]Error:[/] {err}')
+        console_err.print(f"  [bold red]Error:[/] {err}")
         return 20
 
     except Exception as err:
-        console_err.print(f'  [bold red]Error:[/] {err}')
+        console_err.print(f"  [bold red]Error:[/] {err}")
         return 200
 
-    # Run all checks for this file
-    check_results = await run_python_checks(tree)
-
-    # Display results based on verbosity level
-    display_results(shortname, check_results, context.verbose, max_len)
-
-    return 0 if all(result.success for _, result in check_results) else 1
+    success = await run_checks_and_display(tree, shortname, context, max_len)
+    return 0 if success else 1
 
 
 async def process(
@@ -310,22 +353,22 @@ async def process(
     """
     # Prepare the context and validate environment configuration
     if context.envconfig is None:
-        raise ValueError('No envconfig found in context.')
+        raise ValueError("No envconfig found in context.")
 
-    paths = context.envconfig.get('paths', {})
+    paths = context.envconfig.get("paths", {})
     if not isinstance(paths, dict):
         raise ValueError("'paths.config' must be a dictionary.")
 
-    configdir = paths.get('config_dir', None)
-    log.debug(f'Async Processing validation with {configdir=}...')
-    log.debug(f'Registry has {len(registry.registry)} checks registered')
+    configdir = paths.get("config_dir", None)
+    log.debug(f"Async Processing validation with {configdir=}...")
+    log.debug(f"Registry has {len(registry.registry)} checks registered")
 
     # Convert iterator to tuple if needed to get total count
     if isinstance(xmlfiles, Iterator):
         xmlfiles = tuple(xmlfiles)
 
     if not xmlfiles:
-        log.warning('No XML files found to validate.')
+        log.warning("No XML files found to validate.")
         return 0
 
     total_files = len(xmlfiles)
@@ -337,7 +380,8 @@ async def process(
 
     # Filter for files that passed the initial validation
     successful_files_paths = [
-        xmlfile for xmlfile, result in zip(xmlfiles, results, strict=False)
+        xmlfile
+        for xmlfile, result in zip(xmlfiles, results, strict=False)
         if result == 0
     ]
 
@@ -346,21 +390,21 @@ async def process(
     stitch_success = True
     if successful_files_paths:
         try:
-            log.info('Performing stitch-file validation...')
-            cachedir = paths.get('base_server_cache_dir', None)
+            log.info("Performing stitch-file validation...")
+            cachedir = paths.get("base_server_cache_dir", None)
             tree = await create_stitchfile(successful_files_paths)
             if cachedir is not None:
                 stitchfile = (
-                    Path(cachedir) / f'stitchfile-{date.today().isoformat()}.xml'
+                    Path(cachedir) / f"stitchfile-{date.today().isoformat()}.xml"
                 )
-                stitchfile.write_text(etree.tostring(tree, encoding='unicode'))
+                stitchfile.write_text(etree.tostring(tree, encoding="unicode"))
                 log.debug("Wrote stitchfile to %s", str(stitchfile))
 
-            log.info('Stitch-file validation successful.')
+            log.info("Stitch-file validation successful.")
 
         except ValueError as e:
             # Using rich for better visibility of this critical error
-            console_err.print(f'[bold red]Stitch-file validation failed:[/] {e}')
+            console_err.print(f"[bold red]Stitch-file validation failed:[/] {e}")
             stitch_success = False
 
     # Calculate summary statistics
@@ -368,13 +412,16 @@ async def process(
     failed_files = total_files - successful_files
 
     # Display summary
-    successful_part = f'[green]{successful_files}/{total_files} files(s)[/green]'
-    failed_part = f'[red]{failed_files} file(s)[/red]'
-    summary_msg = f'{successful_part} successfully validated, {failed_part} failed.'
-
-    if context.verbose > 0:  # pragma: no cover
-        console_out.print(f'Result: {summary_msg}')
+    successful_part = f"[green]{successful_files}/{total_files} files(s)[/green]"
+    failed_part = f"[red]{failed_files} file(s)[/red]"
+    summary_msg = (
+        f"{successful_part} successfully validated, {failed_part} failed. "
+        f"Stitch validation [blue]{stitch_success}[/blue]"
+    )
 
     final_success = (failed_files == 0) and stitch_success
+
+    if context.verbose > 0:  # pragma: no cover
+        console_out.print(f"Result: {summary_msg}")
 
     return 0 if final_success else 1

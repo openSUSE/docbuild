@@ -1,4 +1,3 @@
-
 from lxml import etree
 import pytest
 
@@ -13,8 +12,8 @@ def test_register_check_registers_function():
     def foo(tree):
         return True
 
-    assert foo(etree.Element('root', nsmap=None, attrib=None)) is True
-    assert registry[0].__name__ == 'foo'
+    assert foo(etree.Element("root", nsmap=None, attrib=None)) is True
+    assert registry[0].__name__ == "foo"
 
 
 def test_register_check_type_error():
@@ -37,7 +36,7 @@ def test_multiple_functions_registered():
 
     assert len(registry) == 2
 
-    for func, name in zip(registry, ('foo', 'bar'), strict=False):
+    for func, name in zip(registry, ("foo", "bar"), strict=False):
         assert callable(func)
         assert func.__name__ == name
 
@@ -50,5 +49,5 @@ def test_wrapper_preserves_function_metadata():
         """Docstring for foo."""
         return True
 
-    assert foo.__name__ == 'foo'
-    assert foo.__doc__ == 'Docstring for foo.'
+    assert foo.__name__ == "foo"
+    assert foo.__doc__ == "Docstring for foo."

@@ -15,6 +15,7 @@ Attributes
 .. autoapisummary::
 
    docbuild.config.app.MAX_RECURSION_DEPTH
+   docbuild.config.app.ConfigValue
 
 
 Exceptions
@@ -62,6 +63,13 @@ Module Contents
 
 
    The maximum recursion depth for placeholder replacement.
+
+
+.. py:type:: ConfigValue
+   :canonical: str | int | float | bool | list['ConfigValue'] | dict[str, 'ConfigValue']
+
+
+   A recursive type for values found in the configuration.
 
 
 .. py:function:: replace_placeholders(config: dict[str, Any] | None, max_recursion_depth: int = MAX_RECURSION_DEPTH) -> dict[str, Any] | None

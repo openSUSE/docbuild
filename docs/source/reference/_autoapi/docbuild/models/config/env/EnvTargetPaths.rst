@@ -1,11 +1,11 @@
-docbuild.models.config.env.Env_TargetPaths
-================================================
+docbuild.models.config.env.EnvTargetPaths
+=========================================
 
-.. py:class:: docbuild.models.config.env.Env_TargetPaths(/, **data: Any)
+.. py:class:: docbuild.models.config.env.EnvTargetPaths(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config.env.Env_TargetPaths
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.EnvTargetPaths
       :parts: 1
 
 

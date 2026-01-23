@@ -1,11 +1,11 @@
-docbuild.models.config.env.Env_PathsConfig
-================================================
+docbuild.models.config.env.EnvPathsConfig
+=========================================
 
-.. py:class:: docbuild.models.config.env.Env_PathsConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.env.EnvPathsConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config.env.Env_PathsConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.EnvPathsConfig
       :parts: 1
 
 
@@ -109,14 +109,14 @@ docbuild.models.config.env.Env_PathsConfig
 
 
    .. py:attribute:: tmp
-      :type:  Env_TmpPaths
+      :type:  EnvTmpPaths
 
       Temporary build paths.
 
 
 
    .. py:attribute:: target
-      :type:  Env_TargetPaths
+      :type:  EnvTargetPaths
 
       Target deployment and backup paths.
 

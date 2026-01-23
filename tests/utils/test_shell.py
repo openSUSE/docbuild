@@ -4,13 +4,13 @@ from pathlib import Path
 
 import pytest
 
-from docbuild.utils.shell import execute_git_command, CompletedProcess
+from docbuild.utils.shell import execute_git_command
 
 
 async def test_execute_git_command_with_gitconfig(tmp_path):
     """Verify that execute_git_command uses the config file.
 
-      This is provided in the`gitconfig` parameter to replace the user's configuration.
+    This is provided in the`gitconfig` parameter to replace the user's configuration.
     """
     # The tmp_path fixture provides a temporary directory as a Path object
     repo_path = tmp_path
@@ -53,11 +53,12 @@ async def test_execute_git_command_without_gitconfig(tmp_path):
 async def test_execute_git_command_with_nonexistent_cwd():
     with pytest.raises(FileNotFoundError):
         await execute_git_command(
-            'config', '--get', 'docbuild.name', cwd=Path("does-not-exist")
+            "config", "--get", "docbuild.name", cwd=Path("does-not-exist")
         )
+
 
 async def test_execute_git_command_with_failed_command():
     with pytest.raises(RuntimeError):
         await execute_git_command(
-            'foo',  # wrong git command
+            "foo",  # wrong git command
         )

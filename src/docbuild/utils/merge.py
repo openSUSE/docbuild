@@ -29,8 +29,8 @@ def _merge_langs(
     :param langs2: Second list of LanguageCode objects.
     :return: Merged sorted list of LanguageCode objects.
     """
-    if '*' in langs1 or '*' in langs2:
-        return [LanguageCode(language='*')]
+    if "*" in langs1 or "*" in langs2:
+        return [LanguageCode(language="*")]
     return sorted(set(chain(langs1, langs2)))  # sorted(set(langs1 + langs2))
 
 
@@ -59,10 +59,10 @@ def _split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
     :param dt2: Second Doctype instance.
     :return: List of merged Doctypes or None if no merging is possible.
     """
-    if ('*' in dt1.docset and '*' not in dt2.docset) or (
-        '*' in dt2.docset and '*' not in dt1.docset
+    if ("*" in dt1.docset and "*" not in dt2.docset) or (
+        "*" in dt2.docset and "*" not in dt1.docset
     ):
-        wildcard, specific = (dt1, dt2) if '*' in dt1.docset else (dt2, dt1)
+        wildcard, specific = (dt1, dt2) if "*" in dt1.docset else (dt2, dt1)
         wildcard_langs = set(wildcard.langs)
         specific_langs = set(specific.langs)
         common_langs = wildcard_langs & specific_langs
@@ -71,7 +71,7 @@ def _split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
             merged = [
                 Doctype(
                     product=wildcard.product,
-                    docset=['*'],
+                    docset=["*"],
                     lifecycle=wildcard.lifecycle,
                     langs=sorted(common_langs),
                 ),
@@ -80,7 +80,7 @@ def _split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
                 merged.append(
                     Doctype(
                         product=specific.product,
-                        docset=[d for d in specific.docset if d != '*'],
+                        docset=[d for d in specific.docset if d != "*"],
                         lifecycle=specific.lifecycle,
                         langs=sorted(extra_langs),
                     ),

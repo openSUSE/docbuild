@@ -6,9 +6,7 @@ from pathlib import Path
 import tomllib as toml
 from typing import Any
 
-from ..constants import DEFAULT_ENV_CONFIG_FILENAME
 from .merge import deep_merge
-
 
 # --- REMOVED THE OBSOLETE `process_envconfig` FUNCTION ---
 
@@ -22,7 +20,7 @@ def load_single_config(configfile: str | Path) -> dict[str, Any]:
     :raise tomllib.TOMLDecodeError: If the config file is not a valid TOML file
         or cannot be decoded.
     """
-    with Path(configfile).open('rb') as f:
+    with Path(configfile).open("rb") as f:
         return toml.load(f)
 
 
@@ -48,8 +46,8 @@ def load_and_merge_configs(
     # If no paths are provided, raise an error:
     if not paths:
         raise ValueError(
-            'No paths provided. '
-            'Please provide at least one path to load the config files.',
+            "No paths provided. "
+            "Please provide at least one path to load the config files.",
         )
 
     # Create a cartesian product of paths and default filenames:

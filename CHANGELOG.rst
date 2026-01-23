@@ -21,6 +21,49 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.15.0
+==============
+
+Bug Fixes
+---------
+
+- Provide a project-defined Git config to prevent issues with user Git config. (:gh:`118`)
+
+
+Improved Documentation
+----------------------
+
+- Fix documentation issues due to renaming of classes with underscores. (:gh:`137`)
+
+
+Features
+--------
+
+- Introduces the new :command:`docbuild metadata` to automate the process of generating and caching documentation metadata. (:gh:`106`)
+
+
+Infrastructure
+--------------
+
+- Add ``pytest_report_header`` from pytest to print additional information
+  in the header. (:gh:`123`)
+- Add a new GitHub Action for code formatting issues using Ruff. (:gh:`127`)
+- Add coverage for GitHub Action CI workflow. Whenever a pull request is made, the CI will add a coverage report comment. If there are new commits, the comment will be updated. (:gh:`128`)
+- Colorize the coverage report in the GitHub Actions comment based on a threshold. (:gh:`130`)
+- Reformat the source code with Ruff. Removed unused imports and variables, fix docstrings, and use double quotes in strings. (:gh:`135`)
+
+
+Code Refactoring
+----------------
+
+- Refactor the ``run_command`` and ``run_git_command`` to return :class:`~subprocess.CompletedProcess`
+  instead of tuples. This makes the two commands more consistent. (:gh:`121`)
+- Improve several tests to improve coverage, readability, reduce dependency to private functions or attributes, and refactor for better modularity. (:gh:`124`)
+- In function :func:`validate_rng`, use ``CompletedProcess``  as return object.
+  Replace tuple with CompletedProcess. This is used in other functions too and this change makes it consistent with other. (:gh:`125`)
+- Reduce complexity of :func:`~docbuild.cli.cmd_validate.process.process_file`. Split into smaller functions. (:gh:`135`)
+
+
 Version 0.14.0
 ==============
 

@@ -6,18 +6,18 @@ import re
 from .models.lifecycle import LifecycleFlag
 from .models.serverroles import ServerRole
 
-APP_NAME = 'docbuild'
+APP_NAME = "docbuild"
 """The name of the application, used in paths and config files."""
 
-DEFAULT_LANGS = ('en-us',)
+DEFAULT_LANGS = ("en-us",)
 """The default languages used by the application."""
 
 ALLOWED_LANGUAGES = frozenset(
-    'de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn'.split(' '),
+    "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "),
 )
 """The languages supported by the documentation portal."""
 
-DEFAULT_DELIVERABLES = '*/@supported/en-us'
+DEFAULT_DELIVERABLES = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 
 # SERVER_ROLES = (
@@ -30,13 +30,10 @@ SERVER_ROLES = tuple(
 )
 """The different server roles, including long and short spelling."""
 
-DEFAULT_LIFECYCLE = 'supported'
+DEFAULT_LIFECYCLE = "supported"
 """The default lifecycle state for a docset."""
 
-ALLOWED_LIFECYCLES: tuple[str] = tuple(
-    lc.name
-    for lc in LifecycleFlag
-)
+ALLOWED_LIFECYCLES: tuple[str] = tuple(lc.name for lc in LifecycleFlag)
 # ('supported', 'beta', 'hidden', 'unsupported')
 """The available lifecycle states for a docset (without 'unknown')."""
 
@@ -51,7 +48,7 @@ ALLOWED_LIFECYCLES: tuple[str] = tuple(
 VALID_PRODUCTS: dict[str, str] = {
     key.strip(): value.strip()
     for key, value in (
-        line.split(' ', 1)
+        line.split(" ", 1)
         # Syntax: acronym <SPACE> full name:
         for line in """appliance Appliance building
 cloudnative Cloud Native
@@ -89,16 +86,16 @@ trd Technical Reference Documentation""".strip().splitlines()
 ALLOWED_PRODUCTS = tuple([item for item in VALID_PRODUCTS])
 """A tuple of valid product acronyms."""
 
-SINGLE_LANG_REGEX = re.compile(r'[a-z]{2}-[a-z]{2}')
+SINGLE_LANG_REGEX = re.compile(r"[a-z]{2}-[a-z]{2}")
 """Regex for a single language code in the format 'xx-XX' (e.g., 'en-us')."""
 
 MULTIPLE_LANG_REGEX = re.compile(
-    rf'^({SINGLE_LANG_REGEX.pattern},)*'
-    rf'{SINGLE_LANG_REGEX.pattern}',
+    rf"^({SINGLE_LANG_REGEX.pattern},)*"
+    rf"{SINGLE_LANG_REGEX.pattern}",
 )
 """Regex for multiple languages, separated by commas."""
 
-LIFECYCLES_STR = '|'.join(ALLOWED_LIFECYCLES)
+LIFECYCLES_STR = "|".join(ALLOWED_LIFECYCLES)
 """Regex for lifecycle states, separated by pipe (|)."""
 
 
@@ -106,11 +103,11 @@ LIFECYCLES_STR = '|'.join(ALLOWED_LIFECYCLES)
 PROJECT_DIR = Path.cwd()
 """The current working directory, used as the project directory."""
 
-USER_CONFIG_DIR = Path.home() / '.config' / APP_NAME
+USER_CONFIG_DIR = Path.home() / ".config" / APP_NAME
 """The user-specific configuration directory, typically located
 at ~/.config/docbuild."""
 
-SYSTEM_CONFIG_DIR = Path('/etc') / APP_NAME
+SYSTEM_CONFIG_DIR = Path("/etc") / APP_NAME
 """The system-wide configuration directory, typically located
 at /etc/docbuild."""
 
@@ -124,45 +121,45 @@ CONFIG_PATHS = (
 )
 """The paths where the application will look for configuration files."""
 
-APP_CONFIG_BASENAMES = ('.config.toml', 'config.toml')
+APP_CONFIG_BASENAMES = (".config.toml", "config.toml")
 """The base filenames for the application configuration files, in
 order of priority."""
 
 PROJECT_LEVEL_APP_CONFIG_FILENAMES = (
-    f'.{APP_NAME}.config.toml',
-    f'{APP_NAME}.config.toml',
+    f".{APP_NAME}.config.toml",
+    f"{APP_NAME}.config.toml",
     # 'app.config.toml',
 )
 """Additional configuration filenames at the project level."""
 
-APP_CONFIG_FILENAME = 'config.toml'
+APP_CONFIG_FILENAME = "config.toml"
 """The filename of the application's config file without any paths."""
 
-ENV_CONFIG_FILENAME = 'env.{role}.toml'
+ENV_CONFIG_FILENAME = "env.{role}.toml"
 """The filename of the environment's config file without any paths."""
 
-DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role='production')
+DEFAULT_ENV_CONFIG_FILENAME = ENV_CONFIG_FILENAME.format(role="production")
 """The default filename for the environment's config file, typically
 used in production."""
 
-GIT_CONFIG_FILENAME = Path(__file__).parent / 'etc/git/gitconfig'
+GIT_CONFIG_FILENAME = Path(__file__).parent / "etc/git/gitconfig"
 """The project-specific Git configuration file (relative to this project)"""
 
 # --- State and Logging Constants (Refactored) ---
 
-BASE_STATE_DIR = Path.home() / '.local' / 'state' / APP_NAME
+BASE_STATE_DIR = Path.home() / ".local" / "state" / APP_NAME
 """The directory where application state, logs, and locks are stored,
 per XDG Base Directory Specification."""
 
 GITLOGGER_NAME = "docbuild.git"
 """The standardized name for the Git-related logger."""
 
-BASE_LOG_DIR = BASE_STATE_DIR / 'logs'
+BASE_LOG_DIR = BASE_STATE_DIR / "logs"
 """The directory where log files will be stored."""
 
 # --- Locking constants ---
-BASE_LOCK_DIR = BASE_STATE_DIR / 'locks'
+BASE_LOCK_DIR = BASE_STATE_DIR / "locks"
 """The directory where PID lock files will be stored."""
 
-XMLDATADIR = Path(__file__).parent / 'config' / 'xml' / 'data'
+XMLDATADIR = Path(__file__).parent / "config" / "xml" / "data"
 """Directory where additional files (RNC, XSLT) for XML processing are stored."""

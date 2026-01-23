@@ -6,6 +6,11 @@ from typing import Any
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
+type ConfigValue = (
+    str | int | float | bool | list["ConfigValue"] | dict[str, "ConfigValue"]
+)
+"""A recursive type for values found in the configuration."""
+
 
 class PlaceholderResolutionError(KeyError):
     """Exception raised when a placeholder cannot be resolved."""
@@ -22,7 +27,7 @@ class CircularReferenceError(ValueError):
 class PlaceholderResolver:
     """Handles placeholder resolution in configuration data."""
 
-    PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r'(?<!\{)\{([^{}]+)\}(?!\})')
+    PLACEHOLDER_PATTERN: re.Pattern[str] = re.compile(r"(?<!\{)\{([^{}]+)\}(?!\})")
     """Compiled regex for standard placeholders in configuration
        files (like ``{placeholder}``)."""
 
@@ -34,9 +39,9 @@ class PlaceholderResolver:
         self._current_container: dict[str, Any] | list[Any] | None = None
         self._current_key: str | int | None = None
 
-    def _resolve_dotted_path(self, path: str) -> Any:
+    def _resolve_dotted_path(self, path: str) -> ConfigValue:
         """Resolve a dotted path like 'paths.tmp.session'."""
-        parts = path.split('.')
+        parts = path.split(".")
         value = self.config
         resolved_path = []
         container_name = self._get_container_name()
@@ -44,14 +49,14 @@ class PlaceholderResolver:
         for part in parts:
             resolved_path.append(part)
             if not isinstance(value, dict):
-                full_path = '.'.join(resolved_path)
+                full_path = ".".join(resolved_path)
                 raise PlaceholderResolutionError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
                     f"'{full_path}' is not a dictionary "
-                    f'(got type {type(value).__name__}).',
+                    f"(got type {type(value).__name__}).",
                 )
             if part not in value:
-                full_path = '.'.join(resolved_path)
+                full_path = ".".join(resolved_path)
                 raise PlaceholderResolutionError(
                     f"While resolving '{{{path}}}' in '{container_name}': "
                     f"missing key '{part}' in path '{full_path}'.",
@@ -65,7 +70,7 @@ class PlaceholderResolver:
         placeholder = match.group(1)
         container_name = self._get_container_name()
 
-        if '.' in placeholder:
+        if "." in placeholder:
             # Dotted path - resolve from root config
             return str(self._resolve_dotted_path(placeholder))
         elif (
@@ -102,16 +107,16 @@ class PlaceholderResolver:
             )
 
         # Replace escaped braces with literal ones
-        return text.replace('{{', '{').replace('}}', '}')
+        return text.replace("{{", "{").replace("}}", "}")
 
     def _get_container_name(self) -> str:
         """Get a human-readable name for the current container/key being processed."""
         if self._current_key is None:
-            return 'unknown'
+            return "unknown"
         return (
             str(self._current_key)
             if isinstance(self._current_key, str)
-            else f'list item at index {self._current_key}'
+            else f"list item at index {self._current_key}"
         )
 
     def get_container_name(self) -> str:
@@ -157,7 +162,7 @@ class PlaceholderResolver:
             elif isinstance(value, list):
                 # Add string/dict/list items from lists to stack for processing
                 for i, item in enumerate(value):
-                    if isinstance(item, (dict, list, str)):
+                    if isinstance(item, dict | list | str):
                         stack.append((value, i, context))
 
         return self.config

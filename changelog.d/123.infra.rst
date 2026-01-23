@@ -1,2 +1,0 @@
-Add ``pytest_report_header`` from pytest to print additional information
-in the header.

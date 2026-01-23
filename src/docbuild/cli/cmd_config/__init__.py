@@ -7,7 +7,7 @@ from .environment import env
 
 
 @click.group(
-    name='config',
+    name="config",
     help=__doc__,
 )
 @click.pass_context

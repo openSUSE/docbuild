@@ -43,7 +43,7 @@ Module Contents
 
 .. py:data:: F
 
-   Type variable for functions that take an XML element or tree and return CheckResult.
+   A type variable representing a callable that takes an XML element or tree
 
 
 .. py:function:: factory_registry() -> collections.abc.Callable[[F], F]

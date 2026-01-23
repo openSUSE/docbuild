@@ -13,7 +13,6 @@ import tempfile
 import time
 from types import TracebackType
 from typing import Any
-import weakref as _weakref
 
 # Type aliases for exception handling
 type ExcType = type[BaseException] | None
@@ -23,14 +22,15 @@ type ExcTback = TracebackType | None
 # Logging
 log = logging.getLogger(__name__)
 
+
 @dataclass
 class TimerData:
     """Data structure to hold timer information."""
 
     name: str
-    start: float = float('nan')
-    end: float = float('nan')
-    elapsed: float = float('nan')
+    start: float = float("nan")
+    end: float = float("nan")
+    elapsed: float = float("nan")
 
 
 def make_timer(
@@ -149,12 +149,10 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
             except OSError as e:
                 # Your custom logging is more informative than the parent's
                 # `ignore_errors=True`, so we replicate it here.
-                log.exception('Failed to delete temp dir %s: %s', self.name, e)
+                log.exception("Failed to delete temp dir %s: %s", self.name, e)
 
-    async def __aexit__(self,
-        exc_type: ExcType,
-        exc_val: ExcVal,
-        exc_tb: ExcTback
+    async def __aexit__(
+        self, exc_type: ExcType, exc_val: ExcVal, exc_tb: ExcTback
     ) -> None:
         """Asynchronously clean up the directory on successful exit.
 
@@ -202,13 +200,23 @@ def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
             config["docs"][0]["format"]["html"] = "..."
             # more modifications...
     """
-    encoding = 'utf-8'
+    encoding = "utf-8"
     path = Path(path)
     parent = path.parent
 
-    # Load JSON
-    with path.open('r', encoding=encoding) as f:
-        data = json.load(f)
+    # Guard: ensure file exists
+    if not path.exists():
+        raise FileNotFoundError(f"JSON file not found: {path}")
+
+    # Load JSON with better error context
+    with path.open("r", encoding=encoding) as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError as e:
+            # Re-raise with file path context while preserving original info
+            raise json.JSONDecodeError(
+                f"Invalid JSON in {path}: {e.msg}", e.doc, e.pos
+            ) from e
 
     # Hand control to the user
     try:
@@ -222,12 +230,12 @@ def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
     tmp_path = None
     try:
         with tempfile.NamedTemporaryFile(
-            'w',
+            "w",
             encoding=encoding,
             dir=str(parent),
             delete=False,  # We manage deletion manually
-            prefix=f'.{path.stem}.',
-            suffix='.tmp',
+            prefix=f".{path.stem}.",
+            suffix=".tmp",
         ) as tmp_file:
             tmp_path = Path(tmp_file.name)
 

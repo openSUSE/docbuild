@@ -1,3 +1,5 @@
+"""Click callback to validate doctype strings."""
+
 import logging
 
 import click
@@ -40,39 +42,39 @@ def validate_doctypes(
         except ValueError as err:
             click.secho(
                 f"ERROR: Invalid doctype string '{doctype_str}': {err}",
-                fg='red',
+                fg="red",
                 err=True,
             )
             raise click.Abort(err) from err
 
         except ValidationError as err:
             for error in err.errors():
-                field = error['loc'][0]
+                field = error["loc"][0]
                 # Convert to string to ensure it works as dictionary key
                 field_name = str(field)
-                msg = error['msg']
+                msg = error["msg"]
                 # Make accessing of .description and .examples safe(r) if
                 # the definition in Doctype is not present
                 safe_field = Field(description=None, examples=None)
                 hint = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
-                    'description',
+                    "description",
                     None,
                 )
                 examples = getattr(
                     Doctype.model_fields.get(field_name, safe_field),
-                    'examples',
+                    "examples",
                     None,
                 )
                 click.secho(
                     f"ERROR in '{field}': {msg}",
-                    fg='red',
+                    fg="red",
                     err=True,
                 )
                 if hint:
-                    click.echo(f'  → Hint: {hint}')
+                    click.echo(f"  → Hint: {hint}")
                 if examples:
-                    click.echo(f'  → Examples: {", ".join(examples)}')
+                    click.echo(f"  → Examples: {', '.join(examples)}")
                 click.echo()
             raise click.Abort(err) from err
 

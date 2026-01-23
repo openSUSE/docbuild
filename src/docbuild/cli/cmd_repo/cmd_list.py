@@ -11,7 +11,7 @@ console = Console()
 console_err = Console(stderr=True)
 
 
-@click.command(help=__doc__, name='list')
+@click.command(help=__doc__, name="list")
 @click.pass_context
 def cmd_list(ctx: click.Context) -> None:
     """List the available permanent repositories.
@@ -25,24 +25,24 @@ def cmd_list(ctx: click.Context) -> None:
     """
     context: DocBuildContext = ctx.obj
     if context.envconfig is None:
-        raise ValueError('No envconfig found in context.')
+        raise ValueError("No envconfig found in context.")
 
-    repo_dir = context.envconfig.get('paths', {}).get('repo_dir', None)
+    repo_dir = context.envconfig.get("paths", {}).get("repo_dir", None)
     if repo_dir is None:
         raise ValueError(
-            'No permanent repositories defined, neither with '
-            '--env-config nor as default.'
+            "No permanent repositories defined, neither with "
+            "--env-config nor as default."
         )
     repo_dir = Path(repo_dir).resolve()
     if not repo_dir.exists():
         console_err.print(
-            f'[red]ERROR:[/] No permanent repositories found in {repo_dir}.',
+            f"[red]ERROR:[/] No permanent repositories found in {repo_dir}.",
         )
         ctx.exit(1)
 
-    console.print(f'Available permanent repositories in {repo_dir}:')
+    console.print(f"Available permanent repositories in {repo_dir}:")
     for path in Path(repo_dir).iterdir():
-        if path.is_dir() and not path.name.startswith('.'):
-            console.print(f'  - {path}')
+        if path.is_dir() and not path.name.startswith("."):
+            console.print(f"  - {path}")
 
     ctx.exit(0)

@@ -42,10 +42,10 @@ from ..context import DocBuildContext
 
 
 @click.command(
-    help=__doc__.replace('\b\n\n', '\b\n').replace('``', ''),  # type: ignore
+    help=__doc__.replace("\b\n\n", "\b\n").replace("``", ""),  # type: ignore
 )
 @click.argument(
-    'doctypes',
+    "doctypes",
     nargs=-1,
     callback=validate_doctypes,
 )
@@ -59,6 +59,6 @@ def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 
-    click.echo(f'[BUILD] Verbosity: {context.verbose}')
-    click.echo(f'{context=}')
-    click.echo(f'{context.appconfigfiles=}')
+    click.echo(f"[BUILD] Verbosity: {context.verbose}")
+    click.echo(f"{context=}")
+    click.echo(f"{context.appconfigfiles=}")

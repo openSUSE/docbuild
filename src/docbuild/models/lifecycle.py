@@ -34,7 +34,7 @@ class LifecycleFlag(Flag):
     # _SEPARATOR = re.compile(r'[|,]')  # Static class variable
 
     @classmethod
-    def from_str(cls: 'LifecycleFlag', value: str) -> 'LifecycleFlag':
+    def from_str(cls: "LifecycleFlag", value: str) -> "LifecycleFlag":
         """Convert a string to a LifecycleFlag object.
 
         The string accepts the values 'supported', 'beta', 'hidden',
@@ -66,9 +66,9 @@ class LifecycleFlag(Flag):
             return flag
 
         except KeyError as err:
-            allowed = ', '.join(cls.__members__.keys())
+            allowed = ", ".join(cls.__members__.keys())
             raise ValueError(
-                f'Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}',
+                f"Invalid lifecycle name: {err.args[0]!r}. Allowed values: {allowed}",
             ) from err
 
     def __contains__(self: Self, other: str | Flag) -> bool:
@@ -92,4 +92,4 @@ class LifecycleFlag(Flag):
 
 
 # attach after class creation so EnumMeta doesn't touch it
-LifecycleFlag._SEPARATOR: ClassVar[re.Pattern] = re.compile(r'[|,]')
+LifecycleFlag._SEPARATOR: ClassVar[re.Pattern] = re.compile(r"[|,]")

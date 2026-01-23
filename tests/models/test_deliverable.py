@@ -7,7 +7,7 @@ import pytest
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.metadata import Metadata
 
-DATADIR = Path(__file__).absolute().parent.parent / 'data'
+DATADIR = Path(__file__).absolute().parent.parent / "data"
 
 
 @pytest.fixture
@@ -58,10 +58,10 @@ def node() -> etree._ElementTree:
     return node.getroottree()  # .getiterator("deliverable")
 
 
-def get_deliverables(node, *, lang: str = 'en-us'):
+def get_deliverables(node, *, lang: str = "en-us"):
     """Get all deliverable elements from the XML node."""
     yield from node.xpath(
-        f'/product/docset/builddocs/language[@lang={lang!r}]/deliverable',
+        f"/product/docset/builddocs/language[@lang={lang!r}]/deliverable",
     )
 
 
@@ -74,7 +74,7 @@ def deliverable(node: etree._ElementTree) -> Generator[etree._Element, None, Non
 @pytest.fixture
 def deliverable_de(node: etree._Element) -> Generator[etree._Element, None, None]:
     """Fixture to yield German deliverable elements from the XML node."""
-    return get_deliverables(node, lang='de-de')
+    return get_deliverables(node, lang="de-de")
 
 
 @pytest.fixture
@@ -84,36 +84,36 @@ def firstnode(deliverable: etree._Element) -> etree._Element:
 
 # ---------------------
 def test_deliverable_productid(firstnode: Deliverable):
-    assert firstnode.productid == 'sles'
+    assert firstnode.productid == "sles"
 
 
 def test_deliverable_docsetid(firstnode: Deliverable):
-    assert firstnode.docsetid == '15-SP6'
+    assert firstnode.docsetid == "15-SP6"
 
 
 def test_deliverable_lang(firstnode: Deliverable):
-    assert firstnode.lang == 'en-us'
+    assert firstnode.lang == "en-us"
 
 
 def test_deliverable_language(firstnode: Deliverable):
-    assert firstnode.language == 'en'
+    assert firstnode.language == "en"
 
 
 def test_deliverable_product_docset(firstnode: Deliverable):
-    assert firstnode.product_docset == 'sles/15-SP6'
+    assert firstnode.product_docset == "sles/15-SP6"
 
 
 def test_deliverable_pdlang(firstnode: Deliverable):
-    assert firstnode.pdlang == 'sles/15-SP6/en-us'
+    assert firstnode.pdlang == "sles/15-SP6/en-us"
 
 
 def test_deliverable_pdlangdc(firstnode: Deliverable):
-    assert firstnode.pdlangdc == 'sles/15-SP6/en-us:DC-SLES-administration'
+    assert firstnode.pdlangdc == "sles/15-SP6/en-us:DC-SLES-administration"
 
 
 def test_deliverable_full_id(firstnode: Deliverable):
     assert firstnode.full_id == (
-        'sles/15-SP6/maintenance_SLE15SP6/en-us:DC-SLES-administration'
+        "sles/15-SP6/maintenance_SLE15SP6/en-us:DC-SLES-administration"
     )
 
 
@@ -122,16 +122,16 @@ def test_deliverable_lang_is_default(firstnode: Deliverable):
 
 
 def test_deliverable_docsuite(firstnode: Deliverable):
-    assert firstnode.docsuite == 'sles/15-SP6/en-us:DC-SLES-administration'
+    assert firstnode.docsuite == "sles/15-SP6/en-us:DC-SLES-administration"
 
 
 def test_deliverable_branch(firstnode: Deliverable):
-    assert firstnode.branch == 'maintenance/SLE15SP6'
+    assert firstnode.branch == "maintenance/SLE15SP6"
 
 
 def test_deliverable_branch_german(deliverable_de: etree._Element):
     firstnode = Deliverable(next(deliverable_de))
-    assert firstnode.branch == 'maintenance/SLE15SP6'
+    assert firstnode.branch == "maintenance/SLE15SP6"
 
 
 def test_deliverable_no_branch_found(node: etree._ElementTree):
@@ -143,52 +143,52 @@ def test_deliverable_no_branch_found(node: etree._ElementTree):
         branch[0].getparent().remove(branch[0])
 
     deliverables = get_deliverables(node)
-    with pytest.raises(ValueError, match='No branch found for this deliverable'):
+    with pytest.raises(ValueError, match="No branch found for this deliverable"):
         deli = Deliverable(next(deliverables))
         deli.branch  # noqa: B018 This should raise an error
 
 
 def test_deliverable_subdir(firstnode: Deliverable):
-    assert firstnode.subdir == ''
+    assert firstnode.subdir == ""
 
 
 def test_deliverable_no_subdir_found(deliverable_de: etree._Element):
     deli = Deliverable(next(deliverable_de))
-    assert deli.subdir == 'l10n/sles/de-de'
+    assert deli.subdir == "l10n/sles/de-de"
 
 
 def test_deliverable_git(firstnode: Deliverable):
-    assert firstnode.git.url == 'https://github.com/suse/doc-sle.git'
+    assert firstnode.git.url == "https://github.com/suse/doc-sle.git"
 
 
 def test_deliverable_no_git_found(node: etree._ElementTree):
     git = node.xpath(
-        '/product/docset[1]/builddocs/git',
+        "/product/docset[1]/builddocs/git",
     )
     # Remove the git element to simulate no error
     if git:
         git[0].getparent().remove(git[0])
 
     deliverables = get_deliverables(node)
-    with pytest.raises(ValueError, match='No git remote found'):
+    with pytest.raises(ValueError, match="No git remote found"):
         deli = Deliverable(next(deliverables))
         deli.git  #  noqa: B018 This should raise an error
 
 
 def test_deliverable_dcfile(firstnode: Deliverable):
-    assert firstnode.dcfile == 'DC-SLES-administration'
+    assert firstnode.dcfile == "DC-SLES-administration"
 
 
 def test_deliverable_basefile(firstnode: Deliverable):
-    assert firstnode.basefile == 'SLES-administration'
+    assert firstnode.basefile == "SLES-administration"
 
 
 def test_deliverable_format(firstnode: Deliverable):
     assert firstnode.format == {
-        'epub': False,
-        'html': False,
-        'pdf': True,
-        'single-html': True,
+        "epub": False,
+        "html": False,
+        "pdf": True,
+        "single-html": True,
     }
 
 
@@ -201,7 +201,7 @@ def test_deliverable_no_format_found(node: etree._ElementTree):
         format_elem[0].getparent().remove(format_elem[0])
 
     deliverables = get_deliverables(node)
-    with pytest.raises(ValueError, match='No format found for'):
+    with pytest.raises(ValueError, match="No format found for"):
         deli = Deliverable(next(deliverables))
         deli.format  #  noqa: B018 This should raise an error
 
@@ -211,16 +211,16 @@ def test_deliverable_node(firstnode: Deliverable):
 
 
 def test_deliverable_productname(firstnode: Deliverable):
-    assert firstnode.productname == 'SUSE Linux Enterprise Server'
+    assert firstnode.productname == "SUSE Linux Enterprise Server"
 
 
 def test_deliverable_acronym(firstnode: Deliverable):
-    assert firstnode.acronym == 'SLES'
+    assert firstnode.acronym == "SLES"
 
 
 def test_deliverable_no_acronym_found(node: etree._ElementTree):
     acronym_elem = node.xpath(
-        '/product/acronym',
+        "/product/acronym",
     )
     # Remove the acronym element to simulate no error
     if acronym_elem:
@@ -228,42 +228,42 @@ def test_deliverable_no_acronym_found(node: etree._ElementTree):
 
     deliverables = get_deliverables(node)
     deli = Deliverable(next(deliverables))
-    assert deli.acronym == ''
+    assert deli.acronym == ""
 
 
 def test_deliverable_version(firstnode: Deliverable):
-    assert firstnode.version == '15 SP6'
+    assert firstnode.version == "15 SP6"
 
 
 def test_deliverable_lifecycle(firstnode: Deliverable):
-    assert firstnode.lifecycle == 'supported'
+    assert firstnode.lifecycle == "supported"
 
 
 def test_deliverable_relpath(firstnode: Deliverable):
-    assert firstnode.relpath == 'en-us/sles/15-SP6'
+    assert firstnode.relpath == "en-us/sles/15-SP6"
 
 
 def test_deliverable_repo_path(firstnode: Deliverable):
-    assert firstnode.repo_path == Path('https___github_com_suse_doc_sle_git')
+    assert firstnode.repo_path == Path("https___github_com_suse_doc_sle_git")
 
 
 def test_deliverable_zip_path(firstnode: Deliverable):
-    assert firstnode.zip_path == 'en-us/sles/15-SP6/sles-15-SP6-en-us.zip'
+    assert firstnode.zip_path == "en-us/sles/15-SP6/sles-15-SP6-en-us.zip"
 
 
 def test_deliverable_html_path(firstnode: Deliverable):
-    assert firstnode.html_path == '/sles/15-SP6/html/SLES-administration/'
+    assert firstnode.html_path == "/sles/15-SP6/html/SLES-administration/"
 
 
 def test_deliverable_base_format_path(deliverable_de: etree._Element):
     deli = Deliverable(next(deliverable_de))
     deli.meta = Metadata(
-        rootid='foo',
+        rootid="foo",
         # productid="sles",
         # docsetid="15-SP6",
         # lang="de-de"
     )
-    assert deli.html_path == '/de-de/sles/15-SP6/html/foo/'
+    assert deli.html_path == "/de-de/sles/15-SP6/html/foo/"
 
 
 def test_deliverable_base_format_path_rootid_none(deliverable_de: etree._Element):
@@ -275,22 +275,20 @@ def test_deliverable_base_format_path_rootid_none(deliverable_de: etree._Element
         # lang="de-de"
     )
     # If rootid is None, fallback to the deliverable's basefile
-    assert deli.html_path == (
-        '/de-de/sles/15-SP6/html/SLES-administration/'
-    )
+    assert deli.html_path == ("/de-de/sles/15-SP6/html/SLES-administration/")
 
 
 def test_deliverable_singlehtml_path(firstnode: Deliverable):
-    assert firstnode.singlehtml_path == '/sles/15-SP6/single-html/SLES-administration/'
+    assert firstnode.singlehtml_path == "/sles/15-SP6/single-html/SLES-administration/"
 
 
 def test_deliverable_pdf_path(firstnode: Deliverable):
-    assert firstnode.pdf_path == '/sles/15-SP6/pdf/SLES-administration_en.pdf'
+    assert firstnode.pdf_path == "/sles/15-SP6/pdf/SLES-administration_en.pdf"
 
 
 def test_deliverable_pdf_path_german(deliverable_de: etree._Element):
     deli = Deliverable(next(deliverable_de))
-    assert deli.pdf_path == '/de-de/sles/15-SP6/pdf/SLES-administration_de.pdf'
+    assert deli.pdf_path == "/de-de/sles/15-SP6/pdf/SLES-administration_de.pdf"
 
 
 def test_deliverable_product_node(firstnode: Deliverable):
@@ -306,7 +304,7 @@ def test_deliverable_metafile(firstnode: Deliverable):
 
 
 def test_deliverable_metafile_setter(firstnode: Deliverable):
-    firstnode.metafile = 'metafile'
+    firstnode.metafile = "metafile"
     assert firstnode.metafile is not None
 
 
@@ -315,8 +313,8 @@ def test_deliverable_meta(firstnode: Deliverable):
 
 
 def test_deliverable_meta_setter_wrong_type(firstnode: Deliverable):
-    with pytest.raises(TypeError, match='Expected type Metadata, but got'):
-        firstnode.meta = 'not-a-metadata-instance'
+    with pytest.raises(TypeError, match="Expected type Metadata, but got"):
+        firstnode.meta = "not-a-metadata-instance"
 
 
 def test_deliverable_hash(firstnode: Deliverable):

@@ -24,38 +24,38 @@ def list_all_deliverables(
     """
     # Select the product node regardless if its a child of "/" or under a
     # different root element.
-    productnode = tree.xpath('(/product | /*/product)[1]')[0]
+    productnode = tree.xpath("(/product | /*/product)[1]")[0]
     # TODO: error handling if no product node is found?
 
     if doctypes is not None:
-        log.debug('Filtering for docset %r', doctypes)
+        log.debug("Filtering for docset %r", doctypes)
         for dt in doctypes:
             # Gradually build the XPath expression
-            xpath = 'self::product'
-            if '*' not in dt.product:
-                xpath += f'[@productid={dt.product.value!r}]'
+            xpath = "self::product"
+            if "*" not in dt.product:
+                xpath += f"[@productid={dt.product.value!r}]"
 
-            xpath += '/docset'
-            if '*' not in dt.docset:
-                xpath += '[' + ' or '.join([f'@setid={d!r}' for d in dt.docset]) + ']'
+            xpath += "/docset"
+            if "*" not in dt.docset:
+                xpath += "[" + " or ".join([f"@setid={d!r}" for d in dt.docset]) + "]"
 
             if LifecycleFlag.unknown != dt.lifecycle:  # type: ignore
                 xpath += (
-                    '['
-                    + ' or '.join([f'@lifecycle={lc.name!r}' for lc in dt.lifecycle])
-                    + ']'
+                    "["
+                    + " or ".join([f"@lifecycle={lc.name!r}" for lc in dt.lifecycle])
+                    + "]"
                 )
 
-            xpath += '/builddocs/language'
+            xpath += "/builddocs/language"
 
-            if '*' not in dt.langs:
+            if "*" not in dt.langs:
                 xpath += (
-                    '['
-                    + ' or '.join([f'@lang={lng.language!r}' for lng in dt.langs])
-                    + ']'
+                    "["
+                    + " or ".join([f"@lang={lng.language!r}" for lng in dt.langs])
+                    + "]"
                 )
 
-            xpath += '/deliverable'
+            xpath += "/deliverable"
             # -----------------
             # xpath = (
             #     f"/*/product[@productid={p!r}]"
@@ -69,16 +69,16 @@ def list_all_deliverables(
             #     xpath += f"[@lang={lang!r}]"
             # xpath += "/deliverable"
             # xpathlog.debug("XPath: %r", xpath)
-            print('XPath:', xpath)
+            print("XPath:", xpath)
             nodes = productnode.xpath(xpath)
             if nodes:
                 yield from nodes
             else:
-                log.warning('No deliverables found for %r', dt)
+                log.warning("No deliverables found for %r", dt)
 
     else:
         # TODO: do we need all languages? How to handle non-en-us languages?
         xpath = "self::product/docset/builddocs/language[@lang='en-us']/deliverable"
-        xpathlog.debug('XPath: %r', xpath)
-        print('XPath:', xpath)
+        xpathlog.debug("XPath: %r", xpath)
+        print("XPath:", xpath)
         yield from productnode.xpath(xpath)

@@ -46,48 +46,48 @@ def node() -> etree._ElementTree:
 
 
 @pytest.mark.parametrize(
-    'doctypes, dc_files',
+    "doctypes, dc_files",
     [
         # 0
-        (None, ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast']),
+        (None, ["DC-SLES-administration", "DC-SLES-deployment", "DC-SLES-autoyast"]),
         # 1
         (
-            [Doctype.from_str('*/*@supported,beta/en-us')],
-            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+            [Doctype.from_str("*/*@supported,beta/en-us")],
+            ["DC-SLES-administration", "DC-SLES-deployment", "DC-SLES-autoyast"],
         ),
         # 2
         (
-            [Doctype.from_str('sles/*@supported,beta/en-us')],
-            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+            [Doctype.from_str("sles/*@supported,beta/en-us")],
+            ["DC-SLES-administration", "DC-SLES-deployment", "DC-SLES-autoyast"],
         ),
         # 3
         (
-            [Doctype.from_str('sles/*@supported,beta/en-us,de-de')],
+            [Doctype.from_str("sles/*@supported,beta/en-us,de-de")],
             [
-                'DC-SLES-administration',
-                'DC-SLES-deployment',
-                'DC-SLES-administration',
-                'DC-SLES-autoyast',
+                "DC-SLES-administration",
+                "DC-SLES-deployment",
+                "DC-SLES-administration",
+                "DC-SLES-autoyast",
             ],
         ),
         # 4
         (
-            [Doctype.from_str('sles/15sp4,15sp5/en-us')],
-            ['DC-SLES-administration', 'DC-SLES-deployment', 'DC-SLES-autoyast'],
+            [Doctype.from_str("sles/15sp4,15sp5/en-us")],
+            ["DC-SLES-administration", "DC-SLES-deployment", "DC-SLES-autoyast"],
         ),
         # 5
         (
-            [Doctype.from_str('sles/*/*')],
+            [Doctype.from_str("sles/*/*")],
             [
-                'DC-SLES-administration',
-                'DC-SLES-deployment',
-                'DC-SLES-administration',
-                'DC-SLES-autoyast',
+                "DC-SLES-administration",
+                "DC-SLES-deployment",
+                "DC-SLES-administration",
+                "DC-SLES-autoyast",
             ],
         ),
         # 6
         (
-            [Doctype.from_str('smart/*/en-us')],
+            [Doctype.from_str("smart/*/en-us")],
             [],
         ),
     ],

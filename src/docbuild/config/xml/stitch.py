@@ -8,10 +8,11 @@ import importlib
 import inspect
 import logging
 from pathlib import Path
+import resource
+import sys
 
 from lxml import etree
 
-from ...constants import XMLDATADIR
 from .references import check_stitched_references
 
 log = logging.getLogger(__name__)
@@ -19,19 +20,32 @@ log = logging.getLogger(__name__)
 
 def load_check_functions() -> list[Callable]:
     """Load all check functions from :mod:`docbuild.config.xml.checks`."""
-    xmlchecks = importlib.import_module('docbuild.config.xml.checks')
+    xmlchecks = importlib.import_module("docbuild.config.xml.checks")
 
     return [
         func
         for name, func in inspect.getmembers(xmlchecks, inspect.isfunction)
-        if name.startswith('check_')
+        if name.startswith("check_")
     ]
 
 
-# def log_memory_usage():
-#     import psutil
-#     process = psutil.Process(os.getpid())
-#     print(f'Memory usage: {process.memory_info().rss / 1024**2:.2f} MB')
+def log_memory_usage() -> int:
+    """Determine the memory usage.
+
+    :return: memory usage in kilobytes
+    """
+    # Get the resource usage for the current process (RUSAGE_SELF)
+    usage = resource.getrusage(resource.RUSAGE_SELF)
+    # usage.ru_maxrss returns the memory.
+    # Note: On Linux, this is usually Kilobytes. On macOS, it is Bytes.
+    memory_in_kb = usage.ru_maxrss
+
+    # Adjustment for macOS to keep units consistent (convert to KB)
+    if sys.platform == "darwin":
+        # Use integer division to match the function's return type hint
+        memory_in_kb //= 1024
+
+    return memory_in_kb
 
 
 def check_stitchfile(tree: etree._Element | etree._ElementTree) -> bool:
@@ -74,7 +88,7 @@ async def create_stitchfile(
         return tree
 
     # Step 1: Concurrently parse all XML files
-    docservconfig = etree.Element('docservconfig', attrib=None, nsmap=None)
+    docservconfig = etree.Element("docservconfig", attrib=None, nsmap=None)
     tasks = [parse_and_xinclude(Path(xmlfile)) for xmlfile in xmlfiles]
     parsed_trees = await asyncio.gather(*tasks)
 
@@ -84,18 +98,21 @@ async def create_stitchfile(
         docservconfig.append(deepcopy(tree.getroot()))
         del tree  # Explicitly delete the tree to free memory
 
-    # log_memory_usage()
-
     # Step 2: Check for unique IDs
-    product_ids = docservconfig.xpath('//@productid')
+    product_ids = docservconfig.xpath("//@productid")
     if len(product_ids) > len(set(product_ids)):
         duplicates = [item for item, count in Counter(product_ids).items() if count > 1]
-        raise ValueError(f'Duplicate product IDs found: {", ".join(duplicates)}')
+        raise ValueError(f"Duplicate product IDs found: {', '.join(duplicates)}")
 
     # Step 3: Check references
     if with_ref_check:
         result = check_stitchfile(docservconfig)
         if not result:
-            raise ValueError('Unresolved references found in stitch file')
+            raise ValueError(
+                "Unresolved references found in stitch file. "
+                "Run the validate subcommand"
+            )
+
+    log.debug("Memory usage: %.1f MB", log_memory_usage() / 1024)
 
     return etree.ElementTree(docservconfig)

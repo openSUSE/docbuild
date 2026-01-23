@@ -49,10 +49,11 @@ jobs:
         id: version_check
         run: |
           BRANCH_VERSION="${{ env.VERSION }}"
-          
-          # Safely extract __version__ from the file (for example, '1.0.0' from __version__ = '1.0.0')
-          CODE_VERSION=$(grep '__version__' src/docbuild/__about__.py | awk -F "'" '{print $2}')
-          
+
+          # Safely extract __version__ from the file regardless of single or double quotes,
+          # e.g. __version__ = '1.0.0' or __version__ = "1.0.0"
+          CODE_VERSION=$(grep -Po "__version__\s*=\s*['\"]\K[^'\"]+" src/docbuild/__about__.py)
+
           echo ":notice title=Branch version::$BRANCH_VERSION"
           echo ":notice title=Code version::$CODE_VERSION"
 

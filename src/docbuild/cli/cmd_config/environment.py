@@ -1,8 +1,6 @@
 """CLI interface to showsthe configuration of the environment files."""
 
 import click
-from rich import print 
-from rich.pretty import Pretty
 from rich import print_json
 
 
@@ -15,15 +13,14 @@ def env(ctx: click.Context) -> None:
 
     :param ctx: The Click context object.
     """
-
     # Check if envconfigfiles is None (which it is when the default config is used)
     if ctx.obj.envconfigfiles is None:
-        path = '(Default configuration used)'
+        path = "(Default configuration used)"
     else:
-        path = ', '.join(str(path) for path in ctx.obj.envconfigfiles)
-        
-    click.secho(f"# ENV Config file '{path}'", fg='blue')
-    
+        path = ", ".join(str(path) for path in ctx.obj.envconfigfiles)
+
+    click.secho(f"# ENV Config file '{path}'", fg="blue")
+
     serialized_config = ctx.obj.envconfig.model_dump_json()
 
     print_json(serialized_config)

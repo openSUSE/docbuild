@@ -1,11 +1,11 @@
-docbuild.models.config.env.Env_GeneralConfig
-==================================================
+docbuild.models.config.env.EnvGeneralConfig
+===========================================
 
-.. py:class:: docbuild.models.config.env.Env_GeneralConfig(/, **data: Any)
+.. py:class:: docbuild.models.config.env.EnvGeneralConfig(/, **data: Any)
 
    Bases: :py:obj:`pydantic.BaseModel`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.config.env.Env_GeneralConfig
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.EnvGeneralConfig
       :parts: 1
 
 
@@ -47,12 +47,12 @@ docbuild.models.config.env.Env_GeneralConfig
 
    .. py:method:: serialize_default_lang(lang_obj: docbuild.models.language.LanguageCode) -> str
 
-      Serializes the LanguageCode model back to a simple string (e.g., 'en-us').
+      Serialize the LanguageCode model back to a simple string (e.g., 'en-us').
 
 
 
    .. py:method:: serialize_languages(lang_list: list[docbuild.models.language.LanguageCode]) -> list[str]
 
-      Serializes the list of LanguageCode models back to a list of strings.
+      Serialize the list of LanguageCode models back to a list of strings.
 
 

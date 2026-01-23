@@ -15,9 +15,9 @@ def app(ctx: click.Context) -> None:
     :param ctx: The Click context object.
     """
     if ctx.obj.appconfigfiles:
-        files = ', '.join(str(f) for f in ctx.obj.appconfigfiles)
-        click.secho(f"# Application config files '{files}'", fg='blue')
+        files = ", ".join(str(f) for f in ctx.obj.appconfigfiles)
+        click.secho(f"# Application config files '{files}'", fg="blue")
         print(Pretty(ctx.obj.appconfig, expand_all=True))
     else:
-        click.secho('# No application config files provided', fg='yellow')
+        click.secho("# No application config files provided", fg="yellow")
         print(Pretty(ctx.obj.appconfig, expand_all=True))

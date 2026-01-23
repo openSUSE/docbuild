@@ -23,29 +23,29 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     :raises ValueError: If configuration paths are missing.
     """
     # The calling command function is expected to have checked context.envconfig.
-    paths = context.envconfig.get('paths', {})
-    config_dir_str = paths.get('config_dir')
-    repo_dir_str = paths.get('repo_dir')
+    paths = context.envconfig.get("paths", {})
+    config_dir_str = paths.get("config_dir")
+    repo_dir_str = paths.get("repo_dir")
 
     if not config_dir_str:
-        raise ValueError('Could not get a value from envconfig.paths.config_dir')
+        raise ValueError("Could not get a value from envconfig.paths.config_dir")
     if not repo_dir_str:
-        raise ValueError('Could not get a value from envconfig.paths.repo_dir')
+        raise ValueError("Could not get a value from envconfig.paths.repo_dir")
 
     configdir = Path(config_dir_str).expanduser()
     repo_dir = Path(repo_dir_str).expanduser()
 
-    xmlconfigs = tuple(configdir.rglob('[a-z]*.xml'))
+    xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
     stitchnode = await create_stitchfile(xmlconfigs)
     if stitchnode is None:
-        raise ValueError('Stitch node could not be created.')
+        raise ValueError("Stitch node could not be created.")
 
     if not repos:
-        git_nodes = await asyncio.to_thread(stitchnode.xpath, './/git')
+        git_nodes = await asyncio.to_thread(stitchnode.xpath, ".//git")
         all_remotes = [
-            Repo(repo.attrib.get('remote'))
+            Repo(repo.attrib.get("remote"))
             for repo in git_nodes
-            if repo.attrib.get('remote') is not None
+            if repo.attrib.get("remote") is not None
         ]
         # Create a unique list while preserving order
         unique_git_repos = list(dict.fromkeys(all_remotes))
@@ -54,13 +54,13 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
         unique_git_repos = list(dict.fromkeys(Repo(r) for r in repos))
 
     if not unique_git_repos:
-        log.info('No repositories found to clone.')
+        log.info("No repositories found to clone.")
         return 0
 
     # print(f'Found {len(unique_git_repos)} unique git repositories to process.')
     # print(f'Cloning repositories into {repo_dir}')
 
-    timer = make_timer('git-clone-repos')
+    timer = make_timer("git-clone-repos")
     with timer() as t:
         tasks = [
             ManagedGitRepo(str(repo), repo_dir).clone_bare()
@@ -68,7 +68,7 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
         ]
         results = await asyncio.gather(*tasks)
 
-    log.info('Elapsed time:  %0.3f seconds', t.elapsed)
+    log.info("Elapsed time:  %0.3f seconds", t.elapsed)
 
     # Return 0 for success (all clones succeeded), 1 for failure.
     if all(results):

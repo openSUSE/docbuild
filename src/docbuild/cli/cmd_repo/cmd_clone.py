@@ -14,16 +14,17 @@ import logging
 import click
 
 from ...cli.context import DocBuildContext
-from .process import process
 from ...constants import GITLOGGER_NAME
+from .process import process
 
 log = logging.getLogger(__name__)
 
 git_logger = logging.getLogger(GITLOGGER_NAME)
 
+
 @click.command(help=__doc__)
 @click.argument(
-    'repos',
+    "repos",
     nargs=-1,
 )
 @click.pass_context
@@ -35,8 +36,8 @@ def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     """
     context: DocBuildContext = ctx.obj
     if context.envconfig is None:
-        raise ValueError('No envconfig found in context.')
+        raise ValueError("No envconfig found in context.")
 
     result = asyncio.run(process(context, repos))
-    log.info(f'Clone process completed with exit code: {result}')
+    log.info(f"Clone process completed with exit code: {result}")
     ctx.exit(result)

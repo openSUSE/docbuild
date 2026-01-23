@@ -50,41 +50,41 @@ class Doctype(BaseModel):
     # """   # type: ignore
 
     product: Product = Field(
-        title='A SUSE product',
-        description='A SUSE product is a lowercase acronym.',
-        examples=['sles', 'smart'],
+        title="A SUSE product",
+        description="A SUSE product is a lowercase acronym.",
+        examples=["sles", "smart"],
     )
     """A SUSE product is a lowercase acronym"""
 
     docset: list[str] = Field(
         title="A specific 'docset' of a product",
         description=(
-            'A specific release or version of a product. '
-            'Values can be combined using commas. '
-            'After validation, docsets are sorted.'
+            "A specific release or version of a product. "
+            "Values can be combined using commas. "
+            "After validation, docsets are sorted."
         ),
-        examples=['15-SP6', 'systems-management'],
+        examples=["15-SP6", "systems-management"],
     )
     """A specific 'docset' of a product (usually a release or version)"""
 
     lifecycle: LifecycleFlag = Field(
-        title='The state of the Doctype',
+        title="The state of the Doctype",
         description=(
-            'One or more lifecycle states that indicate the '
-            'support or development. '
-            'Values can be combined using commas or pipes.'
+            "One or more lifecycle states that indicate the "
+            "support or development. "
+            "Values can be combined using commas or pipes."
         ),
-        examples=['supported', 'beta', 'unsupported'],
+        examples=["supported", "beta", "unsupported"],
     )
     """The state  (supported, beta, etc.) of the Doctype"""
 
     langs: list[LanguageCode] = Field(
-        title='A natural language',
+        title="A natural language",
         description=(
-            'The natural language containing language and country. '
-            'After validation, langs are sorted'
+            "The natural language containing language and country. "
+            "After validation, langs are sorted"
         ),
-        examples=['en-us', 'de-de'],
+        examples=["en-us", "de-de"],
     )
     """A natural language containing language and country"""
 
@@ -92,11 +92,11 @@ class Doctype(BaseModel):
     # The regex contains non-capturing groups on purpose
     # This leads to None in the result if that group isn't matched
     _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
-        r'^'  # start
-        r'(?:/?([^/@]+|\*))?'  # optional product (group 1)
-        r'/(?:([^/@]+|\*))?'  # optional docset (group 2)
-        r'(?:@([a-z]+(?:[,|][a-z]+)*))?'  # optional lifecycle (group 3)
-        r'/(\*|[\w-]+(?:,[\w-]+)*)$',  # required langs (group 4)
+        r"^"  # start
+        r"(?:/?([^/@]+|\*))?"  # optional product (group 1)
+        r"/(?:([^/@]+|\*))?"  # optional docset (group 2)
+        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"  # optional lifecycle (group 3)
+        r"/(\*|[\w-]+(?:,[\w-]+)*)$",  # required langs (group 4)
     )
 
     # dunder methods
@@ -127,23 +127,23 @@ class Doctype(BaseModel):
 
     def __str__(self) -> str:
         """Implement str(self)."""
-        langs_str = ','.join(lang.language for lang in self.langs)
-        docset_str = ','.join(self.docset)
-        return f'{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}'
+        langs_str = ",".join(lang.language for lang in self.langs)
+        docset_str = ",".join(self.docset)
+        return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self) -> str:
         """Implement repr(self)."""
-        langs_str = ','.join(lang.language for lang in self.langs)
-        docset_str = ','.join(self.docset)
+        langs_str = ",".join(lang.language for lang in self.langs)
+        docset_str = ",".join(self.docset)
         return (
-            f'{self.__class__.__name__}(product={self.product.value!r}, '
-            f'docset=[{docset_str}], '
-            f'lifecycle={self.lifecycle.name!r}, '
-            f'langs=[{langs_str}]'
-            f')'
+            f"{self.__class__.__name__}(product={self.product.value!r}, "
+            f"docset=[{docset_str}], "
+            f"lifecycle={self.lifecycle.name!r}, "
+            f"langs=[{langs_str}]"
+            f")"
         )
 
-    def __contains__(self, other: 'Doctype') -> bool:
+    def __contains__(self, other: "Doctype") -> bool:
         """Return if bool(other in self).
 
         Every part of a Doctype is compared element-wise.
@@ -154,9 +154,9 @@ class Doctype(BaseModel):
         return all(
             [
                 self.product == other.product or self.product == Product.ALL,
-                set(other.docset).issubset(self.docset) or '*' in self.docset,
+                set(other.docset).issubset(self.docset) or "*" in self.docset,
                 other.lifecycle in self.lifecycle,
-                set(other.langs).issubset(self.langs) or '*' in self.langs,
+                set(other.langs).issubset(self.langs) or "*" in self.langs,
             ],
         )
 
@@ -171,19 +171,19 @@ class Doctype(BaseModel):
         )
 
     # Validators
-    @field_validator('product', mode='before')
+    @field_validator("product", mode="before")
     @classmethod
     def coerce_product(cls, value: str | Product) -> Product:
         """Convert a string into a valid Product."""
         return value if isinstance(value, Product) else Product(value)
 
-    @field_validator('docset', mode='before')
+    @field_validator("docset", mode="before")
     @classmethod
     def coerce_docset(cls, value: str | list[str]) -> list[str]:
         """Convert a string into a list."""
-        return sorted(value.split(',')) if isinstance(value, str) else sorted(value)
+        return sorted(value.split(",")) if isinstance(value, str) else sorted(value)
 
-    @field_validator('lifecycle', mode='before')
+    @field_validator("lifecycle", mode="before")
     @classmethod
     def coerce_lifecycle(cls, value: str | LifecycleFlag) -> LifecycleFlag:
         """Convert a string into a LifecycleFlag."""
@@ -195,13 +195,13 @@ class Doctype(BaseModel):
             return lifecycles
         return LifecycleFlag(value)
 
-    @field_validator('langs', mode='before')
+    @field_validator("langs", mode="before")
     @classmethod
     def coerce_langs(cls, value: str | list[str | LanguageCode]) -> list[LanguageCode]:
         """Convert a comma-separated string or a list of strings into LanguageCode."""
         # Allow list of strings or Language enums
         if isinstance(value, str):
-            value = sorted(value.split(','))
+            value = sorted(value.split(","))
         return sorted(
             [
                 lang if isinstance(lang, LanguageCode) else LanguageCode(language=lang)
@@ -215,13 +215,13 @@ class Doctype(BaseModel):
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
         if not match:
-            raise ValueError(f'Invalid doctype string format: {doctype_str!r}')
+            raise ValueError(f"Invalid doctype string format: {doctype_str!r}")
 
         product, docset, lifecycle, langs = match.groups()
-        product = '*' if not product else product
-        docset = '*' if not docset else docset
-        lifecycle = 'unknown' if lifecycle is None else lifecycle
-        langs = 'en-us' if langs is None else langs
+        product = "*" if not product else product
+        docset = "*" if not docset else docset
+        lifecycle = "unknown" if lifecycle is None else lifecycle
+        langs = "en-us" if langs is None else langs
         return cls(
             product=product,
             docset=docset,
@@ -245,32 +245,32 @@ class Doctype(BaseModel):
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
-        product = 'product'
+        product = "product"
         if self.product != Product.ALL:
-            product += f'[@productid={self.product.value!r}]'
+            product += f"[@productid={self.product.value!r}]"
 
-        setids = [f'@setid={d!r}' for d in self.docset if d != '*']
+        setids = [f"@setid={d!r}" for d in self.docset if d != "*"]
 
-        setids_str = ' or '.join(setids)
+        setids_str = " or ".join(setids)
         if setids_str:
-            docset = f'docset[{setids_str}]'
+            docset = f"docset[{setids_str}]"
         else:
-            docset = 'docset'
+            docset = "docset"
 
-        lifecycle = ' or '.join(
+        lifecycle = " or ".join(
             [
-                f'@lifecycle={lc.name!r}'
+                f"@lifecycle={lc.name!r}"
                 for lc in self.lifecycle
                 if lc != LifecycleFlag.unknown
             ]
         )
         if lifecycle:
-            docset += f'[{lifecycle}]'
+            docset += f"[{lifecycle}]"
 
-        if '*' in self.langs:
-            language = 'language'
+        if "*" in self.langs:
+            language = "language"
         else:
-            language = ' or '.join([f'@lang={lang.language!r}' for lang in self.langs])
-            language = f'language[{language}]'
+            language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
+            language = f"language[{language}]"
 
-        return f'{product}/{docset}/builddocs/{language}'
+        return f"{product}/{docset}/builddocs/{language}"

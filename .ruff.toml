@@ -3,30 +3,12 @@ target-version = "py312"
 
 # Max line length (matches Black's default)
 line-length = 88
+indent-width = 4
 
-# Exclude a variety of commonly ignored directories.
-exclude = [
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "build",
+# Amend exclude list in addtion to "exclude".
+# See https://docs.astral.sh/ruff/configuration/
+extend-exclude = [
     "contrib",
-    "dist",
-    "site-packages",
-    "venv",
 ]
 
 
@@ -44,7 +26,6 @@ select = [
     "C90",  # mccabe complexity
     "B",    # flake8-bugbear
     "A",    # flake8-builtins
-    "COM",  # flake8-commas
     "RUF",  # Ruff-specific rules
 ]
 
@@ -54,8 +35,7 @@ ignore = [
     "D107",    # Missing docstring in __init__
     "D203",    # Conflicts with D211 (one blank line before class docstring)
     "D213",    # Conflicts with D212 (multi-line docstring start convention)
-    # "D401",    # First line of docstring should be in imperative mood
-    "COM812",  # 
+    "E501",    # Line too long (Let the formatter handle this)
 ]
 
 # Allow autofix for everything except complexity and annotations
@@ -77,7 +57,7 @@ max-complexity = 10
 
 [format]
 # 5. Use single quotes in `ruff format`.
-quote-style = "single"
+quote-style = "double"
 
 
 [lint.per-file-ignores]
@@ -85,14 +65,9 @@ quote-style = "single"
     "D301"  # Use `r"""` if any backslashes in a docstring
 ]
 "tests/**/test_*.py" = [
-    "ANN001", # Missing type annotation for function argument
-    "ANN002", # Missing type annotation for variable
-    "ANN003", # Missing type annotation for class attribute
-    "ANN201", # Missing return type annotation
-    "ANN202", # Missing return type annotation for private function
-    "ANN204", # Missing return type annotation for special method `__init__`
-    "D100",   # Missing docstring in public module
-    "D101",   # Missing docstring in public class
-    "D103",   # Missing docstring in public function
-    "D105",   # Missing docstring in magic method
+    "ANN",    # Ignore ALL annotations in tests (simpler than listing specific codes)
+    "D",      # Ignore ALL docstrings in tests
+    "S101",   # (Optional) If you add flake8-bandit, this allows "assert" in tests
 ]
+# Ignore unused imports in all __init__.py files
+"__init__.py" = ["F401"]

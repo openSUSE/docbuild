@@ -99,12 +99,9 @@ def test_file_logs_all_levels(logger, memory_handler):
 
 def test_setup_with_user_config(logger):
     """Test that user-provided logging configuration is correctly applied."""
-
     user_config = {
         "logging": {
-            "handlers": {
-                "console": {"level": "ERROR"}
-            },
+            "handlers": {"console": {"level": "ERROR"}},
             "root": {"level": "DEBUG"},
         }
     }
@@ -113,7 +110,7 @@ def test_setup_with_user_config(logger):
     setup_logging(cliverbosity=2, user_config=user_config)
 
     # Attach MemoryHandler to capture logs
-    memory_handler = MemoryHandler(capacity=10*1024, target=None)
+    memory_handler = MemoryHandler(capacity=10 * 1024, target=None)
     memory_handler.setLevel(logging.ERROR)  # **only capture ERROR and above**
     logger.addHandler(memory_handler)
     memory_handler.buffer.clear()
@@ -160,8 +157,9 @@ def test_setup_logging_creates_logfile_and_listener(tmp_path, monkeypatch):
     handlers = _LOGGING_STATE["handlers"].get()
 
     assert listener is not None
-    assert isinstance(handlers, list) and any(isinstance(h, logging.FileHandler)
-                                              for h in handlers)
+    assert isinstance(handlers, list) and any(
+        isinstance(h, logging.FileHandler) for h in handlers
+    )
 
     # Verify a logfile was created in the XDG_STATE_HOME directory
     files = list(tmp_path.glob(f"{APP_NAME}_*.log"))
@@ -176,35 +174,39 @@ def test_setup_logging_bad_formatter(monkeypatch, tmp_path):
     # A formatter that points to a non-existent class should raise on setup
     user_config = {
         "logging": {
-            "formatters": {"bad": {"class": "non.existent.Class",
-                                   "format": "%(message)s"}},
+            "formatters": {
+                "bad": {"class": "non.existent.Class", "format": "%(message)s"}
+            },
             "handlers": {"console": {"formatter": "bad"}},
         }
     }
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path))
     _shutdown_logging()
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         setup_logging(1, user_config)
     _shutdown_logging()
 
 
 def test_safe_emit_swallows_valueerror(monkeypatch):
     """Test that the safe_emit wrapper swallows ValueError exceptions."""
+
     # Replace the module's _original_emit with a function that raises ValueError
     def raising_emit(self, record):
         raise ValueError("boom")
 
-    monkeypatch.setattr('docbuild.logging._original_emit', raising_emit, raising=True)
+    monkeypatch.setattr("docbuild.logging._original_emit", raising_emit, raising=True)
 
     # Create a handler and a dummy record and call the (patched) StreamHandler.emit
     handler = logging.StreamHandler()
-    record = logging.LogRecord(name="test",
-                               level=logging.INFO,
-                               pathname=__file__,
-                               lineno=1,
-                               msg="x",
-                               args=(),
-                               exc_info=None)
+    record = logging.LogRecord(
+        name="test",
+        level=logging.INFO,
+        pathname=__file__,
+        lineno=1,
+        msg="x",
+        args=(),
+        exc_info=None,
+    )
 
     # Should not raise due to safe wrapper
     logging.StreamHandler.emit(handler, record)
@@ -212,6 +214,7 @@ def test_safe_emit_swallows_valueerror(monkeypatch):
 
 def test_shutdown_joins_background_threads():
     """Test that _shutdown_logging joins background threads."""
+
     # Create a short-lived background thread and register it
     def worker():
         time.sleep(0.05)
@@ -245,7 +248,10 @@ def test_shutdown_skips_not_alive_threads():
 
 
 def test_register_background_thread_initializes_none():
-    """When the ContextVar is None, `register_background_thread` should initialize it."""
+    """Test that register_background_thread initializes the ContextVar.
+
+    When the ContextVar is None, `register_background_thread` should initialize it.
+    """
     # Ensure initial state is None
     _LOGGING_STATE["background_threads"].set(None)
 
@@ -262,8 +268,11 @@ def test_formatter_kwargs_applied():
     # Ensure formatter kwargs like `format` and `datefmt` are passed through
     user_config = {
         "handlers": {
-            "console": {"class": "logging.StreamHandler",
-                        "formatter": "standard", "level": "INFO"}
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "standard",
+                "level": "INFO",
+            }
         },
         "formatters": {
             "standard": {
@@ -276,8 +285,9 @@ def test_formatter_kwargs_applied():
     }
     handlers = build_handlers_from_config(user_config)
     assert any(
-        getattr(h, "formatter", None) and
-        getattr(h.formatter, "_fmt", None) == "FOO %(message)s" for h in handlers
+        getattr(h, "formatter", None)
+        and getattr(h.formatter, "_fmt", None) == "FOO %(message)s"
+        for h in handlers
     )
 
 
@@ -300,8 +310,8 @@ def test_handler_args_and_missing_formatter(tmp_path):
     handlers = build_handlers_from_config(user_config)
     # FileHandler should receive encoding arg
     assert any(
-        isinstance(h, logging.FileHandler) and
-        getattr(h, "encoding", None) == "utf-8" for h in handlers
+        isinstance(h, logging.FileHandler) and getattr(h, "encoding", None) == "utf-8"
+        for h in handlers
     )
     # Since formatter was set to None, handler.formatter should be absent
     assert any(getattr(h, "formatter", None) is None for h in handlers)
@@ -309,7 +319,8 @@ def test_handler_args_and_missing_formatter(tmp_path):
 
 def test_handler_level_numeric():
     """Test that passing a numeric level is accepted."""
-    user_config = {"handlers": {"console": {"class": "logging.StreamHandler",
-                                            "level": 10}}}
+    user_config = {
+        "handlers": {"console": {"class": "logging.StreamHandler", "level": 10}}
+    }
     handlers = build_handlers_from_config(user_config)
     assert any(getattr(h, "level", None) == 10 for h in handlers)

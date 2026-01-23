@@ -10,4 +10,4 @@ def c14n(ctx: click.Context) -> None:
 
     :param ctx: The Click context object.
     """
-    click.echo(f'[C17N] Verbosity: {ctx.obj.verbose}')
+    click.echo(f"[C17N] Verbosity: {ctx.obj.verbose}")

@@ -1,9 +1,21 @@
 docbuild.utils.git.ManagedGitRepo
 =================================
 
-.. py:class:: docbuild.utils.git.ManagedGitRepo(remote_url: str, permanent_root: pathlib.Path)
+.. py:class:: docbuild.utils.git.ManagedGitRepo(remote_url: str, rootdir: pathlib.Path, gitconfig: pathlib.Path | None = None)
 
    Manages a bare repository and its temporary worktrees.
+
+
+   .. py:method:: clear_cache() -> None
+      :classmethod:
+
+
+      Clear the internal update-state cache.
+
+      This is a small, explicit API intended primarily for tests
+      to reset class-level state between test cases. It avoids
+      tests touching the private `_is_updated` attribute directly.
+
 
 
    .. py:method:: __repr__() -> str
@@ -42,7 +54,10 @@ docbuild.utils.git.ManagedGitRepo
 
       Clone the remote repository as a bare repository.
 
-      If the repository already exists, it logs a message and returns.
+      If the repository already exists, it updates the repo. Once the repo is
+      updated, its status is stored. Further calls won't update the repo
+      again to maintain a consistent state. This avoids different states betwen
+      different times.
 
       :returns: True if successful, False otherwise.
 
@@ -60,7 +75,7 @@ docbuild.utils.git.ManagedGitRepo
       :async:
 
 
-      Fetch updates from the remote to the bare repository.
+      Fetch updates for all branches from the remote.
 
       :return: True if successful, False otherwise.
 

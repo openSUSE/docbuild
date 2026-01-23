@@ -1,1 +1,0 @@
-Improve several tests to improve coverage, readability, reduce dependency to private functions or attributes, and refactor for better modularity.

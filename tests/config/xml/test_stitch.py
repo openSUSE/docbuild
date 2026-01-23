@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from lxml import etree
 import pytest
@@ -67,21 +66,20 @@ class TestLoadCheckFunctions:
         # Should return functions that start with "check_"
         for func in functions:
             assert callable(func)
-            assert func.__name__.startswith('check_')
+            assert func.__name__.startswith("check_")
 
 
 class TestStitchfile:
-
     async def test_create_stitchfile_with_xml_files(self, tmp_path):
         """Test create_stitchfile with XML files in directory."""
         # This will cover lines 52-58
         # Create some XML files
-        xml1 = tmp_path / 'config1.xml'
+        xml1 = tmp_path / "config1.xml"
         xml1.write_text("""<product productid="test1">
 <name>Product 1</name>
 </product>""")
 
-        xml2 = tmp_path / 'config2.xml'
+        xml2 = tmp_path / "config2.xml"
         xml2.write_text("""<product productid="test2">
 <name>Product 2</name>
 </product>""")
@@ -91,12 +89,12 @@ class TestStitchfile:
 
         assert isinstance(result, etree._ElementTree)
         root = result.getroot()
-        assert root.tag == 'docservconfig'
+        assert root.tag == "docservconfig"
 
         # Should contain both XML files as children
         children = list(root)
         assert len(children) == 2
-        assert all(child.tag == 'product' for child in children)
+        assert all(child.tag == "product" for child in children)
 
     def test_check_stitchfile_valid_refs(self, xmlnode):
         """Test check_stitchfile with valid references."""
@@ -105,14 +103,17 @@ class TestStitchfile:
 
     def test_check_stitchfile_invalid_product_ref(self, xmlnode):
         """Test check_stitchfile with an invalid product reference."""
-        internal_node = xmlnode.find('.//internal')
+        internal_node = xmlnode.find(".//internal")
         # Add a ref to a product that does not exist
-        etree.SubElement(internal_node,
-                         'ref',
-                         attrib={'product': 'invalid-product',
-                                 'docset': 'unknown',
-                                 'dc': 'DC-unknown',
-                                 })
+        etree.SubElement(
+            internal_node,
+            "ref",
+            attrib={
+                "product": "invalid-product",
+                "docset": "unknown",
+                "dc": "DC-unknown",
+            },
+        )
         result = check_stitchfile(xmlnode)
         assert not result
 
@@ -131,7 +132,7 @@ class TestStitchfile:
         xml_file.write_text(invalid_xml_content)
 
         with pytest.raises(
-            ValueError, match='Unresolved references found in stitch file'
+            ValueError, match="Unresolved references found in stitch file"
         ):
             await create_stitchfile([xml_file], with_ref_check=True)
 
@@ -159,8 +160,8 @@ class TestStitchfile:
         result = await create_stitchfile([xml_file], with_ref_check=False)
         assert isinstance(result, etree._ElementTree)
         root = result.getroot()
-        assert root.tag == 'docservconfig'
-        assert len(root.findall('product')) == 1
+        assert root.tag == "docservconfig"
+        assert len(root.findall("product")) == 1
 
     async def test_create_stitchfile_with_valid_refs_does_not_raise(
         self, product_xml_string, tmp_path

@@ -54,8 +54,8 @@ def xml_tree() -> etree._Element:
 
 def add_ref(tree: etree._Element, attrs: dict[str, str]) -> etree._Element:
     """Add a <ref> element to the test tree and return it."""
-    internal_node = tree.find('.//internal')
-    ref_element = etree.SubElement(internal_node, 'ref', attrib=attrs)
+    internal_node = tree.find(".//internal")
+    ref_element = etree.SubElement(internal_node, "ref", attrib=attrs)
     return ref_element
 
 
@@ -63,10 +63,10 @@ class TestCheckRefToSubdeliverable:
     def test_valid_ref(self, xml_tree):
         """Test a valid reference to a subdeliverable."""
         attrs = {
-            'product': 'p1',
-            'docset': 'ds1',
-            'dc': 'DC-1',
-            'subdeliverable': 'sub-1',
+            "product": "p1",
+            "docset": "ds1",
+            "dc": "DC-1",
+            "subdeliverable": "sub-1",
         }
         ref = add_ref(xml_tree, attrs)
         assert check_ref_to_subdeliverable(ref, attrs) is None
@@ -74,87 +74,87 @@ class TestCheckRefToSubdeliverable:
     def test_invalid_ref_does_not_exist(self, xml_tree):
         """Test an invalid reference to a non-existent subdeliverable."""
         attrs = {
-            'product': 'p1',
-            'docset': 'ds1',
-            'dc': 'DC-1',
-            'subdeliverable': 'invalid',
+            "product": "p1",
+            "docset": "ds1",
+            "dc": "DC-1",
+            "subdeliverable": "invalid",
         }
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_subdeliverable(ref, attrs)
         assert result is not None
-        assert 'Referenced subdeliverable does not exist' in result
+        assert "Referenced subdeliverable does not exist" in result
 
 
 class TestCheckRefToDeliverable:
     def test_valid_ref(self, xml_tree):
         """Test a valid reference to a deliverable without subdeliverables."""
-        attrs = {'product': 'p1', 'docset': 'ds1', 'dc': 'DC-2'}
+        attrs = {"product": "p1", "docset": "ds1", "dc": "DC-2"}
         ref = add_ref(xml_tree, attrs)
         assert check_ref_to_deliverable(ref, attrs) is None
 
     def test_invalid_ref_has_subdeliverables(self, xml_tree):
         """Test reference to a deliverable that has subdeliverables."""
-        attrs = {'product': 'p1', 'docset': 'ds1', 'dc': 'DC-1'}
+        attrs = {"product": "p1", "docset": "ds1", "dc": "DC-1"}
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_deliverable(ref, attrs)
         assert result is not None
-        assert 'Referenced deliverable has subdeliverables' in result
+        assert "Referenced deliverable has subdeliverables" in result
 
     def test_invalid_ref_does_not_exist(self, xml_tree):
         """Test reference to a deliverable that does not exist."""
-        attrs = {'product': 'p1', 'docset': 'ds1', 'dc': 'invalid-dc'}
+        attrs = {"product": "p1", "docset": "ds1", "dc": "invalid-dc"}
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_deliverable(ref, attrs)
         assert result is not None
-        assert 'Referenced deliverable does not exist' in result
+        assert "Referenced deliverable does not exist" in result
 
 
 class TestCheckRefToLink:
     def test_valid_ref(self, xml_tree):
         """Test a valid reference to an external link."""
-        attrs = {'product': 'p1', 'docset': 'ds1', 'link': 'link-1'}
+        attrs = {"product": "p1", "docset": "ds1", "link": "link-1"}
         ref = add_ref(xml_tree, attrs)
         assert check_ref_to_link(ref, attrs) is None
 
     def test_invalid_ref_does_not_exist(self, xml_tree):
         """Test reference to a link that does not exist."""
-        attrs = {'product': 'p1', 'docset': 'ds1', 'link': 'invalid-link'}
+        attrs = {"product": "p1", "docset": "ds1", "link": "invalid-link"}
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_link(ref, attrs)
         assert result is not None
-        assert 'Referenced external link does not exist' in result
+        assert "Referenced external link does not exist" in result
 
 
 class TestCheckRefToDocset:
     def test_valid_ref(self, xml_tree):
         """Test a valid reference to a docset."""
-        attrs = {'product': 'p1', 'docset': 'ds2'}
+        attrs = {"product": "p1", "docset": "ds2"}
         ref = add_ref(xml_tree, attrs)
         assert check_ref_to_docset(ref, attrs) is None
 
     def test_invalid_ref_does_not_exist(self, xml_tree):
         """Test reference to a docset that does not exist."""
-        attrs = {'product': 'p1', 'docset': 'invalid-ds'}
+        attrs = {"product": "p1", "docset": "invalid-ds"}
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_docset(ref, attrs)
         assert result is not None
-        assert 'Referenced docset does not exist' in result
+        assert "Referenced docset does not exist" in result
 
 
 class TestCheckRefToProduct:
     def test_valid_ref(self, xml_tree):
         """Test a valid reference to a product."""
-        attrs = {'product': 'p2'}
+        attrs = {"product": "p2"}
         ref = add_ref(xml_tree, attrs)
         assert check_ref_to_product(ref, attrs) is None
 
     def test_invalid_ref_does_not_exist(self, xml_tree):
         """Test reference to a product that does not exist."""
-        attrs = {'product': 'invalid-p'}
+        attrs = {"product": "invalid-p"}
         ref = add_ref(xml_tree, attrs)
         result = check_ref_to_product(ref, attrs)
         assert result is not None
-        assert 'Referenced product does not exist' in result
+        assert "Referenced product does not exist" in result
 
 
 class TestCheckStitchedReferences:
@@ -164,15 +164,15 @@ class TestCheckStitchedReferences:
         """Test that no errors are returned for a file with all valid refs."""
         add_ref(
             xml_tree,
-            {'product': 'p1', 'docset': 'ds1', 'dc': 'DC-1', 'subdeliverable': 'sub-1'},
+            {"product": "p1", "docset": "ds1", "dc": "DC-1", "subdeliverable": "sub-1"},
         )
-        add_ref(xml_tree, {'product': 'p1', 'docset': 'ds1', 'dc': 'DC-2'})
-        add_ref(xml_tree, {'product': 'p1', 'docset': 'ds1', 'link': 'link-1'})
-        add_ref(xml_tree, {'product': 'p1', 'docset': 'ds2'})
-        add_ref(xml_tree, {'product': 'p2'})
+        add_ref(xml_tree, {"product": "p1", "docset": "ds1", "dc": "DC-2"})
+        add_ref(xml_tree, {"product": "p1", "docset": "ds1", "link": "link-1"})
+        add_ref(xml_tree, {"product": "p1", "docset": "ds2"})
+        add_ref(xml_tree, {"product": "p2"})
 
         errors = check_stitched_references(etree.ElementTree(xml_tree))
-        assert not errors, f'Expected no errors, but got: {errors}'
+        assert not errors, f"Expected no errors, but got: {errors}"
 
     def test_all_invalid_refs(self, xml_tree):
         """Test that all invalid reference types are caught."""
@@ -180,17 +180,17 @@ class TestCheckStitchedReferences:
         add_ref(
             tree_copy,
             {
-                'product': 'p1',
-                'docset': 'ds1',
-                'dc': 'DC-1',
-                'subdeliverable': 'invalid',
+                "product": "p1",
+                "docset": "ds1",
+                "dc": "DC-1",
+                "subdeliverable": "invalid",
             },
         )
-        add_ref(tree_copy, {'product': 'p1', 'docset': 'ds1', 'dc': 'DC-1'})
-        add_ref(tree_copy, {'product': 'p1', 'docset': 'ds1', 'dc': 'invalid-dc'})
-        add_ref(tree_copy, {'product': 'p1', 'docset': 'ds1', 'link': 'invalid-link'})
-        add_ref(tree_copy, {'product': 'p1', 'docset': 'invalid-ds'})
-        add_ref(tree_copy, {'product': 'invalid-p'})
+        add_ref(tree_copy, {"product": "p1", "docset": "ds1", "dc": "DC-1"})
+        add_ref(tree_copy, {"product": "p1", "docset": "ds1", "dc": "invalid-dc"})
+        add_ref(tree_copy, {"product": "p1", "docset": "ds1", "link": "invalid-link"})
+        add_ref(tree_copy, {"product": "p1", "docset": "invalid-ds"})
+        add_ref(tree_copy, {"product": "invalid-p"})
 
         errors = check_stitched_references(etree.ElementTree(tree_copy))
         assert len(errors) == 6
@@ -200,4 +200,4 @@ class TestCheckStitchedReferences:
         add_ref(xml_tree, {})  # Empty ref
         errors = check_stitched_references(etree.ElementTree(xml_tree))
         assert len(errors) == 1
-        assert 'This is a docserv-stitch bug' in errors[0]
+        assert "This is a docserv-stitch bug" in errors[0]

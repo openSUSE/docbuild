@@ -1,5 +1,5 @@
 docbuild.models.config.app.AppConfig
-==========================================
+====================================
 
 .. py:class:: docbuild.models.config.app.AppConfig(/, **data: Any)
 
@@ -9,7 +9,7 @@ docbuild.models.config.app.AppConfig
       :parts: 1
 
 
-   Root model for application configuration (config.toml).
+   Root model for application configuration (:file:`config.toml`).
 
 
    .. py:attribute:: model_config
@@ -22,6 +22,6 @@ docbuild.models.config.app.AppConfig
       :classmethod:
 
 
-      Convenience method to validate and return an instance.
+      Create an AppConfig instance from a dictionary.
 
 

@@ -1,6 +1,7 @@
-from typing import Any
 import re
+from typing import Any
 
+from pydantic import ValidationError
 import pytest
 
 from docbuild.config.app import (
@@ -10,58 +11,57 @@ from docbuild.config.app import (
     replace_placeholders,
 )
 from docbuild.models.config.app import AppConfig
-from pydantic import ValidationError
 
 
 def test_replace_placeholders():
     config = {
-        'server': {'name': 'example.com', 'url': 'https://{server.name}'},
-        'paths': {
-            'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_dir': '/tmp/myapp'},
-            'full_tmp_path': '{paths.tmp.tmp_base_dir}/session',
+        "server": {"name": "example.com", "url": "https://{server.name}"},
+        "paths": {
+            "config_dir": "/etc/myapp",
+            "tmp": {"tmp_base_dir": "/tmp/myapp"},
+            "full_tmp_path": "{paths.tmp.tmp_base_dir}/session",
         },
-        'logging': {
-            'log_dir': '{paths.config_dir}/logs',
-            'tmp_base_dir': '/var/tmp',
+        "logging": {
+            "log_dir": "{paths.config_dir}/logs",
+            "tmp_base_dir": "/var/tmp",
             # Should resolve within this section if key exists:
-            'temp_dir': '{tmp_base_dir}',
+            "temp_dir": "{tmp_base_dir}",
         },
     }
 
     expected = {
-        'server': {'name': 'example.com', 'url': 'https://example.com'},
-        'paths': {
-            'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_dir': '/tmp/myapp'},
-            'full_tmp_path': '/tmp/myapp/session',
+        "server": {"name": "example.com", "url": "https://example.com"},
+        "paths": {
+            "config_dir": "/etc/myapp",
+            "tmp": {"tmp_base_dir": "/tmp/myapp"},
+            "full_tmp_path": "/tmp/myapp/session",
         },
-        'logging': {
-            'log_dir': '/etc/myapp/logs',
-            'tmp_base_dir': '/var/tmp',
-            'temp_dir': '/var/tmp',
+        "logging": {
+            "log_dir": "/etc/myapp/logs",
+            "tmp_base_dir": "/var/tmp",
+            "temp_dir": "/var/tmp",
         },
     }
 
     result = replace_placeholders(config)
-    assert result == expected, f'Expected {expected}, but got {result}'
+    assert result == expected, f"Expected {expected}, but got {result}"
 
 
 def test_missing_key_in_current_section():
     config = {
-        'database': {
-            'host': 'localhost',
+        "database": {
+            "host": "localhost",
             # 'user' is missing in this section
-            'url': 'postgres://{user}@{host}/mydb',
+            "url": "postgres://{user}@{host}/mydb",
         },
-        'user': 'admin',
+        "user": "admin",
     }
 
     with pytest.raises(
         PlaceholderResolutionError,
         match=re.escape(
             "While resolving '{user}' in 'url': key 'user' "
-            'not found in current section.',
+            "not found in current section.",
         ),
     ):
         replace_placeholders(config)
@@ -69,12 +69,12 @@ def test_missing_key_in_current_section():
 
 def test_unresolved_key_in_config():
     config = {
-        'server': {'name': 'example.com', 'url': 'https://{server.name}'},
-        'paths': {
-            'config_dir': '/etc/myapp',
-            'tmp': {'tmp_base_dir': '/tmp/myapp'},
+        "server": {"name": "example.com", "url": "https://{server.name}"},
+        "paths": {
+            "config_dir": "/etc/myapp",
+            "tmp": {"tmp_base_dir": "/tmp/myapp"},
             # 'session' is missing in this section
-            'full_tmp_path': '{paths.tmp.session}/session',
+            "full_tmp_path": "{paths.tmp.session}/session",
         },
     }
 
@@ -90,50 +90,50 @@ def test_unresolved_key_in_config():
 
 def test_placeholders_in_list():
     config = {
-        'paths': {
-            'config_dir': '/etc/myapp',
+        "paths": {
+            "config_dir": "/etc/myapp",
         },
-        'resources': {
-            'files': [
-                '{paths.config_dir}/app.yaml',
-                '{paths.config_dir}/db.yaml',
-                'static/style.css',
+        "resources": {
+            "files": [
+                "{paths.config_dir}/app.yaml",
+                "{paths.config_dir}/db.yaml",
+                "static/style.css",
             ],
         },
     }
 
     expected = {
-        'paths': {
-            'config_dir': '/etc/myapp',
+        "paths": {
+            "config_dir": "/etc/myapp",
         },
-        'resources': {
-            'files': ['/etc/myapp/app.yaml', '/etc/myapp/db.yaml', 'static/style.css'],
+        "resources": {
+            "files": ["/etc/myapp/app.yaml", "/etc/myapp/db.yaml", "static/style.css"],
         },
     }
 
     result = replace_placeholders(config)
-    assert result == expected, f'Expected {expected}, but got {result}'
+    assert result == expected, f"Expected {expected}, but got {result}"
 
 
 def test_literal_values_are_untouched():
     config = {
-        'defaults': {'enabled': True, 'retries': 3, 'timeout': 5.5, 'optional': None},
+        "defaults": {"enabled": True, "retries": 3, "timeout": 5.5, "optional": None},
     }
 
     expected = {
-        'defaults': {'enabled': True, 'retries': 3, 'timeout': 5.5, 'optional': None},
+        "defaults": {"enabled": True, "retries": 3, "timeout": 5.5, "optional": None},
     }
 
     result = replace_placeholders(config)
-    assert result == expected, f'Expected {expected}, but got {result}'
+    assert result == expected, f"Expected {expected}, but got {result}"
 
 
 def test_placeholder_path_is_not_dict():
     config = {
-        'server': {'name': 'myserver', 'ip': '127.0.0.1'},
-        'paths': {
-            'tmp': 'not_a_dict',
-            'path': '{paths.tmp.value}',  # .value should fail
+        "server": {"name": "myserver", "ip": "127.0.0.1"},
+        "paths": {
+            "tmp": "not_a_dict",
+            "path": "{paths.tmp.value}",  # .value should fail
         },
     }
 
@@ -141,7 +141,7 @@ def test_placeholder_path_is_not_dict():
         PlaceholderResolutionError,
         match=re.escape(
             "While resolving '{paths.tmp.value}' in 'path': 'paths.tmp.value' is not "
-            'a dictionary (got type str).',
+            "a dictionary (got type str).",
         ),
     ):
         replace_placeholders(config)
@@ -149,77 +149,77 @@ def test_placeholder_path_is_not_dict():
 
 def test_chained_placeholder_resolution():
     data = {
-        'paths': {
-            'tmp': {
-                'tmp_base_dir': '/tmp/docbuild',
-                'tmp_dir': '{tmp_base_dir}/doc-example-com',
-                'tmp_deliverable_dir': '{tmp_dir}/deliverable/',
+        "paths": {
+            "tmp": {
+                "tmp_base_dir": "/tmp/docbuild",
+                "tmp_dir": "{tmp_base_dir}/doc-example-com",
+                "tmp_deliverable_dir": "{tmp_dir}/deliverable/",
             },
         },
     }
 
     result: dict[str, Any] = replace_placeholders(data)
-    tmp = result['paths']['tmp']
-    assert tmp['tmp_base_dir'] == '/tmp/docbuild'
-    assert tmp['tmp_dir'] == '/tmp/docbuild/doc-example-com'
-    assert tmp['tmp_deliverable_dir'] == '/tmp/docbuild/doc-example-com/deliverable/'
+    tmp = result["paths"]["tmp"]
+    assert tmp["tmp_base_dir"] == "/tmp/docbuild"
+    assert tmp["tmp_dir"] == "/tmp/docbuild/doc-example-com"
+    assert tmp["tmp_deliverable_dir"] == "/tmp/docbuild/doc-example-com/deliverable/"
 
 
 def test_too_many_nested_placeholder_expansions():
     data = {
-        'section': {
-            'a': '{b}',
-            'b': '{a}',
+        "section": {
+            "a": "{b}",
+            "b": "{a}",
         },
     }
     with pytest.raises(
-        CircularReferenceError, match='Too many nested placeholder expansions'
+        CircularReferenceError, match="Too many nested placeholder expansions"
     ):
         replace_placeholders(data)
 
 
 def test_chained_cross_section_placeholders():
     config = {
-        'build': {
-            'output': '{paths.tmp_deliverable_dir}',
+        "build": {
+            "output": "{paths.tmp_deliverable_dir}",
         },
-        'paths': {
-            'tmp_base_dir': '/tmp/docbuild',
-            'tmp_dir': '{tmp_base_dir}/doc-example-com',
-            'tmp_deliverable_dir': '{paths.tmp_dir}/deliverable/',
+        "paths": {
+            "tmp_base_dir": "/tmp/docbuild",
+            "tmp_dir": "{tmp_base_dir}/doc-example-com",
+            "tmp_deliverable_dir": "{paths.tmp_dir}/deliverable/",
         },
     }
 
     result = replace_placeholders(config)
-    assert result['build']['output'] == '/tmp/docbuild/doc-example-com/deliverable/'
+    assert result["build"]["output"] == "/tmp/docbuild/doc-example-com/deliverable/"
 
 
 def test_escaped_braces():
-    config = {'section': {'key': 'This is a literal brace: {{not_a_placeholder}}'}}
+    config = {"section": {"key": "This is a literal brace: {{not_a_placeholder}}"}}
     result = replace_placeholders(config)
-    assert result['section']['key'] == 'This is a literal brace: {not_a_placeholder}'
+    assert result["section"]["key"] == "This is a literal brace: {not_a_placeholder}"
 
 
 def test_replace_placeholders_max_recursion_error():
     """Test that max recursion depth is enforced."""
     # Create a config with circular references that will cause infinite recursion
     config = {
-        'a': '{b}',
-        'b': '{c}',
-        'c': '{d}',
-        'd': '{e}',
-        'e': '{f}',
-        'f': '{g}',
-        'g': '{h}',
-        'h': '{i}',
-        'i': '{j}',
-        'j': '{k}',
-        'k': '{a}',  # Circular reference back to 'a'
+        "a": "{b}",
+        "b": "{c}",
+        "c": "{d}",
+        "d": "{e}",
+        "e": "{f}",
+        "f": "{g}",
+        "g": "{h}",
+        "h": "{i}",
+        "i": "{j}",
+        "j": "{k}",
+        "k": "{a}",  # Circular reference back to 'a'
     }
 
     # This should raise ValueError due to max recursion depth
     with pytest.raises(
-        CircularReferenceError, match='Too many nested placeholder expansions in key'
+        CircularReferenceError, match="Too many nested placeholder expansions in key"
     ):
         replace_placeholders(config, max_recursion_depth=5)
 
@@ -227,13 +227,13 @@ def test_replace_placeholders_max_recursion_error():
 def test_replace_placeholders_list_with_non_processable_items():
     """Test that list items that are not dict/list/str are skipped."""
     config = {
-        'mixed_list': [
-            'string_item',  # This will be processed (str)
+        "mixed_list": [
+            "string_item",  # This will be processed (str)
             42,  # This will be skipped (int)
             3.14,  # This will be skipped (float)
             True,  # This will be skipped (bool)
             None,  # This will be skipped (NoneType)
-            {'nested': 'dict'},  # This will be processed (dict)
+            {"nested": "dict"},  # This will be processed (dict)
             [1, 2, 3],  # This will be processed (list)
         ]
     }
@@ -243,17 +243,17 @@ def test_replace_placeholders_list_with_non_processable_items():
 
     # The structure should remain the same since no placeholders to replace
     assert result == config
-    assert result['mixed_list'][1] == 42  # int unchanged
-    assert result['mixed_list'][2] == 3.14  # float unchanged
-    assert result['mixed_list'][3] is True  # bool unchanged
-    assert result['mixed_list'][4] is None  # None unchanged
+    assert result["mixed_list"][1] == 42  # int unchanged
+    assert result["mixed_list"][2] == 3.14  # float unchanged
+    assert result["mixed_list"][3] is True  # bool unchanged
+    assert result["mixed_list"][4] is None  # None unchanged
 
 
 def test_placeholder_resolution_error_is_keyerror():
     """Test that PlaceholderResolutionError is a subclass of KeyError."""
     config = {
-        'section': {
-            'value': '{missing_key}',
+        "section": {
+            "value": "{missing_key}",
         },
     }
 
@@ -267,7 +267,8 @@ def test_placeholder_resolution_error_is_keyerror():
 
 def test_placeholder_wrong_type():
     config = 42
-    assert replace_placeholders(config) == 42, 'Non-dict input should return unchanged'
+    assert replace_placeholders(config) == 42, "Non-dict input should return unchanged"
+
 
 def test_appconfig_resolve_placeholders_non_dict_validator_runs():
     """Ensure the AppConfig model validator runs for non-dict input.
@@ -281,13 +282,14 @@ def test_appconfig_resolve_placeholders_non_dict_validator_runs():
     with pytest.raises(ValidationError):
         AppConfig.model_validate(123)
 
+
 # @pytest.mark.skip(reason="Private method test; not typically needed.")
 def test_get_container_name_with_none_key():
     """Test _get_container_name when _current_key is None."""
-    config = {'test': 'value'}
+    config = {"test": "value"}
     resolver = PlaceholderResolver(config)
     # This should return 'unknown' via the public accessor
-    assert resolver.get_container_name() == 'unknown'
+    assert resolver.get_container_name() == "unknown"
 
 
 def test_list_items_are_processed_and_resolved():
@@ -296,19 +298,19 @@ def test_list_items_are_processed_and_resolved():
     This targets the branch that appends list items to the processing stack.
     """
     config = {
-        'global': {'val': 'G'},
-        'items': [
-            {'inner': '{global.val}'},
-            '{global.val}',
+        "global": {"val": "G"},
+        "items": [
+            {"inner": "{global.val}"},
+            "{global.val}",
             42,  # non-processable should be left untouched
         ],
     }
 
     result = replace_placeholders(config)
 
-    assert result['items'][0]['inner'] == 'G'
-    assert result['items'][1] == 'G'
-    assert result['items'][2] == 42
+    assert result["items"][0]["inner"] == "G"
+    assert result["items"][1] == "G"
+    assert result["items"][2] == 42
 
 
 def test_nested_list_processing_appends_stack_items():
@@ -319,13 +321,13 @@ def test_nested_list_processing_appends_stack_items():
     inner `stack.append((value, i, context))` line is executed.
     """
     config = {
-        'seq': [
-            {'inner': '{global.v}'},
-            '{global.v}',
+        "seq": [
+            {"inner": "{global.v}"},
+            "{global.v}",
         ],
-        'global': {'v': 'VAL'},
+        "global": {"v": "VAL"},
     }
 
     out = replace_placeholders(config)
-    assert out['seq'][0]['inner'] == 'VAL'
-    assert out['seq'][1] == 'VAL'
+    assert out["seq"][0]["inner"] == "VAL"
+    assert out["seq"][1] == "VAL"

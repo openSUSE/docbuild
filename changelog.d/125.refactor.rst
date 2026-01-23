@@ -1,2 +1,0 @@
-In function :fun:`validate_rng`, use ``CompletedProcess``  as return object.
-Replace tuple with CompletedProcess. This is used in other functions too and this change makes it consistent with other.

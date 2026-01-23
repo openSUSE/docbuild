@@ -60,7 +60,7 @@ docbuild.models.language.LanguageCode
       * Symmetric: a == b <=> b == a
       * Transitive: if a == b and b == c, then a == c
 
-      If you need to check for wildcar logic, use matches()
+      If you need to check for wildcard logic, use matches()
 
 
 

@@ -16,7 +16,7 @@ Follow these steps:
 
    .. code-block:: console
 
-      git push origin HEAD
+      git push -u origin HEAD
 
 #. Wait for the CI to pass. If it fails, fix the issues and commit again.
 #. If the CI passes, (squash-)merge your release branch into the main branch.

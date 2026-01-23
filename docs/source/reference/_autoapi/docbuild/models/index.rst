@@ -15,7 +15,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /reference/_autoapi/docbuild/models/config_model/index
+   /reference/_autoapi/docbuild/models/config/index
    /reference/_autoapi/docbuild/models/deliverable/index
    /reference/_autoapi/docbuild/models/doctype/index
    /reference/_autoapi/docbuild/models/language/index

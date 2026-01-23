@@ -9,7 +9,16 @@ docbuild.utils.pidlock.PidFileLock
    The mutual exclusion is guaranteed by the atomic fcntl.flock(LOCK_EX|LOCK_NB).
    The lock file is automatically created and is removed on successful exit.
 
-   Implements a per-path singleton pattern: each lock_path has at most one instance within this process.
+   Implements a per-path singleton pattern: each lock_path has at most one
+   instance within this process.
+
+
+   .. py:property:: lock_path
+      :type: pathlib.Path
+
+
+      Get the path to the lock file.
+
 
 
    .. py:method:: __enter__() -> Self
@@ -18,7 +27,7 @@ docbuild.utils.pidlock.PidFileLock
 
 
 
-   .. py:method:: __exit__(exc_type, exc_value, traceback) -> None
+   .. py:method:: __exit__(exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: object | None) -> None
 
       Release the lock and remove the lock file.
 

@@ -1,5 +1,5 @@
 docbuild.models.config.env.EnvConfig
-==========================================
+====================================
 
 .. py:class:: docbuild.models.config.env.EnvConfig(/, **data: Any)
 
@@ -19,7 +19,7 @@ docbuild.models.config.env.EnvConfig
 
 
    .. py:attribute:: server
-      :type:  Env_Server
+      :type:  EnvServer
       :value: None
 
 
@@ -28,7 +28,7 @@ docbuild.models.config.env.EnvConfig
 
 
    .. py:attribute:: config
-      :type:  Env_GeneralConfig
+      :type:  EnvGeneralConfig
       :value: None
 
 
@@ -37,7 +37,7 @@ docbuild.models.config.env.EnvConfig
 
 
    .. py:attribute:: paths
-      :type:  Env_PathsConfig
+      :type:  EnvPathsConfig
       :value: None
 
 
@@ -46,7 +46,7 @@ docbuild.models.config.env.EnvConfig
 
 
    .. py:attribute:: build
-      :type:  Env_Build
+      :type:  EnvBuild
       :value: None
 
 
@@ -67,6 +67,6 @@ docbuild.models.config.env.EnvConfig
       :classmethod:
 
 
-      Convenience method to validate and return an instance.
+      Create an EnvConfig instance from a dictionary.
 
 

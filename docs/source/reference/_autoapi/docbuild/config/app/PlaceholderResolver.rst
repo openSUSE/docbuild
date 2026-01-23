@@ -14,6 +14,16 @@ docbuild.config.app.PlaceholderResolver
 
 
 
+   .. py:method:: get_container_name() -> str
+
+      Public accessor for the current container/key name.
+
+      This provides a stable, public way to retrieve the human-readable
+      container name for diagnostics and tests without reaching into
+      private attributes.
+
+
+
    .. py:method:: replace() -> dict[str, Any]
 
       Replace all placeholders in the configuration.

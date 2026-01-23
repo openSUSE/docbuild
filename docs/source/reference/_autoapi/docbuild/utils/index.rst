@@ -18,6 +18,7 @@ Submodules
    /reference/_autoapi/docbuild/utils/contextmgr/index
    /reference/_autoapi/docbuild/utils/convert/index
    /reference/_autoapi/docbuild/utils/decorators/index
+   /reference/_autoapi/docbuild/utils/doc/index
    /reference/_autoapi/docbuild/utils/git/index
    /reference/_autoapi/docbuild/utils/merge/index
    /reference/_autoapi/docbuild/utils/paths/index

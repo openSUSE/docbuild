@@ -21,7 +21,7 @@ logging.raiseExceptions = False  # Suppress internal logging exception traceback
 _original_emit = logging.StreamHandler.emit
 
 
-def _safe_emit(self: Self, record: logging.LogRecord) -> None: # pyright: ignore[reportGeneralTypeIssues]
+def _safe_emit(self: Self, record: logging.LogRecord) -> None:  # pyright: ignore[reportGeneralTypeIssues]
     # Happens if a background thread logs after sys.stdout/stderr closed.
     with suppress(ValueError):
         _original_emit(self, record)
@@ -90,7 +90,9 @@ def _shutdown_logging() -> None:
     """Ensure all logging threads and handlers shut down cleanly."""
     listener = _LOGGING_STATE["listener"].get()
     handlers: list[logging.Handler] = _LOGGING_STATE["handlers"].get()
-    bg_threads: list[threading.Thread] | None = _LOGGING_STATE["background_threads"].get()
+    bg_threads: list[threading.Thread] | None = _LOGGING_STATE[
+        "background_threads"
+    ].get()
 
     # Defensive: some tests or earlier code may have mutated the stored
     # value accidentally (e.g. to the `list` type). Coerce to an iterable
@@ -171,8 +173,7 @@ def build_handlers_from_config(config: dict[str, Any]) -> list[logging.Handler]:
             formatter_kwargs["datefmt"] = fmt_conf.get("datefmt")
             formatter_kwargs["style"] = fmt_conf.get("style")
             formatter_kwargs = {
-                k: v for k, v in formatter_kwargs.items()
-                if v is not None
+                k: v for k, v in formatter_kwargs.items() if v is not None
             }
             fmt_cls = _resolve_class(fmt_conf.get("class", "logging.Formatter"))
             handler.setFormatter(fmt_cls(**formatter_kwargs))
@@ -187,6 +188,7 @@ def setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) 
     config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
     if user_config and "logging" in user_config:
+
         def deep_merge(target: dict, source: dict) -> None:
             for k, v in source.items():
                 if k in target and isinstance(target[k], dict) and isinstance(v, dict):

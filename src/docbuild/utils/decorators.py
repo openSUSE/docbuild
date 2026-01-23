@@ -9,8 +9,8 @@ from lxml import etree
 if TYPE_CHECKING:
     from ..config.xml.checks import CheckResult
 
-F = TypeVar('F', bound=Callable[[etree._Element | etree._ElementTree], 'CheckResult'])
-"""Type variable for functions that take an XML element or tree and return CheckResult."""
+F = TypeVar("F", bound=Callable[[etree._Element | etree._ElementTree], "CheckResult"])
+"""A type variable representing a callable that takes an XML element or tree"""
 
 
 class RegistryDecorator:
@@ -30,11 +30,11 @@ class RegistryDecorator:
         :return: The wrapped function.
         """
         if not callable(func):
-            raise TypeError('Only callable objects can be registered as checks.')
+            raise TypeError("Only callable objects can be registered as checks.")
         self.registry.append(func)
 
         @wraps(func)
-        def wrapper(*args: object, **kwargs: object) -> 'CheckResult':
+        def wrapper(*args: object, **kwargs: object) -> "CheckResult":
             return func(*args, **kwargs)
 
         return cast(F, wrapper)

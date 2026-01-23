@@ -17,7 +17,8 @@ log = logging.getLogger(__name__)
 # New Exception
 # ------------------
 class LockAcquisitionError(RuntimeError):
-    """Raised when a process fails to acquire the PidFileLock because it is already held by another process."""
+    """Raised when a file lock cannot be acquired because it is already held."""
+
     pass
 
 
@@ -31,12 +32,14 @@ class PidFileLock:
     The mutual exclusion is guaranteed by the atomic fcntl.flock(LOCK_EX|LOCK_NB).
     The lock file is automatically created and is removed on successful exit.
 
-    Implements a per-path singleton pattern: each lock_path has at most one instance within this process.
+    Implements a per-path singleton pattern: each lock_path has at most one
+    instance within this process.
     """
 
     _instances: ClassVar[dict[Path, "PidFileLock"]] = {}
 
     def __new__(cls, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> Self:
+        """Implement per-path singleton behavior."""
         lock_path = cls._generate_lock_name(resource_path, lock_dir)
         if lock_path in cls._instances:
             return cast(Self, cls._instances[lock_path])
@@ -58,6 +61,7 @@ class PidFileLock:
 
     @property
     def lock_path(self) -> Path:
+        """Get the path to the lock file."""
         return self._lock_path
 
     # --------------------
@@ -78,9 +82,10 @@ class PidFileLock:
             # Use os.open/os.fdopen for low-level file descriptor access needed by fcntl
             # fd = os.open(self._lock_path, os.O_RDWR | os.O_CREAT)
             # handle = os.fdopen(fd, "w+")
-            handle = open(self._lock_path, 'w+')
+            handle = open(self._lock_path, "w+")
 
-            # 2. Acquire the exclusive, non-blocking fcntl lock. This is the atomic check.
+            # 2. Acquire the exclusive, non-blocking fcntl lock.
+            # This is the atomic check.
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
 
             # 3. Write PID to the file (Optional, for debugging/identification)
@@ -101,19 +106,23 @@ class PidFileLock:
                     handle.close()
                 # Raise the new, specific exception (Addressing reviewer point 3)
                 raise LockAcquisitionError(
-                    f"Resource is locked by another process (lock file {self._lock_path})"
+                    "Resource is locked by another process "
+                    f"(lock file {self._lock_path})"
                 ) from e
 
             # Check for permission/access errors during file open (critical failure)
             elif e.errno in (errno.EACCES, errno.EPERM):
-                 raise RuntimeError(f"Cannot acquire lock: {e}") from e
+                raise RuntimeError(f"Cannot acquire lock: {e}") from e
 
             # Re-raise other unexpected errors
             raise e
 
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+    def __exit__(self,
+                 exc_type: type[BaseException] | None,
+                 exc_value: BaseException | None,
+                 traceback: object | None) -> None:
         """Release the lock and remove the lock file."""
         if not self._lock_acquired or self._handle is None:
             return
@@ -155,5 +164,7 @@ class PidFileLock:
     def _generate_lock_name(resource_path: Path, lock_dir: Path) -> Path:
         import hashlib
 
-        path_hash = hashlib.sha256(str(resource_path.resolve()).encode("utf-8")).hexdigest()
+        path_hash = hashlib.sha256(
+            str(resource_path.resolve()).encode("utf-8")
+        ).hexdigest()
         return Path(lock_dir) / f"docbuild-{path_hash}.pid"

@@ -18,14 +18,14 @@ class LanguageCode(BaseModel):
     """
 
     language: str = Field(
-        title='The natural language',
+        title="The natural language",
         description=(
-            'A natural language in the format ll-cc, '
+            "A natural language in the format ll-cc, "
             "whereas 'll' is the language and 'cc' the country "
-            'both in lowercase letters. '
+            "both in lowercase letters. "
             "The special syntax '*' denotes every language."
         ),
-        examples=['en-us', 'de-de'],
+        examples=["en-us", "de-de"],
         frozen=True,
     )
     """The natural language in the format ll-cc, where 'll' is the
@@ -36,27 +36,27 @@ class LanguageCode(BaseModel):
     conforming to Pydantic's :class:`~pydantic.config.ConfigDict`."""
 
     ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
-        {'*'} | ALLOWED_LANGUAGES,
+        {"*"} | ALLOWED_LANGUAGES,
     )
     """Class variable containing all allowed languages."""
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
-    def _convert_str_to_dict(cls, data: Any) -> Any:
+    def _convert_str_to_dict(cls, data: str | dict[str, Any]) -> dict[str, Any]:
         """Allow initializing LanguageCode from a plain string."""
         if isinstance(data, str):
-            return {'language': data}
+            return {"language": data}
         return data
 
     def __str__(self) -> str:
         """Implement str(self)."""
-        return f'{self.language}'
+        return f"{self.language}"
 
     def __repr__(self) -> str:
         """Implement repr(self)."""
-        return f'{self.__class__.__name__}(language={str(self)!r})'
+        return f"{self.__class__.__name__}(language={str(self)!r})"
 
-    def __eq__(self, other: 'object|str|LanguageCode') -> bool:
+    def __eq__(self, other: "object|str|LanguageCode") -> bool:
         """Implement self == other.
 
         The comparison does NOT break the principle of equality:
@@ -64,7 +64,7 @@ class LanguageCode(BaseModel):
         * Symmetric: a == b <=> b == a
         * Transitive: if a == b and b == c, then a == c
 
-        If you need to check for wildcar logic, use matches()
+        If you need to check for wildcard logic, use matches()
         """
         if isinstance(other, LanguageCode):
             return self.language == other.language
@@ -72,7 +72,7 @@ class LanguageCode(BaseModel):
             return self.language == other
         return NotImplemented
 
-    def __lt__(self, other: 'object|str|LanguageCode') -> bool:
+    def __lt__(self, other: "object|str|LanguageCode") -> bool:
         """Implement self < other.
 
         Special properties:
@@ -88,9 +88,9 @@ class LanguageCode(BaseModel):
             return NotImplemented
 
         # "*" is always smallest
-        if self.language == '*':
-            return other_value != '*'
-        if other_value == '*':
+        if self.language == "*":
+            return other_value != "*"
+        if other_value == "*":
             return False
 
         # Perform string comparison after handling the wildcard case
@@ -103,7 +103,7 @@ class LanguageCode(BaseModel):
         """
         return hash(self.language)
 
-    def matches(self, other: 'LanguageCode | str') -> bool:
+    def matches(self, other: "LanguageCode | str") -> bool:
         """Return True if this LanguageCode matches the other, considering wildcards.
 
         The string '*' matches any language:
@@ -115,18 +115,18 @@ class LanguageCode(BaseModel):
         """
         other_value = str(other)
         return (
-            self.language == '*' or other_value == '*' or self.language == other_value
+            self.language == "*" or other_value == "*" or self.language == other_value
         )
 
-    @field_validator('language', mode='before')
+    @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
         """Normalize separator from _ to -."""
         if isinstance(value, str):
-            return value.replace('_', '-')
+            return value.replace("_", "-")
         return value
 
-    @field_validator('language')
+    @field_validator("language")
     @classmethod
     def validate_language(cls, value: str) -> str:
         """Check if the passed language adheres to the allowed language."""
@@ -134,7 +134,7 @@ class LanguageCode(BaseModel):
             raise ValueError(
                 (
                     f"Invalid language code '{value}'. "
-                    f'Expected one of {", ".join(sorted(cls.ALLOWED_LANGS))}'
+                    f"Expected one of {', '.join(sorted(cls.ALLOWED_LANGS))}"
                 ),
             )
         return value
@@ -150,17 +150,17 @@ class LanguageCode(BaseModel):
           - ``(language, country)`` if both parts are present.
           - ``('*',)`` if the language code is ``"*"``
         """
-        if self.language == '*':
-            return ('*',)
+        if self.language == "*":
+            return ("*",)
 
         # Use split('-') as the separator is already normalized
-        parts = self.language.split('-')
+        parts = self.language.split("-")
         return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
 
     @computed_field(
         repr=False,
-        title='The language part of the language code',
-        examples=['en', 'de', 'ja'],
+        title="The language part of the language code",
+        examples=["en", "de", "ja"],
     )
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
@@ -168,9 +168,9 @@ class LanguageCode(BaseModel):
 
     @computed_field(
         repr=False,
-        title='The country part of the language code',
-        examples=['us', 'de', 'jp'],
+        title="The country part of the language code",
+        examples=["us", "de", "jp"],
     )
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
-        return self._parts[1] if len(self._parts) > 1 else '*'
+        return self._parts[1] if len(self._parts) > 1 else "*"
