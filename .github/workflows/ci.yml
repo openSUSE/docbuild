@@ -6,7 +6,8 @@ on:
         description: "Jing version to use"
         required: false
         default: "20091111"  # Default value
-  pull_request:
+  pull_request_target: # Changed from pull_request to pull_request_target
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - main
@@ -52,6 +53,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} #  Test the PR code
+          persist-credentials: false
 
       - name: Get dependencies
         run: |
@@ -106,7 +110,7 @@ jobs:
           uv run python -m coverage erase
 
       - name: Create Coverage Comment for ${{ github.event.pull_request.head.sha || github.sha }}
-        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        if: success() && (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && matrix.python-version == '3.12'
         env:
           # Use the PR head if available, otherwise fallback to the workflow SHA
           COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -164,7 +168,7 @@ jobs:
           echo "</details>" >> coverage_comment.txt
 
       - name: Post Coverage Comment
-        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        if: success() && (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && matrix.python-version == '3.12'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Explicitly passed to fix "Resource not accessible"
@@ -182,6 +186,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # Set up Python on macOS environment
       - name: Setup Python
