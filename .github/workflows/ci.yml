@@ -39,7 +39,7 @@ jobs:
     permissions: # Additional permissions for posting coverage comments
       pull-requests: write
       contents: read
-    timeout-minutes: 20
+    timeout-minutes: 30 # Increased to 30 for Python 3.14 source builds
     strategy:
       fail-fast: false # Continue other jobs even if one fails (testing)
       matrix:
@@ -167,6 +167,7 @@ jobs:
         if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Explicitly passed to fix "Resource not accessible"
           path: coverage_comment.txt
           header: coverage
 
@@ -174,6 +175,7 @@ jobs:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
     strategy:
+      fail-fast: false # Same here for consistency
       matrix:
         python-version: *python-matrix
 
