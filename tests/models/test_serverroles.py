@@ -11,7 +11,7 @@ def test_serverrole_with_call(role):
 
 @pytest.mark.parametrize("role", SERVER_ROLES)
 def test_serverrole_with_predicate(role):
-    assert ServerRole[role]
+    assert ServerRole(role)
 
 
 @pytest.mark.parametrize("role", SERVER_ROLES)

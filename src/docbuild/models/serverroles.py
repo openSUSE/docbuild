@@ -1,7 +1,6 @@
 """Server roles for the docbuild application."""
 
 from enum import StrEnum
-from typing import Self
 
 
 class ServerRole(StrEnum):
@@ -12,7 +11,7 @@ class ServerRole(StrEnum):
     TESTING = "testing"
 
     @classmethod
-    def _missing_(cls, value: object) -> str | None:
+    def _missing_(cls, value: object) -> object:
         """Handle aliases and case-insensitive lookups."""
         if not isinstance(value, str):
             return None
