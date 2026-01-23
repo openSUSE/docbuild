@@ -1,0 +1,2 @@
+Implement a "smart" ``ServerRole`` enum that accepts aliases like ``devel`` or ``prod`` and handles case-insensitive input. 
+Refactor CLI error handling to display Pydantic validation failures in a clean, structured format.

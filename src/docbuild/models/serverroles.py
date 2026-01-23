@@ -1,43 +1,39 @@
-"""Server roles for the docbuild application."""
-
 from enum import StrEnum
-
-# from typing import Literal, Type
-# from pydantic import BaseModel, field_validator, Field
-# from ...constants import SERVER_ROLES
-#
-# ServerRole = StrEnum(
-#     "ServerRole",
-#     # Allow lowercase and uppercase names
-#     {name: name for name in SERVER_ROLES}
-#     | {name.upper(): name for name in SERVER_ROLES},
-# )
-
+from typing import Any, Self, cast
 
 class ServerRole(StrEnum):
     """The server role."""
 
-    # production
     PRODUCTION = 'production'
-    """Server is in production mode, serving live traffic."""
-    PROD = PRODUCTION
-    P = PRODUCTION
-    production = PRODUCTION
-    prod = PRODUCTION
-    p = PRODUCTION
-    # staging
     STAGING = 'staging'
-    """Server is in staging mode, used for testing before production."""
-    STAGE = STAGING
-    S = STAGING
-    staging = STAGING
-    stage = STAGING
-    s = STAGING
-    # testing
     TESTING = 'testing'
-    """Server is in testing mode, used for development and QA."""
-    TEST = TESTING
-    T = TESTING
-    testing = TESTING
-    test = TESTING
-    t = TESTING
+
+    @classmethod
+    def _missing_(cls, value: object) -> Any: # Use Any here to satisfy the Enum metaclass requirements
+        if not isinstance(value, str):
+            return None
+        
+        v = value.lower()
+        
+        # Comprehensive alias map
+        # We use 'cls' to access the members to ensure they are the correct type
+        aliases: dict[str, ServerRole] = {
+            "p": cls.PRODUCTION,
+            "prod": cls.PRODUCTION,
+            "s": cls.STAGING,
+            "stage": cls.STAGING,
+            "t": cls.TESTING,
+            "test": cls.TESTING,
+            "devel": cls.TESTING,
+            "dev": cls.TESTING,
+        }
+
+        if v in aliases:
+            return cast(Self, aliases[v])
+        
+        # Check if the string matches a member name (e.g., "PROD")
+        for member in cls:
+            if member.name.lower() == v:
+                return cast(Self, member)
+                
+        return None

@@ -5,7 +5,6 @@ import sys
 import logging
 import click
 import rich.console
-import rich.logging
 from rich.pretty import install
 from rich.traceback import install as install_traceback
 from pydantic import ValidationError
@@ -184,39 +183,22 @@ def cli(
         # Pydantic validation handles placeholder replacement via @model_validator
         # The result is the validated Pydantic object, stored in context.envconfig
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
-    except (ValueError, ValidationError) as e:
-        log.error(
-             "Environment configuration failed validation: "
-             "Error in config file(s): %s %s",
-             context.envconfigfiles, e
-        )
+    except ValidationError as e:
+        log.error("Environment configuration failed validation:")
+        log.error("Error in config file(s): %s", context.envconfigfiles)
+        
+        # Loop through each individual error in the Pydantic exception
+        for error in e.errors():
+            # Get the path to the field (e.g., 'server -> role')
+            loc = " -> ".join(str(item) for item in error['loc'])
+            # Get the human-readable message
+            msg = error['msg']
+            log.error("  [%s]: %s", loc, msg)
+        
         ctx.exit(1)
-    
-    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
-    
-    # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
-    if env_config_path:
-        # 1. Instantiate the lock object
-        ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
-        
-        try:
-            # 2. Acquire the lock by explicitly calling the __enter__ method.
-            ctx.obj.env_lock.__enter__()
-            log.info("Acquired lock for environment config: %r", env_config_path.name)
-
-        except LockAcquisitionError as e:
-            # Handles lock contention
-            log.error(str(e))
-            ctx.exit(1)
-        except Exception as e:
-            # Handles critical errors
-            log.error("Failed to set up environment lock: %s", e)
-            ctx.exit(1)
-        
-        # 3. Register the lock's __exit__ method to be called when the context terminates.
-        # We use a lambda to supply the three mandatory positional arguments (None)
-        # expected by __exit__, satisfying the click.call_on_close requirement.
-        ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
+    except ValueError as e:
+        log.error("Environment configuration error: %s", e)
+        ctx.exit(1)
     
 # Add subcommand
 cli.add_command(build)
