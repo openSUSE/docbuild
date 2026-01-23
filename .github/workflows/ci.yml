@@ -22,6 +22,8 @@ permissions:
   contents: read
   packages: read
   pull-requests: write
+  issues: write # For posting coverage comments
+  checks: write # For updating job status
 
 # GLOBAL ENV: Applies to ALL jobs (Linux & macOS)
 env:
