@@ -6,19 +6,14 @@ on:
         description: "Jing version to use"
         required: false
         default: "20091111"  # Default value
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'src/**'
-      - 'tests/**'
-      - '.github/workflows/**' 
+  pull_request:
   push:
     branches:
       - main
     paths:
       - 'src/**'
       - 'tests/**'
-      - '.github/workflows/**'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -41,12 +36,8 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    permissions: # Additional permissions for posting coverage comments
-      pull-requests: write
-      contents: read
-    timeout-minutes: 30 # Increased to 30 for Python 3.14 source builds
+    timeout-minutes: 15
     strategy:
-      fail-fast: false # Continue other jobs even if one fails (testing)
       matrix:
         python-version: &python-matrix
           - '3.12'
@@ -57,9 +48,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }} #  Test the PR code
-          persist-credentials: false
 
       - name: Get dependencies
         run: |
@@ -114,7 +102,7 @@ jobs:
           uv run python -m coverage erase
 
       - name: Create Coverage Comment for ${{ github.event.pull_request.head.sha || github.sha }}
-        if: success() && (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && matrix.python-version == '3.12'
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
         env:
           # Use the PR head if available, otherwise fallback to the workflow SHA
           COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -172,10 +160,9 @@ jobs:
           echo "</details>" >> coverage_comment.txt
 
       - name: Post Coverage Comment
-        if: success() && (github.event_name == 'pull_request' || github.event_name == 'pull_request_target') && matrix.python-version == '3.12'
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Explicitly passed to fix "Resource not accessible"
           path: coverage_comment.txt
           header: coverage
 
@@ -183,15 +170,12 @@ jobs:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
     strategy:
-      fail-fast: false # Same here for consistency
       matrix:
         python-version: *python-matrix
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       # Set up Python on macOS environment
       - name: Setup Python
