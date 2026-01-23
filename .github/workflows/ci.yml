@@ -22,8 +22,6 @@ permissions:
   contents: read
   packages: read
   pull-requests: write
-  issues: write # For posting coverage comments
-  checks: write # For updating job status
 
 # GLOBAL ENV: Applies to ALL jobs (Linux & macOS)
 env:
@@ -38,6 +36,9 @@ jobs:
   test-ubuntu:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    permissions: # Additional permissions for posting coverage comments
+      pull-requests: write
+      contents: read
     timeout-minutes: 20
     strategy:
       fail-fast: false # Continue other jobs even if one fails (testing)
