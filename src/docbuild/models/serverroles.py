@@ -1,23 +1,26 @@
+"""Server roles for the docbuild application."""
+
 from enum import StrEnum
-from typing import Any, Self, cast
+from typing import Self
+
 
 class ServerRole(StrEnum):
     """The server role."""
 
-    PRODUCTION = 'production'
-    STAGING = 'staging'
-    TESTING = 'testing'
+    PRODUCTION = "production"
+    STAGING = "staging"
+    TESTING = "testing"
 
     @classmethod
-    def _missing_(cls, value: object) -> Any: # Use Any here to satisfy the Enum metaclass requirements
+    def _missing_(cls, value: object) -> str | None:
+        """Handle aliases and case-insensitive lookups."""
         if not isinstance(value, str):
             return None
-        
+
         v = value.lower()
-        
+
         # Comprehensive alias map
-        # We use 'cls' to access the members to ensure they are the correct type
-        aliases: dict[str, ServerRole] = {
+        aliases: dict[str, str] = {
             "p": cls.PRODUCTION,
             "prod": cls.PRODUCTION,
             "s": cls.STAGING,
@@ -29,11 +32,11 @@ class ServerRole(StrEnum):
         }
 
         if v in aliases:
-            return cast(Self, aliases[v])
-        
+            return aliases[v]
+
         # Check if the string matches a member name (e.g., "PROD")
         for member in cls:
             if member.name.lower() == v:
-                return cast(Self, member)
-                
+                return member
+
         return None

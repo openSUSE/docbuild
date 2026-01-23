@@ -25,7 +25,6 @@ from ..constants import (
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
-from ..utils.pidlock import PidFileLock, LockAcquisitionError
 from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_config import config
