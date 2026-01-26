@@ -5,9 +5,10 @@ from enum import StrEnum
 
 class ServerRole(StrEnum):
     """The server role.
-    
+
     This Enum supports various aliases and case variations for each role.
     """
+
     # Primary Members
     PRODUCTION = "production"
     STAGING = "staging"
@@ -38,9 +39,9 @@ class ServerRole(StrEnum):
     @classmethod
     def _missing_(cls, value: object) -> "ServerRole | None":
         """Handle aliases and case-insensitive lookups using class members.
-        
-        If the value passed isn't a valid value (e.g. 'production'),
-        check if it matches one of the alias names (e.g. 'p').
+
+        If the value passed isn't a valid value (for example, 'production'),
+        check if it matches one of the alias names (for example, 'p').
         """
         # Convert the input to a string to check against member keys
         name = str(value)
@@ -54,4 +55,3 @@ class ServerRole(StrEnum):
         raise ValueError(
             f"{name!r} is not a valid {cls.__name__}; valid names/aliases: {valid}"
         )
-    
