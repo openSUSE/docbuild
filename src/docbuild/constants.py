@@ -20,15 +20,16 @@ ALLOWED_LANGUAGES = frozenset(
 DEFAULT_DELIVERABLES = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 
-# SERVER_ROLES = (
-#     "production", "prod", "p",
-#     "testing", "test", "t",
-#     "staging", "stage", "s",
-# )
+# The primary, unique values of the Enum ('production', 'staging', 'testing')
 SERVER_ROLES = tuple(
-    [role.value for role in ServerRole]  # type: ignore[call-arg]
+    [role.value for role in ServerRole]
 )
-"""The different server roles, including long and short spelling."""
+"""The unique primary server role values."""
+
+# Every single valid name and alias defined in the Enum
+# ('PRODUCTION', 'PROD', 'P', 'production', 'prod', 'p', 'devel', etc.)
+SERVER_ROLES_ALIASES = tuple(ServerRole.__members__.keys())
+"""All valid server role names and aliases for validation and testing."""
 
 DEFAULT_LIFECYCLE = "supported"
 """The default lifecycle state for a docset."""
