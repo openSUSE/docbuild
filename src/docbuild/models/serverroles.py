@@ -4,38 +4,54 @@ from enum import StrEnum
 
 
 class ServerRole(StrEnum):
-    """The server role."""
-
+    """The server role.
+    
+    This Enum supports various aliases and case variations for each role.
+    """
+    # Primary Members
     PRODUCTION = "production"
     STAGING = "staging"
     TESTING = "testing"
 
+    # Aliases for PRODUCTION
+    PROD = "production"
+    P = "production"
+    prod = "production"
+    p = "production"
+
+    # Aliases for STAGING
+    STAGE = "staging"
+    S = "staging"
+    stage = "staging"
+    s = "staging"
+
+    # Aliases for TESTING
+    TEST = "testing"
+    T = "testing"
+    test = "testing"
+    t = "testing"
+    DEVEL = "testing"
+    devel = "testing"
+    DEV = "testing"
+    dev = "testing"
+
     @classmethod
-    def _missing_(cls, value: object) -> object:
-        """Handle aliases and case-insensitive lookups."""
-        if not isinstance(value, str):
-            return None
+    def _missing_(cls, value: object) -> "ServerRole | None":
+        """Handle aliases and case-insensitive lookups using class members.
+        
+        If the value passed isn't a valid value (e.g. 'production'),
+        check if it matches one of the alias names (e.g. 'p').
+        """
+        # Convert the input to a string to check against member keys
+        name = str(value)
+        member = cls.__members__.get(name)
 
-        v = value.lower()
+        if member is not None:
+            return member
 
-        # Comprehensive alias map
-        aliases: dict[str, str] = {
-            "p": cls.PRODUCTION,
-            "prod": cls.PRODUCTION,
-            "s": cls.STAGING,
-            "stage": cls.STAGING,
-            "t": cls.TESTING,
-            "test": cls.TESTING,
-            "devel": cls.TESTING,
-            "dev": cls.TESTING,
-        }
-
-        if v in aliases:
-            return aliases[v]
-
-        # Check if the string matches a member name (e.g., "PROD")
-        for member in cls:
-            if member.name.lower() == v:
-                return member
-
-        return None
+        # If no match is found, raise ValueError with all valid names/aliases
+        valid = ", ".join(cls.__members__.keys())
+        raise ValueError(
+            f"{name!r} is not a valid {cls.__name__}; valid names/aliases: {valid}"
+        )
+    
