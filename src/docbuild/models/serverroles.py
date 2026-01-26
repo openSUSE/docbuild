@@ -1,6 +1,7 @@
 """Server roles for the docbuild application."""
 
 from enum import StrEnum
+from typing import Self
 
 
 class ServerRole(StrEnum):
@@ -37,7 +38,7 @@ class ServerRole(StrEnum):
     dev = "testing"
 
     @classmethod
-    def _missing_(cls, value: object) -> "ServerRole | None":
+    def _missing_(cls: type[Self], value: object) -> "ServerRole | None":
         """Handle aliases and case-insensitive lookups using class members.
 
         If the value passed isn't a valid value (for example, 'production'),
