@@ -5,8 +5,22 @@
 
 version: 2
 updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    open-pull-requests-limit: 5
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "tomschr"
+    cooldown:
+      # https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#cooldown-
+      default-days: 5
+    labels:
+      - "area:dependencies"
+
   - package-ecosystem: "pip"
-    directory: "/" # Location of your pyproject.toml
+    directory: "/"
     schedule:
       interval: "weekly"
     allow:
