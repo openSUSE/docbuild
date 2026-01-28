@@ -93,6 +93,12 @@ For Python specific terms, look into:
 
       See section :ref:`use-ipython`.
 
+   Jinja
+      A templating engine for Python that allows you to create dynamic
+      content by combining static templates with data.
+
+      See https://jinja.palletsprojects.com/
+
    Lifecycle
       Describes the distinct stages a product goes through, from its initial introduction to the market until its eventual decline and retirement.
 
@@ -123,7 +129,7 @@ For Python specific terms, look into:
    Parallelism
       The simultaneous execution of multiple tasks at the exact same instant, which requires a system with multiple hardware resources like CPU cores.
 
-      *Parallelism* is about executing multiple tasks simultaneously. This requires multiple CPU cores
+      *Parallelism* is about executing multiple tasks simultaneously. This requires multiple CPU cores.
 
       See also :term:`Concurrency`
 
