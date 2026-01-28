@@ -159,12 +159,19 @@ jobs:
           echo "\`\`\`" >> coverage_comment.txt
           echo "</details>" >> coverage_comment.txt
 
-      - name: Post Coverage Comment
+      - name: Save PR Number
         if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
-        uses: marocchino/sticky-pull-request-comment@v2
+        run: echo ${{ github.event.number }} > pr_number.txt
+
+      - name: Upload Coverage Artifact
+        if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
         with:
-          path: coverage_comment.txt
-          header: coverage
+          name: coverage-artifact
+          path: |
+            coverage_comment.txt
+            pr_number.txt
+
 
   test-macos:
     name: macos-python-${{ matrix.python-version }}
