@@ -165,7 +165,7 @@ jobs:
 
       - name: Upload Coverage Artifact
         if: success() && github.event_name == 'pull_request' && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-artifact
           path: |
