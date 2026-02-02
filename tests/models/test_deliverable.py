@@ -18,7 +18,11 @@ def node() -> etree._ElementTree:
     <product productid="sles" schemaversion="6.0">
         <name>SUSE Linux Enterprise Server</name>
         <acronym>SLES</acronym>
-        <!-- categories -->
+        <categories>
+            <category categoryid="about">
+                <language lang="en-us" default="1" title="About"/>
+            </category>
+        </categories>
         <!-- desc -->
         <docset lifecycle="supported" setid="15-SP6">
             <version>15 SP6</version>
@@ -61,7 +65,12 @@ def node() -> etree._ElementTree:
 def get_deliverables(node, *, lang: str = "en-us"):
     """Get all deliverable elements from the XML node."""
     yield from node.xpath(
-        f"/product/docset/builddocs/language[@lang={lang!r}]/deliverable",
+        (
+            # Works for product nodes that is a root element and
+            # those that is under another element:
+            "(/product | /docservconfig/product)"
+            f"/docset/builddocs/language[@lang={lang!r}]/deliverable"
+        ),
     )
 
 
@@ -331,3 +340,65 @@ def test_deliverable_repr(firstnode: etree._Element):
 def test_deliverable_to_dict(firstnode: Deliverable):
     with pytest.raises(NotImplementedError):
         firstnode.to_dict()
+
+
+def test_deliverable_group_from_product(node: etree._ElementTree):
+    deli = Deliverable(next(get_deliverables(node)))
+    assert len(list(deli.categories)) == 1
+
+
+def test_deliverable_group_from_root():
+    doc = """<docservconfig>
+        <categories>
+            <category categoryid="about">
+                <language lang="en-us" default="1" title="About"/>
+            </category>
+        </categories>
+        <product productid="sles" schemaversion="6.0">
+            <docset lifecycle="supported" setid="15-SP6">
+                <builddocs>
+                    <git remote="https://github.com/SUSE/doc-sle.git"/>
+                    <language default="1" lang="en-us">
+                        <branch>maintenance/SLE15SP6</branch>
+                        <deliverable category="administration">
+                            <dc>DC-SLES-administration</dc>
+                        </deliverable>
+                    </language>
+                </builddocs>
+            </docset>
+        </product>
+    </docservconfig>
+    """
+    node = etree.fromstring(doc, parser=None).getroottree()
+    deli = Deliverable(next(get_deliverables(node)))
+    assert len(list(deli.categories_from_root)) == 1
+
+
+def test_deliverable_all_groups():
+    doc = """<docservconfig>
+        <categories>
+            <category categoryid="about">
+                <language lang="en-us" default="1" title="About"/>
+            </category>
+        </categories>
+        <product productid="sles" schemaversion="6.0">
+            <category>
+                <language lang="en-us" default="1" title="Hello World"/>
+            </category>
+            <docset lifecycle="supported" setid="15-SP6">
+                <builddocs>
+                    <git remote="https://github.com/SUSE/doc-sle.git"/>
+                    <language default="1" lang="en-us">
+                        <branch>maintenance/SLE15SP6</branch>
+                        <deliverable category="administration">
+                            <dc>DC-SLES-administration</dc>
+                        </deliverable>
+                    </language>
+                </builddocs>
+            </docset>
+        </product>
+    </docservconfig>
+    """
+    node = etree.fromstring(doc, parser=None).getroottree()
+    deli = Deliverable(next(get_deliverables(node)))
+    assert len(list(deli.all_categories)) == 2
