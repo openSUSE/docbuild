@@ -25,3 +25,14 @@ docbuild.models.manifest.Category
            ]
        }
 
+
+   .. py:method:: from_xml_node(node: lxml.etree._Element) -> collections.abc.Generator[Self, None, None]
+      :classmethod:
+
+
+      Extract categories from a parent XML node.
+
+      :param node: a node pointing to ``<product>``
+      :yield: A :class:`Category` instance for each category found.
+
+

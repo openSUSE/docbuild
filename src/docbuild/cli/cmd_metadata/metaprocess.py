@@ -16,7 +16,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...models.manifest import Document, Manifest
+from ...models.manifest import Category, Description, Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ..context import DocBuildContext
@@ -338,25 +338,30 @@ def store_productdocset_json(
 
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         # files: list[Path]
+        # TODO: Create a Deliverable object?
         product = doctype.product.value
-        stdout.print(f" > Processed group: {doctype} / {docset}")
+        stdout.print(f" ❱ Processed group: {doctype} / {docset}")
         # The XPath logic is encapsulated within the Doctype model
         productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
+        descriptions = Description.from_xml_node(productnode)
+        categories = Category.from_xml_node(productnode)
 
         manifest = Manifest(
             productname=productnode.find("name").text,
             acronym=product,
             version=docset,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
+            descriptions=descriptions,
+            categories=categories,
             # * hide-productname is False by default in the Manifest model
-            # * descriptions, categories, archives are empty lists by default
+            # * archives are empty lists by default
         )
 
         for f in files:
-            stdout.print(f" {f}")
+            stdout.print(f"  | {f.stem}")
             try:
                 with (meta_cache_dir / f).open(encoding="utf-8") as fh:
                     loaded_doc_data = json.load(fh)
@@ -384,10 +389,13 @@ def store_productdocset_json(
         jsonfile = (
             jsondir / f"{docset}.json"
         )  # e.g., /path/to/cache/product_id/docset_id.json
+
+        #
         jsonfile.write_text(manifest.model_dump_json(indent=2, by_alias=True))
         log.info(
             "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
         )
+        stdout.print(f" > Result: {jsonfile}")
 
 
 async def process(

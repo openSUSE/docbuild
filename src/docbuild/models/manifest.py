@@ -1,14 +1,17 @@
 """Pydantic models for the metadata manifest structure."""
 
+from collections.abc import Generator
 from datetime import date
-from typing import Self
+from typing import ClassVar, Self
 
+from lxml import etree
 from pydantic import (
     BaseModel,
     Field,
     SerializationInfo,
     field_serializer,
     field_validator,
+    # model_validator,
 )
 
 from ..models.language import LanguageCode
@@ -31,6 +34,36 @@ class Description(BaseModel):
     default: bool
     description: str
 
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
+
+    @classmethod
+    def from_xml_node(
+        cls: type[Self], node: etree._Element
+    ) -> Generator[Self, None, None]:
+        """Extract descriptions from a parent XML node.
+
+        :param node: a node pointing to ``<product>``
+        :yield:
+        """
+        for n in node.xpath("desc"):
+            text = "".join(
+                f"<{child.tag}>{
+                    ' '.join(
+                        x.strip()
+                        for t in child.itertext()
+                        for x in t.splitlines()
+                        if x.strip()
+                    )
+                }</{child.tag}>"
+                for child in n.iterchildren()
+                if child.tag != "title"
+            )
+
+            yield cls(**{"default": False, **n.attrib}, description=text)
+
 
 class CategoryTranslation(BaseModel):
     """Represents a translation for a category title.
@@ -45,8 +78,13 @@ class CategoryTranslation(BaseModel):
     """
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     title: str
+
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
 
 
 class Category(BaseModel):
@@ -67,8 +105,50 @@ class Category(BaseModel):
         }
     """
 
-    id: str = Field(alias="categoryId")
+    _current_rank: ClassVar[int] = 0
+
+    @staticmethod
+    def _increment_rank() -> int:
+        """Increments the counter and returns the next value."""
+        Category._current_rank += 1
+        return Category._current_rank
+
+    id: str = Field(serialization_alias="categoryId")
+    # Automatically called. Depends on the order of the XML element.
+    rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    # @model_validator(mode="before")
+    # @classmethod
+    # def prevent_manual_rank(cls, data: Any) -> Any:
+    #     """Prevent setting the rank attribute as it is set automatically."""
+    #     # If 'rank' is in the input data, it means the user tried to set it manually
+    #     if isinstance(data, dict) and "rank" in data:
+    #         raise ValueError(
+    #             "The 'rank' field is automatic and cannot be set manually."
+    #         )
+    #     return data
+
+    @classmethod
+    def from_xml_node(
+        cls: type[Self], node: etree._Element
+    ) -> Generator[Self, None, None]:
+        """Extract categories from a parent XML node.
+
+        :param node: a node pointing to ``<product>``
+        :yield: A :class:`Category` instance for each category found.
+        """
+        for cat in node.xpath("category|categories/category"):
+            langs = cat.xpath("language")
+            translations = [
+                CategoryTranslation(
+                    lang=lng.attrib.get("lang", "en-us"),
+                    default=lng.attrib.get("default", False),
+                    title=lng.attrib.get("title", ""),
+                )
+                for lng in langs
+            ]
+            yield cls(id=cat.attrib.get("categoryid", ""), translations=translations)
 
 
 class Archive(BaseModel):
@@ -86,6 +166,11 @@ class Archive(BaseModel):
     lang: LanguageCode
     default: bool
     zip: str
+
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
 
 
 class DocumentFormat(BaseModel):

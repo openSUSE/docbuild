@@ -19,3 +19,20 @@ docbuild.models.manifest.Description
            "description": "<p>The English description for a product.</p>"
        }
 
+
+   .. py:method:: serialize_lang(value: docbuild.models.language.LanguageCode, info: pydantic.SerializationInfo) -> str
+
+      Serialize LanguageCode to a string like 'en-us'.
+
+
+
+   .. py:method:: from_xml_node(node: lxml.etree._Element) -> collections.abc.Generator[Self, None, None]
+      :classmethod:
+
+
+      Extract descriptions from a parent XML node.
+
+      :param node: a node pointing to ``<product>``
+      :yield:
+
+
