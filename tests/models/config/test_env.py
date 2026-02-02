@@ -27,7 +27,7 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
         "/etc/docbuild/server-root-files-doc-suse-com"
     )
     resolved_data["paths"]["repo_dir"] = "/var/cache/docbuild/repos/permanent-full/"
-    resolved_data["paths"]["temp_repo_dir"] = (
+    resolved_data["paths"]["tmp_repo_dir"] = (
         "/var/cache/docbuild/repos/temporary-branches/"
     )
     resolved_data["paths"]["base_cache_dir"] = "/var/cache/docserv"
@@ -39,19 +39,19 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
     )
     resolved_data["paths"]["base_tmp_dir"] = "/var/tmp/docbuild"
     resolved_data["paths"]["tmp"]["tmp_base_dir"] = "/var/tmp/docbuild"
-    resolved_data["paths"]["tmp"]["tmp_path"] = tmp_general
-    resolved_data["paths"]["tmp"]["tmp_deliverable_path"] = tmp_general + "/deliverable"
+    resolved_data["paths"]["tmp"]["tmp_dir"] = tmp_general
+    resolved_data["paths"]["tmp"]["tmp_deliverable_dir"] = tmp_general + "/deliverable"
     resolved_data["paths"]["tmp"]["tmp_metadata_dir"] = tmp_general + "/metadata"
     resolved_data["paths"]["tmp"]["tmp_build_dir"] = (
         tmp_general + "/build/{{product}}-{{docset}}-{{lang}}"
     )
-    resolved_data["paths"]["tmp"]["tmp_out_path"] = tmp_general + "/out"
-    resolved_data["paths"]["tmp"]["log_path"] = tmp_general + "/log"
+    resolved_data["paths"]["tmp"]["tmp_out_dir"] = tmp_general + "/out"
+    resolved_data["paths"]["tmp"]["log_dir"] = tmp_general + "/log"
     resolved_data["paths"]["tmp"]["tmp_deliverable_name"] = (
         "{{product}}_{{docset}}_{{lang}}_XXXXXX"
     )
-    resolved_data["paths"]["target"]["target_path"] = "doc@10.100.100.100:/srv/docs"
-    resolved_data["paths"]["target"]["backup_path"] = Path(
+    resolved_data["paths"]["target"]["target_dir"] = "doc@10.100.100.100:/srv/docs"
+    resolved_data["paths"]["target"]["backup_dir"] = Path(
         "/data/docbuild/external-builds/"
     )
 
@@ -79,8 +79,7 @@ def mock_placeholder_resolution(monkeypatch):
 def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
     """Provide a minimal, valid dictionary representing env.toml data.
 
-    It uses aliases. Includes ALL mandatory path fields and a nested
-    xslt-params structure.
+    Includes ALL mandatory path fields and a nested xslt-params structure.
     """
     nested_xslt_params = {
         "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
@@ -111,7 +110,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "base_server_cache_dir": "/var/cache/docserv/server",
             "base_tmp_dir": "/var/tmp/docbuild",
             "repo_dir": "/var/cache/docbuild/repos/permanent-full/",
-            "temp_repo_dir": "/var/cache/docbuild/repos/temporary-branches/",
+            "tmp_repo_dir": "/var/cache/docbuild/repos/temporary-branches/",
             "base_cache_dir": "/var/cache/docserv",
             "meta_cache_dir": "/var/cache/docbuild/doc-example-com/meta",
             "tmp": {
@@ -149,8 +148,9 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     # Check type coercion for core types
     assert isinstance(config.paths.base_cache_dir, Path)
 
-    assert config.paths.tmp.tmp_path.is_absolute()
-    assert config.paths.tmp.tmp_path.name == "doc-example-com"
+    # Updated assertion to use tmp_dir instead of tmp_path
+    assert config.paths.tmp.tmp_dir.is_absolute()
+    assert config.paths.tmp.tmp_dir.name == "doc-example-com"
 
     # Check that the field with runtime placeholders is correctly handled as a string
     assert isinstance(config.paths.tmp.tmp_build_dir, str)
@@ -174,13 +174,10 @@ def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
-    # This test checks for 'extra = forbid' behavior. The autouse mock for placeholder
-    # resolution interferes by replacing paths with non-existent ones, causing a
-    # premature validation failure. We override it with a simple pass-through.
+    # This test checks for 'extra = forbid' behavior.
     monkeypatch.setattr(config_app_mod, "replace_placeholders", lambda data: data)
 
     # Prepare all directories that are validated for existence and writability.
-    # The EnvConfig model uses EnsureWritableDirectory for several path fields.
     paths_to_create = [
         tmp_path,
         tmp_path / "config",
@@ -215,7 +212,7 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
             "jinja_dir": str(tmp_path),
             "server_rootfiles_dir": str(tmp_path),
             "repo_dir": str(tmp_path),
-            "temp_repo_dir": str(tmp_path),
+            "tmp_repo_dir": str(tmp_path),
             "base_cache_dir": str(tmp_path),
             "base_server_cache_dir": str(tmp_path),
             "meta_cache_dir": str(tmp_path),

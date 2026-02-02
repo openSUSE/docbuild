@@ -1,0 +1,3 @@
+Standardized environment configuration keys in ``env.toml``.
+All temporary paths now use the ``tmp_`` prefix (e.g., ``tmp_repo_dir`` instead of ``temp_repo_dir``).
+All directory-related keys now consistently use the ``_dir`` suffix, and previous ``_path`` aliases have been removed.
