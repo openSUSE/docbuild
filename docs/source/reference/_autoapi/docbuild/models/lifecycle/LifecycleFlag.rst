@@ -44,7 +44,7 @@ docbuild.models.lifecycle.LifecycleFlag
 
 
 
-   .. py:method:: from_str(value: str) -> LifecycleFlag
+   .. py:method:: from_str(value: str) -> Self
       :classmethod:
 
 

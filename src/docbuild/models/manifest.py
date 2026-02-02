@@ -1,8 +1,10 @@
 """Pydantic models for the metadata manifest structure."""
 
+from collections.abc import Generator
 from datetime import date
 from typing import Self
 
+from lxml import etree
 from pydantic import (
     BaseModel,
     Field,
@@ -22,6 +24,36 @@ class Description(BaseModel):
     default: bool
     description: str
 
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
+
+    @classmethod
+    def from_xml_node(
+        cls: type[Self], node: etree._Element
+    ) -> Generator[Self, None, None]:
+        """Extract descriptions from a parent XML node.
+
+        :param node: a node pointing to ``<product>``
+        :yield:
+        """
+        for n in node.xpath("desc"):
+            text = "".join(
+                f"<{child.tag}>{
+                    ' '.join(
+                        x.strip()
+                        for t in child.itertext()
+                        for x in t.splitlines()
+                        if x.strip()
+                    )
+                }</{child.tag}>"
+                for child in n.iterchildren()
+                if child.tag != "title"
+            )
+
+            yield cls(**{"default": False, **n.attrib}, description=text)
+
 
 class CategoryTranslation(BaseModel):
     """Represents a translation for a category title."""
@@ -29,6 +61,11 @@ class CategoryTranslation(BaseModel):
     lang: LanguageCode
     default: bool
     title: str
+
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
 
 
 class Category(BaseModel):
@@ -44,6 +81,11 @@ class Archive(BaseModel):
     lang: LanguageCode
     default: bool
     zip: str
+
+    @field_serializer("lang")
+    def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
+        """Serialize LanguageCode to a string like 'en-us'."""
+        return str(value)
 
 
 class DocumentFormat(BaseModel):
