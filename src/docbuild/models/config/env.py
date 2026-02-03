@@ -163,7 +163,7 @@ class EnvTmpPaths(BaseModel):
     )
     "Root path for temporary files."
 
-    tmp_dir: Path = Field(
+    tmp_dir: EnsureWritableDirectory = Field(
         title="General Temporary Directory for specific server",
         description=(
             "A general-purpose subdirectory within the base temporary path to "
@@ -173,7 +173,7 @@ class EnvTmpPaths(BaseModel):
     )
     "General temporary directory."
 
-    tmp_deliverable_dir: Path = Field(
+    tmp_deliverable_dir: EnsureWritableDirectory = Field(
         title="Temporary Deliverable Directory",
         description=(
             "The directory where deliverable repositories are cloned and processed."
@@ -182,7 +182,7 @@ class EnvTmpPaths(BaseModel):
     )
     "Directory for temporary deliverable clones."
 
-    tmp_metadata_dir: Path = Field(
+    tmp_metadata_dir: EnsureWritableDirectory = Field(
         title="Temporary Metadata Directory",
         description="Temporary directory for metadata files.",
         examples=["/var/tmp/docbuild/doc-example-com/metadata"],
@@ -200,7 +200,7 @@ class EnvTmpPaths(BaseModel):
     )
     "Temporary build output directory."
 
-    tmp_out_dir: Path = Field(
+    tmp_out_dir: EnsureWritableDirectory = Field(
         title="Temporary Output Directory",
         description=(
             "The final temporary directory where built artifacts land before "
@@ -210,7 +210,7 @@ class EnvTmpPaths(BaseModel):
     )
     "Temporary final output directory."
 
-    log_dir: Path = Field(
+    log_dir: EnsureWritableDirectory = Field(
         title="Log Directory",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
@@ -331,7 +331,7 @@ class EnvPathsConfig(BaseModel):
     )
     "Metadata cache path."
 
-    base_tmp_dir: Path = Field(
+    base_tmp_dir: EnsureWritableDirectory = Field(
         title="Base Temporary Directory (System Wide)",
         description=(
             "The root directory for all temporary artifacts (used for "
