@@ -469,6 +469,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../../lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Description.html">docbuild.models.manifest.Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Category.html">docbuild.models.manifest.Category</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Product.html">docbuild.models.manifest.Product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Document.html">docbuild.models.manifest.Document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
@@ -618,15 +630,15 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_path">
-<span class="sig-name descname"><span class="pre">tmp_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_path" title="Link to this definition">#</a></dt>
-<dd><p>General temporary path.</p>
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_dir">
+<span class="sig-name descname"><span class="pre">tmp_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_dir" title="Link to this definition">#</a></dt>
+<dd><p>General temporary directory.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_path">
-<span class="sig-name descname"><span class="pre">tmp_deliverable_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_path" title="Link to this definition">#</a></dt>
-<dd><p>Path for temporary deliverable clones.</p>
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_dir">
+<span class="sig-name descname"><span class="pre">tmp_deliverable_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_dir" title="Link to this definition">#</a></dt>
+<dd><p>Directory for temporary deliverable clones.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -642,15 +654,15 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_out_path">
-<span class="sig-name descname"><span class="pre">tmp_out_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_out_path" title="Link to this definition">#</a></dt>
-<dd><p>Temporary final output path.</p>
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.tmp_out_dir">
+<span class="sig-name descname"><span class="pre">tmp_out_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.tmp_out_dir" title="Link to this definition">#</a></dt>
+<dd><p>Temporary final output directory.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.log_path">
-<span class="sig-name descname"><span class="pre">log_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.log_path" title="Link to this definition">#</a></dt>
-<dd><p>Path for log files.</p>
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvTmpPaths.log_dir">
+<span class="sig-name descname"><span class="pre">log_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../path/EnsureWritableDirectory.html#docbuild.models.path.EnsureWritableDirectory" title="docbuild.models.path.EnsureWritableDirectory"><span class="pre">docbuild.models.path.EnsureWritableDirectory</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvTmpPaths.log_dir" title="Link to this definition">#</a></dt>
+<dd><p>Directory for log files.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -713,12 +725,12 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.model_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.model_config</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_base_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_base_dir</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_dir</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_metadata_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_metadata_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_build_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_build_dir</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_out_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_out_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.log_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.log_path</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_out_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_out_dir</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.log_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.log_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_name"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_name</span></code></a></li>
 </ul>
 </li>

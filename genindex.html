@@ -675,7 +675,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths.backup_path">backup_path (docbuild.models.config.env.EnvTargetPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths.backup_dir">backup_dir (docbuild.models.config.env.EnvTargetPaths attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.base_cache_dir">base_cache_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
 </li>
@@ -783,9 +783,9 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.coerce_langs">coerce_langs() (docbuild.models.doctype.Doctype class method)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.coerce_lifecycle">coerce_lifecycle() (docbuild.models.doctype.Doctype class method)</a>
-</li>
       <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.coerce_product">coerce_product() (docbuild.models.doctype.Doctype class method)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Document.html#docbuild.models.manifest.Document.coerce_rank">coerce_rank() (docbuild.models.manifest.Document class method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html#docbuild.cli.cmd_metadata.metaprocess.collect_files_flat">collect_files_flat() (in module docbuild.cli.cmd_metadata.metaprocess)</a>
 </li>
@@ -1116,8 +1116,6 @@
         <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#module-docbuild.config.xml.checks">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/CheckResult.html#docbuild.config.xml.checks.CheckResult">docbuild.config.xml.checks.CheckResult (built-in class)</a>
 </li>
       <li>
@@ -1141,6 +1139,8 @@
         <li><a href="reference/_autoapi/docbuild/config/xml/stitch/index.html#module-docbuild.config.xml.stitch">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.constants
 
@@ -1248,6 +1248,31 @@
 </li>
       </ul></li>
       <li><a href="reference/_autoapi/docbuild/models/lifecycle/LifecycleFlag.html#docbuild.models.lifecycle.LifecycleFlag">docbuild.models.lifecycle.LifecycleFlag (built-in class)</a>
+</li>
+      <li>
+    docbuild.models.manifest
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/models/manifest/index.html#module-docbuild.models.manifest">module</a>
+</li>
+      </ul></li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Archive.html#docbuild.models.manifest.Archive">docbuild.models.manifest.Archive (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category">docbuild.models.manifest.Category (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/CategoryTranslation.html#docbuild.models.manifest.CategoryTranslation">docbuild.models.manifest.CategoryTranslation (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Description.html#docbuild.models.manifest.Description">docbuild.models.manifest.Description (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Document.html#docbuild.models.manifest.Document">docbuild.models.manifest.Document (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/DocumentFormat.html#docbuild.models.manifest.DocumentFormat">docbuild.models.manifest.DocumentFormat (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Manifest.html#docbuild.models.manifest.Manifest">docbuild.models.manifest.Manifest (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Product.html#docbuild.models.manifest.Product">docbuild.models.manifest.Product (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/SingleDocument.html#docbuild.models.manifest.SingleDocument">docbuild.models.manifest.SingleDocument (built-in class)</a>
 </li>
       <li>
     docbuild.models.metadata
@@ -1385,6 +1410,8 @@
       <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.docset">docset (docbuild.models.doctype.Doctype attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.docset_node">docset_node (docbuild.models.deliverable.Deliverable property)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.docset_xpath_segment">docset_xpath_segment() (docbuild.models.doctype.Doctype method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.docsetid">docsetid (docbuild.models.deliverable.Deliverable property)</a>
 </li>
@@ -1568,9 +1595,9 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/pidlock/PidFileLock.html#docbuild.utils.pidlock.PidFileLock.lock_path">lock_path (docbuild.utils.pidlock.PidFileLock property)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/config/xml/stitch/index.html#docbuild.config.xml.stitch.log_memory_usage">log_memory_usage() (in module docbuild.config.xml.stitch)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.log_dir">log_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.log_path">log_path (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/config/xml/stitch/index.html#docbuild.config.xml.stitch.log_memory_usage">log_memory_usage() (in module docbuild.config.xml.stitch)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1716,6 +1743,8 @@
 </li>
         <li><a href="reference/_autoapi/docbuild/models/lifecycle/index.html#module-docbuild.models.lifecycle">docbuild.models.lifecycle</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/models/manifest/index.html#module-docbuild.models.manifest">docbuild.models.manifest</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/models/metadata/index.html#module-docbuild.models.metadata">docbuild.models.metadata</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/path/index.html#module-docbuild.models.path">docbuild.models.path</a>
@@ -1831,6 +1860,8 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.product_node">product_node (docbuild.models.deliverable.Deliverable property)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.product_xpath_segment">product_xpath_segment() (docbuild.models.doctype.Doctype method)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.productid">productid (docbuild.models.deliverable.Deliverable property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.productname">productname (docbuild.models.deliverable.Deliverable property)</a>
@@ -1919,9 +1950,13 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.seo_title">seo_title (docbuild.models.metadata.Metadata attribute)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/SingleDocument.html#docbuild.models.manifest.SingleDocument.serialize_date">serialize_date() (docbuild.models.manifest.SingleDocument method)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvGeneralConfig.html#docbuild.models.config.env.EnvGeneralConfig.serialize_default_lang">serialize_default_lang() (docbuild.models.config.env.EnvGeneralConfig method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvGeneralConfig.html#docbuild.models.config.env.EnvGeneralConfig.serialize_languages">serialize_languages() (docbuild.models.config.env.EnvGeneralConfig method)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Document.html#docbuild.models.manifest.Document.serialize_rank">serialize_rank() (docbuild.models.manifest.Document method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.series">series (docbuild.models.metadata.Metadata attribute)</a>
 </li>
@@ -1931,10 +1966,10 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.SERVER_ROLES_ALIASES">SERVER_ROLES_ALIASES (in module docbuild.constants)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.server_rootfiles_dir">server_rootfiles_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.server_rootfiles_dir">server_rootfiles_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/logging/index.html#docbuild.logging.setup_logging">setup_logging() (in module docbuild.logging)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.SINGLE_LANG_REGEX">SINGLE_LANG_REGEX (in module docbuild.constants)</a>
@@ -1969,11 +2004,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.target">target (docbuild.models.config.env.EnvPathsConfig attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths.target_path">target_path (docbuild.models.config.env.EnvTargetPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths.target_dir">target_dir (docbuild.models.config.env.EnvTargetPaths attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.tasks">tasks (docbuild.models.metadata.Metadata attribute)</a>
-</li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.temp_repo_dir">temp_repo_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.title">title (docbuild.models.metadata.Metadata attribute)</a>
 </li>
@@ -1981,19 +2014,21 @@
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_base_dir">tmp_base_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_build_dir">tmp_build_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_build_dir">tmp_build_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_dir">tmp_deliverable_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_name">tmp_deliverable_name (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_deliverable_path">tmp_deliverable_path (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_dir">tmp_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_metadata_dir">tmp_metadata_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_out_path">tmp_out_path (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_out_dir">tmp_out_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_path">tmp_path (docbuild.models.config.env.EnvTmpPaths attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig.tmp_repo_dir">tmp_repo_dir (docbuild.models.config.env.EnvPathsConfig attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.to_dict">to_dict() (docbuild.models.deliverable.Deliverable method)</a>
 </li>

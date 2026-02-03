@@ -50,7 +50,7 @@
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.models.metadata" href="../metadata/index.html" />
+    <link rel="next" title="docbuild.models.manifest" href="../manifest/index.html" />
     <link rel="prev" title="docbuild.models.lifecycle" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -469,6 +469,18 @@
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Description.html">docbuild.models.manifest.Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Category.html">docbuild.models.manifest.Category</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Product.html">docbuild.models.manifest.Product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Document.html">docbuild.models.manifest.Document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
@@ -636,7 +648,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.lifecycle.LifecycleFlag.from_str">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><span class="pre">LifecycleFlag</span></a></span></span><a class="headerlink" href="#docbuild.models.lifecycle.LifecycleFlag.from_str" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.lifecycle.LifecycleFlag.from_str" title="Link to this definition">#</a></dt>
 <dd><p>Convert a string to a LifecycleFlag object.</p>
 <p>The string accepts the values ‘supported’, ‘beta’, ‘hidden’,
 ‘unsupported’, or a combination of them separated by a comma or pipe.
@@ -689,11 +701,11 @@ An empty string, “”, is equivalent to “unknown”.</p>
       </div>
     </a>
     <a class="right-next"
-       href="../metadata/index.html"
+       href="../manifest/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.metadata</p>
+        <p class="prev-next-title">docbuild.models.manifest</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

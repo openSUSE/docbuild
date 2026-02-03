@@ -20,6 +20,7 @@ Submodules
    /reference/_autoapi/docbuild/models/doctype/index
    /reference/_autoapi/docbuild/models/language/index
    /reference/_autoapi/docbuild/models/lifecycle/index
+   /reference/_autoapi/docbuild/models/manifest/index
    /reference/_autoapi/docbuild/models/metadata/index
    /reference/_autoapi/docbuild/models/path/index
    /reference/_autoapi/docbuild/models/product/index

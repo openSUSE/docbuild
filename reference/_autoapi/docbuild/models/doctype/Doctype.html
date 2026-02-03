@@ -469,6 +469,18 @@
 <li class="toctree-l4"><a class="reference internal" href="../lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Description.html">docbuild.models.manifest.Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Category.html">docbuild.models.manifest.Category</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Product.html">docbuild.models.manifest.Product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Document.html">docbuild.models.manifest.Document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
 </ul>
@@ -698,12 +710,6 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.coerce_lifecycle">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">coerce_lifecycle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../lifecycle/LifecycleFlag.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><span class="pre">docbuild.models.lifecycle.LifecycleFlag</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../lifecycle/LifecycleFlag.html#docbuild.models.lifecycle.LifecycleFlag" title="docbuild.models.lifecycle.LifecycleFlag"><span class="pre">docbuild.models.lifecycle.LifecycleFlag</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.coerce_lifecycle" title="Link to this definition">#</a></dt>
-<dd><p>Convert a string into a LifecycleFlag.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.coerce_langs">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">coerce_langs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.coerce_langs" title="Link to this definition">#</a></dt>
 <dd><p>Convert a comma-separated string or a list of strings into LanguageCode.</p>
@@ -735,6 +741,20 @@
 deliverables that match this Doctype.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.product_xpath_segment">
+<span class="sig-name descname"><span class="pre">product_xpath_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.product_xpath_segment" title="Link to this definition">#</a></dt>
+<dd><p>Return the XPath segment for the product node.</p>
+<p>Example: “product[&#64;productid=’sles’]” or “product”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.docset_xpath_segment">
+<span class="sig-name descname"><span class="pre">docset_xpath_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.docset_xpath_segment" title="Link to this definition">#</a></dt>
+<dd><p>Return the XPath segment for the docset node.</p>
+<p>Example: “docset[&#64;setid=’15-SP6’]” or “docset”</p>
 </dd></dl>
 
 </dd></dl>
@@ -801,10 +821,11 @@ deliverables that match this Doctype.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__hash__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__hash__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_product"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_product()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_docset"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_docset()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_lifecycle"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_lifecycle()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_langs"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_langs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.from_str"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.from_str()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.xpath"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.xpath()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.product_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.product_xpath_segment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.docset_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.docset_xpath_segment()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -27,21 +27,21 @@ docbuild.models.config.env.EnvTmpPaths
 
 
 
-   .. py:attribute:: tmp_path
+   .. py:attribute:: tmp_dir
       :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
-      General temporary path.
+      General temporary directory.
 
 
 
-   .. py:attribute:: tmp_deliverable_path
+   .. py:attribute:: tmp_deliverable_dir
       :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
-      Path for temporary deliverable clones.
+      Directory for temporary deliverable clones.
 
 
 
@@ -63,21 +63,21 @@ docbuild.models.config.env.EnvTmpPaths
 
 
 
-   .. py:attribute:: tmp_out_path
+   .. py:attribute:: tmp_out_dir
       :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
-      Temporary final output path.
+      Temporary final output directory.
 
 
 
-   .. py:attribute:: log_path
+   .. py:attribute:: log_dir
       :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
-      Path for log files.
+      Directory for log files.
 
 
 
