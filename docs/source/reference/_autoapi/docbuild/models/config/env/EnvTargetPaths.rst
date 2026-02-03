@@ -18,20 +18,20 @@ docbuild.models.config.env.EnvTargetPaths
 
 
 
-   .. py:attribute:: target_path
+   .. py:attribute:: target_dir
       :type:  str
       :value: None
 
 
-      The destination path for final built documentation.
+      The destination directory for final built documentation.
 
 
 
-   .. py:attribute:: backup_path
+   .. py:attribute:: backup_dir
       :type:  pathlib.Path
       :value: None
 
 
-      Path for backups.
+      Directory for backups.
 
 

@@ -19,6 +19,7 @@ Attributes
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
    docbuild.constants.SERVER_ROLES
+   docbuild.constants.SERVER_ROLES_ALIASES
    docbuild.constants.DEFAULT_LIFECYCLE
    docbuild.constants.ALLOWED_LIFECYCLES
    docbuild.constants.VALID_PRODUCTS
@@ -74,7 +75,14 @@ Module Contents
 
 .. py:data:: SERVER_ROLES
 
-   The different server roles, including long and short spelling.
+   The unique primary server role values.
+
+
+.. py:data:: SERVER_ROLES_ALIASES
+   :value: ('PRODUCTION', 'STAGING', 'TESTING', 'PROD', 'P', 'prod', 'p', 'STAGE', 'S', 'stage', 's',...
+
+
+   All valid server role names and aliases for validation and testing.
 
 
 .. py:data:: DEFAULT_LIFECYCLE

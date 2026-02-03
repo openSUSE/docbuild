@@ -125,14 +125,6 @@ docbuild.models.doctype.Doctype
 
 
 
-   .. py:method:: coerce_lifecycle(value: str | docbuild.models.lifecycle.LifecycleFlag) -> docbuild.models.lifecycle.LifecycleFlag
-      :classmethod:
-
-
-      Convert a string into a LifecycleFlag.
-
-
-
    .. py:method:: coerce_langs(value: str | list[str | docbuild.models.language.LanguageCode]) -> list[docbuild.models.language.LanguageCode]
       :classmethod:
 
@@ -164,5 +156,21 @@ docbuild.models.doctype.Doctype
 
       :return: A relative XPath expression that can be used to find all
           deliverables that match this Doctype.
+
+
+
+   .. py:method:: product_xpath_segment() -> str
+
+      Return the XPath segment for the product node.
+
+      Example: "product[@productid='sles']" or "product"
+
+
+
+   .. py:method:: docset_xpath_segment(docset: str) -> str
+
+      Return the XPath segment for the docset node.
+
+      Example: "docset[@setid='15-SP6']" or "docset"
 
 

@@ -11,27 +11,5 @@ docbuild.models.serverroles.ServerRole
 
    The server role.
 
-
-   .. py:attribute:: PRODUCTION
-      :value: 'production'
-
-
-      Server is in production mode, serving live traffic.
-
-
-
-   .. py:attribute:: STAGING
-      :value: 'staging'
-
-
-      Server is in staging mode, used for testing before production.
-
-
-
-   .. py:attribute:: TESTING
-      :value: 'testing'
-
-
-      Server is in testing mode, used for development and QA.
-
+   This Enum supports various aliases and case variations for each role.
 

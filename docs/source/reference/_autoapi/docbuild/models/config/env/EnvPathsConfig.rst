@@ -63,12 +63,12 @@ docbuild.models.config.env.EnvPathsConfig
 
 
 
-   .. py:attribute:: temp_repo_dir
+   .. py:attribute:: tmp_repo_dir
       :type:  pathlib.Path
       :value: None
 
 
-      Path for temporary working copies.
+      Directory for temporary working copies.
 
 
 
@@ -100,7 +100,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_tmp_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  pathlib.Path
       :value: None
 
 

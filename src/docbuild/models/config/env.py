@@ -20,6 +20,7 @@ from ...config.app import (
     replace_placeholders,
 )
 from ..language import LanguageCode
+from ..path import EnsureWritableDirectory
 from ..serverroles import ServerRole
 
 # --- Custom Types and Utilities ---
@@ -155,7 +156,7 @@ class EnvTmpPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    tmp_base_dir: Path = Field(
+    tmp_base_dir: EnsureWritableDirectory = Field(
         title="Temporary Base Directory",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
