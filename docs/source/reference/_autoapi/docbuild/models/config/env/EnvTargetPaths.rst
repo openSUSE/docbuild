@@ -32,6 +32,6 @@ docbuild.models.config.env.EnvTargetPaths
       :value: None
 
 
-      Directory for backups.
+      Local directory for storing build backups before deployment.
 
 

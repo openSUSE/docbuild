@@ -28,7 +28,7 @@ docbuild.models.config.env.EnvTmpPaths
 
 
    .. py:attribute:: tmp_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -37,7 +37,7 @@ docbuild.models.config.env.EnvTmpPaths
 
 
    .. py:attribute:: tmp_deliverable_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -46,7 +46,7 @@ docbuild.models.config.env.EnvTmpPaths
 
 
    .. py:attribute:: tmp_metadata_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -64,7 +64,7 @@ docbuild.models.config.env.EnvTmpPaths
 
 
    .. py:attribute:: tmp_out_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -73,7 +73,7 @@ docbuild.models.config.env.EnvTmpPaths
 
 
    .. py:attribute:: log_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 

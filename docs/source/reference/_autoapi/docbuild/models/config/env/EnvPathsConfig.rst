@@ -100,7 +100,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_tmp_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 

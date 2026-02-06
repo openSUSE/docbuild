@@ -32,3 +32,15 @@ To deal with different environments without having to type the full command each
    alias docbuild-prod='docbuild --env-config env.production.toml'
    alias docbuild-test='docbuild --env-config env.testing.toml'
    alias docbuild-dev='docbuild --env-config env.devel.toml'
+
+Viewing the Environment Configuration
+------------------------------------
+
+To see how ``docbuild`` interprets your environment configuration, use the ``config env`` subcommand. This is particularly useful for verifying that all placeholders (like ``{{product}}`` or ``{{lang}}``) have been correctly resolved into absolute paths.
+
+.. code-block:: shell-session
+   :caption: Displaying the resolved environment configuration
+
+   docbuild config env
+
+If the configuration contains errors—such as missing mandatory keys or invalid data types—the command will output a validation error detailing what needs to be fixed.

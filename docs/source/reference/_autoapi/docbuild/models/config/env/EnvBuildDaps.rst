@@ -17,3 +17,21 @@ docbuild.models.config.env.EnvBuildDaps
       Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 
+
+   .. py:attribute:: command
+      :type:  str
+      :value: None
+
+
+      The base command used for DAPS execution.
+
+
+
+   .. py:attribute:: meta
+      :type:  str
+      :value: None
+
+
+      The command used to extract DAPS metadata.
+
+

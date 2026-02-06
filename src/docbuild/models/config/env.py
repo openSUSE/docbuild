@@ -43,11 +43,23 @@ DomainName = Annotated[
 class EnvBuildDaps(BaseModel):
     """Configuration for daps command execution."""
 
-    # Allows extra keys from the TOML file that aren't yet defined in the model schema.
     model_config = ConfigDict(extra="allow")
 
-    command: str = Field(..., description="The base daps command.")
-    meta: str = Field(..., description="The daps metadata command.")
+    command: str = Field(
+        ..., 
+        title="DAPS Command",
+        description="The base daps command executable.",
+        examples=["daps"]
+    )
+    "The base command used for DAPS execution."
+
+    meta: str = Field(
+        ..., 
+        title="DAPS Metadata Command",
+        description="The daps metadata command for extracting info.",
+        examples=["daps-xml-meta"]
+    )
+    "The command used to extract DAPS metadata."
 
 
 class EnvBuildContainer(BaseModel):
@@ -55,7 +67,13 @@ class EnvBuildContainer(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    container: str = Field(..., description="The container registry path/name.")
+    container: str = Field(
+        ..., 
+        title="Container Image",
+        description="The container registry path or image name.",
+        examples=["registry.opensuse.org/opensuse/daps:latest"]
+    )
+    "The container image used for the build environment."
 
 
 class EnvBuild(BaseModel):
@@ -175,9 +193,7 @@ class EnvTmpPaths(BaseModel):
 
     tmp_deliverable_dir: EnsureWritableDirectory = Field(
         title="Temporary Deliverable Directory",
-        description=(
-            "The directory where deliverable repositories are cloned and processed."
-        ),
+        description="The directory where deliverable repositories are cloned and processed.",
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
     )
     "Directory for temporary deliverable clones."
@@ -191,9 +207,7 @@ class EnvTmpPaths(BaseModel):
 
     tmp_build_dir: str = Field(
         title="Temporary Build Directory",
-        description=(
-            "Temporary directory for intermediate files (contains placeholders)."
-        ),
+        description="Temporary directory for intermediate files (contains placeholders).",
         examples=[
             "/var/tmp/docbuild/doc-example-com/build/{{product}}-{{docset}}-{{lang}}"
         ],
@@ -202,10 +216,7 @@ class EnvTmpPaths(BaseModel):
 
     tmp_out_dir: EnsureWritableDirectory = Field(
         title="Temporary Output Directory",
-        description=(
-            "The final temporary directory where built artifacts land before "
-            "deployment."
-        ),
+        description="The final temporary directory where built artifacts land before deployment.",
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
     )
     "Temporary final output directory."
@@ -242,11 +253,10 @@ class EnvTargetPaths(BaseModel):
 
     backup_dir: Path = Field(
         title="Build Server Backup Directory",
-        description=(
-            "The location on the build server before it is synced to the target path."
-        ),
+        description="The location on the build server before it is synced to the target path.",
+        examples=["/var/lib/docbuild/backups"]
     )
-    "Directory for backups."
+    "Local directory for storing build backups before deployment."
 
 
 class EnvPathsConfig(BaseModel):
@@ -256,20 +266,14 @@ class EnvPathsConfig(BaseModel):
 
     config_dir: Path = Field(
         title="Configuration Directory",
-        description=(
-            "The configuration directory containing application and environment "
-            "files (e.g. app.toml)"
-        ),
+        description="The configuration directory containing application and environment files (e.g. app.toml).",
         examples=["/etc/docbuild"],
     )
     "Path to configuration files."
 
     root_config_dir: Path = Field(
         title="Root Configuration Directory",
-        description=(
-            "The highest-level configuration directory containing common "
-            "configuration files."
-        ),
+        description="The highest-level directory containing common config files.",
         examples=["/etc/docbuild"],
     )
     "Path to the root configuration files."
@@ -283,10 +287,7 @@ class EnvPathsConfig(BaseModel):
 
     server_rootfiles_dir: Path = Field(
         title="Server Root Files Directory",
-        description=(
-            "Directory for files that should be placed in the root of the "
-            "server deployment."
-        ),
+        description="Files placed in the root of the server deployment.",
         examples=["/etc/docbuild/server-root-files-doc-suse-com"],
     )
     "Path for server root files."
@@ -300,10 +301,7 @@ class EnvPathsConfig(BaseModel):
 
     tmp_repo_dir: Path = Field(
         title="Temporary Repository Directory",
-        description=(
-            "The directory used for temporary working copies cloned from "
-            "the permanent bare repositories."
-        ),
+        description="Directory used for temporary working copies cloned from permanent bare repos.",
         examples=["/var/cache/docbuild/repos/temporary-branches/"],
     )
     "Directory for temporary working copies."
@@ -324,19 +322,14 @@ class EnvPathsConfig(BaseModel):
 
     meta_cache_dir: Path = Field(
         title="Metadata Cache Directory",
-        description=(
-            "Cache directory specifically for repository and deliverable metadata."
-        ),
+        description="Cache specifically for repository and deliverable metadata.",
         examples=["/var/cache/docbuild/doc-example-com/meta"],
     )
     "Metadata cache path."
 
     base_tmp_dir: EnsureWritableDirectory = Field(
         title="Base Temporary Directory (System Wide)",
-        description=(
-            "The root directory for all temporary artifacts (used for "
-            "placeholder resolution)."
-        ),
+        description="The root directory for all temporary artifacts (used for placeholder resolution).",
         examples=["/var/tmp/docbuild"],
     )
     "Base system temporary path."
