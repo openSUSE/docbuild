@@ -46,7 +46,7 @@ class EnvBuildDaps(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     command: str = Field(
-        ..., 
+        ...,
         title="DAPS Command",
         description="The base daps command executable.",
         examples=["daps"]
@@ -54,7 +54,7 @@ class EnvBuildDaps(BaseModel):
     "The base command used for DAPS execution."
 
     meta: str = Field(
-        ..., 
+        ...,
         title="DAPS Metadata Command",
         description="The daps metadata command for extracting info.",
         examples=["daps-xml-meta"]
@@ -68,7 +68,7 @@ class EnvBuildContainer(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     container: str = Field(
-        ..., 
+        ...,
         title="Container Image",
         description="The container registry path or image name.",
         examples=["registry.opensuse.org/opensuse/daps:latest"]
