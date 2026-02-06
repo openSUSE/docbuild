@@ -1,5 +1,6 @@
 """Module for defining the Deliverable model."""
 
+from collections.abc import Generator
 from dataclasses import dataclass, field
 from functools import cached_property
 from pathlib import Path
@@ -27,6 +28,43 @@ class Deliverable:
     _metafile: str | None = field(repr=False, default=None)
     _product_node: etree._Element | None = field(repr=False, default=None)
     _meta: Metadata | None = None
+
+    @cached_property
+    def all_categories(self) -> Generator[etree._Element, None, None]:
+        """Return the groups (formerly categories) of the deliverable.
+
+        Yield all elements from the product and root node.
+
+        :yield: The elements categories/category and category.
+        """
+        yield from self.categories
+        yield from self.categories_from_root
+
+    @cached_property
+    def categories(self) -> Generator[etree._Element, None, None]:
+        """Return the groups (formerly categories) from the product node.
+
+        Yield all elements under the product were this deliverable belongs to.
+
+        :yield: The elements categories/category and category.
+        """
+        yield from self.product_node.xpath("categories/category|category")
+
+    @cached_property
+    def categories_from_root(self) -> Generator[etree._Element, None, None]:
+        """Return the groups (formerly categories) from the root node.
+
+        Yield all elements under the root node.
+
+        :yield: The elements categories/category and category.
+        """
+        root = self.product_node.getroottree().getroot()
+        yield from root.xpath("categories/category|category")
+
+    @cached_property
+    def desc(self) -> Generator[etree._Element, None, None]:
+        """Return the <desc> from the product node."""
+        yield from self.product_node.xpath("desc")
 
     @cached_property
     def productid(self) -> str | None:
