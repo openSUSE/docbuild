@@ -59,7 +59,7 @@ class CategoryTranslation(BaseModel):
     """Represents a translation for a category title."""
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     title: str
 
     @field_serializer("lang")
@@ -71,8 +71,17 @@ class CategoryTranslation(BaseModel):
 class Category(BaseModel):
     """Represents a category for a product/docset."""
 
-    id: str = Field(alias="categoryId")
+    id: str = Field(serialization_alias="categoryId")
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    @classmethod
+    def from_xml_node(
+        cls: type[Self], node: etree._Element
+    ) -> Generator[Self, None, None]:
+        """Extract categories from a parent XML node."""
+        for cat in node.xpath("category|categories/category"):
+
+            yield cls(id=cat.attrib.get("categoryid", ""), translations=[])
 
 
 class Archive(BaseModel):

@@ -16,7 +16,7 @@ from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...models.manifest import Description, Document, Manifest
+from ...models.manifest import Category, Description, Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ..context import DocBuildContext
@@ -347,6 +347,7 @@ def store_productdocset_json(
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
         descriptions = list(Description.from_xml_node(productnode))
+        categories = Category.from_xml_node(productnode)
 
         manifest = Manifest(
             productname=productnode.find("name").text,
@@ -354,12 +355,13 @@ def store_productdocset_json(
             version=docset,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
             descriptions=descriptions,
+            categories=categories,
             # * hide-productname is False by default in the Manifest model
             # * archives are empty lists by default
         )
 
         for f in files:
-            stdout.print(f" {f}")
+            stdout.print(f.stem)
             try:
                 with (meta_cache_dir / f).open(encoding="utf-8") as fh:
                     loaded_doc_data = json.load(fh)
@@ -393,6 +395,7 @@ def store_productdocset_json(
         log.info(
             "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
         )
+        stdout.print(f" > Result: {jsonfile}")
 
 
 async def process(
