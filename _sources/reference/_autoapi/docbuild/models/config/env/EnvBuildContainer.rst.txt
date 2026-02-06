@@ -17,3 +17,12 @@ docbuild.models.config.env.EnvBuildContainer
       Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
 
+
+   .. py:attribute:: container
+      :type:  str
+      :value: None
+
+
+      The container image used for the build environment.
+
+
