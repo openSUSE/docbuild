@@ -55,9 +55,9 @@ class EnvBuildDaps(BaseModel):
 
     meta: str = Field(
         ...,
-        title="DAPS Metadata Command",
+        title="DAPS Metadata Subcommand",
         description="The daps metadata command for extracting info.",
-        examples=["daps-xml-meta"]
+        examples=["daps metadata"]
     )
     "The command used to extract DAPS metadata."
 
@@ -71,7 +71,7 @@ class EnvBuildContainer(BaseModel):
         ...,
         title="Container Image",
         description="The container registry path or image name.",
-        examples=["registry.opensuse.org/opensuse/daps:latest"]
+        examples=["registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"]
     )
     "The container image used for the build environment."
 
