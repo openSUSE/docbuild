@@ -205,14 +205,21 @@ class EnvTmpPaths(BaseModel):
     )
     "Temporary metadata directory."
 
-    tmp_build_dir: str = Field(
-        title="Temporary Build Directory",
-        description="Temporary directory for intermediate files (contains placeholders).",
-        examples=[
-            "/var/tmp/docbuild/doc-example-com/build/{{product}}-{{docset}}-{{lang}}"
-        ],
+    # SPLIT: static base directory (validated)
+    tmp_build_base_dir: EnsureWritableDirectory = Field(
+        title="Temporary Build Base Directory",
+        description="The base directory where intermediate build files are stored.",
+        examples=["/var/tmp/docbuild/doc-example-com/build/"],
     )
-    "Temporary build output directory."
+    "Base path for build output."
+
+    # SPLIT: dynamic suffix (string only, not validated as path)
+    tmp_build_dir_dyn: str = Field(
+        title="Temporary Build Directory Suffix",
+        description="The dynamic part of the build path containing runtime placeholders.",
+        examples=["{{product}}-{{docset}}-{{lang}}"],
+    )
+    "Dynamic suffix for build directory."
 
     tmp_out_dir: EnsureWritableDirectory = Field(
         title="Temporary Output Directory",
@@ -228,15 +235,15 @@ class EnvTmpPaths(BaseModel):
     )
     "Directory for log files."
 
-    tmp_deliverable_name: str = Field(
-        title="Temporary Deliverable Name",
+    # RENAMED: To indicate this is a dynamic template
+    tmp_deliverable_name_dyn: str = Field(
+        title="Temporary Deliverable Name (Dynamic)",
         description=(
-            "The name used for the current deliverable being built "
-            "(e.g., branch name or version)."
+            "The dynamic template name used for the current deliverable being built."
         ),
         examples=["{{product}}_{{docset}}_{{lang}}_XXXXXX"],
     )
-    "Temporary deliverable name."
+    "Temporary deliverable name template."
 
 
 class EnvTargetPaths(BaseModel):
@@ -244,12 +251,21 @@ class EnvTargetPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    target_dir: str = Field(
-        title="Target Server Deployment Directory",
-        description="The final remote destination for the built documentation",
+    # SPLIT: static base directory or remote destination
+    target_base_dir: str = Field(
+        title="Target Server Base Directory",
+        description="The static remote destination or base path for built documentation.",
         examples=["doc@10.100.100.100:/srv/docs"],
     )
-    "The destination directory for final built documentation."
+    "The base destination for final built documentation."
+
+    # SPLIT: dynamic suffix
+    target_dir_dyn: str = Field(
+        title="Target Directory Suffix",
+        description="The dynamic suffix of the remote path containing runtime placeholders.",
+        examples=["{{product}}"],
+    )
+    "Dynamic suffix for final remote destination."
 
     backup_dir: Path = Field(
         title="Build Server Backup Directory",

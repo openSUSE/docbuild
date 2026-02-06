@@ -15,7 +15,7 @@ DEFAULT_APP_CONFIG = {
     "paths": {
         "config_dir": "/etc/docbuild",
         "repo_dir": "/data/docserv/repos/permanent-full/",
-        "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
+        "tmp_repo_dir": "/data/docserv/repos/temporary-branches/",
     },
     "paths.tmp": {
         "tmp_base_dir": "/tmp",
@@ -44,7 +44,7 @@ DEFAULT_ENV_CONFIG = {
         "jinja_dir": "/etc/docbuild/jinja",
         "server_rootfiles_dir": "/etc/docbuild/root-files",
         "repo_dir": "/data/docserv/repos/permanent-full/",
-        "temp_repo_dir": "/data/docserv/repos/temporary-branches/",
+        "tmp_repo_dir": "/data/docserv/repos/temporary-branches/",
         "base_cache_dir": "/var/cache/docserv",
         "base_server_cache_dir": "/var/cache/docserv/default",
         "meta_cache_dir": "/var/cache/docserv/default/meta",
@@ -54,13 +54,18 @@ DEFAULT_ENV_CONFIG = {
             "tmp_dir": "{tmp_base_dir}/default-local",
             "tmp_deliverable_dir": "{tmp_dir}/deliverable",
             "tmp_metadata_dir": "{tmp_dir}/metadata",
-            "tmp_build_dir": "{tmp_dir}/build/default",
+            # build_dir has become build_base_dir + dir_dyn
+            "tmp_build_base_dir": "{tmp_dir}/build",
+            "tmp_build_dir_dyn": "default",
             "tmp_out_dir": "{tmp_dir}/out",
             "log_dir": "{tmp_dir}/log",
-            "tmp_deliverable_name": "default_deliverable",
+            # deliverable_name has become name_dyn
+            "tmp_deliverable_name_dyn": "default_deliverable",
         },
         "target": {
-            "target_dir": "file:///tmp/docbuild/target",
+            # target_dir has become base_dir + dir_dyn
+            "target_base_dir": "file:///tmp/docbuild/target",
+            "target_dir_dyn": "default",
             "backup_dir": "/tmp/docbuild/backup",
         },
     },
