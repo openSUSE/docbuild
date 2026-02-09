@@ -42,7 +42,7 @@ Module Contents
    Yields (Doctype, Docset, List[Path]) using a flattened iteration strategy.
 
 
-.. py:function:: process_deliverable(deliverable: docbuild.models.deliverable.Deliverable, *, repo_dir: pathlib.Path, temp_repo_dir: pathlib.Path, base_cache_dir: pathlib.Path, meta_cache_dir: pathlib.Path, dapstmpl: str) -> bool
+.. py:function:: process_deliverable(deliverable: docbuild.models.deliverable.Deliverable, *, repo_dir: pathlib.Path, tmp_repo_dir: pathlib.Path, base_cache_dir: pathlib.Path, meta_cache_dir: pathlib.Path, dapstmpl: str) -> bool
    :async:
 
 
@@ -55,8 +55,8 @@ Module Contents
    :param deliverable: The Deliverable object to process.
    :param repo_dir: The permanent repo path taken from the env
         config ``paths.repo_dir``
-   :param temp_repo_dir: The temporary repo path taken from the env
-        config ``paths.temp_repo_dir``
+   :param tmp_repo_dir: The temporary repo path taken from the env
+        config ``paths.tmp_repo_dir``
    :param base_cache_dir: The base path of the cache directory taken
         from the env config ``paths.base_cache_dir``
    :param meta_cache_dir: The ath of the metadata directory taken

@@ -54,12 +54,21 @@ docbuild.models.config.env.EnvTmpPaths
 
 
 
-   .. py:attribute:: tmp_build_dir
+   .. py:attribute:: tmp_build_base_dir
+      :type:  docbuild.models.path.EnsureWritableDirectory
+      :value: None
+
+
+      Base path for build output.
+
+
+
+   .. py:attribute:: tmp_build_dir_dyn
       :type:  str
       :value: None
 
 
-      Temporary build output directory.
+      Dynamic suffix for build directory.
 
 
 
@@ -81,11 +90,11 @@ docbuild.models.config.env.EnvTmpPaths
 
 
 
-   .. py:attribute:: tmp_deliverable_name
+   .. py:attribute:: tmp_deliverable_name_dyn
       :type:  str
       :value: None
 
 
-      Temporary deliverable name.
+      Temporary deliverable name template.
 
 
