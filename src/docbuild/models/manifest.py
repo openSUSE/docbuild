@@ -102,7 +102,16 @@ class Category(BaseModel):
     ) -> Generator[Self, None, None]:
         """Extract categories from a parent XML node."""
         for cat in node.xpath("category|categories/category"):
-            yield cls(id=cat.attrib.get("categoryid", ""), translations=[])
+            langs = cat.xpath("language")
+            translations = [
+                CategoryTranslation(
+                    lang=l.attrib.get("lang", "en-us"),
+                    default=l.attrib.get("default", False),
+                    title=l.attrib.get("title", ""),
+                )
+                for l in langs
+            ]
+            yield cls(id=cat.attrib.get("categoryid", ""), translations=translations)
 
 
 class Archive(BaseModel):
