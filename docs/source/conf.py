@@ -7,6 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 from datetime import datetime
+
 from docbuild.__about__ import __version__
 
 project = "docbuild"
