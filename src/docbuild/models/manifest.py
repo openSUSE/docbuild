@@ -173,7 +173,7 @@ if __name__ == "__main__":  # pragma: nocover
                             "html": "/sles/16.0/html/SLE-comparison/",
                             "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf",
                         },
-                        "dateModified": "2025-11-04",
+                        "dateModified": date.today().isoformat(),
                     }
                 ],
                 "tasks": ["About"],

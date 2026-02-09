@@ -6,11 +6,13 @@
 # -- Project information
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+from datetime import datetime
 from docbuild.__about__ import __version__
 
 project = "docbuild"
-copyright = "2025, Tom Schraitle"  # noqa: A001
-author = "Tom Schraitle"
+current_year = datetime.now().year
+copyright = f"{current_year}, Tom Schraitle | Sushant Gaurav"  # noqa: A001
+author = "Tom Schraitle, Sushant Gaurav"
 release = __version__
 
 gh_user = "openSUSE"

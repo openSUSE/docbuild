@@ -88,9 +88,9 @@ def test_single_document_serialize_date_non_none() -> None:
         description="Example description",
         dcfile="DC-EXAMPLE",
         format=DocumentFormat(html="/example-html"),
-        datemodified=date(2025, 1, 2),
+        datemodified=date(2026, 1, 2),
     ).model_dump(by_alias=True)
-    assert serialized["dateModified"] == "2025-01-02"
+    assert serialized["dateModified"] == "2026-01-02"
 
 
 @pytest.mark.parametrize(
