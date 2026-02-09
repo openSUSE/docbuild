@@ -214,7 +214,9 @@ class EnvTmpPaths(BaseModel):
     "Base path for build output."
 
     # SPLIT: dynamic suffix (string only, not validated as path)
+    # Added a default value so it's not required in defaults.py or user configs
     tmp_build_dir_dyn: str = Field(
+        default="{{product}}-{{docset}}-{{lang}}",
         title="Temporary Build Directory Suffix",
         description="The dynamic part of the build path containing runtime placeholders.",
         examples=["{{product}}-{{docset}}-{{lang}}"],

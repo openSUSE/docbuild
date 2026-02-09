@@ -84,7 +84,7 @@ async def process_deliverable(
     deliverable: Deliverable,
     *,
     repo_dir: Path,
-    temp_repo_dir: Path,
+    tmp_repo_dir: Path,
     base_cache_dir: Path,
     meta_cache_dir: Path,
     dapstmpl: str,
@@ -98,8 +98,8 @@ async def process_deliverable(
     :param deliverable: The Deliverable object to process.
     :param repo_dir: The permanent repo path taken from the env
          config ``paths.repo_dir``
-    :param temp_repo_dir: The temporary repo path taken from the env
-         config ``paths.temp_repo_dir``
+    :param tmp_repo_dir: The temporary repo path taken from the env
+         config ``paths.tmp_repo_dir``
     :param base_cache_dir: The base path of the cache directory taken
          from the env config ``paths.base_cache_dir``
     :param meta_cache_dir: The ath of the metadata directory taken
@@ -132,7 +132,7 @@ async def process_deliverable(
 
     try:
         async with PersistentOnErrorTemporaryDirectory(
-            dir=str(temp_repo_dir),
+            dir=str(tmp_repo_dir),
             prefix=f"clone-{prefix}_",
         ) as worktree_dir:
             # 1. Ensure the bare repository exists/updated using ManagedGitRepo,
@@ -264,7 +264,7 @@ async def process_doctype(
     # if not available:
     meta_cache_dir: Path = env.paths.meta_cache_dir
     # Cloned temporary repo:
-    temp_repo_dir: Path = env.paths.temp_repo_dir
+    tmp_repo_dir: Path = env.paths.tmp_repo_dir
 
     deliverables: list[Deliverable] = await asyncio.to_thread(
         get_deliverable_from_doctype,
@@ -284,7 +284,7 @@ async def process_doctype(
         process_deliverable(
             deliverable,
             repo_dir=repo_dir,
-            temp_repo_dir=temp_repo_dir,
+            tmp_repo_dir=tmp_repo_dir,
             base_cache_dir=base_cache_dir,
             meta_cache_dir=meta_cache_dir,
             dapstmpl=dapsmetatmpl,

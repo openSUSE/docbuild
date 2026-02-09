@@ -43,7 +43,6 @@ DEFAULT_ENV_CONFIG = {
         "root_config_dir": "/etc/docbuild",
         "jinja_dir": "/etc/docbuild/jinja",
         "server_rootfiles_dir": "/etc/docbuild/root-files",
-        "repo_dir": "/data/docserv/repos/permanent-full/",
         "tmp_repo_dir": "/data/docserv/repos/temporary-branches/",
         "base_cache_dir": "/var/cache/docserv",
         "base_server_cache_dir": "/var/cache/docserv/default",
@@ -56,16 +55,15 @@ DEFAULT_ENV_CONFIG = {
             "tmp_metadata_dir": "{tmp_dir}/metadata",
             # build_dir has become build_base_dir + dir_dyn
             "tmp_build_base_dir": "{tmp_dir}/build",
-            "tmp_build_dir_dyn": "default",
             "tmp_out_dir": "{tmp_dir}/out",
             "log_dir": "{tmp_dir}/log",
             # deliverable_name has become name_dyn
-            "tmp_deliverable_name_dyn": "default_deliverable",
+            "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
         },
         "target": {
             # target_dir has become base_dir + dir_dyn
             "target_base_dir": "file:///tmp/docbuild/target",
-            "target_dir_dyn": "default",
+            "target_dir_dyn": "{{product}}",
             "backup_dir": "/tmp/docbuild/backup",
         },
     },

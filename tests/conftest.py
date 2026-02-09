@@ -65,7 +65,7 @@ def env_content(default_env_config_filename: Path) -> Path:
 [paths]
 config_dir = "/etc/docbuild"
 repo_dir = "/data/docserv/repos/permanent-full/"
-temp_repo_dir = "/data/docserv/repos/temporary-branches/"
+tmp_repo_dir = "/data/docserv/repos/temporary-branches/"
 
 [paths.tmp]
 tmp_base_dir = "/tmp"

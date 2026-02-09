@@ -35,7 +35,7 @@ def mock_envconfig(tmp_path: Path) -> Mock:
     mock_paths.repo_dir = tmp_path / "repos"
     mock_paths.base_cache_dir = tmp_path / "cache"
     mock_paths.meta_cache_dir = tmp_path / "cache" / "metadata"
-    mock_paths.temp_repo_dir = tmp_path / "temp_repos"
+    mock_paths.tmp_repo_dir = tmp_path / "tmp_repos"
 
     mock_build = Mock()
     mock_build.daps.meta = "daps-command-template"
@@ -275,7 +275,7 @@ class TestProcessDeliverable:
         """Set up common paths and directories for tests."""
         paths = {
             "repo_dir": tmp_path / "repos",
-            "temp_repo_dir": tmp_path / "temp_repos",
+            "tmp_repo_dir": tmp_path / "tmp_repos",
             "base_cache_dir": tmp_path / "cache",
             "meta_cache_dir": tmp_path / "cache" / "metadata",
         }
@@ -460,7 +460,7 @@ class TestProcessDoctype:
         # Ensure other paths are set, even if repo_dir is missing
         mock_envconfig.paths.base_cache_dir = Path("/fake/cache")
         mock_envconfig.paths.meta_cache_dir = Path("/fake/cache/meta")
-        mock_envconfig.paths.temp_repo_dir = Path("/fake/temp")
+        mock_envconfig.paths.tmp_repo_dir = Path("/fake/tmp")
         context_missing_path.envconfig = mock_envconfig
 
         with pytest.raises(AttributeError):
