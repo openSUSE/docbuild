@@ -340,7 +340,7 @@ def store_productdocset_json(
         # files: list[Path]
         # TODO: Create a Deliverable object?
         product = doctype.product.value
-        stdout.print(f" > Processed group: {doctype} / {docset}")
+        stdout.print(f" ❱ Processed group: {doctype} / {docset}")
         # The XPath logic is encapsulated within the Doctype model
         productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
@@ -361,7 +361,7 @@ def store_productdocset_json(
         )
 
         for f in files:
-            stdout.print(f.stem)
+            stdout.print(f"  | {f.stem}")
             try:
                 with (meta_cache_dir / f).open(encoding="utf-8") as fh:
                     loaded_doc_data = json.load(fh)
