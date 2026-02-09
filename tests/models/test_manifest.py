@@ -5,6 +5,7 @@ import pytest
 
 from docbuild.models.manifest import (
     Archive,
+    Category,
     CategoryTranslation,
     Description,
     Document,
@@ -137,6 +138,54 @@ def test_category_translation_serialize_lang() -> None:
     cat_trans = CategoryTranslation(lang="de-de", default=False, title="Test Titel")
     serialized = cat_trans.model_dump()
     assert serialized["lang"] == "de-de"
+
+
+def test_category_from_xml_node() -> None:
+    """Test extraction of categories from an XML node."""
+    doc = """<product>
+        <category categoryid="cat1">
+            <language lang="en-us" default="1" title="Category 1 EN"/>
+            <language lang="de-de" title="Kategorie 1 DE"/>
+        </category>
+        <categories>
+            <category categoryid="cat2">
+                <language lang="fr-fr" title="Catégorie 2 FR"/>
+            </category>
+        </categories>
+        <category categoryid="cat3_no_lang"/>
+        <category> <!-- missing categoryid -->
+            <language lang="en-us" title="No ID"/>
+        </category>
+    </product>
+    """
+    node = etree.fromstring(doc, parser=None)
+    # Reset class variable for predictable rank
+    Category._current_rank = 0
+    models = list(Category.from_xml_node(node))
+
+    assert len(models) == 4
+
+    # Test first category
+    assert models[0].id == "cat1"
+    assert models[0].rank == 1
+    assert len(models[0].translations) == 2
+    assert models[0].translations[0].lang == "en-us"
+    assert models[0].translations[0].default is True
+    assert models[0].translations[0].title == "Category 1 EN"
+
+    # Test category with missing categoryid attribute
+    assert models[3].id == ""
+    assert models[3].rank == 4
+    assert models[3].translations[0].title == "No ID"
+
+
+def test_category_rank() -> None:
+    # Just to be sure, we reset the current rank:
+    Category._current_rank = 0
+    for idx, i in enumerate(["A", "B", "C"], 1):
+        cat = Category(id=i, translations=[])
+        serizalized = cat.model_dump()
+        assert serizalized["rank"] == idx
 
 
 def test_archive_serialize_lang() -> None:

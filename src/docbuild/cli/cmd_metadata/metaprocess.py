@@ -346,7 +346,7 @@ def store_productdocset_json(
         productnode = stitchnode.find(productxpath)
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
-        descriptions = list(Description.from_xml_node(productnode))
+        descriptions = Description.from_xml_node(productnode)
         categories = Category.from_xml_node(productnode)
 
         manifest = Manifest(

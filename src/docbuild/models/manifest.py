@@ -100,16 +100,20 @@ class Category(BaseModel):
     def from_xml_node(
         cls: type[Self], node: etree._Element
     ) -> Generator[Self, None, None]:
-        """Extract categories from a parent XML node."""
+        """Extract categories from a parent XML node.
+
+        :param node: a node pointing to ``<product>``
+        :yield: A :class:`Category` instance for each category found.
+        """
         for cat in node.xpath("category|categories/category"):
             langs = cat.xpath("language")
             translations = [
                 CategoryTranslation(
-                    lang=l.attrib.get("lang", "en-us"),
-                    default=l.attrib.get("default", False),
-                    title=l.attrib.get("title", ""),
+                    lang=lng.attrib.get("lang", "en-us"),
+                    default=lng.attrib.get("default", False),
+                    title=lng.attrib.get("title", ""),
                 )
-                for l in langs
+                for lng in langs
             ]
             yield cls(id=cat.attrib.get("categoryid", ""), translations=translations)
 
