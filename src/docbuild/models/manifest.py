@@ -2,7 +2,7 @@
 
 from collections.abc import Generator
 from datetime import date
-from typing import Self
+from typing import ClassVar, Self
 
 from lxml import etree
 from pydantic import (
@@ -11,6 +11,7 @@ from pydantic import (
     SerializationInfo,
     field_serializer,
     field_validator,
+    # model_validator,
 )
 
 from ..models.language import LanguageCode
@@ -71,8 +72,29 @@ class CategoryTranslation(BaseModel):
 class Category(BaseModel):
     """Represents a category for a product/docset."""
 
+    _current_rank: ClassVar[int] = 0
+
+    @staticmethod
+    def _increment_rank() -> int:
+        """Increments the counter and returns the next value."""
+        Category._current_rank += 1
+        return Category._current_rank
+
     id: str = Field(serialization_alias="categoryId")
+    # Automatically called. Depends on the order of the XML element.
+    rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    # @model_validator(mode="before")
+    # @classmethod
+    # def prevent_manual_rank(cls, data: Any) -> Any:
+    #     """Prevent setting the rank attribute as it is set automatically."""
+    #     # If 'rank' is in the input data, it means the user tried to set it manually
+    #     if isinstance(data, dict) and "rank" in data:
+    #         raise ValueError(
+    #             "The 'rank' field is automatic and cannot be set manually."
+    #         )
+    #     return data
 
     @classmethod
     def from_xml_node(
@@ -80,7 +102,6 @@ class Category(BaseModel):
     ) -> Generator[Self, None, None]:
         """Extract categories from a parent XML node."""
         for cat in node.xpath("category|categories/category"):
-
             yield cls(id=cat.attrib.get("categoryid", ""), translations=[])
 
 
