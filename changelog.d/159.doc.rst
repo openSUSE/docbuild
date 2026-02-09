@@ -1,0 +1,1 @@
+Updated the documentation copyright year and manifest timestamps, and added Sushant Gaurav in authors list.
