@@ -26,6 +26,7 @@ from ..models.config.env import EnvConfig
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_metadata import metadata
 from .cmd_repo import repo
@@ -228,3 +229,4 @@ cli.add_command(config)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(validate)
+cli.add_command(cmd_check)

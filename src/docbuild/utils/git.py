@@ -199,3 +199,43 @@ class ManagedGitRepo:
         except RuntimeError as e:
             log.error("Failed to fetch updates for '%s': %s", self.slug, e)
             return False
+
+    async def ls_tree(self: Self, branch: str, recursive: bool = True) -> list[str]:
+        """List all files in a specific branch of the bare repository.
+
+        :param branch: The branch name to inspect.
+        :param recursive: Whether to list files in subdirectories.
+        :return: A list of file paths found in the branch.
+        """
+        if not self.bare_repo_path.exists():
+            log.warning(
+                "Cannot run ls-tree: Bare repository does not exist at %s",
+                self.bare_repo_path,
+            )
+            return []
+
+        args = ["ls-tree", "--name-only"]
+        if recursive:
+            args.append("-r")
+        args.append(branch)
+
+        try:
+            # We use execute_git_command which already handles the 'git' prefix
+            # and uses the bare_repo_path as the current working directory.
+            self.result = await execute_git_command(
+                *args,
+                cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig,
+            )
+
+            if not self.result.stdout:
+                return []
+
+            return self.result.stdout.strip().splitlines()
+
+        except RuntimeError as e:
+            log.error(
+                "Failed to run ls-tree on branch '%s' in '%s': %s",
+                branch, self.slug, e
+            )
+            return []
