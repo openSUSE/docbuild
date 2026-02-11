@@ -1,6 +1,5 @@
 name: Bug Report
 description: Report a reproducible bug or unexpected behavior.
-assignees: [tomschr]
 type: bug
 
 body:
