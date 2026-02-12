@@ -93,4 +93,8 @@ async def process_check_files(
         results = await _verify_repository_files(url, branch, deli_list, repo_root)
         missing_files.extend(results)
 
+    # Final success message if no files were missing
+    if not missing_files:
+        log.info("All DC files are available in remote repositories.")
+
     return missing_files
