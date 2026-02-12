@@ -57,8 +57,8 @@ async def process_check_files(
     log.info("Starting DC file availability check...")
 
     env_config = cast(EnvConfig, ctx.envconfig)
-    config_dir = env_config.paths.config_dir.resolve()
-    repo_root = env_config.paths.repo_dir.resolve()
+    config_dir = env_config.paths.config_dir.expanduser()
+    repo_root = env_config.paths.repo_dir.expanduser()
 
     # 1. Prepare XML and Stitch Tree
     xml_files = list(config_dir.rglob("*.xml"))
