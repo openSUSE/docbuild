@@ -1,0 +1,8 @@
+Refactor how Git repository URLs are parsed and handled.
+Previously, multiple regular expressions were used to identify different
+URL formats (like HTTPS, SSH, plain, and abbreviated notations).
+These have now been consolidated into a single, more robust regular expression.
+
+Additionally, the :class:`~docbuild.model.repo.Repo` class was
+enhanced with new attributes (:attr:`Repo.branch`, :attr:`Repo.origin`,
+:attr:`Repo.treeurl`) to better manage repository details.

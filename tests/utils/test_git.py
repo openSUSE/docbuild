@@ -47,7 +47,7 @@ async def test_managed_repo_clone_bare_new(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test clone_bare when the repository does not exist yet."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate repo does not exist
     monkeypatch.setattr(Path, "exists", lambda self: False)
 
@@ -58,7 +58,7 @@ async def test_managed_repo_clone_bare_new(
         "clone",
         "--bare",
         "--progress",
-        "http://a.b/c.git",
+        "http://a.b/org/c.git",
         str(repo.bare_repo_path),
         cwd=tmp_path,
         gitconfig=None,
@@ -69,7 +69,7 @@ async def test_managed_repo_clone_bare_exists(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test clone_bare when the repository already exists."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
 
@@ -81,7 +81,7 @@ async def test_managed_repo_clone_bare_failure(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test clone_bare when the git command fails."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate repo does not exist
     monkeypatch.setattr(Path, "exists", lambda self: False)
     mock_execute_git.side_effect = RuntimeError("Git clone failed")
@@ -94,7 +94,7 @@ async def test_managed_repo_create_worktree_success(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree successfully creates a worktree."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
     target_dir = tmp_path / "worktree"
@@ -117,7 +117,7 @@ async def test_managed_repo_create_worktree_with_options(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree with additional clone options."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
     target_dir = tmp_path / "worktree"
@@ -142,7 +142,7 @@ async def test_managed_repo_create_worktree_no_bare_repo(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree fails if the bare repository does not exist."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo does not exist
     monkeypatch.setattr(Path, "exists", lambda self: False)
     target_dir = tmp_path / "worktree"
@@ -157,7 +157,7 @@ async def test_managed_repo_create_worktree_not_local(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree without the --local flag."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
     target_dir = tmp_path / "worktree"
@@ -191,7 +191,7 @@ def test_managed_git_repo_repr(tmp_path: Path):
 def test_managed_git_repo_remote_url_property(tmp_path: Path):
     """Test the remote_url property of ManagedGitRepo."""
     # Use a short-form URL to ensure the underlying Repo model is used correctly
-    short_url = "gh:/my-org/my-repo"
+    short_url = "gh://my-org/my-repo"
     repo = ManagedGitRepo(short_url, tmp_path)
     # The property should return the full, canonical URL
     assert repo.remote_url == "https://github.com/my-org/my-repo.git"
@@ -218,7 +218,7 @@ async def test_fetch_updates_success(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test fetch_updates successfully fetches updates."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
 
@@ -232,7 +232,7 @@ async def test_fetch_updates_no_repo(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test fetch_updates fails if the bare repository does not exist."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo does not exist
     monkeypatch.setattr(Path, "exists", lambda self: False)
 
@@ -246,7 +246,7 @@ async def test_fetch_updates_failure(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test fetch_updates when the git command fails."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
     mock_execute_git.side_effect = RuntimeError("Git fetch failed")
@@ -260,7 +260,7 @@ async def test_managed_repo_clone_bare_already_processed(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test clone_bare when the repository has been processed in this run."""
-    repo = ManagedGitRepo("http://a.b/c.git", tmp_path)
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate repo does not exist for the first call
     monkeypatch.setattr(Path, "exists", lambda self: False)
 
@@ -272,7 +272,7 @@ async def test_managed_repo_clone_bare_already_processed(
         "clone",
         "--bare",
         "--progress",
-        "http://a.b/c.git",
+        "http://a.b/org/c.git",
         str(repo.bare_repo_path),
         cwd=tmp_path,
         gitconfig=None,
