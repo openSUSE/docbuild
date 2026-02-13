@@ -103,7 +103,7 @@ class Repo:
     """The branch of the repository"""
 
     origin: str = field(init=False, repr=False)
-    """The original unchainged URL of the repository."""
+    """The original unchanged URL of the repository."""
 
     def __init__(self, value: str, default_branch: str | None = None) -> None:
         """Initialize a repository model from a URL or a short name.
