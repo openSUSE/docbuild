@@ -21,6 +21,56 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.16.0
+==============
+
+Breaking Changes
+----------------
+
+- Standardized environment configuration keys in ``env.toml``.
+  All temporary paths now use the ``tmp_`` prefix (for example, ``tmp_repo_dir`` instead of ``temp_repo_dir``).
+  All directory-related keys now consistently use the ``_dir`` suffix, and previous ``_path`` aliases have been removed. (:gh:`102`)
+
+
+Improved Documentation
+----------------------
+
+- Added a comprehensive technical reference for environment configuration keys and a User Guide section for the ``docbuild config env`` subcommand. (:gh:`110`)
+- Updated the documentation copyright year and manifest timestamps, and added Sushant Gaurav in authors list. (:gh:`159`)
+
+
+Features
+--------
+
+- Added :command:`check files` subcommand to verify that all DC files defined in XML configurations exist in their respective remote repositories. The implementation includes an optimization to group checks by repository, significantly reducing Git network overhead. (:gh:`78`)
+- Implemented a "smart" :class:`~docbuild.models.serverroles.ServerRole` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
+  Refactor CLI error handling to display Pydantic validation failures in a clean, structured format. (:gh:`113`)
+
+
+Infrastructure
+--------------
+
+- Enabled Python 3.14 for GitHub Action (:gh:`131`)
+- Enabled GitHub Action for Dependabot config validation. (:gh:`144`)
+- Fix permission issue in forks for coverage comment. (:gh:`148`)
+
+
+Code Refactoring
+----------------
+
+- Refactored environment configuration to separate static path placeholders from runtime dynamic placeholders. This prevents invalid directory creation during configuration validation. (:gh:`108`)
+- Refactored JSON structure for robust metadata handling in :func:`~docserv.cli.cmd_metadata.metaprocess.store_productdocset_json`. Introduce Pydantic :class:`~docbuild.models.manifest.Manifest` model to encapsulate document metadata, enhancing validation and serialization. (:gh:`140`)
+- Refactored how Git repository URLs are parsed and handled.
+  Previously, multiple regular expressions were used to identify different
+  URL formats (like HTTPS, SSH, plain, and abbreviated notations).
+  These have now been consolidated into a single, more robust regular expression.
+
+  Additionally, the :class:`~docbuild.models.repo.Repo` class was
+  enhanced with new attributes (:attr:`~docbuild.models.repo.Repo.branch`,
+  :attr:`~docbuild.models.repo.Repo.origin`,
+  :attr:`~docbuild.models.repo.Repo.treeurl`) to better manage repository details. (:gh:`167`)
+
+
 Version 0.15.0
 ==============
 

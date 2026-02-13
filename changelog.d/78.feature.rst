@@ -1,1 +1,0 @@
-Added ``check files`` subcommand to verify that all DC files defined in XML configurations exist in their respective remote repositories. The implementation includes an optimization to group checks by repository, significantly reducing Git network overhead.

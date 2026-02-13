@@ -16,7 +16,16 @@ from ..models.lifecycle import LifecycleFlag
 
 
 class Description(BaseModel):
-    """Represents a description for a product/docset."""
+    """Represents a description for a product/docset.
+
+    .. code-block:: json
+
+        {
+            "lang": "en-us",
+            "default": true,
+            "description": "<p>The English description for a product.</p>"
+        }
+    """
 
     lang: LanguageCode
     default: bool
@@ -24,7 +33,16 @@ class Description(BaseModel):
 
 
 class CategoryTranslation(BaseModel):
-    """Represents a translation for a category title."""
+    """Represents a translation for a category title.
+
+    .. code-block:: json
+
+        {
+            "lang": "en-us",
+            "default": true,
+            "title": "About"
+        }
+    """
 
     lang: LanguageCode
     default: bool
@@ -32,14 +50,38 @@ class CategoryTranslation(BaseModel):
 
 
 class Category(BaseModel):
-    """Represents a category for a product/docset."""
+    """Represents a category for a product/docset.
+
+    .. code-block:: json
+
+        {
+            "categoryId": "about",
+            "rank": 1,
+            "translations": [
+                {
+                    "lang": "en-us",
+                    "default": true,
+                    "title": "About"
+                }
+            ]
+        }
+    """
 
     id: str = Field(alias="categoryId")
     translations: list[CategoryTranslation] = Field(default_factory=list)
 
 
 class Archive(BaseModel):
-    """Represents an archive (e.g., a ZIP file) for a product/docset."""
+    """Represents an archive (e.g., a ZIP file) for a product/docset.
+
+    .. code-block:: json
+
+        {
+            "lang": "en-us",
+            "default": true,
+            "zip": "/en-us/sles/16.0/sles-16.0-en-us.zip"
+        }
+    """
 
     lang: LanguageCode
     default: bool
@@ -47,7 +89,15 @@ class Archive(BaseModel):
 
 
 class DocumentFormat(BaseModel):
-    """Represents the available formats for a document."""
+    """Represents the available formats for a document.
+
+    .. code-block:: json
+
+        {
+            "html": "/sles/16.0/html/SLE-comparison/",
+            "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf"
+        }
+    """
 
     html: str
     pdf: str | None = Field(default=None, exclude_if=lambda v: v is None or v == "")
@@ -57,7 +107,25 @@ class DocumentFormat(BaseModel):
 
 
 class SingleDocument(BaseModel):
-    """Represent a single document."""
+    """Represent a single document.
+
+    .. code-block:: json
+
+        {
+            "lang": "en",
+            "default": true,
+            "title": "Key Differences Between SLE 15 and SLE 16",
+            "subtitle": "Adopting SLE 16",
+            "description": "Key differences between SLE 15 and SLE 16",
+            "dcfile": "DC-SLE-comparison",
+            "rootid": "comparison-sle16-sle15",
+            "format": {
+                "html": "/sles/16.0/html/SLE-comparison/",
+                "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf"
+            },
+            "dateModified": "2026-04-01"
+        }
+    """
 
     lang: str | None = None
     title: str
@@ -77,14 +145,49 @@ class SingleDocument(BaseModel):
 
 
 class Product(BaseModel):
-    """Represents a single SUSE product."""
+    """Represents a single SUSE product.
+
+    .. code-block:: json
+
+        {
+            "name": "SUSE Linux Enterprise Server",
+            "versions": ["16.0"]
+        }
+    """
 
     name: str
     versions: list[str] = Field(default_factory=list)
 
 
 class Document(BaseModel):
-    """Represents a single document within the manifest."""
+    """Represents a single document within the manifest.
+
+    .. code-block:: json
+
+        {
+            "docs": [
+                {
+                    "lang": "en",
+                    "default": true,
+                    "title": "Key Differences Between SLE 15 and SLE 16",
+                    "subtitle": "Adopting SLE 16",
+                    "description": "Key differences between SLE 15 and SLE 16",
+                    "dcfile": "DC-SLE-comparison",
+                    "rootid": "comparison-sle16-sle15",
+                    "format": {
+                        "html": "/sles/16.0/html/SLE-comparison/",
+                        "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf"
+                    },
+                    "dateModified": "2026-04-01"
+                }
+            ],
+            "tasks": ["About"],
+            "products": [{"name": "SUSE Linux", "versions": ["16.0"]}],
+            "docTypes": [],
+            "isGated": false,
+            "rank": ""
+        }
+    """
 
     docs: list[SingleDocument] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)

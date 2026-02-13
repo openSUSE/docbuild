@@ -12,11 +12,11 @@ class EnsureWritableDirectory:
     """A Pydantic custom type that ensures a directory exists and is writable.
 
     Behavior:
-    1. Expands user paths (e.g., "~/data" -> "/home/user/data").
+
+    1. Expands user paths (e.g., ``~/data`` -> ``/home/user/data``).
     2. Validates input is a path.
     3. If path DOES NOT exist: It creates it (including parents).
-    4. If path DOES exist (or was just created): It checks is_dir()
-       and R/W/X permissions.
+    4. If path DOES exist (or was just created): It checks if it's a directory and has R/W/X permissions.
     """
 
     def __init__(self, path: str | Path) -> None:
@@ -80,7 +80,9 @@ class EnsureWritableDirectory:
             try:
                 path.mkdir(parents=True, exist_ok=True)
             except OSError as e:
-                raise ValueError(f"Failed to create directory '{path}': {e.strerror}") from e
+                raise ValueError(
+                    f"Failed to create directory '{path}': {e.strerror}"
+                ) from e
 
         # 2. Type Check
         if not path.is_dir():

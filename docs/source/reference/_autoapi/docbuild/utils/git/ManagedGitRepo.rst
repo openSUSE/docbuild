@@ -80,3 +80,15 @@ docbuild.utils.git.ManagedGitRepo
       :return: True if successful, False otherwise.
 
 
+
+   .. py:method:: ls_tree(branch: str, recursive: bool = True) -> list[str]
+      :async:
+
+
+      List all files in a specific branch of the bare repository.
+
+      :param branch: The branch name to inspect.
+      :param recursive: Whether to list files in subdirectories.
+      :return: A list of file paths found in the branch.
+
+

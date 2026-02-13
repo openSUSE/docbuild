@@ -13,3 +13,30 @@ docbuild.models.serverroles.ServerRole
 
    This Enum supports various aliases and case variations for each role.
 
+
+   .. py:attribute:: PRODUCTION
+      :value: 'production'
+
+
+      The role for production environments.
+      Aliases include 'prod', 'p', and any case variations.
+
+
+
+   .. py:attribute:: STAGING
+      :value: 'staging'
+
+
+      The role for staging environments.
+      Aliases include 'stage', 's', and any case variations.
+
+
+
+   .. py:attribute:: TESTING
+      :value: 'testing'
+
+
+      The role for testing and developing.
+      Aliases include 'test', 't', 'devel', 'dev', and any case variations.
+
+

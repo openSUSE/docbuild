@@ -1,1 +1,0 @@
-Fix permission issue in forks for coverage comment.

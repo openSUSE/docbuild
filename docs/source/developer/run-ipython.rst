@@ -13,7 +13,6 @@ This is useful for experimenting with the project's code and for debugging.
 
 .. code-block:: shell-session
    :caption: Running IPython using |uv| with alias :ref:`uipython <devel-helpers>`
-   :name: sh-running-ipython
 
    uipython
 

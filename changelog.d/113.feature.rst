@@ -1,2 +1,0 @@
-Implement a "smart" ``ServerRole`` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
-Refactor CLI error handling to display Pydantic validation failures in a clean, structured format.

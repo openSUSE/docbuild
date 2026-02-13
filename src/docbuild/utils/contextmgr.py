@@ -170,7 +170,7 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
 def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
     """Context manager for safely and atomically editing a JSON file.
 
-    This function implements a "read-modify-write" cycle with ACID-like properties.
+    This function implements a "read-modify-write" cycle with :term:`ACID`-like properties.
     It ensures that the file is either fully updated or remains strictly unchanged
     (no partial writes or corruption) if an error occurs during modification or saving.
 
@@ -179,10 +179,13 @@ def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
     1. **Read**: The file is parsed into a Python dictionary.
     2. **Modify** (Yield): Control is handed to the caller to modify the dictionary.
     3. **Write**:
-       - If the block exits successfully, the data is written to a temporary file,
-         fsync-ed to disk, and atomically renamed over the original file.
-       - If an exception is raised within the block, the write phase is skipped
-         entirely.
+
+       *  If the block exits successfully, the data is written to a
+          temporary file, fsync-ed to disk, and atomically renamed
+          over the original file.
+
+       *  If an exception is raised within the block, the write phase
+          is skipped entirely.
 
     :param path: The path to the JSON file to edit.
     :yields: The content of the JSON file as a mutable dictionary.

@@ -20,8 +20,8 @@ docbuild.models.language.LanguageCode
       :value: None
 
 
-      The natural language in the format ll-cc, where 'll' is the
-      language and 'cc' the country.
+      The natural language in the format ``ll-cc``, where ``ll`` is the
+      language and ``cc`` the country.
 
 
 
@@ -41,43 +41,46 @@ docbuild.models.language.LanguageCode
 
    .. py:method:: __str__() -> str
 
-      Implement str(self).
+      Implement ``str(self)``.
 
 
 
    .. py:method:: __repr__() -> str
 
-      Implement repr(self).
+      Implement ``repr(self)``.
 
 
 
    .. py:method:: __eq__(other: object|str|LanguageCode) -> bool
 
-      Implement self == other.
+      Implement ``self == other``.
 
       The comparison does NOT break the principle of equality:
-      * Reflexive: a == b
-      * Symmetric: a == b <=> b == a
-      * Transitive: if a == b and b == c, then a == c
 
-      If you need to check for wildcard logic, use matches()
+      *  Reflexive: a == b
+      *  Symmetric: a == b <=> b == a
+      *  Transitive: if a == b and b == c, then a == c
+
+      If you need to check for wildcard logic, use
+      :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
 
 
 
    .. py:method:: __lt__(other: object|str|LanguageCode) -> bool
 
-      Implement self < other.
+      Implement ``self < other``.
 
       Special properties:
-      - "*" is always the "smallest" language
-      - If self contains "*" and the other not, return True
-      - If self and the other contains "*", return False
+
+      *  "*" is always the "smallest" language
+      *  If self contains "*" and the other not, return True
+      *  If self and the other contains "*", return False
 
 
 
    .. py:method:: __hash__() -> int
 
-      Implement hash(self).
+      Implement ``hash(self)``.
 
       For using 'in sets' or as dict keys
 

@@ -28,8 +28,8 @@ class LanguageCode(BaseModel):
         examples=["en-us", "de-de"],
         frozen=True,
     )
-    """The natural language in the format ll-cc, where 'll' is the
-    language and 'cc' the country."""
+    """The natural language in the format ``ll-cc``, where ``ll`` is the
+    language and ``cc`` the country."""
 
     model_config = ConfigDict(frozen=True)
     """Configuration for the model, should be a dictionary
@@ -49,22 +49,24 @@ class LanguageCode(BaseModel):
         return data
 
     def __str__(self) -> str:
-        """Implement str(self)."""
+        """Implement ``str(self)``."""
         return f"{self.language}"
 
     def __repr__(self) -> str:
-        """Implement repr(self)."""
+        """Implement ``repr(self)``."""
         return f"{self.__class__.__name__}(language={str(self)!r})"
 
     def __eq__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self == other.
+        """Implement ``self == other``.
 
         The comparison does NOT break the principle of equality:
-        * Reflexive: a == b
-        * Symmetric: a == b <=> b == a
-        * Transitive: if a == b and b == c, then a == c
 
-        If you need to check for wildcard logic, use matches()
+        *  Reflexive: a == b
+        *  Symmetric: a == b <=> b == a
+        *  Transitive: if a == b and b == c, then a == c
+
+        If you need to check for wildcard logic, use
+        :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
         """
         if isinstance(other, LanguageCode):
             return self.language == other.language
@@ -73,12 +75,13 @@ class LanguageCode(BaseModel):
         return NotImplemented
 
     def __lt__(self, other: "object|str|LanguageCode") -> bool:
-        """Implement self < other.
+        """Implement ``self < other``.
 
         Special properties:
-        - "*" is always the "smallest" language
-        - If self contains "*" and the other not, return True
-        - If self and the other contains "*", return False
+
+        *  "*" is always the "smallest" language
+        *  If self contains "*" and the other not, return True
+        *  If self and the other contains "*", return False
         """
         if isinstance(other, LanguageCode):
             other_value = other.language
@@ -97,7 +100,7 @@ class LanguageCode(BaseModel):
         return self.language < other_value
 
     def __hash__(self) -> int:
-        """Implement hash(self).
+        """Implement ``hash(self)``.
 
         For using 'in sets' or as dict keys
         """
@@ -121,7 +124,7 @@ class LanguageCode(BaseModel):
     @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
-        """Normalize separator from _ to -."""
+        """Normalize separator from ``_`` to ``-``."""
         if isinstance(value, str):
             return value.replace("_", "-")
         return value

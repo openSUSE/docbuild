@@ -18,12 +18,21 @@ docbuild.models.config.env.EnvTargetPaths
 
 
 
-   .. py:attribute:: target_dir
+   .. py:attribute:: target_base_dir
       :type:  str
       :value: None
 
 
-      The destination directory for final built documentation.
+      The base destination for final built documentation.
+
+
+
+   .. py:attribute:: target_dir_dyn
+      :type:  str
+      :value: None
+
+
+      Dynamic suffix for final remote destination.
 
 
 

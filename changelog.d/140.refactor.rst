@@ -1,1 +1,0 @@
-Refactor JSON structure for robust metadata handling in ``docserv.cli.cmd_metadata.metaprocess:store_productdocset_json``. Introduce Pydantic :class:`~docbuild.models.manifest.Manifest` model to encapsulate document metadata, enhancing validation and serialization.

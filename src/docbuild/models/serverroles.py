@@ -12,10 +12,18 @@ class ServerRole(StrEnum):
 
     # Primary Members
     PRODUCTION = "production"
-    STAGING = "staging"
-    TESTING = "testing"
+    """The role for production environments.
+    Aliases include 'prod', 'p', and any case variations."""
 
-    # Aliases for PRODUCTION
+    STAGING = "staging"
+    """The role for staging environments.
+    Aliases include 'stage', 's', and any case variations."""
+
+    TESTING = "testing"
+    """The role for testing and developing.
+    Aliases include 'test', 't', 'devel', 'dev', and any case variations."""
+
+    #: Aliases for PRODUCTION
     PROD = "production"
     P = "production"
     prod = "production"

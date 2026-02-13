@@ -10,10 +10,49 @@ class Repo:
     """A repository model that can be initialized from a URL or a short name.
 
     This model can be compared directly with strings, which will check
-    against the repository's abbreviated name (e.g., 'org/repo').
+    against the repository's abbreviated name (e.g., ``org/repo``).
 
     Two Repo objects are considered equal if their derived names are the same,
     regardless of the original URL (HTTPS vs. SSH).
+
+    The class understands:
+
+    *  A full URL like ``https://HOST/ORG/REPO.git`` or a URL pointing
+       to a branch like ``https://HOST/ORG/REPO/tree/BRANCH``
+
+    *  A SSH URL like ``git@HOST:ORG/REPO.git``.
+
+    *  An abbreviated URL like ``SERVICE://ORG/REPO`` or ``SERVICE://ORG/REPO.git``
+       The service part is a two to four letter alias for common Git hosting
+       services, for example:
+
+       * ``gh`` for GitHub (default)
+       * ``gl`` for GitLab
+       * ``bb`` for BitBucket
+       * ``gt`` for Gitea
+       * ``cb`` for Codeberg
+       * ``ghe`` for GitHub Enterprise
+
+       This makes the reference to a Git repo more readable.
+
+    *  A plain notation like ``ORG/REPO`` which defaults to GitHub.
+
+    Additionally, branches other than default branches (main or master) can be
+    added by ``@BRANCH_NAME`` to any of the above URLs.
+
+    .. code-block:: python
+
+        >>> from docbuild.models.repo import Repo
+        >>> repo = Repo("https://github.com/openSUSE/docbuild.git")
+        >>> repo.url
+        'https://github.com/openSUSE/docbuild.git'
+        >>> repo.name
+        'openSUSE/docbuild'
+        >>> repo.surl
+        'gh://openSUSE/docbuild'
+        >>> repo.treeurl
+        'https://github.com/openSUSE/docbuild/tree/main'
+
     """
 
     DEFAULT_HOST: ClassVar[str] = "https://github.com"
@@ -109,28 +148,6 @@ class Repo:
         """Initialize a repository model from a URL or a short name.
 
         :param default_branch: The default branch to use if no branch is specified in the URL.
-
-        This initializer understands:
-
-        * A full URL like ``https://HOST/ORG/REPO.git`` or a URL pointing
-            to a branch like ``https://HOST/ORG/REPO/tree/BRANCH``
-
-        * A SSH URL like ``git@HOST:ORG/REPO.git``.
-
-        * An abbreviated URL like ``SERVICE://ORG/REPO`` or ``SERVICE://ORG/REPO.git``
-          The service part (before '://') is a two to four letter code:
-            - ``gh`` for GitHub (default)
-            - ``gl`` for GitLab
-            - ``bb`` for BitBucket
-            - ``gt`` for Gitea
-            - ``cb`` for Codeberg
-            - ``ghe`` for GitHub Enterprise
-          This makes the reference to a Git repo more readable.
-
-        * A plain notation like ``ORG/REPO`` which defaults to GitHub.
-
-        Branches other than default branches (main or master) are added
-        by ``@BRANCH_NAME`` to the URL.
         """
         if not value:
             raise ValueError("Repository value cannot be empty.")
