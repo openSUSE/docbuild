@@ -11,6 +11,50 @@ docbuild.models.deliverable.Deliverable
    deliverable.
 
 
+   .. py:property:: all_categories
+      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+
+
+      Return the groups (formerly categories) of the deliverable.
+
+      Yield all elements from the product and root node.
+
+      :yield: The elements categories/category and category.
+
+
+
+   .. py:property:: categories
+      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+
+
+      Return the groups (formerly categories) from the product node.
+
+      Yield all elements under the product were this deliverable belongs to.
+
+      :yield: The elements categories/category and category.
+
+
+
+   .. py:property:: categories_from_root
+      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+
+
+      Return the groups (formerly categories) from the root node.
+
+      Yield all elements under the root node.
+
+      :yield: The elements categories/category and category.
+
+
+
+   .. py:property:: desc
+      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+
+
+      Return the <desc> from the product node.
+
+
+
    .. py:property:: productid
       :type: str | None
 
