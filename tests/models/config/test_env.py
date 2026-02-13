@@ -9,6 +9,7 @@ import pytest
 
 import docbuild.config.app as config_app_mod
 from docbuild.models.config.env import EnvConfig
+from docbuild.models.path import EnsureWritableDirectory
 
 # --- Fixture Setup ---
 
@@ -83,7 +84,12 @@ def mock_placeholder_resolution(monkeypatch):
 
 @pytest.fixture
 def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
-    """Provide a minimal, valid dictionary representing env.toml data."""
+    """Provide a minimal, valid dictionary representing env.toml data with writable paths."""
+
+    # Create a base directory for the test inside the pytest temp folder
+    base = tmp_path / "docbuild_test"
+    base.mkdir()
+
     nested_xslt_params = {
         "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
         "show": {"edit": {"link": 1}},
@@ -106,18 +112,21 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "canonical_url_domain": "https://docs.example.com",
         },
         "paths": {
-            "config_dir": str(tmp_path / "config"),
-            "root_config_dir": "/etc/docbuild",
-            "jinja_dir": "/etc/docbuild/jinja",
-            "server_rootfiles_dir": "/etc/docbuild/rootfiles",
-            "base_server_cache_dir": "/var/cache/docserv/server",
-            "base_tmp_dir": "/var/tmp/docbuild",
-            "repo_dir": "/var/cache/docbuild/repos/permanent-full/",
-            "tmp_repo_dir": "/var/cache/docbuild/repos/temporary-branches/",
-            "base_cache_dir": "/var/cache/docserv",
-            "meta_cache_dir": "/var/cache/docbuild/doc-example-com/meta",
+            "config_dir": str(base / "config"),
+            "root_config_dir": str(base / "etc/docbuild"),
+            "jinja_dir": str(base / "etc/docbuild/jinja"),
+            "server_rootfiles_dir": str(base / "etc/docbuild/rootfiles"),
+
+            # These use EnsureWritableDirectory - MUST be in tmp_path
+            "base_cache_dir": str(base / "cache"),
+            "base_server_cache_dir": str(base / "cache/server"),
+            "base_tmp_dir": str(base / "var/tmp"),
+            "repo_dir": str(base / "repos/perm"),
+            "tmp_repo_dir": str(base / "repos/temp"),
+            "meta_cache_dir": str(base / "cache/meta"),
+
             "tmp": {
-                "tmp_base_dir": "/var/tmp/docbuild",
+                "tmp_base_dir": str(base / "var/tmp"),
                 "tmp_dir": "{tmp_base_dir}/doc-example-com",
                 "tmp_deliverable_dir": "{tmp_dir}/deliverable/",
                 "tmp_build_base_dir": "{tmp_dir}/build",
@@ -129,7 +138,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "target": {
                 "target_base_dir": "doc@10.100.100.100:/srv/docs",
                 "target_dir_dyn": "{{product}}",
-                "backup_dir": Path("/data/docbuild/external-builds/"),
+                "backup_dir": str(base / "backups"),
             },
         },
         "build": {
@@ -150,7 +159,7 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert isinstance(config, EnvConfig)
 
     # Check type coercion for core types
-    assert isinstance(config.paths.base_cache_dir, Path)
+    assert isinstance(config.paths.base_cache_dir, EnsureWritableDirectory)
 
     # Check tmp_dir instead of tmp_path
     assert config.paths.tmp.tmp_dir.is_absolute()

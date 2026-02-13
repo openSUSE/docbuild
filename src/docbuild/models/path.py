@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-from typing import Self
 
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -57,22 +56,29 @@ class EnsureWritableDirectory:
     # --- Validation & Creation Logic ---
 
     @classmethod
-    def validate_and_create(cls, path: Path) -> Self:
-        """Expand user, checks if path exists.
-
-        If not, creates it. Then checks permissions.
-        """
+    def validate_and_create(cls, path: Path) -> "EnsureWritableDirectory":
+        """Expand user, check existence/permissions, or check parent for creation."""
         # Ensure user expansion happens before any filesystem operations
         path = path.expanduser()
 
-        # 1. Auto-Creation Logic
+        # 1. Existence and Creation Logic
         if not path.exists():
+            # Check if the parent is writable so we can create the directory
+            parent = path.parent
+            # Find the first existing parent (e.g., if /data/a/b doesn't exist, check /data)
+            while not parent.exists() and parent != parent.parent:
+                parent = parent.parent
+
+            if not os.access(parent, os.W_OK):
+                raise ValueError(
+                    f"Cannot create directory '{path}'. "
+                    f"Permission denied: Parent directory '{parent}' is not writable."
+                )
+
             try:
-                # parents=True: creates /tmp/a/b even if /tmp/a doesn't exist
-                # exist_ok=True: prevents race conditions
                 path.mkdir(parents=True, exist_ok=True)
             except OSError as e:
-                raise ValueError(f"Could not create directory '{path}': {e}") from e
+                raise ValueError(f"Failed to create directory '{path}': {e.strerror}") from e
 
         # 2. Type Check
         if not path.is_dir():
@@ -93,7 +99,6 @@ class EnsureWritableDirectory:
                 f"Missing: {', '.join(missing_perms)}"
             )
 
-        # Return an instance of the custom type (the __init__ method runs next)
         return cls(path)
 
     # --- Usability Methods ---

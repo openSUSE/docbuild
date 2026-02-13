@@ -310,35 +310,37 @@ class EnvPathsConfig(BaseModel):
     )
     "Path for server root files."
 
-    repo_dir: Path = Field(
+    # --- WRITABLE PATHS START HERE ---
+
+    repo_dir: EnsureWritableDirectory = Field(
         title="Permanent Repository Directory",
         description="The directory where permanent bare Git repositories are stored.",
         examples=["/var/cache/docbuild/repos/permanent-full/"],
     )
     "Path for permanent bare Git repositories."
 
-    tmp_repo_dir: Path = Field(
+    tmp_repo_dir: EnsureWritableDirectory = Field(
         title="Temporary Repository Directory",
         description="Directory used for temporary working copies cloned from permanent bare repos.",
         examples=["/var/cache/docbuild/repos/temporary-branches/"],
     )
     "Directory for temporary working copies."
 
-    base_cache_dir: Path = Field(
+    base_cache_dir: EnsureWritableDirectory = Field(
         title="Base Cache Directory",
         description="The root directory for all application-level caches.",
         examples=["/var/cache/docserv"],
     )
     "Base path for all caches."
 
-    base_server_cache_dir: Path = Field(
+    base_server_cache_dir: EnsureWritableDirectory = Field(
         title="Base Server Cache Directory",
         description="The base directory for server-specific caches.",
         examples=["/var/cache/docserv/doc-example-com"],
     )
     "Base path for server caches."
 
-    meta_cache_dir: Path = Field(
+    meta_cache_dir: EnsureWritableDirectory = Field(
         title="Metadata Cache Directory",
         description="Cache specifically for repository and deliverable metadata.",
         examples=["/var/cache/docbuild/doc-example-com/meta"],

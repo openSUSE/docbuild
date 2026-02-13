@@ -184,7 +184,7 @@ def test_writable_directory_failure_mkdir_os_error(monkeypatch, tmp_path: Path):
     # Assert that the error is correctly wrapped in a ValueError/ValidationError
     error_msg = excinfo.value.errors()[0]["msg"]
     assert "Value error" in error_msg
-    assert "Could not create directory" in error_msg
+    assert "Failed to create directory" in error_msg
     assert "Simulated permission denied" in error_msg
 
 
@@ -229,3 +229,34 @@ def test_fspath_protocol_compatibility(
     result = path_consumer(custom_path_obj)
     expected = expected_factory(test_dir)
     assert result == expected
+
+
+def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypatch):
+    """Test validation fails when the parent directory is not writable.
+    This simulates the scenario where a user tries to create a directory
+    in a protected root folder (like /data).
+    """
+    # 1. Setup a "protected" parent and a target child
+    protected_parent = tmp_path / "protected_parent"
+    protected_parent.mkdir()
+    target_dir = protected_parent / "new_child_dir"
+
+    # 2. Mock os.access to report the parent as NOT writable
+    _original_os_access = os.access
+
+    def fake_access(path, mode):
+        # Resolve path to ensure comparison works on all OSs
+        if str(path) == str(protected_parent.resolve()) and mode == os.W_OK:
+            return False
+        return _original_os_access(path, mode)
+
+    monkeypatch.setattr(os, "access", fake_access)
+
+    # 3. Action & Assertions
+    with pytest.raises(ValidationError) as excinfo:
+        PathTestModel(writable_dir=target_dir)  # type: ignore
+
+    error_msg = excinfo.value.errors()[0]["msg"]
+    assert "Cannot create directory" in error_msg
+    assert "Permission denied: Parent directory" in error_msg
+    assert str(protected_parent.resolve()) in error_msg
