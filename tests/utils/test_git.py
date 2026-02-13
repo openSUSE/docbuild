@@ -3,7 +3,7 @@
 import asyncio
 from pathlib import Path
 from subprocess import CompletedProcess
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -26,13 +26,8 @@ def mock_subprocess_exec(monkeypatch) -> AsyncMock:
 @pytest.fixture
 def mock_execute_git(monkeypatch) -> AsyncMock:
     """Fixture to mock execute_git_command."""
-
-    async def side_effect(*args, **kwargs):
-        if args[0] == "clone":
-            return CompletedProcess(args, 0, "Cloning...", "")
-        return CompletedProcess(args, 0, "stdout success", "")
-
-    mock = AsyncMock(side_effect=side_effect)
+    # Remove the side_effect to allow tests to set their own return_value
+    mock = AsyncMock()
     monkeypatch.setattr(git_module, "execute_git_command", mock)
     return mock
 
@@ -48,6 +43,9 @@ async def test_managed_repo_clone_bare_new(
 ):
     """Test clone_bare when the repository does not exist yet."""
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     # Simulate repo does not exist
     monkeypatch.setattr(Path, "exists", lambda self: False)
 
@@ -70,6 +68,9 @@ async def test_managed_repo_clone_bare_exists(
 ):
     """Test clone_bare when the repository already exists."""
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     # Simulate repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
 
@@ -94,6 +95,9 @@ async def test_managed_repo_create_worktree_success(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree successfully creates a worktree."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
@@ -117,6 +121,9 @@ async def test_managed_repo_create_worktree_with_options(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree with additional clone options."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
@@ -157,6 +164,9 @@ async def test_managed_repo_create_worktree_not_local(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test create_worktree without the --local flag."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
@@ -218,6 +228,9 @@ async def test_fetch_updates_success(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test fetch_updates successfully fetches updates."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate bare repo exists
     monkeypatch.setattr(Path, "exists", lambda self: True)
@@ -260,6 +273,9 @@ async def test_managed_repo_clone_bare_already_processed(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
     """Test clone_bare when the repository has been processed in this run."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     # Simulate repo does not exist for the first call
     monkeypatch.setattr(Path, "exists", lambda self: False)
@@ -284,3 +300,103 @@ async def test_managed_repo_clone_bare_already_processed(
     assert result2 is True
     # The mock should still have only been called once
     mock_execute_git.assert_awaited_once()
+
+
+async def test_ls_tree_no_repo(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test ls_tree when the bare repository does not exist."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    # Simulate bare repo does not exist
+    monkeypatch.setattr(Path, "exists", lambda self: False)
+
+    with patch.object(git_module.log, "warning") as mock_log_warning:
+        result = await repo.ls_tree("main")
+
+        assert result == []
+        mock_log_warning.assert_called_once_with(
+            "Cannot run ls-tree: Bare repository does not exist at %s",
+            repo.bare_repo_path,
+        )
+        mock_execute_git.assert_not_awaited()
+
+
+async def test_ls_tree_success_recursive(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test ls_tree successfully lists files recursively."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="file1.txt\ndir/file2.txt", stderr=""
+    )
+
+    result = await repo.ls_tree("main")
+
+    assert result == ["file1.txt", "dir/file2.txt"]
+    mock_execute_git.assert_awaited_once_with(
+        "ls-tree",
+        "--name-only",
+        "-r",
+        "main",
+        cwd=repo.bare_repo_path,
+        gitconfig=None,
+    )
+
+
+async def test_ls_tree_success_non_recursive(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test ls_tree successfully lists files non-recursively."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="file1.txt", stderr=""
+    )
+
+    result = await repo.ls_tree("main", recursive=False)
+
+    assert result == ["file1.txt"]
+    mock_execute_git.assert_awaited_once_with(
+        "ls-tree",
+        "--name-only",
+        "main",
+        cwd=repo.bare_repo_path,
+        gitconfig=None,
+    )
+
+
+async def test_ls_tree_empty_output(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test ls_tree handles empty stdout correctly."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
+
+    result = await repo.ls_tree("main")
+
+    assert result == []
+
+
+async def test_ls_tree_command_failure(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test ls_tree handles a RuntimeError from execute_git_command."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+    error = RuntimeError("Git command failed")
+    mock_execute_git.side_effect = error
+
+    with patch.object(git_module.log, "error") as mock_log_error:
+        result = await repo.ls_tree("develop")
+
+        assert result == []
+        mock_log_error.assert_called_once_with(
+            "Failed to run ls-tree on branch '%s' in '%s': %s",
+            "develop",
+            repo.slug,
+            error,
+        )

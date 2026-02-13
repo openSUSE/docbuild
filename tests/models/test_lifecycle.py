@@ -20,6 +20,12 @@ def test_unknown_lifecycle():
     assert instance.name == "unknown"
 
 
+def test_invalid_lifecycle_from_constructor():
+    """Creating a lifecycle from an invalid string via constructor raises ValueError."""
+    with pytest.raises(ValueError, match="'invalid' is not a valid LifecycleFlag"):
+        LifecycleFlag("invalid")
+
+
 def test_lifecycle_flag_from_str_with_empty_string():
     instance = LifecycleFlag.from_str("")
     assert instance == LifecycleFlag.unknown

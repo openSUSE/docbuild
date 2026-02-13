@@ -309,3 +309,17 @@ def test_xpath_in_doctype(string, xpath):
     """Test the XPath extraction from a Doctype."""
     doctype = Doctype.from_str(string)
     assert xpath == doctype.xpath()
+
+
+def test_product_xpath_segment():
+    """Test the product_xpath_segment method."""
+    # Test with all products (*)
+    dt_all = Doctype.from_str("*/15-SP6/en-us")
+    assert dt_all.product_xpath_segment() == "product"
+
+
+def test_docset_xpath_segment():
+    """Test the docset_xpath_segment method."""
+    # Test with all docsets (*)
+    dt_all = Doctype.from_str("sles/*/en-us")
+    assert dt_all.docset_xpath_segment("*") == "docset"
