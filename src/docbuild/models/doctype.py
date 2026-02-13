@@ -268,7 +268,7 @@ class Doctype(BaseModel):
 
         Example: "product[@productid='sles']" or "product"
         """
-        if self.product != Product.ALL:
+        if self.product != Product["ALL"]:
             return f"product[@productid={self.product.value!r}]"
         return "product"
 
