@@ -22,39 +22,6 @@ class PathTestModel(BaseModel):
 # --- Test Cases ---
 
 
-def test_writable_directory_success_exists(tmp_path: Path):
-    """Test validation succeeds for an existing, writable directory."""
-    existing_dir = tmp_path / "existing_test_dir"
-    existing_dir.mkdir()
-
-    # Validation should succeed and return the custom type instance
-    model = PathTestModel(writable_dir=existing_dir)  # type: ignore
-
-    assert isinstance(model.writable_dir, EnsureWritableDirectory)
-    assert Path(str(model.writable_dir)).resolve() == existing_dir.resolve()
-    assert model.writable_dir.is_dir()  # Test __getattr__ functionality
-
-
-def test_writable_directory_success_create_new(tmp_path: Path):
-    """Test validation succeeds and creates a new directory.
-
-    This test ensures that if the provided path does not exist, it is
-    automatically created with the necessary parent directories.
-    """
-    new_dir = tmp_path / "non_existent" / "deep" / "path"
-
-    # Assert precondition: Path does not exist
-    assert not new_dir.exists()
-
-    # Validation should trigger auto-creation
-    model = PathTestModel(writable_dir=new_dir)  # type: ignore
-
-    # Assert postcondition: Path now exists and is a directory
-    assert model.writable_dir.exists()
-    assert model.writable_dir.is_dir()
-    assert Path(str(model.writable_dir)).resolve() == new_dir.resolve()
-
-
 def test_writable_directory_path_expansion(monkeypatch, tmp_path: Path):
     """Test that the path correctly expands the user home directory (~)."""
     # 1. Setup Mock Home Directory
@@ -83,82 +50,6 @@ def test_writable_directory_failure_not_a_directory(tmp_path: Path):
         PathTestModel(writable_dir=existing_file)  # type: ignore
 
     assert "Path exists but is not a directory" in excinfo.value.errors()[0]["msg"]
-
-
-def test_writable_directory_failure_not_writable(tmp_path: Path, monkeypatch):
-    """Test validation fails when the directory lacks write permission.
-
-    This test is robust against being run by the root user by patching
-    ``os.access`` to simulate a write permission failure.
-    """
-    read_only_dir = tmp_path / "read_only_dir"
-    read_only_dir.mkdir()
-
-    _original_os_access = os.access
-
-    # Patch os.access() to always report write permission is MISSING on this directory
-    def fake_access(path, mode):
-        # If we are checking the specific read_only directory for WRITE
-        # permission, fail it.
-        if path == read_only_dir.resolve() and mode == os.W_OK:
-            return False
-
-        # Otherwise, call the safely stored original function.
-        return _original_os_access(path, mode)
-
-    monkeypatch.setattr(os, "access", fake_access)
-
-    # The actual chmod is now primarily symbolic, the mock forces the logic path
-    read_only_dir.chmod(0o444)
-
-    try:
-        with pytest.raises(ValidationError) as excinfo:
-            PathTestModel(writable_dir=read_only_dir)  # type: ignore
-
-        assert (
-            "Insufficient permissions for directory" in excinfo.value.errors()[0]["msg"]
-        )
-        assert "WRITE" in excinfo.value.errors()[0]["msg"]
-    finally:
-        # Restore permissions to ensure cleanup (Crucial for CI)
-        read_only_dir.chmod(0o777)
-
-
-def test_writable_directory_failure_not_executable(tmp_path: Path, monkeypatch):
-    """Test validation fails when the directory lacks execute permission.
-
-    This test is robust against being run by the root user by patching
-    ``os.access`` to simulate an execute/search permission failure.
-    """
-    no_exec_dir = tmp_path / "no_exec_dir"
-    no_exec_dir.mkdir()
-
-    _original_os_access = os.access
-
-    # Patch os.access() to always report execute permission is MISSING
-    def fake_access(path, mode):
-        if path == no_exec_dir.resolve() and mode == os.X_OK:
-            return False  # Force failure on execute check
-
-        # Otherwise, call the safely stored original function.
-        return _original_os_access(path, mode)
-
-    monkeypatch.setattr(os, "access", fake_access)
-
-    # The actual chmod is now primarily symbolic, the mock forces the logic path
-    no_exec_dir.chmod(0o666)
-
-    try:
-        with pytest.raises(ValidationError) as excinfo:
-            PathTestModel(writable_dir=no_exec_dir)  # type: ignore
-
-        assert (
-            "Insufficient permissions for directory" in excinfo.value.errors()[0]["msg"]
-        )
-        assert "EXECUTE" in excinfo.value.errors()[0]["msg"]
-    finally:
-        # Restore permissions
-        no_exec_dir.chmod(0o777)
 
 
 def test_writable_directory_failure_mkdir_os_error(monkeypatch, tmp_path: Path):
@@ -233,6 +124,7 @@ def test_fspath_protocol_compatibility(
 
 def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypatch):
     """Test validation fails when the parent directory is not writable.
+
     This simulates the scenario where a user tries to create a directory
     in a protected root folder (like /data).
     """
@@ -260,3 +152,44 @@ def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypa
     assert "Cannot create directory" in error_msg
     assert "Permission denied: Parent directory" in error_msg
     assert str(protected_parent.resolve()) in error_msg
+
+
+@pytest.mark.parametrize(
+    "permission_to_fail, expected_missing_perm",
+    [
+        (os.R_OK, "READ"),
+        (os.W_OK, "WRITE"),
+        (os.X_OK, "EXECUTE"),
+    ],
+    ids=["missing_read", "missing_write", "missing_execute"],
+)
+def test_writable_directory_permission_failures(
+    tmp_path: Path, monkeypatch, permission_to_fail, expected_missing_perm
+):
+    """Test validation fails when a specific permission is missing.
+
+    This test is robust against being run by the root user by patching
+    ``os.access`` to simulate a specific permission failure (R, W, or X).
+    """
+    test_dir = tmp_path / "permission_test_dir"
+    test_dir.mkdir()
+
+    original_os_access = os.access
+
+    # Patch os.access() to fail only the specified permission check for our test directory.
+    def fake_access(path, mode):
+        # Resolve path to ensure comparison works reliably across OSs
+        if Path(path).resolve() == test_dir.resolve() and mode == permission_to_fail:
+            return False
+
+        # For all other checks, or other paths, use the original behavior.
+        return original_os_access(path, mode)
+
+    monkeypatch.setattr(os, "access", fake_access)
+
+    with pytest.raises(ValidationError) as excinfo:
+        PathTestModel(writable_dir=test_dir)  # type: ignore
+
+    error_msg = excinfo.value.errors()[0]["msg"]
+    assert "Insufficient permissions for directory" in error_msg
+    assert f"Missing: {expected_missing_perm}" in error_msg

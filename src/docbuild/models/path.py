@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+from typing import Self
 
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -56,7 +57,7 @@ class EnsureWritableDirectory:
     # --- Validation & Creation Logic ---
 
     @classmethod
-    def validate_and_create(cls, path: Path) -> "EnsureWritableDirectory":
+    def validate_and_create(cls: type[Self], path: Path) -> type[Self]:
         """Expand user, check existence/permissions, or check parent for creation."""
         # Ensure user expansion happens before any filesystem operations
         path = path.expanduser()
@@ -65,9 +66,10 @@ class EnsureWritableDirectory:
         if not path.exists():
             # Check if the parent is writable so we can create the directory
             parent = path.parent
-            # Find the first existing parent (e.g., if /data/a/b doesn't exist, check /data)
-            while not parent.exists() and parent != parent.parent:
-                parent = parent.parent
+            # Find the first existing parent directory to check for write permissions.
+            # For a path like '/a/b/c', path.parents is ('/a/b', '/a', '/').
+            # We find the first one in that sequence that exists.
+            parent = next((p for p in path.parents if p.exists()), path.root)
 
             if not os.access(parent, os.W_OK):
                 raise ValueError(
