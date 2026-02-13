@@ -80,7 +80,7 @@ class Repo:
         "git@": "https://github.com/{owner}/{repo}/tree/{branch}",
         "gl": "https://gitlab.com/{owner}/{repo}/-/tree/{branch}",
         "gls": "https://gitlab.suse.de/{owner}/{repo}/-/tree/{branch}",
-        "gt": "https://gitea.com/{owner}/{repo}/src/branch/{branch}",  # TODO: Check
+        "gt": "https://gitea.com/{owner}/{repo}/src/branch/{branch}",
     }
     """URL template for constructing tree URLs based on the service."""
 
