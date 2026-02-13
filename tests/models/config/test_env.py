@@ -174,6 +174,14 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert isinstance(config.xslt_params["external"], dict)
     assert config.xslt_params["show"]["edit"]["link"] == 1
 
+    # Test serialization of LanguageCode fields back to strings
+    dumped_config = config.model_dump()
+    assert isinstance(dumped_config["config"]["default_lang"], str)
+    assert dumped_config["config"]["default_lang"] == "en-us"
+    assert isinstance(dumped_config["config"]["languages"], list)
+    assert all(isinstance(lang, str) for lang in dumped_config["config"]["languages"])
+    assert set(dumped_config["config"]["languages"]) == {"en-us", "de-de"}
+
 
 def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]):
     """Test that the host field handles IPvAnyAddress correctly."""
@@ -267,3 +275,23 @@ def test_envconfig_invalid_role_fails(mock_valid_raw_env_data: dict[str, Any]):
 
     locs = excinfo.value.errors()[0]["loc"]
     assert ("server", "role") == tuple(locs)
+
+
+def test_envconfig_unresolved_placeholder_fails(
+    mock_valid_raw_env_data: dict[str, Any]
+):
+    """Test that an unresolved placeholder raises a ValueError."""
+    data = mock_valid_raw_env_data.copy()
+    # Introduce an unresolvable placeholder
+    data["paths"]["jinja_dir"] = "/etc/docbuild/{UNRESOLVED_PLACEHOLDER}"
+
+    with pytest.raises(ValueError, match="Configuration placeholder error"):
+        EnvConfig.from_dict(data)
+
+
+def test_envconfig_with_non_dict_input():
+    """Test that passing non-dict input to the validator is handled."""
+    # This covers the `else: return data` path in `_resolve_placeholders`.
+    # Pydantic will then raise a ValidationError because the input is not a dict.
+    with pytest.raises(ValidationError, match="Input should be a valid dictionary"):
+        EnvConfig.model_validate("not a dict")

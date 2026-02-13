@@ -156,7 +156,7 @@ class EnvGeneralConfig(BaseModel):
     )
     "The canonical domain for URLs."
 
-    # --- NEW: Custom Serialization for LanguageCode Models ---
+    # --- Custom Serialization for LanguageCode Models ---
     @field_serializer("default_lang")
     def serialize_default_lang(self, lang_obj: LanguageCode) -> str:
         """Serialize the LanguageCode model back to a simple string (e.g., 'en-us')."""
