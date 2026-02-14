@@ -10,12 +10,19 @@ body:
       value: |
         Help us improve the documentation! Please describe what needs updating.
 
-  - type: input
+  - type: dropdown
     id: affected_section
     attributes:
-      label: Affected Documentation Section
-      description: Which part of the docs needs updating?
-      placeholder: e.g., README, Installation section, Usage instructions
+      label: Affected Documentation Section(s)
+      description: Select the section(s) of the documentation that need updating.
+      multiple: true
+      options:
+        - "User"
+        - "Developer"
+        - "Reference"
+        - "API"
+        - "Glossary"
+        - "Other (describe below)"
     validations:
       required: true
 
