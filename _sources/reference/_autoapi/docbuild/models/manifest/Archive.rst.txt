@@ -11,3 +11,11 @@ docbuild.models.manifest.Archive
 
    Represents an archive (e.g., a ZIP file) for a product/docset.
 
+   .. code-block:: json
+
+       {
+           "lang": "en-us",
+           "default": true,
+           "zip": "/en-us/sles/16.0/sles-16.0-en-us.zip"
+       }
+

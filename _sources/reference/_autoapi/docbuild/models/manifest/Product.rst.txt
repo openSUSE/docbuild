@@ -11,3 +11,10 @@ docbuild.models.manifest.Product
 
    Represents a single SUSE product.
 
+   .. code-block:: json
+
+       {
+           "name": "SUSE Linux Enterprise Server",
+           "versions": ["16.0"]
+       }
+

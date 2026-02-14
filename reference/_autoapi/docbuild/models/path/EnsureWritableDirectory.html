@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.path.EnsureWritableDirectory &#8212; docbuild 0.15.0 documentation</title>
+    <title>docbuild.models.path.EnsureWritableDirectory &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ef97403f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -610,14 +610,13 @@
 <dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.path.</span></span><span class="sig-name descname"><span class="pre">EnsureWritableDirectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory" title="Link to this definition">#</a></dt>
 <dd><p>A Pydantic custom type that ensures a directory exists and is writable.</p>
-<p>Behavior:
-1. Expands user paths (e.g., “~/data” -&gt; “/home/user/data”).
-2. Validates input is a path.
-3. If path DOES NOT exist: It creates it (including parents).
-4. If path DOES exist (or was just created): It checks is_dir()</p>
-<blockquote>
-<div><p>and R/W/X permissions.</p>
-</div></blockquote>
+<p>Behavior:</p>
+<ol class="arabic simple">
+<li><p>Expands user paths (e.g., <code class="docutils literal notranslate"><span class="pre">~/data</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">/home/user/data</span></code>).</p></li>
+<li><p>Validates input is a path.</p></li>
+<li><p>If path DOES NOT exist: It creates it (including parents).</p></li>
+<li><p>If path DOES exist (or was just created): It checks if it’s a directory and has R/W/X permissions.</p></li>
+</ol>
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">__get_pydantic_core_schema__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pydantic.dev/latest/api/annotated_handlers/#pydantic.annotated_handlers.GetCoreSchemaHandler" title="(in Pydantic Validation v0.0.0)"><span class="pre">pydantic.GetCoreSchemaHandler</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pydantic_core.core_schema.CoreSchema</span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.__get_pydantic_core_schema__" title="Link to this definition">#</a></dt>
@@ -626,9 +625,8 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.path.EnsureWritableDirectory.validate_and_create">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_and_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.validate_and_create" title="Link to this definition">#</a></dt>
-<dd><p>Expand user, checks if path exists.</p>
-<p>If not, creates it. Then checks permissions.</p>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_and_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Self</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.path.EnsureWritableDirectory.validate_and_create" title="Link to this definition">#</a></dt>
+<dd><p>Expand user, check existence/permissions, or check parent for creation.</p>
 </dd></dl>
 
 <dl class="py method">

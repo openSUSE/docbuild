@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.repo.Repo &#8212; docbuild 0.15.0 documentation</title>
+    <title>docbuild.models.repo.Repo &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ef97403f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -608,12 +608,46 @@
 <h1>docbuild.models.repo.Repo<a class="headerlink" href="#docbuild-models-repo-repo" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
 <dd><p>A repository model that can be initialized from a URL or a short name.</p>
 <p>This model can be compared directly with strings, which will check
-against the repository’s abbreviated name (e.g., ‘org/repo’).</p>
+against the repository’s abbreviated name (e.g., <code class="docutils literal notranslate"><span class="pre">org/repo</span></code>).</p>
 <p>Two Repo objects are considered equal if their derived names are the same,
 regardless of the original URL (HTTPS vs. SSH).</p>
+<p>The class understands:</p>
+<ul>
+<li><p>A full URL like <code class="docutils literal notranslate"><span class="pre">https://HOST/ORG/REPO.git</span></code> or a URL pointing
+to a branch like <code class="docutils literal notranslate"><span class="pre">https://HOST/ORG/REPO/tree/BRANCH</span></code></p></li>
+<li><p>A SSH URL like <code class="docutils literal notranslate"><span class="pre">git&#64;HOST:ORG/REPO.git</span></code>.</p></li>
+<li><p>An abbreviated URL like <code class="docutils literal notranslate"><span class="pre">SERVICE://ORG/REPO</span></code> or <code class="docutils literal notranslate"><span class="pre">SERVICE://ORG/REPO.git</span></code>
+The service part is a two to four letter alias for common Git hosting
+services, for example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gh</span></code> for GitHub (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gl</span></code> for GitLab</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bb</span></code> for BitBucket</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gt</span></code> for Gitea</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb</span></code> for Codeberg</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ghe</span></code> for GitHub Enterprise</p></li>
+</ul>
+<p>This makes the reference to a Git repo more readable.</p>
+</li>
+<li><p>A plain notation like <code class="docutils literal notranslate"><span class="pre">ORG/REPO</span></code> which defaults to GitHub.</p></li>
+</ul>
+<p>Additionally, branches other than default branches (main or master) can be
+added by <code class="docutils literal notranslate"><span class="pre">&#64;BRANCH_NAME</span></code> to any of the above URLs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">docbuild.models.repo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Repo</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;https://github.com/openSUSE/docbuild.git&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">url</span>
+<span class="go">&#39;https://github.com/openSUSE/docbuild.git&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;openSUSE/docbuild&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">surl</span>
+<span class="go">&#39;gh://openSUSE/docbuild&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">treeurl</span>
+<span class="go">&#39;https://github.com/openSUSE/docbuild/tree/main&#39;</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.DEFAULT_HOST">
 <span class="sig-name descname"><span class="pre">DEFAULT_HOST</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://github.com'</span></span><a class="headerlink" href="#docbuild.models.repo.Repo.DEFAULT_HOST" title="Link to this definition">#</a></dt>
@@ -627,6 +661,12 @@ regardless of the original URL (HTTPS vs. SSH).</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.repo.Repo.treeurl">
+<span class="sig-name descname"><span class="pre">treeurl</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.repo.Repo.treeurl" title="Link to this definition">#</a></dt>
+<dd><p>The full URL including the branch of the repository.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.surl">
 <span class="sig-name descname"><span class="pre">surl</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.repo.Repo.surl" title="Link to this definition">#</a></dt>
 <dd><p>The shortened URL version of the repository, for example gh://org/repo for
@@ -637,6 +677,18 @@ a GitHub repo.</p>
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.name">
 <span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.repo.Repo.name" title="Link to this definition">#</a></dt>
 <dd><p>The abbreviated name of the repository (e.g., ‘org/repo’).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.repo.Repo.branch">
+<span class="sig-name descname"><span class="pre">branch</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.repo.Repo.branch" title="Link to this definition">#</a></dt>
+<dd><p>The branch of the repository</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.repo.Repo.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.repo.Repo.origin" title="Link to this definition">#</a></dt>
+<dd><p>The original unchanged URL of the repository.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -723,8 +775,11 @@ a GitHub repo.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.DEFAULT_HOST"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.DEFAULT_HOST</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.url"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.treeurl"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.treeurl</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.surl"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.surl</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.name"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.branch"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.branch</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.origin"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.origin</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.__eq__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.__eq__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.__str__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.__str__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.repo.Repo.__hash__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.repo.Repo.__hash__()</span></code></a></li>

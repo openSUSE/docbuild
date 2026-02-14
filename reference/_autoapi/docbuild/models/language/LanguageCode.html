@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.language.LanguageCode &#8212; docbuild 0.15.0 documentation</title>
+    <title>docbuild.models.language.LanguageCode &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ef97403f"></script>
+    <script src="../../../../../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -619,8 +619,8 @@ Use “*” to denote “ALL” languages</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.language">
 <span class="sig-name descname"><span class="pre">language</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.language" title="Link to this definition">#</a></dt>
-<dd><p>The natural language in the format ll-cc, where ‘ll’ is the
-language and ‘cc’ the country.</p>
+<dd><p>The natural language in the format <code class="docutils literal notranslate"><span class="pre">ll-cc</span></code>, where <code class="docutils literal notranslate"><span class="pre">ll</span></code> is the
+language and <code class="docutils literal notranslate"><span class="pre">cc</span></code> the country.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -639,40 +639,45 @@ conforming to Pydantic’s <a class="reference external" href="https://docs.pyda
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.__str__" title="Link to this definition">#</a></dt>
-<dd><p>Implement str(self).</p>
+<dd><p>Implement <code class="docutils literal notranslate"><span class="pre">str(self)</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.__repr__">
 <span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Implement repr(self).</p>
+<dd><p>Implement <code class="docutils literal notranslate"><span class="pre">repr(self)</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.__eq__">
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">LanguageCode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.__eq__" title="Link to this definition">#</a></dt>
-<dd><p>Implement self == other.</p>
-<p>The comparison does NOT break the principle of equality:
-* Reflexive: a == b
-* Symmetric: a == b &lt;=&gt; b == a
-* Transitive: if a == b and b == c, then a == c</p>
-<p>If you need to check for wildcard logic, use matches()</p>
+<dd><p>Implement <code class="docutils literal notranslate"><span class="pre">self</span> <span class="pre">==</span> <span class="pre">other</span></code>.</p>
+<p>The comparison does NOT break the principle of equality:</p>
+<ul class="simple">
+<li><p>Reflexive: a == b</p></li>
+<li><p>Symmetric: a == b &lt;=&gt; b == a</p></li>
+<li><p>Transitive: if a == b and b == c, then a == c</p></li>
+</ul>
+<p>If you need to check for wildcard logic, use
+<a class="reference internal" href="#docbuild.models.language.LanguageCode.matches" title="docbuild.models.language.LanguageCode.matches"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matches()</span></code></a> instead.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">LanguageCode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.__lt__" title="Link to this definition">#</a></dt>
-<dd><p>Implement self &lt; other.</p>
-<p>Special properties:
-- “*” is always the “smallest” language
-- If self contains “*” and the other not, return True
-- If self and the other contains “*”, return False</p>
+<dd><p>Implement <code class="docutils literal notranslate"><span class="pre">self</span> <span class="pre">&lt;</span> <span class="pre">other</span></code>.</p>
+<p>Special properties:</p>
+<ul class="simple">
+<li><p>“*” is always the “smallest” language</p></li>
+<li><p>If self contains “*” and the other not, return True</p></li>
+<li><p>If self and the other contains “*”, return False</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.__hash__">
 <span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.__hash__" title="Link to this definition">#</a></dt>
-<dd><p>Implement hash(self).</p>
+<dd><p>Implement <code class="docutils literal notranslate"><span class="pre">hash(self)</span></code>.</p>
 <p>For using ‘in sets’ or as dict keys</p>
 </dd></dl>
 

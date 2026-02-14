@@ -11,3 +11,10 @@ docbuild.models.manifest.DocumentFormat
 
    Represents the available formats for a document.
 
+   .. code-block:: json
+
+       {
+           "html": "/sles/16.0/html/SLE-comparison/",
+           "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf"
+       }
+

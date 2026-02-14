@@ -55,7 +55,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: repo_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -64,7 +64,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: tmp_repo_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -73,7 +73,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_cache_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -82,7 +82,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_server_cache_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
@@ -91,7 +91,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: meta_cache_dir
-      :type:  pathlib.Path
+      :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 

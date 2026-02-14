@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; docbuild 0.15.0 documentation</title>
+    <title>docbuild CLI &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=ef97403f"></script>
+    <script src="../_static/documentation_options.js?v=7de89ed4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -720,6 +720,29 @@ with the following properties:</p>
 </pre></div>
 </div>
 </section>
+<section id="docbuild-check">
+<h3>check<a class="headerlink" href="#docbuild-check" title="Link to this heading">#</a></h3>
+<p>Check the environment or configuration for consistency.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>check<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</pre></div>
+</div>
+<section id="docbuild-check-files">
+<h4>files<a class="headerlink" href="#docbuild-check-files" title="Link to this heading">#</a></h4>
+<p>Verify that DC files exist. Optional: specify ‘product/version/lang’.</p>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>check<span class="w"> </span>files<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DOCTYPES<span class="o">]</span>...
+</pre></div>
+</div>
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-check-files-arg-DOCTYPES">
+<span class="sig-name descname"><span class="pre">DOCTYPES</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-check-files-arg-DOCTYPES" title="Link to this definition">#</a></dt>
+<dd><p>Optional argument(s)</p>
+</dd></dl>
+
+</section>
+</section>
 <section id="docbuild-config">
 <h3>config<a class="headerlink" href="#docbuild-config" title="Link to this heading">#</a></h3>
 <p>CLI interface to shows config files how docbuild sees it.</p>
@@ -907,6 +930,10 @@ with the following properties:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild">docbuild</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-build">build</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-c14n">c14n</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-check">check</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-check-files">files</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config">config</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-app">app</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-env">env</a></li>

@@ -11,3 +11,11 @@ docbuild.models.manifest.CategoryTranslation
 
    Represents a translation for a category title.
 
+   .. code-block:: json
+
+       {
+           "lang": "en-us",
+           "default": true,
+           "title": "About"
+       }
+

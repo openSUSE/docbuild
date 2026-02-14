@@ -11,3 +11,17 @@ docbuild.models.manifest.Category
 
    Represents a category for a product/docset.
 
+   .. code-block:: json
+
+       {
+           "categoryId": "about",
+           "rank": 1,
+           "translations": [
+               {
+                   "lang": "en-us",
+                   "default": true,
+                   "title": "About"
+               }
+           ]
+       }
+

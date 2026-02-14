@@ -1,7 +1,7 @@
 Glossary
 ========
 
-:term:`A <ADoc>` | :term:`C <Changelog>` | :term:`D <DAPS>` | :term:`G <GIL>` | :term:`I <IPython>` | :term:`L <Lifecycle>` | :term:`M <Module>` | :term:`O <Option>` | :term:`P <Package>` | :term:`R <Ruff>` | :term:`S <SemVer>` | :term:`U <UV>` | :term:`V <VENV>` | :term:`X <XML>`
+:term:`A <ADoc>` | :term:`C <Changelog>` | :term:`D <DAPS>` | :term:`G <GIL>` | :term:`I <IPython>` | :term:`L <Lifecycle>` | :term:`M <Module>` | :term:`O <Option>` | :term:`P <Package>` | :term:`R <RNC>` | :term:`S <SemVer>` | :term:`U <UV>` | :term:`V <VENV>` | :term:`X <XML>`
 
 For Python specific terms, look into:
 
@@ -11,6 +11,9 @@ For Python specific terms, look into:
 
 .. glossary::
    :sorted:
+
+   ACID
+      A set of properties that guarantee reliable processing of database transactions, ensuring that they are *Atomic*, *Consistent*, *Isolated*, and *Durable*.
 
    ADoc
    ASCIIDoc
@@ -150,6 +153,16 @@ For Python specific terms, look into:
       testing.
 
       See https://pytest.org
+
+   RELAX NG
+   RNC
+   RNG
+      A schema language for XML used to define and validate the structure
+      and content of XML documents.
+      RNC is the compact syntax of RELAX NG, while RNG is the XML syntax.
+      Both are equivalent in terms of expressiveness.
+
+      See https://relaxng.org/
 
    Ruff
       A fast extensible linter and code formatter to improve code qualitiy

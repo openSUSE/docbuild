@@ -11,3 +11,11 @@ docbuild.models.manifest.Description
 
    Represents a description for a product/docset.
 
+   .. code-block:: json
+
+       {
+           "lang": "en-us",
+           "default": true,
+           "description": "<p>The English description for a product.</p>"
+       }
+

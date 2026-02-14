@@ -34,7 +34,7 @@ To deal with different environments without having to type the full command each
    alias docbuild-dev='docbuild --env-config env.devel.toml'
 
 Viewing the Environment Configuration
-------------------------------------
+-------------------------------------
 
 To see how ``docbuild`` interprets your environment configuration, use the ``config env`` subcommand. This is particularly useful for verifying that all placeholders (like ``{{product}}`` or ``{{lang}}``) have been correctly resolved into absolute paths.
 

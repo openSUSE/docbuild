@@ -11,6 +11,32 @@ docbuild.models.manifest.Document
 
    Represents a single document within the manifest.
 
+   .. code-block:: json
+
+       {
+           "docs": [
+               {
+                   "lang": "en",
+                   "default": true,
+                   "title": "Key Differences Between SLE 15 and SLE 16",
+                   "subtitle": "Adopting SLE 16",
+                   "description": "Key differences between SLE 15 and SLE 16",
+                   "dcfile": "DC-SLE-comparison",
+                   "rootid": "comparison-sle16-sle15",
+                   "format": {
+                       "html": "/sles/16.0/html/SLE-comparison/",
+                       "pdf": "/sles/16.0/pdf/SLE-comparison_en.pdf"
+                   },
+                   "dateModified": "2026-04-01"
+               }
+           ],
+           "tasks": ["About"],
+           "products": [{"name": "SUSE Linux", "versions": ["16.0"]}],
+           "docTypes": [],
+           "isGated": false,
+           "rank": ""
+       }
+
 
    .. py:method:: coerce_rank(value: str | int | None) -> int | None
       :classmethod:
