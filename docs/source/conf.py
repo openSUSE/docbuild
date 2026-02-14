@@ -7,8 +7,18 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 from datetime import datetime
+from pathlib import Path
+import sys
+
+from sphinx.application import Sphinx
+from sphinx.errors import ExtensionError
+from sphinx.util import logging
 
 from docbuild.__about__ import __version__
+
+# Add the directory containing toml_doc_generator.py to sys.path
+# If it's in the same directory as conf.py:
+sys.path.insert(0, str(Path(__file__).parent))
 
 project = "docbuild"
 current_year = datetime.now().year
@@ -219,3 +229,63 @@ linkcheck_ignore = [
     # Just ignore useless example URLs
     r"https://github\.com/org/repo",
 ]
+
+
+# Configuration for TOML documentation generation
+# Format: (input_toml, output, {additional_config})
+# Paths are relative to the conf.py directory
+toml_doc_config = [
+    # 1
+    (
+        "../../etc/docbuild/env.example.toml",
+        "reference/env-toml/env-toml-ref.rst.inc",
+        {},  # Use default prefix, no need to add that.
+    ),
+]
+
+logger = logging.getLogger(__name__)
+
+
+def run_toml_generator(app: Sphinx) -> None:
+    """Run the TOML documentation generator before the build process starts."""
+    from toml_parser import generate_toml_reference
+
+    conf_dir = Path(app.confdir)
+    for input_rel, output_rel, config_data in toml_doc_config:
+        toml_input = (conf_dir / input_rel).resolve()
+        rst_output = (conf_dir / output_rel).resolve()
+
+        # Check if the input file exists before proceeding
+        if not toml_input.exists():
+            msg = (
+                "TOML documentation generation failed: "
+                f"Input file not found at {toml_input}"
+            )
+            logger.error(msg)
+            raise ExtensionError(msg)
+
+        # Optimization: Only generate if input is newer than output
+        if rst_output.exists():
+            input_mtime = toml_input.stat().st_mtime
+            output_mtime = rst_output.stat().st_mtime
+
+            if input_mtime <= output_mtime:
+                logger.info(
+                    "Skipping TOML reference generation: %s is up to date.",
+                    rst_output.name,
+                )
+                continue
+
+        # Ensure the directory exists
+        rst_output.parent.mkdir(parents=True, exist_ok=True)
+
+        logger.info(
+            "Generating TOML reference: %s -> %s", toml_input.name, rst_output.name
+        )
+        generate_toml_reference(toml_input, rst_output, **config_data)
+
+
+def setup(app: Sphinx) -> None:
+    """Sphinx setup function to connect the TOML generator to the build process."""
+    # This hook ensures the file exists before Sphinx tries to 'include' it
+    app.connect("builder-inited", run_toml_generator)
