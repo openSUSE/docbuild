@@ -29,8 +29,8 @@ env:
   UV_FROZEN: "1"
   # Needed for coverage/multiprocessing reliability
   PYTHONSTARTMETHOD: spawn
-  # The group to use for installing/testing dependencies
-  PYPROJECT_GROUP: tests
+  # The group to use for installing/testing dependencies, see pyproject.toml
+  PYPROJECT_GROUP: github-action
 
 jobs:
   test-ubuntu:

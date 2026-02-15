@@ -90,6 +90,10 @@ devel = [
   {include-group = "repl"},
   # {include-group = "publish"},
 ]
+github-action = [
+  {include-group = "tests"},
+  {include-group = "docs"},
+]
 
 [project.scripts]
 docbuild = "docbuild.__main__:cli"
