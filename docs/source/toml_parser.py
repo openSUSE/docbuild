@@ -54,7 +54,7 @@ logger = logging.getLogger(__name__)
 # This pattern defines a single TOML key part, which can be a bare key (unquoted),
 # a double-quoted key, or a single-quoted key. This is the building block for
 # more complex dotted keys.
-KEY_PART_PATTERN = r"""[A-Za-z0-9_-]+|"(?:\\.|[^"\\])*"|\'[^\']*\'"""
+KEY_PART_PATTERN = r"""[A-Za-z0-9_-]+|"(?:\\.|[^"\\])*"|'[^']*'"""
 
 # This verbose regex pattern matches a full TOML key (bare, quoted, or dotted).
 # A TOML key is composed of one or more "key parts" separated by dots.
@@ -73,8 +73,8 @@ DOTTED_KEY_PATTERN = fr"""
 
 COMMENT_METADATA_REGEX = re.compile(
     fr"""
-        ^\s*#\s*                                # Leading whitespace and comment marker
-        (?P<key>{DOTTED_KEY_PATTERN})          # The full TOML key (captured)
+        ^\s*[#]\s*                                # Leading whitespace and comment marker
+        (?P<key>{DOTTED_KEY_PATTERN})           # The full TOML key (captured)
         \((?P<type>[^)]+)\)                     # The type in parentheses (captured)
         :\s*                                    # Colon and optional whitespace
         (?P<description>.*)$                    # The rest of the line is the description (captured)
