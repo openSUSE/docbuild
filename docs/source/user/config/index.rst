@@ -1,4 +1,4 @@
-Showing configuration
+Showing Configuration
 =====================
 
 The docbuild tool distinguishes between two types of configuration files:
