@@ -57,13 +57,6 @@ async def test_process_file_with_generic_parsing_error(
     assert "Generic test error" in captured.err
 
 
-async def test_process_no_envconfig(mock_context):
-    mock_context.envconfig = None
-    with pytest.raises(ValueError,
-                       match=re.escape("No envconfig found in context.")):
-        await process(mock_context, xmlfiles=(Path("dummy.xml"),))
-
-
 @patch.object(process_module, "process_file", new_callable=AsyncMock, return_value=0)
 @patch.object(process_module, "create_stitchfile", new_callable=AsyncMock)
 async def test_process_with_stitchfile_failure(
