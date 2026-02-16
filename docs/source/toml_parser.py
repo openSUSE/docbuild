@@ -171,7 +171,7 @@ def parse_toml_contents(
     toml_path: Path, raw_toml_data: dict[str, Any]
 ) -> list[ConfigSection]:
     """Parse the TOML file line-by-line to extract sections and entries."""
-    lines = toml_path.read_text().splitlines()
+    lines = toml_path.read_text(encoding="utf-8").splitlines()
     sections: list[ConfigSection] = []
 
     current_section: ConfigSection | None = None
