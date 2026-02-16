@@ -1,0 +1,2 @@
+Improve test coverage for :file:`git.py`, :file:`env.py`, and
+:file:`lifecycle.py`. Raises coverage report by 1%.
