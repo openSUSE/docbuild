@@ -1,0 +1,1 @@
+Added a project security policy (SECURITY.md) to define a coordinated disclosure process for reporting vulnerabilities.
