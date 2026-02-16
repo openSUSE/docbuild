@@ -16,7 +16,7 @@ from sphinx.util import logging
 
 from docbuild.__about__ import __version__
 
-# Add the directory containing toml_doc_generator.py to sys.path
+# Add the directory containing toml_parser.py to sys.path
 # If it's in the same directory as conf.py:
 sys.path.insert(0, str(Path(__file__).parent))
 
