@@ -207,10 +207,16 @@ def test_managed_git_repo_remote_url_property(tmp_path: Path):
     assert repo.remote_url == "https://github.com/my-org/my-repo.git"
 
 
-def test_managed_git_repo_slug_property(tmp_path: Path):
-    """Test the slug property of ManagedGitRepo."""
-    remote_url = "https://github.com/my-org/my-repo.git"
-    repo = ManagedGitRepo(remote_url, tmp_path)
+@pytest.mark.parametrize(
+    "repo_input",
+    [
+        "https://github.com/my-org/my-repo.git",
+        Repo("gh://my-org/my-repo"),
+    ],
+)
+def test_managed_git_repo_slug_property(tmp_path: Path, repo_input):
+    """Test the slug property of ManagedGitRepo for str and Repo inputs."""
+    repo = ManagedGitRepo(repo_input, tmp_path)
     # The slug should be a filesystem-safe version of the canonical URL
     expected_slug = "https___github_com_my_org_my_repo_git"
     assert repo.slug == expected_slug
@@ -222,6 +228,13 @@ def test_managed_git_repo_permanent_root_property(tmp_path: Path):
     permanent_root = tmp_path / "permanent_repos"
     repo = ManagedGitRepo(remote_url, permanent_root)
     assert repo.permanent_root == permanent_root
+
+
+def test_managed_git_repo_invalid_repo_type(tmp_path: Path):
+    """ManagedGitRepo should reject unsupported repo types with TypeError."""
+
+    with pytest.raises(TypeError, match="remote_url must be a string or Repo instance"):
+        ManagedGitRepo(123, tmp_path)  # type: ignore[arg-type]
 
 
 async def test_fetch_updates_success(
