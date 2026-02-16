@@ -5,7 +5,7 @@ docbuild.cli.cmd_config.environment
 
 .. autoapi-nested-parse::
 
-   CLI interface to showsthe configuration of the environment files.
+   CLI interface to shows the configuration of the environment files.
 
 
 

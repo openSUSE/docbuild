@@ -1,4 +1,4 @@
-"""CLI interface to showsthe configuration of the environment files."""
+"""CLI interface to shows the configuration of the environment files."""
 
 import click
 from rich import print_json

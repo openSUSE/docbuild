@@ -66,7 +66,7 @@ def _setup_console() -> None:
     help=(
         "Enable debug mode. "
         "This will show more information about the process and the config files. "
-        "If available, read the environment variable 'DOCBUILD_DEBUG'."
+        "If available, read the environment variable ``DOCBUILD_DEBUG``."
     ),
 )
 @click.option(
