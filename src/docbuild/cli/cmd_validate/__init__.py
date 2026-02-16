@@ -4,9 +4,11 @@ import asyncio
 from collections.abc import Iterator
 import logging
 from pathlib import Path
+from typing import cast
 
 import click
 
+from ...models.config.env import EnvConfig
 from ..context import DocBuildContext
 from . import process as process_mod
 
@@ -36,20 +38,12 @@ def validate(
     :param validation_method: Validation method to use, 'jing' or 'lxml'.
     """
     context: DocBuildContext = ctx.obj
+    env = cast(EnvConfig, context.envconfig)
 
     # Set the chosen validation method in the context for downstream use
     context.validation_method = validation_method.lower()
 
-    if context.envconfig is None:
-        raise ValueError("No envconfig found in context.")
-
-    if (paths := ctx.obj.envconfig.get("paths")) is None:
-        raise ValueError("No paths found in envconfig.")
-
-    configdir = paths.get("config_dir", None)
-    if configdir is None:
-        raise ValueError("Could not get a value from envconfig.paths.config_dir")
-
+    configdir = env.paths.config_dir
     configdir_path = Path(configdir).expanduser()
 
     if not xmlfiles:

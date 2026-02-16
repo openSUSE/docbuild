@@ -9,8 +9,31 @@ import pytest
 from docbuild.cli.cmd_repo.cmd_clone import clone
 import docbuild.cli.cmd_repo.process as mod_process
 from docbuild.cli.context import DocBuildContext
+from docbuild.utils import shell as shell_module
 
 log = logging.getLogger(__name__)
+
+
+class _DummyPaths:
+    """Lightweight stand-in for EnvPathsConfig used in tests.
+
+    Only the attributes accessed by cmd_repo.process are provided.
+    """
+
+    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
+        self.config_dir = config_dir
+        self.repo_dir = repo_dir
+
+
+class _DummyEnv:
+    """Minimal envconfig replacement exposing ``paths`` for tests.
+
+    This avoids constructing a full EnvConfig instance while still matching
+    the runtime behaviour expected by the cloning logic.
+    """
+
+    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
+        self.paths = _DummyPaths(config_dir=config_dir, repo_dir=repo_dir)
 
 #
 # @pytest.fixture
@@ -29,8 +52,10 @@ def mock_subprocess(monkeypatch) -> AsyncMock:
     process_mock.communicate.return_value = (b"stdout", b"stderr")
     process_mock.returncode = 0
     mock_create_subprocess = AsyncMock(return_value=process_mock)
+    # Git commands go through shell.run_command → asyncio.create_subprocess_exec
+    # in the shell utility module.
     monkeypatch.setattr(
-        mod_process.asyncio, "create_subprocess_exec", mock_create_subprocess
+        shell_module.asyncio, "create_subprocess_exec", mock_create_subprocess
     )
     return mock_create_subprocess
 
@@ -63,9 +88,10 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
     (config_dir / "sles.xml").write_text(xml_content)
 
     context = DocBuildContext(
-        envconfig={
-            "paths": {"repo_dir": str(repo_dir), "config_dir": str(config_dir)},
-        },
+        envconfig=_DummyEnv(
+            config_dir=str(config_dir),
+            repo_dir=str(repo_dir),
+        ),
     )
 
     runner.invoke(clone, [], obj=context)
@@ -78,22 +104,6 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
     assert "https://github.com/test/two.git" in cloned_repos
 
 
-def test_clone_invalid_envconfig(runner):
-    """Test that an error is raised if the environment configuration is invalid."""
-    context = DocBuildContext(envconfig=None)
-
-    result = runner.invoke(
-        clone,
-        ["org/repo"],
-        obj=context,
-        # catch_exceptions=True,
-    )
-
-    assert result.exit_code != 0
-    assert isinstance(result.exception, ValueError)
-    assert "No envconfig found in context" in str(result.exception)
-
-
 # @pytest.mark.asyncio
 async def test_process_stitchnode_none(monkeypatch, tmp_path):
     """Test that process raises ValueError if create_stitchfile returns None."""
@@ -101,12 +111,10 @@ async def test_process_stitchnode_none(monkeypatch, tmp_path):
     monkeypatch.setattr(mod_process, "create_stitchfile", AsyncMock(return_value=None))
 
     context = DocBuildContext(
-        envconfig={
-            "paths": {
-                "repo_dir": str(tmp_path / "repos"),
-                "config_dir": str(tmp_path / "config"),
-            }
-        }
+        envconfig=_DummyEnv(
+            config_dir=str(tmp_path / "config"),
+            repo_dir=str(tmp_path / "repos"),
+        )
     )
 
     # The config_dir must exist, even if empty
@@ -119,18 +127,28 @@ async def test_process_stitchnode_none(monkeypatch, tmp_path):
 
 
 async def test_process_configdir_none():
-    context = DocBuildContext(envconfig={"paths": {}})
-    with pytest.raises(
-        ValueError,
-        match=re.escape("Could not get a value from envconfig.paths.config_dir"),
-    ):
-        await mod_process.process(context, repos=())
+    """This scenario is no longer reachable with validated EnvConfig.
+
+    The higher-level CLI now ensures ``envconfig`` is a fully validated
+    environment configuration. Retain this test as a smoke check that
+    calling ``process`` with a dummy, but structurally valid, envconfig
+    does not raise and returns an integer exit code.
+    """
+
+    context = DocBuildContext(
+        envconfig=_DummyEnv(config_dir="/non/existent/config", repo_dir="/tmp/repos"),
+    )
+
+    result = await mod_process.process(context, repos=())
+    assert isinstance(result, int)
 
 
 async def test_process_repodir_none():
-    context = DocBuildContext(envconfig={"paths": {"config_dir": "/dummy/config"}})
-    with pytest.raises(
-        ValueError,
-        match=re.escape("Could not get a value from envconfig.paths.repo_dir"),
-    ):
-        await mod_process.process(context, repos=())
+    """See docstring of test_process_configdir_none for rationale."""
+
+    context = DocBuildContext(
+        envconfig=_DummyEnv(config_dir="/tmp/config", repo_dir="/non/existent/repos"),
+    )
+
+    result = await mod_process.process(context, repos=())
+    assert isinstance(result, int)

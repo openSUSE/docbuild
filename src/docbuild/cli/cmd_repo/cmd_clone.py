@@ -35,9 +35,6 @@ def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    if context.envconfig is None:
-        raise ValueError("No envconfig found in context.")
-
     result = asyncio.run(process(context, repos))
     log.info(f"Clone process completed with exit code: {result}")
     ctx.exit(result)

@@ -32,16 +32,24 @@ class ManagedGitRepo:
         cls._is_updated.clear()
 
     def __init__(
-        self: Self, remote_url: str, rootdir: Path, gitconfig: Path | None = None
+        self: Self, repo: str | Repo, rootdir: Path, gitconfig: Path | None = None
     ) -> None:
         """Initialize the managed repository.
 
-        :param remote_url: The remote URL of the repository.
+        :param repo: The remote URL or :class:`~docbuild.models.repo.Repo` instance of the repository to manage.
+        Repo instance of the repository.
         :param permanent_root: The root directory for storing permanent bare clones.
         :param gitconfig: The path to a separate Git configuration file
            (=None, use the default config from etc/gitconfig)
         """
-        self._repo_model = Repo(remote_url)
+        if isinstance(repo, str):
+            self._repo_model = Repo(repo)
+        elif isinstance(repo, Repo):
+            self._repo_model = repo
+        else:
+            raise TypeError(
+                f"remote_url must be a string or Repo instance, got {type(repo)}"
+            )
         self._permanent_root = rootdir
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug

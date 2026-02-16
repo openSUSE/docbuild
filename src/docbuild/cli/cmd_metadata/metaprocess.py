@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 import shlex
-from typing import Any
+from typing import Any, cast
 
 from lxml import etree
 from pydantic import ValidationError
@@ -14,6 +14,7 @@ from rich.console import Console
 
 from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
+from ...models.config.env import EnvConfig
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.manifest import Document, Manifest
@@ -407,12 +408,13 @@ async def process(
         configured correctly.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
-    configdir = Path(context.envconfig.paths.config_dir).expanduser()
+    env = cast(EnvConfig, context.envconfig)
+    configdir = Path(env.paths.config_dir).expanduser()
     stdout.print(f"Config path: {configdir}")
     xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
     stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
 
-    tmp_metadata_dir = context.envconfig.paths.tmp.tmp_metadata_dir
+    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 
