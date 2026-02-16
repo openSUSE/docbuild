@@ -1,11 +1,11 @@
-Showing configuration
+Showing Configuration
 =====================
 
 The docbuild tool distinguishes between two types of configuration files:
 
-* **Application configuration files ("app config")**
+* Application configuration files ("app config")
 
-* **Environment configuration files ("env config")**
+* Environment configuration files ("env config")
 
 Additionally, the docbuild tool has also hardcoded default values for both types of configuration.
 
@@ -17,7 +17,7 @@ Keep in mind that these defaults may not be suitable for all use cases, and it i
 
 .. admonition:: TOML as default format
 
-   Both configuration types are written in TOML format, which is a human-readable data serialization standard. See `TOML docs <https://toml.io/en/>_` for more information on its syntax and structure.
+   Both configuration types are written in TOML format, which is a human-readable data serialization standard. See `TOML docs <https://toml.io/en/>`_ for more information on its syntax and structure.
 
 The following subsections provide more details on how to view and manage the configuration files for both application and environment settings.
 

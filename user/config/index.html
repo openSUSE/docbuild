@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Showing configuration &#8212; docbuild 0.16.0 documentation</title>
+    <title>Showing Configuration &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -394,8 +394,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing docbuild</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../config.html">Configuring the Tool</a></li>
 
+
+
+
+
 <li class="toctree-l1"><a class="reference internal" href="../run-docbuild.html">Running docbuild</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Showing configuration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Showing Configuration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Showing App’s Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environment.html">Showing Env’s Configuration</a></li>
 </ul>
@@ -404,6 +408,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../validate.html">Validating XML configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metadata.html">Creating Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../check-env.html">Checking your Environment</a></li>
 </ul>
 </div>
 </nav></div>
@@ -447,7 +452,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Showing configuration</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Showing Configuration</span></li>
   </ul>
 </nav>
 </div>
@@ -465,11 +470,11 @@
                 <article class="bd-article">
                   
   <section id="showing-configuration">
-<h1>Showing configuration<a class="headerlink" href="#showing-configuration" title="Link to this heading">#</a></h1>
+<h1>Showing Configuration<a class="headerlink" href="#showing-configuration" title="Link to this heading">#</a></h1>
 <p>The docbuild tool distinguishes between two types of configuration files:</p>
 <ul class="simple">
-<li><p><strong>Application configuration files (“app config”)</strong></p></li>
-<li><p><strong>Environment configuration files (“env config”)</strong></p></li>
+<li><p>Application configuration files (“app config”)</p></li>
+<li><p>Environment configuration files (“env config”)</p></li>
 </ul>
 <p>Additionally, the docbuild tool has also hardcoded default values for both types of configuration.</p>
 <p>If no env or app configuration files are found, the docbuild tool will
@@ -477,7 +482,7 @@ fallback to these hardcoded default values.</p>
 <p>Keep in mind that these defaults may not be suitable for all use cases, and it is recommended to create and use a configuration file to customize the behavior of the docbuild tool.</p>
 <div class="admonition-toml-as-default-format admonition">
 <p class="admonition-title">TOML as default format</p>
-<p>Both configuration types are written in TOML format, which is a human-readable data serialization standard. See <cite>TOML docs &lt;https://toml.io/en/&gt;_</cite> for more information on its syntax and structure.</p>
+<p>Both configuration types are written in TOML format, which is a human-readable data serialization standard. See <a class="reference external" href="https://toml.io/en/">TOML docs</a> for more information on its syntax and structure.</p>
 </div>
 <p>The following subsections provide more details on how to view and manage the configuration files for both application and environment settings.</p>
 <div class="toctree-wrapper compound">

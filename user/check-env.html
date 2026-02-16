@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Tool &#8212; docbuild 0.16.0 documentation</title>
+    <title>Checking your Environment &#8212; docbuild 0.16.0 documentation</title>
   
   
   
@@ -46,12 +46,12 @@
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user/config';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/check-env';</script>
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Running docbuild" href="run-docbuild.html" />
-    <link rel="prev" title="Installing docbuild" href="install.html" />
+    <link rel="next" title="Developer Guide" href="../developer/index.html" />
+    <link rel="prev" title="Creating Metadata" href="metadata.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -392,7 +392,7 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing docbuild</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Configuring the Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuring the Tool</a></li>
 
 
 
@@ -408,7 +408,7 @@
 <li class="toctree-l1"><a class="reference internal" href="validate.html">Validating XML configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Creating Metadata</a></li>
-<li class="toctree-l1"><a class="reference internal" href="check-env.html">Checking your Environment</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Checking your Environment</a></li>
 </ul>
 </div>
 </nav></div>
@@ -452,7 +452,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Configuring the Tool</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Checking your Environment</span></li>
   </ul>
 </nav>
 </div>
@@ -469,125 +469,30 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="configuring-the-tool">
-<span id="config-docbuild"></span><h1>Configuring the Tool<a class="headerlink" href="#configuring-the-tool" title="Link to this heading">#</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To prevent accidental commits of sensitive information, all configuration files matching the <code class="file docutils literal notranslate"><span class="pre">env.*.toml</span></code> pattern in the root directory are ignored by Git. However, this rule does not apply to files within the <code class="file docutils literal notranslate"><span class="pre">etc/</span></code> directory.</p>
-</div>
-<p>Use separate TOML files to define the configuration for each of your environments. To avoid confusion, name each file according to its specific purpose. For instance, use <code class="file docutils literal notranslate"><span class="pre">env.devel.toml</span></code> for development, <code class="file docutils literal notranslate"><span class="pre">env.staging.toml</span></code> for staging, and <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> for production.</p>
-<p>An example configuration file is provided in the repository at <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/etc/docbuild/env.example.toml">etc/docbuild/env.example.toml</a>.</p>
-<p>To use your configuration file, follow these steps one time:</p>
-<ol class="arabic">
-<li><p>In your cloned GitHub repository, copy the example file <code class="file docutils literal notranslate"><span class="pre">etc/docbuild/env.example.toml</span></code> to the root directory of this project. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">etc</span><span class="o">/</span><span class="n">docbuild</span><span class="o">/</span><span class="n">env</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">toml</span> <span class="n">env</span><span class="o">.</span><span class="n">devel</span><span class="o">.</span><span class="n">toml</span>
-</pre></div>
-</div>
-</li>
-<li><p>Open your TOML file.</p></li>
-<li><p>Adjust the path <code class="docutils literal notranslate"><span class="pre">paths.root_config_dir</span></code>. Use the path from <a class="reference internal" href="install.html#get-xml-config"><span class="std std-ref">Getting the XML configuration</span></a>. The rest can stay as it is.</p></li>
-<li><p>Specify the configuration with the global option <code class="docutils literal notranslate"><span class="pre">--env-config</span></code>.</p></li>
-</ol>
-</section>
-<section id="key-naming-conventions">
-<span id="config-key-naming-conventions"></span><h1>Key Naming Conventions<a class="headerlink" href="#key-naming-conventions" title="Link to this heading">#</a></h1>
-<p>The keys follow specific naming conventions to indicate their purpose and expected value types. Here are some common patterns whereas the asterisk
-(<code class="docutils literal notranslate"><span class="pre">*</span></code>) represents a variable part of the key:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">*_dir</span></code>: Contains a directory.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tmp_*</span></code>: Indicates a temporary path.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">*_dyn</span></code>: Denotes a dynamic value that is expected to be resolved at runtime.</p></li>
-</ul>
-<p>Directories are created automatically when the script runs. Additionally,
-the script checks if the specified paths are readable, writeable and belongs
-to the user running the script.</p>
-</section>
-<section id="validating-the-configuration">
-<span id="config-validation"></span><h1>Validating the Configuration<a class="headerlink" href="#validating-the-configuration" title="Link to this heading">#</a></h1>
-<p>Before docbuild executes any commands, it validates the provided configuration
-file against a predefined <a class="reference internal" href="../glossary.html#term-Pydantic"><span class="xref std std-term">Pydantic</span></a> model.</p>
-<p>The validation checks for different aspects of the configuration, such as:</p>
-<ul class="simple">
-<li><p>Presence of mandatory keys.</p></li>
-<li><p>Correct data types (for example, strings, integers, lists).</p></li>
-<li><p>Valid paths and if they exist on the filesystem and are writable when
-required.</p></li>
-<li><p>Correct use of placeholders.</p></li>
-</ul>
-</section>
-<section id="using-placeholders">
-<span id="config-placeholders"></span><h1>Using Placeholders<a class="headerlink" href="#using-placeholders" title="Link to this heading">#</a></h1>
-<p>Docbuild supports the use of placeholders in the configuration file.
-Two types of placeholders are supported:</p>
-<ul>
-<li><p><strong>Static placeholders</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">{placeholder}</span></code>)</p>
-<p>They are used to reference <em>other parts</em> of the configuration.
-For example, assume you have a configuration key <code class="docutils literal notranslate"><span class="pre">paths.root_config_dir</span></code> that defines the root directory for configuration files. You can use a static placeholder like <code class="docutils literal notranslate"><span class="pre">{paths.root_config_dir}</span></code> in other parts of the configuration to refer to this value.</p>
-<p>This allows you to maintain consistency and avoid repeating the same path multiple times in your configuration file.</p>
-</li>
-<li><p><strong>Dynamic placeholders</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">{{placeholder}}</span></code>)</p>
-<p>These types of placeholder cannot and must not be replaced. They are meant to be used as <em>templates</em> for values that will be resolved at runtime. For example, you might have a placeholder like <code class="docutils literal notranslate"><span class="pre">{{product}}</span></code> that is intended to be replaced with the actual product name when the docbuild tool runs.</p>
-<p>This allows for greater flexibility and adaptability in your configuration, as the same configuration file can be used across different products or environments without needing to hardcode specific values.</p>
-</li>
-</ul>
-<p>These types of placeholder make it easier to manage and maintain your configuration files, as they allow you to centralize key values and create reusable templates for dynamic content.</p>
-<p>Static placeholders follow a specific syntax:</p>
-<ul>
-<li><p><strong>Regular name</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">{placeholder}</span></code>)</p>
-<p>A regular name refers to another key in the same section:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[paths]</span>
-<span class="n">root_config_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;~/repos/GL/susedoc/docserv-config&quot;</span>
-<span class="hll"><span class="n">jinja_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{root_config_dir}/jinja-doc-suse-com&quot;</span>
-</span></pre></div>
-</div>
-<p>In the previous example, the key <code class="docutils literal notranslate"><span class="pre">jinja_dir</span></code> uses a static placeholder
-<code class="docutils literal notranslate"><span class="pre">{root_config_dir}</span></code> to reference the value of the same key
-<code class="docutils literal notranslate"><span class="pre">root_config_dir</span></code> within the same section.</p>
-</li>
-<li><p><strong>Section name</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">{section.key}</span></code>)</p>
-<p>A section name refers to a key in another section:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[server]</span>
-<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;doc-example-com&quot;</span>
-
-<span class="k">[paths]</span>
-<span class="hll"><span class="n">base_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/tmp/cache&quot;</span>
-</span><span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{server.name}&quot;</span>
-<span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{server.name}&quot;</span>
-</pre></div>
-</div>
-<p>In this example, the key <code class="docutils literal notranslate"><span class="pre">base_server_cache_dir</span></code> uses the
-static placeholder <code class="docutils literal notranslate"><span class="pre">{server.name}</span></code> to reference the value of the
-key <code class="docutils literal notranslate"><span class="pre">name</span></code> in the <code class="docutils literal notranslate"><span class="pre">server</span></code> section.</p>
-<p>If you have nested sections, use dot notation to reference the keys (for example, <code class="docutils literal notranslate"><span class="pre">section.subsection.key</span></code>).</p>
-</li>
-</ul>
-</section>
-<section id="viewing-the-environment-configuration">
-<span id="config-viewing-docbuild-config-env"></span><h1>Viewing the Environment Configuration<a class="headerlink" href="#viewing-the-environment-configuration" title="Link to this heading">#</a></h1>
-<p>To see how <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> interprets your environment configuration, use the
-<code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">env</span></code> subcommand. This is particularly useful for verifying that all
-static placeholders have been correctly resolved into absolute paths.</p>
+  <section id="checking-your-environment">
+<span id="check-environment"></span><h1>Checking your Environment<a class="headerlink" href="#checking-your-environment" title="Link to this heading">#</a></h1>
+<section id="checking-dc-files">
+<span id="check-dc-files"></span><h2>Checking DC Files<a class="headerlink" href="#checking-dc-files" title="Link to this heading">#</a></h2>
+<p>From time to time it makes sense to check if the DC files referred in
+the Docbuild XML configuration exist in the repos.</p>
+<p>To check all DC files in all repositories, use the following command:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Displaying the resolved environment configuration</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild --env-config=YOUR_TOML_CONFIG config env</span>
+<div class="code-block-caption"><span class="caption-text">Checking DC files in all repositories</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild --env-config ENV_CONFIG_FILE check dc-files</span>
 </pre></div>
 </div>
 </div>
-<p>If the configuration contains errors—such as missing mandatory keys or invalid data types—the command will output a validation error detailing what needs to be fixed.</p>
+<p>To check DC files only for a specific product and docset, use the doctype
+syntax:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Checking DC files for SLES 16.0 in English only</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild --env-config ENV_CONFIG_FILE check dc-files &#39;sles/16.0/en-us&#39;</span>
+</pre></div>
+</div>
+</div>
+<p>If a DC file is missing, the tool will report it, allowing you to take
+corrective action.</p>
 </section>
-<section id="using-multiple-environment-configurations">
-<span id="config-use-multiple-env-configs"></span><h1>Using Multiple Environment Configurations<a class="headerlink" href="#using-multiple-environment-configurations" title="Link to this heading">#</a></h1>
-<p>To deal with different environments without having to type the full command
-each time, create aliases in your shell. This allows you to quickly switch
-between configurations without needing to remember the exact command syntax.</p>
-<div class="literal-block-wrapper docutils container" id="docbuild-aliases">
-<div class="code-block-caption"><span class="caption-text">Example aliases for different configuration files</span><a class="headerlink" href="#docbuild-aliases" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">alias docbuild-prod=&#39;docbuild --env-config env.production.toml&#39;</span>
-<span class="go">alias docbuild-test=&#39;docbuild --env-config env.testing.toml&#39;</span>
-<span class="go">alias docbuild-dev=&#39;docbuild --env-config env.devel.toml&#39;</span>
-</pre></div>
-</div>
-</div>
 </section>
 
 
@@ -601,20 +506,20 @@ between configurations without needing to remember the exact command syntax.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="install.html"
+       href="metadata.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Installing docbuild</p>
+        <p class="prev-next-title">Creating Metadata</p>
       </div>
     </a>
     <a class="right-next"
-       href="run-docbuild.html"
+       href="../developer/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Running docbuild</p>
+        <p class="prev-next-title">Developer Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -637,21 +542,15 @@ between configurations without needing to remember the exact command syntax.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Configuring the Tool</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#key-naming-conventions">Key Naming Conventions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-configuration">Validating the Configuration</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-placeholders">Using Placeholders</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#viewing-the-environment-configuration">Viewing the Environment Configuration</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-multiple-environment-configurations">Using Multiple Environment Configurations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-dc-files">Checking DC Files</a></li>
 </ul>
-
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/config.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/check-env.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -667,7 +566,7 @@ between configurations without needing to remember the exact command syntax.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/user/config.rst.txt"
+      <li><a href="../_sources/user/check-env.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>
