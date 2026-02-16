@@ -1,0 +1,1297 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Env TOML Configuration &#8212; docbuild 0.16.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=7de89ed4"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/env-toml/index';</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Change Log" href="../../changelog.html" />
+    <link rel="prev" title="docbuild.utils.shell" href="../_autoapi/docbuild/utils/shell/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">Documentation is under construction.</div>
+</aside>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Docbuild Documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/openSUSE/docbuild" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://gitlab.suse.de/susedoc/docserv-config" title="GitLab susedoc/docserv-config" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-gitlab fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitLab susedoc/docserv-config</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/orgs/openSUSE/projects/27/" title="Kanban board" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-table-columns fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Kanban board</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/openSUSE/docbuild" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://gitlab.suse.de/susedoc/docserv-config" title="GitLab susedoc/docserv-config" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-gitlab fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitLab susedoc/docserv-config</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/orgs/openSUSE/projects/27/" title="Kanban board" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-table-columns fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Kanban board</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../docbuild-cli.html">docbuild CLI</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../_autoapi/docbuild/index.html">docbuild</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autoapi/docbuild/__about__/index.html">docbuild.__about__</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autoapi/docbuild/__main__/index.html">docbuild.__main__</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/cli/callback/index.html">docbuild.cli.callback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_config/application/index.html">docbuild.cli.cmd_config.application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_config/environment/index.html">docbuild.cli.cmd_config.environment</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/cli/defaults/index.html">docbuild.cli.defaults</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../_autoapi/docbuild/config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/config/app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/config/load/index.html">docbuild.config.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/config/merge/index.html">docbuild.config.merge</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/config/xml/index.html">docbuild.config.xml</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/xml/list/index.html">docbuild.config.xml.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/xml/references/index.html">docbuild.config.xml.references</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autoapi/docbuild/constants/index.html">docbuild.constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autoapi/docbuild/logging/index.html">docbuild.logging</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/config/index.html">docbuild.models.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/config/app/index.html">docbuild.models.config.app</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/config/env/index.html">docbuild.models.config.env</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/doctype/index.html">docbuild.models.doctype</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/lifecycle/index.html">docbuild.models.lifecycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/lifecycle/LifecycleFlag.html">docbuild.models.lifecycle.LifecycleFlag</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/index.html">docbuild.models.manifest</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Description.html">docbuild.models.manifest.Description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/CategoryTranslation.html">docbuild.models.manifest.CategoryTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Category.html">docbuild.models.manifest.Category</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Archive.html">docbuild.models.manifest.Archive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/DocumentFormat.html">docbuild.models.manifest.DocumentFormat</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/SingleDocument.html">docbuild.models.manifest.SingleDocument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Product.html">docbuild.models.manifest.Product</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Document.html">docbuild.models.manifest.Document</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/manifest/Manifest.html">docbuild.models.manifest.Manifest</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/metadata/index.html">docbuild.models.metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/metadata/Metadata.html">docbuild.models.metadata.Metadata</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/path/index.html">docbuild.models.path</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/path/EnsureWritableDirectory.html">docbuild.models.path.EnsureWritableDirectory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/contextmgr/TimerData.html">docbuild.utils.contextmgr.TimerData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/contextmgr/PersistentOnErrorTemporaryDirectory.html">docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/utils/convert/index.html">docbuild.utils.convert</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/decorators/index.html">docbuild.utils.decorators</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/utils/merge/index.html">docbuild.utils.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/utils/paths/index.html">docbuild.utils.paths</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../_autoapi/docbuild/utils/pidlock/index.html">docbuild.utils.pidlock</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/pidlock/LockAcquisitionError.html">docbuild.utils.pidlock.LockAcquisitionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../_autoapi/docbuild/utils/pidlock/PidFileLock.html">docbuild.utils.pidlock.PidFileLock</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autoapi/docbuild/utils/shell/index.html">docbuild.utils.shell</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Env TOML Configuration</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Env TOML Configuration</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="env-toml-configuration">
+<h1>Env TOML Configuration<a class="headerlink" href="#env-toml-configuration" title="Link to this heading">#</a></h1>
+<p>The Env TOML file is used to configure the environment for docbuild.
+It allows you to specify various settings such as server configuration,
+paths, and other environment-specific parameters.</p>
+<section id="server">
+<span id="envtoml-section-server"></span><h2>[server]<a class="headerlink" href="#server" title="Link to this heading">#</a></h2>
+<p>Deals with all config about server settings</p>
+<dl id="envtoml-server-name">
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">doc-example-com</span></code></p>
+</dd>
+</dl>
+<p>Name of the server, used for logging and cache paths</p>
+</dd>
+</dl>
+<dl id="envtoml-server-role">
+<dt><code class="docutils literal notranslate"><span class="pre">role</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">production</span></code></p>
+</dd>
+</dl>
+<p>Role of the server, used for logging and other purposes. Possible values: “production”, “staging”, “development”</p>
+</dd>
+</dl>
+<dl id="envtoml-server-host">
+<dt><code class="docutils literal notranslate"><span class="pre">host</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
+</dd>
+</dl>
+<p>Hostname or IP address to bind the server to.</p>
+</dd>
+</dl>
+<dl id="envtoml-server-port">
+<dt><code class="docutils literal notranslate"><span class="pre">port</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">80</span></code></p>
+</dd>
+</dl>
+<p>Port number to listen on. Uncomment and set to enable.</p>
+</dd>
+</dl>
+<dl id="envtoml-server-enable-mail">
+<dt><code class="docutils literal notranslate"><span class="pre">enable_mail</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+</dd>
+</dl>
+<p>Whether to enable email notifications.
+Set to true to enable.</p>
+</dd>
+</dl>
+</section>
+<section id="config">
+<span id="envtoml-section-config"></span><h2>[config]<a class="headerlink" href="#config" title="Link to this heading">#</a></h2>
+<p>General configuration</p>
+<dl id="envtoml-config-default-lang">
+<dt><code class="docutils literal notranslate"><span class="pre">default_lang</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">en-us</span></code></p>
+</dd>
+</dl>
+<p>Default language for the documentation.</p>
+</dd>
+</dl>
+<dl id="envtoml-config-languages">
+<dt><code class="docutils literal notranslate"><span class="pre">languages</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">list[str]</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">['de-de',</span> <span class="pre">'en-us',</span> <span class="pre">'es-es',</span> <span class="pre">'fr-fr',</span> <span class="pre">'ja-jp',</span> <span class="pre">'ko-kr',</span> <span class="pre">'pt-br',</span> <span class="pre">'zh-cn']</span></code></p>
+</dd>
+</dl>
+<p>A list of all supported languages.</p>
+</dd>
+</dl>
+<dl id="envtoml-config-canonical-url-domain">
+<dt><code class="docutils literal notranslate"><span class="pre">canonical_url_domain</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">https://docs.example.com</span></code></p>
+</dd>
+</dl>
+<p>The canonical domain used to construct absolute URLs.</p>
+</dd>
+</dl>
+</section>
+<section id="paths">
+<span id="envtoml-section-paths"></span><h2>[paths]<a class="headerlink" href="#paths" title="Link to this heading">#</a></h2>
+<p>Defines several paths
+Paths can hold placeholders in brackets.
+Key naming convention:</p>
+<ul class="simple">
+<li><p>Suffix <code class="docutils literal notranslate"><span class="pre">_dir</span></code>: contains only directory paths</p></li>
+<li><p>Suffix <code class="docutils literal notranslate"><span class="pre">_path</span></code>: contains directory and filename paths</p></li>
+<li><p>Suffix <code class="docutils literal notranslate"><span class="pre">_dyn</span></code>: contains placeholders that are replaced at runtime</p></li>
+</ul>
+<dl id="envtoml-paths-root-config-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">root_config_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/etc/docbuild</span></code></p>
+</dd>
+</dl>
+<p>The root directory where all configuration files are stored.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-jinja-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">jinja_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/jinja-doc-suse-com</span></code></p>
+</dd>
+</dl>
+<p>Path to the directory containing Jinja templates.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-config-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">config_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/config.d</span></code></p>
+</dd>
+</dl>
+<p>Path to the directory for additional configuration files.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-server-rootfiles-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">server_rootfiles_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/server-root-files-doc-suse-com</span></code></p>
+</dd>
+</dl>
+<p>Path to the directory containing server root files like robots.txt.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-base-cache-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">base_cache_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/var/cache/docserv</span></code></p>
+</dd>
+</dl>
+<p>The base directory for storing cached data.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-base-server-cache-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">base_server_cache_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/{server.name}</span></code></p>
+</dd>
+</dl>
+<p>The server-specific cache directory, derived from base_cache_dir and server name.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-base-tmp-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">base_tmp_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/var/tmp/docbuild</span></code></p>
+</dd>
+</dl>
+<p>The base directory for temporary files.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-repo-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">repo_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docserv/repos/permanent-full/</span></code></p>
+</dd>
+</dl>
+<p>The directory where permanent full repositories are stored.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-repo-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_repo_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docserv/repos/temporary-branches/</span></code></p>
+</dd>
+</dl>
+<p>The directory for storing temporary repositories from branches.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-meta-cache-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">meta_cache_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/{server.name}/meta</span></code></p>
+</dd>
+</dl>
+<p>The directory for caching metadata.</p>
+</dd>
+</dl>
+</section>
+<section id="paths-tmp">
+<span id="envtoml-section-paths-tmp"></span><h2>[paths.tmp]<a class="headerlink" href="#paths-tmp" title="Link to this heading">#</a></h2>
+<p>Defines temporary paths
+Paths can hold placeholders in brackets.</p>
+<dl id="envtoml-paths-tmp-tmp-base-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_base_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{paths.base_tmp_dir}</span></code></p>
+</dd>
+</dl>
+<p>The base directory for temporary files, referencing paths.base_tmp_dir.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{tmp_base_dir}/doc-example-com</span></code></p>
+</dd>
+</dl>
+<p>A server-specific temporary directory.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-metadata-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_metadata_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{tmp_dir}/metadata</span></code></p>
+</dd>
+</dl>
+<p>A temporary directory for storing metadata during processing.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-deliverable-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_deliverable_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{paths.tmp.tmp_dir}/deliverable/</span></code></p>
+</dd>
+</dl>
+<p>A temporary directory for storing deliverables.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-build-base-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_build_base_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{tmp_dir}/build</span></code></p>
+</dd>
+</dl>
+<p>The base directory for build outputs.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-build-dir-dyn">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_build_dir_dyn</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{{product}}-{{docset}}-{{lang}}</span></code></p>
+</dd>
+</dl>
+<p>A dynamic template for creating build-specific directories.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-out-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_out_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{tmp_dir}/out/</span></code></p>
+</dd>
+</dl>
+<p>The final temporary output directory before deployment.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-log-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">log_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{tmp_dir}/log/</span></code></p>
+</dd>
+</dl>
+<p>The directory for storing log files.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-tmp-tmp-deliverable-name-dyn">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_deliverable_name_dyn</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{{product}}_{{docset}}_{{lang}}_XXXXXX</span></code></p>
+</dd>
+</dl>
+<p>A dynamic template for naming temporary deliverables.</p>
+</dd>
+</dl>
+</section>
+<section id="paths-target">
+<span id="envtoml-section-paths-target"></span><h2>[paths.target]<a class="headerlink" href="#paths-target" title="Link to this heading">#</a></h2>
+<p>Defines target paths</p>
+<dl id="envtoml-paths-target-target-base-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">target_base_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">doc&#64;10.100.60.1:/srv/docs</span></code></p>
+</dd>
+</dl>
+<p>The base path for the deployment target, including server and directory.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-target-target-dir-dyn">
+<dt><code class="docutils literal notranslate"><span class="pre">target_dir_dyn</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{{product}}</span></code></p>
+</dd>
+</dl>
+<p>A dynamic template for the final target directory on the remote server.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-target-backup-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">backup_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docbuild/external-builds/</span></code></p>
+</dd>
+</dl>
+<p>The directory where backups of external builds are stored.</p>
+</dd>
+</dl>
+</section>
+<section id="build">
+<span id="envtoml-section-build"></span><h2>[build]<a class="headerlink" href="#build" title="Link to this heading">#</a></h2>
+</section>
+<section id="build-daps">
+<span id="envtoml-section-build-daps"></span><h2>[build.daps]<a class="headerlink" href="#build-daps" title="Link to this heading">#</a></h2>
+<p>Configuration for daps</p>
+<dl id="envtoml-build-daps-command">
+<dt><code class="docutils literal notranslate"><span class="pre">command</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">daps</span> <span class="pre">-vv</span></code></p>
+</dd>
+</dl>
+<p>The base command to execute DAPS with verbose output.</p>
+</dd>
+</dl>
+<dl id="envtoml-build-daps-meta">
+<dt><code class="docutils literal notranslate"><span class="pre">meta</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">daps</span> <span class="pre">-vv</span> <span class="pre">metadata</span> <span class="pre">--output</span> <span class="pre">{{output}}</span></code></p>
+</dd>
+</dl>
+<p>The DAPS command to extract metadata, with a placeholder for the output file.</p>
+</dd>
+</dl>
+</section>
+<section id="build-container">
+<span id="envtoml-section-build-container"></span><h2>[build.container]<a class="headerlink" href="#build-container" title="Link to this heading">#</a></h2>
+<p>Configuration for container</p>
+<dl id="envtoml-build-container-container">
+<dt><code class="docutils literal notranslate"><span class="pre">container</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest</span></code></p>
+</dd>
+</dl>
+<p>The full name of the container image to be used for the build environment.</p>
+</dd>
+</dl>
+</section>
+<section id="xslt-params">
+<span id="envtoml-section-xslt-params"></span><h2>[xslt-params]<a class="headerlink" href="#xslt-params" title="Link to this heading">#</a></h2>
+<p>Replaces <code class="file docutils literal notranslate"><span class="pre">/etc/docserv/xslt-params-doc-suse-com.txt</span></code> file
+These keys are considered as XSLT parameters and passed
+to the transformation process</p>
+<dl id="envtoml-xslt-params-homepage">
+<dt><code class="docutils literal notranslate"><span class="pre">homepage</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">https://documentation.suse.com/</span></code></p>
+</dd>
+</dl>
+<p>The URL for the main homepage link in the documentation.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-overview-page">
+<dt><code class="docutils literal notranslate"><span class="pre">overview-page</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">https://documentation.suse.com/</span></code></p>
+</dd>
+</dl>
+<p>The URL for the documentation overview page.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-overview-page-title">
+<dt><code class="docutils literal notranslate"><span class="pre">overview-page-title</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">documentation.suse.com</span></code></p>
+</dd>
+</dl>
+<p>The title displayed for the overview page link.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-external-js-onlineonly">
+<dt><code class="docutils literal notranslate"><span class="pre">external.js.onlineonly</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>Path to an external JavaScript file that is only included in the online version.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-show-edit-link">
+<dt><code class="docutils literal notranslate"><span class="pre">show.edit.link</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>A flag to control the visibility of the “Edit on GitHub” link (1 for true).</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-twittercards-twitter-account">
+<dt><code class="docutils literal notranslate"><span class="pre">twittercards.twitter.account</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>The Twitter username to associate with Twitter Cards.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-generate-json-ld">
+<dt><code class="docutils literal notranslate"><span class="pre">generate.json-ld</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>A flag to enable or disable the generation of JSON-LD structured data (1 for true).</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-search-description-length">
+<dt><code class="docutils literal notranslate"><span class="pre">search.description.length</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>The maximum character length for search result descriptions.</p>
+</dd>
+</dl>
+<dl id="envtoml-xslt-params-socialmedia-description-length">
+<dt><code class="docutils literal notranslate"><span class="pre">socialmedia.description.length</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>The maximum character length for descriptions used in social media sharing.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../_autoapi/docbuild/utils/shell/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">docbuild.utils.shell</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../changelog.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Change Log</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#server">[server]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config">[config]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths">[paths]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-tmp">[paths.tmp]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-target">[paths.target]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build">[build]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-daps">[build.daps]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-container">[build.container]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-params">[xslt-params]</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/env-toml/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/reference/env-toml/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Tom Schraitle | Sushant Gaurav.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
