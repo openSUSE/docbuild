@@ -1,7 +1,6 @@
 """Tests for the XML validation process module."""
 
 from pathlib import Path
-import re
 from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, MagicMock, patch
 

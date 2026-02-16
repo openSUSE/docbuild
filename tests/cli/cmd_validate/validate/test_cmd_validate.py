@@ -3,7 +3,6 @@
 from collections.abc import Iterator
 from os import PathLike
 from pathlib import Path
-import re
 from subprocess import CompletedProcess
 import tempfile
 from unittest.mock import AsyncMock, Mock, patch
