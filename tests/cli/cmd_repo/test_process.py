@@ -9,6 +9,25 @@ from docbuild.cli.context import DocBuildContext
 from docbuild.models.repo import Repo
 
 
+class _DummyPaths:
+    """Minimal stand-in for EnvPathsConfig used by process tests."""
+
+    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
+        self.config_dir = config_dir
+        self.repo_dir = repo_dir
+
+
+class _DummyEnv:
+    """Fake EnvConfig-like object exposing ``paths`` only.
+
+    This mirrors the attributes accessed by the repo ``process`` function
+    without pulling in the full Pydantic EnvConfig model.
+    """
+
+    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
+        self.paths = _DummyPaths(config_dir=config_dir, repo_dir=repo_dir)
+
+
 @pytest.fixture
 def mock_managed_git_repo(monkeypatch) -> AsyncMock:
     """Fixture to mock the ManagedGitRepo class."""
@@ -46,12 +65,10 @@ async def test_process_with_specific_repos(
 
     repo_dir = tmp_path / "repos"
     context = DocBuildContext(
-        envconfig={
-            "paths": {
-                "repo_dir": str(repo_dir),
-                "config_dir": str(tmp_path / "config"),
-            },
-        },
+        envconfig=_DummyEnv(
+            config_dir=str(tmp_path / "config"),
+            repo_dir=str(repo_dir),
+        ),
     )
     # The directories must exist for the function to run
     (tmp_path / "config").mkdir()
@@ -77,12 +94,10 @@ async def test_process_with_all_repos_from_xml(
     """Test `process` when no specific repos are provided, using XML config."""
     repo_dir = tmp_path / "repos"
     context = DocBuildContext(
-        envconfig={
-            "paths": {
-                "repo_dir": str(repo_dir),
-                "config_dir": str(tmp_path / "config"),
-            },
-        },
+        envconfig=_DummyEnv(
+            config_dir=str(tmp_path / "config"),
+            repo_dir=str(repo_dir),
+        ),
     )
     (tmp_path / "config").mkdir()
     repo_dir.mkdir()
@@ -118,12 +133,10 @@ async def test_process_with_no_repos_found(
 
     repo_dir = tmp_path / "repos"
     context = DocBuildContext(
-        envconfig={
-            "paths": {
-                "repo_dir": str(repo_dir),
-                "config_dir": str(tmp_path / "config"),
-            },
-        },
+        envconfig=_DummyEnv(
+            config_dir=str(tmp_path / "config"),
+            repo_dir=str(repo_dir),
+        ),
     )
     (tmp_path / "config").mkdir()
     repo_dir.mkdir()
@@ -150,12 +163,10 @@ async def test_process_failure_if_one_clone_fails(
 
     repo_dir = tmp_path / "repos"
     context = DocBuildContext(
-        envconfig={
-            "paths": {
-                "repo_dir": str(repo_dir),
-                "config_dir": str(tmp_path / "config"),
-            },
-        },
+        envconfig=_DummyEnv(
+            config_dir=str(tmp_path / "config"),
+            repo_dir=str(repo_dir),
+        ),
     )
     (tmp_path / "config").mkdir()
     repo_dir.mkdir()
