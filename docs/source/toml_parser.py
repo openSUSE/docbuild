@@ -49,12 +49,54 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-# Regex patterns for TOML parsing
+# --- Regex patterns for TOML parsing ---
+
+# This pattern defines a single TOML key part, which can be a bare key (unquoted),
+# a double-quoted key, or a single-quoted key. This is the building block for
+# more complex dotted keys.
+KEY_PART_PATTERN = r"""[A-Za-z0-9_-]+|"(?:\\.|[^"\\])*"|\'[^\']*\'"""
+
+# This verbose regex pattern matches a full TOML key (bare, quoted, or dotted).
+# A TOML key is composed of one or more "key parts" separated by dots.
+DOTTED_KEY_PATTERN = fr"""
+    # --- Definition of the first key part ---
+    (?:{KEY_PART_PATTERN})
+
+    # --- Optional subsequent, dot-separated parts ---
+    (?:                     # A non-capturing group for the rest of the dotted key.
+        \s*\.\s*            # A dot separator, surrounded by optional whitespace.
+
+        # The pattern for any subsequent key part is the same as the first.
+        (?:{KEY_PART_PATTERN})
+    )*                      # This group of subsequent parts can appear zero or more times.
+"""
+
 COMMENT_METADATA_REGEX = re.compile(
-    r"^\s*#\s*(?P<key>[\w.-]+)\((?P<type>[^)]+)\):\s*(?P<description>.*)$"
+    fr"""
+        ^\s*#\s*                                # Leading whitespace and comment marker
+        (?P<key>{DOTTED_KEY_PATTERN})          # The full TOML key (captured)
+        \((?P<type>[^)]+)\)                     # The type in parentheses (captured)
+        :\s*                                    # Colon and optional whitespace
+        (?P<description>.*)$                    # The rest of the line is the description (captured)
+    """,
+    re.VERBOSE,
 )
-TOML_KEY_VALUE_REGEX = re.compile(r"^\s*(?P<key>[\w.-]+)\s*=\s*.*$")
-TOML_SECTION_REGEX = re.compile(r"^\s*\[(?P<name>[\w.-]+)\]\s*$")
+TOML_KEY_VALUE_REGEX = re.compile(
+    fr"""
+        ^\s*                                    # Leading whitespace
+        (?P<key>{DOTTED_KEY_PATTERN})          # The full TOML key (captured)
+        \s*=\s*.*$                              # Equals sign, optional whitespace, and the rest of the line
+    """,
+    re.VERBOSE,
+)
+TOML_SECTION_REGEX = re.compile(
+    fr"""
+        ^\s*\[                                  # Leading whitespace and opening bracket
+        (?P<name>{DOTTED_KEY_PATTERN})         # The full TOML key as the section name (captured)
+        \]\s*$                                  # Closing bracket and optional trailing whitespace
+    """,
+    re.VERBOSE,
+)
 
 
 @dataclass
