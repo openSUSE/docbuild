@@ -141,6 +141,11 @@ For Python specific terms, look into:
 
       See class :class:`~docbuild.models.product.Product`.
 
+   Pydantic
+      A Python library for data validation and settings management using Python type annotations. It provides a way to define data models with strict type checking and validation rules, making it easier to ensure that the data your application works with is correct and consistent.
+
+      See https://pydantic.dev/
+
    :file:`pyproject.toml`
       A configuration file used in Python project to define build system
       requirements and project metadata.
