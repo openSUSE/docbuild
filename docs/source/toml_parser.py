@@ -303,7 +303,7 @@ def generate_toml_reference(
 
     # 3. Render and write output
     rst_string = render_rst(sections, use_labels, prefix)
-    rst_output_path.write_text(rst_string)
+    rst_output_path.write_text(rst_string, encoding="utf-8")
 
 
 if __name__ == "__main__":
