@@ -1,0 +1,7 @@
+Describe some missing features:
+
+* Document the command :command:`docbuild check files` in the new seciton
+  "Checking your Environment"
+* Add Pydantic definition into glossary
+* Adjusted "Configuring the Tool" section and included placeholders
+  (static & dynamic), key naming conventions, and more.
