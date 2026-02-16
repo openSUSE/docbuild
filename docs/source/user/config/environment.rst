@@ -1,3 +1,5 @@
+.. _config-show-env:
+
 Showing Env's Configuration
 ===========================
 
