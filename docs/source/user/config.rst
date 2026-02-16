@@ -26,7 +26,7 @@ To use your configuration file, follow these steps one time:
 
 .. _config-key-naming-conventions:
 
-Key Naming conventions
+Key Naming Conventions
 ----------------------
 
 The keys follow specific naming conventions to indicate their purpose and expected value types. Here are some common patterns whereas the asterisk
@@ -60,7 +60,9 @@ The validation checks for different aspects of the configuration, such as:
 * Correct use of placeholders.
 
 
-.. TODO: Add a link to the TOML env config reference, add an example of
+..
+   TODO: Add a link to the TOML env config reference, add an example of
+   a validation error message, and explain how to fix common issues.
    a validation error message, and explain how to fix common issues.
 
 
@@ -92,7 +94,7 @@ Static placeholders follow a specific syntax:
 
 * **Regular name** (Syntax ``{placeholder}``)
 
-  A regular name refers to a another key in the same section:
+  A regular name refers to another key in the same section:
 
   .. code-block:: toml
      :emphasize-lines: 3
@@ -115,15 +117,16 @@ Static placeholders follow a specific syntax:
      [server]
      name = "doc-example-com"
 
-     [path]
+     [paths]
+     base_cache_dir = "/tmp/cache"
+     base_server_cache_dir = "{base_cache_dir}/{server.name}"
      base_server_cache_dir = "{base_cache_dir}/{server.name}"
 
   In this example, the key ``base_server_cache_dir`` uses the
   static placeholder ``{server.name}`` to reference the value of the
   key ``name`` in the ``server`` section.
 
-  If you have nested sections, use the dot notation to reference the keys.
-  For example, ``section.subsection.key``.
+  If you have nested sections, use dot notation to reference the keys (for example, ``section.subsection.key``).
 
 
 .. _config-viewing-docbuild-config-env:
