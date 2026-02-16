@@ -13,3 +13,4 @@ User Guide
    validate
    clone
    metadata
+   check-env
