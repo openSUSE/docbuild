@@ -70,7 +70,7 @@ docbuild.cli.context.DocBuildContext
 
 
    .. py:attribute:: envconfig
-      :type:  dict[str, Any] | None
+      :type:  docbuild.models.config.env.EnvConfig | None
       :value: None
 
 

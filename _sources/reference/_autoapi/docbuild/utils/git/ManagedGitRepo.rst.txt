@@ -1,7 +1,7 @@
 docbuild.utils.git.ManagedGitRepo
 =================================
 
-.. py:class:: docbuild.utils.git.ManagedGitRepo(remote_url: str, rootdir: pathlib.Path, gitconfig: pathlib.Path | None = None)
+.. py:class:: docbuild.utils.git.ManagedGitRepo(repo: str | docbuild.models.repo.Repo, rootdir: pathlib.Path, gitconfig: pathlib.Path | None = None)
 
    Manages a bare repository and its temporary worktrees.
 
