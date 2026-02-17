@@ -1,0 +1,1 @@
+Added a rich-formatted Pydantic validation error reporter for the CLI, providing field descriptions, expected values, and documentation links.

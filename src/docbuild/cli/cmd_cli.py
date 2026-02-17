@@ -23,6 +23,7 @@ from ..constants import (
 from ..logging import setup_logging
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
+from ..utils.errors import format_pydantic_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
@@ -150,9 +151,16 @@ def cli(
         # Pydantic validation also handles placeholder replacement via @model_validator
         context.appconfig = AppConfig.from_dict(raw_appconfig)
     except (ValueError, ValidationError) as e:
-        log.error("Application configuration failed validation:")
-        log.error("Error in config file(s): %s", context.appconfigfiles)
-        log.error(e)
+        if isinstance(e, ValidationError):
+            # FIXED: Added fallback for config files to avoid subscripting None
+            config_file = str((context.appconfigfiles or ["unknown"])[0])
+            format_pydantic_error(
+                e, AppConfig, config_file, context.verbose
+            )
+        else:
+            log.error("Application configuration failed validation:")
+            log.error("Error in config file(s): %s", context.appconfigfiles)
+            log.error(e)
         ctx.exit(1)
 
     # 3. Setup logging using the validated config object
@@ -186,20 +194,27 @@ def cli(
         # The result is the validated Pydantic object, stored in context.envconfig
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
     except (ValueError, ValidationError) as e:
-        log.error(
-            "Environment configuration failed validation: "
-            "Error in config file(s): %s %s",
-            context.envconfigfiles,
-            e,
-        )
+        if isinstance(e, ValidationError):
+            # FIXED: Added fallback for config files to avoid subscripting None
+            config_file = str((context.envconfigfiles or ["unknown"])[0])
+            format_pydantic_error(
+                e, EnvConfig, config_file, context.verbose
+            )
+        else:
+            log.error(
+                "Environment configuration failed validation: "
+                "Error in config file(s): %s %s",
+                context.envconfigfiles,
+                e,
+            )
         ctx.exit(1)
 
-    env_config_path = context.envconfigfiles[0] if context.envconfigfiles else None
+    env_config_path = (context.envconfigfiles or [None])[0]
 
     # --- CONCURRENCY CONTROL: Use explicit __enter__ and cleanup registration ---
     if env_config_path:
         # 1. Instantiate the lock object
-        ctx.obj.env_lock = PidFileLock(resource_path=env_config_path)
+        ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
 
         try:
             # 2. Acquire the lock by explicitly calling the __enter__ method.
@@ -217,8 +232,6 @@ def cli(
 
         # 3. Register the lock's __exit__ method to be called when the context
         # terminates.
-        # We use a lambda to supply the three mandatory positional arguments (None)
-        # expected by __exit__, satisfying the click.call_on_close requirement.
         ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
 
 

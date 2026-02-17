@@ -176,11 +176,11 @@ def test_cli_config_validation_failure(
     mock_config_models,
     is_app_config_failure,
 ):
-    """Test that the CLI handles Pydantic validation errors gracefully."""
+    """Test that the CLI handles Pydantic validation errors with the new formatter."""
     app_file = app_config_file
     app_file.write_text("bad data")
 
-    # 1. Mock the log.error function to check output
+    # 1. Mock the log.error function
     mock_log_error = Mock()
     monkeypatch.setattr(cli_mod.log, "error", mock_log_error)
 
@@ -196,19 +196,12 @@ def test_cli_config_validation_failure(
         ],
     )
 
-    # Define the simple error structure that the CLI error formatting relies on:
-    # MOCK_ERROR_DETAIL = {
-    #     'loc': ('server', 'port'),
-    #     'msg': 'value is not a valid integer (mocked)',
-    #     'input': 'not_an_int'
-    # }
-
     if is_app_config_failure:
         mock_config_models["app_from_dict"].side_effect = mock_validation_error
     else:
         mock_config_models["env_from_dict"].side_effect = mock_validation_error
 
-    # 3. Mock handle_config to return raw data successfully (no file read error)
+    # 3. Mock handle_config to return raw data successfully
     def resolver(user_path, *a, **kw):
         if user_path == app_file:
             return (app_file,), {"raw_app_data": "x"}, False
@@ -217,6 +210,7 @@ def test_cli_config_validation_failure(
     fake_handle_config(resolver)
 
     context = DocBuildContext()
+    # Click runner captures stdout/stderr. Our rich formatter prints to stderr.
     result = runner.invoke(
         cli,
         ["--app-config", str(app_file), "capture"],
@@ -227,23 +221,14 @@ def test_cli_config_validation_failure(
     # 4. Assertions
     assert result.exit_code == 1
 
-    if is_app_config_failure:
-        assert (
-            "Application configuration failed validation"
-            in mock_log_error.call_args_list[0][0][0]
-        )
-    else:
-        assert (
-            "Environment configuration failed validation"
-            in mock_log_error.call_args_list[0][0][0]
-        )
+    # For ValidationErrors, the CLI now uses format_pydantic_error, NOT log.error
+    assert mock_log_error.call_count == 0
 
-    # --- REMOVE FRAGILE ASSERTIONS ON LOG CALL COUNT ---
-    # assert mock_log_error.call_count > 1
-    # assert mock_log_error.call_count >= 2
-    # assert any("Field: (" in call[0][0] for call in mock_log_error.call_args_list)
-
-    assert mock_log_error.call_count >= 1
+    # Check that our new pretty-printer output exists in the captured terminal output
+    assert "Validation error" in result.output
+    assert "server.port" in result.output
+    # Check for the Pydantic error message
+    assert "Input should be a valid integer" in result.output
 
 
 def test_cli_verbose_and_debug(
