@@ -58,7 +58,7 @@ def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
     """
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
-    # env = cast(EnvConfig, context.envconfig)
+    # env = context.envconfig
 
     click.echo(f"[BUILD] Verbosity: {context.verbose}")
     click.echo(f"{context=}")

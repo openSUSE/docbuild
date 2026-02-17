@@ -3,12 +3,10 @@
 import asyncio
 import logging
 from pathlib import Path
-from typing import cast
 
 from ...cli.context import DocBuildContext
 from ...config.xml.stitch import create_stitchfile
 from ...constants import GITLOGGER_NAME
-from ...models.config.env import EnvConfig
 from ...models.repo import Repo
 from ...utils.contextmgr import make_timer
 from ...utils.git import ManagedGitRepo
@@ -25,7 +23,7 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     :raises ValueError: If configuration paths are missing.
     """
     # The calling command function is expected to have checked context.envconfig.
-    envcfg = cast(EnvConfig, context.envconfig)
+    envcfg = context.envconfig
     config_dir_str = envcfg.paths.config_dir
     repo_dir_str = envcfg.paths.repo_dir
 

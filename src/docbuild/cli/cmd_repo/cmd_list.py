@@ -1,13 +1,11 @@
 """List the available permanent repositories."""
 
 from pathlib import Path
-from typing import cast
 
 import click
 from rich.console import Console
 
 from ...cli.context import DocBuildContext
-from ...models.config.env import EnvConfig
 
 console = Console()
 console_err = Console(stderr=True)
@@ -26,7 +24,7 @@ def cmd_list(ctx: click.Context) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    env = cast(EnvConfig, context.envconfig)
+    env = context.envconfig
 
     repo_dir = env.paths.repo_dir
     repo_dir = Path(repo_dir).resolve()

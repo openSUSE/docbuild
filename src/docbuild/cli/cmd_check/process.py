@@ -3,13 +3,11 @@
 from collections.abc import Sequence
 import logging
 from pathlib import Path
-from typing import cast
 
 from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
 from docbuild.cli.context import DocBuildContext
 from docbuild.config.xml.stitch import create_stitchfile
 from docbuild.constants import DEFAULT_DELIVERABLES
-from docbuild.models.config.env import EnvConfig
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.utils.git import ManagedGitRepo
@@ -56,7 +54,7 @@ async def process_check_files(
     """Verify DC file existence using official Deliverable models."""
     log.info("Starting DC file availability check...")
 
-    env_config = cast(EnvConfig, ctx.envconfig)
+    env_config = ctx.envconfig
     config_dir = env_config.paths.config_dir.expanduser()
     repo_root = env_config.paths.repo_dir.expanduser()
 

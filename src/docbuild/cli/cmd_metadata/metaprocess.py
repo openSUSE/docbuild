@@ -6,7 +6,7 @@ import json
 import logging
 from pathlib import Path
 import shlex
-from typing import Any, cast
+from typing import Any
 
 from lxml import etree
 from pydantic import ValidationError
@@ -14,7 +14,6 @@ from rich.console import Console
 
 from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
-from ...models.config.env import EnvConfig
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.manifest import Document, Manifest
@@ -408,7 +407,7 @@ async def process(
         configured correctly.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
-    env = cast(EnvConfig, context.envconfig)
+    env = context.envconfig
     configdir = Path(env.paths.config_dir).expanduser()
     stdout.print(f"Config path: {configdir}")
     xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))

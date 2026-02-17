@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from ..models.config.env import EnvConfig
 from ..models.doctype import Doctype
 
 
@@ -32,7 +33,7 @@ class DocBuildContext:
     envconfig_from_defaults: bool = False
     """Internal flag to indicate if the env's config was loaded from defaults"""
 
-    envconfig: dict[str, Any] | None = None
+    envconfig: EnvConfig | None = None
     """The accumulated content of all env config files"""
 
     doctypes: list[Doctype] | None = None

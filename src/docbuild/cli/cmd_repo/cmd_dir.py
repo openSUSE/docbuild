@@ -1,11 +1,9 @@
 """Show the directory path for permanent repositories."""
 
-from typing import cast
 
 import click
 
 from ...cli.context import DocBuildContext
-from ...models.config.env import EnvConfig
 
 
 @click.command(help=__doc__, name="dir")
@@ -19,7 +17,7 @@ def cmd_dir(ctx: click.Context) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    env = cast(EnvConfig, context.envconfig)
+    env = context.envconfig
     repo_dir = env.paths.repo_dir
     print(repo_dir)
     ctx.exit(0)
