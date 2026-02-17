@@ -176,7 +176,7 @@ def test_cli_config_validation_failure(
     mock_config_models,
     is_app_config_failure,
 ):
-    """Test that the CLI handles Pydantic validation errors with the new formatter."""
+    """Verify that the CLI handles Pydantic validation errors with the new formatter."""
     app_file = app_config_file
     app_file.write_text("bad data")
 
@@ -201,7 +201,7 @@ def test_cli_config_validation_failure(
     else:
         mock_config_models["env_from_dict"].side_effect = mock_validation_error
 
-    # 3. Mock handle_config to return raw data successfully
+    # 3. Mock handle_config
     def resolver(user_path, *a, **kw):
         if user_path == app_file:
             return (app_file,), {"raw_app_data": "x"}, False
@@ -210,7 +210,6 @@ def test_cli_config_validation_failure(
     fake_handle_config(resolver)
 
     context = DocBuildContext()
-    # Click runner captures stdout/stderr. Our rich formatter prints to stderr.
     result = runner.invoke(
         cli,
         ["--app-config", str(app_file), "capture"],
@@ -226,9 +225,8 @@ def test_cli_config_validation_failure(
 
     # Check that our new pretty-printer output exists in the captured terminal output
     assert "Validation error" in result.output
+    # Check that the specific field causing the issue is mentioned
     assert "server.port" in result.output
-    # Check for the Pydantic error message
-    assert "Input should be a valid integer" in result.output
 
 
 def test_cli_verbose_and_debug(

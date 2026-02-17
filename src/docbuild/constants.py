@@ -164,3 +164,8 @@ BASE_LOCK_DIR = BASE_STATE_DIR / "locks"
 
 XMLDATADIR = Path(__file__).parent / "config" / "xml" / "data"
 """Directory where additional files (RNC, XSLT) for XML processing are stored."""
+
+# --- UI and Error Reporting Constants ---
+
+DEFAULT_ERROR_LIMIT = 5
+"""The maximum number of validation errors to display before truncating the output."""

@@ -1,15 +1,19 @@
 """Utilities for handling and formatting application errors."""
 
+
 from pydantic import BaseModel, ValidationError
 from rich.console import Console
 from rich.text import Text
+
+from ..constants import DEFAULT_ERROR_LIMIT
 
 
 def format_pydantic_error(
     error: ValidationError,
     model_class: type[BaseModel],
     config_file: str,
-    verbose: int = 0
+    verbose: int = 0,
+    console: Console | None = None,
 ) -> None:
     """Centralized formatter for Pydantic ValidationErrors using Rich.
 
@@ -17,8 +21,11 @@ def format_pydantic_error(
     :param model_class: The Pydantic model class that failed validation.
     :param config_file: The name/path of the config file being processed.
     :param verbose: Verbosity level to control error detail.
+    :param console: Optional Rich console object. If None, creates a stderr console.
     """
-    console = Console(stderr=True)
+    # Use provided console or fall back to default (Dependency Injection)
+    con = console or Console(stderr=True)
+
     errors = error.errors()
     error_count = len(errors)
 
@@ -29,16 +36,24 @@ def format_pydantic_error(
         (f"'{config_file}'", "bold cyan"),
         (":", "white")
     )
-    console.print(header)
-    console.print()
+    con.print(header)
+    con.print()
 
-    # Smart Truncation: Show only first 5 unless verbose
-    max_display = 5 if verbose < 2 else error_count
+    # Smart Truncation: Use the constant from constants.py
+    max_display = DEFAULT_ERROR_LIMIT if verbose < 2 else error_count
     display_errors = errors[:max_display]
 
     for i, err in enumerate(display_errors, 1):
         # 1. Resolve Location and Field Info
-        loc_path = ".".join(str(v) for v in err["loc"])
+        # Filter out internal Pydantic tags (strings with '[' or '-')
+        # to keep the path clean for end users.
+        clean_loc = [
+            str(v) for v in err["loc"]
+            if not (isinstance(v, str) and ("[" in v or "-" in v))
+            and not isinstance(v, int)
+        ]
+        loc_path = ".".join(clean_loc)
+
         err_type = err["type"]
         msg = err["msg"]
 
@@ -47,21 +62,17 @@ def format_pydantic_error(
         current_model = model_class
 
         for part in err["loc"]:
-            # Check if current_model is a Pydantic class and contains the field
             if (isinstance(current_model, type) and
                 issubclass(current_model, BaseModel) and
                 part in current_model.model_fields):
 
                 field_info = current_model.model_fields[part]
 
-                # Move deeper into the tree if the annotation is another model
                 annotation = field_info.annotation
                 if (isinstance(annotation, type) and
                     issubclass(annotation, BaseModel)):
                     current_model = annotation
                 else:
-                    # We have reached a leaf node or a complex type (List, etc.)
-                    # Stop traversing but keep the field_info
                     current_model = None
             else:
                 field_info = None
@@ -92,12 +103,12 @@ def format_pydantic_error(
             style="link underline blue"
         )
 
-        console.print(error_panel)
-        console.print()
+        con.print(error_panel)
+        con.print()
 
     # Footer for Truncation
     if error_count > max_display:
-        console.print(
+        con.print(
             f"[dim]... and {error_count - max_display} more errors. "
             "Use '-vv' to see all errors.[/dim]\n"
         )

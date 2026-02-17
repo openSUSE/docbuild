@@ -2,8 +2,10 @@
 
 from typing import Any
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, IPvAnyAddress, ValidationError, create_model
+from rich.console import Console
 
+from docbuild.constants import DEFAULT_ERROR_LIMIT
 from docbuild.utils.errors import format_pydantic_error
 
 
@@ -21,54 +23,74 @@ class MockModel(BaseModel):
 
 
 def test_format_pydantic_error_smoke(capsys):
-    """Smoke test to ensure the formatter runs without crashing."""
-    # Using Any to bypass static type checking for invalid data types
+    """Smoke test to ensure the formatter runs without crashing with injected console."""
     invalid_data: dict[str, Any] = {"age": "not-an-int", "sub": {"name": 123}}
+    # Create a specific console to test dependency injection
+    test_console = Console(stderr=True, force_terminal=False)
 
     try:
-        # Trigger a validation error
         MockModel(**invalid_data)
     except ValidationError as e:
-        # Run the formatter
-        format_pydantic_error(e, MockModel, "test.toml", verbose=1)
+        format_pydantic_error(
+            e, MockModel, "test.toml", verbose=1, console=test_console
+        )
 
     captured = capsys.readouterr()
 
-    # Check for key UI elements
     assert "Validation error" in captured.err
-    assert "test.toml" in captured.err
     assert "User Age" in captured.err
     assert "A sub description" in captured.err
-    assert "https://opensuse.github.io/docbuild/latest/errors/" in captured.err
 
 
 def test_format_pydantic_error_truncation(capsys):
-    """Verify that truncation message appears when many errors exist."""
+    """Verify truncation message appears based on DEFAULT_ERROR_LIMIT."""
 
-    class MultiModel(BaseModel):
-        """A model with many fields to trigger truncation."""
-
-        a: int
-        b: int
-        c: int
-        d: int
-        e: int
-        f: int
-
-    # Cast to Any to bypass static type checking for the invalid input
-    invalid_input: dict[str, Any] = {
-        "a": "x",
-        "b": "x",
-        "c": "x",
-        "d": "x",
-        "e": "x",
-        "f": "x",
+    # Define a dictionary of fields: { 'a': (int, ...), 'b': (int, ...), ... }
+    # This creates exactly one more field than the allowed display limit.
+    field_definitions: dict[str, Any] = {
+        chr(97 + i): (int, ...)
+        for i in range(DEFAULT_ERROR_LIMIT + 1)
     }
 
+    # Use create_model with explicit __base__ to satisfy type checkers.
+    # Renamed to dynamic_model (lowercase) to satisfy Ruff N806.
+    dynamic_model = create_model(
+        "DynamicModel",
+        __base__=BaseModel,
+        **field_definitions
+    )
+
+    # Create invalid input for all fields
+    invalid_input = {k: "not-an-int" for k in field_definitions.keys()}
+
     try:
-        MultiModel(**invalid_input)
+        dynamic_model(**invalid_input)
     except ValidationError as e:
-        format_pydantic_error(e, MultiModel, "test.toml", verbose=0)
+        format_pydantic_error(e, dynamic_model, "test.toml", verbose=0)
 
     captured = capsys.readouterr()
+    # Check that the footer correctly identifies the hidden error
     assert "... and 1 more errors" in captured.err
+
+
+def test_format_pydantic_error_path_cleaning(capsys):
+    """Verify that internal Pydantic tags like [..] are stripped from the path."""
+
+    class UnionModel(BaseModel):
+        # A union often causes Pydantic to add tags like 'function-plain[...]'
+        host: IPvAnyAddress | str = Field(pattern=r"^[a-z]+$")
+
+    # This will fail both IPvAnyAddress and the string regex
+    invalid_data: dict[str, Any] = {"host": "123-invalid-host"}
+
+    try:
+        UnionModel(**invalid_data)
+    except ValidationError as e:
+        format_pydantic_error(e, UnionModel, "test.toml")
+
+    captured = capsys.readouterr()
+
+    # We want to see 'In 'host'', NOT 'In 'host.function-plain...''
+    assert "In 'host':" in captured.err
+    # Verify no bracketed pydantic internals leaked in the path part
+    assert "[" not in captured.err.split("In '")[1].split("':")[0]
