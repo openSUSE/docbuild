@@ -1,0 +1,4 @@
+Streamlined CLI subcommands by removing redundant environment configuration
+checks and implementing strict typing with EnvConfig models.
+Updated :class:`~docbuild.utils.git.ManagedGitRepo` to support both string
+and :class:`~docbuild.models.repo.Repo` model initialization.
