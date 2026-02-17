@@ -32,7 +32,7 @@ docbuild.models.manifest.Category
 
       Extract categories from a parent XML node.
 
-      :param node: a node pointing to ``<product>``
+      :param node: a node pointing to ``<product>``.
       :yield: A :class:`Category` instance for each category found.
 
 
