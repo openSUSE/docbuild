@@ -160,7 +160,7 @@ def test_category_from_xml_node() -> None:
     """
     node = etree.fromstring(doc, parser=None)
     # Reset class variable for predictable rank
-    Category._current_rank = 0
+    Category.reset_rank()
     models = list(Category.from_xml_node(node))
 
     assert len(models) == 4
@@ -181,7 +181,7 @@ def test_category_from_xml_node() -> None:
 
 def test_category_rank() -> None:
     # Just to be sure, we reset the current rank:
-    Category._current_rank = 0
+    Category.reset_rank()
     for idx, i in enumerate(["A", "B", "C"], 1):
         cat = Category(id=i, translations=[])
         serizalized = cat.model_dump()

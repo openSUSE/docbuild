@@ -118,16 +118,10 @@ class Category(BaseModel):
     rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
 
-    # @model_validator(mode="before")
-    # @classmethod
-    # def prevent_manual_rank(cls, data: Any) -> Any:
-    #     """Prevent setting the rank attribute as it is set automatically."""
-    #     # If 'rank' is in the input data, it means the user tried to set it manually
-    #     if isinstance(data, dict) and "rank" in data:
-    #         raise ValueError(
-    #             "The 'rank' field is automatic and cannot be set manually."
-    #         )
-    #     return data
+    @classmethod
+    def reset_rank(cls: type[Self]) -> None:
+        """Reset the rank counter."""
+        cls._current_rank = 0
 
     @classmethod
     def from_xml_node(
