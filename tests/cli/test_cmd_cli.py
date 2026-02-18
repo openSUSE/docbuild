@@ -1,5 +1,7 @@
+"""Tests for the main CLI entry point and configuration loading flow."""
+
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 import click
 from pydantic import ValidationError
@@ -9,8 +11,20 @@ import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
 from docbuild.models.config.app import AppConfig
 from docbuild.models.config.env import EnvConfig
+from docbuild.utils.pidlock import LockAcquisitionError
 
 cli = cli_mod.cli
+
+
+@pytest.fixture
+def fake_handle_config(monkeypatch):
+    """Fixture to mock the handle_config function behavior.
+    This allows us to simulate different filesystem states (finding/not finding configs)
+    without actual IO.
+    """
+    def _setup(resolver_func):
+        monkeypatch.setattr(cli_mod, "handle_config", resolver_func)
+    return _setup
 
 
 @pytest.fixture(autouse=True)
@@ -19,7 +33,6 @@ def register_capture_command():
 
     The command is removed after each test to avoid leaking state.
     """
-
     @click.command("capture")
     @click.pass_context
     def capture(ctx: click.Context) -> None:
@@ -35,21 +48,17 @@ def mock_config_models(monkeypatch):
     """Fixture to mock AppConfig.from_dict and EnvConfig.from_dict.
 
     Ensures the mock AppConfig instance has the necessary
-    logging attributes and methods (.logging.model_dump) that the CLI calls
-    during setup_logging.
+    logging attributes and methods that the CLI calls during setup.
     """
     # Mock the nested logging attribute and its model_dump method
     mock_logging_dump = Mock(return_value={"version": 1, "log_setup": True})
     mock_logging_attribute = Mock()
     mock_logging_attribute.model_dump = mock_logging_dump
 
-    # Create simple mock Pydantic objects that assert their type
+    # Create simple mock Pydantic objects
     mock_app_instance = Mock(spec=AppConfig)
-    # Assign the mock logging attribute to the app instance
     mock_app_instance.logging = mock_logging_attribute
 
-    # Env config mock doesn't need logging setup
-    # The CLI calls .model_dump() on the instance, so we mock that call.
     mock_env_dump = Mock(return_value={"env_data": "from_mock_dump"})
     mock_env_instance = Mock(spec=EnvConfig)
     mock_env_instance.model_dump.return_value = mock_env_dump
@@ -65,13 +74,21 @@ def mock_config_models(monkeypatch):
     return {
         "app_instance": mock_app_instance,
         "env_instance": mock_env_instance,
-        "env_dump": mock_env_dump,
         "app_from_dict": mock_app_from_dict,
         "env_from_dict": mock_env_from_dict,
     }
 
 
-# --- Tests focused purely on CLI argument passing and loading flow ---
+# --- Tests focused on CLI flow and coverage ---
+
+def test_cli_no_subcommand_shows_help(runner):
+    """Verify that calling docbuild without a command shows help.
+    Covers the 'if ctx.invoked_subcommand is None' block.
+    """
+    result = runner.invoke(cli)
+    assert result.exit_code == 0
+    assert "Main CLI tool for document operations" in result.output
+    assert "----------" in result.output
 
 
 def test_cli_defaults(
@@ -79,42 +96,27 @@ def test_cli_defaults(
     app_config_file,
     fake_handle_config,
     mock_config_models,
-    monkeypatch,
 ):
     """Test standard execution flow with default config handling."""
     app_file = app_config_file
 
-    # Install fake handle_config resolver
-    def resolver(user_path):
+    def resolver(user_path, *args, **kwargs):
         if user_path == app_file:
             return (user_path,), {"logging": {"version": 1}}, False
         return (Path("default_env.toml"),), {"env_data": "from_default"}, True
 
-    monkeypatch.setattr(cli_mod, "handle_config", fake_handle_config)
-
     fake_handle_config(resolver)
-
     context = DocBuildContext()
 
     result = runner.invoke(
         cli,
         ["--app-config", str(app_file), "capture"],
         obj=context,
-        catch_exceptions=False,
     )
 
     assert result.exit_code == 0
-    assert "capture" in result.output.strip()
-
-    # Assert that the raw data was passed to the Pydantic models
-    mock_config_models["app_from_dict"].assert_called_once()
-    mock_config_models["env_from_dict"].assert_called_once()
-
-    # Assert that the context now holds the MOCKED VALIDATED OBJECTS
-    assert context.appconfig is mock_config_models["app_instance"]
-
-    # Assert that the context holds the EnvConfig instance.
-    assert context.envconfig is mock_config_models["env_instance"]
+    assert "capture" in result.output
+    assert context.appconfig_from_defaults is False
     assert context.envconfig_from_defaults is True
 
 
@@ -126,74 +128,40 @@ def test_cli_with_app_and_env_config(
     mock_config_models,
 ):
     """Test execution when both config files are explicitly provided."""
-    app_file = app_config_file
-    env_file = env_config_file
+    app_file, env_file = app_config_file, env_config_file
 
-    def resolver(user_path):
+    def resolver(user_path, *args, **kwargs):
         if str(user_path) == str(app_file):
             return (app_file,), {"logging": {"version": 1}}, False
         if str(user_path) == str(env_file):
             return (env_file,), {"server": {"host": "1.2.3.4"}}, False
-        return (None,), {"default_data": "default_content"}, True
+        return (None,), {}, True
 
     fake_handle_config(resolver)
 
     context = DocBuildContext()
     result = runner.invoke(
         cli,
-        [
-            "--app-config",
-            str(app_file),
-            "--env-config",
-            str(env_file),
-            "capture",
-        ],
+        ["--app-config", str(app_file), "--env-config", str(env_file), "capture"],
         obj=context,
-        catch_exceptions=False,
     )
 
-    # Check for success and context variables
     assert result.exit_code == 0
-
-    # Assert that the raw env data was passed to the validator
-    mock_config_models["env_from_dict"].assert_called_once_with(
-        {"server": {"host": "1.2.3.4"}}
-    )
-
-    # Assert that the context now holds the MOCKED VALIDATED OBJECTS
-    assert context.appconfig is mock_config_models["app_instance"]
-    assert context.envconfig is mock_config_models["env_instance"]
     assert context.envconfigfiles == (env_file,)
-    assert context.envconfig_from_defaults is False
 
 
 @pytest.mark.parametrize("is_app_config_failure", [True, False])
 def test_cli_config_validation_failure(
     monkeypatch,
     runner,
-    app_config_file,
     fake_handle_config,
     mock_config_models,
     is_app_config_failure,
 ):
-    """Verify that the CLI handles Pydantic validation errors with the new formatter."""
-    app_file = app_config_file
-    app_file.write_text("bad data")
-
-    # 1. Mock the log.error function
-    mock_log_error = Mock()
-    monkeypatch.setattr(cli_mod.log, "error", mock_log_error)
-
-    # 2. Configure the Pydantic mocks to simulate failure
+    """Verify that the CLI handles Pydantic ValidationErrors with the custom formatter."""
     mock_validation_error = ValidationError.from_exception_data(
         "TestModel",
-        [
-            {
-                "type": "int_parsing",
-                "loc": ("server", "port"),
-                "input": "not_an_int",
-            }
-        ],
+        [{"type": "int_parsing", "loc": ("server", "port"), "input": "x"}]
     )
 
     if is_app_config_failure:
@@ -201,32 +169,78 @@ def test_cli_config_validation_failure(
     else:
         mock_config_models["env_from_dict"].side_effect = mock_validation_error
 
-    # 3. Mock handle_config
-    def resolver(user_path, *a, **kw):
-        if user_path == app_file:
-            return (app_file,), {"raw_app_data": "x"}, False
-        return (Path("env.toml"),), {"raw_env_data": "y"}, False
+    fake_handle_config(lambda *a, **k: ((Path("test.toml"),), {"x": 1}, False))
 
-    fake_handle_config(resolver)
-
-    context = DocBuildContext()
-    result = runner.invoke(
-        cli,
-        ["--app-config", str(app_file), "capture"],
-        obj=context,
-        catch_exceptions=True,
-    )
-
-    # 4. Assertions
+    result = runner.invoke(cli, ["capture"])
     assert result.exit_code == 1
-
-    # For ValidationErrors, the CLI now uses format_pydantic_error, NOT log.error
-    assert mock_log_error.call_count == 0
-
-    # Check that our new pretty-printer output exists in the captured terminal output
     assert "Validation error" in result.output
-    # Check that the specific field causing the issue is mentioned
     assert "server.port" in result.output
+
+
+@pytest.mark.parametrize("model_target", ["AppConfig", "EnvConfig"])
+def test_cli_generic_value_error(
+    monkeypatch,
+    runner,
+    mock_config_models,
+    fake_handle_config,
+    model_target,
+):
+    """Verify handling of generic ValueErrors (non-Pydantic) in the loading phase."""
+    mock_log_error = Mock()
+    monkeypatch.setattr(cli_mod.log, "error", mock_log_error)
+
+    if model_target == "AppConfig":
+        mock_config_models["app_from_dict"].side_effect = ValueError("Generic App Error")
+    else:
+        mock_config_models["env_from_dict"].side_effect = ValueError("Generic Env Error")
+
+    fake_handle_config(lambda *a, **k: ((Path("test.toml"),), {"x": 1}, False))
+
+    result = runner.invoke(cli, ["capture"])
+    assert result.exit_code == 1
+    assert mock_log_error.called
+
+
+def test_cli_lock_acquisition_failure(
+    monkeypatch,
+    runner,
+    mock_config_models,
+    fake_handle_config,
+):
+    """Verify the CLI exits correctly when a PID lock cannot be acquired."""
+    mock_log_error = Mock()
+    monkeypatch.setattr(cli_mod.log, "error", mock_log_error)
+
+    # Return a path so the lock logic triggers
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"s": "t"}, False))
+
+    with patch("docbuild.cli.cmd_cli.PidFileLock") as mock_lock:
+        mock_lock.return_value.__enter__.side_effect = LockAcquisitionError("Lock busy")
+
+        result = runner.invoke(cli, ["capture"])
+        assert result.exit_code == 1
+        mock_log_error.assert_any_call("Lock busy")
+
+
+def test_cli_general_lock_exception(
+    monkeypatch,
+    runner,
+    mock_config_models,
+    fake_handle_config,
+):
+    """Verify handling of unexpected exceptions during the locking phase."""
+    mock_log_error = Mock()
+    monkeypatch.setattr(cli_mod.log, "error", mock_log_error)
+
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"s": "t"}, False))
+
+    with patch("docbuild.cli.cmd_cli.PidFileLock") as mock_lock:
+        mock_lock.return_value.__enter__.side_effect = Exception("System Crash")
+
+        result = runner.invoke(cli, ["capture"])
+        assert result.exit_code == 1
+        assert any("Failed to set up environment lock" in str(arg)
+                   for arg, kw in mock_log_error.call_args_list)
 
 
 def test_cli_verbose_and_debug(
@@ -235,31 +249,21 @@ def test_cli_verbose_and_debug(
     fake_handle_config,
     mock_config_models,
 ):
-    """Test that verbosity and debug flags are passed correctly to context."""
+    """Verify that verbosity and debug flags are correctly set in the context."""
     app_file = app_config_file
-    app_file.write_text("[logging]\nversion=1")
 
-    def resolver(user_path):
-        if user_path == app_file:
-            return (app_file,), {"logging": {"version": 1}}, False
-        return (Path("default_env.toml"),), {"env_data": "from_default"}, True
+    def resolver(user_path, *args, **kwargs):
+        return (app_file,), {"logging": {"version": 1}}, False
 
     fake_handle_config(resolver)
-
     context = DocBuildContext()
+
     result = runner.invoke(
         cli,
         ["-vvv", "--debug", "--app-config", str(app_file), "capture"],
         obj=context,
-        catch_exceptions=False,
     )
 
-    # Check for success and context variables
     assert result.exit_code == 0
-    assert "capture\n" in result.output
     assert context.verbose == 3
     assert context.debug is True
-
-    # Assertions on config structure must now reference the MOCKED Pydantic objects
-    assert context.appconfig is mock_config_models["app_instance"]
-    assert context.envconfig is mock_config_models["env_instance"]

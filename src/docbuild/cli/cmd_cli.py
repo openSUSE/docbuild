@@ -48,7 +48,7 @@ def _setup_console() -> None:
     install_traceback(console=CONSOLE, show_locals=True)
 
 
-def _handle_validation_error(
+def handle_validation_error(
     e: Exception,
     model_class: type[BaseModel],
     config_files: Sequence[Path] | None,
@@ -59,6 +59,14 @@ def _handle_validation_error(
 
     Outsourced logic to avoid code duplication between App and Env config phases.
     Using Sequence[Path] ensures compatibility with both lists and tuples.
+    :param e: The exception that was raised during validation.
+    :param model_class: The Pydantic model class that was being validated
+      (AppConfig or EnvConfig).
+    :param config_files: The list of config files that were attempted to be loaded, used for error context.
+    :param verbose: The verbosity level from the CLI options, which can be
+      used to control the level of detail in the error output.
+    :param ctx: The Click context, used to exit the CLI with an appropriate
+      status code after handling the error.
     """
     config_label = "Application" if model_class == AppConfig else "Environment"
 
@@ -131,7 +139,16 @@ def cli(
     env_config: Path,
     **kwargs: dict,
 ) -> None:
-    """Acts as a main entry point for CLI tool."""
+    """Acts as a main entry point for CLI tool.
+
+    :param ctx: The Click context object.
+    :param verbose: The verbosity level.
+    :param dry_run: If set, just pretend to run the command without making any changes.
+    :param debug: If set, enable debug mode.
+    :param app_config: Filename to the application TOML config file.
+    :param env_config: Filename to a environment's TOML config file.
+    :param kwargs: Additional keyword arguments.
+    """
     if ctx.invoked_subcommand is None:
         click.echo(10 * "-")
         click.echo(ctx.get_help())
@@ -163,7 +180,7 @@ def cli(
     try:
         context.appconfig = AppConfig.from_dict(raw_appconfig)
     except (ValueError, ValidationError) as e:
-        _handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
+        handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
 
     # 3. Setup logging using the validated config object
     logging_config = context.appconfig.logging.model_dump(
@@ -189,7 +206,7 @@ def cli(
     try:
         context.envconfig = EnvConfig.from_dict(raw_envconfig)
     except (ValueError, ValidationError) as e:
-        _handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
+        handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
 
     env_config_path = (context.envconfigfiles or [None])[0]
 
