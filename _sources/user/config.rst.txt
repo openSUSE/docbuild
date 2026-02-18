@@ -48,7 +48,7 @@ to the user running the script.
 Validating the Configuration
 -----------------------------
 
-Before docbuild executes any commands, it validates the provided configuration
+Before ``docbuild`` executes any commands, it validates the provided configuration
 file against a predefined :term:`Pydantic` model.
 
 The validation checks for different aspects of the configuration, such as:
@@ -59,11 +59,43 @@ The validation checks for different aspects of the configuration, such as:
   required.
 * Correct use of placeholders.
 
+Detailed Validation Feedback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-..
-   TODO: Add a link to the TOML env config reference, add an example of
-   a validation error message, and explain how to fix common issues.
-   a validation error message, and explain how to fix common issues.
+If the configuration is invalid, the application provides a structured, 
+color-coded error report to help you identify and fix the issues. Each error 
+includes:
+
+* **Location**: The exact path in the TOML file (e.g., ``server.host``).
+* **Field Info**: A human-readable title and description of the field's purpose.
+* **Error Detail**: A specific message explaining why the value failed validation.
+* **Documentation Link**: A direct URL to a reference page with more details 
+  on how to resolve that specific error type.
+
+Example error output:
+
+.. code-block:: text
+
+    1 Validation error in config file 'env.devel.toml':
+
+    (1) In 'server.enable_mail':
+        Input should be a valid boolean, unable to interpret input
+        Expected: Enable Email
+        Description: Flag to enable email sending features.
+        See: https://opensuse.github.io/docbuild/latest/errors/bool_parsing.html
+
+Fixing Common Issues
+~~~~~~~~~~~~~~~~~~~~
+
+If you encounter validation errors, check the following common causes:
+
+* **Missing Keys**: Ensure all mandatory fields (like ``paths.root_config_dir``) are defined.
+* **Typing Errors**: Ensure booleans (``true``/``false``) and integers are not enclosed 
+  in quotes.
+* **Permission Issues**: If a path error occurs, verify that the user running 
+  ``docbuild`` has the necessary read/write permissions for the specified directory.
+* **Circular Placeholders**: Ensure that your static placeholders do not point 
+  to each other in a loop (e.g., Key A referencing Key B, which references Key A).
 
 
 .. _config-placeholders:
@@ -119,7 +151,6 @@ Static placeholders follow a specific syntax:
 
      [paths]
      base_cache_dir = "/tmp/cache"
-     base_server_cache_dir = "{base_cache_dir}/{server.name}"
      base_server_cache_dir = "{base_cache_dir}/{server.name}"
 
   In this example, the key ``base_server_cache_dir`` uses the

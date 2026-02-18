@@ -14,11 +14,28 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_cli.handle_validation_error
    docbuild.cli.cmd_cli.cli
 
 
 Module Contents
 ---------------
+
+.. py:function:: handle_validation_error(e: Exception, model_class: type[pydantic.BaseModel], config_files: collections.abc.Sequence[pathlib.Path] | None, verbose: int, ctx: click.Context) -> None
+
+   Format validation errors and exit the CLI.
+
+   Outsourced logic to avoid code duplication between App and Env config phases.
+   Using Sequence[Path] ensures compatibility with both lists and tuples.
+   :param e: The exception that was raised during validation.
+   :param model_class: The Pydantic model class that was being validated
+     (AppConfig or EnvConfig).
+   :param config_files: The list of config files that were attempted to be loaded, used for error context.
+   :param verbose: The verbosity level from the CLI options, which can be
+     used to control the level of detail in the error output.
+   :param ctx: The Click context, used to exit the CLI with an appropriate
+     status code after handling the error.
+
 
 .. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, **kwargs: dict) -> None
 

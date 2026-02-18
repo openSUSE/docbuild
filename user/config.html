@@ -504,7 +504,7 @@ to the user running the script.</p>
 </section>
 <section id="validating-the-configuration">
 <span id="config-validation"></span><h1>Validating the Configuration<a class="headerlink" href="#validating-the-configuration" title="Link to this heading">#</a></h1>
-<p>Before docbuild executes any commands, it validates the provided configuration
+<p>Before <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> executes any commands, it validates the provided configuration
 file against a predefined <a class="reference internal" href="../glossary.html#term-Pydantic"><span class="xref std std-term">Pydantic</span></a> model.</p>
 <p>The validation checks for different aspects of the configuration, such as:</p>
 <ul class="simple">
@@ -514,6 +514,42 @@ file against a predefined <a class="reference internal" href="../glossary.html#t
 required.</p></li>
 <li><p>Correct use of placeholders.</p></li>
 </ul>
+<section id="detailed-validation-feedback">
+<h2>Detailed Validation Feedback<a class="headerlink" href="#detailed-validation-feedback" title="Link to this heading">#</a></h2>
+<p>If the configuration is invalid, the application provides a structured,
+color-coded error report to help you identify and fix the issues. Each error
+includes:</p>
+<ul class="simple">
+<li><p><strong>Location</strong>: The exact path in the TOML file (e.g., <code class="docutils literal notranslate"><span class="pre">server.host</span></code>).</p></li>
+<li><p><strong>Field Info</strong>: A human-readable title and description of the field’s purpose.</p></li>
+<li><p><strong>Error Detail</strong>: A specific message explaining why the value failed validation.</p></li>
+<li><p><strong>Documentation Link</strong>: A direct URL to a reference page with more details
+on how to resolve that specific error type.</p></li>
+</ul>
+<p>Example error output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1 Validation error in config file &#39;env.devel.toml&#39;:
+
+(1) In &#39;server.enable_mail&#39;:
+    Input should be a valid boolean, unable to interpret input
+    Expected: Enable Email
+    Description: Flag to enable email sending features.
+    See: https://opensuse.github.io/docbuild/latest/errors/bool_parsing.html
+</pre></div>
+</div>
+</section>
+<section id="fixing-common-issues">
+<h2>Fixing Common Issues<a class="headerlink" href="#fixing-common-issues" title="Link to this heading">#</a></h2>
+<p>If you encounter validation errors, check the following common causes:</p>
+<ul class="simple">
+<li><p><strong>Missing Keys</strong>: Ensure all mandatory fields (like <code class="docutils literal notranslate"><span class="pre">paths.root_config_dir</span></code>) are defined.</p></li>
+<li><p><strong>Typing Errors</strong>: Ensure booleans (<code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code>) and integers are not enclosed
+in quotes.</p></li>
+<li><p><strong>Permission Issues</strong>: If a path error occurs, verify that the user running
+<code class="docutils literal notranslate"><span class="pre">docbuild</span></code> has the necessary read/write permissions for the specified directory.</p></li>
+<li><p><strong>Circular Placeholders</strong>: Ensure that your static placeholders do not point
+to each other in a loop (e.g., Key A referencing Key B, which references Key A).</p></li>
+</ul>
+</section>
 </section>
 <section id="using-placeholders">
 <span id="config-placeholders"></span><h1>Using Placeholders<a class="headerlink" href="#using-placeholders" title="Link to this heading">#</a></h1>
@@ -552,7 +588,6 @@ For example, assume you have a configuration key <code class="docutils literal n
 <span class="k">[paths]</span>
 <span class="hll"><span class="n">base_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/tmp/cache&quot;</span>
 </span><span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{server.name}&quot;</span>
-<span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{server.name}&quot;</span>
 </pre></div>
 </div>
 <p>In this example, the key <code class="docutils literal notranslate"><span class="pre">base_server_cache_dir</span></code> uses the
@@ -639,7 +674,11 @@ between configurations without needing to remember the exact command syntax.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Configuring the Tool</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#key-naming-conventions">Key Naming Conventions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-configuration">Validating the Configuration</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-the-configuration">Validating the Configuration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#detailed-validation-feedback">Detailed Validation Feedback</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fixing-common-issues">Fixing Common Issues</a></li>
+</ul>
+</li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-placeholders">Using Placeholders</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#viewing-the-environment-configuration">Viewing the Environment Configuration</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-multiple-environment-configurations">Using Multiple Environment Configurations</a></li>

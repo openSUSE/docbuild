@@ -42,6 +42,7 @@ Attributes
    docbuild.constants.BASE_LOG_DIR
    docbuild.constants.BASE_LOCK_DIR
    docbuild.constants.XMLDATADIR
+   docbuild.constants.DEFAULT_ERROR_LIMIT
 
 
 Module Contents
@@ -214,5 +215,12 @@ Module Contents
 .. py:data:: XMLDATADIR
 
    Directory where additional files (RNC, XSLT) for XML processing are stored.
+
+
+.. py:data:: DEFAULT_ERROR_LIMIT
+   :value: 5
+
+
+   The maximum number of validation errors to display before truncating the output.
 
 
