@@ -1,6 +1,6 @@
 """Pydantic models for the metadata manifest structure."""
 
-from collections.abc import Generator
+from collections.abc import Iterable
 from datetime import date
 from typing import ClassVar, Self
 
@@ -303,10 +303,10 @@ class Manifest(BaseModel):
     version: str
     lifecycle: str | LifecycleFlag = Field(default=LifecycleFlag.unknown)
     hide_productname: bool = Field(default=False, alias="hide-productname")
-    descriptions: list[Description] = Field(default_factory=list)
-    categories: list[Category] = Field(default_factory=list)
-    documents: list[Document] = Field(default_factory=list)
-    archives: list[Archive] = Field(default_factory=list)
+    descriptions: Iterable[Description] = Field(default_factory=list)
+    categories: Iterable[Category] = Field(default_factory=list)
+    documents: Iterable[Document] = Field(default_factory=list)
+    archives: Iterable[Archive] = Field(default_factory=list)
 
 
 if __name__ == "__main__":  # pragma: nocover
