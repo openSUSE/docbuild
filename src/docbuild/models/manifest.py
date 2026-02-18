@@ -11,6 +11,7 @@ from pydantic import (
     SerializationInfo,
     field_serializer,
     field_validator,
+    ConfigDict,
     # model_validator,
 )
 
@@ -302,12 +303,17 @@ class Manifest(BaseModel):
     acronym: str
     version: str
     lifecycle: str | LifecycleFlag = Field(default=LifecycleFlag.unknown)
+    # Ensure this is defined exactly like this:
     hide_productname: bool = Field(default=False, alias="hide-productname")
     descriptions: list[Description] = Field(default_factory=list)
     categories: list[Category] = Field(default_factory=list)
     documents: list[Document] = Field(default_factory=list)
     archives: list[Archive] = Field(default_factory=list)
 
+    model_config = ConfigDict(
+        populate_by_name=True,
+        str_strip_whitespace=True
+    )
 
 if __name__ == "__main__":  # pragma: nocover
     from rich import print  # noqa: A004

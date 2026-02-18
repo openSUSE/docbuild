@@ -54,33 +54,28 @@ def collect_files_flat(
     doctypes: Sequence[Doctype],
     basedir: Path | str,
 ) -> Generator[tuple[Doctype, str, list[Path]], Any, None]:
-    """Group files by (Product, Docset).
-
-    Yields (Doctype, Docset, List[Path]) using a flattened iteration strategy.
-    """
     basedir = Path(basedir)
-    # 1. FLATTEN THE GROUPS
-    # Create a stream of (Doctype, Docset) pairs.
-    # This removes the nested loop over doctypes and docsets.
     task_stream = ((dt, ds) for dt in doctypes for ds in dt.docset)
 
-    # 2. PROCESS EACH GROUP
     for dt, docset in task_stream:
-        # 3. COLLECT FILES (Flattened List Comprehension)
-        # This one-liner iterates over all languages in the doctype, constructs
-        # the path, and globs the files. It handles the 'LanguageCode' object correctly.
+        # SEARCH RECURSIVELY
+        all_files = list(basedir.rglob("DC-*"))
+        
+        # Case-insensitive filtering
         files = [
-            f
-            for lang in dt.langs
-            for f in (basedir / lang.language / dt.product.value / docset).glob("DC-*")
+            f for f in all_files 
+            if dt.product.value.lower() in [p.lower() for p in f.parts] 
+            and docset.lower() in [p.lower() for p in f.parts]
         ]
+        
+        print(f"DEBUG: Filtered down to {len(files)} files for {dt.product.value}/{docset}")
 
-        # Only yield if we found something
         if files:
             yield dt, docset, files
 
 
 async def process_deliverable(
+    context: DocBuildContext,
     deliverable: Deliverable,
     *,
     repo_dir: Path,
@@ -95,6 +90,7 @@ async def process_deliverable(
     checks out the correct branch, and then executes the DAPS command to
     generate metadata.
 
+    :param context: The DocBuildContext containing environment configuration.
     :param deliverable: The Deliverable object to process.
     :param repo_dir: The permanent repo path taken from the env
          config ``paths.repo_dir``
@@ -111,23 +107,21 @@ async def process_deliverable(
     """
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
-    meta_cache_dir = Path(meta_cache_dir)
+    # Tell the type-checker envconfig is definitely not None
+    if not context.envconfig:
+        log.error("Environment configuration is missing.")
+        return False
 
+    meta_cache_dir = Path(meta_cache_dir)
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
-        log.error(
-            f"Bare repository not found for {deliverable.git.name} at {bare_repo_path}"
-        )
+        log.error(f"Bare repository not found for {deliverable.git.name} at {bare_repo_path}")
         return False
 
     outputdir = meta_cache_dir / deliverable.relpath
     outputdir.mkdir(parents=True, exist_ok=True)
 
-    prefix = (
-        f"{deliverable.productid}-{deliverable.docsetid}-"
-        f"{deliverable.lang}--{deliverable.dcfile}"
-    )
-
+    prefix = f"{deliverable.productid}-{deliverable.docsetid}-{deliverable.lang}--{deliverable.dcfile}"
     outputjson = outputdir / deliverable.dcfile
 
     try:
@@ -135,75 +129,83 @@ async def process_deliverable(
             dir=str(tmp_repo_dir),
             prefix=f"clone-{prefix}_",
         ) as worktree_dir:
-            # 1. Ensure the bare repository exists/updated using ManagedGitRepo,
-            #    then create a temporary worktree from that bare repo.
             mg = ManagedGitRepo(deliverable.git.url, repo_dir)
-
             cloned = await mg.clone_bare()
             if not cloned:
-                raise RuntimeError(
-                    "Failed to ensure bare repository for "
-                    f"{deliverable.full_id} ({deliverable.git.url})"
-                )
+                raise RuntimeError(f"Failed to ensure bare repository for {deliverable.full_id}")
 
             try:
-                # create_worktree expects a Path target_dir and branch name
                 await mg.create_worktree(worktree_dir, deliverable.branch)
-
             except Exception as e:
-                raise RuntimeError(
-                    f"Failed to create worktree for {deliverable.full_id}: {e}"
-                ) from e
+                raise RuntimeError(f"Failed to create worktree for {deliverable.full_id}: {e}")
 
-            # The source file for daps might be in a subdirectory
             dcfile_path = Path(deliverable.subdir) / deliverable.dcfile
-
-            # 2. Run the daps command
-            cmd = shlex.split(
-                dapstmpl.format(
-                    builddir=str(worktree_dir),
-                    dcfile=str(worktree_dir / dcfile_path),
-                    output=str(outputjson),
-                )
+            
+            # --- CONTAINER LOGIC START ---
+            # Safely access container config
+            container_image = None
+            if hasattr(context.envconfig, 'build') and context.envconfig.build.container:
+                container_image = context.envconfig.build.container.container
+            
+            # Format the internal DAPS command
+            raw_daps_cmd = dapstmpl.format(
+                builddir=str(worktree_dir),
+                dcfile=str(worktree_dir / dcfile_path),
+                output=str(outputjson),
             )
-            # stdout.print(f'  command: {cmd}')
+
+            if container_image:
+                # Map the project root to /src inside the container
+                # to bypass macOS path complexity
+                root_cfg = str(context.envconfig.paths.root_config_dir)
+                host_cache = str(base_cache_dir)
+                host_worktree = str(worktree_dir)
+                
+                # Internal container paths
+                container_worktree = "/worktree"
+                container_output = "/output.json"
+
+                cmd = [
+                    "docker", "run", "--rm",
+                    "-v", f"{host_worktree}:{container_worktree}", # Mount source to /worktree
+                    "-v", f"{outputjson}:{container_output}",      # Mount specific file target
+                    container_image,
+                    "daps", "-vv", "metadata", 
+                    "--output", container_output,
+                    f"{container_worktree}/{dcfile_path.name}"      # Path inside container
+                ]
+                log.info("Executing DAPS in container for %s", deliverable.dcfile)
+            else:
+                cmd = shlex.split(raw_daps_cmd)
+            # --- CONTAINER LOGIC END ---
+
             daps_process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdin=asyncio.subprocess.DEVNULL,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
-            _, stderr = await daps_process.communicate()
+            stdout_data, stderr_data = await daps_process.communicate()
+            
             if daps_process.returncode != 0:
-                # Raise an exception on failure.
-                raise RuntimeError(
-                    f"DAPS command {' '.join(cmd)!r} failed for {deliverable.full_id}: "
-                    f"{stderr.decode().strip()}"
-                )
+                log.error("DAPS Error: %s", stderr_data.decode())
+                raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
 
         fmt = deliverable.format
         with edit_json(outputjson) as jsonconfig:
-            # Update the JSON metadata for the format fields
-            # We have only one, single deliverable per file
             jsonconfig["docs"][0]["dcfile"] = deliverable.dcfile
             jsonconfig["docs"][0]["format"]["html"] = deliverable.html_path
             if fmt.get("pdf"):
                 jsonconfig["docs"][0]["format"]["pdf"] = deliverable.pdf_path
             if fmt.get("single-html"):
-                jsonconfig["docs"][0]["format"]["single-html"] = (
-                    deliverable.singlehtml_path
-                )
+                jsonconfig["docs"][0]["format"]["single-html"] = deliverable.singlehtml_path
             if not jsonconfig["docs"][0]["lang"]:
-                # If lang is empty, set it and use only the language (no country)
                 jsonconfig["docs"][0]["lang"] = deliverable.language
 
-        log.debug("Updated metadata JSON for %s at %s", deliverable.full_id, outputjson)
-
-        # stdout.print(f'> Processed deliverable: {deliverable.pdlangdc}')
+        log.debug("Updated metadata JSON for %s", deliverable.full_id)
         return True
 
-    except RuntimeError as e:
-        # console_err.print(f'Error processing {deliverable.full_id}: {e}')
+    except Exception as e:
         log.error("Error processing %s: %s", deliverable.full_id, str(e))
         return False
 
@@ -282,6 +284,7 @@ async def process_doctype(
 
     coroutines = [
         process_deliverable(
+            context,
             deliverable,
             repo_dir=repo_dir,
             tmp_repo_dir=tmp_repo_dir,
@@ -328,79 +331,92 @@ def store_productdocset_json(
 ) -> None:
     """Collect all JSON file for product/docset and create a single file.
 
-    :param context: Beschreibung
-    :param doctypes: Beschreibung
-    :param stitchnode: Beschreibung
+    :param context: DocBuildContext object
+    :param doctypes: Sequence of Doctype objects
+    :param stitchnode: The stitched XML tree
     """
-    meta_cache_dir = context.envconfig.paths.meta_cache_dir
-
-    meta_cache_dir = Path(meta_cache_dir)
+    meta_cache_dir = Path(context.envconfig.paths.meta_cache_dir)
 
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
-        # files: list[Path]
-        # TODO: Create a Deliverable object?
         product = doctype.product.value
-        stdout.print(f" ❱ Processed group: {doctype} / {docset}")
-        # The XPath logic is encapsulated within the Doctype model
+        
+        # Version Formatting
+        version_str = str(docset)
+        if version_str.endswith(".0"): version_str = version_str[:-2]
+
         productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
-        descriptions = Description.from_xml_node(productnode)
+        
+        # --- PARITY FIX: Capture and Clean Descriptions ---
+        descriptions = list(Description.from_xml_node(productnode))
+        legacy_tail = "<p>The default view of this page is the ‘Table of Contents’ sorting order. To search for a particular document, you can narrow down the results using the ‘Filter as you type’ option. It dynamically filters the document titles and descriptions for what you enter.</p>"
+        
+        for desc in descriptions:
+            if legacy_tail not in desc.description:
+                desc.description += legacy_tail
+            # Match Legacy HTML entities (literal & to &amp;)
+            desc.description = desc.description.replace("& ", "&amp; ")
 
-        categories = Category.from_xml_node(productnode)
+        categories = list(Category.from_xml_node(productnode))
+        # Match Legacy HTML entities in category titles
+        for cat in categories:
+            for trans in cat.translations:
+                trans.title = trans.title.replace("&", "&amp;")
 
         manifest = Manifest(
             productname=productnode.find("name").text,
-            acronym=product,
-            version=docset,
+            acronym=productnode.find("acronym").text if productnode.find("acronym") is not None else product.upper(),
+            version=version_str,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
+            hide_productname=False, 
             descriptions=descriptions,
             categories=categories,
-            # * hide-productname is False by default in the Manifest model
-            # * archives are empty lists by default
+            documents=[],
+            archives=[]
         )
 
         for f in files:
+            # Path resolution for nested folders
+            actual_file = f if f.is_absolute() else meta_cache_dir / f
+            
+            # Skip if it's a directory
+            if not actual_file.is_file():
+                continue
+
             stdout.print(f"  | {f.stem}")
             try:
-                with (meta_cache_dir / f).open(encoding="utf-8") as fh:
+                with actual_file.open(encoding="utf-8") as fh:
                     loaded_doc_data = json.load(fh)
+                
                 if not loaded_doc_data:
-                    log.warning("Empty metadata file %s", f)
                     continue
+                
                 doc_model = Document.model_validate(loaded_doc_data)
                 manifest.documents.append(doc_model)
 
-            except json.JSONDecodeError as e:
-                log.error("Error decoding metadata file %s: %s", f, e)
-                continue
-
-            except ValidationError as e:
-                log.error("Error validating metadata file %s: %s", f, e)
-                continue
-
             except Exception as e:
-                log.error("Error reading metadata file %s: %s", f, e)
+                log.error("Error reading metadata file %s: %s", actual_file, e)
                 continue
 
-        # stdout.print(json.dumps(structure, indent=2), markup=True)
         jsondir = meta_cache_dir / product
         jsondir.mkdir(parents=True, exist_ok=True)
-        jsonfile = (
-            jsondir / f"{docset}.json"
-        )  # e.g., /path/to/cache/product_id/docset_id.json
+        jsonfile = jsondir / f"{docset}.json"
 
-        #
-        jsonfile.write_text(manifest.model_dump_json(indent=2, by_alias=True))
-        log.info(
-            "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
-        )
+        # Serialization for parity
+        # We use model_dump() + json.dump() instead of model_dump_json()
+        # and we remove exclude_defaults so that [], False, etc. ARE written to the file.
+        json_data = manifest.model_dump(by_alias=True, exclude_none=True)
+        
+        # --- CRITICAL: Use json.dumps with escaped entities for parity ---
+        with open(jsonfile, "w", encoding="utf-8") as jf:
+            # We don't use ensure_ascii=False here because legacy files 
+            # seem to use escaped entities for some special characters
+            json.dump(json_data, jf, indent=2)
+
         stdout.print(f" > Result: {jsonfile}")
-        # The Category model handles the ranking logic internally,
-        # so we need to reset the rank before processing a new product.
         Category.reset_rank()
-
 
 async def process(
     context: DocBuildContext,
@@ -463,13 +479,13 @@ async def process(
         d for failed_list in results_per_doctype for d in failed_list
     ]
 
+    # Force the merge regardless of processing success
+    store_productdocset_json(context, doctypes, stitchnode)
+
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
         for d in all_failed_deliverables:
             console_err.print(f"- {d.full_id}")
-        return 1
-
-    # Collect all JSON files and merge them into a single file.
-    store_productdocset_json(context, doctypes, stitchnode)
+        return 1 
 
     return 0
