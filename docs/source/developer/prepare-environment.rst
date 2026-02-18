@@ -75,7 +75,7 @@ The following steps are recommended to set up your development environment:
       uv venv --prompt venv313 --python 3.13 .venv
 
    Keep in mind that the Python version used in the virtual environment should match the version specified in the :file:`pyproject.toml` file.
-   
+
    The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
    See file :file:`pyproject.toml` in ``project.requires-python`` for the exact version.
 
@@ -100,6 +100,8 @@ The following steps are recommended to set up your development environment:
 
 After completing these steps, your development environment is ready to go.
 
+
+.. _get-docserv-config:
 
 Getting Docserv's Config Files
 ------------------------------
