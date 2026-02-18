@@ -1,6 +1,6 @@
 """Pydantic models for the metadata manifest structure."""
 
-from collections.abc import Iterable
+from collections.abc import Generator, Iterable
 from datetime import date
 from typing import ClassVar, Self
 

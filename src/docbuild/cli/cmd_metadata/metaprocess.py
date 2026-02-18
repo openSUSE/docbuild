@@ -347,6 +347,7 @@ def store_productdocset_json(
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
         descriptions = Description.from_xml_node(productnode)
+
         categories = Category.from_xml_node(productnode)
 
         manifest = Manifest(
@@ -396,6 +397,9 @@ def store_productdocset_json(
             "Wrote merged metadata JSON for %s/%s => %s", product, docset, jsonfile
         )
         stdout.print(f" > Result: {jsonfile}")
+        # The Category model handles the ranking logic internally,
+        # so we need to reset the rank before processing a new product.
+        Category.reset_rank()
 
 
 async def process(
