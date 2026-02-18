@@ -1,0 +1,1 @@
+Implement manifest parity with legacy JSON portal configuration, including support for nested product metadata collection and containerized DAPS execution.

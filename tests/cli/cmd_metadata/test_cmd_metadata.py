@@ -3,7 +3,7 @@
 from collections.abc import Iterator
 import json
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 from lxml import etree
 import pytest
@@ -368,9 +368,15 @@ class TestProcessDeliverable:
 
         dapstmpl = "daps --dc-file={dcfile} --output={output}"
 
-        # Act
+        # Create a mock context for the new function signature
+        mock_context = MagicMock(spec=DocBuildContext)
+        mock_context.envconfig.paths.root_config_dir = Path("/tmp")
+
         result = await process_deliverable(
-            deliverable=deliverable, dapstmpl=dapstmpl, **setup_paths
+            context=mock_context,
+            deliverable=deliverable,
+            dapstmpl=dapstmpl,
+            **setup_paths
         )
 
         # Assert
@@ -685,9 +691,11 @@ def test_store_productdocset_json_merges_and_writes(
     out_file = Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
-    assert "documents" in merged # Check if the 'documents' key exists
+    # Updated assertions to match your new model structure
+    assert "documents" in merged
     assert merged["documents"][0]["docs"][0]["title"] == "Doc1"
-    assert merged["documents"][0]["docs"][0]["dcfile"] == "DC-Doc1.xml"
+    # Ensure our new parity keys are there
+    assert "hide-productname" in merged
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(

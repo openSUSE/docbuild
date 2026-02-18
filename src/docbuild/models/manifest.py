@@ -7,12 +7,12 @@ from typing import ClassVar, Self
 from lxml import etree
 from pydantic import (
     BaseModel,
+    ConfigDict,
+    # model_validator,
     Field,
     SerializationInfo,
     field_serializer,
     field_validator,
-    ConfigDict,
-    # model_validator,
 )
 
 from ..models.language import LanguageCode
