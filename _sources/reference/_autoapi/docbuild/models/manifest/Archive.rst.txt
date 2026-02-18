@@ -19,3 +19,9 @@ docbuild.models.manifest.Archive
            "zip": "/en-us/sles/16.0/sles-16.0-en-us.zip"
        }
 
+
+   .. py:method:: serialize_lang(value: docbuild.models.language.LanguageCode, info: pydantic.SerializationInfo) -> str
+
+      Serialize LanguageCode to a string like 'en-us'.
+
+

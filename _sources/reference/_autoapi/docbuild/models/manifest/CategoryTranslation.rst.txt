@@ -19,3 +19,9 @@ docbuild.models.manifest.CategoryTranslation
            "title": "About"
        }
 
+
+   .. py:method:: serialize_lang(value: docbuild.models.language.LanguageCode, info: pydantic.SerializationInfo) -> str
+
+      Serialize LanguageCode to a string like 'en-us'.
+
+

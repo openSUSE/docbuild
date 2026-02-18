@@ -617,6 +617,48 @@ configuration file. It contains information about the product,
 docset, language, branch, and other metadata related to the
 deliverable.</p>
 <dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.all_categories">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">all_categories</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.all_categories" title="Link to this definition">#</a></dt>
+<dd><p>Return the groups (formerly categories) of the deliverable.</p>
+<p>Yield all elements from the product and root node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yield<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The elements categories/category and category.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.categories">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">categories</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.categories" title="Link to this definition">#</a></dt>
+<dd><p>Return the groups (formerly categories) from the product node.</p>
+<p>Yield all elements under the product were this deliverable belongs to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yield<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The elements categories/category and category.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.categories_from_root">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">categories_from_root</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.categories_from_root" title="Link to this definition">#</a></dt>
+<dd><p>Return the groups (formerly categories) from the root node.</p>
+<p>Yield all elements under the root node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yield<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The elements categories/category and category.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.desc">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">desc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.desc" title="Link to this definition">#</a></dt>
+<dd><p>Return the &lt;desc&gt; from the product node.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productid">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">productid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productid" title="Link to this definition">#</a></dt>
 <dd><p>Return the product ID.</p>
@@ -905,6 +947,10 @@ then in the current language node.</p>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.all_categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.all_categories</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.categories</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.categories_from_root"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.categories_from_root</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.desc"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.desc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productname"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productname</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.docsetid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.docsetid</span></code></a></li>
