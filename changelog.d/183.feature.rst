@@ -1,1 +1,1 @@
-Implement manifest parity with legacy JSON portal configuration, including support for nested product metadata collection and containerized DAPS execution.
+Implement manifest parity with legacy JSON portal configuration, including support for nested product metadata collection, full locale (BCP 47) support, and a new manifest audit utility for structural verification.

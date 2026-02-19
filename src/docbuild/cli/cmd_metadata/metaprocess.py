@@ -103,7 +103,7 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
         if fmt.get("single-html"):
             doc["format"]["single-html"] = deliverable.singlehtml_path
         if not doc.get("lang"):
-            doc["lang"] = deliverable.language
+            doc["lang"] = deliverable.lang
 
 async def process_deliverable(
     context: DocBuildContext,
