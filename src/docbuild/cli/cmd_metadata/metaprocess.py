@@ -76,7 +76,7 @@ def collect_files_flat(
         if files:
             yield dt, docset, files
 
-def _get_daps_command(
+def get_daps_command(
     worktree_dir: Path,
     dcfile_path: Path,
     outputjson: Path,
@@ -91,7 +91,7 @@ def _get_daps_command(
     return shlex.split(raw_daps_cmd)
 
 
-def _update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
+def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
     """Update the generated metadata JSON with deliverable-specific details."""
     fmt = deliverable.format
     with edit_json(outputjson) as jsonconfig:
@@ -110,7 +110,7 @@ async def process_deliverable(
     deliverable: Deliverable,
     *,
     dapstmpl: str,
-) -> bool:
+) -> tuple[bool, Deliverable]:
     """Process a single deliverable asynchronously.
 
     This function creates a temporary clone of the deliverable's repository,
@@ -125,11 +125,11 @@ async def process_deliverable(
     """
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
-    # Simplified initialization per reviewer feedback
+    # Simplified initialization
     env = context.envconfig
     repo_dir = env.paths.repo_dir
     tmp_repo_dir = env.paths.tmp_repo_dir
-    meta_cache_dir = Path(env.paths.meta_cache_dir)
+    meta_cache_dir = env.paths.meta_cache_dir
 
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
@@ -157,7 +157,7 @@ async def process_deliverable(
             # Use absolute path within worktree to avoid DAPS "Missing DC-file" error
             full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.dcfile
 
-            cmd = _get_daps_command(
+            cmd = get_daps_command(
                 Path(worktree_dir),
                 full_dcfile_path,
                 outputjson,
@@ -165,8 +165,10 @@ async def process_deliverable(
             )
 
             daps_proc = await asyncio.create_subprocess_exec(
-                *cmd, stdin=asyncio.subprocess.DEVNULL,
-                stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+                *cmd,
+                stdin=asyncio.subprocess.DEVNULL,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
             )
             _, stderr_data = await daps_proc.communicate()
 
@@ -174,7 +176,7 @@ async def process_deliverable(
                 log.error("DAPS Error: %s", stderr_data.decode())
                 raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
 
-        _update_metadata_json(outputjson, deliverable)
+        update_metadata_json(outputjson, deliverable)
         log.debug("Updated metadata JSON for %s", deliverable.full_id)
         return True, deliverable
 
@@ -205,7 +207,8 @@ async def update_repositories(
 
     return res
 
-async def _run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
+
+async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
     """Execute tasks and stop immediately on the first failure."""
     failed: list[Deliverable] = []
     for task in asyncio.as_completed(tasks):
@@ -226,7 +229,7 @@ async def _run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
     return failed
 
 
-async def _run_tasks_collect_all(
+async def run_tasks_collect_all(
     tasks: list[asyncio.Task], deliverables: list[Deliverable]
 ) -> list[Deliverable]:
     """Execute all tasks and collect every failure encountered."""
@@ -248,8 +251,8 @@ async def _run_metadata_tasks(
 ) -> list[Deliverable]:
     """Execute metadata tasks using either fail-fast or collect-all strategy."""
     if exitfirst:
-        return await _run_tasks_fail_fast(tasks)
-    return await _run_tasks_collect_all(tasks, deliverables)
+        return await run_tasks_fail_fast(tasks)
+    return await run_tasks_collect_all(tasks, deliverables)
 
 async def process_doctype(
     root: etree._ElementTree,
@@ -307,7 +310,7 @@ def _apply_parity_fixes(descriptions: list, categories: list) -> None:
             trans.title = trans.title.replace("&", "&amp;")
 
 
-def _load_and_validate_documents(
+def load_and_validate_documents(
     files: list[Path],
     meta_cache_dir: Path,
     manifest: Manifest
@@ -348,19 +351,14 @@ def store_productdocset_json(
     :param doctypes: Sequence of Doctype objects
     :param stitchnode: The stitched XML tree
     """
-    # Aligning with reviewer suggestion to derive paths cleanly from context
     env = context.envconfig
     meta_cache_dir = Path(env.paths.meta_cache_dir)
 
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         product = doctype.product.value
 
-        # Version Formatting (Safety Fix)
-        # Only remove .0 if the docset appears to be a version number
-        # and not a purely alphanumeric identifier (Fixing dangerous remsuffix)
+        # Use the docset directly as the version string
         version_str = str(docset)
-        if version_str.replace('.', '', 1).isdigit() and version_str.endswith(".0"):
-            version_str = version_str.removesuffix(".0")
 
         productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
@@ -378,7 +376,7 @@ def store_productdocset_json(
             acronym=(
                 productnode.find("acronym").text
                 if productnode.find("acronym") is not None
-                else product.upper()
+                else product
             ),
             version=version_str,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
@@ -389,18 +387,20 @@ def store_productdocset_json(
             archives=[]
         )
 
-        # 3. Load and validate documents using helper (Specific exceptions handled inside)
-        _load_and_validate_documents(files, meta_cache_dir, manifest)
+        # 3. Load and validate documents using helper
+        load_and_validate_documents(files, meta_cache_dir, manifest)
 
         # 4. Save and export
         jsondir = meta_cache_dir / product
         jsondir.mkdir(parents=True, exist_ok=True)
         jsonfile = jsondir / f"{docset}.json"
 
-        # Exporting with aliases to maintain parity with legacy JSON keys
-        json_data = manifest.model_dump(by_alias=True, exclude_none=True)
+        # Exporting with aliases and INCLUDING defaults (dateModified, rank, isGate)
+        json_data = manifest.model_dump(by_alias=True)
+
         with jsonfile.open("w", encoding="utf-8") as jf:
-            json.dump(json_data, jf, indent=2)
+            # ensure_ascii=False ensures raw UTF-8 (e.g., "á" instead of "\u00e1")
+            json.dump(json_data, jf, indent=2, ensure_ascii=False)
 
         stdout.print(f" > Result: {jsonfile}")
         Category.reset_rank()

@@ -220,8 +220,9 @@ class SingleDocument(BaseModel):
     def serialize_date(self: Self, value: date | None, info: SerializationInfo) -> str:
         """Serialize date to 'YYYY-MM-DD' or an empty string if None."""
         if value is None:
-            return ""
-        return value.isoformat()
+            return ""  # This ensures the key exists as "" in JSON
+        # If it's already a string (from DAPS output), return it, otherwise isoformat
+        return value.isoformat() if hasattr(value, "isoformat") else str(value)
 
 
 class Product(BaseModel):
@@ -273,24 +274,20 @@ class Document(BaseModel):
     tasks: list[str] = Field(default_factory=list)
     products: list[Product] = Field(default_factory=list)
     doctypes: list[str] = Field(default_factory=list, alias="docTypes")
-    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGated")
-    rank: int | None = Field(default=None)
+    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGate")
+    rank: int | str | None = Field(default=None)
 
     @field_validator("rank", mode="before")
     @classmethod
     def coerce_rank(cls: type[Self], value: str | int | None) -> int | None:
-        """Coerce rank from string to int, handling empty strings."""
-        if isinstance(value, str):
-            if not value.strip():
-                return None
-            return int(value)
-        return value
+        """Coerce rank to an integer, treating empty strings or None as None to match legacy parity."""
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return None
+        return int(value)
 
     @field_serializer("rank")
-    def serialize_rank(
-        self: Self, value: int | str | None, info: SerializationInfo
-    ) -> str:
-        """Serialize rank to an empty string if None."""
+    def serialize_rank(self: Self, value: int | str | None, info: SerializationInfo) -> str:
+        """Serialize rank to an empty string if None to match legacy parity."""
         if value is None:
             return ""
         return str(value)
