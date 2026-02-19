@@ -292,8 +292,10 @@ async def process_doctype(
     # Complexity reduced by delegating task execution to the helper
     return await _run_metadata_tasks(tasks, deliverables, exitfirst)
 
-def _apply_parity_fixes(descriptions: list, categories: list) -> None:
+def apply_parity_fixes(descriptions: list, categories: list) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency."""
+    # TODO: These strings are hard-coded for legacy parity but should be moved to
+    # Docserv config files to allow for proper translation and localization.
     legacy_tail = (
         "<p>The default view of this page is the ```Table of Contents``` sorting order. "
         "To search for a particular document, you can narrow down the results using the "
@@ -368,7 +370,7 @@ def store_productdocset_json(
         # 1. Capture and Clean Descriptions/Categories using helper
         descriptions = list(Description.from_xml_node(productnode))
         categories = list(Category.from_xml_node(productnode))
-        _apply_parity_fixes(descriptions, categories)
+        apply_parity_fixes(descriptions, categories)
 
         # 2. Initialize Manifest
         manifest = Manifest(
