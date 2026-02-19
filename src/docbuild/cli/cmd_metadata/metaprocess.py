@@ -9,6 +9,7 @@ import shlex
 from typing import Any
 
 from lxml import etree
+from pydantic import ValidationError
 from rich.console import Console
 
 from ...config.xml.stitch import create_stitchfile
@@ -76,33 +77,15 @@ def collect_files_flat(
             yield dt, docset, files
 
 def _get_daps_command(
-    context: DocBuildContext,
     worktree_dir: Path,
     dcfile_path: Path,
     outputjson: Path,
     dapstmpl: str,
 ) -> list[str]:
-    """Construct the DAPS command for local or containerized execution."""
-    container_image = None
-    if hasattr(context.envconfig, 'build') and context.envconfig.build.container:
-        container_image = context.envconfig.build.container.container
-
-    if container_image:
-        container_worktree = "/worktree"
-        container_output = "/output.json"
-        return [
-            "docker", "run", "--rm",
-            "-v", f"{worktree_dir}:{container_worktree}",
-            "-v", f"{outputjson}:{container_output}",
-            container_image,
-            "daps", "-vv", "metadata",
-            "--output", container_output,
-            f"{container_worktree}/{dcfile_path.name}"
-        ]
-
+    """Construct the DAPS command for native execution."""
     raw_daps_cmd = dapstmpl.format(
         builddir=str(worktree_dir),
-        dcfile=str(worktree_dir / dcfile_path),
+        dcfile=str(dcfile_path),
         output=str(outputjson),
     )
     return shlex.split(raw_daps_cmd)
@@ -126,10 +109,6 @@ async def process_deliverable(
     context: DocBuildContext,
     deliverable: Deliverable,
     *,
-    repo_dir: Path,
-    tmp_repo_dir: Path,
-    base_cache_dir: Path,
-    meta_cache_dir: Path,
     dapstmpl: str,
 ) -> bool:
     """Process a single deliverable asynchronously.
@@ -140,38 +119,31 @@ async def process_deliverable(
 
     :param context: The DocBuildContext containing environment configuration.
     :param deliverable: The Deliverable object to process.
-    :param repo_dir: The permanent repo path taken from the env
-         config ``paths.repo_dir``
-    :param tmp_repo_dir: The temporary repo path taken from the env
-         config ``paths.tmp_repo_dir``
-    :param base_cache_dir: The base path of the cache directory taken
-         from the env config ``paths.base_cache_dir``
-    :param meta_cache_dir: The ath of the metadata directory taken
-         from the env config ``paths.meta_cache_dir``
-    :param dapstmp: A template string with the daps command and potential
-     placeholders
+    :param dapstmpl: A template string with the daps command and potential
+     placeholders.
     :return: True if successful, False otherwise.
-    :raises ValueError: If required configuration paths are missing.
     """
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
-    if not context.envconfig:
-        log.error("Environment configuration is missing.")
-        return False
+    # Simplified initialization per reviewer feedback
+    env = context.envconfig
+    repo_dir = env.paths.repo_dir
+    tmp_repo_dir = env.paths.tmp_repo_dir
+    meta_cache_dir = Path(env.paths.meta_cache_dir)
 
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
         log.error("Bare repository not found for %s at %s", deliverable.git.name, bare_repo_path)
-        return False
+        return False, deliverable
 
-    outputdir = Path(meta_cache_dir) / deliverable.relpath
+    outputdir = meta_cache_dir / deliverable.relpath
     outputdir.mkdir(parents=True, exist_ok=True)
     outputjson = outputdir / deliverable.dcfile
 
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(tmp_repo_dir),
-            prefix=f"clone-{deliverable.productid}-{deliverable.dcfile}_",
+            prefix=f"clone-{deliverable.productid}-{deliverable.docsetid}-{deliverable.lang}-{deliverable.dcfile}_",
         ) as worktree_dir:
             mg = ManagedGitRepo(deliverable.git.url, repo_dir)
             if not await mg.clone_bare():
@@ -182,8 +154,14 @@ async def process_deliverable(
             except Exception as e:
                 raise RuntimeError(f"Failed to create worktree for {deliverable.full_id}: {e}") from e
 
+            # Use absolute path within worktree to avoid DAPS "Missing DC-file" error
+            full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.dcfile
+
             cmd = _get_daps_command(
-                context, Path(worktree_dir), Path(deliverable.subdir) / deliverable.dcfile, outputjson, dapstmpl
+                Path(worktree_dir), 
+                full_dcfile_path, 
+                outputjson, 
+                dapstmpl
             )
 
             daps_proc = await asyncio.create_subprocess_exec(
@@ -198,12 +176,11 @@ async def process_deliverable(
 
         _update_metadata_json(outputjson, deliverable)
         log.debug("Updated metadata JSON for %s", deliverable.full_id)
-        return True
+        return True, deliverable
 
     except Exception as e:
         log.error("Error processing %s: %s", deliverable.full_id, str(e))
-        return False
-
+        return False, deliverable
 
 async def update_repositories(
     deliverables: list[Deliverable], bare_repo_dir: Path
@@ -241,28 +218,15 @@ async def process_doctype(
 
     :param root: The stitched XML node containing configuration.
     :param context: The DocBuildContext containing environment configuration.
-    :param doctypes: A tuple of Doctype objects to process.
+    :param doctype: The Doctype object to process.
     :param exitfirst: If True, stop processing on the first failure.
-    :return: True if all files passed validation, False otherwise
+    :param skip_repo_update: If True, do not fetch updates for the git repositories.
+    :return: A list of failed Deliverables.
     """
-    # Here you would implement the logic to process the doctypes
-    # and create metadata files based on the stitchnode and context.
-    # This is a placeholder for the actual implementation.
-    # stdout.print(f'Processing doctypes: {doctype}')
-    # xpath = doctype.xpath()
-    # print("XPath: ", xpath)
-    # stdout.print(f'XPath: {doctype.xpath()}', markup=False)
-
     env = context.envconfig
-
     repo_dir: Path = env.paths.repo_dir
-    base_cache_dir: Path = env.paths.base_cache_dir
-    # We retrieve the path.meta_cache_dir and fall back to path.base_cache_dir
-    # if not available:
-    meta_cache_dir: Path = env.paths.meta_cache_dir
-    # Cloned temporary repo:
-    tmp_repo_dir: Path = env.paths.tmp_repo_dir
 
+    # Extract all deliverables associated with this doctype from the XML
     deliverables: list[Deliverable] = await asyncio.to_thread(
         get_deliverable_from_doctype,
         root,
@@ -274,17 +238,14 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    # stdout.print(f'Found deliverables: {len(deliverables)}')
     dapsmetatmpl = env.build.daps.meta
 
+    # Cleaned up the call to match the new process_deliverable signature.
+    # Paths are now derived internally within process_deliverable from context.
     coroutines = [
         process_deliverable(
             context,
             deliverable,
-            repo_dir=repo_dir,
-            tmp_repo_dir=tmp_repo_dir,
-            base_cache_dir=base_cache_dir,
-            meta_cache_dir=meta_cache_dir,
             dapstmpl=dapsmetatmpl,
         )
         for deliverable in deliverables
@@ -294,27 +255,37 @@ async def process_doctype(
     failed_deliverables: list[Deliverable] = []
 
     if exitfirst:
-        # Fail-fast behavior
+        # Stop and cancel pending tasks on the first failure
         for task in asyncio.as_completed(tasks):
-            success, deliverable = await task
-            if not success:
-                failed_deliverables.append(deliverable)
-                # cancel others...
+            try:
+                # Success and deliverable come from the tuple returned by process_deliverable
+                success, deliverable = await task
+                if not success:
+                    failed_deliverables.append(deliverable)
+                    for t in tasks:
+                        if not t.done():
+                            t.cancel()
+                    break
+            except Exception as e:
+                log.error("Task failed unexpectedly: %s", e)
+                # If a task crashes, we still treat it as a failure for exitfirst
                 for t in tasks:
                     if not t.done():
                         t.cancel()
-                # Wait for cancellations to propagate
-                await asyncio.gather(*tasks, return_exceptions=True)
-                break  # Exit the loop on first failure
-
+                break
     else:
-        # Run all and collect all results
+        # Run all tasks and collect failures
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        failed_deliverables.extend(
-            deliverable
-            for deliverable, success in zip(deliverables, results, strict=False)
-            if not success
-        )
+        # We zip with deliverables to know which one failed if an Exception occurred
+        for deliverable, result in zip(deliverables, results, strict=False):
+            if isinstance(result, tuple):
+                success, res_deliverable = result
+                if not success:
+                    failed_deliverables.append(res_deliverable)
+            elif isinstance(result, Exception):
+                # If the task crashed (e.g. RuntimeError), result is the Exception object
+                log.error("Error in task for %s: %s", deliverable.full_id, result)
+                failed_deliverables.append(deliverable)
 
     return failed_deliverables
 
@@ -343,8 +314,10 @@ def _load_and_validate_documents(
 ) -> None:
     """Load JSON metadata files and append validated Document models to the manifest."""
     for f in files:
+        # Path resolution for nested folders
         actual_file = f if f.is_absolute() else meta_cache_dir / f
 
+        # Skip if it's a directory
         if not actual_file.is_file():
             continue
 
@@ -354,14 +327,14 @@ def _load_and_validate_documents(
                 loaded_doc_data = json.load(fh)
 
             if not loaded_doc_data:
-                log.warning("Empty metadata file %s", f)
+                log.error("Empty metadata file %s", f)
                 continue
 
             doc_model = Document.model_validate(loaded_doc_data)
             manifest.documents.append(doc_model)
 
-        except Exception as e:
-            log.error("Error reading metadata file %s: %s", actual_file, e)
+        except (json.JSONDecodeError, ValidationError, OSError) as e:
+            log.error("Error processing metadata file %s: %s", actual_file, e)
 
 
 def store_productdocset_json(
@@ -375,11 +348,19 @@ def store_productdocset_json(
     :param doctypes: Sequence of Doctype objects
     :param stitchnode: The stitched XML tree
     """
-    meta_cache_dir = Path(context.envconfig.paths.meta_cache_dir)
+    # Aligning with reviewer suggestion to derive paths cleanly from context
+    env = context.envconfig
+    meta_cache_dir = Path(env.paths.meta_cache_dir)
 
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         product = doctype.product.value
-        version_str = str(docset).removesuffix(".0")
+
+        # Version Formatting (Safety Fix)
+        # Only remove .0 if the docset appears to be a version number
+        # and not a purely alphanumeric identifier (Fixing dangerous remsuffix)
+        version_str = str(docset)
+        if version_str.replace('.', '', 1).isdigit() and version_str.endswith(".0"):
+            version_str = version_str.removesuffix(".0")
 
         productxpath = f"./{doctype.product_xpath_segment()}"
         productnode = stitchnode.find(productxpath)
@@ -394,7 +375,11 @@ def store_productdocset_json(
         # 2. Initialize Manifest
         manifest = Manifest(
             productname=productnode.find("name").text,
-            acronym=productnode.find("acronym").text if productnode.find("acronym") is not None else product.upper(),
+            acronym=(
+                productnode.find("acronym").text
+                if productnode.find("acronym") is not None
+                else product.upper()
+            ),
             version=version_str,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
             hide_productname=False,
@@ -404,7 +389,7 @@ def store_productdocset_json(
             archives=[]
         )
 
-        # 3. Load and validate documents using helper
+        # 3. Load and validate documents using helper (Specific exceptions handled inside)
         _load_and_validate_documents(files, meta_cache_dir, manifest)
 
         # 4. Save and export
@@ -412,8 +397,9 @@ def store_productdocset_json(
         jsondir.mkdir(parents=True, exist_ok=True)
         jsonfile = jsondir / f"{docset}.json"
 
+        # Exporting with aliases to maintain parity with legacy JSON keys
         json_data = manifest.model_dump(by_alias=True, exclude_none=True)
-        with open(jsonfile, "w", encoding="utf-8") as jf:
+        with jsonfile.open("w", encoding="utf-8") as jf:
             json.dump(json_data, jf, indent=2)
 
         stdout.print(f" > Result: {jsonfile}")

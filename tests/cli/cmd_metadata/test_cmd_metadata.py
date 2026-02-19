@@ -370,17 +370,24 @@ class TestProcessDeliverable:
 
         # Create a mock context for the new function signature
         mock_context = MagicMock(spec=DocBuildContext)
-        mock_context.envconfig.paths.root_config_dir = Path("/tmp")
+        
+        # Link the mock context to the actual temporary paths created by the test setup
+        mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
+        mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
+        mock_context.envconfig.paths.meta_cache_dir = setup_paths["meta_cache_dir"]
+        mock_context.envconfig.paths.base_cache_dir = setup_paths["base_cache_dir"]
 
         result = await process_deliverable(
             context=mock_context,
             deliverable=deliverable,
             dapstmpl=dapstmpl,
-            **setup_paths
         )
 
         # Assert
-        assert result is expected_result
+        success, res_deliverable = result
+        assert success is expected_result
+        assert res_deliverable == deliverable
+        
         if expected_log:
             assert any(expected_log in record.message for record in caplog.records)
 
@@ -724,8 +731,8 @@ def test_store_productdocset_json_warns_on_empty_metadata(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
-    # Expect a warning to be logged
-    mock_log.warning.assert_called_with("Empty metadata file %s", Path("empty.json"))
+    # Expect an error to be logged
+    mock_log.error.assert_called_with("Empty metadata file %s", Path("empty.json"))
 
 
 def test_store_productdocset_json_handles_read_error(
