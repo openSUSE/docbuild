@@ -370,7 +370,7 @@ class TestProcessDeliverable:
 
         # Create a mock context for the new function signature
         mock_context = MagicMock(spec=DocBuildContext)
-        
+
         # Link the mock context to the actual temporary paths created by the test setup
         mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
         mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
@@ -387,7 +387,7 @@ class TestProcessDeliverable:
         success, res_deliverable = result
         assert success is expected_result
         assert res_deliverable == deliverable
-        
+
         if expected_log:
             assert any(expected_log in record.message for record in caplog.records)
 

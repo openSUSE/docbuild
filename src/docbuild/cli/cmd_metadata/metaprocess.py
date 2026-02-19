@@ -158,9 +158,9 @@ async def process_deliverable(
             full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.dcfile
 
             cmd = _get_daps_command(
-                Path(worktree_dir), 
-                full_dcfile_path, 
-                outputjson, 
+                Path(worktree_dir),
+                full_dcfile_path,
+                outputjson,
                 dapstmpl
             )
 
@@ -205,6 +205,51 @@ async def update_repositories(
 
     return res
 
+async def _run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
+    """Execute tasks and stop immediately on the first failure."""
+    failed: list[Deliverable] = []
+    for task in asyncio.as_completed(tasks):
+        try:
+            success, deliverable = await task
+            if not success:
+                failed.append(deliverable)
+                for t in tasks:
+                    if not t.done():
+                        t.cancel()
+                break
+        except Exception as e:
+            log.error("Task failed unexpectedly: %s", e)
+            for t in tasks:
+                if not t.done():
+                    t.cancel()
+            break
+    return failed
+
+
+async def _run_tasks_collect_all(
+    tasks: list[asyncio.Task], deliverables: list[Deliverable]
+) -> list[Deliverable]:
+    """Execute all tasks and collect every failure encountered."""
+    failed: list[Deliverable] = []
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for deliverable, result in zip(deliverables, results, strict=False):
+        if isinstance(result, tuple):
+            success, res_deliverable = result
+            if not success:
+                failed.append(res_deliverable)
+        elif isinstance(result, Exception):
+            log.error("Error in task for %s: %s", deliverable.full_id, result)
+            failed.append(deliverable)
+    return failed
+
+
+async def _run_metadata_tasks(
+    tasks: list[asyncio.Task], deliverables: list[Deliverable], exitfirst: bool
+) -> list[Deliverable]:
+    """Execute metadata tasks using either fail-fast or collect-all strategy."""
+    if exitfirst:
+        return await _run_tasks_fail_fast(tasks)
+    return await _run_tasks_collect_all(tasks, deliverables)
 
 async def process_doctype(
     root: etree._ElementTree,
@@ -226,68 +271,23 @@ async def process_doctype(
     env = context.envconfig
     repo_dir: Path = env.paths.repo_dir
 
-    # Extract all deliverables associated with this doctype from the XML
     deliverables: list[Deliverable] = await asyncio.to_thread(
-        get_deliverable_from_doctype,
-        root,
-        doctype,
+        get_deliverable_from_doctype, root, doctype
     )
 
-    if skip_repo_update:  # pragma: no cover
+    if skip_repo_update:
         log.info("Skipping repository %s updates as requested.", repo_dir)
     else:
         await update_repositories(deliverables, repo_dir)
 
     dapsmetatmpl = env.build.daps.meta
-
-    # Cleaned up the call to match the new process_deliverable signature.
-    # Paths are now derived internally within process_deliverable from context.
-    coroutines = [
-        process_deliverable(
-            context,
-            deliverable,
-            dapstmpl=dapsmetatmpl,
-        )
-        for deliverable in deliverables
+    tasks = [
+        asyncio.create_task(process_deliverable(context, d, dapstmpl=dapsmetatmpl))
+        for d in deliverables
     ]
 
-    tasks = [asyncio.create_task(coro) for coro in coroutines]
-    failed_deliverables: list[Deliverable] = []
-
-    if exitfirst:
-        # Stop and cancel pending tasks on the first failure
-        for task in asyncio.as_completed(tasks):
-            try:
-                # Success and deliverable come from the tuple returned by process_deliverable
-                success, deliverable = await task
-                if not success:
-                    failed_deliverables.append(deliverable)
-                    for t in tasks:
-                        if not t.done():
-                            t.cancel()
-                    break
-            except Exception as e:
-                log.error("Task failed unexpectedly: %s", e)
-                # If a task crashes, we still treat it as a failure for exitfirst
-                for t in tasks:
-                    if not t.done():
-                        t.cancel()
-                break
-    else:
-        # Run all tasks and collect failures
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        # We zip with deliverables to know which one failed if an Exception occurred
-        for deliverable, result in zip(deliverables, results, strict=False):
-            if isinstance(result, tuple):
-                success, res_deliverable = result
-                if not success:
-                    failed_deliverables.append(res_deliverable)
-            elif isinstance(result, Exception):
-                # If the task crashed (e.g. RuntimeError), result is the Exception object
-                log.error("Error in task for %s: %s", deliverable.full_id, result)
-                failed_deliverables.append(deliverable)
-
-    return failed_deliverables
+    # Complexity reduced by delegating task execution to the helper
+    return await _run_metadata_tasks(tasks, deliverables, exitfirst)
 
 def _apply_parity_fixes(descriptions: list, categories: list) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency."""
