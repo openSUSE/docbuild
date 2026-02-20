@@ -28,8 +28,11 @@ jobs:
             enable-cache: true
             cache-suffix: "docbuild"
 
-      - name: Print the installed version
-        run: echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+      - name: Print uv debug information
+        run: |
+          echo "Installed uv version is ${{ steps.setup-uv.outputs.uv-version }}"
+          echo "Installed uv path is ${{ steps.setup-uv.outputs.uv-path }}"
+          echo "Set Python version is ${{ steps.setup-uv.outputs.python-version }}"
 
       - name: Install dependencies
         run: uv sync --frozen --group docs

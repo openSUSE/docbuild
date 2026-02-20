@@ -1,0 +1,1 @@
+Print more information from the setup-uv step.
