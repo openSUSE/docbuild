@@ -16,9 +16,15 @@ Functions
 
    docbuild.cli.cmd_metadata.metaprocess.get_deliverable_from_doctype
    docbuild.cli.cmd_metadata.metaprocess.collect_files_flat
+   docbuild.cli.cmd_metadata.metaprocess.get_daps_command
+   docbuild.cli.cmd_metadata.metaprocess.update_metadata_json
    docbuild.cli.cmd_metadata.metaprocess.process_deliverable
    docbuild.cli.cmd_metadata.metaprocess.update_repositories
+   docbuild.cli.cmd_metadata.metaprocess.run_tasks_fail_fast
+   docbuild.cli.cmd_metadata.metaprocess.run_tasks_collect_all
    docbuild.cli.cmd_metadata.metaprocess.process_doctype
+   docbuild.cli.cmd_metadata.metaprocess.apply_parity_fixes
+   docbuild.cli.cmd_metadata.metaprocess.load_and_validate_documents
    docbuild.cli.cmd_metadata.metaprocess.store_productdocset_json
    docbuild.cli.cmd_metadata.metaprocess.process
 
@@ -37,12 +43,24 @@ Module Contents
 
 .. py:function:: collect_files_flat(doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype], basedir: pathlib.Path | str) -> collections.abc.Generator[tuple[docbuild.models.doctype.Doctype, str, list[pathlib.Path]], Any, None]
 
-   Group files by (Product, Docset).
+   Recursively collect all DC-metadata files from the cache directory.
 
-   Yields (Doctype, Docset, List[Path]) using a flattened iteration strategy.
+   :param doctypes: Sequence of Doctype objects to filter by.
+   :param basedir: The base directory to start the recursive search.
+   :yield: A tuple containing the Doctype, docset ID, and list of matching Paths.
 
 
-.. py:function:: process_deliverable(deliverable: docbuild.models.deliverable.Deliverable, *, repo_dir: pathlib.Path, tmp_repo_dir: pathlib.Path, base_cache_dir: pathlib.Path, meta_cache_dir: pathlib.Path, dapstmpl: str) -> bool
+.. py:function:: get_daps_command(worktree_dir: pathlib.Path, dcfile_path: pathlib.Path, outputjson: pathlib.Path, dapstmpl: str) -> list[str]
+
+   Construct the DAPS command for native execution.
+
+
+.. py:function:: update_metadata_json(outputjson: pathlib.Path, deliverable: docbuild.models.deliverable.Deliverable) -> None
+
+   Update the generated metadata JSON with deliverable-specific details.
+
+
+.. py:function:: process_deliverable(context: docbuild.cli.context.DocBuildContext, deliverable: docbuild.models.deliverable.Deliverable, *, dapstmpl: str) -> tuple[bool, docbuild.models.deliverable.Deliverable]
    :async:
 
 
@@ -52,19 +70,11 @@ Module Contents
    checks out the correct branch, and then executes the DAPS command to
    generate metadata.
 
+   :param context: The DocBuildContext containing environment configuration.
    :param deliverable: The Deliverable object to process.
-   :param repo_dir: The permanent repo path taken from the env
-        config ``paths.repo_dir``
-   :param tmp_repo_dir: The temporary repo path taken from the env
-        config ``paths.tmp_repo_dir``
-   :param base_cache_dir: The base path of the cache directory taken
-        from the env config ``paths.base_cache_dir``
-   :param meta_cache_dir: The ath of the metadata directory taken
-        from the env config ``paths.meta_cache_dir``
-   :param dapstmp: A template string with the daps command and potential
-    placeholders
+   :param dapstmpl: A template string with the daps command and potential
+    placeholders.
    :return: True if successful, False otherwise.
-   :raises ValueError: If required configuration paths are missing.
 
 
 .. py:function:: update_repositories(deliverables: list[docbuild.models.deliverable.Deliverable], bare_repo_dir: pathlib.Path) -> bool
@@ -77,6 +87,20 @@ Module Contents
    :param bare_repo_dir: The root directory for storing permanent bare clones.
 
 
+.. py:function:: run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[docbuild.models.deliverable.Deliverable]
+   :async:
+
+
+   Execute tasks and stop immediately on the first failure.
+
+
+.. py:function:: run_tasks_collect_all(tasks: list[asyncio.Task], deliverables: list[docbuild.models.deliverable.Deliverable]) -> list[docbuild.models.deliverable.Deliverable]
+   :async:
+
+
+   Execute all tasks and collect every failure encountered.
+
+
 .. py:function:: process_doctype(root: lxml.etree._ElementTree, context: docbuild.cli.context.DocBuildContext, doctype: docbuild.models.doctype.Doctype, *, exitfirst: bool = False, skip_repo_update: bool = False) -> list[docbuild.models.deliverable.Deliverable]
    :async:
 
@@ -85,18 +109,29 @@ Module Contents
 
    :param root: The stitched XML node containing configuration.
    :param context: The DocBuildContext containing environment configuration.
-   :param doctypes: A tuple of Doctype objects to process.
+   :param doctype: The Doctype object to process.
    :param exitfirst: If True, stop processing on the first failure.
-   :return: True if all files passed validation, False otherwise
+   :param skip_repo_update: If True, do not fetch updates for the git repositories.
+   :return: A list of failed Deliverables.
+
+
+.. py:function:: apply_parity_fixes(descriptions: list, categories: list) -> None
+
+   Apply wording and HTML parity fixes for legacy JSON consistency.
+
+
+.. py:function:: load_and_validate_documents(files: list[pathlib.Path], meta_cache_dir: pathlib.Path, manifest: docbuild.models.manifest.Manifest) -> None
+
+   Load JSON metadata files and append validated Document models to the manifest.
 
 
 .. py:function:: store_productdocset_json(context: docbuild.cli.context.DocBuildContext, doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype], stitchnode: lxml.etree._ElementTree) -> None
 
-   Collect all JSON file for product/docset and create a single file.
+   Collect all JSON files for product/docset and create a single file.
 
-   :param context: Beschreibung
-   :param doctypes: Beschreibung
-   :param stitchnode: Beschreibung
+   :param context: DocBuildContext object
+   :param doctypes: Sequence of Doctype objects
+   :param stitchnode: The stitched XML tree
 
 
 .. py:function:: process(context: docbuild.cli.context.DocBuildContext, doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None, *, exitfirst: bool = False, skip_repo_update: bool = False) -> int
@@ -106,7 +141,7 @@ Module Contents
    Asynchronous function to process metadata retrieval.
 
    :param context: The DocBuildContext containing environment configuration.
-   :param doctype: A Doctype object to process.
+   :param doctypes: A sequence of Doctype objects to process.
    :param exitfirst: If True, stop processing on the first failure.
    :param skip_repo_update: If True, skip updating Git repositories before processing.
    :raises ValueError: If no envconfig is found or if paths are not
