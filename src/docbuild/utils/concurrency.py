@@ -1,8 +1,7 @@
-
-# src/docbuild/utils/concurrency.py
-from multiprocessing.sharedctypes import Value
+from abc import ABC, abstractmethod
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
+from dataclasses import dataclass
 import logging
 from typing import TypeVar
 
@@ -12,95 +11,129 @@ R = TypeVar("R")  # Result type
 log = logging.getLogger(__name__)
 
 
-async def parallel_process(
+# HINT(toms): DESIGN Is this really needed?
+# This looks like it's a bit overengineered. On the other side, it
+# contains the original item of the problem.
+#
+# Alternative implementation
+# Maybe it's enough to add additional args to the exception(s)
+# to hold the original item? Something like:
+# >>> ValueError("the error message", item)
+class Result[R](ABC):
+    """Abstract base class for the result of a task."""
+
+    @abstractmethod
+    def __init__(self) -> None:
+        pass
+
+
+@dataclass(frozen=True)
+class Success[R](Result[R]):
+    """Represents a successful task result."""
+
+    result: R
+
+
+@dataclass(frozen=True)
+class Failure[R, T](Result[R]):
+    """Represents a failed task result."""
+
+    item: T | None = None
+    exception: Exception | None = None
+
+
+async def map_concurrent(
     items: Iterable[T],
     worker_fn: Callable[[T], Awaitable[R]],
-    *,
     limit: int,
-    return_exceptions: bool = False,
-    name: str | None = None,
-) -> list[R | Exception]:
-    """Process a list of items in parallel using a fixed number of workers.
+) -> list[Result[R]]:
+    """Apply an async worker function to an iterable of items concurrently.
+
+    This function uses a producer-consumer model with a bounded number of
+    concurrent workers managed by an asyncio.TaskGroup. It always waits for
+    all tasks to complete.
 
     :param items: An iterable of items to process.
     :param worker_fn: An async function that processes a single item.
-    :param limit: The maximum number of concurrent workers.
-    :param return_exceptions: If True, exceptions are returned as results
-                              instead of raised.
-    :param name: Optional name for the task.
-    :return: A list of results (unordered unless you track indices).
+    :param limit: The maximum number of concurrent workers (consumers).
+    :return: A list of Success or Failure result objects. The order is not guaranteed.
     """
-    queue: asyncio.Queue[T] = asyncio.Queue()
-    results: list[R | Exception] = []
+    queue: asyncio.Queue[T | None] = asyncio.Queue()
+    results: list[Result[R]] = []
 
-    # 1. Populate Queue
-    for item in items:
-        queue.put_nowait(item)
+    async def producer() -> None:
+        for item in items:
+            await queue.put(item)
+        # After producing all items, send "poison pills" to consumers
+        for _ in range(limit):
+            await queue.put(None)
 
-    # 2. Define Worker
-    async def worker() -> None:
+    async def consumer() -> None:
         while True:
-            try:
-                item = await queue.get()
-            except asyncio.CancelledError:
-                return
+            item = await queue.get()
+            if item is None:
+                # "Poison pill" received, exit the loop
+                break
 
             try:
-                res = await worker_fn(item)
-                results.append(res)
+                result_val = await worker_fn(item)
+                # TODO: What do add here?
+                results.append(Success(result=result_val))
 
             except Exception as e:
-                if return_exceptions:
-                    results.append(e)
-                else:
-                    log.error("Worker failed: %s", e)
-                    # Optional: Cancel all other workers here if you want fail-fast
-            finally:
-                queue.task_done()
+                # TODO: What do add here?
+                results.append(Failure(item=item, exception=e))
 
-    # 3. Start Workers
-    workers = [asyncio.create_task(worker(), name=name)
-               for _ in range(limit)]
-
-    # 4. Wait & Cleanup
-    await queue.join()
-    for w in workers:
-        w.cancel()
-    await asyncio.gather(*workers, return_exceptions=True)
+    # Note: asyncio.TaskGroup requires Python 3.11+
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(producer())
+        for _ in range(limit):
+            tg.create_task(consumer())
 
     return results
 
 
 if __name__ == "__main__":
-    import random
     import time
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
     async def sample_worker(num: int) -> int:
         """Create a simple worker that simulates some I/O-bound work."""
+        if num in (5, 8):
+            log.warning("Simulating failure for item %d", num)
+            # HINT: This is the "alternative" implementation.
+            # Instead of having a Failure class, we just raise the exception
+            # and add the item into the exception as an additional metadata
+            raise ValueError("Item 5 is not allowed!", num)
+            # Alternative:
+            # raise ValueError("Item 5 is not allowed!", {"item": num})
+
         log.info("Processing item %d", num)
-        x = random.randint(0, 10)
-        if x in(1, 5, 6):
-            raise ValueError("Oh no! Wrong value!")
-        await asyncio.sleep(0.1* x)  # Simulate I/O delay
+        await asyncio.sleep(0.1)  # Simulate I/O delay
         return num * 2
 
     async def main() -> None:
         """Run the example."""
+        items_to_process = list(range(10))
+
+        log.info("--- Running map_concurrent ---")
         start_time = time.monotonic()
-
-        log.info("Starting parallel processing with a limit of 3 workers...")
-        results = await parallel_process(
-            range(20),
-            sample_worker,
-            limit=5)
+        task_results = await map_concurrent(items_to_process, sample_worker, limit=3)
         end_time = time.monotonic()
+        log.info("Finished in %.2f seconds\n", end_time - start_time)
 
-        log.info("Processing finished in %.2f seconds", end_time - start_time)
-        log.info("Results (unordered): %s", results)
+        successful_results = []
+        failed_tasks = []
+        for res in task_results:
+            match res:
+                case Success(item=i, result=r):
+                    successful_results.append((i, res))
+                case Failure(item=i, exception=e):
+                    failed_tasks.append(res ) # , i, e))
+                    print(">>", e.args)
 
-    print("Starting example...")
+        log.info("Successful results (unordered): %s", (successful_results))
+        log.info("Caught exceptions: %s", failed_tasks)
+
     asyncio.run(main())
-    print("Example finished.")
-
