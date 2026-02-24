@@ -165,7 +165,7 @@ class ManagedGitRepo:
 
         clone_args = ["clone"]
         if is_local:
-            clone_args.append("--local")
+            pass
         clone_args.extend(["--branch", branch])
         if options:
             clone_args.extend(options)

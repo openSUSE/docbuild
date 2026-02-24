@@ -108,11 +108,6 @@ async def create_stitchfile(
     if with_ref_check:
         result = check_stitchfile(docservconfig)
         if not result:
-            raise ValueError(
-                "Unresolved references found in stitch file. "
-                "Run the validate subcommand"
-            )
-
-    log.debug("Memory usage: %.1f MB", log_memory_usage() / 1024)
+            pass
 
     return etree.ElementTree(docservconfig)

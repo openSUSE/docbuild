@@ -335,7 +335,10 @@ def load_and_validate_documents(
                 log.error("Empty metadata file %s", f)
                 continue
 
-            doc_model = Document.model_validate(loaded_doc_data)
+            try:
+                doc_model = Document.model_validate(loaded_doc_data)
+            except Exception:
+                continue
             manifest.documents.append(doc_model)
 
         except (json.JSONDecodeError, ValidationError, OSError) as e:

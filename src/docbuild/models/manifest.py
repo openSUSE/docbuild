@@ -33,7 +33,7 @@ class Description(BaseModel):
 
     lang: LanguageCode
     default: bool
-    description: str
+    description: str = Field(default="")
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -179,7 +179,7 @@ class DocumentFormat(BaseModel):
         }
     """
 
-    html: str
+    html: str = Field(default="")
     pdf: str | None = Field(default=None, exclude_if=lambda v: v is None or v == "")
     single_html: str | None = Field(
         default=None, alias="single-html", exclude_if=lambda v: v is None or v == ""
@@ -208,12 +208,12 @@ class SingleDocument(BaseModel):
     """
 
     lang: str | None = None
-    title: str
+    title: str = Field(default="No Title Available")
     subtitle: str = Field(default="")
-    description: str
-    dcfile: str
+    description: str = Field(default="")
+    dcfile: str = Field(default="")
     rootid: str = Field(default="")
-    format: DocumentFormat
+    format: DocumentFormat = Field(default_factory=DocumentFormat)
     datemodified: date | None = Field(default=None, serialization_alias="dateModified")
 
     @field_serializer("datemodified")

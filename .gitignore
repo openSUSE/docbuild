@@ -285,3 +285,7 @@ node_modules/
 /.config.toml
 /config.toml
 scalene-profile.*
+audit_reports/
+git_repos/
+.DS_Store
+lean_audit.txt

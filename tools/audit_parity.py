@@ -1,6 +1,7 @@
 #!/usr/bin/env -S uv run --frozen python
-"""Smart Audit Tool for Document Manifest Parity.
+"""audit_parity.py - A tool to compare legacy and generated document manifests for parity.
 
+Smart Audit Tool for Document Manifest Parity.
 Compares a legacy (manual) JSON manifest against a generated JSON manifest
 by matching documents based on normalized Titles and strict Languages.
 """

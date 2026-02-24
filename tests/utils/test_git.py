@@ -107,7 +107,6 @@ async def test_managed_repo_create_worktree_success(
 
     mock_execute_git.assert_awaited_once_with(
         "clone",
-        "--local",
         "--branch",
         "main",
         str(repo.bare_repo_path),
@@ -133,7 +132,6 @@ async def test_managed_repo_create_worktree_with_options(
 
     mock_execute_git.assert_awaited_once_with(
         "clone",
-        "--local",
         "--branch",
         "develop",
         "--depth",
