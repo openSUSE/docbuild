@@ -3,25 +3,32 @@
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
 import logging
-from typing import TypeVar
-
-T = TypeVar("T")  # Input type
-R = TypeVar("R")  # Result type
 
 log = logging.getLogger(__name__)
 
 
-async def process_unordered(
+class TaskFailedError[T](Exception):
+    """Exception raised when a task fails during processing.
+
+    :param item: The item that was being processed.
+    :param original_exception: The exception that caused the failure.
+    """
+
+    def __init__(self, item: T, original_exception: Exception) -> None:
+        super().__init__(f"Task failed for item {item}: {original_exception}")
+        self.item = item
+        self.original_exception = original_exception
+
+
     items: Iterable[T],
     worker_fn: Callable[[T], Awaitable[R]],
     limit: int,
-) -> list[R | Exception]:
+) -> list[R | TaskFailedError[T]]:
     """Process items concurrently with a worker limit.
 
     Uses a producer-consumer model via asyncio.TaskGroup.
     Order of results is NOT guaranteed.
-    If an exception occurs, the exception object is returned in the list.
-    The original item is attached to the exception as `e.item`.
+    If an exception occurs, it is wrapped in `TaskFailedError`.
 
     :param items: Iterable of items to process.
     :param worker_fn: Async function processing a single item.
@@ -29,7 +36,7 @@ async def process_unordered(
     """
     # Limit queue size to prevent memory explosion if producer is faster than consumers
     queue: asyncio.Queue[T | None] = asyncio.Queue(maxsize=limit * 2)
-    results: list[R | Exception] = []
+    results: list[R | TaskFailedError[T]] = []
 
     async def producer() -> None:
         for item in items:
@@ -47,9 +54,8 @@ async def process_unordered(
                 results.append(result_val)
 
             except Exception as e:
-                # Attach the item to the exception for tracking
-                e.item = item  # type: ignore[attr-defined]
-                results.append(e)
+                # Wrap the exception in TaskFailedError
+                results.append(TaskFailedError(item, e))
 
             finally:
                 queue.task_done()
@@ -92,6 +98,12 @@ if __name__ == "__main__":
         await asyncio.sleep(0.1)  # Simulate I/O delay
         return num * 2
 
+    # Make process intensive tasks in a executor
+    # 1. Define the heavy lifting function (must be at module level for pickle)
+    def heavy_cpu_math(item: int) -> int:
+        """Simulate a CPU-bound task."""
+        return item * item
+
     async def main() -> None:
         """Run the example."""
         items_to_process = list(range(10))
@@ -105,12 +117,41 @@ if __name__ == "__main__":
         successful_results = []
         failed_tasks = []
         for res in task_results:
-            match res:
-                case Exception(item=i):
-                    failed_tasks.append((i, res))
-                case _:
-                    # Order lost, but we have results
-                    successful_results.append(res)
+            if isinstance(res, TaskFailedError):
+                failed_tasks.append((res.item, res.original_exception))
+            else:
+                successful_results.append(res)
+
+        log.info("Successful results (unordered): %s", (successful_results))
+        log.info("Caught exceptions: %s", failed_tasks)
+
+        ## -------------------
+        log.info("--- Running process executor ---")
+        from concurrent.futures import ProcessPoolExecutor
+
+        # 2. Create the wrapper
+        async def cpu_worker_wrapper(item, executor: None|ProcessPoolExecutor=None) -> int:
+            loop = asyncio.get_running_loop()
+            # Use the passed executor
+            return await loop.run_in_executor(executor, heavy_cpu_math, item)
+
+        # 3. Use your existing utility with the executor passed as a kwarg
+        items = range(10)
+        with ProcessPoolExecutor() as process_pool:
+            results = await process_unordered(
+                items,
+                cpu_worker_wrapper,
+                limit=4,
+                executor=process_pool
+            )
+
+        successful_results = []
+        failed_tasks = []
+        for res in results:
+            if isinstance(res, TaskFailedError):
+                failed_tasks.append((res.item, res.original_exception))
+            else:
+                successful_results.append(res)
 
         log.info("Successful results (unordered): %s", (successful_results))
         log.info("Caught exceptions: %s", failed_tasks)
