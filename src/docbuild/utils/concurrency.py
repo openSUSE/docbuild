@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
+"""Concurrency utilities."""
+
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
-from dataclasses import dataclass
 import logging
 from typing import TypeVar
 
@@ -11,84 +11,63 @@ R = TypeVar("R")  # Result type
 log = logging.getLogger(__name__)
 
 
-# HINT(toms): DESIGN Is this really needed?
-# This looks like it's a bit overengineered. On the other side, it
-# contains the original item of the problem.
-#
-# Alternative implementation
-# Maybe it's enough to add additional args to the exception(s)
-# to hold the original item? Something like:
-# >>> ValueError("the error message", item)
-class Result[R](ABC):
-    """Abstract base class for the result of a task."""
-
-    @abstractmethod
-    def __init__(self) -> None:
-        pass
-
-
-@dataclass(frozen=True)
-class Success[R](Result[R]):
-    """Represents a successful task result."""
-
-    result: R
-
-
-@dataclass(frozen=True)
-class Failure[R, T](Result[R]):
-    """Represents a failed task result."""
-
-    item: T | None = None
-    exception: Exception | None = None
-
-
-async def map_concurrent(
+async def process_unordered(
     items: Iterable[T],
     worker_fn: Callable[[T], Awaitable[R]],
     limit: int,
-) -> list[Result[R]]:
-    """Apply an async worker function to an iterable of items concurrently.
+) -> list[R | Exception]:
+    """Process items concurrently with a worker limit.
 
-    This function uses a producer-consumer model with a bounded number of
-    concurrent workers managed by an asyncio.TaskGroup. It always waits for
-    all tasks to complete.
+    Uses a producer-consumer model via asyncio.TaskGroup.
+    Order of results is NOT guaranteed.
+    If an exception occurs, the exception object is returned in the list.
+    The original item is attached to the exception as `e.item`.
 
-    :param items: An iterable of items to process.
-    :param worker_fn: An async function that processes a single item.
-    :param limit: The maximum number of concurrent workers (consumers).
-    :return: A list of Success or Failure result objects. The order is not guaranteed.
+    :param items: Iterable of items to process.
+    :param worker_fn: Async function processing a single item.
+    :param limit: Max concurrent workers.
     """
-    queue: asyncio.Queue[T | None] = asyncio.Queue()
-    results: list[Result[R]] = []
+    # Limit queue size to prevent memory explosion if producer is faster than consumers
+    queue: asyncio.Queue[T | None] = asyncio.Queue(maxsize=limit * 2)
+    results: list[R | Exception] = []
 
     async def producer() -> None:
         for item in items:
             await queue.put(item)
-        # After producing all items, send "poison pills" to consumers
-        for _ in range(limit):
-            await queue.put(None)
 
     async def consumer() -> None:
         while True:
             item = await queue.get()
             if item is None:
-                # "Poison pill" received, exit the loop
+                queue.task_done()
                 break
 
             try:
                 result_val = await worker_fn(item)
-                # TODO: What do add here?
-                results.append(Success(result=result_val))
+                results.append(result_val)
 
             except Exception as e:
-                # TODO: What do add here?
-                results.append(Failure(item=item, exception=e))
+                # Attach the item to the exception for tracking
+                e.item = item  # type: ignore[attr-defined]
+                results.append(e)
 
-    # Note: asyncio.TaskGroup requires Python 3.11+
+            finally:
+                queue.task_done()
+
     async with asyncio.TaskGroup() as tg:
-        tg.create_task(producer())
+        # Start consumers
         for _ in range(limit):
             tg.create_task(consumer())
+
+        # Push items (blocks if queue is full, providing backpressure)
+        await producer()
+
+        # Signal shutdown
+        for _ in range(limit):
+            await queue.put(None)
+
+        # Wait for all items to be processed
+        await queue.join()
 
     return results
 
@@ -117,9 +96,9 @@ if __name__ == "__main__":
         """Run the example."""
         items_to_process = list(range(10))
 
-        log.info("--- Running map_concurrent ---")
+        log.info("--- Running process_unordered ---")
         start_time = time.monotonic()
-        task_results = await map_concurrent(items_to_process, sample_worker, limit=3)
+        task_results = await process_unordered(items_to_process, sample_worker, limit=3)
         end_time = time.monotonic()
         log.info("Finished in %.2f seconds\n", end_time - start_time)
 
@@ -127,11 +106,11 @@ if __name__ == "__main__":
         failed_tasks = []
         for res in task_results:
             match res:
-                case Success(item=i, result=r):
-                    successful_results.append((i, res))
-                case Failure(item=i, exception=e):
-                    failed_tasks.append(res ) # , i, e))
-                    print(">>", e.args)
+                case Exception(item=i):
+                    failed_tasks.append((i, res))
+                case _:
+                    # Order lost, but we have results
+                    successful_results.append(res)
 
         log.info("Successful results (unordered): %s", (successful_results))
         log.info("Caught exceptions: %s", failed_tasks)
