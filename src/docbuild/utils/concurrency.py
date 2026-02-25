@@ -3,7 +3,7 @@
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
 import logging
-from typing import Concatenate, ParamSpec
+from typing import Concatenate
 
 log = logging.getLogger(__name__)
 
@@ -134,10 +134,12 @@ if __name__ == "__main__":
 
         ## -------------------
         log.info("--- Running process executor ---")
-        from concurrent.futures import ProcessPoolExecutor
+        from concurrent.futures import Executor, ProcessPoolExecutor
 
         # 2. Create the wrapper
-        async def cpu_worker_wrapper(item, executor: None|ProcessPoolExecutor=None) -> int:
+        async def cpu_worker_wrapper(
+            item: int, executor: Executor | None = None
+        ) -> int:
             loop = asyncio.get_running_loop()
             # Use the passed executor
             return await loop.run_in_executor(executor, heavy_cpu_math, item)
