@@ -3,6 +3,7 @@
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
 import logging
+from typing import Concatenate, ParamSpec
 
 log = logging.getLogger(__name__)
 
@@ -20,9 +21,12 @@ class TaskFailedError[T](Exception):
         self.original_exception = original_exception
 
 
+async def process_unordered[T, R, **P](
     items: Iterable[T],
-    worker_fn: Callable[[T], Awaitable[R]],
+    worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
+    *worker_args: P.args,
+    **worker_kwargs: P.kwargs,
 ) -> list[R | TaskFailedError[T]]:
     """Process items concurrently with a worker limit.
 
@@ -32,7 +36,10 @@ class TaskFailedError[T](Exception):
 
     :param items: Iterable of items to process.
     :param worker_fn: Async function processing a single item.
+        Result signature: `worker_fn(item, *worker_args, **worker_kwargs)`.
     :param limit: Max concurrent workers.
+    :param worker_args: Additional positional arguments passed to `worker_fn`.
+    :param worker_kwargs: Additional keyword arguments passed to `worker_fn`.
     """
     # Limit queue size to prevent memory explosion if producer is faster than consumers
     queue: asyncio.Queue[T | None] = asyncio.Queue(maxsize=limit * 2)
@@ -50,7 +57,7 @@ class TaskFailedError[T](Exception):
                 break
 
             try:
-                result_val = await worker_fn(item)
+                result_val = await worker_fn(item, *worker_args, **worker_kwargs)
                 results.append(result_val)
 
             except Exception as e:
