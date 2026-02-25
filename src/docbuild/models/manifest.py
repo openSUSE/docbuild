@@ -208,7 +208,7 @@ class SingleDocument(BaseModel):
     """
 
     lang: str | None = None
-    title: str = Field(default="No Title Available")
+    title: str | None = Field(default=None)
     subtitle: str = Field(default="")
     description: str = Field(default="")
     dcfile: str = Field(default="")

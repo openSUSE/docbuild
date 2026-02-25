@@ -337,7 +337,7 @@ def load_and_validate_documents(
 
             try:
                 doc_model = Document.model_validate(loaded_doc_data)
-            except Exception:
+            except ValidationError:
                 continue
             manifest.documents.append(doc_model)
 
