@@ -1,4 +1,11 @@
-"""Concurrency utilities."""
+"""Concurrency utilities using producer-consumer patterns.
+
+This module provides helpers for managing concurrent asyncio tasks with
+strict concurrency limits, backpressure handling, and robust exception tracking.
+
+It is designed to handle both I/O-bound tasks (via native asyncio coroutines) and
+CPU-bound tasks (via `loop.run_in_executor`) while keeping resource usage deterministic.
+"""
 
 import asyncio
 from collections.abc import Awaitable, Callable, Iterable
@@ -10,6 +17,11 @@ log = logging.getLogger(__name__)
 
 class TaskFailedError[T](Exception):
     """Exception raised when a task fails during processing.
+
+    This wrapper preserves the context of a failure in concurrent processing pipelines.
+    Since results may be returned out of order or aggregated later, wrapping the
+    exception allows the caller to link a failure back to the specific input item
+    that caused it.
 
     :param item: The item that was being processed.
     :param original_exception: The exception that caused the failure.
@@ -32,14 +44,14 @@ async def process_unordered[T, R, **P](
 
     Uses a producer-consumer model via asyncio.TaskGroup.
     Order of results is NOT guaranteed.
-    If an exception occurs, it is wrapped in `TaskFailedError`.
+    If an exception occurs, it is wrapped in :class:`~docbuild.utils.concurrency.TaskFailedError`.
 
     :param items: Iterable of items to process.
     :param worker_fn: Async function processing a single item.
-        Result signature: `worker_fn(item, *worker_args, **worker_kwargs)`.
+        Result signature: ``worker_fn(item, *worker_args, **worker_kwargs)``.
     :param limit: Max concurrent workers.
-    :param worker_args: Additional positional arguments passed to `worker_fn`.
-    :param worker_kwargs: Additional keyword arguments passed to `worker_fn`.
+    :param worker_args: Additional positional arguments passed to ``worker_fn``.
+    :param worker_kwargs: Additional keyword arguments passed to ``worker_fn``.
     """
     # Limit queue size to prevent memory explosion if producer is faster than consumers
     queue: asyncio.Queue[T | None] = asyncio.Queue(maxsize=limit * 2)
