@@ -1,9 +1,6 @@
 """Tests for concurrency utilities."""
 
 import asyncio
-import logging
-
-import pytest
 
 from docbuild.utils.concurrency import TaskFailedError, process_unordered
 
