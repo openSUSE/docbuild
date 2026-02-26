@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
 """audit_suite.py - Unified Metadata Audit & Parity Tooling.
 
 This suite provides tools to benchmark automated metadata generation against
