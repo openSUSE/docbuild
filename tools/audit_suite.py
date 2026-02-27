@@ -1,4 +1,9 @@
 #!/usr/bin/env -S uv run --script
+#
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["rich"]
+# ///
 """audit_suite.py - Unified Metadata Audit & Parity Tooling."""
 
 import argparse
@@ -99,6 +104,7 @@ def run_parity(args: argparse.Namespace) -> int:
     map1, map2 = get_doc_map(d1, fuzzy_lang=args.fuzzy), get_doc_map(d2, fuzzy_lang=args.fuzzy)
 
     table = Table(title=f"Parity Check: {p1.name} vs {p2.name}", header_style="bold blue")
+    table.add_column("Language", justify="center")
     table.add_column("Document Title", style="italic")
     table.add_column("Field")
     table.add_column("Legacy (Baseline)", style="red")
@@ -108,24 +114,29 @@ def run_parity(args: argparse.Namespace) -> int:
     diff_found = False
 
     for key, doc1 in map1.items():
+        # key is (normalized_title, lang)
+        title_text = doc1.get("title", "[NO TITLE]")
+        lang_text = doc1.get("lang", "??")
+
         if key in map2:
             doc2 = map2[key]
             for f in fields:
                 v1, v2 = str(doc1.get(f, "")).strip(), str(doc2.get(f, "")).strip()
+
                 # Special check for lang if fuzzy is on
                 if f == "lang" and args.fuzzy:
                     if normalize_lang(v1) == normalize_lang(v2):
                         continue
 
                 if v1 != v2:
-                    table.add_row(doc1.get("title"), f, v1, v2)
+                    table.add_row(lang_text, title_text, f, v1, v2)
                     diff_found = True
         else:
-            table.add_row(doc1.get("title"), "FILE", "MISSING", "")
+            table.add_row(lang_text, title_text, "FILE", "MISSING", "")
             diff_found = True
 
     if not diff_found:
-        console.print("[bold green]✅ 100% Parity found (Fuzzy Lang: " + str(args.fuzzy) + ")![/bold green]")
+        console.print(f"[bold green]✅ 100% Parity found (Fuzzy Lang: {args.fuzzy})![/bold green]")
         return 0
     else:
         console.print(table)

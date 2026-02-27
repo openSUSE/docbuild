@@ -226,14 +226,18 @@ class SingleDocument(BaseModel):
         """Check for missing titles and log a warning with the document origin."""
         # info.data contains fields defined before 'title'
         origin = info.data.get("dcfile", "Unknown Origin")
+        lang = info.data.get("lang", "Unknown Lang")
 
         # Catch both None and empty strings
         if not v:
-            log.warning("Metadata Integrity: Document missing title. Origin: %s", origin)
+            log.warning(
+                "Metadata Integrity: Document missing title. Origin: %s (Lang: %s)",
+                origin, lang
+            )
         return v
 
     @field_serializer("datemodified")
-    def serialize_date(self, value: date | None, _info: SerializationInfo) -> str:
+    def serialize_date(self: Self, value: date | None, _info: SerializationInfo) -> str:
         """Serialize date to 'YYYY-MM-DD' or an empty string if None."""
         if value is None:
             return ""

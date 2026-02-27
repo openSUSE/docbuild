@@ -108,7 +108,7 @@ async def create_stitchfile(
     if with_ref_check:
         result = check_stitchfile(docservconfig)
         if not result:
-            log.warning(
+            raise ValueError(
                 "Unresolved references found in stitch file. "
                 "The build will continue, but some cross-product links may be broken. "
                 "Check the logs above for specific reference failures."

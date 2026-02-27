@@ -431,7 +431,10 @@ async def process(
     configdir = Path(env.paths.config_dir).expanduser()
     stdout.print(f"Config path: {configdir}")
     xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
-    stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
+    try:
+        stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
+    except ValueError as e:
+        log.warning(e)
 
     tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
