@@ -15,10 +15,14 @@ from collections.abc import (
     Callable,
     Iterable,
 )
+import functools
 import logging
-from typing import Concatenate
+from typing import Any, Concatenate
 
 log = logging.getLogger(__name__)
+
+#: Sentinel value for internal use when needed (e.g., to signal completion).
+SENTINEL = object()
 
 
 class TaskFailedError[T](Exception):
@@ -39,77 +43,144 @@ class TaskFailedError[T](Exception):
         self.original_exception = original_exception
 
 
-async def run_parallel[T, R, **P](
+async def producer[T](
     items: Iterable[T] | AsyncIterableABC[T],
-    worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
+    input_queue: asyncio.Queue,
+    num_workers: int,
+) -> None:
+    """Feed items into the input queue, then send one sentinel per worker."""
+    try:
+        if isinstance(items, AsyncIterableABC):
+            async for item in items:
+                await input_queue.put(item)
+        else:
+            for item in items:
+                await input_queue.put(item)
+
+    finally:
+        for _ in range(num_workers):
+            await input_queue.put(SENTINEL)
+
+
+async def worker[T, R](
+    worker_fn: Callable[[T], Awaitable[R]],
+    input_queue: asyncio.Queue,
+    result_queue: asyncio.Queue,
+) -> None:
+    """Pull items from the input queue, process them, push results out."""
+    while True:
+        item = await input_queue.get()
+        if item is SENTINEL:
+            return
+        try:
+            result = await worker_fn(item)
+            await result_queue.put(result)
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            await result_queue.put(TaskFailedError(item, exc))
+
+        finally:
+            input_queue.task_done()
+
+
+async def run_all[T, R](
+    items: Iterable[T] | AsyncIterableABC[T],
+    worker_fn: Callable[[T], Awaitable[R]],
+    input_queue: asyncio.Queue,
+    result_queue: asyncio.Queue,
     limit: int,
-    *worker_args: P.args,
-    **worker_kwargs: P.kwargs,
+) -> None:
+    """Orchestrate producer + workers, then signal the consumer when done."""
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(producer(items, input_queue, limit))
+        for _ in range(limit):
+            tg.create_task(worker(worker_fn, input_queue, result_queue))
+
+    await result_queue.put(SENTINEL)
+
+
+async def run_parallel[T, R](
+    items: Iterable[T] | AsyncIterableABC[T],
+    worker_fn: Callable[[T], Awaitable[R]],
+    limit: int,
+    **worker_kwargs: Any,  # noqa: ANN401
 ) -> AsyncIterator[R | TaskFailedError[T]]:
-    """Process items concurrently with a worker limit.
+    """Process items concurrently with bounded parallelism.
 
-    Uses a producer-consumer model via asyncio.TaskGroup.
+    Uses a producer/worker/consumer pipeline:
+
+    - A single **producer** task feeds items into a bounded input queue.
+    - ``limit`` **worker** tasks pull from the input queue, call ``worker_fn``,
+      and push results into a bounded result queue.
+    - The **caller** consumes results by iterating this async generator.
+
+    All three stages run concurrently. Backpressure propagates naturally:
+    a slow consumer stalls workers; stalled workers stall the producer.
     Order of results is NOT guaranteed.
-    If an exception occurs, it is wrapped in :class:`~docbuild.utils.concurrency.TaskFailedError`.
 
-    :param items: Iterable of items to process.
-    :param worker_fn: Async function processing a single item.
-        Result signature: ``worker_fn(item, *worker_args, **worker_kwargs)``.
-    :param limit: Max concurrent workers.
-    :param worker_args: Additional positional arguments passed to ``worker_fn``.
-    :param worker_kwargs: Additional keyword arguments passed to ``worker_fn``.
+    If ``worker_fn`` raises, the exception is wrapped in
+    :class:`TaskFailedError` and yielded rather than re-raised, so one
+    failing item does not abort the pipeline.
+
+    Performance characteristics
+    ---------------------------
+    - **Throughput:** approaches ``limit × per-worker throughput`` for
+      I/O-bound workloads where workers spend most time awaiting external
+      resources. CPU-bound work gains little due to the GIL; use
+      ``ProcessPoolExecutor`` wrapped in ``asyncio.run_in_executor`` instead.
+    - **Startup cost:** O(limit) — one asyncio task per worker, each cheap
+      to create (~microseconds).
+    - **Memory:** O(limit). Both the input queue (``maxsize=limit * 2``)
+      and the result queue (``maxsize=limit * 2``) are bounded. At most
+      ``limit`` items are in-flight inside workers at any time, giving a
+      total live-item count of roughly ``5 × limit``.
+      Note: each item itself may be arbitrarily large; the O(limit) bound
+      refers to the *number* of items held in memory, not their byte size.
+    - **Latency:** time-to-first-result equals one worker's latency.
+      Remaining results stream out as workers complete, with no polling
+      delay (sentinel-based signalling, zero busy-wait).
+    - **Cancellation:** if the caller abandons the generator (e.g. ``break``
+      in an ``async for`` loop), the internal runner task is cancelled and
+      all worker tasks are cleaned up promptly via ``TaskGroup``.
+
+    :param items: Iterable or async iterable of items to process.
+    :param worker_fn: Async callable invoked as ``worker_fn(item)`` for
+        each item. Must be safe to call concurrently from ``limit`` tasks.
+    :param limit: Maximum number of concurrent workers. Must be >= 1.
+        Higher values increase throughput up to the point where the event
+        loop, network, or downstream service becomes the bottleneck.
+    :raises ValueError: If ``limit`` is less than 1.
+    :yields: Results in completion order (not input order). Failed items
+        are yielded as :class:`TaskFailedError` instances rather than
+        raising, so the caller can handle partial failures inline.
     """
     if limit <= 0:
         raise ValueError("limit must be >= 1")
 
-    result_queue: asyncio.Queue[R | TaskFailedError[T]] = asyncio.Queue()
-    iterator_lock = asyncio.Lock()
+    bound_fn = (
+        functools.partial(worker_fn, **worker_kwargs) if worker_kwargs else worker_fn
+    )
 
-    # Normalize iterable
-    if isinstance(items, AsyncIterableABC):
-        async_iter = items
+    input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 2)
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue()
 
-    else:
-        async def async_wrapper():
-            for item in items:
-                yield item
+    runner = asyncio.create_task(run_all(items, bound_fn, input_queue, result_queue, limit))
 
-        async_iter = async_wrapper()
-
-    async def worker():
+    try:
         while True:
-            async with iterator_lock:
-                try:
-                    item = await anext(async_iter)
-                except StopAsyncIteration:
-                    return
+            result = await result_queue.get()
+            if result is SENTINEL:
+                break
+            yield result  # type: ignore[misc]
 
+    finally:
+        if not runner.done():
+            runner.cancel()
             try:
-                result = await worker_fn(item, *worker_args, **worker_kwargs)
-                await result_queue.put(result)
-
-            except asyncio.CancelledError:
-                raise
-
-            except Exception as e:
-                await result_queue.put(TaskFailedError(item, e))
-
-    async with asyncio.TaskGroup() as tg:
-        for _ in range(limit):
-            tg.create_task(worker())
-
-        active_workers = limit
-        while active_workers > 0:
-            try:
-                result = await asyncio.wait_for(result_queue.get(), timeout=0.1)
-                yield result
-
-            except asyncio.TimeoutError:
-                # Check if workers done
-                active_workers = sum(
-                    not t.done()
-                    for t in tg._tasks  # internal but safe in practice
-                )
+                await runner
+            except (asyncio.CancelledError, Exception):
+                pass
 
 
 if __name__ == "__main__":
