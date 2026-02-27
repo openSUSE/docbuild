@@ -1,11 +1,8 @@
 #!/usr/bin/env -S uv run --script
-"""audit_suite.py - Unified Metadata Audit & Parity Tooling.
+"""audit_suite.py - Unified Metadata Audit & Parity Tooling."""
 
-This suite provides tools to benchmark automated metadata generation against
-legacy manual manifests. It supports catalog-wide audits, targeted lean runs,
-and granular field-level parity comparisons.
-"""
-
+import argparse
+from collections.abc import Sequence
 import csv
 import json
 import logging
@@ -20,20 +17,17 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-# --- Path Configuration (Environment Aware) ---
-# Detect project root relative to this script
+# --- Path Configuration ---
 SCRIPT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = SCRIPT_DIR.parent
 
 if os.path.exists("/docserv-config"):
-    # Standard paths for the SUSE Docker/CI environment
     LEGACY_BASE = Path("/docserv-config/json-portal-dsc")
     NEW_BASE = Path("/mnt/build/docbuild/cache/doc-example-com/meta")
     REPORT_DIR = Path("/mnt/build/docbuild/docbuild/audit_reports")
     ENV_CONFIG = Path("/mnt/build/docbuild/docbuild/env.development.toml")
     LEAN_LIST = Path("/mnt/build/docbuild/docbuild/lean_audit.txt")
 else:
-    # Portable fallback for local development (macOS/Generic Linux)
     LEGACY_BASE = Path(os.environ.get("LEGACY_BASE", ROOT_DIR.parent / "docserv-config/json-portal-dsc"))
     NEW_BASE = Path(os.environ.get("NEW_BASE", ROOT_DIR / "mnt/build/cache/doc-example-com/meta"))
     REPORT_DIR = ROOT_DIR / "audit_reports"
@@ -44,6 +38,12 @@ console = Console()
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 # --- Utility Functions ---
+
+def normalize_lang(lang: str | None) -> str:
+    """Fuzzy match languages by comparing only the first two chars (e.g., en == en-us)."""
+    if not lang:
+        return "unknown"
+    return lang.split('-')[0].split('_')[0].lower()
 
 def normalize_text(text: str | None) -> str:
     """Lowercase and strip HTML/extra whitespace for fuzzy title matching."""
@@ -69,20 +69,23 @@ def get_titles(file_path: Path) -> set[str]:
         logging.debug(f"Parsing failed for {file_path}: {e}")
         return set()
 
-def get_doc_map(data: dict[str, Any]) -> dict[tuple, dict[str, Any]]:
+def get_doc_map(data: dict[str, Any], fuzzy_lang: bool = False) -> dict[tuple, dict[str, Any]]:
     """Create a map of {(normalized_title, lang): doc_dict} for comparison."""
     doc_map = {}
     for doc_group in data.get("documents", []):
         for doc in doc_group.get("docs", []):
-            key = (normalize_text(doc.get("title")), doc.get("lang", "unknown"))
+            lang = doc.get("lang", "unknown")
+            if fuzzy_lang:
+                lang = normalize_lang(lang)
+            key = (normalize_text(doc.get("title")), lang)
             doc_map[key] = doc
     return doc_map
 
 # --- Core Commands ---
 
-def run_parity(path_a: str, path_b: str) -> None:
+def run_parity(args: argparse.Namespace) -> int:
     """Perform a deep-dive comparison between two specific JSON manifests."""
-    p1, p2 = Path(path_a), Path(path_b)
+    p1, p2 = Path(args.legacy), Path(args.new)
     try:
         with open(p1, encoding='utf-8') as f:
             d1 = json.load(f)
@@ -90,9 +93,11 @@ def run_parity(path_a: str, path_b: str) -> None:
             d2 = json.load(f)
     except Exception as e:
         console.print(f"[bold red]Load error:[/bold red] {e}")
-        return
+        return 1
 
-    map1, map2 = get_doc_map(d1), get_doc_map(d2)
+    # Use fuzzy lang matching if requested
+    map1, map2 = get_doc_map(d1, fuzzy_lang=args.fuzzy), get_doc_map(d2, fuzzy_lang=args.fuzzy)
+
     table = Table(title=f"Parity Check: {p1.name} vs {p2.name}", header_style="bold blue")
     table.add_column("Document Title", style="italic")
     table.add_column("Field")
@@ -107,6 +112,11 @@ def run_parity(path_a: str, path_b: str) -> None:
             doc2 = map2[key]
             for f in fields:
                 v1, v2 = str(doc1.get(f, "")).strip(), str(doc2.get(f, "")).strip()
+                # Special check for lang if fuzzy is on
+                if f == "lang" and args.fuzzy:
+                    if normalize_lang(v1) == normalize_lang(v2):
+                        continue
+
                 if v1 != v2:
                     table.add_row(doc1.get("title"), f, v1, v2)
                     diff_found = True
@@ -115,13 +125,18 @@ def run_parity(path_a: str, path_b: str) -> None:
             diff_found = True
 
     if not diff_found:
-        console.print("[bold green]✅ 100% Parity found![/bold green]")
+        console.print("[bold green]✅ 100% Parity found (Fuzzy Lang: " + str(args.fuzzy) + ")![/bold green]")
+        return 0
     else:
         console.print(table)
+        return 1
 
-def run_mass_audit(targets: list[str] | None = None) -> None:
+def run_mass_audit(args: argparse.Namespace | None = None, targets: list[str] | None = None) -> int:
     """Execute metadata builds for multiple product targets."""
-    mode = "Lean" if targets else "Mass"
+    mode = "Mass"
+    if targets or (args and hasattr(args, 'command') and args.command == 'lean'):
+        mode = "Lean"
+
     output_base = REPORT_DIR / mode.lower()
     output_base.mkdir(parents=True, exist_ok=True)
 
@@ -151,7 +166,6 @@ def run_mass_audit(targets: list[str] | None = None) -> None:
         except Exception as e:
             logging.error(f"Execution failed for {doctype}: {e}")
             status = "ERROR"
-
         summary.append([doctype, status])
 
     summary_file = output_base / "summary.csv"
@@ -159,9 +173,22 @@ def run_mass_audit(targets: list[str] | None = None) -> None:
         writer = csv.writer(f)
         writer.writerow(["Doctype", "Status"])
         writer.writerows(summary)
-    console.print(f"[bold green]✅ {mode} Audit Finished. Summary: {summary_file}[/bold green]")
 
-def run_stats() -> None:
+    console.print(f"[bold green]✅ {mode} Audit Finished. Summary: {summary_file}[/bold green]")
+    return 0
+
+def run_lean(args: argparse.Namespace) -> int:
+    """Wrap run_mass_audit using a lean list file."""
+    lean_path = Path(args.lean_list)
+    if not lean_path.exists():
+        console.print(f"[red]Error: {lean_path} not found.[/red]")
+        return 1
+
+    with open(lean_path, encoding='utf-8') as f:
+        ts = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+    return run_mass_audit(targets=ts)
+
+def run_stats(args: argparse.Namespace) -> int:
     """Calculate Match Rate and Delta for the entire catalog."""
     results = []
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
@@ -171,8 +198,6 @@ def run_stats() -> None:
             if f.endswith(".json"):
                 lp = Path(root) / f
                 rel_path = lp.relative_to(LEGACY_BASE)
-
-                # Try direct structure, then flattened filename fallback
                 np = NEW_BASE / rel_path
                 if not np.exists():
                     np = NEW_BASE / str(rel_path).replace("/", "-")
@@ -186,6 +211,10 @@ def run_stats() -> None:
                     "Missing": len(t1 - t2)
                 })
 
+    if not results:
+        console.print("[yellow]No JSON files found for stats.[/yellow]")
+        return 1
+
     results.sort(key=lambda x: float(x['Match_Rate'].replace('%','')))
     stats_file = REPORT_DIR / "stats_summary.csv"
     with open(stats_file, "w", newline="", encoding="utf-8") as f:
@@ -193,27 +222,35 @@ def run_stats() -> None:
         writer.writeheader()
         writer.writerows(results)
     console.print(f"[bold green]✅ Stats saved to: {stats_file}[/bold green]")
+    return 0
 
-# --- Entry Point ---
+# --- CLI Parsing ---
+
+def parsecli(args: Sequence[str] | None = None) -> argparse.Namespace:
+    """Parse command-line arguments for the audit suite."""
+    parser = argparse.ArgumentParser(description="Audit Suite CLI.")
+    subparsers = parser.add_subparsers(dest="command", required=True, help="The command to execute")
+
+    subparsers.add_parser("mass", help="Run mass audit").set_defaults(func=run_mass_audit)
+
+    lean_parser = subparsers.add_parser("lean", help="Run lean audit")
+    lean_parser.add_argument("lean_list", type=str, default=str(LEAN_LIST), nargs='?', help="Path to lean list")
+    lean_parser.set_defaults(func=run_lean)
+
+    parity_parser = subparsers.add_parser("parity", help="Compare legacy and new JSON data")
+    parity_parser.add_argument("legacy", type=str, help="Path to legacy JSON")
+    parity_parser.add_argument("new", type=str, help="Path to new JSON")
+    parity_parser.add_argument("--fuzzy", action="store_true", help="Enable fuzzy language matching (en-us == en)")
+    parity_parser.set_defaults(func=run_parity)
+
+    subparsers.add_parser("stats", help="View audit statistics").set_defaults(func=run_stats)
+
+    return parser.parse_args(args)
+
+def main() -> int:
+    """Execute the main entry point for the audit suite CLI."""
+    parsed_args = parsecli()
+    return parsed_args.func(parsed_args)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        console.print("[yellow]Usage: ./audit_suite.py [mass|lean|parity <legacy.json> <new.json>|stats][/yellow]")
-        sys.exit(1)
-
-    command = sys.argv[1]
-    if command == "mass":
-        run_mass_audit()
-    elif command == "lean":
-        if not LEAN_LIST.exists():
-            console.print(f"[red]Error: {LEAN_LIST} not found.[/red]")
-        else:
-            with open(LEAN_LIST, encoding='utf-8') as f:
-                ts = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-            run_mass_audit(ts)
-    elif command == "parity" and len(sys.argv) == 4:
-        run_parity(sys.argv[2], sys.argv[3])
-    elif command == "stats":
-        run_stats()
-    else:
-        console.print("[red]Invalid command or arguments.[/red]")
+    sys.exit(main())

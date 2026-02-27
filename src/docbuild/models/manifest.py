@@ -228,7 +228,7 @@ class SingleDocument(BaseModel):
         origin = info.data.get("dcfile", "Unknown Origin")
 
         # Catch both None and empty strings
-        if v is None or (isinstance(v, str) and not v.strip()):
+        if not v:
             log.warning("Metadata Integrity: Document missing title. Origin: %s", origin)
         return v
 
