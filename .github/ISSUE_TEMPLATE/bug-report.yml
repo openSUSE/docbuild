@@ -39,8 +39,8 @@ body:
       multiple: true
       options:
         - Linux
-        - Windows
         - macOS
+        - Generic
         - Other (describe below)
     validations:
       required: true
