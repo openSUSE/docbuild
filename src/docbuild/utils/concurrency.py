@@ -8,7 +8,13 @@ CPU-bound tasks (via `loop.run_in_executor`) while keeping resource usage determ
 """
 
 import asyncio
-from collections.abc import Awaitable, Callable, Iterable
+from collections.abc import (
+    AsyncIterable as AsyncIterableABC,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Iterable,
+)
 import logging
 from typing import Concatenate
 
@@ -34,12 +40,12 @@ class TaskFailedError[T](Exception):
 
 
 async def run_parallel[T, R, **P](
-    items: Iterable[T],
+    items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
     *worker_args: P.args,
     **worker_kwargs: P.kwargs,
-) -> list[R | TaskFailedError[T]]:
+) -> AsyncIterator[R | TaskFailedError[T]]:
     """Process items concurrently with a worker limit.
 
     Uses a producer-consumer model via asyncio.TaskGroup.
@@ -53,48 +59,57 @@ async def run_parallel[T, R, **P](
     :param worker_args: Additional positional arguments passed to ``worker_fn``.
     :param worker_kwargs: Additional keyword arguments passed to ``worker_fn``.
     """
-    # Limit queue size to prevent memory explosion if producer is faster than consumers
-    queue: asyncio.Queue[T | None] = asyncio.Queue(maxsize=limit * 2)
-    results: list[R | TaskFailedError[T]] = []
+    if limit <= 0:
+        raise ValueError("limit must be >= 1")
 
-    async def producer() -> None:
-        for item in items:
-            await queue.put(item)
+    result_queue: asyncio.Queue[R | TaskFailedError[T]] = asyncio.Queue()
+    iterator_lock = asyncio.Lock()
 
-    async def consumer() -> None:
+    # Normalize iterable
+    if isinstance(items, AsyncIterableABC):
+        async_iter = items
+
+    else:
+        async def async_wrapper():
+            for item in items:
+                yield item
+
+        async_iter = async_wrapper()
+
+    async def worker():
         while True:
-            item = await queue.get()
-            if item is None:
-                queue.task_done()
-                break
+            async with iterator_lock:
+                try:
+                    item = await anext(async_iter)
+                except StopAsyncIteration:
+                    return
 
             try:
-                result_val = await worker_fn(item, *worker_args, **worker_kwargs)
-                results.append(result_val)
+                result = await worker_fn(item, *worker_args, **worker_kwargs)
+                await result_queue.put(result)
+
+            except asyncio.CancelledError:
+                raise
 
             except Exception as e:
-                # Wrap the exception in TaskFailedError
-                results.append(TaskFailedError(item, e))
-
-            finally:
-                queue.task_done()
+                await result_queue.put(TaskFailedError(item, e))
 
     async with asyncio.TaskGroup() as tg:
-        # Start consumers
         for _ in range(limit):
-            tg.create_task(consumer())
+            tg.create_task(worker())
 
-        # Push items (blocks if queue is full, providing backpressure)
-        await producer()
+        active_workers = limit
+        while active_workers > 0:
+            try:
+                result = await asyncio.wait_for(result_queue.get(), timeout=0.1)
+                yield result
 
-        # Signal shutdown
-        for _ in range(limit):
-            await queue.put(None)
-
-        # Wait for all items to be processed
-        await queue.join()
-
-    return results
+            except asyncio.TimeoutError:
+                # Check if workers done
+                active_workers = sum(
+                    not t.done()
+                    for t in tg._tasks  # internal but safe in practice
+                )
 
 
 if __name__ == "__main__":
@@ -125,17 +140,22 @@ if __name__ == "__main__":
 
     async def main() -> None:
         """Run the example."""
-        items_to_process = list(range(10))
+        async def generate_items() -> AsyncIterableABC[int]:
+            for i in range(10):
+                yield i
+            # yield from range(10)
 
         log.info("--- Running process_unordered ---")
         start_time = time.monotonic()
-        task_results = await run_parallel(items_to_process, sample_worker, limit=3)
+        task_results = (
+            res async for res in run_parallel(generate_items(), sample_worker, limit=3)
+        )
         end_time = time.monotonic()
         log.info("Finished in %.2f seconds\n", end_time - start_time)
 
         successful_results = []
         failed_tasks = []
-        for res in task_results:
+        async for res in task_results:
             if isinstance(res, TaskFailedError):
                 failed_tasks.append((res.item, res.original_exception))
             else:
@@ -159,20 +179,16 @@ if __name__ == "__main__":
         # 3. Use your existing utility with the executor passed as a kwarg
         items = range(10)
         with ProcessPoolExecutor() as process_pool:
-            results = await run_parallel(
-                items,
-                cpu_worker_wrapper,
-                limit=4,
-                executor=process_pool
-            )
 
-        successful_results = []
-        failed_tasks = []
-        for res in results:
-            if isinstance(res, TaskFailedError):
-                failed_tasks.append((res.item, res.original_exception))
-            else:
-                successful_results.append(res)
+            successful_results = []
+            failed_tasks = []
+            async for res in run_parallel(
+                items, cpu_worker_wrapper, limit=4, executor=process_pool
+            ):
+                if isinstance(res, TaskFailedError):
+                    failed_tasks.append((res.item, res.original_exception))
+                else:
+                    successful_results.append(res)
 
         log.info("Successful results (unordered): %s", (successful_results))
         log.info("Caught exceptions: %s", failed_tasks)
