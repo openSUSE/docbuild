@@ -33,7 +33,7 @@ class TaskFailedError[T](Exception):
         self.original_exception = original_exception
 
 
-async def process_unordered[T, R, **P](
+async def run_parallel[T, R, **P](
     items: Iterable[T],
     worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
         log.info("--- Running process_unordered ---")
         start_time = time.monotonic()
-        task_results = await process_unordered(items_to_process, sample_worker, limit=3)
+        task_results = await run_parallel(items_to_process, sample_worker, limit=3)
         end_time = time.monotonic()
         log.info("Finished in %.2f seconds\n", end_time - start_time)
 
@@ -159,7 +159,7 @@ if __name__ == "__main__":
         # 3. Use your existing utility with the executor passed as a kwarg
         items = range(10)
         with ProcessPoolExecutor() as process_pool:
-            results = await process_unordered(
+            results = await run_parallel(
                 items,
                 cpu_worker_wrapper,
                 limit=4,

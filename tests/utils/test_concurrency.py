@@ -2,7 +2,7 @@
 
 import asyncio
 
-from docbuild.utils.concurrency import TaskFailedError, process_unordered
+from docbuild.utils.concurrency import TaskFailedError, run_parallel
 
 
 async def test_process_unordered_basic():
@@ -12,7 +12,7 @@ async def test_process_unordered_basic():
         return n * n
 
     items = [1, 2, 3, 4, 5]
-    result = await process_unordered(items, square, limit=2)
+    result = await run_parallel(items, square, limit=2)
 
     val_set = set()
     for r in result:
@@ -43,7 +43,7 @@ async def test_process_unordered_concurrency_limit():
     items = range(10)
     limit = 3
     # Use higher limit in worker fn but restrict at call site
-    await process_unordered(items, track_concurrency, limit=limit)
+    await run_parallel(items, track_concurrency, limit=limit)
 
     assert max_active <= limit
 
@@ -56,7 +56,7 @@ async def test_process_unordered_exceptions():
         return n
 
     items = [1, 2, 3]
-    results = await process_unordered(items, fail_on_even, limit=2)
+    results = await run_parallel(items, fail_on_even, limit=2)
 
     assert len(results) == 3
 
@@ -78,7 +78,7 @@ async def test_process_unordered_exceptions():
 async def test_process_unordered_empty():
     """Test processing an empty list."""
     async def identity(n): return n
-    results = await process_unordered([], identity, limit=5)
+    results = await run_parallel([], identity, limit=5)
     assert results == []
 
 
@@ -88,7 +88,7 @@ async def test_process_unordered_kwargs():
         return n * factor
 
     items = [1, 2, 3]
-    results = await process_unordered(items, multiply, limit=2, factor=3)
+    results = await run_parallel(items, multiply, limit=2, factor=3)
 
     # We might get exceptions if anything failed, but expecting ints
     int_results = [r for r in results if isinstance(r, int)]
