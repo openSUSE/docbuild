@@ -18,7 +18,6 @@ from collections.abc import (
 from contextlib import suppress
 import functools
 import logging
-from typing import Any
 
 log = logging.getLogger(__name__)
 
@@ -126,11 +125,12 @@ async def run_all[T, R](
         await result_queue.put(SENTINEL)
 
 
-async def run_parallel[T, R](
+async def run_parallel[T, R, **P](
     items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[[T], Awaitable[R]],
     limit: int,
-    **worker_kwargs: Any,  # noqa: ANN401
+    *worker_args: P.args,
+    **worker_kwargs: P.kwargs,
 ) -> AsyncIterator[R | TaskFailedError[T]]:
     """Process items concurrently with bounded parallelism.
 
@@ -185,7 +185,7 @@ async def run_parallel[T, R](
         raise ValueError("limit must be >= 1")
 
     bound_fn = (
-        functools.partial(worker_fn, **worker_kwargs) if worker_kwargs else worker_fn
+        functools.partial(worker_fn, *worker_args, **worker_kwargs) if worker_kwargs else worker_fn
     )
 
     input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 2)
@@ -193,7 +193,9 @@ async def run_parallel[T, R](
         maxsize=limit * 2
     )
 
-    runner = asyncio.create_task(run_all(items, bound_fn, input_queue, result_queue, limit))
+    runner = asyncio.create_task(
+        run_all(items, bound_fn, input_queue, result_queue, limit)
+    )
 
     try:
         while True:
