@@ -17,7 +17,7 @@ from collections.abc import (
 )
 import functools
 import logging
-from typing import Any, Concatenate
+from typing import Any
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +48,12 @@ async def producer[T](
     input_queue: asyncio.Queue,
     num_workers: int,
 ) -> None:
-    """Feed items into the input queue, then send one sentinel per worker."""
+    """Feed items into the input queue, then send one sentinel per worker.
+
+    :param items: An iterable or async iterable of items to be processed.
+    :param input_queue: The queue for items to be processed by workers.
+    :param num_workers: The number of workers, used to send the correct number of sentinels.
+    """
     try:
         if isinstance(items, AsyncIterableABC):
             async for item in items:
@@ -67,7 +72,12 @@ async def worker[T, R](
     input_queue: asyncio.Queue,
     result_queue: asyncio.Queue,
 ) -> None:
-    """Pull items from the input queue, process them, push results out."""
+    """Pull items from the input queue, process them, push results out.
+
+    :param worker_fn: The asynchronous function that processes a single item.
+    :param input_queue: The queue for items to be processed by workers.
+    :param result_queue: The queue for results from the workers.
+    """
     while True:
         item = await input_queue.get()
         if item is SENTINEL:
@@ -91,7 +101,14 @@ async def run_all[T, R](
     result_queue: asyncio.Queue,
     limit: int,
 ) -> None:
-    """Orchestrate producer + workers, then signal the consumer when done."""
+    """Orchestrate producer + workers, then signal the consumer when done.
+
+    :param items: An iterable or async iterable of items to be processed.
+    :param worker_fn: The asynchronous function that processes a single item.
+    :param input_queue: The queue for items to be processed by workers.
+    :param result_queue: The queue for results from the workers.
+    :param limit: The maximum number of concurrent workers.
+    """
     async with asyncio.TaskGroup() as tg:
         tg.create_task(producer(items, input_queue, limit))
         for _ in range(limit):
@@ -125,7 +142,7 @@ async def run_parallel[T, R](
 
     Performance characteristics
     ---------------------------
-    - **Throughput:** approaches ``limit × per-worker throughput`` for
+    - **Throughput:** approaches ``limit * per-worker-throughput`` for
       I/O-bound workloads where workers spend most time awaiting external
       resources. CPU-bound work gains little due to the GIL; use
       ``ProcessPoolExecutor`` wrapped in ``asyncio.run_in_executor`` instead.
@@ -134,7 +151,7 @@ async def run_parallel[T, R](
     - **Memory:** O(limit). Both the input queue (``maxsize=limit * 2``)
       and the result queue (``maxsize=limit * 2``) are bounded. At most
       ``limit`` items are in-flight inside workers at any time, giving a
-      total live-item count of roughly ``5 × limit``.
+      total live-item count of roughly ``5 * limit``.
       Note: each item itself may be arbitrarily large; the O(limit) bound
       refers to the *number* of items held in memory, not their byte size.
     - **Latency:** time-to-first-result equals one worker's latency.
