@@ -177,6 +177,8 @@ async def run_parallel[T, R, **P](
     :param limit: Maximum number of concurrent workers. Must be >= 1.
         Higher values increase throughput up to the point where the event
         loop, network, or downstream service becomes the bottleneck.
+    :param worker_args: Positional arguments to pass to ``worker_fn``.
+    :param worker_kwargs: Keyword arguments to pass to ``worker_fn``.
     :raises ValueError: If ``limit`` is less than 1.
     :yields: Results in completion order (not input order). Failed items
         are yielded as :class:`TaskFailedError` instances rather than
