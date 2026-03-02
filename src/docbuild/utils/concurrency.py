@@ -189,7 +189,9 @@ async def run_parallel[T, R](
     )
 
     input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 2)
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue()
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(
+        maxsize=limit * 2
+    )
 
     runner = asyncio.create_task(run_all(items, bound_fn, input_queue, result_queue, limit))
 
