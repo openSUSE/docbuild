@@ -18,6 +18,7 @@ from collections.abc import (
 from contextlib import suppress
 import functools
 import logging
+from typing import Concatenate
 
 log = logging.getLogger(__name__)
 
@@ -127,7 +128,7 @@ async def run_all[T, R](
 
 async def run_parallel[T, R, **P](
     items: Iterable[T] | AsyncIterableABC[T],
-    worker_fn: Callable[[T], Awaitable[R]],
+    worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
     *worker_args: P.args,
     **worker_kwargs: P.kwargs,
