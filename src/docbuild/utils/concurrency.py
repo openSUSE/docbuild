@@ -208,14 +208,14 @@ async def run_parallel[T, R, **P](
         if not runner.done():
             runner.cancel()
 
-            with suppress(asyncio.CancelledError, Exception):
-                # Always await runner regardless of whether we cancelled it
-                # or it finished on its own.
-                # This ensures the task is fully cleaned up (no "task was
-                # destroyed but it is pending" warnings) and re-raises any unexpected
-                # exception from run_all — which we suppress here since we're
-                # in a cleanup path and cannot meaningfully recover.
-                await runner
+        with suppress(asyncio.CancelledError, Exception):
+            # Always await runner regardless of whether we cancelled it
+            # or it finished on its own.
+            # This ensures the task is fully cleaned up (no "task was
+            # destroyed but it is pending" warnings) and re-raises any unexpected
+            # exception from run_all — which we suppress here since we're
+            # in a cleanup path and cannot meaningfully recover.
+            await runner
 
 
 if __name__ == "__main__":
