@@ -15,6 +15,7 @@ from collections.abc import (
     Callable,
     Iterable,
 )
+from contextlib import suppress
 import functools
 import logging
 from typing import Any
@@ -62,7 +63,13 @@ async def producer[T](
             for item in items:
                 await input_queue.put(item)
 
+    except asyncio.CancelledError:
+        # We were cancelled — workers are being cancelled too, so there's
+        # nobody left to consume sentinels. Don't bother sending them.
+        raise
+
     finally:
+        # Normal completion only — workers are still running and need sentinels.
         for _ in range(num_workers):
             await input_queue.put(SENTINEL)
 
@@ -194,10 +201,15 @@ async def run_parallel[T, R](
     finally:
         if not runner.done():
             runner.cancel()
-            try:
+
+            with suppress(asyncio.CancelledError, Exception):
+                # Always await runner regardless of whether we cancelled it
+                # or it finished on its own.
+                # This ensures the task is fully cleaned up (no "task was
+                # destroyed but it is pending" warnings) and re-raises any unexpected
+                # exception from run_all — which we suppress here since we're
+                # in a cleanup path and cannot meaningfully recover.
                 await runner
-            except (asyncio.CancelledError, Exception):
-                pass
 
 
 if __name__ == "__main__":
