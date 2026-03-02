@@ -116,12 +116,14 @@ async def run_all[T, R](
     :param result_queue: The queue for results from the workers.
     :param limit: The maximum number of concurrent workers.
     """
-    async with asyncio.TaskGroup() as tg:
-        tg.create_task(producer(items, input_queue, limit))
-        for _ in range(limit):
-            tg.create_task(worker(worker_fn, input_queue, result_queue))
+    try:
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(producer(items, input_queue, limit))
+            for _ in range(limit):
+                tg.create_task(worker(worker_fn, input_queue, result_queue))
 
-    await result_queue.put(SENTINEL)
+    finally:
+        await result_queue.put(SENTINEL)
 
 
 async def run_parallel[T, R](
