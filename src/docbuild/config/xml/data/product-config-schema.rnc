@@ -9,7 +9,7 @@ default namespace = ""
   db:refname [ "start" ]
   db:refpurpose [ "The start of the schema" ]
 ]
-start = ds.product
+start = ds.product | ds.docset # | ds.categories
 
 
 # CONSTANTS
