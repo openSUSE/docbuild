@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:../product-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude"
+  schemaversion="7.0">
+  
+  <categories>
+    <xi:include href="categories/de-de.xml" />
+    <xi:include href="categories/en-us.xml" />
+  </categories>
+
+  <xi:include href="sles/sles.xml" />
+
+</portal>
