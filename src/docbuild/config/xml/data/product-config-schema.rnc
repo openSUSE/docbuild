@@ -9,8 +9,9 @@ default namespace = ""
   db:refname [ "start" ]
   db:refpurpose [ "The start of the schema" ]
 ]
-start = ds.product | ds.docset # | ds.categories
+start = ds.portal | ds.product | ds.docset | ds.categories
 
+include "xinclude.rnc"
 
 # CONSTANTS
 
@@ -23,7 +24,7 @@ ds.schema.version =
   [
     db:refpurpose [ "Schema version" ]
   ]
-  "6.0"
+  "7.0"
 
 
 # TYPES
@@ -118,11 +119,11 @@ ds.type.alphanumeric =
   }
 
 ds.type.id =
-  ## An ID (unlike xml:ids, this allows initial digits)
-  # (however, we do not check for uniqueness via RNC -- we check in docserv-stitch)
+  ## An unique ID (unlike xml:ids, this allows initial digits)
   [
     db:refpurpose [ "An ID (unlike xml:ids, this allows initial digits)" ]
   ]
+  # TODO: Change into a xml:id?
   xsd:token {
     pattern="""[\-_\.\+a-zA-Z0-9]+"""
   }
@@ -177,6 +178,7 @@ ds.type.titleformat.link =
 ds.false.enum =
   ## Boolean false value
   "0" | "false"
+
 ds.true.enum =
   ## Boolean true value
   "1" | "true"
@@ -366,6 +368,22 @@ ds.href.attr =
 
 
 # --- ROOT ---
+
+
+[
+  db:refname [ "portal" ]
+  db:refpurpose [ "The root element of all portal configuration" ]
+]
+div {
+  ds.portal =
+    ## The root element of all portal configuration
+    element portal {
+      ds.schemaversion.attr,
+      ds.categories,
+      (ds.product+ & xi.include*)
+    }
+}
+
 [
   db:refname [ "product"]
   db:refpurpose [ "Product definition" ]
@@ -376,6 +394,7 @@ div {
     [
       db:refpurpose [ "Product ID, must be unique across entire site config, used as first-level path element" ]
     ]
+    # TODO: Simplify to id?
     attribute productid { ds.type.id }
 
   ds.schemaversion.attr =
@@ -383,6 +402,7 @@ div {
     [
       db:refpurpose [ "Version of the schema, verifies that Docserv² major version and version of product configuration match" ]
     ]
+    # TODO: Simplify to version?
     attribute schemaversion { ds.schema.version }
 
   ds.enabled.attr =
@@ -398,6 +418,8 @@ div {
     [
       db:refpurpose [ "Site section this configuration belongs to" ]
     ]
+    # TODO: Do we still need this attribute?
+    # TODO: Is it similar to a (product) family now?
     attribute site-section { ds.type.alphanumeric }?
 
   ds.docset-sort.attr =
@@ -432,7 +454,7 @@ ds.product =
     ds.sortname?,
     ds.acronym?,
     ds.maintainers,
-    ds.category*,
+    (ds.category | xi.include)*,
     ds.desc_default,
     ds.desc_translation*,
     ds.docset+
@@ -577,6 +599,18 @@ ds.category =
   }
 }
 
+
+[
+  db:refname [ "categories" ]
+  db:refpurpose [ "Wrapper for all category elements" ]
+]
+div {
+  ds.categories =
+    ## Wrapper for all category elements
+    element categories {
+      ds.category+ & xi.include*
+    }
+}
 
 [
   db:refname [ "language (variant 1)" ]
