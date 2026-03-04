@@ -9,7 +9,7 @@ default namespace = ""
   db:refname [ "start" ]
   db:refpurpose [ "The start of the schema" ]
 ]
-start = ds.portal | ds.product | ds.docset | ds.categories
+start = ds.portal | ds.product | ds.docset | ds.categories | ds.descriptions
 
 include "xinclude.rnc"
 
@@ -244,6 +244,13 @@ ds.htmlinlinecontent =
 #
 # Common attributes
 #
+ds.xmlbase.attr =
+  ## Specifies the base URI of the element and its descendants
+  [
+     db:refpurpose [ "Specifies the base URI of the element and its descendants" ]
+  ]
+  attribute xml:base { xsd:anyURI }
+
 ds.id.attr =
   ## ID attribute (HTML, not checked for uniqueness)
   [
@@ -443,6 +450,7 @@ ds.product =
     # not make sense to use xsd:id here because there can only ever be one
     # of these ID per productconfig file.
     (
+      ds.xmlbase.attr? &
       ds.productid.attr &
       ds.schemaversion.attr &
       ds.enabled.attr? &
@@ -454,6 +462,7 @@ ds.product =
     ds.sortname?,
     ds.acronym?,
     ds.maintainers,
+    # TODO: Adjust the content model?
     (ds.category | xi.include)*,
     (ds.descriptions | xi.include),
     (ds.docset | xi.include)+
@@ -535,6 +544,7 @@ div {
   ds.descriptions =
     ## Wrapper of desc element
     element descriptions {
+      ds.xmlbase.attr?,
       ds.desc_default,
       ds.desc_translation*
     }
@@ -620,7 +630,8 @@ div {
   ds.categories =
     ## Wrapper for all category elements
     element categories {
-      ds.category+ & xi.include*
+      ds.xmlbase.attr?,
+      (ds.category+ & xi.include*)
     }
 }
 
@@ -703,10 +714,13 @@ div {
 ds.docset =
   ## Product version or second-level category
   element docset {
-    ds.setid.attr,
-    ds.lifecycle.attr,
-    ds.navigation.attr?,
-    ds.gated.attr?,
+    (
+    ds.xmlbase.attr? &
+    ds.setid.attr &
+    ds.lifecycle.attr &
+    ds.navigation.attr? &
+    ds.gated.attr?
+    ),
     #
     # To allow for name changes between versions, as in the example of SUSE
     # Cloud -> SUSE OpenStack Cloud: optional ds.name here
