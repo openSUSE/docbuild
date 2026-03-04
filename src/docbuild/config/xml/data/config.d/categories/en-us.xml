@@ -1,0 +1,6 @@
+<category lang="en-us" default="true">
+  <entry categoryid="about" title="About" />
+  <entry categoryid="deployment" title="Deployment" />
+  <entry categoryid="inital-config" title="Initial configuration" />
+  <!-- ... more entries ... -->
+</category>
