@@ -455,9 +455,8 @@ ds.product =
     ds.acronym?,
     ds.maintainers,
     (ds.category | xi.include)*,
-    ds.desc_default,
-    ds.desc_translation*,
-    ds.docset+
+    (ds.descriptions | xi.include),
+    (ds.docset | xi.include)+
   }
 }
 
@@ -527,6 +526,19 @@ ds.contact =
   }
 }
 
+
+[
+  db:refname [ "descriptions" ]
+  db:refpurpose [ "Wrapper of desc element" ]
+]
+div {
+  ds.descriptions =
+    ## Wrapper of desc element
+    element descriptions {
+      ds.desc_default,
+      ds.desc_translation*
+    }
+}
 
 [
   db:refname [ "desc" ]
