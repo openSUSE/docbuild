@@ -1096,21 +1096,6 @@ div {
     ]
     attribute link { ds.type.id }
 
-  ds.titleformat.attr =
-    ## How to display the document title on the product version navigational page, a combination of the following values:
-    ## * `title`: title as extracted from the document
-    ## * `subtitle`: subtitle as extracted from the document (can be empty)
-    ## * `docset`: product and version number as classified in the Docserv² product configuration
-    ## * `product`: product and version number as extracted from the document (can be empty)
-    ## Note the following:
-    ## * `title` is mandatory
-    ## * `docset` and `product` are mutually exclusive.
-    ## * the order of values must be `title`, `subtitle`, `docset`/`product`
-    ## Default: `title subtitle`
-    [
-      db:refpurpose [ "How to display the document title on the product version navigational page, a combination of the following values: title, subtitle, docset, product. Note the following: title is mandatory, docset and product are mutually exclusive, and the order of values must be title, subtitle, docset/product. Default: title subtitle" ]
-    ]
-    attribute titleformat { ds.type.titleformat.build }
 
 ds.ref =
   ## Docserv²-internal reference
