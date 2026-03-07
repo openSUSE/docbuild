@@ -112,7 +112,7 @@ ds.type.xsltparam =
 ds.type.alphanumeric =
   ## An alphanumeric value + "-" + "_"
   [
-    db:refpurpose [ "An alphanumeric value" ]
+    db:refpurpose [ "An alphanumeric value with dash and underscore" ]
   ]
   xsd:token {
     pattern="""[\-_a-zA-Z0-9]+"""
@@ -135,6 +135,7 @@ ds.type.idmulti =
     db:refpurpose [ "A space-separated list of IDs" ]
   ]
   xsd:token {
+    # TODO: Change that to xsd:IDREF or xsd:IDREFS?
     pattern="""([\-_\.\+a-zA-Z0-9]+ )*[\-_\.\+a-zA-Z0-9]+"""
   }
 
@@ -363,6 +364,7 @@ ds.meta.attr =
   [
     db:refpurpose [ "Enable DocBook meta information in this document (daps ... --meta; the default value varies depending on the site configuration)" ]
   ]
+  # TODO: Is this still needed?
   attribute meta { xsd:boolean }
 
 ds.href.attr =
@@ -375,8 +377,6 @@ ds.href.attr =
 
 
 # --- ROOT ---
-
-
 [
   db:refname [ "portal" ]
   db:refpurpose [ "The root element of all portal configuration" ]
@@ -387,6 +387,7 @@ div {
     element portal {
       ds.schemaversion.attr,
       ds.categories,
+      # ds.productfamilies,
       (ds.product+ & xi.include*)
     }
 }
