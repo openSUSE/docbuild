@@ -1,0 +1,17 @@
+<?xml-model href="file:../../product-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<product productid="sles" schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <name>SUSE Linux Enterprise Server</name>
+  <acronym>SLES</acronym>
+  <maintainers>
+    <contact>taroth@suse.de</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+
+  <xi:include href="desc/descriptions.xml" />
+
+  <!-- docsets: -->
+  <xi:include href="docsets/16.0.xml" />
+  <!-- <xi:include href="docsets/15-SP7.xml"/>  -->
+
+</product>

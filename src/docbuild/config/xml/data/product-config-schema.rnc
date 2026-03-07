@@ -1,11 +1,17 @@
 # RELAX NG Schema for Docserv² product configuration
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace db = "http://docbook.org/ns/docbook"
+namespace xlink = "http://www.w3.org/1999/xlink"
+default namespace = ""
 
 # BASICS
+[
+  db:refname [ "start" ]
+  db:refpurpose [ "The start of the schema" ]
+]
+start = ds.portal | ds.product | ds.docset | ds.categories | ds.descriptions
 
-default namespace = ""
-start = ds.product
-
+include "xinclude.rnc"
 
 # CONSTANTS
 
@@ -15,13 +21,22 @@ start = ds.product
 # changes, leave the version as is.
 ds.schema.version =
   ## Schema version
-  "6.0"
+  [
+    db:refpurpose [ "Schema version" ]
+  ]
+  "7.0"
 
 
 # TYPES
-
+[
+    db:refpurpose [ "Custom data types used in the schema"]
+]
+div {
 ds.type.class =
   ## A space-separated list of HTML classes
+  [
+    db:refpurpose [ "A space-separated list of HTML classes" ]
+  ]
   xsd:token { pattern = "[\-_\+\.a-zA-Z0-9]+( [\-_\+\.a-zA-Z0-9]+)*" }
 
 ds.type.email =
@@ -31,56 +46,84 @@ ds.type.email =
   # "David Tolpin"@[Obscure Place]
   # The expression above is slightly more allowing than required,
   # but should be appropriate for the majority of cases.
+  [
+    db:refpurpose [ "An email address" ]
+
+  ]
   xsd:token {
     pattern="""([a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+(\.[a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+)*|"[^"\\]*")@([a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+(\.[a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+)*|\[[^\[\]\\]*\])"""
   }
 
 ds.type.lang =
   ## A language code
-  xsd:token {
+  [
+    db:refpurpose [ "A language code (la-ng style)" ]
+  ]
+  xsd:language {
     pattern="""[a-z]{2}(-[a-z]{2,8})?"""
   }
 
 ds.type.gitremote =
   ## URL to a Git remote ("http[s]" URLs only)
   # (Let's not support SSH URLs for the moment since that needs authentication)
+  [
+    db:refpurpose [ "URL to a Git remote (https URLs only)" ]
+  ]
   xsd:anyURI {
     pattern="""https?://.*"""
   }
 
 ds.type.dirname =
   ## A relative directory name
+  [
+    db:refpurpose [ "A relative directory name" ]
+  ]
   xsd:anyURI {
     pattern="""[^/\\]*[^/\\:](/[^/\\]+)*"""
   }
 
 ds.type.branch =
   ## A Git branch name
+  [
+    db:refpurpose [ "A Git branch name" ]
+  ]
   xsd:token {
     pattern="""[^\s\\]+"""
   }
 
 ds.type.dcfile =
   ## A DC file name
+  [
+    db:refpurpose [ "A DC file name" ]
+  ]
   xsd:string {
     pattern="""DC-[\-_\.\+a-zA-Z0-9]+"""
   }
 
 ds.type.xsltparam =
   ## An XSLT parameter name
+  [
+    db:refpurpose [ "An XSLT parameter name" ]
+  ]
   xsd:token {
     pattern="""[\-_\.\+a-zA-Z0-9]+"""
   }
 
 ds.type.alphanumeric =
   ## An alphanumeric value + "-" + "_"
+  [
+    db:refpurpose [ "An alphanumeric value with dash and underscore" ]
+  ]
   xsd:token {
     pattern="""[\-_a-zA-Z0-9]+"""
   }
 
 ds.type.id =
-  ## An ID (unlike xml:ids, this allows initial digits)
-  # (however, we do not check for uniqueness via RNC -- we check in docserv-stitch)
+  ## An unique ID (unlike xml:ids, this allows initial digits)
+  [
+    db:refpurpose [ "An ID (unlike xml:ids, this allows initial digits)" ]
+  ]
+  # TODO: Change into a xml:id?
   xsd:token {
     pattern="""[\-_\.\+a-zA-Z0-9]+"""
   }
@@ -88,22 +131,33 @@ ds.type.id =
 ds.type.idmulti =
   ## A space-separated list of IDs
   # (we do not check via RNC -- we check in docserv-stitch)
+  [
+    db:refpurpose [ "A space-separated list of IDs" ]
+  ]
   xsd:token {
+    # TODO: Change that to xsd:IDREF or xsd:IDREFS?
     pattern="""([\-_\.\+a-zA-Z0-9]+ )*[\-_\.\+a-zA-Z0-9]+"""
   }
 
 ds.type.containerref =
   ## A reference to a remote container image
   # matches the expression used by daps2docker
+  [
+    db:refpurpose [ "A reference to a remote container image" ]
+  ]
   xsd:token {
     pattern="""[\-_\.a-zA-Z0-9]+(/[\-_\.a-zA-Z0-9]+)*(:[\-_\.a-zA-Z0-9]+)?"""
   }
 
 ds.type.hexdigest =
   ## A hash/hex digest (such as a Docker or Git SHA reference)
+  [
+    db:refpurpose [ "A hash/hex digest (such as a Docker or Git SHA reference" ]
+  ]
   xsd:token {
     pattern="""[a-f0-9]{7,}"""
   }
+
 
 # A basic title template that allows strings like "title subtitle product/docset",
 # in exactly that order, but everything except the title can be
@@ -125,9 +179,12 @@ ds.type.titleformat.link =
 ds.false.enum =
   ## Boolean false value
   "0" | "false"
+
 ds.true.enum =
   ## Boolean true value
   "1" | "true"
+
+}
 
 # TAG/ATTRIBUTE SETS
 
@@ -173,10 +230,8 @@ ds.htmlinline =
 div
 {
 ds.htmlattr =
-  ## ID attribute (HTML, not checked for uniqueness within Docserv²)
-  attribute id { xsd:ID }?,
-  ## Class attribute (HTML)
-  attribute class { ds.type.class }?
+  ds.id.attr?,
+  ds.class.attr?
 }
 
 div
@@ -187,26 +242,66 @@ ds.htmlinlinecontent =
   text)*
 }
 
-
+#
 # Common attributes
+#
+ds.xmlbase.attr =
+  ## Specifies the base URI of the element and its descendants
+  [
+     db:refpurpose [ "Specifies the base URI of the element and its descendants" ]
+  ]
+  attribute xml:base { xsd:anyURI }
+
+ds.id.attr =
+  ## ID attribute (HTML, not checked for uniqueness)
+  [
+    db:refpurpose [ "ID attribute (HTML, not checked for uniqueness)" ]
+  ]
+  attribute id { xsd:ID }
+
+ds.class.attr =
+  ## Class attribute (HTML)
+  [
+    db:refpurpose [ "Class attribute (HTML)" ]
+  ]
+  attribute class { ds.type.class }
+
 ds.gated.attr =
   ## Is the content behind a paywall? (default "false")
-  [ a:defaultValue = "false" ] attribute gated { xsd:boolean }
+  [
+    a:defaultValue = "false"
+    db:refpurpose [ "Is the content behind a paywall?" ]
+  ]
+  attribute gated { xsd:boolean }
 
 ds.lang.attr =
   ## Language code (`la-ng` style) of this description
+  [
+    db:refpurpose [ "Language code (la-ng style) of this description" ]
+  ]
   attribute lang { ds.type.lang }
 
 ds.default.true.attr =
     ## Whether this is the default language (must be true for initial `<desc/>` element)
+    [
+      a:defaultValue = "true"
+      db:refpurpose [ "Whether this is the default language (must be true for initial `<desc/>` element)" ]
+    ]
     attribute default { ds.true.enum }
 
 ds.default.false.attr =
     ## Whether this is the default language (must be true for initial `<desc/>` element)
+    [
+      a:defaultValue = "false"
+      db:refpurpose [ "Whether this is the default language (must be true for initial `<desc/>` element)" ]
+    ]
     attribute default { ds.false.enum }
 
 ds.title.attr =
     ## Localized title of description
+    [
+      db:refpurpose [ "Localized title of description" ]
+    ]
     attribute title { text }
 
 ds.titleformat.attr =
@@ -220,11 +315,17 @@ ds.titleformat.attr =
   ## * `docset` and `product` are mutually exclusive.
   ## * the order of values must be `title`, `subtitle`, `docset`/`product`
   ## Default: `title subtitle`
+  [
+    db:refpurpose [ "How to display the document title on the product version navigational page, a combination of the following values: title, subtitle, docset, product. Note the following: title is mandatory, docset and product are mutually exclusive, and the order of values must be title, subtitle, docset/product. Default: title subtitle" ]
+  ]
   attribute titleformat { ds.type.titleformat.build }
 
 
 ds.category.attr =
   ## What category or categories to display this document under on the product version navigational page
+  [
+    db:refpurpose [ "What category or categories to display this document under on the product version navigational page" ]
+  ]
   attribute category { ds.type.idmulti }
 
 ds.includes-productname.attr =
@@ -235,29 +336,112 @@ ds.includes-productname.attr =
   ## * <listingversion/> is also a version (number), also normally combined with a
   ##   product name. However, it is only ever shown on the home page's selection
   ##   boxes, but not used within internal references or for product pages.
+  [
+    a:defaultValue = "false"
+    db:refpurpose [ "Whether the version number name includes the product name (default: false)" ]
+  ]
   attribute includes-productname { xsd:boolean }
 
 ds.remarks.attr =
   ## Enable DocBook remarks in this document (`daps ... --remarks`;
   ## the default value varies depending on the site configuration)
+  [
+    db:refpurpose [ "Enable DocBook remarks in this document (daps ... --remarks; the default value varies depending on the site configuration)" ]
+  ]
   attribute remarks { xsd:boolean }
 
 ds.draft.attr =
   ## Enable DocBook draft watermark in this document (`daps ... --draft`;
   ## the default value varies depending on the site configuration and product lifecycle)
+  [
+    db:refpurpose [ "Enable DocBook draft watermark in this document (daps ... --draft; the default value varies depending on the site configuration and product lifecycle)" ]
+  ]
   attribute draft { xsd:boolean }
 
 ds.meta.attr =
   ## Enable DocBook meta information in this document (`daps ... --meta`;
   ## the default value varies depending on the site configuration)
+  [
+    db:refpurpose [ "Enable DocBook meta information in this document (daps ... --meta; the default value varies depending on the site configuration)" ]
+  ]
+  # TODO: Is this still needed?
   attribute meta { xsd:boolean }
 
 ds.href.attr =
   ## Target URL for the link (if the URL has no protocol prefix, the link is assumed
   ## to be local to the current host and a `/` will be added automatically)
+  [
+    db:refpurpose [ "Target URL for the link" ]
+  ]
   attribute href { xsd:anyURI }
 
+
 # --- ROOT ---
+[
+  db:refname [ "portal" ]
+  db:refpurpose [ "The root element of all portal configuration" ]
+]
+div {
+  ds.portal =
+    ## The root element of all portal configuration
+    element portal {
+      ds.schemaversion.attr,
+      ds.categories,
+      # ds.productfamilies,
+      (ds.product+ & xi.include*)
+    }
+}
+
+[
+  db:refname [ "product"]
+  db:refpurpose [ "Product definition" ]
+]
+div {
+  ds.productid.attr =
+    ## Product ID, must be unique across entire site config, used as first-level path element
+    [
+      db:refpurpose [ "Product ID, must be unique across entire site config, used as first-level path element" ]
+    ]
+    # TODO: Simplify to id?
+    attribute productid { ds.type.id }
+
+  ds.schemaversion.attr =
+    ## Version of the schema, verifies that Docserv² major version and version of product configuration match
+    [
+      db:refpurpose [ "Version of the schema, verifies that Docserv² major version and version of product configuration match" ]
+    ]
+    # TODO: Simplify to version?
+    attribute schemaversion { ds.schema.version }
+
+  ds.enabled.attr =
+    ## Whether to enable this configuration file (`true` by default)
+    [
+      a:defaultValue = "true"
+      db:refpurpose [ "Whether to enable this configuration file (true by default)" ]
+    ]
+    attribute enabled { xsd:boolean }
+
+  ds.site-section.attr =
+    ## Site section this configuration belongs to
+    [
+      db:refpurpose [ "Site section this configuration belongs to" ]
+    ]
+    # TODO: Do we still need this attribute?
+    # TODO: Is it similar to a (product) family now?
+    attribute site-section { ds.type.alphanumeric }?
+
+  ds.docset-sort.attr =
+    ## Whether to sort docsets of this product Z-A9-0 (`descending`, default) or 0-9A-Z (`ascending`)
+    [
+      a:defaultValue = "descending"
+      db:refpurpose [ "Whether to sort docsets of this product" ]
+    ]
+    attribute docset-sort {
+       ## Sort 0-9A-Z
+       "ascending"
+       |
+       ## Sort Z-A9-0
+       "descending" }?
 
 ds.product =
   ## Product (or top-level category, root element)
@@ -266,60 +450,112 @@ ds.product =
     # files together (i.e. after we have run stitch.sh). In any case, it does
     # not make sense to use xsd:id here because there can only ever be one
     # of these ID per productconfig file.
-    ## Product ID, must be unique across entire site config, used as first-level path element
-    attribute productid { ds.type.id },
-    ## Version of the schema, verifies that Docserv² major version and version of product configuration match
-    attribute schemaversion { ds.schema.version },
-    ## Whether to enable this configuration file (`true` by default)
-    attribute enabled { xsd:boolean }?,
-    ## Site section this configuration belongs to
-    attribute site-section { ds.type.alphanumeric }?,
-    ## Whether to sort docsets of this product Z-A9-0 (`descending`, default) or 0-9A-Z (`ascending`)
-    attribute docset-sort { "ascending" | "descending" }?,
-    ds.gated.attr?,
+    (
+      ds.xmlbase.attr? &
+      ds.productid.attr &
+      ds.schemaversion.attr &
+      ds.enabled.attr? &
+      ds.site-section.attr? &
+      ds.docset-sort.attr? &
+      ds.gated.attr?
+    ),
     ds.name,
     ds.sortname?,
     ds.acronym?,
     ds.maintainers,
-    ds.category*,
-    ds.desc_default,
-    ds.desc_translation*,
-    ds.docset+
+    # TODO: Adjust the content model?
+    (ds.category | xi.include)*,
+    (ds.descriptions | xi.include),
+    (ds.docset | xi.include)+
   }
+}
 
 
 # PRODUCT DESCRIPTION
-
+[
+  db:refname [ "name" ]
+  db:refpurpose [ "Name of product or top-level category" ]
+]
+div {
 ds.name =
   ## Name of product or top-level category
   element name {
     text
   }
+}
 
+
+[
+  db:refname [ "sortname" ]
+  db:refpurpose [ "Sort name of product or top-level category" ]
+]
+div {
 ds.sortname =
   ## Sort name of product or top-level category
   element sortname {
     text
   }
+}
 
+
+[
+  db:refname [ "acronym" ]
+  db:refpurpose [ "Acronym of name of product or top-level category" ]
+]
+div {
 ds.acronym =
   ## Acronym of name of product or top-level category
   element acronym {
     text
   }
+}
 
+
+[
+  db:refname [ "maintainers" ]
+  db:refpurpose [ "Collection of email addresses to send mail about build failures to" ]
+]
+div {
 ds.maintainers =
   ## Collection of email addresses to send mail about build failures to
   element maintainers {
     ds.contact+
   }
+}
 
+
+[
+  db:refname [ "contact" ]
+  db:refpurpose [ "Email address to send mail about build failures to" ]
+]
+div {
 ds.contact =
   ## Email address to send mail about build failures to
   element contact {
     ds.type.email
   }
+}
 
+
+[
+  db:refname [ "descriptions" ]
+  db:refpurpose [ "Wrapper of desc element" ]
+]
+div {
+  ds.descriptions =
+    ## Wrapper of desc element
+    element descriptions {
+      ds.xmlbase.attr?,
+      ds.desc_default,
+      ds.desc_translation*
+    }
+}
+
+[
+  db:refname [ "desc" ]
+  db:refpurpose [ "Description of product or top-level category" ]
+]
+div {
 ds.desc_default =
   ## Description of product or top-level category (default language)
   element desc {
@@ -328,7 +564,14 @@ ds.desc_default =
     ds.shortdesc?,
     ds.htmlblock+
   }
+}
 
+
+[
+  db:refname [ "desc" ]
+  db:refpurpose [ "Description of product or top-level category (dependent languages)" ]
+]
+div {
 ds.desc_translation =
   ## Description of product or top-level category (dependent languages)
   element desc {
@@ -338,25 +581,66 @@ ds.desc_translation =
     ds.shortdesc?,
     ds.htmlblock*
   }
+}
+
 
 ds.shortdesc_text =
   xsd:string { pattern = "[^\n]{1,80}" }
 
+
+[
+  db:refname [ "shortdesc" ]
+  db:refpurpose [ "A short description of the product"]
+]
+div {
 ds.shortdesc =
   ## A short description of the product
   element title {
     ds.shortdesc_text
   }
+}
+
+
+[
+  db:refname [ "category" ]
+  db:refpurpose [ "Definition of category displayed on product detail navigational page (third-level category)" ]
+]
+div {
+  ds.categoryid.attr =
+    ## Category ID, must be unique across the configuration for a single product
+    [
+      db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
+    ]
+    attribute categoryid { ds.type.id }
 
 ds.category =
   ## Definition of category displayed on product detail navigational page (third-level category)
   element category {
-    ## Category ID, must be unique across the configuration for a single product
-    attribute categoryid { ds.type.id }?,
+    ds.categoryid.attr,
     ds.categorylanguage_default,
     ds.categorylanguage_translation*
   }
+}
 
+
+[
+  db:refname [ "categories" ]
+  db:refpurpose [ "Wrapper for all category elements" ]
+]
+div {
+  ds.categories =
+    ## Wrapper for all category elements
+    element categories {
+      ds.xmlbase.attr?,
+      (ds.category+ & xi.include*)
+    }
+}
+
+[
+  db:refname [ "language (variant 1)" ]
+  db:refpurpose [ "Metadata for category displayed on product detail navigational page" ]
+]
+div {
 ds.categorylanguage_default =
   ## Metadata for category displayed on product detail navigational page (default language, third-level category)
   element language {
@@ -365,6 +649,14 @@ ds.categorylanguage_default =
     ds.title.attr,
     ds.htmlblock*
   }
+}
+
+
+[
+  db:refname [ "language (variant 2)" ]
+  db:refpurpose [ "Metadata for category displayed on product detail navigational page (dependent languages)" ]
+]
+div {
 ds.categorylanguage_translation =
   ## Metadata for category displayed on product detail navigational page (dependent languages, third-level category)
   element language {
@@ -373,28 +665,64 @@ ds.categorylanguage_translation =
     ds.title.attr,
     ds.htmlblock*
   }
+}
 
 
 # DOCSETS
+[
+  db:refname [ "docset" ]
+  db:refpurpose [ "Product version definition" ]
+]
+div {
+  ds.lifecycle.attr =
+    ## Lifecycle value of this product version
+    [
+      a:defaultValue = "supported"
+      db:refpurpose [ "Lifecycle value of this product version" ]
+    ]
+    attribute lifecycle {
+       ## Product versions can only be built for instances defined as internal in the INI configuration
+       "unpublished" |
+       ## Product versions can be built without restriction but contain a draft watermark
+       "beta" |
+       ## Product versions can be built without restriction
+       "supported" |
+       ## Product versions can be built without restriction but are only published as Zip archives
+       "unsupported"
+    }
+
+  ds.setid.attr =
+    ## Set ID, must be unique across the configuration for a single product
+    [
+      db:refpurpose [ "Set ID, must be unique across the configuration for a single product" ]
+    ]
+    attribute setid { ds.type.id }
+
+  ds.navigation.attr =
+    ## Whether to build a navigational page for this product version
+    [
+      a:defaultValue = "linked"
+      db:refpurpose [ "Whether to build a navigational page for this product version: linked for navigational pages linked from the homepage (default), hidden for navigational pages not linked from the homepage, disabled to disable creation of a navigational page" ]
+    ]
+    attribute navigation {
+      ## For navigational pages linked from the homepage (default)
+      "linked" |
+      ## For navigational pages not linked from the homepage
+      "hidden" |
+      ## To disable creation of a navigational page
+      "disabled" }
 
 ds.docset =
   ## Product version or second-level category
   element docset {
-    ## Set ID, must be unique across the configuration for a single product
-    attribute setid { ds.type.id },
-    ## Lifecycle value of this product version:
-    ## * `unpublished` product versions can only be built for instances defined as internal in the INI configuration
-    ## * `beta` product versions can be built without restriction but contain a draft watermark
-    ## * `supported` product versions can be built without restriction
-    ## * `unsupported` product versions can be built without restriction but are only published as Zip archives
-    attribute lifecycle { "unpublished" | "beta" | "supported" | "unsupported" },
-    ## Whether to build a navigational page for this product version:
-    ## * `linked` for navigational pages linked from the homepage (default)
-    ## * `hidden` for navigational pages not linked from the homepage
-    ## * `disabled` to disable creation of a navigational page
-    attribute navigation { "linked" | "hidden" | "disabled" }?,
+    (
+    ds.xmlbase.attr? &
+    ds.setid.attr &
+    ds.lifecycle.attr &
+    ds.navigation.attr? &
+    ds.gated.attr?
+    ),
     #
-    ds.gated.attr?,
     # To allow for name changes between versions, as in the example of SUSE
     # Cloud -> SUSE OpenStack Cloud: optional ds.name here
     ds.name?,
@@ -413,7 +741,14 @@ ds.docset =
       ds.external
     )
   }
+}
 
+
+[
+  db:refname [ "version" ]
+  db:refpurpose [ "User-visible version number (or name of second-level category)" ]
+]
+div {
 # * <version/> is a normal version (number) that is normally combined with a
 #   product name and shown in all situations. When @includes-productname=true is
 #   set for <version/>, we will always only display the <version/> text rather
@@ -432,31 +767,72 @@ ds.version =
     ds.includes-productname.attr?,
     text
   }
+}
+
+
+[
+  db:refname [ "canonical" ]
+  db:refpurpose [ "For canonical links; from previous, obsolete SPs to the latest" ]
+]
+div {
 ds.canonical =
   ## For canonical links; from previous, obsolete SPs to the latest
   element canonical {
     xsd:anyURI
   }
-ds.listingversion =
+}
+
+
+[
+  db:refname [ "listingversion" ]
+  db:refpurpose [ "Version number (or name of second-level category) displayed in homepage listing" ]
+]
+div {
+  ds.listingversion =
   ## User-visible version number (or name of second-level category) displayed in homepage listing
   element listingversion {
     ## Whether the version number name includes the product name (default: `false`)
     ds.includes-productname.attr?,
     text
   }
+}
 
-ds.overridedesc =
-  ## Collection of version-specific product descriptions
-  element overridedesc {
-    ## How to treat version-specific product descriptions:
-    ## * `append`: append this description to the original product description
-    ## * `prepend`: prepend this description to the original product description
-    ## * `replace`: replace the original product description with this description
-    attribute treatment { 'append' | 'prepend' | 'replace' },
-    ds.desc_default,
-    ds.desc_translation*
-  }
 
+[
+  db:refname [ "overridedesc" ]
+  db:refpurpose [ "Collection of version-specific product descriptions" ]
+]
+div {
+  ds.treatment.attr =
+    ## How to treat version-specific product descriptions
+    [
+      a:defaultValue = "append"
+      db:refpurpose [ "How to treat version-specific product descriptions" ]
+    ]
+    attribute treatment {
+      ## Append this description to the original product description
+      'append' |
+      ## Prepend this description to the original product description
+      'prepend' |
+      ## Replace the original product description with this description
+      'replace'
+    }
+
+  ds.overridedesc =
+    ## Collection of version-specific product descriptions
+    element overridedesc {
+      ds.treatment.attr,
+      ds.desc_default,
+      ds.desc_translation*
+    }
+}
+
+
+[
+  db:refname [ "builddocs" ]
+  db:refpurpose [ "Container for definitions of documents to build" ]
+]
+div {
 ds.builddocs =
   ## Container for definitions of documents to build
   element builddocs {
@@ -468,7 +844,14 @@ ds.builddocs =
      ds.language_translation_full
     )*
   }
+}
 
+
+[
+  db:refname [ "git" ]
+  db:refpurpose [ "Definition of Git remote URL to use for documentation of a specific product version (or second-level category)" ]
+]
+div {
 ds.git =
   ## Definition of Git remote URL to use for documentation of a specific product version (or second-level category)
   element git {
@@ -476,7 +859,14 @@ ds.git =
     attribute remote { ds.type.gitremote },
     empty
   }
+}
 
+
+[
+  db:refname [ "buildcontainer" ]
+  db:refpurpose [ "Docker container to use for specific product version (or second-level category)" ]
+]
+div {
 ds.buildcontainer =
   ## Docker container to use for specific product version (or second-level category)
   element buildcontainer {
@@ -484,6 +874,7 @@ ds.buildcontainer =
     attribute image { ds.type.hexdigest | ds.type.containerref },
     empty
   }
+}
 
 # About @translation-type:
 # * "list" creates a list of documents that will be built for the
@@ -515,6 +906,7 @@ ds.language_translation_list =
     ds.subdir?,
     ds.deliverablerestricted+
   }
+
 ds.language_translation_full =
   ## Set of documents to build (dependent languages, set of documents matches documents available in default language)
   element language {
@@ -527,25 +919,51 @@ ds.language_translation_full =
   }
 
 
+[
+  db:refname [ "deliverable" ]
+  db:refpurpose [ "Definition of an individual DAPS-compatible document built on its own (default language)" ]
+]
+div {
 ds.branch =
   ## Branch of the source Git repository
   element branch {
     ds.type.branch
   }
+}
 
+
+[
+  db:refname [ "subdir" ]
+  db:refpurpose [ "Subdirectory within the source Git repository"]
+]
+div {
 ds.subdir =
   ## Subdirectory within the source Git repository
   element subdir {
     ds.type.dirname
   }
+}
 
+
+[
+  db:refname [ "partners" ]
+  db:refpurpose [ "A list of partners (usually for TRDs)" ]
+]
+div {
 ds.partners =
   ## A list of partners (usually for TRDs)
   element partners {
     ## An individual partner
     element partner { text }+
   }
+}
 
+
+[
+  db:refname [ "deliverable" ]
+  db:refpurpose [ "Definition of an individual DAPS-compatible document built on its own (default language)" ]
+]
+div {
 ds.deliverable =
   ## An individual DAPS-compatible document built on its own (default language)
   element deliverable {
@@ -562,9 +980,15 @@ ds.deliverable =
     ds.param*,
     ds.partners*
   }
+}
 
+[
+  db:refname [ "deliverable" ]
+  db:refpurpose [ "Definition of an individual document that is a DocBook set/book that includes articles/book (default language)" ]
+]
+div {
 ds.deliverable_subdeliverable =
-  ## An individual DAPS-compatible document that is a DocBook set/book that includes articles/book (default language)
+  ## An individual document that is a DocBook set/book that includes articles/book (default language)
   element deliverable {
     ds.remarks.attr?,
     ds.draft.attr?,
@@ -576,13 +1000,27 @@ ds.deliverable_subdeliverable =
     ds.param*,
     ds.subdeliverable+
   }
+}
 
+
+[
+  db:refname [ "dc" ]
+  db:refpurpose [ "Reference to DC file" ]
+]
+div {
 ds.dc =
   ## Reference to DC file
   element dc {
     ds.type.dcfile
   }
+}
 
+
+[
+  db:refname [ "format" ]
+  db:refpurpose [ "Enabling/disabling document formats to build" ]
+]
+div {
 # Unfortunately, this way, I can't force people to choose at least one format
 # they actually want to build.
 ds.format =
@@ -597,7 +1035,13 @@ ds.format =
     ## Whether to enable EPUB builds
     attribute epub { xsd:boolean }?
   }
+}
 
+[
+  db:refname [ "param" ]
+  db:refpurpose [ "Custom XSLT parameter" ]
+]
+div {
 ds.param =
   ## Custom XSLT parameter
   element param {
@@ -605,8 +1049,14 @@ ds.param =
     attribute name { ds.type.xsltparam },
     text
   }
+}
 
 
+[
+  db:refname [ "subdeliverable" ]
+  db:refpurpose [ "Individual document within a DocBook set as identified by their XML ID (default language)" ]
+]
+div {
 ds.subdeliverable =
   ## Individual document within a DocBook set as identified by their XML ID (default language)
   element subdeliverable {
@@ -614,7 +1064,14 @@ ds.subdeliverable =
     ds.titleformat.attr?,
     ds.type.id
   }
+}
 
+
+[
+  db:refname [ "deliverable (restricted)" ]
+  db:refpurpose [ "Definition of an individual document that is a DocBook set/book that includes articles/book (dependent languages)" ]
+]
+div {
 ds.deliverablerestricted =
   ## An individual DAPS-compatible document that is a DocBook set/book that includes articles/book (dependent languages)
   element deliverable {
@@ -623,19 +1080,40 @@ ds.deliverablerestricted =
     ds.dc,
     ds.subdeliverablerestricted*
   }
+}
 
+
+[
+  db:refname [ "subdeliverable (restricted)" ]
+  db:refpurpose [ "Individual document within a DocBook set as identified by their XML ID (dependent languages)" ]
+]
+div {
 ds.subdeliverablerestricted =
   ## Individual document within a DocBook set as identified by its XML ID (dependent languages)
   element subdeliverable {
     ds.type.id
   }
+}
 
+
+[
+  db:refname [ "internal" ]
+  db:refpurpose [ "Container for Docserv²-internal references" ]
+]
+div {
 ds.internal =
   ## Container for Docserv²-internal references
   element internal {
     ds.ref+
   }
+}
 
+
+[
+  db:refname [ "ref" ]
+  db:refpurpose [ "Reference to a document or navigational page within Docserv²" ]
+]
+div {
 # The following definition is a bit complicated, so -- the intention is to
 # allow links to either of:
 # * a specific product (i.e. show the most recent product revision, link will
@@ -643,46 +1121,85 @@ ds.internal =
 # * a specific docset (link will only support the current UI language)
 # * a specific deliverable (by DC), subdeliverable (by DC and rootid), or an
 #   external link (by link ID)
+
+  ds.product.attr =
+    ## Product ID of referenced document or navigational page
+    [
+      db:refpurpose [ "Product ID of referenced document or navigational page" ]
+    ]
+    attribute product { ds.type.id }
+
+  ds.docset.attr =
+    ## Docset ID of referenced document or navigational page
+    [
+      db:refpurpose [ "Docset ID of referenced document or navigational page" ]
+    ]
+    attribute docset { ds.type.id }
+
+  ds.dc.attr =
+    ## DC file name of referenced document
+    [
+      db:refpurpose [ "DC file name of referenced document" ]
+    ]
+    attribute dc { ds.type.id }
+
+  ds.subdeliverable.attr =
+    ## Root ID of referenced subdeliverable document
+    [
+      db:refpurpose [ "Root ID of referenced subdeliverable document" ]
+    ]
+    attribute subdeliverable { ds.type.id }
+
+  ds.link.attr =
+    ## Link ID of referenced external document
+    [
+      db:refpurpose [ "Link ID of referenced external document" ]
+    ]
+    attribute link { ds.type.id }
+
+
 ds.ref =
   ## Docserv²-internal reference
   element ref {
-    ## Product ID of referenced document or navigational page
-    attribute product { ds.type.id },
+    ds.product.attr,
     (
-      ## Docset ID of referenced navigational page
-      attribute docset { ds.type.id }? |
+      ds.docset.attr? |
       (
-        ## Docset ID of referenced document
-        attribute docset { ds.type.id },
+        ds.docset.attr,
         (
           (
-           ## DC file name of referenced document
-           attribute dc { ds.type.id },
-           ## Subdeliverable (DocBook/AsciiDoc ID) of referenced document
-           attribute subdeliverable { ds.type.id }?,
-           ds.titleformat.attr?) |
-          (attribute link { ds.type.id },
-           ## How to display the document title on the product version navigational page, a combination of the following values:
-           ## * `title`: title as extracted from the document
-           ## * `docset`: product and version number as classified in the Docserv² product configuration
-           ## Note the following:
-           ## * `title` is mandatory
-           ## * the order of values must be `title`, `docset`
-           ## Default: `title docset`
-           attribute titleformat { ds.type.titleformat.link }?)
+           ds.dc.attr &
+           ds.subdeliverable.attr? &
+           ds.titleformat.attr?
+          ) |
+          (ds.link.attr & ds.titleformat.attr?)
         )
       )
     ),
     ds.category.attr?,
     empty
   }
+}
 
+
+[
+  db:refname [ "external" ]
+  db:refpurpose [ "Container for references to externally-hosted documents" ]
+]
+div {
 ds.external =
   ## Container for references to externally-hosted documents
   element external {
     ds.link*
   }
+}
 
+
+[
+  db:refname [ "link" ]
+  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats" ]
+]
+div {
 ds.link =
   ## Collection of URLs for a single externally-hosted document in different languages and formats
   element link {
@@ -700,7 +1217,14 @@ ds.link =
     ds.linklanguage_default,
     ds.linklanguage_translation*
   }
+}
 
+
+[
+  db:refname [ "language (variant 1)" ]
+  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats (default language)" ]
+]
+div {
 ds.linklanguage_default =
   ## Collection of URLs for a single externally-hosted document in different formats (default language)
   element language {
@@ -710,7 +1234,14 @@ ds.linklanguage_default =
     ds.title.attr,
     ds.url+
   }
+}
 
+
+[
+  db:refname [ "language (variant 2)" ]
+  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats (dependent languages)" ]
+]
+div {
 ds.linklanguage_translation =
   ## Collection of URLs for a single externally-hosted document in different formats (dependent languages)
   element language {
@@ -719,7 +1250,14 @@ ds.linklanguage_translation =
     ds.title.attr,
     ds.url+
   }
+}
 
+
+[
+  db:refname [ "url" ]
+  db:refpurpose [ "URL of externally-hosted document"]
+]
+div {
 ds.url =
   ## URL of externally-hosted document
   element url {
@@ -728,7 +1266,7 @@ ds.url =
     attribute format { "html" | "single-html" | "pdf" | "epub" | "zip" | "tar" | "other" },
     empty
   }
-
+}
 
 # SUPPORTED HTML SUBSET
 
