@@ -59,7 +59,7 @@ ds.type.lang =
   [
     db:refpurpose [ "A language code (la-ng style)" ]
   ]
-  xsd:token {
+  xsd:language {
     pattern="""[a-z]{2}(-[a-z]{2,8})?"""
   }
 
