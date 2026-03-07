@@ -2,8 +2,8 @@
 
 This directory contains:
 
-* A RELAX NG schema. It's the successor of the previous Docserv
-  product schema.
+* A RELAX NG schema (`src/docbuild/config/xml/data/product-config-schema.rnc`).
+  It's the successor of the previous Docserv product schema.
 * An example `config.d` directory.
 
 ## File structure
@@ -16,14 +16,14 @@ config.d/
 │   ├── [... more languages ...]
 │   ├── de-de.xml
 │   └── en-us.xml
-├── cloudnative/  # product 1
+├── cloudnative/
 │   ├── [... similar to sles/... ]
 │   └── cloudnative.xml
-├── portal.xml    # <-- Main file
-└── sles/         # product 2
+├── portal.xml
+└── sles/
     ├── desc
     │   ├── [... more languages ...]
-    │   ├── descriptions.xml   # <-- includes all the other
+    │   ├── descriptions.xml
     │   ├── de-de.xml
     │   └── en-us.xml
     ├── docsets
@@ -41,6 +41,15 @@ config.d/
 * `sles/docsets/`: contains all docsets of a product.
   Depending on the complexity of the product, this may not always be
   needed. For SLES, it would probably useful.
+
+## Creating combined config
+
+```shell
+xmllint --xinclude \
+  --output src/docbuild/config/xml/data/stitchfile.xml \
+  src/docbuild/config/xml/data/config.d/portal.xml
+```
+
 
 ## Additional Sources
 
