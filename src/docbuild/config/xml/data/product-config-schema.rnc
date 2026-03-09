@@ -431,6 +431,20 @@ div {
     # TODO: Is it similar to a (product) family now?
     attribute site-section { ds.type.alphanumeric }?
 
+  ds.series.attr =
+    ## Where a product belongs to which tab (SBP, TRD, Products & Solution)
+    [
+      db:refpurpose [ "Where a product belongs to which tab (SBP, TRD, Products & Solution)" ]
+    ]
+    attribute series { ds.type.alphanumeric } # TODO: IDREF?
+
+  ds.family.attr =
+    ## Product family this product belongs to
+    [
+      db:refpurpose [ "Product family this product belongs to" ]
+    ]
+    attribute family { xsd:IDREF }
+
   ds.docset-sort.attr =
     ## Whether to sort docsets of this product Z-A9-0 (`descending`, default) or 0-9A-Z (`ascending`)
     [
@@ -456,7 +470,9 @@ ds.product =
       ds.productid.attr &  # TODO: use ds.id.attr?
       ds.schemaversion.attr? &
       ds.enabled.attr? &
-      ds.site-section.attr? &
+      ds.site-section.attr? & # TODO: Do we still need this attribute?
+      ds.series.attr &
+      ds.family.attr &
       ds.docset-sort.attr? &
       ds.gated.attr?
     ),
