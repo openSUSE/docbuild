@@ -450,7 +450,7 @@ div {
     [
       db:refpurpose [ "Rank of this product in the homepage listing (lower ranks are listed first; products with the same rank are sorted alphabetically by product name)" ]
     ]
-    attribute rank { xsd:PositiveInteger }
+    attribute rank { xsd:nonNegativeInteger }
 
   ds.docset-sort.attr =
     ## Whether to sort docsets of this product Z-A9-0 (`descending`, default) or 0-9A-Z (`ascending`)
