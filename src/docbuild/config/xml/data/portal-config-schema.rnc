@@ -530,7 +530,7 @@ ds.product =
     ds.acronym?,
     ds.maintainers,
     # TODO: Adjust the content model?
-    (ds.category | xi.include)*,
+    (ds.categories | xi.include)*,
     (ds.descriptions | xi.include),
     (ds.docset | xi.include)+
   }
@@ -666,29 +666,6 @@ ds.shortdesc =
   }
 }
 
-
-[
-  db:refname [ "category" ]
-  db:refpurpose [ "Definition of category displayed on product detail navigational page (third-level category)" ]
-]
-div {
-  ds.categoryid.attr =
-    ## Category ID, must be unique across the configuration for a single product
-    [
-      db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
-    ]
-    attribute categoryid { ds.type.id }
-
-ds.category =
-  ## Definition of category displayed on product detail navigational page (third-level category)
-  element category {
-    ds.categoryid.attr,
-    ds.categorylanguage_default,
-    ds.categorylanguage_translation*
-  }
-}
-
-
 [
   db:refname [ "categories" ]
   db:refpurpose [ "Wrapper for all category elements" ]
@@ -698,20 +675,75 @@ div {
     ## Wrapper for all category elements
     element categories {
       ds.xmlbase.attr?,
-      (ds.category+ & xi.include*)
+      ds.category.default,
+      ds.category.translation*
+      # (ds.category.translation & xi.include)*
+      # (ds._category & xi.include*)+
     }
 }
+
+# Test
+ds._category =
+  element category {
+      ds.xmlbase.attr?,
+      ds.lang.attr,
+      attribute default { ds.true.enum | ds.false.enum }?,
+      # ds.category_language
+      empty
+    }
+
+[
+  db:refname [ "category" ]
+  db:refpurpose [ "Definition of category (default language)" ]
+]
+div {
+  ds.categoryid.attr =
+    ## Category ID, must be unique across the configuration for a single product
+    [
+      db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
+    ]
+    attribute categoryid { ds.type.id }
+
+  ds.category.default =
+    ## Definition of category (default language)
+    element category {
+      ds.xmlbase.attr?,
+      ds.lang.attr,
+      # ds.default.true.attr,
+      attribute default { ds.true.enum },
+      # ds.category.translation.default?,
+      # ds.category_language
+      empty
+    }
+}
+
+
+[
+  db:refname [ "category" ]
+  db:refpurpose [ "Definition of category (dependent languages)" ]
+]
+div {
+
+  ds.category.translation =
+    ## Definition of category (dependent languages)
+    element category {
+      ds.xmlbase.attr?,
+      ds.lang.attr,
+      attribute default { ds.false.enum },
+      ds.category_language
+    }
+}
+
 
 [
   db:refname [ "language (variant 1)" ]
   db:refpurpose [ "Metadata for category displayed on product detail navigational page" ]
 ]
 div {
-ds.categorylanguage_default =
-  ## Metadata for category displayed on product detail navigational page (default language, third-level category)
+ds.category_language =
+  ## Metadata for category displayed on product detail navigational page
   element language {
-    ds.lang.attr,
-    ds.default.true.attr,
+    ds.categoryid.attr,
     ds.title.attr,
     ds.htmlblock*
   }
@@ -726,8 +758,8 @@ div {
 ds.categorylanguage_translation =
   ## Metadata for category displayed on product detail navigational page (dependent languages, third-level category)
   element language {
-    ds.lang.attr,
-    ds.default.false.attr?,
+    #ds.lang.attr,
+    # ds.default.false.attr?,
     ds.title.attr,
     ds.htmlblock*
   }
