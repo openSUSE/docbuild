@@ -387,8 +387,49 @@ div {
     element portal {
       ds.schemaversion.attr,
       ds.categories,
-      # ds.productfamilies,
+      ds.productfamilies,
+      db.series,
       (ds.product+ & xi.include*)
+    }
+}
+
+[
+  db:refname [ "productfamilies"]
+  db:refpurpose [ "Product families definition" ]
+]
+div {
+  ds.productfamilies =
+    ## Product families definition
+    element productfamilies {
+      ds.xmlbase.attr?,
+      db.item+
+    }
+}
+
+[
+  db:refname [ "series" ]
+  db:refpurpose [ "Series definition" ]
+]
+div {
+  db.series =
+    ## Series definition
+    element series {
+      ds.xmlbase.attr?,
+      db.item+
+    }
+}
+
+[
+  db:refname [ "item" ]
+  db:refpurpose [ "An item of a product family or a series" ]
+]
+div {
+  db.item =
+    ## An item of a product family or a series
+    element item {
+      # ds.xmlbase.attr?,
+      ds.id.attr,
+      text
     }
 }
 
