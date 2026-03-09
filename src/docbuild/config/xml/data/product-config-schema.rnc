@@ -403,7 +403,8 @@ div {
       db:refpurpose [ "Product ID, must be unique across entire site config, used as first-level path element" ]
     ]
     # TODO: Simplify to id?
-    attribute productid { ds.type.id }
+    # attribute productid { ds.type.id }
+    ds.id.attr
 
   ds.schemaversion.attr =
     ## Version of the schema, verifies that Docserv² major version and version of product configuration match
@@ -452,8 +453,7 @@ ds.product =
     # of these ID per productconfig file.
     (
       ds.xmlbase.attr? &
-      ds.productid.attr &
-      ds.schemaversion.attr &
+      ds.productid.attr &  # TODO: use ds.id.attr?
       ds.schemaversion.attr? &
       ds.enabled.attr? &
       ds.site-section.attr? &
@@ -697,7 +697,8 @@ div {
     [
       db:refpurpose [ "Set ID, must be unique across the configuration for a single product" ]
     ]
-    attribute setid { ds.type.id }
+    # attribute setid { ds.type.id }
+    ds.id.attr
 
   ds.navigation.attr =
     ## Whether to build a navigational page for this product version
@@ -718,7 +719,7 @@ ds.docset =
   element docset {
     (
     ds.xmlbase.attr? &
-    ds.setid.attr &
+    ds.setid.attr &  # TODO: use ds.id.attr?
     ds.lifecycle.attr &
     ds.navigation.attr? &
     ds.gated.attr?
