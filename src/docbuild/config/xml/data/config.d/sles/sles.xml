@@ -1,5 +1,5 @@
 <?xml-model href="file:../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
-<product productid="sles" schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+<product id="sles" schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude" family="linux" series="pas">
   <name>SUSE Linux Enterprise Server</name>
   <acronym>SLES</acronym>
   <maintainers>
