@@ -762,8 +762,7 @@ div {
     [
       db:refpurpose [ "Set ID, must be unique across the configuration for a single product" ]
     ]
-    # attribute setid { ds.type.id }
-    ds.id.attr
+    attribute setid { ds.type.id }
 
   ds.navigation.attr =
     ## Whether to build a navigational page for this product version
@@ -784,7 +783,7 @@ ds.docset =
   element docset {
     (
     ds.xmlbase.attr? &
-    ds.setid.attr &  # TODO: use ds.id.attr?
+    ds.setid.attr &
     ds.lifecycle.attr &
     ds.navigation.attr? &
     ds.gated.attr?
