@@ -454,6 +454,7 @@ ds.product =
       ds.xmlbase.attr? &
       ds.productid.attr &
       ds.schemaversion.attr &
+      ds.schemaversion.attr? &
       ds.enabled.attr? &
       ds.site-section.attr? &
       ds.docset-sort.attr? &
@@ -735,7 +736,8 @@ ds.docset =
     (
       (ds.builddocs,
        ds.internal?,
-       ds.external?) |
+       ds.external?)
+       |
       (ds.internal,
        ds.external?) |
       ds.external
