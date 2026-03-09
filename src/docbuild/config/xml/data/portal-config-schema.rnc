@@ -1204,12 +1204,12 @@ div {
     ]
     attribute docset { ds.type.id }
 
-  ds.dc.attr =
-    ## DC file name of referenced document
+  ds.deliverable.attr =
+    ## The deliverable ID to reference
     [
-      db:refpurpose [ "DC file name of referenced document" ]
+      db:refpurpose [ "The deliverable ID of reference" ]
     ]
-    attribute dc { ds.type.id }
+    attribute deliverable { ds.type.id }
 
   ds.subdeliverable.attr =
     ## Root ID of referenced subdeliverable document
@@ -1236,7 +1236,7 @@ ds.ref =
         ds.docset.attr,
         (
           (
-           ds.dc.attr &
+           ds.deliverable.attr &
            ds.subdeliverable.attr? &
            ds.titleformat.attr?
           ) |
