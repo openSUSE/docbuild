@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="../../../product-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="../../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
 <descriptions>
   <desc default="1" lang="en-us">
     <title>THE platform for your business-critical apps in any environment</title>

@@ -1,4 +1,4 @@
-<?xml-model href="file:../../product-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<?xml-model href="file:../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
 <product productid="sles" schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude">
   <name>SUSE Linux Enterprise Server</name>
   <acronym>SLES</acronym>
