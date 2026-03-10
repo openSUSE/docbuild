@@ -694,12 +694,8 @@ div {
     ## Definition of category (default language)
     element category {
       ds.xmlbase.attr?,
-      ds.lang.attr,
-      # ds.default.true.attr,
-      attribute default { ds.true.enum },
-      # ds.category.translation.default?,
-      # ds.category_language
-      empty
+      ds.lang.en-us.attr,
+      ds.category_language
     }
 }
 
@@ -715,7 +711,6 @@ div {
     element category {
       ds.xmlbase.attr?,
       ds.lang.attr,
-      attribute default { ds.false.enum },
       ds.category_language
     }
 }
