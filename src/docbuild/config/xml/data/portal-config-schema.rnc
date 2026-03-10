@@ -123,7 +123,6 @@ ds.type.id =
   [
     db:refpurpose [ "An ID (unlike xml:ids, this allows initial digits)" ]
   ]
-  # TODO: Change into a xml:id?
   xsd:token {
     pattern="""[\-_\.\+a-zA-Z0-9]+"""
   }
@@ -682,15 +681,6 @@ div {
     }
 }
 
-# Test
-ds._category =
-  element category {
-      ds.xmlbase.attr?,
-      ds.lang.attr,
-      attribute default { ds.true.enum | ds.false.enum }?,
-      # ds.category_language
-      empty
-    }
 
 [
   db:refname [ "category" ]
