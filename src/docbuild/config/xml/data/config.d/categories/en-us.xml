@@ -1,4 +1,6 @@
-<category lang="en-us" default="true">
+<?xml-model href="file:../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+
+<category lang="en-us">
   <language categoryid="about" title="About" />
   <language categoryid="deployment" title="Deployment" />
   <language categoryid="inital-config" title="Initial configuration" />
