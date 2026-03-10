@@ -631,8 +631,7 @@ div {
 ds.desc_default =
   ## Description of product or top-level category (default language)
   element desc {
-    ds.lang.attr,
-    ds.default.true.attr,
+    ds.lang.en-us.attr,
     ds.shortdesc?,
     ds.htmlblock+
   }
@@ -649,7 +648,7 @@ ds.desc_translation =
   element desc {
     ## Language code (`la-ng` style) of this description
     ds.lang.attr,
-    ds.default.false.attr?,
+    # ds.default.false.attr?,
     ds.shortdesc?,
     ds.htmlblock*
   }
