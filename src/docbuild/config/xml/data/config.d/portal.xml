@@ -2,15 +2,10 @@
 <?xml-model href="file:../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
 <portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
 
-  <categories>
-    <!--<xi:include href="categories/en-us.xml" />
-    <xi:include href="categories/de-de.xml" />-->
-    <category lang="en-us" default="true"/>
-    <category lang="de-de"/>
-  </categories>
+  <xi:include href="categories.xml" />
 
   <productfamilies>
-    <item id="linux">>Linux</item>
+    <item id="linux">Linux</item>
     <item id="cn">Cloud Native</item>
     <item id="suse-edge">SUSE Edge</item>
     <item id="suse-ai">SUSE AI</item>
@@ -22,6 +17,6 @@
     <item id="rn">Release Notes</item>
   </series>
 
-    <xi:include href="sles/sles.xml" />
+  <xi:include href="sles/sles.xml" />
 
 </portal>

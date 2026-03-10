@@ -5,7 +5,7 @@
   <canonical>sles/16.0</canonical>
   <builddocs>
     <git remote="https://github.com/SUSE/doc-modular.git"/>
-    <language default="1" lang="en-us">
+    <locale lang="en-us">
       <branch>maintenance/SLE16.0</branch>
       <!--************************ about ************************-->
       <deliverable category="about">
@@ -183,6 +183,26 @@
         <dc>DC-SAP-saptune</dc>
         <format html="1" pdf="1" single-html="0"/>
       </deliverable>
-    </language>
+    </locale>
+
+    <locale lang="de-de">
+      <branch>main</branch>
+      <deliverable>
+        <dc>DC-foo</dc>
+        <format html="1"/>
+      </deliverable>
+    </locale>
   </builddocs>
+
+  <external>
+    <link category="about" gated="false">
+      <url href="http://example.com" format="html"/> <!-- Cardinality: + -->
+      <descriptions>
+        <desc lang="en-us">
+          <title> </title>
+        </desc>
+        <!-- more <desc> for other languages -->
+      </descriptions>
+    </link>
+  </external>
 </docset>
