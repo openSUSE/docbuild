@@ -3,7 +3,7 @@
 <docset setid="16.0" lifecycle="supported">
   <version>16.0</version>
   <canonical>sles/16.0</canonical>
-  <builddocs>
+  <resources>
     <git remote="https://github.com/SUSE/doc-modular.git"/>
     <locale lang="en-us">
       <branch>maintenance/SLE16.0</branch>
@@ -192,7 +192,7 @@
         <format html="1"/>
       </deliverable>
     </locale>
-  </builddocs>
+  </resources>
 
   <external>
     <link category="about" gated="false">
