@@ -1068,7 +1068,7 @@ ds.deliverable =
   element deliverable {
     ds.remarks.attr?,
     ds.draft.attr?,
-    ds.meta.attr?,
+    # ds.meta.attr?,
     ds.category.attr?,
     ds.titleformat.attr?,
     ds.gated.attr?,
