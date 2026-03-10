@@ -811,7 +811,7 @@ ds.docset =
     ds.listingversion?,
     ds.overridedesc?,
     (
-      (ds.builddocs,
+      (ds.resources,
        ds.internal?,
        ds.external?)
        |
@@ -912,16 +912,12 @@ div {
   db:refpurpose [ "Container for definitions of documents to build" ]
 ]
 div {
-ds.builddocs =
+ds.resources =
   ## Container for definitions of documents to build
-  element builddocs {
+  element resources {
     ds.git,
     ds.locale_default,
     ds.locale_translation*
-    #(
-    # ds.language_translation_list |
-    # ds.language_translation_full
-    #)*
   }
 }
 
