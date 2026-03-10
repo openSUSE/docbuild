@@ -933,7 +933,6 @@ ds.builddocs =
   ## Container for definitions of documents to build
   element builddocs {
     ds.git,
-    ds.buildcontainer?,
     ds.locale_default,
     ds.locale_translation*
     #(
@@ -959,19 +958,6 @@ ds.git =
 }
 
 
-[
-  db:refname [ "buildcontainer" ]
-  db:refpurpose [ "Docker container to use for specific product version (or second-level category)" ]
-]
-div {
-ds.buildcontainer =
-  ## Docker container to use for specific product version (or second-level category)
-  element buildcontainer {
-    ## Image ID, can be identified by a SHA hash (locally-available Docker image) or reference to remote Docker image
-    attribute image { ds.type.hexdigest | ds.type.containerref },
-    empty
-  }
-}
 
 # About @translation-type:
 # * "list" creates a list of documents that will be built for the
