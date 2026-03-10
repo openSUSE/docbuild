@@ -633,7 +633,7 @@ ds.desc_default =
   element desc {
     ds.lang.en-us.attr,
     ds.title?,
-    ds.htmlblock+
+    ds.htmlblock*
   }
 }
 
