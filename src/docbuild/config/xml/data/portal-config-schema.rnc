@@ -296,6 +296,13 @@ ds.default.false.attr =
     ]
     attribute default { ds.false.enum }
 
+ds.lang.en-us.attr =
+    ## Language code strictly locked to US English
+    [
+      db:refpurpose [ "Language code strictly locked to US English" ]
+    ]
+    attribute lang { "en-us" }
+
 ds.title.attr =
     ## Localized title of description
     [
@@ -927,11 +934,12 @@ ds.builddocs =
   element builddocs {
     ds.git,
     ds.buildcontainer?,
-    ds.language_default,
-    (
-     ds.language_translation_list |
-     ds.language_translation_full
-    )*
+    ds.locale_default,
+    ds.locale_translation*
+    #(
+    # ds.language_translation_list |
+    # ds.language_translation_full
+    #)*
   }
 }
 
@@ -971,12 +979,17 @@ ds.buildcontainer =
 #   a small subset of documents are translated into a particular language.
 # * "full" means there is a full translation in this language for
 #   this docset
-
-ds.language_default =
-  ## Set of documents to build (default language, must list full set of documents available for product version)
-  element language {
-    ds.lang.attr,
-    ds.default.true.attr,
+[
+  db:refname [ "locale (en-us)" ]
+  db:refpurpose [ "Set of deliverables to build for the default language" ]
+]
+div {
+ds.locale_default =
+  ## Set of deliverables to build for the default language
+  element locale {
+    ds.lang.en-us.attr,
+    # ds.lang.attr,
+    # ds.default.true.attr,
     ds.branch,
     ds.subdir?,
     (
@@ -984,28 +997,26 @@ ds.language_default =
      ds.deliverable_subdeliverable
     )+
   }
-ds.language_translation_list =
-  ## Set of documents to build (dependent languages, lists a subset of documents available in the default language)
-  element language {
-    ds.lang.attr,
-    ds.default.false.attr?,
-    ## Documents to build for this language are a subset of documents available in the default language
-    attribute translation-type { "list" },
-    ds.branch?,
-    ds.subdir?,
-    ds.deliverablerestricted+
-  }
+}
 
-ds.language_translation_full =
-  ## Set of documents to build (dependent languages, set of documents matches documents available in default language)
-  element language {
+
+[
+  db:refname [ "locale (en-us)" ]
+  db:refpurpose [ "Set of deliverables to build for the default language" ]
+]
+div {
+ds.locale_translation =
+  ## Set of documents to build (default language, must list full set of documents available for product version)
+  element locale {
     ds.lang.attr,
-    ds.default.false.attr?,
-    ## Documents to build for this language match the documents available in the default language
-    attribute translation-type { "full" },
-    ds.branch?,
-    ds.subdir?
+    ds.branch,
+    ds.subdir?,
+    (
+     ds.deliverable |
+     ds.deliverable_subdeliverable
+    )+
   }
+}
 
 
 [
