@@ -1076,7 +1076,7 @@ ds.deliverable =
     ds.subdir?,
     ds.dc,
     ds.format+,
-    ds.param*,
+    # ds.param*,  # TODO: not really needed?
     ds.partners*
   }
 }
