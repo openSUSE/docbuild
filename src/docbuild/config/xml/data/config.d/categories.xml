@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="file:../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
 <categories xmlns:xi="http://www.w3.org/2001/XInclude">
-    <xi:include href="categories/en-us.xml" />
+  <category lang="en-us">
+    <item categoryid="about">
+      <title>Hello</title>
+    </item>
+  </category>
+  <category lang="de-de">
+    <item categoryid="about">
+      <title>Hallo</title>
+    </item>
+  </category>
+  <!--    <xi:include href="categories/en-us.xml" />-->
     <!--<xi:include href="categories/de-de.xml" />-->
 </categories>

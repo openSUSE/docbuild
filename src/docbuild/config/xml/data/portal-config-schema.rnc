@@ -670,10 +670,10 @@ div {
     ## Wrapper for all category elements
     element categories {
       ds.xmlbase.attr?,
-      ds.category.default,
-      ds.category.translation*
-      # (ds.category.translation & xi.include)*
-      # (ds._category & xi.include*)+
+      (
+        (ds.category.default, ds.category.translation*)
+        | xi.include+
+      )
     }
 }
 
@@ -711,39 +711,25 @@ div {
     element category {
       ds.xmlbase.attr?,
       ds.lang.attr,
-      ds.category_language
+      ds.category_language+
     }
 }
 
 
 [
-  db:refname [ "language (variant 1)" ]
+  db:refname [ "language" ]
   db:refpurpose [ "Metadata for category displayed on product detail navigational page" ]
 ]
 div {
 ds.category_language =
   ## Metadata for category displayed on product detail navigational page
-  element language {
+  element language {  # TODO: language
     ds.categoryid.attr,
     ds.title.attr,
     ds.htmlblock*
   }
 }
 
-
-[
-  db:refname [ "language (variant 2)" ]
-  db:refpurpose [ "Metadata for category displayed on product detail navigational page (dependent languages)" ]
-]
-div {
-ds.categorylanguage_translation =
-  ## Metadata for category displayed on product detail navigational page (dependent languages, third-level category)
-  element language {
-    #ds.lang.attr,
-    ds.title.attr,
-    ds.htmlblock*
-  }
-}
 
 
 # DOCSETS
