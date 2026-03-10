@@ -7,9 +7,16 @@ default namespace = ""
 # BASICS
 [
   db:refname [ "start" ]
-  db:refpurpose [ "The start of the schema" ]
+  db:refpurpose [ "The start elements of the schema" ]
 ]
-start = ds.portal | ds.product | ds.docset | ds.categories | ds.descriptions
+start = (ds.portal
+  | ds.product
+  | ds.docset
+  | ds.categories
+  | ds.category.default
+  | ds.category.translation
+  | ds.descriptions
+)
 
 include "xinclude.rnc"
 
