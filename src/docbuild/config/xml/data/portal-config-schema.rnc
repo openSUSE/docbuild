@@ -1288,7 +1288,7 @@ div {
 ds.link =
   ## Collection of URLs for a single externally-hosted document in different languages and formats
   element link {
-    attribute linkid { ds.type.id }?,
+    # attribute linkid { ds.type.id }?,
     ds.category.attr?,
     ## How to display the document title on the product version navigational page, a combination of the following values:
     ## * `title`: title as extracted from the document
@@ -1299,41 +1299,8 @@ ds.link =
     ## Default: `title`
     attribute titleformat { ds.type.titleformat.link }?,
     ds.gated.attr?,
-    ds.linklanguage_default,
-    ds.linklanguage_translation*
-  }
-}
-
-
-[
-  db:refname [ "language (variant 1)" ]
-  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats (default language)" ]
-]
-div {
-ds.linklanguage_default =
-  ## Collection of URLs for a single externally-hosted document in different formats (default language)
-  element language {
-    ds.lang.attr?,
-    ## Whether this is the default language (must be `false` for initial `<language/>` element)
-    ds.default.true.attr,
-    ds.title.attr,
-    ds.url+
-  }
-}
-
-
-[
-  db:refname [ "language (variant 2)" ]
-  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats (dependent languages)" ]
-]
-div {
-ds.linklanguage_translation =
-  ## Collection of URLs for a single externally-hosted document in different formats (dependent languages)
-  element language {
-    ds.lang.attr?,
-    ds.default.false.attr?,
-    ds.title.attr,
-    ds.url+
+    ds.url+,
+    ds.descriptions
   }
 }
 
