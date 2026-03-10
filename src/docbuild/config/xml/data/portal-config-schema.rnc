@@ -632,7 +632,7 @@ ds.desc_default =
   ## Description of product or top-level category (default language)
   element desc {
     ds.lang.en-us.attr,
-    ds.shortdesc?,
+    ds.title?,
     ds.htmlblock+
   }
 }
@@ -649,13 +649,13 @@ ds.desc_translation =
     ## Language code (`la-ng` style) of this description
     ds.lang.attr,
     # ds.default.false.attr?,
-    ds.shortdesc?,
+    ds.title?,
     ds.htmlblock*
   }
 }
 
 
-ds.shortdesc_text =
+ds.title_text =
   xsd:string { pattern = "[^\n]{1,80}" }
 
 
@@ -664,10 +664,10 @@ ds.shortdesc_text =
   db:refpurpose [ "A short description of the product"]
 ]
 div {
-ds.shortdesc =
+ds.title =
   ## A short description of the product
   element title {
-    ds.shortdesc_text
+    ds.title_text
   }
 }
 
