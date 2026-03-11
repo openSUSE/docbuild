@@ -1,4 +1,4 @@
-# RELAX NG Schema for Docserv² product configuration
+# RELAX NG Schema for portal product configuration
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace db = "http://docbook.org/ns/docbook"
 namespace xi = "http://www.w3.org/2001/XInclude"
@@ -92,8 +92,6 @@ div {
          # xi.fallback?
       }
 }
-
-
 
 
 # CONSTANTS
@@ -212,7 +210,6 @@ ds.type.id =
 
 ds.type.idmulti =
   ## A space-separated list of IDs
-  # (we do not check via RNC -- we check in docserv-stitch)
   [
     db:refpurpose [ "A space-separated list of IDs" ]
   ]
@@ -249,7 +246,7 @@ ds.type.hexdigest =
 # exactly this way or in this order, just that, if available, all of the
 # information requested will come out.
 ds.type.titleformat.build =
-  ## Elements of titles displayed on navigational pages for documents built within Docserv²
+  ## Elements of titles displayed on navigational pages for documents built within the portal
   "title" | "title docset" | "title product" | "title subtitle" | "title subtitle product" | "title subtitle docset"
 # For external links, some metadata is never available: product name and
 # subtitle cannot be generated in any way currently (but you're free to
@@ -381,7 +378,7 @@ ds.titleformat.attr =
   ## How to display the document title on the product version navigational page, a combination of the following values:
   ## * `title`: title as extracted from the document
   ## * `subtitle`: subtitle as extracted from the document (can be empty)
-  ## * `docset`: product and version number as classified in the Docserv² product configuration
+  ## * `docset`: product and version number as classified in the portal product configuration
   ## * `product`: product and version number as extracted from the document (can be empty)
   ## Note the following:
   ## * `title` is mandatory
@@ -521,9 +518,9 @@ div {
     ds.id.attr
 
   ds.schemaversion.attr =
-    ## Version of the schema, verifies that Docserv² major version and version of product configuration match
+    ## Version of the schema, verifies that portal schema major version and version of product configuration match
     [
-      db:refpurpose [ "Version of the schema, verifies that Docserv² major version and version of product configuration match" ]
+      db:refpurpose [ "Version of the schema, verifies that portal schema major version and version of product configuration match" ]
     ]
     # TODO: Simplify to version?
     attribute schemaversion { ds.schema.version }
@@ -1086,11 +1083,11 @@ ds.partners =
 
 [
   db:refname [ "deliverable" ]
-  db:refpurpose [ "Definition of an individual DAPS-compatible document built on its own (default language)" ]
+  db:refpurpose [ "Definition of an individual document (default language)" ]
 ]
 div {
 ds.deliverable =
-  ## An individual DAPS-compatible document built on its own (default language)
+  ## An individual document (default language)
   element deliverable {
     ds.remarks.attr?,
     ds.draft.attr?,
@@ -1194,11 +1191,11 @@ ds.subdeliverable =
 
 [
   db:refname [ "internal" ]
-  db:refpurpose [ "Container for Docserv²-internal references" ]
+  db:refpurpose [ "Wrapper for internal references" ]
 ]
 div {
 ds.internal =
-  ## Container for Docserv²-internal references
+  ## Wrapper for internal references
   element internal {
     ds.ref+
   }
@@ -1207,7 +1204,7 @@ ds.internal =
 
 [
   db:refname [ "ref" ]
-  db:refpurpose [ "Reference to a document or navigational page within Docserv²" ]
+  db:refpurpose [ "Reference to a document or navigational page" ]
 ]
 div {
 # The following definition is a bit complicated, so -- the intention is to
@@ -1255,7 +1252,7 @@ div {
 
 
 ds.ref =
-  ## Docserv²-internal reference
+  ## Internal reference
   element ref {
     ds.product.attr,
     (
@@ -1303,7 +1300,7 @@ ds.link =
     ds.category.attr?,
     ## How to display the document title on the product version navigational page, a combination of the following values:
     ## * `title`: title as extracted from the document
-    ## * `docset`: product and version number as classified in the Docserv² product configuration
+    ## * `docset`: product and version number as classified in the portal product configuration
     ## Note the following:
     ## * `title` is mandatory
     ## * the order of values must be `title`, `docset`
