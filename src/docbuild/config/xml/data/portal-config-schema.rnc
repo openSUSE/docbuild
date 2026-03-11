@@ -678,10 +678,25 @@ ds.contact =
   db:refpurpose [ "Wrapper of desc element" ]
 ]
 div {
+  ds.treatment.attr =
+    ## How to treat version-specific product descriptions
+    [
+      a:defaultValue = "append"
+      db:refpurpose [ "How to treat version-specific product descriptions" ]
+    ]
+    attribute treatment {
+      ## Append this description to the original product description
+      'append' |
+      ## Prepend this description to the original product description
+      'prepend' |
+      ## Replace the original product description with this description
+      'replace'
+    }
+
   ds.descriptions =
     ## Wrapper of desc element
     element descriptions {
-      ds.xmlbase.attr?,
+      ds.xmlbase.attr?, ds.treatment.attr?,
       ds.desc_default,
       ds.desc_translation*
     }
@@ -868,7 +883,7 @@ ds.docset =
     ds.version,
     ds.canonical?,
     ds.listingversion?,
-    ds.overridedesc?,
+    ds.descriptions?,
     (
       (ds.resources,
        ds.internal?,
@@ -933,36 +948,6 @@ div {
     ds.includes-productname.attr?,
     text
   }
-}
-
-
-[
-  db:refname [ "overridedesc" ]
-  db:refpurpose [ "Collection of version-specific product descriptions" ]
-]
-div {
-  ds.treatment.attr =
-    ## How to treat version-specific product descriptions
-    [
-      a:defaultValue = "append"
-      db:refpurpose [ "How to treat version-specific product descriptions" ]
-    ]
-    attribute treatment {
-      ## Append this description to the original product description
-      'append' |
-      ## Prepend this description to the original product description
-      'prepend' |
-      ## Replace the original product description with this description
-      'replace'
-    }
-
-  ds.overridedesc =
-    ## Collection of version-specific product descriptions
-    element overridedesc {
-      ds.treatment.attr,
-      ds.desc_default,
-      ds.desc_translation*
-    }
 }
 
 
