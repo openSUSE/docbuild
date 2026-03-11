@@ -31,6 +31,12 @@
 <!-- ======== Parameters -->
   <xsl:param name="use.xincludes" select="true()" />
 
+  <!-- Set the output directory -->
+  <xsl:param name="outputdir" select="" />
+
+  <!-- Set the schemaversion attribute in the output XML -->
+  <xsl:param name="schemaversion">7.0</xsl:param>
+
 <!-- ======== Keys -->
   <!-- Define a key to group <language> elements by their @lang attribute -->
   <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
