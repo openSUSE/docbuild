@@ -191,6 +191,13 @@
 
   <xsl:template match="docset/@schemaversion" />
 
+  <xsl:template match="docset/overridedesc">
+    <descriptions>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </descriptions>
+  </xsl:template>
+
   <xsl:template match="docset/builddocs">
     <resources>
       <xsl:apply-templates/>
