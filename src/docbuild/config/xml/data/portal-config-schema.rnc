@@ -1243,33 +1243,21 @@ div {
     ]
     attribute subdeliverable { ds.type.id }
 
-  ds.link.attr =
-    ## Link ID of referenced external document
-    [
-      db:refpurpose [ "Link ID of referenced external document" ]
-    ]
-    attribute link { ds.type.id }
-
 
 ds.ref =
   ## Internal reference
   element ref {
-    ds.product.attr,
     (
-      ds.docset.attr? |
+      ds.category.attr? &
+      ds.product.attr &
       (
-        ds.docset.attr,
-        (
-          (
-           ds.deliverable.attr &
-           ds.subdeliverable.attr? &
-           ds.titleformat.attr?
-          ) |
-          (ds.link.attr & ds.titleformat.attr?)
-        )
-      )
+        ds.docset.attr
+        & ds.deliverable.attr?
+        & ds.subdeliverable.attr?
+        & ds.titleformat.attr?
+      )?
     ),
-    ds.category.attr?,
+
     ds.descriptions?
   }
 }
