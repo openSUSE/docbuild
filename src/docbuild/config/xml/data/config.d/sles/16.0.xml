@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
-<docset setid="16.0" lifecycle="supported">
+<docset id="v16.0" dir="16.0" lifecycle="supported">
   <version>16.0</version>
   <canonical>sles/16.0</canonical>
+
+  <descriptions>
+  </descriptions>
+
   <resources>
     <git remote="https://github.com/SUSE/doc-modular.git"/>
     <locale lang="en-us">
       <branch>maintenance/SLE16.0</branch>
       <!--************************ about ************************-->
-      <deliverable category="about">
+      <deliverable category="about" type="dc">
+        <git remote="https://github.com/SUSE/doc-modular.git"/>
         <dc>DC-SLE-comparison</dc>
         <format html="1" pdf="1" single-html="0"/>
       </deliverable>
@@ -196,10 +201,13 @@
 
   <external>
     <link category="about" gated="false">
-      <url href="http://example.com" format="html"/> <!-- Cardinality: + -->
+      <url href="http://example.com" format="html"/>
+      <url href="http://example.com/doc.pdf" format="pdf"/>
+      <!-- Cardinality: + -->
       <descriptions>
         <desc lang="en-us">
           <title> </title>
+          <p>...</p>
         </desc>
         <!-- more <desc> for other languages -->
       </descriptions>
