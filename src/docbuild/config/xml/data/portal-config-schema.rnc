@@ -1,10 +1,12 @@
 # RELAX NG Schema for Docserv² product configuration
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 namespace db = "http://docbook.org/ns/docbook"
-namespace xlink = "http://www.w3.org/1999/xlink"
+namespace xi = "http://www.w3.org/2001/XInclude"
+namespace local = ""
 default namespace = ""
 
 datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
 # BASICS
 [
   db:refname [ "start" ]
@@ -19,7 +21,80 @@ start = (ds.portal
   | ds.descriptions
 )
 
-include "xinclude.rnc"
+
+# XIncludes
+[
+   db:refname [ "xi:include" ]
+   db:refpurpose [ "An XInclude element pointing to an external XML or text resource" ]
+]
+div {
+   xi.any.other.attribute = attribute * - local:* { text }
+
+   xi.href.attr =
+    ## Target URL for the link (if the URL has no protocol prefix, the link is assumed to be local to the current host and a `/` will be added automatically)
+    [
+      db:refpurpose [ "Target URL for the link (if the URL has no protocol prefix, the link is assumed to be local to the current host and a / will be added automatically)" ]
+    ]
+    attribute href { xsd:anyURI { pattern = "[^#]+" } }
+
+   xi.parse.attr =
+    ## How to parse the included resource (default: xml)
+    [
+      a:defaultValue="xml"
+      db:refpurpose [ "How to parse the included resource (default: xml)" ]
+    ]
+    attribute parse { "xml" | "text" }?
+
+   xi.set-xml-id.attr =
+    ## Set the XML ID of the included content to the value of this attribute (optional)
+    [
+      db:refpurpose [ "Set the XML ID of the included content to the value of this attribute (optional)" ]
+    ]
+    attribute set-xml-id { text }?
+
+   xi.encoding.attr =
+    ## The encoding of the included resource (optional)
+    [
+      db:refpurpose [ "The encoding of the included resource (optional)" ]
+    ]
+    attribute encoding { text }?
+
+   xi.accept.attr =
+    ## The media type(s) that the included resource must match (optional)
+    [
+      db:refpurpose [ "The media type(s) that the included resource must match (optional)" ]
+    ]
+    attribute accept { text }?
+
+   xi.language.attr =
+    ## The language(s) that the included resource must match (optional)
+    [
+      db:refpurpose [ "The language(s) that the included resource must match (optional)" ]
+    ]
+    attribute accept-language { text }?
+
+   xi.include.attlist =
+      xi.href.attr?,
+      xi.parse.attr?,
+      # attribute xpointer { text }?,
+      # attribute fragid { text }?,
+      # xi.language.attr?,
+      # xi.accept.attr?,
+      xi.set-xml-id.attr?,
+      xi.encoding.attr?,
+      xi.any.other.attribute*
+
+   xi.include =
+      element xi:include {
+         xi.include.attlist,
+         empty
+         # We don't use fallbacks at the moment.
+         # xi.fallback?
+      }
+}
+
+
+
 
 # CONSTANTS
 
