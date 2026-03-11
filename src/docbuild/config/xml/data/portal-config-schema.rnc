@@ -811,8 +811,8 @@ div {
 div {
 ds.category_language =
   ## Metadata for category displayed on product detail navigational page
-  element language {  # TODO: language
-    ds.categoryid.attr,
+  element language {
+    ds.id.attr,
     ds.title.attr,
     ds.htmlblock*
   }
