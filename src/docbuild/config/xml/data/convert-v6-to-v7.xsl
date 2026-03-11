@@ -28,14 +28,14 @@
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
   <xsl:preserve-space elements="*"/>
 
-  <!-- ======== Parameters -->
+<!-- ======== Parameters -->
   <xsl:param name="use.xincludes" select="true()" />
 
-  <!-- ======== Keys -->
+<!-- ======== Keys -->
   <!-- Define a key to group <language> elements by their @lang attribute -->
   <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
 
-  <!-- ======== Variables -->
+<!-- ======== Variables -->
   <xsl:variable name="_transformation-map">
     <config>
       <product id="appliance" series="pas" family="linux" rank="04150" />
@@ -73,7 +73,7 @@
   <xsl:variable name="config" select="exsl:node-set($_transformation-map)/*" />
 
 
-  <!-- ======== General Templates -->
+<!-- ======== General Templates -->
   <xsl:template match="node() | @*" name="copy">
       <xsl:copy>
         <xsl:apply-templates select="node() | @*" />
