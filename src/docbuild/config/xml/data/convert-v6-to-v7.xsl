@@ -222,4 +222,9 @@
       </xsl:if>
     </ref>
   </xsl:template>
+
+
+  <!-- desc -->
+  <xsl:template match="desc/@default" />
+
 </xsl:stylesheet>
