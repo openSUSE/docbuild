@@ -768,7 +768,7 @@ div {
     element category {
       ds.xmlbase.attr?,
       ds.lang.en-us.attr,
-      ds.category_language
+      ds.category_language+
     }
 }
 
