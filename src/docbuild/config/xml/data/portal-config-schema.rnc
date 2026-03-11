@@ -181,15 +181,6 @@ ds.type.dcfile =
     pattern="""DC-[\-_\.\+a-zA-Z0-9]+"""
   }
 
-ds.type.xsltparam =
-  ## An XSLT parameter name
-  [
-    db:refpurpose [ "An XSLT parameter name" ]
-  ]
-  xsd:token {
-    pattern="""[\-_\.\+a-zA-Z0-9]+"""
-  }
-
 ds.type.alphanumeric =
   ## An alphanumeric value + "-" + "_"
   [
@@ -1082,9 +1073,9 @@ ds.deliverable =
     ds.gated.attr?,
     #
     ds.subdir?,
+    ds.git?,
     ds.dc,
     ds.format+,
-    # ds.param*,  # TODO: not really needed?
     ds.partners*
   }
 }
@@ -1104,7 +1095,6 @@ ds.deliverable_subdeliverable =
     ds.gated.attr?,
     ds.dc,
     ds.format+,
-    ds.param*,
     ds.subdeliverable+
   }
 }
@@ -1141,20 +1131,6 @@ ds.format =
     attribute pdf { xsd:boolean }?,
     ## Whether to enable EPUB builds
     attribute epub { xsd:boolean }?
-  }
-}
-
-[
-  db:refname [ "param" ]
-  db:refpurpose [ "Custom XSLT parameter" ]
-]
-div {
-ds.param =
-  ## Custom XSLT parameter
-  element param {
-    ## Name of the XSLT parameter
-    attribute name { ds.type.xsltparam },
-    text
   }
 }
 
