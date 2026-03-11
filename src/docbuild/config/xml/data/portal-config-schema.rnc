@@ -4,6 +4,7 @@ namespace db = "http://docbook.org/ns/docbook"
 namespace xlink = "http://www.w3.org/1999/xlink"
 default namespace = ""
 
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
 # BASICS
 [
   db:refname [ "start" ]
