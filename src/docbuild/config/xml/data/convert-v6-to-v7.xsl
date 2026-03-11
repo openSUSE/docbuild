@@ -32,7 +32,7 @@
   <xsl:param name="use.xincludes" select="true()" />
 
   <!-- Set the output directory -->
-  <xsl:param name="outputdir" select="" />
+  <xsl:param name="outputdir" select="'output/'" />
 
   <!-- Set the schemaversion attribute in the output XML -->
   <xsl:param name="schemaversion">7.0</xsl:param>
