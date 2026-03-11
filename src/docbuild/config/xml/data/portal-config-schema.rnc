@@ -209,24 +209,7 @@ ds.type.idmulti =
     pattern="""([\-_\.\+a-zA-Z0-9]+ )*[\-_\.\+a-zA-Z0-9]+"""
   }
 
-ds.type.containerref =
-  ## A reference to a remote container image
-  # matches the expression used by daps2docker
-  [
-    db:refpurpose [ "A reference to a remote container image" ]
-  ]
-  xsd:token {
-    pattern="""[\-_\.a-zA-Z0-9]+(/[\-_\.a-zA-Z0-9]+)*(:[\-_\.a-zA-Z0-9]+)?"""
-  }
 
-ds.type.hexdigest =
-  ## A hash/hex digest (such as a Docker or Git SHA reference)
-  [
-    db:refpurpose [ "A hash/hex digest (such as a Docker or Git SHA reference" ]
-  ]
-  xsd:token {
-    pattern="""[a-f0-9]{7,}"""
-  }
 
 
 # A basic title template that allows strings like "title subtitle product/docset",
@@ -245,14 +228,6 @@ ds.type.titleformat.build =
 ds.type.titleformat.link =
   ## Elements of titles displayed on navigational pages for externally-hosted documents
   "title" | "title docset"
-
-ds.false.enum =
-  ## Boolean false value
-  "0" | "false"
-
-ds.true.enum =
-  ## Boolean true value
-  "1" | "true"
 
 }
 
@@ -762,12 +737,13 @@ div {
   db:refpurpose [ "Definition of category (default language)" ]
 ]
 div {
-  ds.categoryid.attr =
-    ## Category ID, must be unique across the configuration for a single product
-    [
-      db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
-    ]
-    attribute categoryid { ds.type.id }
+  # UNUSED
+  # ds.categoryid.attr =
+  #  ## Category ID, must be unique across the configuration for a single product
+  #  [
+  #    db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
+  #  ]
+  #  attribute categoryid { ds.type.id }
 
   ds.category.default =
     ## Definition of category (default language)
