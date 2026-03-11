@@ -90,6 +90,8 @@
   <!-- ========  Ignore Templates -->
   <xsl:template match="/docservconfig/hashes"/>
 
+  <xsl:template match="processing-instruction('xml-model')" />
+
 
   <!-- ========  Templates -->
   <xsl:template match="/docservconfig">
@@ -185,6 +187,21 @@
     <xsl:attribute name="id">
       <xsl:value-of select="$id"/>
     </xsl:attribute>
+  </xsl:template>
+
+  <xsl:template match="docset/@schemaversion" />
+
+  <xsl:template match="docset/builddocs">
+    <resources>
+      <xsl:apply-templates/>
+    </resources>
+  </xsl:template>
+
+  <xsl:template match="docset/builddocs/language">
+    <locale>
+      <xsl:copy-of select="@lang" /><!-- no default attribute -->
+      <xsl:apply-templates />
+    </locale>
   </xsl:template>
 
 </xsl:stylesheet>
