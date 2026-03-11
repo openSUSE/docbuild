@@ -204,4 +204,15 @@
     </locale>
   </xsl:template>
 
+  <!-- ref  -->
+  <xsl:template match="ref">
+    <ref>
+      <xsl:copy-of select="@product|@docset|@category|@titleformat|@subdeliverable"/>
+      <xsl:if test="@dc">
+        <xsl:attribute name="deliverable">
+            <xsl:value-of select="@dc" />
+        </xsl:attribute>
+      </xsl:if>
+    </ref>
+  </xsl:template>
 </xsl:stylesheet>
