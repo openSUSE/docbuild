@@ -12,6 +12,7 @@ from ..constants import APP_NAME
 DEFAULT_APP_CONFIG = {
     "debug": False,
     "role": "production",
+    "max_workers": "half",
     "paths": {
         "config_dir": "/etc/docbuild",
         "repo_dir": "/data/docserv/repos/permanent-full/",

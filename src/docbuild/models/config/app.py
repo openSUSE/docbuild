@@ -2,9 +2,10 @@
 
 from collections.abc import Sequence  # Added Sequence for internal use
 from copy import deepcopy
+import os
 from typing import Any, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from docbuild.config.app import (
     CircularReferenceError,
@@ -188,7 +189,42 @@ class AppConfig(BaseModel):
         description="Configuration for the application's logging system.",
     )
 
+    # Added max_workers with support for ints and descriptive strings
+    max_workers: int | str = Field(
+        default="half",
+        description="Max concurrent workers. Supports integers or 'all', 'all2'/'half'.",
+    )
+
     model_config = ConfigDict(extra="allow")
+
+    @field_validator("max_workers")
+    @classmethod
+    def _resolve_worker_count(cls, v: int | str) -> int:
+        """Resolve keywords 'all', 'half', 'all2' into concrete integers."""
+        cpu_count = os.cpu_count() or 1
+
+        if isinstance(v, str):
+            val = v.lower()
+            if val == "all":
+                return cpu_count
+            if val in ("half", "all2"):
+                return max(1, cpu_count // 2)
+
+            # Handle string-digits like "4"
+            if val.isdigit():
+                v = int(val)
+            else:
+                raise ValueError(
+                    f"Invalid max_workers value: '{v}'. "
+                    "Use an integer, 'all', or 'half'/'all2'."
+                )
+
+        if isinstance(v, int):
+            if v < 1:
+                raise ValueError("max_workers must be at least 1")
+            return v
+
+        return v
 
     @model_validator(mode="before")
     @classmethod
