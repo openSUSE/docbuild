@@ -203,14 +203,18 @@ class AppConfig(BaseModel):
         """Resolve keywords 'all', 'half', 'all2' into concrete integers."""
         cpu_count = os.cpu_count() or 1
 
+        keyword_map = {
+            "all": lambda cpu: cpu,
+            "half": lambda cpu: max(1, cpu // 2),
+            "all2": lambda cpu: max(1, cpu // 2),
+        }
+
         if isinstance(v, str):
             val = v.lower()
-            if val == "all":
-                return cpu_count
-            if val in ("half", "all2"):
-                return max(1, cpu_count // 2)
+            if val in keyword_map:
+                # Return immediately once resolved
+                return keyword_map[val](cpu_count)
 
-            # Handle string-digits like "4"
             if val.isdigit():
                 v = int(val)
             else:
@@ -219,10 +223,9 @@ class AppConfig(BaseModel):
                     "Use an integer, 'all', or 'half'/'all2'."
                 )
 
-        if isinstance(v, int):
-            if v < 1:
-                raise ValueError("max_workers must be at least 1")
-            return v
+        # At this point, v is guaranteed to be an int
+        if v < 1:
+            raise ValueError("max_workers must be at least 1")
 
         return v
 
