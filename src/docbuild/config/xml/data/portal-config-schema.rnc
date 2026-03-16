@@ -716,6 +716,18 @@ ds.title =
 }
 
 [
+  db:refname [ "subtitle" ]
+  db:refpurpose [ "A short subtitle of the product"]
+]
+div {
+ds.subtitle =
+  ## A short subtitle of the product
+  element subtitle {
+    text
+  }
+}
+
+[
   db:refname [ "categories" ]
   db:refpurpose [ "Wrapper for all category elements" ]
 ]
@@ -948,7 +960,6 @@ ds.git =
 }
 
 
-
 # About @translation-type:
 # * "list" creates a list of documents that will be built for the
 #   translation in question. This is advantageous in the common case that only
@@ -975,7 +986,7 @@ ds.locale_default =
 
 
 [
-  db:refname [ "locale (en-us)" ]
+  db:refname [ "locale (translations)" ]
   db:refpurpose [ "Set of deliverables to build for the default language" ]
 ]
 div {
@@ -1047,13 +1058,54 @@ ds.deliverable =
     ds.category.attr?,
     ds.titleformat.attr?,
     ds.gated.attr?,
+    # ds.id.attr,
     #
-    ds.subdir?,
-    ds.git?,
+    (
+      ds.deliverable.dc
+      |
+      ds.deliverable.html
+    )
+  }
+}
+
+[
+  db:refname [ "dc" ]
+  db:refpurpose [ "Standard DocBook/DAPS deliverable definition" ]
+]
+div {
+  ds.deliverable.dc.type.attr =
+    [ a:defaultValue = "dc" ]
+    attribute type { "dc" }
+
+  ds.deliverable.dc =
+    ## Standard DocBook/DAPS deliverable definition
+    ds.deliverable.dc.type.attr?,
     ds.dc,
     ds.format+,
+    ds.subdir?,
+    ds.git?,
     ds.partners*
-  }
+}
+
+
+[
+  db:refname [ "html" ]
+  db:refpurpose [ "Pre-built HTML content definition" ]
+]
+div {
+  ds.deliverable.html.type.attr =
+    attribute type { "html" }
+
+  ds.deliverable.html =
+    ## Pre-built HTML content definition
+    element html {
+      ds.id.attr,
+      ds.deliverable.html.type.attr,
+      ds.title,
+      ds.subtitle?,
+      (ds.desc_default | ds.desc_translation)+,
+      ds.link
+    }
 }
 
 [
