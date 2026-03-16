@@ -1,0 +1,4 @@
+The implementation of :func:`~docbuild.config.app.deep_merge` has been
+fixed to properly handle deep copies of lists, tuples, and sets.
+Refactored to be more robust and handle a wider variety of data types
+(including lists, tuples, and sets) correctly during the merging process.
