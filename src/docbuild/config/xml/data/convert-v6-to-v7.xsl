@@ -22,6 +22,10 @@
 
   Copyright (C) 2026 SUSE Linux GmbH
 -->
+<!DOCTYPE xsl:stylesheet [
+  <!ENTITY uppercase "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'">
+  <!ENTITY lowercase "'abcdefghijklmnopqrstuvwxyz'">
+]>
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -394,6 +398,22 @@
       <xsl:copy-of select="@lang" /><!-- no default attribute -->
       <xsl:apply-templates />
     </locale>
+  </xsl:template>
+
+
+  <!-- deliverable -->
+  <xsl:template match="deliverable">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:if test="../language/@lang='en-us'">
+        <!-- Add id attribute only for English to keep it unique -->
+        <xsl:attribute name="id">
+          <xsl:value-of select=" substring-after(translate(dc, &uppercase;, &lowercase;), 'dc-')"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:attribute name="type">dc</xsl:attribute>
+      <xsl:apply-templates />
+    </xsl:copy>
   </xsl:template>
 
   <!-- ref  -->
