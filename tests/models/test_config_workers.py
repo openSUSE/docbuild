@@ -18,13 +18,13 @@ def mock_cpu_count(request):
 # Separate test cases for better clarity
 def test_max_workers_resolution_all(mock_cpu_count):
     """Verify 'all' keyword resolves to the full CPU count (min 1)."""
-    expected = mock_cpu_count if mock_cpu_count is not None else 1
+    expected = mock_cpu_count or 1
     conf = AppConfig(max_workers="all")
     assert conf.max_workers == expected
 
 def test_max_workers_resolution_half(mock_cpu_count):
     """Verify 'half' and 'all2' resolve to 50% CPU count (min 1)."""
-    cpu = mock_cpu_count if mock_cpu_count is not None else 1
+    cpu = mock_cpu_count or 1
     expected_half = max(1, cpu // 2)
 
     assert AppConfig(max_workers="half").max_workers == expected_half
