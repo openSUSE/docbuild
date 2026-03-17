@@ -97,6 +97,12 @@ def handle_validation_error(
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 @click.option("--dry-run", is_flag=True, help="Run without making changes")
 @click.option(
+    "-j",
+    "--workers",
+    "max_workers",
+    help="Maximum number of concurrent workers (integer, 'all', or 'all2').",
+)
+@click.option(
     "--debug/--no-debug",
     default=False,
     envvar="DOCBUILD_DEBUG",
@@ -137,6 +143,7 @@ def cli(
     debug: bool,
     app_config: Path,
     env_config: Path,
+    max_workers: str | None,
     **kwargs: dict,
 ) -> None:
     """Acts as a main entry point for CLI tool.
@@ -176,6 +183,9 @@ def cli(
     )
 
     raw_appconfig = cast(dict[str, Any], raw_appconfig)
+
+    if max_workers is not None:
+        raw_appconfig["max_workers"] = max_workers
 
     try:
         context.appconfig = AppConfig.from_dict(raw_appconfig)

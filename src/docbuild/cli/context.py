@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
+from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
 from ..models.doctype import Doctype
 
@@ -24,7 +24,7 @@ class DocBuildContext:
     appconfig_from_defaults: bool = False
     """If set, the app's config was loaded from defaults"""
 
-    appconfig: dict[str, Any] | None = None
+    appconfig: AppConfig | None = None
     """The accumulated content of all app config files"""
 
     envconfigfiles: tuple[str | Path, ...] | None = None
