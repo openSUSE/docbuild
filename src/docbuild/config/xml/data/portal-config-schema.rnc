@@ -1243,25 +1243,32 @@ div {
     ]
     attribute subdeliverable { ds.type.id }
 
+[
+  db:refname [ "ref" ]
+  db:refpurpose [ "Reference to a document or navigational page" ]
+]
+div {
+  ds.ref.linkend.attr =
+    ## Link ID of referenced external link
+    [
+      db:refpurpose [ "Link ID of referenced external link" ]
+    ]
+    attribute linkend { xsd:IDREF }
 
-ds.ref =
-  ## Internal reference
-  element ref {
-    (
-      ds.category.attr? &
-      ds.product.attr &
+  ds.ref =
+    ## Internal reference
+    element ref {
       (
-        ds.docset.attr
-        & ds.deliverable.attr?
-        & ds.subdeliverable.attr?
-        & ds.titleformat.attr?
-      )?
-    ),
+        ds.ref.linkend.attr &
+        ds.category.attr? &
+        ds.product.attr &
+        ds.titleformat.attr?
+      ),
 
-    ds.descriptions?
+      ds.descriptions?
+    }
   }
 }
-
 
 [
   db:refname [ "external" ]
