@@ -55,10 +55,18 @@
 
 <!-- ======== Variables -->
   <xsl:variable name="_transformation-map">
+    <!--
+      Attributes:
+      * id (ID): the product ID
+      * series (str): the series that this product belongs
+      * family (str): the product family that this product belongs
+      * rank (int): The product rank that influences the tiles on the portal homepage
+      * externals (bool): Convert external links into <deliverable> and <prebuilt> elements
+    -->
     <config>
       <product id="appliance" series="pas" family="linux" rank="04150" />
       <product id="cloudnative" series="pas" family="cn" rank="00030" />
-      <product id="container" series="pas" family="linux" rank="04130" />
+      <product id="container" series="pas" family="linux" rank="04130" externals="1" />
       <product id="compliance" series="pas" family="linux" rank="" />
       <product id="liberty" series="pas" family="linux" rank="00060" />
       <product id="releasenotes" series="rn" family="linux" />
@@ -78,8 +86,8 @@
       <product id="soc" series="pas" family="linux" rank="04300" />
       <product id="style" series="pas" family="linux" />
       <product id="subscription" series="pas" family="linux" rank="04140" />
-      <product id="suma-retail" series="pas" family="linux" />
-      <product id="suma" series="pas" family="linux" rank="" />
+      <product id="suma" series="pas" family="linux" rank="" externals="1" />
+      <product id="suma-retail" series="pas" family="linux" externals="1" />
       <product id="suma-ai" series="pas" family="suse-ai" rank="00010" />
       <product id="suma-caasp" series="pas" family="linux" rank="04310" />
       <product id="suma-cap" series="pas" family="linux" rank="04320"/>
