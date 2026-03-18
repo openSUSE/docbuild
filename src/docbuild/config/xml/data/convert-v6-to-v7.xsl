@@ -221,6 +221,7 @@
         <xsl:value-of select="concat(' href=&quot;', $schemafile, '&quot;')"/>
         <xsl:value-of select="concat(' type=&quot;', $type, '&quot;')"/>
       </xsl:processing-instruction>
+      <xsl:text>&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
 
@@ -343,16 +344,13 @@
     <xsl:variable name="id" select="@productid" />
     <xsl:variable name="cnfg" select="$config/product[@id=$id]" />
 
-    <!-- Define the subpath for the product file -->
-    <xsl:variable name="subpath" select="concat($id, '/', $id, '.xml')"/>
-
     <!-- Capture the product content -->
     <xsl:variable name="content">
       <xsl:apply-templates select="." mode="render"/>
     </xsl:variable>
 
     <xsl:call-template name="write.chunk">
-       <xsl:with-param name="filename" select="$subpath"/>
+      <xsl:with-param name="filename" select="concat($id, '/', $id, '.xml')"/>
        <xsl:with-param name="content" select="$content"/>
     </xsl:call-template>
   </xsl:template>
@@ -381,7 +379,7 @@
                 <xsl:for-each select="desc">
                    <xsl:variable name="lang" select="@lang"/>
                    <xsl:variable name="inner_content">
-                      <xsl:copy-of select="."/>
+                      <xsl:apply-templates select="." />
                    </xsl:variable>
 
                    <xsl:call-template name="write.chunk">
@@ -404,6 +402,8 @@
 
   <!-- We ignore the product/category as this was moved to portal/categories -->
   <xsl:template match="product/category" />
+
+  <xsl:template match="product/desc/@default" />
 
   <xsl:template match="product/@productid">
     <xsl:attribute name="id">
@@ -433,7 +433,7 @@
      </xsl:call-template>
   </xsl:template>
 
-q  <xsl:template match="docset/@setid">
+  <xsl:template match="docset/@setid">
     <xsl:attribute name="id">
       <xsl:value-of select="concat(ancestor::product/@productid, $id.sep, .)" />
     </xsl:attribute>
@@ -472,6 +472,7 @@ q  <xsl:template match="docset/@setid">
     </locale>
   </xsl:template>
 
+  <xsl:template match="link/language/@default" />
 
   <!-- deliverable -->
   <xsl:template match="language[@lang='en-us']/deliverable">
@@ -490,6 +491,21 @@ q  <xsl:template match="docset/@setid">
       <xsl:copy-of select="@*"/>
       <xsl:apply-templates />
     </deliverable>
+  </xsl:template>
+
+  <xsl:template match="language[@lang!='en-us']/deliverable">
+    <xsl:variable name="pid" select="ancestor::product/@productid"/>
+    <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
+    <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
+    <xsl:variable name="id">
+      <xsl:call-template name="generate.id">
+        <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
+        <xsl:with-param name="docset" select="ancestor::docset/@setid"/>
+        <xsl:with-param name="dc" select="dc"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <ref linkend="{$id}" />
   </xsl:template>
 
   <!-- ref  -->
