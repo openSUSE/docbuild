@@ -850,7 +850,7 @@ ds.docset =
   element docset {
     (
     ds.xmlbase.attr? &
-    ds.setid.attr &
+    ds.id.attr &
     ds.lifecycle.attr &
     ds.navigation.attr? &
     ds.gated.attr?
@@ -1060,7 +1060,7 @@ ds.deliverable =
     ds.category.attr?,
     ds.titleformat.attr?,
     ds.gated.attr?,
-    # ds.id.attr,
+    ds.id.attr,
     #
     (
       ds.deliverable.dc
