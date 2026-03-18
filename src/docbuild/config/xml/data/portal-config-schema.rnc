@@ -1065,7 +1065,7 @@ ds.deliverable =
     (
       ds.deliverable.dc
       |
-      ds.deliverable.html
+      ds.deliverable.prebuilt
     )
   }
 }
@@ -1091,16 +1091,16 @@ div {
 
 
 [
-  db:refname [ "html" ]
-  db:refpurpose [ "Pre-built HTML content definition" ]
+  db:refname [ "prebuilt" ]
+  db:refpurpose [ "Pre-built content definition" ]
 ]
 div {
   ds.deliverable.html.type.attr =
     attribute type { "html" }
 
-  ds.deliverable.html =
-    ## Pre-built HTML content definition
-    element html {
+  ds.deliverable.prebuilt =
+    ## Pre-built content definition
+    element prebuilt {
       ds.id.attr,
       ds.deliverable.html.type.attr,
       ds.title,
