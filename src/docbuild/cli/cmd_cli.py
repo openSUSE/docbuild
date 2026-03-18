@@ -100,6 +100,8 @@ def handle_validation_error(
     "-j",
     "--workers",
     "max_workers",
+    default="half",
+    show_default=True,
     help="Maximum number of concurrent workers (integer, 'all', or 'all2').",
 )
 @click.option(

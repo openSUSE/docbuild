@@ -190,14 +190,14 @@ class AppConfig(BaseModel):
     )
 
     # Added max_workers with support for ints and descriptive strings
-    max_workers: int | str = Field(
-        default="half",
+    max_workers: int = Field(
+        default="half",  # type: ignore
         description="Max concurrent workers. Supports integers or 'all', 'all2'/'half'.",
     )
 
     model_config = ConfigDict(extra="allow")
 
-    @field_validator("max_workers")
+    @field_validator("max_workers", mode="before")
     @classmethod
     def _resolve_worker_count(cls, v: int | str) -> int:
         """Resolve keywords 'all', 'half', 'all2' into concrete integers."""
