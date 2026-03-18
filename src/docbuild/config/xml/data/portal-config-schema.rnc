@@ -304,6 +304,13 @@ ds.id.attr =
   ]
   attribute id { xsd:ID }
 
+ds.path.attr =
+  ## Relative path to a file or directory, with no leading or trailing slash
+  [
+    db:refpurpose [ "Relative path to a file or directory, with no leading or trailing slash" ]
+  ]
+  attribute path { ds.type.dirname }
+
 ds.class.attr =
   ## Class attribute (HTML)
   [
@@ -551,6 +558,7 @@ ds.product =
     # of these ID per productconfig file.
     (
       ds.xmlbase.attr? &
+      ds.path.attr? &
       ds.productid.attr &  # TODO: use ds.id.attr?
       ds.schemaversion.attr? &
       ds.enabled.attr? &
@@ -850,6 +858,7 @@ ds.docset =
   element docset {
     (
     ds.xmlbase.attr? &
+    ds.path.attr? &
     ds.id.attr &
     ds.lifecycle.attr &
     ds.navigation.attr? &
