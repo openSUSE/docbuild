@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-model href="../../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
-<docset id="v16.0" dir="16.0" lifecycle="supported">
+<docset setid="16.0" lifecycle="supported">
   <version>16.0</version>
   <canonical>sles/16.0</canonical>
 
-  <descriptions>
-  </descriptions>
+  <!--<descriptions>
+  </descriptions>-->
 
   <resources>
     <git remote="https://github.com/SUSE/doc-modular.git"/>

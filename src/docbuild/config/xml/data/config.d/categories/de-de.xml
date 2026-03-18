@@ -1,8 +1,8 @@
 <?xml-model href="file:../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
 
 <category lang="de-de">
-  <language categoryid="about" title="Über" />
-  <language categoryid="deployment" title="Deployment" />
-  <language categoryid="inital-config" title="Initiale Konfiguration" />
+  <language id="about" title="Über" />
+  <language id="deployment" title="Deployment" />
+  <language id="inital-config" title="Initiale Konfiguration" />
   <!-- ... more entries ... -->
 </category>
