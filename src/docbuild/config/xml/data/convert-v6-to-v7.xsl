@@ -46,6 +46,9 @@
   <!-- Set the main output filename -->
   <xsl:param name="outputfile" select="'portal.xml'" />
 
+  <!-- Set the RNC schema file -->
+  <xsl:param name="schemafile"></xsl:param>
+
   <!-- Set the schemaversion attribute in the output XML -->
   <xsl:param name="schemaversion">7.0</xsl:param>
 
@@ -192,6 +195,28 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="add-pi-for-relaxng">
+    <xsl:variable name="ext" select="substring($schemafile, string-length($schemafile) - 3)" />
+    <xsl:if test="$schemafile != ''">
+      <xsl:variable name="type">
+        <xsl:choose>
+          <xsl:when test="$ext = '.rnc'">application/relax-ng-compact-syntax</xsl:when>
+          <xsl:when test="$ext = '.rng'">application/xml</xsl:when>
+          <xsl:otherwise>
+            <xsl:message terminate="yes">
+              <xsl:text>Error: Unknown schema file extension for </xsl:text>
+              <xsl:value-of select="$schemafile"/>
+              <xsl:text>. Only .rnc and .rng are supported.</xsl:text>
+            </xsl:message>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:processing-instruction name="xml-model">
+        <xsl:value-of select="concat(' href=&quot;', $schemafile, '&quot;')"/>
+        <xsl:value-of select="concat(' type=&quot;', $type, '&quot;')"/>
+      </xsl:processing-instruction>
+    </xsl:if>
+  </xsl:template>
 
 
 <!-- ======== General Templates -->
@@ -213,6 +238,7 @@
     <xsl:call-template name="write.file">
       <xsl:with-param name="filename" select="concat($outputdir, $outputfile)" />
       <xsl:with-param name="content">
+        <xsl:call-template name="add-pi-for-relaxng" />
         <portal schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude">
           <xsl:apply-templates select="categories" />
           <productfamilies>
