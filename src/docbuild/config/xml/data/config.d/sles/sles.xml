@@ -1,0 +1,20 @@
+<?xml-model href="file:../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<product id="sles" schemaversion="7.0" family="linux" series="pas"
+   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <name>SUSE Linux Enterprise Server</name>
+  <acronym>SLES</acronym>
+  <maintainers>
+    <contact>taroth@suse.de</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+
+  <descriptions>
+    <xi:include href="desc/en-us.xml" />
+  </descriptions>
+
+  <!-- docsets: -->
+  <xi:include href="16.0.xml" />
+  <!-- <xi:include href="docsets/15-SP7.xml"/>  -->
+
+</product>

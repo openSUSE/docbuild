@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Purpose:
+    XSLT stylesheet to convert product configuration (version 6) to
+    new portal configuration (version 7)
+
+  Input:
+    - product configuration XML file (version 6)
+    - Stitchfile
+
+  Output:
+    - portal configuration XML file (version 7)
+
+  Parameters:
+    - use.xincludes: Whether to use xi:include for chunking output (default: true)
+    - outputdir: The directory to write output files to (default: 'output/')
+    - outputfile: The main output filename (default: 'portal.xml')
+    - schemaversion: The schemaversion attribute to set in the output XML (default: '7.0')
+
+  Author:
+    Tom Schraitle
+
+  Copyright (C) 2026 SUSE Linux GmbH
+-->
+<!DOCTYPE xsl:stylesheet [
+  <!ENTITY uppercase "'ABCDEFGHIJKLMNOPQRSTUVWXYZ'">
+  <!ENTITY lowercase "'abcdefghijklmnopqrstuvwxyz'">
+]>
+<xsl:stylesheet version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:exsl="http://exslt.org/common"
+  exclude-result-prefixes="exsl"
+  extension-element-prefixes="exsl">
+
+  <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
+  <xsl:preserve-space elements="*"/>
+  <xsl:strip-space elements="product"/>
+
+<!-- ======== Parameters -->
+  <xsl:param name="use.xincludes" select="true()" />
+
+  <!-- Set the output directory -->
+  <xsl:param name="outputdir" select="'output/'" />
+
+  <!-- Set the main output filename -->
+  <xsl:param name="outputfile" select="'portal.xml'" />
+
+  <!-- Set the schemaversion attribute in the output XML -->
+  <xsl:param name="schemaversion">7.0</xsl:param>
+
+<!-- ======== Keys -->
+  <!-- Define a key to group <language> elements by their @lang attribute -->
+  <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
+
+<!-- ======== Variables -->
+  <xsl:variable name="_transformation-map">
+    <config>
+      <product id="appliance" series="pas" family="linux" rank="04150" />
+      <product id="cloudnative" series="pas" family="cn" rank="00030" />
+      <product id="container" series="pas" family="linux" rank="04130" />
+      <product id="compliance" series="pas" family="linux" rank="" />
+      <product id="liberty" series="pas" family="linux" rank="00060" />
+      <product id="releasenotes" series="rn" family="linux" />
+      <product id="sbp" series="sbp" family="linux" />
+      <product id="ses" series="pas" family="linux" rank="04160" />
+      <product id="sled" series="pas" family="linux" rank="04100" />
+      <product id="sle-ha" series="pas" family="linux" rank="04070" />
+      <product id="sle-hpc" series="pas" family="linux" rank="04110" />
+      <product id="sle-micro" series="pas" family="linux" rank="00020" />
+      <product id="sle-public-cloud" series="pas" family="linux" rank="04060" />
+      <product id="sle-rt" series="pas" family="linux" rank="04080" />
+      <product id="sles-sap" series="pas" family="linux" rank="00050" />
+      <product id="sles" series="pas" family="linux" rank="00080" />
+      <product id="sle-vmdp" series="pas" family="linux" rank="04120" />
+      <product id="smart" series="pas" family="linux" />
+      <product id="smt" series="pas" family="linux" rank="04330" />
+      <product id="soc" series="pas" family="linux" rank="04300" />
+      <product id="style" series="pas" family="linux" />
+      <product id="subscription" series="pas" family="linux" rank="04140" />
+      <product id="suma-retail" series="pas" family="linux" />
+      <product id="suma" series="pas" family="linux" rank="" />
+      <product id="suma-ai" series="pas" family="suse-ai" rank="00010" />
+      <product id="suma-caasp" series="pas" family="linux" rank="04310" />
+      <product id="suma-cap" series="pas" family="linux" rank="04320"/>
+      <product id="suma-distribution-migration-system" series="pas" family="linux" />
+      <product id="suma-edge" series="pas" family="suse-edge" rank="00040" />
+      <product id="trd" series="trd" family="linux" />
+    </config>
+  </xsl:variable>
+  <xsl:variable name="config" select="exsl:node-set($_transformation-map)/*" />
+
+
+<!-- ======== Helper functions -->
+<!--
+    Template: write.file
+    Writes content to a file.
+    Parameters:
+      filename - The filename to write to
+      content - The content to write
+      method - Output method (default: xml)
+      encoding - Output encoding (default: UTF-8)
+      indent - Whether to indent output (default: yes)
+  -->
+  <xsl:template name="write.file">
+    <xsl:param name="filename"/>
+    <xsl:param name="content"/>
+    <xsl:param name="debug" select="1" />
+    <xsl:param name="method" select="'xml'"/>
+    <xsl:param name="encoding" select="'UTF-8'"/>
+    <xsl:param name="indent" select="'yes'"/>
+
+    <exsl:document href="{$filename}"
+                   method="{$method}"
+                   encoding="{$encoding}"
+                   indent="{$indent}">
+      <xsl:copy-of select="$content"/>
+    </exsl:document>
+    <xsl:if test="boolean($debug)">
+      <xsl:message>Written file: <xsl:value-of select="concat('&quot;', $filename, '&quot;')" /></xsl:message>
+    </xsl:if>
+  </xsl:template>
+
+  <!--
+    Template: write.chunk
+    Handles the logic for writing a chunk to a file or inlining it.
+    Parameters:
+      filename - The relative path to the output file (from outputdir)
+      hreftype - The href to use for xi:include
+                 Possible values: 'filename' (default), 'relative', 'none'
+      content - The content to Write
+  -->
+  <xsl:template name="write.chunk">
+    <xsl:param name="filename"/>
+    <xsl:param name="hreftype" select="'filename'"/>
+    <xsl:param name="manual_href" select="''"/>
+    <xsl:param name="content"/>
+
+    <xsl:choose>
+      <xsl:when test="(string($use.xincludes) = 'true' or string($use.xincludes) = '1') and $filename != ''">
+        <xsl:variable name="href">
+           <xsl:choose>
+             <xsl:when test="string($manual_href) != ''">
+               <xsl:value-of select="$manual_href"/>
+             </xsl:when>
+             <xsl:when test="$hreftype = 'relative'">
+               <xsl:call-template name="substring-after-last">
+                 <xsl:with-param name="string" select="$filename"/>
+                 <xsl:with-param name="char" select="'/'"/>
+               </xsl:call-template>
+             </xsl:when>
+             <xsl:otherwise>
+               <xsl:value-of select="$filename"/>
+             </xsl:otherwise>
+           </xsl:choose>
+        </xsl:variable>
+
+        <xi:include href="{$href}"/>
+
+        <xsl:call-template name="write.file">
+          <xsl:with-param name="filename" select="concat($outputdir, $filename)"/>
+          <xsl:with-param name="content" select="$content"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="$content"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="substring-after-last">
+    <xsl:param name="string" />
+    <xsl:param name="char" />
+    <xsl:choose>
+      <xsl:when test="contains($string, $char)">
+        <xsl:call-template name="substring-after-last">
+          <xsl:with-param name="string" select="substring-after($string, $char)" />
+          <xsl:with-param name="char" select="$char" />
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$string" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+
+
+<!-- ======== General Templates -->
+  <xsl:template match="node() | @*" name="copy">
+      <xsl:copy>
+        <xsl:apply-templates select="node() | @*" />
+      </xsl:copy>
+  </xsl:template>
+
+
+  <!-- ========  Ignore Templates -->
+  <xsl:template match="/docservconfig/hashes"/>
+
+  <xsl:template match="processing-instruction('xml-model')" />
+
+
+  <!-- ========  Templates -->
+  <xsl:template match="/docservconfig">
+    <xsl:call-template name="write.file">
+      <xsl:with-param name="filename" select="concat($outputdir, $outputfile)" />
+      <xsl:with-param name="content">
+        <portal schemaversion="7.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+          <xsl:apply-templates select="categories" />
+          <productfamilies>
+            <item id="linux">Linux</item>
+            <item id="cn">Cloud Native</item>
+            <item id="suse-edge">SUSE Edge</item>
+            <item id="suse-ai">SUSE AI</item>
+          </productfamilies>
+          <series>
+            <item id="pas">Products &amp; Solutions</item>
+            <item id="sbp" >SUSE Best Practices</item>
+            <item id="trd">Technical References</item>
+            <item id="rn">Release Notes</item>
+          </series>
+          <!-- <xi:include href="categories.xml" />
+          <xsl:element name="include" namespace="http://www.w3.org/2001/XInclude">
+            <xsl:attribute name="href">categories.xml</xsl:attribute>
+          </xsl:element>
+          -->
+          <xsl:apply-templates select="*[not(self::categories)]" />
+        </portal>
+      </xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="/docservconfig/categories">
+    <xsl:variable name="content">
+      <xsl:apply-templates select="." mode="render"/>
+    </xsl:variable>
+
+    <xsl:call-template name="write.chunk">
+      <xsl:with-param name="filename" select="'categories.xml'"/>
+      <xsl:with-param name="content" select="$content"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="/docservconfig/categories" mode="render">
+    <categories xmlns:xi="http://www.w3.org/2001/XInclude">
+      <xsl:copy-of select="@*"/>
+      <!-- Select only the first occurring <language> element for each unique @lang -->
+      <xsl:for-each select="category/language[generate-id() = generate-id(key('langKey', @lang)[1])]">
+        <xsl:variable name="currentLang" select="@lang" />
+
+        <xsl:variable name="content">
+          <!-- Create the new <category> element grouped by language -->
+          <category lang="{$currentLang}">
+
+            <!-- Retrieve all <language> elements that match the current @lang -->
+            <xsl:for-each select="key('langKey', $currentLang)">
+               <!-- Create an <language> for each, pulling categoryid from its parent -->
+              <language id="{../@categoryid}" title="{@title}" />
+            </xsl:for-each>
+          </category>
+        </xsl:variable>
+
+        <xsl:call-template name="write.chunk">
+           <xsl:with-param name="filename" select="concat('categories/', $currentLang, '.xml')"/>
+           <xsl:with-param name="content" select="$content"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </categories>
+  </xsl:template>
+
+  <!-- Product  -->
+  <xsl:template match="product">
+    <xsl:variable name="id" select="@productid" />
+    <xsl:variable name="cnfg" select="$config/product[@id=$id]" />
+
+    <!-- Define the subpath for the product file -->
+    <xsl:variable name="subpath" select="concat($id, '/', $id, '.xml')"/>
+
+    <!-- Capture the product content -->
+    <xsl:variable name="content">
+      <xsl:apply-templates select="." mode="render"/>
+    </xsl:variable>
+
+    <xsl:call-template name="write.chunk">
+       <xsl:with-param name="filename" select="$subpath"/>
+       <xsl:with-param name="content" select="$content"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="product" mode="render">
+    <xsl:variable name="id" select="@productid" />
+    <xsl:variable name="cnfg" select="$config/product[@id=$id]" />
+    <product xmlns:xi="http://www.w3.org/2001/XInclude">
+        <xsl:apply-templates select="@*" />
+        <!-- Add new attributes based on the transformation map -->
+        <xsl:attribute name="family">
+          <xsl:value-of select="$cnfg/@family" />
+        </xsl:attribute>
+        <xsl:attribute name="series">
+          <xsl:value-of select="$cnfg/@series" />
+        </xsl:attribute>
+        <xsl:attribute name="rank">
+          <xsl:value-of select="$cnfg/@rank" />
+        </xsl:attribute>
+        <xsl:apply-templates select="node()[not(self::desc)]" />
+
+        <!-- Handle desc elements -->
+        <xsl:if test="desc">
+          <xsl:variable name="content">
+             <descriptions xmlns:xi="http://www.w3.org/2001/XInclude">
+                <xsl:for-each select="desc">
+                   <xsl:variable name="lang" select="@lang"/>
+                   <xsl:variable name="inner_content">
+                      <xsl:copy-of select="."/>
+                   </xsl:variable>
+
+                   <xsl:call-template name="write.chunk">
+                      <xsl:with-param name="filename" select="concat($id, '/desc/', $lang, '.xml')"/>
+                      <xsl:with-param name="hreftype" select="'relative'"/>
+                      <xsl:with-param name="content" select="$inner_content"/>
+                   </xsl:call-template>
+                </xsl:for-each>
+             </descriptions>
+          </xsl:variable>
+
+          <xsl:call-template name="write.chunk">
+             <xsl:with-param name="filename" select="concat($id, '/desc/desc.xml')"/>
+             <xsl:with-param name="manual_href" select="'desc/desc.xml'"/>
+             <xsl:with-param name="content" select="$content"/>
+          </xsl:call-template>
+        </xsl:if>
+    </product>
+  </xsl:template>
+
+  <!-- We ignore the product/category as this was moved to portal/categories -->
+  <xsl:template match="product/category" />
+
+  <!-- Docset -->
+  <xsl:template match="docset">
+     <xsl:variable name="id" select="ancestor::product/@productid"/>
+     <xsl:variable name="ver" select="@setid"/>
+     <xsl:variable name="subpath" select="concat($id, '/', $ver, '.xml')"/>
+
+
+     <xsl:variable name="content">
+        <xsl:apply-templates select="." mode="render"/>
+     </xsl:variable>
+
+     <xsl:call-template name="write.chunk">
+        <xsl:with-param name="filename" select="$subpath"/>
+        <xsl:with-param name="hreftype" select="'relative'"/>
+        <xsl:with-param name="content" select="$content"/>
+     </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="docset" mode="render">
+     <xsl:copy>
+        <xsl:apply-templates select="node()|@*"/>
+     </xsl:copy>
+  </xsl:template>
+
+  <!-- don't copy these attributes -->
+  <xsl:template match="product/@schemaversion" />
+  <xsl:template match="product/@site-section" />
+
+  <xsl:template match="product/@productid">
+    <xsl:variable name="id" select="." />
+    <xsl:attribute name="id">
+      <xsl:value-of select="$id" />
+    </xsl:attribute>
+  </xsl:template>
+
+
+  <!--<xsl:template match="docset/@setid">
+    <xsl:variable name="id" select="." />
+    <xsl:attribute name="id">
+      <xsl:value-of select="$id"/>
+    </xsl:attribute>
+  </xsl:template>-->
+
+  <xsl:template match="docset/@schemaversion" />
+
+  <xsl:template match="docset/overridedesc">
+    <descriptions>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </descriptions>
+  </xsl:template>
+
+  <xsl:template match="docset/builddocs">
+    <resources>
+      <xsl:apply-templates/>
+    </resources>
+  </xsl:template>
+
+  <xsl:template match="docset/builddocs/language">
+    <locale>
+      <xsl:copy-of select="@lang" /><!-- no default attribute -->
+      <xsl:apply-templates />
+    </locale>
+  </xsl:template>
+
+
+  <!-- deliverable -->
+  <xsl:template match="deliverable">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:if test="../language/@lang='en-us'">
+        <!-- Add id attribute only for English to keep it unique -->
+        <xsl:attribute name="id">
+          <xsl:value-of select=" substring-after(translate(dc, &uppercase;, &lowercase;), 'dc-')"/>
+        </xsl:attribute>
+      </xsl:if>
+      <xsl:attribute name="type">dc</xsl:attribute>
+      <xsl:apply-templates />
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- ref  -->
+  <xsl:template match="ref">
+    <ref>
+      <xsl:copy-of select="@product|@docset|@category|@titleformat|@subdeliverable"/>
+      <xsl:if test="@dc">
+        <xsl:attribute name="deliverable">
+            <xsl:value-of select="@dc" />
+        </xsl:attribute>
+      </xsl:if>
+    </ref>
+  </xsl:template>
+
+
+  <!-- desc -->
+  <xsl:template match="desc/@default" />
+
+
+</xsl:stylesheet>

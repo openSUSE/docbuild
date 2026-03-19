@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<docset id="v16.0" dir="16.0" lifecycle="supported">
+  <version>16.0</version>
+  <canonical>sles/16.0</canonical>
+
+  <descriptions>
+  </descriptions>
+
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us">
+      <branch>maintenance/SLE16.0</branch>
+      <!--************************ about ************************-->
+      <deliverable category="about" type="dc">
+        <git remote="https://github.com/SUSE/doc-modular.git"/>
+        <dc>DC-SLE-comparison</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="about">
+        <dc>DC-SLE-differences-faq</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="about">
+        <dc>DC-SLE-packages-lifecycle</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="about">
+        <dc>DC-SLE-os-identification</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable category="deployment">
+        <dc>DC-SLES-x86-64-agama-based-installation</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="deployment">
+        <dc>DC-SLES-s390-agama-based-installation</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="deployment">
+        <dc>DC-SLES-ppc-agama-based-installation</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="deployment">
+        <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="deployment">
+        <dc>DC-SLES-PXE-server</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="deployment">
+        <dc>DC-SLES-deployment-pxe-client</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable category="update-upgrade">
+        <dc>DC-SLES-klp</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="update-upgrade">
+        <dc>DC-SLES-ulp</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="update-upgrade">
+        <dc>DC-SLES-upgrading</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--*************** administration ***************-->
+      <deliverable category="administration">
+        <dc>DC-SLES-Ansible</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-ansible-roles</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-cockpit</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-copy-file-rsync</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-gnome-remote-desktop</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-networkmanager-nmcli</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-ntp-time-synchronization</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-predictable-naming</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-snapper-basics</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-subnet-manager</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-sudo-run-commands-as-superuser</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-supportconfig</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-systemd-basics</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="administration">
+        <dc>DC-SLES-systemd-timers</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-apache-tomcat-cloud</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-disk-cache</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-io</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-libvirt</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-qemu</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-spice-removal</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-virtualization-support</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="container-virtualization">
+        <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--****************** product-usage ******************-->
+      <deliverable category="product-usage">
+        <dc>DC-SLES-GNOME-getting-started</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="product-usage">
+        <dc>DC-SLES-valkey</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable category="security-compliance">
+        <dc>DC-SLES-intro-firewalld</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="security-compliance">
+        <dc>DC-SLES-SELinux</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <deliverable category="security-compliance">
+        <dc>DC-SLES-sudo-configure-superuser-privileges</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+      <!--*********tuning-performance******-->
+      <deliverable category="tuning-performance">
+        <dc>DC-SAP-saptune</dc>
+        <format html="1" pdf="1" single-html="0"/>
+      </deliverable>
+    </locale>
+
+    <locale lang="de-de">
+      <branch>main</branch>
+      <deliverable>
+        <dc>DC-foo</dc>
+        <format html="1"/>
+      </deliverable>
+    </locale>
+  </resources>
+
+  <external>
+    <link category="about" gated="false">
+      <url href="http://example.com" format="html"/>
+      <url href="http://example.com/doc.pdf" format="pdf"/>
+      <!-- Cardinality: + -->
+      <descriptions>
+        <desc lang="en-us">
+          <title> </title>
+          <p>...</p>
+        </desc>
+        <!-- more <desc> for other languages -->
+      </descriptions>
+    </link>
+  </external>
+</docset>
