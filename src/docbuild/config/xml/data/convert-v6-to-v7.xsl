@@ -370,7 +370,11 @@
         <xsl:attribute name="rank">
           <xsl:value-of select="$cnfg/@rank" />
         </xsl:attribute>
-        <xsl:apply-templates select="node()[not(self::desc)]" />
+
+        <xsl:apply-templates select="name"/>
+        <xsl:apply-templates select="sortname"/>
+        <xsl:apply-templates select="acronym"/>
+        <xsl:apply-templates select="maintainers"/>
 
         <!-- Handle desc elements -->
         <xsl:if test="desc">
@@ -397,6 +401,8 @@
              <xsl:with-param name="content" select="$content"/>
           </xsl:call-template>
         </xsl:if>
+
+        <xsl:apply-templates select="node()[not(self::desc) and not(self::name) and not(self::sortname) and not(self::acronym) and not(self::maintainers)]" />
     </product>
   </xsl:template>
 
