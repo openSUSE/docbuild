@@ -69,13 +69,13 @@
       * series (str): the series that this product belongs
       * family (str): the product family that this product belongs
       * rank (int): The product rank that influences the tiles on the portal homepage
-      * externals (bool): Convert external links into <deliverable> and <prebuilt> elements
-      * idabbrev (str): The product ID abbreviation used in <deliverable id="...">
+      * idabbrev (str): The product ID abbreviation used in <deliverable id="...">. The IDs for
+        products are not changed.
     -->
     <config>
       <product id="appliance" series="pas" family="linux" rank="04150" idabbrev="app"/>
       <product id="cloudnative" series="pas" family="cn" rank="00030" idabbrev="cn" />
-      <product id="container" series="pas" family="linux" rank="04130" externals="1" idabbrev="cont" />
+      <product id="container" series="pas" family="linux" rank="04130" idabbrev="cont" />
       <product id="compliance" series="pas" family="linux" rank="" idabbrev="comp" />
       <product id="liberty" series="pas" family="linux" rank="00060" idabbrev="lib" />
       <product id="releasenotes" series="rn" family="linux" idabbrev="rn"/>
@@ -95,8 +95,8 @@
       <product id="soc" series="pas" family="linux" rank="04300" />
       <product id="style" series="pas" family="linux" />
       <product id="subscription" series="pas" family="linux" rank="04140" idabbrev="sub" />
-      <product id="suma" series="pas" family="linux" rank="" externals="1" />
-      <product id="suma-retail" series="pas" family="linux" externals="1" />
+      <product id="suma" series="pas" family="linux" rank="" />
+      <product id="suma-retail" series="pas" family="linux" />
       <product id="suma-ai" series="pas" family="suse-ai" rank="00010" />
       <product id="suma-caasp" series="pas" family="linux" rank="04310" />
       <product id="suma-cap" series="pas" family="linux" rank="04320"/>
