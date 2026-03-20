@@ -76,7 +76,7 @@
       <product id="appliance" series="pas" family="linux" rank="04150" idabbrev="app"/>
       <product id="cloudnative" series="pas" family="cn" rank="00030" idabbrev="cn" />
       <product id="container" series="pas" family="linux" rank="04130" idabbrev="cont" />
-      <product id="compliance" series="pas" family="linux" rank="" idabbrev="comp" />
+      <product id="compliance" series="pas" family="linux" rank="04130" idabbrev="comp" />
       <product id="liberty" series="pas" family="linux" rank="00060" idabbrev="lib" />
       <product id="releasenotes" series="rn" family="linux" idabbrev="rn"/>
       <product id="sbp" series="sbp" family="linux" />
@@ -485,14 +485,17 @@
 
   <xsl:template name="docset-without-builddocs">
     <resources>
-       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://'))]]" mode="builddocs" />
+      <git remote="https://TODO" />
+       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://'))]]"
+         mode="builddocs" />
     </resources>
   </xsl:template>
 
 
   <xsl:template match="docset/external" mode="builddocs">
     <locale lang="en-us">
-        <xsl:apply-templates select="link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
+      <branch>main</branch>
+      <xsl:apply-templates select="link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
     </locale>
     <xsl:if test="link[not(starts-with(language/url/@href, 'https://')) and @lang != 'en-us']">
       <xsl:message>TODO: Found non-English links in docset/external</xsl:message>
@@ -525,7 +528,50 @@
   </xsl:template>
 
   <xsl:template match="link" mode="builddocs">
-    <deliverable type="prebuilt" category="{@category}">
+    <xsl:variable name="href" select="language[@lang='en-us']/url/@href"/>
+    <!-- Extract product ID from URL like /product/docset/... -->
+    <xsl:variable name="pid" select="substring-before(substring-after($href, '/'), '/')"/>
+
+    <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
+
+    <xsl:variable name="product.idabbrev">
+      <xsl:choose>
+        <xsl:when test="string($abbrev) != ''">
+          <xsl:value-of select="$abbrev"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$pid"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="filename">
+      <xsl:call-template name="substring-after-last">
+        <xsl:with-param name="string" select="$href"/>
+        <xsl:with-param name="char" select="'/'"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <xsl:variable name="doc">
+      <xsl:choose>
+        <xsl:when test="contains($filename, '.')">
+           <xsl:value-of select="substring-before($filename, '.')"/>
+        </xsl:when>
+        <xsl:otherwise>
+           <xsl:value-of select="$filename"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="id">
+       <xsl:call-template name="generate.id">
+         <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
+         <xsl:with-param name="docset" select="ancestor::docset/@setid"/>
+         <xsl:with-param name="dc" select="$doc"/>
+       </xsl:call-template>
+    </xsl:variable>
+
+    <deliverable id="{$id}" type="prebuilt" category="{@category}">
       <xsl:apply-templates mode="builddocs" />
     </deliverable>
   </xsl:template>
@@ -533,12 +579,12 @@
   <xsl:template match="docset/external/link/language" mode="builddocs">
     <prebuilt>
       <title><xsl:value-of select="normalize-space(@title)"/></title>
+      <xsl:copy-of select="url"/>
       <descriptions>
           <desc lang="en-us">
             <p><xsl:comment>TODO</xsl:comment></p>
           </desc>
       </descriptions>
-      <xsl:copy-of select="url"/>
     </prebuilt>
   </xsl:template>
 
