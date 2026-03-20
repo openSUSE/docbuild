@@ -1130,10 +1130,10 @@ ds.deliverable_subdeliverable =
     ds.remarks.attr?,
     ds.draft.attr?,
     ds.meta.attr?,
-    ds.subdir?,
     ds.gated.attr?,
+    ds.subdir?,
     ds.dc,
-    ds.format+,
+    ds.format,
     ds.subdeliverable+
   }
 }
