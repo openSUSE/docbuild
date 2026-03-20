@@ -34,8 +34,8 @@
   extension-element-prefixes="exsl">
 
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
-  <xsl:preserve-space elements="*"/>
-  <xsl:strip-space elements="product"/>
+  <xsl:strip-space elements="*"/>
+  <xsl:preserve-space elements="p div pre h1 h2 h3 h4 h5 h6 li dt dd span em strong code q s u sub sup cite a br hr title subtitle desc"/>
 
 <!-- ======== Parameters -->
   <xsl:param name="use.xincludes" select="true()" />
@@ -433,7 +433,15 @@
 
      <xsl:variable name="content">
         <docset xmlns:xi="http://www.w3.org/2001/XInclude">
-           <xsl:apply-templates select="@*|node()" />
+          <xsl:choose>
+            <xsl:when test="builddocs">
+              <xsl:apply-templates select="@*|node()" />
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates select="@*|node()[not(self::external)]" />
+              <xsl:call-template name="docset-without-builddocs" ></xsl:call-template>
+            </xsl:otherwise>
+          </xsl:choose>
         </docset>
      </xsl:variable>
 
@@ -465,6 +473,41 @@
       <xsl:apply-templates />
     </resources>
   </xsl:template>
+
+  <xsl:template name="docset-without-builddocs">
+    <resources>
+       <xsl:apply-templates select="external" mode="builddocs" />
+    </resources>
+  </xsl:template>
+
+
+  <xsl:template match="docset/external" mode="builddocs">
+    <locale lang="en-us">
+        <xsl:apply-templates select="link" mode="builddocs" />
+    </locale>
+    <xsl:if test="link[@lang != 'en-us']">
+      <xsl:message>TODO: Found non-English links in docset/external</xsl:message>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="link" mode="builddocs">
+    <deliverable type="prebuilt" category="{@category}">
+      <xsl:apply-templates mode="builddocs" />
+    </deliverable>
+  </xsl:template>
+
+  <xsl:template match="docset/external/link/language" mode="builddocs">
+    <prebuilt>
+      <title><xsl:value-of select="normalize-space(@title)"/></title>
+      <descriptions>
+          <desc lang="en-us">
+            <p><xsl:comment>TODO</xsl:comment></p>
+          </desc>
+      </descriptions>
+      <xsl:copy-of select="url"/>
+    </prebuilt>
+  </xsl:template>
+
 
   <!-- builddocs -->
   <xsl:template match="builddocs/language">
