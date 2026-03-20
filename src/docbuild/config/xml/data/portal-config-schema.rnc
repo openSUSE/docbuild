@@ -1184,7 +1184,7 @@ ds.deliverable_subdeliverable =
 
 [
   db:refname [ "dc" ]
-  db:refpurpose [ "Reference to DC file" ]
+  db:refpurpose [ "Wrapper to structure DC file reference" ]
 ]
 div {
   ds.dc.file.attr =
@@ -1194,7 +1194,7 @@ div {
     }
 
 ds.dc =
-  ## Reference to DC file
+  ## Wrapper to structure DC file reference
   element dc {
     ds.dc.file.attr,
     ds.git?,
@@ -1370,7 +1370,15 @@ ds.url =
   element url {
     ds.href.attr,
     ## Target file format of the link for display in the UI
-    attribute format { "html" | "single-html" | "pdf" | "epub" | "zip" | "tar" | "other" },
+    attribute format {
+      "html"
+      | "single-html"
+      | "pdf"
+      | "epub"
+      | "zip"
+      | "tar"
+      | "other"
+      },
     empty
   }
 }
