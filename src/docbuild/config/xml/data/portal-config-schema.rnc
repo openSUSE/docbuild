@@ -942,8 +942,8 @@ div {
 
 
 [
-  db:refname [ "builddocs" ]
-  db:refpurpose [ "Container for definitions of documents to build" ]
+  db:refname [ "resources" ]
+  db:refpurpose [ "Container for definitions of documents to build (formerly builddocs)" ]
 ]
 div {
 ds.resources =
