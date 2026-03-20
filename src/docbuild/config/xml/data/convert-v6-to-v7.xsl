@@ -172,7 +172,12 @@
            </xsl:choose>
         </xsl:variable>
 
-        <xi:include href="{$href}"/>
+        <!-- <xi:include href="{$href}"/>-->
+        <xsl:element name="xi:include" namespace="http://www.w3.org/2001/XInclude">
+          <xsl:attribute name="href">
+            <xsl:value-of select="$href"/>
+          </xsl:attribute>
+        </xsl:element>
 
         <xsl:call-template name="write.file">
           <xsl:with-param name="filename" select="concat($outputdir, $filename)"/>
