@@ -989,8 +989,9 @@ ds.locale_default =
     ds.branch,
     ds.subdir?,
     (
-     ds.deliverable |
-     ds.deliverable_subdeliverable
+     ds.deliverable_en_us_dc
+     | ds.deliverable_subdeliverable
+     | ds.deliverable_en_us_prebuilt
     )+
   }
 }
@@ -1007,12 +1008,30 @@ ds.locale_translation =
     ds.lang.attr,
     ds.branch,
     ds.subdir?,
-    (
-     ds.deliverable |
-     ds.deliverable_subdeliverable
-    )+
+
+    ds.deliverable_trans+
   }
 }
+
+
+div {
+  ds.deliverable.trans.type.attr =
+    [ a:defaultValue = "ref" ]
+    attribute type { "ref" }
+
+  ds.deliverable_trans =
+    ## A document to build for a translation, identified by the DC file of the default language deliverable
+    element deliverable {
+      (
+        ds.gated.attr?
+        & ds.deliverable.trans.type.attr
+      ),
+      #
+      (ds.ref | ds.deliverable.prebuilt)
+    }
+
+}
+
 
 
 [
@@ -1056,47 +1075,61 @@ ds.partners =
 
 
 [
-  db:refname [ "deliverable" ]
-  db:refpurpose [ "Definition of an individual document (default language)" ]
-]
-div {
-ds.deliverable =
-  ## An individual document (default language)
-  element deliverable {
-    ds.remarks.attr?,
-    ds.draft.attr?,
-    # ds.meta.attr?,
-    ds.category.attr?,
-    ds.titleformat.attr?,
-    ds.gated.attr?,
-    ds.id.attr,
-    #
-    (
-      ds.deliverable.dc
-      |
-      ds.deliverable.prebuilt
-    )
-  }
-}
-
-[
-  db:refname [ "dc" ]
-  db:refpurpose [ "Standard DocBook/DAPS deliverable definition" ]
+  db:refname [ "deliverable (dc)" ]
+  db:refpurpose [ "Definition of an individual document built by DAPS (default language)" ]
 ]
 div {
   ds.deliverable.dc.type.attr =
     [ a:defaultValue = "dc" ]
     attribute type { "dc" }
 
-  ds.deliverable.dc =
-    ## Standard DocBook/DAPS deliverable definition
-    ds.deliverable.dc.type.attr?,
-    ds.dc,
-    ds.format+,
-    ds.subdir?,
-    ds.git?,
-    ds.partners*
+ds.deliverable_en_us_dc =
+  ## An individual document built by DAPS (default language)
+  element deliverable {
+    (
+      ds.deliverable.dc.type.attr?
+      & ds.remarks.attr?
+      & ds.draft.attr?
+      # & ds.meta.attr?
+      & ds.category.attr?
+      & ds.titleformat.attr?
+      & ds.gated.attr?
+      & ds.id.attr
+    ),
+    #
+    ds.dc
+    #ds.git?,
+    #ds.subdir?,
+    #ds.format,
+    #ds.partners*
+  }
 }
+
+
+[
+  db:refname [ "deliverable (prebuilt)" ]
+  db:refpurpose [ "Definition of an individual prebuilt document (default language)" ]
+]
+div {
+ds.deliverable.prebuilt.type.attr =
+    [ a:defaultValue = "prebuilt" ]
+    attribute type { "prebuilt" }
+
+ds.deliverable_en_us_prebuilt =
+  ##
+  element deliverable {
+    (
+      ds.deliverable.prebuilt.type.attr?
+      & ds.category.attr?
+      & ds.titleformat.attr?
+      & ds.gated.attr?
+      & ds.id.attr
+    ),
+    #
+    ds.deliverable.prebuilt
+  }
+}
+
 
 
 [
@@ -1104,20 +1137,31 @@ div {
   db:refpurpose [ "Pre-built content definition" ]
 ]
 div {
-  ds.deliverable.html.type.attr =
-    attribute type { "html" }
-
   ds.deliverable.prebuilt =
     ## Pre-built content definition
     element prebuilt {
-      ds.id.attr,
-      ds.deliverable.html.type.attr,
       ds.title,
       ds.subtitle?,
-      (ds.desc_default | ds.desc_translation)+,
-      ds.link
+      ds.descriptions,
+      ds.url+
+      # ds.link+
+      # ds.metadata  # TODO
     }
 }
+
+
+[
+  db:refname [ "metadata" ]
+  db:refpurpose [ "" ]
+]
+div {
+ds.metadata =
+  ##
+  element metadata {
+    empty  # TODO
+  }
+}
+
 
 [
   db:refname [ "deliverable" ]
@@ -1144,10 +1188,20 @@ ds.deliverable_subdeliverable =
   db:refpurpose [ "Reference to DC file" ]
 ]
 div {
+  ds.dc.file.attr =
+    ##
+    attribute file {
+      ds.type.dcfile
+    }
+
 ds.dc =
   ## Reference to DC file
   element dc {
-    ds.type.dcfile
+    ds.dc.file.attr,
+    ds.git?,
+    ds.subdir?,
+    ds.format,
+    ds.partners*
   }
 }
 
