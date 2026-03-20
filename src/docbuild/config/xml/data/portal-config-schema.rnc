@@ -1261,7 +1261,6 @@ div {
       (
         ds.ref.linkend.attr &
         ds.category.attr? &
-        ds.product.attr &
         ds.titleformat.attr?
       ),
 
