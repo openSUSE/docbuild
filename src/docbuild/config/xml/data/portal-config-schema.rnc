@@ -1142,9 +1142,8 @@ div {
     element prebuilt {
       ds.title,
       ds.subtitle?,
-      ds.descriptions,
-      ds.url+
-      # ds.link+
+      ds.url+,
+      ds.descriptions
       # ds.metadata  # TODO
     }
 }
