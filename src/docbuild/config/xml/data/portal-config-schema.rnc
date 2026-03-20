@@ -574,8 +574,8 @@ ds.product =
     ds.acronym?,
     ds.maintainers,
     # TODO: Adjust the content model?
-    (ds.categories | xi.include)*,
-    (ds.descriptions | xi.include),
+    (ds.categories | xi.include)?,
+    (ds.descriptions | xi.include)?,
     (ds.docset | xi.include)+
   }
 }
