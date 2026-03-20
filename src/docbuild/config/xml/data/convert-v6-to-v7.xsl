@@ -439,7 +439,16 @@
             </xsl:when>
             <xsl:otherwise>
               <xsl:apply-templates select="@*|node()[not(self::external)]" />
-              <xsl:call-template name="docset-without-builddocs" ></xsl:call-template>
+
+              <xsl:if test="external/link[not(starts-with(language/url/@href, 'https://'))]">
+                 <xsl:call-template name="docset-without-builddocs" ></xsl:call-template>
+              </xsl:if>
+
+              <xsl:if test="external/link[starts-with(language/url/@href, 'https://')]">
+                 <external>
+                    <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')]" mode="external-link"/>
+                 </external>
+              </xsl:if>
             </xsl:otherwise>
           </xsl:choose>
         </docset>
@@ -476,18 +485,43 @@
 
   <xsl:template name="docset-without-builddocs">
     <resources>
-       <xsl:apply-templates select="external" mode="builddocs" />
+       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://'))]]" mode="builddocs" />
     </resources>
   </xsl:template>
 
 
   <xsl:template match="docset/external" mode="builddocs">
     <locale lang="en-us">
-        <xsl:apply-templates select="link" mode="builddocs" />
+        <xsl:apply-templates select="link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
     </locale>
-    <xsl:if test="link[@lang != 'en-us']">
+    <xsl:if test="link[not(starts-with(language/url/@href, 'https://')) and @lang != 'en-us']">
       <xsl:message>TODO: Found non-English links in docset/external</xsl:message>
     </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="link" mode="external-link">
+    <link>
+      <xsl:copy-of select="@category|@gated|@titleformat"/>
+      <xsl:for-each select="language/url">
+         <url>
+           <xsl:copy-of select="@href|@format"/>
+         </url>
+      </xsl:for-each>
+
+      <descriptions>
+        <xsl:for-each select="language">
+          <desc>
+             <xsl:attribute name="lang">
+               <xsl:choose>
+                 <xsl:when test="@lang"><xsl:value-of select="@lang"/></xsl:when>
+                 <xsl:otherwise>en-us</xsl:otherwise>
+               </xsl:choose>
+             </xsl:attribute>
+             <title><xsl:value-of select="@title"/></title>
+          </desc>
+        </xsl:for-each>
+      </descriptions>
+    </link>
   </xsl:template>
 
   <xsl:template match="link" mode="builddocs">
