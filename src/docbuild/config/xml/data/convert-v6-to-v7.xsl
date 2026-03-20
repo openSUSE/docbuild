@@ -457,30 +457,21 @@
 
   <xsl:template match="docset/builddocs">
     <resources>
-      <xsl:apply-templates/>
+      <xsl:apply-templates />
     </resources>
   </xsl:template>
 
-  <xsl:template match="docset/builddocs/language">
-    <xsl:variable name="pid" select="ancestor::product/@productid"/>
-    <xsl:variable name="do_externals" select="$config[@id=$pid]/@externals"/>
-    <xsl:variable name="current_lang" select="@lang"/>
-
-    <locale>
-      <xsl:copy-of select="@lang" /><!-- no default attribute -->
+  <!-- builddocs -->
+  <xsl:template match="builddocs/language">
+    <locale lang="{@lang}">
       <xsl:apply-templates />
-
-      <xsl:if test="$do_externals">
-         <xsl:apply-templates select="../../external/link[language[@lang = $current_lang]]" mode="convert-to-prebuilt">
-            <xsl:with-param name="lang" select="$current_lang"/>
-         </xsl:apply-templates>
-      </xsl:if>
     </locale>
   </xsl:template>
 
-  <xsl:template match="link/language/@default" />
+  <xsl:template match="builddocs/language/@default" />
 
-  <!-- deliverable -->
+
+  <!-- regular <deliverable> -->
   <xsl:template match="language[@lang='en-us']/deliverable">
     <xsl:variable name="pid" select="ancestor::product/@productid"/>
     <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
@@ -495,10 +486,16 @@
 
     <deliverable id="{$id}" type="dc">
       <xsl:copy-of select="@*"/>
-      <xsl:apply-templates />
+      <dc file="{normalize-space(dc/text())}">
+        <xsl:apply-templates />
+      </dc>
     </deliverable>
   </xsl:template>
 
+  <xsl:template match="dc|dc/text()" />
+
+
+  <!-- translated <deliverable> -->
   <xsl:template match="language[@lang!='en-us']/deliverable">
     <xsl:variable name="pid" select="ancestor::product/@productid"/>
     <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
@@ -511,8 +508,11 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <ref linkend="{$id}" />
+    <deliverable type="ref">
+      <ref linkend="{$id}" />
+    </deliverable>
   </xsl:template>
+
 
   <!-- ref  -->
   <xsl:template match="ref">
