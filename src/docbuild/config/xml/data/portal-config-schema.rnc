@@ -1027,11 +1027,12 @@ div {
         & ds.deliverable.trans.type.attr
       ),
       #
-      (ds.ref | ds.deliverable.prebuilt)
+      # TODO: Do we want only have references in translations?
+      # The <ref> content model allows also descriptions.
+      ds.ref # | ds.deliverable.prebuilt
     }
 
 }
-
 
 
 [
