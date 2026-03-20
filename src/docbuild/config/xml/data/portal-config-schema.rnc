@@ -1016,8 +1016,8 @@ ds.locale_translation =
 
 
 [
-  db:refname [ "deliverable" ]
-  db:refpurpose [ "Definition of an individual DAPS-compatible document built on its own (default language)" ]
+  db:refname [ "branch" ]
+  db:refpurpose [ "Branch of the source Git repository" ]
 ]
 div {
 ds.branch =
