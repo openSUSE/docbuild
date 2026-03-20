@@ -481,15 +481,6 @@ div {
   db:refpurpose [ "Product definition" ]
 ]
 div {
-  ds.productid.attr =
-    ## Product ID, must be unique across entire site config, used as first-level path element
-    [
-      db:refpurpose [ "Product ID, must be unique across entire site config, used as first-level path element" ]
-    ]
-    # TODO: Simplify to id?
-    # attribute productid { ds.type.id }
-    ds.id.attr
-
   ds.schemaversion.attr =
     ## Version of the schema, verifies that portal schema major version and version of product configuration match
     [
@@ -831,13 +822,6 @@ div {
        ## Product versions can be built without restriction but are only published as Zip archives
        "unsupported"
     }
-
-  ds.setid.attr =
-    ## Set ID, must be unique across the configuration for a single product
-    [
-      db:refpurpose [ "Set ID, must be unique across the configuration for a single product" ]
-    ]
-    attribute setid { ds.type.id }
 
   ds.navigation.attr =
     ## Whether to build a navigational page for this product version
@@ -1261,47 +1245,6 @@ ds.internal =
   db:refpurpose [ "Reference to a document or navigational page" ]
 ]
 div {
-# The following definition is a bit complicated, so -- the intention is to
-# allow links to either of:
-# * a specific product (i.e. show the most recent product revision, link will
-#   only support the current UI language)
-# * a specific docset (link will only support the current UI language)
-# * a specific deliverable (by DC), subdeliverable (by DC and rootid), or an
-#   external link (by link ID)
-
-  ds.product.attr =
-    ## Product ID of referenced document or navigational page
-    [
-      db:refpurpose [ "Product ID of referenced document or navigational page" ]
-    ]
-    attribute product { ds.type.id }
-
-  ds.docset.attr =
-    ## Docset ID of referenced document or navigational page
-    [
-      db:refpurpose [ "Docset ID of referenced document or navigational page" ]
-    ]
-    attribute docset { ds.type.id }
-
-  ds.deliverable.attr =
-    ## The deliverable ID to reference
-    [
-      db:refpurpose [ "The deliverable ID of reference" ]
-    ]
-    attribute deliverable { ds.type.id }
-
-  ds.subdeliverable.attr =
-    ## Root ID of referenced subdeliverable document
-    [
-      db:refpurpose [ "Root ID of referenced subdeliverable document" ]
-    ]
-    attribute subdeliverable { ds.type.id }
-
-[
-  db:refname [ "ref" ]
-  db:refpurpose [ "Reference to a document or navigational page" ]
-]
-div {
   ds.ref.linkend.attr =
     ## Link ID of referenced external link
     [
@@ -1320,8 +1263,8 @@ div {
 
       ds.descriptions?
     }
-  }
 }
+
 
 [
   db:refname [ "external" ]
