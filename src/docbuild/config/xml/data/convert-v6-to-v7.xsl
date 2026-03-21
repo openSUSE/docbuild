@@ -78,8 +78,8 @@
       <product id="container" series="pas" family="linux" rank="04130" idabbrev="cont" />
       <product id="compliance" series="pas" family="linux" rank="04130" idabbrev="comp" />
       <product id="liberty" series="pas" family="linux" rank="00060" idabbrev="lib" />
-      <product id="releasenotes" series="rn" family="linux" idabbrev="rn"/>
-      <product id="sbp" series="sbp" family="linux" />
+      <product id="releasenotes" series="rn" family="linux" idabbrev="rn" rank="0"/>
+      <product id="sbp" series="sbp" family="linux" rank="0" />
       <product id="ses" series="pas" family="linux" rank="04160" />
       <product id="sled" series="pas" family="linux" rank="04100" />
       <product id="sle-ha" series="pas" family="linux" rank="04070" />
