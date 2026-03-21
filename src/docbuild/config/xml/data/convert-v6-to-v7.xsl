@@ -430,6 +430,7 @@
      <xsl:variable name="id" select="ancestor::product/@productid"/>
      <xsl:variable name="ver" select="@setid"/>
      <xsl:variable name="subpath" select="concat($id, '/', $ver, '.xml')"/>
+<!--    <xsl:variable name="" select=""/>-->
 
      <xsl:variable name="content">
         <docset xmlns:xi="http://www.w3.org/2001/XInclude">
@@ -440,13 +441,16 @@
             <xsl:otherwise>
               <xsl:apply-templates select="@*|node()[not(self::external)]" />
 
-              <xsl:if test="external/link[not(starts-with(language/url/@href, 'https://'))]">
-                 <xsl:call-template name="docset-without-builddocs" ></xsl:call-template>
+              <xsl:if test="external/link[not(starts-with(language/url/@href, 'https://'))
+                            and not(language/url/@format = 'pdf')]">
+                 <xsl:call-template name="docset-without-builddocs" />
               </xsl:if>
 
-              <xsl:if test="external/link[starts-with(language/url/@href, 'https://')]">
+              <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
+                            or language/url/@format = 'pdf']">
                  <external>
-                    <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')]" mode="external-link"/>
+                    <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')
+                                                 or language/url/@format = 'pdf']" mode="external-link"/>
                  </external>
               </xsl:if>
             </xsl:otherwise>
@@ -486,7 +490,7 @@
   <xsl:template name="docset-without-builddocs">
     <resources>
       <git remote="https://TODO" />
-       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://'))]]"
+       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf')]]"
          mode="builddocs" />
     </resources>
   </xsl:template>
@@ -495,16 +499,25 @@
   <xsl:template match="docset/external" mode="builddocs">
     <locale lang="en-us">
       <branch>main</branch>
-      <xsl:apply-templates select="link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
+      <xsl:apply-templates select="link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf')]" mode="builddocs" />
     </locale>
-    <xsl:if test="link[not(starts-with(language/url/@href, 'https://')) and @lang != 'en-us']">
+    <xsl:if test="link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf') and @lang != 'en-us']">
       <xsl:message>TODO: Found non-English links in docset/external</xsl:message>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="link" mode="external-link">
     <link>
-      <xsl:copy-of select="@category|@gated|@titleformat"/>
+      <xsl:copy-of select="@gated|@titleformat|@category"/>
+      <!--<xsl:choose>
+        <xsl:when test="@category">
+          <xsl:copy-of select="@category"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="category">TODO</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>-->
+      
       <xsl:for-each select="language/url">
          <url>
            <xsl:copy-of select="@href|@format"/>
@@ -520,7 +533,10 @@
                  <xsl:otherwise>en-us</xsl:otherwise>
                </xsl:choose>
              </xsl:attribute>
-             <title><xsl:value-of select="@title"/></title>
+             <xsl:if test="@title">
+               <title><xsl:value-of select="@title"/></title>
+             </xsl:if>
+             <p>TODO</p>
           </desc>
         </xsl:for-each>
       </descriptions>
@@ -528,9 +544,25 @@
   </xsl:template>
 
   <xsl:template match="link" mode="builddocs">
-    <xsl:variable name="href" select="language[@lang='en-us']/url/@href"/>
+    <xsl:variable name="url" select="language[@lang='en-us']/url"/>
+    <xsl:variable name="href" select="$url/@href"/>
+    <xsl:variable name="format" select="$url/@format"/>
+
     <!-- Extract product ID from URL like /product/docset/... -->
-    <xsl:variable name="pid" select="substring-before(substring-after($href, '/'), '/')"/>
+    <xsl:variable name="pid">
+      <xsl:choose>
+        <xsl:when test="starts-with($href, '/')">
+           <xsl:value-of select="substring-before(substring-after($href, '/'), '/')"/>
+        </xsl:when>
+        <xsl:when test="contains($href, 'external-tree')">
+           <!-- href="external-tree/en-us/liberty/..." -->
+           <xsl:value-of select="substring-before(substring-after(substring-after($href, 'external-tree/'), '/'), '/')"/>
+        </xsl:when>
+        <xsl:otherwise>
+           <xsl:value-of select="ancestor::product/@productid"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
     <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
 
@@ -543,6 +575,47 @@
           <xsl:value-of select="$pid"/>
         </xsl:otherwise>
       </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="docset_from_url">
+      <xsl:choose>
+        <xsl:when test="starts-with($href, '/')">
+           <xsl:variable name="after_pid" select="substring-after(substring-after($href, '/'), '/')"/>
+           <xsl:choose>
+             <xsl:when test="contains($after_pid, '/')">
+               <xsl:value-of select="substring-before($after_pid, '/')"/>
+             </xsl:when>
+             <xsl:otherwise>
+               <xsl:value-of select="$after_pid"/>
+             </xsl:otherwise>
+           </xsl:choose>
+        </xsl:when>
+        <xsl:when test="contains($href, 'external-tree')">
+           <xsl:variable name="after_pid" select="substring-after(substring-after(substring-after($href, 'external-tree/'), '/'), '/')"/>
+           <xsl:choose>
+             <xsl:when test="contains($after_pid, '/')">
+               <xsl:value-of select="substring-before($after_pid, '/')"/>
+             </xsl:when>
+             <xsl:otherwise>
+               <xsl:value-of select="$after_pid"/>
+             </xsl:otherwise>
+           </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+           <xsl:value-of select="ancestor::docset/@setid"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="docset_clean">
+       <xsl:choose>
+           <xsl:when test="contains($docset_from_url, '.')">
+               <xsl:value-of select="substring-before($docset_from_url, '.')"/>
+           </xsl:when>
+           <xsl:otherwise>
+               <xsl:value-of select="$docset_from_url"/>
+           </xsl:otherwise>
+       </xsl:choose>
     </xsl:variable>
 
     <xsl:variable name="filename">
@@ -566,7 +639,7 @@
     <xsl:variable name="id">
        <xsl:call-template name="generate.id">
          <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-         <xsl:with-param name="docset" select="ancestor::docset/@setid"/>
+         <xsl:with-param name="docset" select="$docset_clean"/>
          <xsl:with-param name="dc" select="$doc"/>
        </xsl:call-template>
     </xsl:variable>
