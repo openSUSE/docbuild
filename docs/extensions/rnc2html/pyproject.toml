@@ -1,0 +1,30 @@
+[project]
+name = "rnc2html-extension"
+version = "0.1.0"
+description = "Internal Sphinx extension for docbuild"
+dependencies = [
+    "sphinx>=9.1",
+    "lxml>=6.0.0",
+]
+requires-python = ">=3.12"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[dependency-groups]
+tests = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.1.1",
+]
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+
+[tool.uv]
+managed = true

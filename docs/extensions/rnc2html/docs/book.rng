@@ -1,0 +1,40 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         xmlns:db="http://docbook.org/ns/docbook"
+         xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0">
+
+  <start>
+    <ref name="book"/>
+  </start>
+
+  <define name="book">
+    <element name="book">
+      <!-- DocBook annotations used by the extension -->
+      <db:refpurpose>A book is the top-level element.</db:refpurpose>
+
+      <!-- Attributes with required status and documentation -->
+      <attribute name="id">
+        <a:documentation>Unique identifier for the book.</a:documentation>
+      </attribute>
+
+      <optional>
+         <attribute name="edition">
+            <a:documentation>The edition number (e.g. "1.0").</a:documentation>
+         </attribute>
+      </optional>
+
+      <!-- Content model: title followed by chapters -->
+      <element name="title">
+        <text/>
+      </element>
+
+      <oneOrMore>
+        <element name="chapter">
+          <db:refpurpose>A chapter containing text.</db:refpurpose>
+          <text/>
+        </element>
+      </oneOrMore>
+
+    </element>
+  </define>
+
+</grammar>

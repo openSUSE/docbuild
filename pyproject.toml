@@ -120,3 +120,9 @@ close-quotes-on-newline = true
 black = true
 pre-summary-newline = true
 recursive = true
+
+[tool.uv.workspace]
+members = ["docs/extensions/rnc2html"]
+[tool.uv.sources]
+# Tell uv to look in the local folder for this package
+rnc2html-extension = { workspace = true }
