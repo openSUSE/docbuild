@@ -142,3 +142,26 @@ if __name__ == "__main__":
     test_missing_refpurpose()
     test_content_model_complex()
     print("All tests passed!")
+
+def test_walker_with_comments() -> None:
+    """Test schema with comments inside definitions."""
+    rng = """
+    <grammar xmlns="http://relaxng.org/ns/structure/1.0">
+      <start>
+        <!-- This is a start comment -->
+        <ref name="root"/>
+      </start>
+      <!-- Defines comment -->
+      <define name="root">
+        <!-- Element comment -->
+        <element name="doc">
+           <text/>
+        </element>
+      </define>
+    </grammar>
+    """
+    tree = etree.fromstring(rng.encode("utf-8")).getroottree()
+    walker = SchemaWalker(tree)
+    elements = walker.walk()
+    assert len(elements) == 1
+    assert elements[0].name == "doc"

@@ -38,11 +38,13 @@ Example Schema (RNG)
 
 The extension looks for ``db:refpurpose`` elements in the ``http://docbook.org/ns/docbook`` namespace.
 
-**File: book.rng**
+.. Comment 1
+    **File: book.rng**
 
-.. literalinclude:: book.rng
-   :language: xml
-   :caption: Example RNG Schema with Annotations
+.. Comment 2
+    .. literalinclude:: book.rng
+      :language: xml
+      :caption: Example RNG Schema with Annotations
 
 Usage in RST
 ------------
@@ -51,7 +53,7 @@ You can also use the directive manually in any RST file:
 
 .. code-block:: rst
 
-   .. rnc-reference:: book.rng
+   .. rnc-reference:: product-config-schema.rng
 
 This will render the documentation for the schema in-place.
 
@@ -60,4 +62,4 @@ This will render the documentation for the schema in-place.
    :maxdepth: 1
    :caption: Generated Reference
 
-   reference/generated_rnc/index
+   reference/portal/index

@@ -40,6 +40,7 @@ html_static_path = ['_static']
 # -- rnc2html options --------------------------------------------------------
 
 rnc_html_files = [
-    "book.rng",
+    # "book.rng",
+    "product-config-schema.rng",
 ]
 rnc_html_multi_page = True

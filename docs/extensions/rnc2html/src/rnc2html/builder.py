@@ -25,8 +25,8 @@ def generate_rnc_docs(app: Sphinx) -> None:
     if not files:
         return
 
-    # Default output directory under source/reference/generated_rnc
-    out_dir = Path(app.srcdir) / "reference" / "generated_rnc"
+    # Default output directory under source/reference/portal
+    out_dir = Path(app.srcdir) / "reference" / "portal"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     logger.info(f"[rnc2html] Generating documentation for {len(files)} schemas in {out_dir}")

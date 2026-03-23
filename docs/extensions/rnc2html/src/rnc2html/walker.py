@@ -72,6 +72,9 @@ class SchemaWalker:
         return None
 
     def _visit(self, node: etree._Element, current_element: RncElement | None = None) -> None:
+        if not isinstance(node.tag, str):
+            return
+
         tag = etree.QName(node).localname
 
         if tag == "element":
