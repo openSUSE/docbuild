@@ -42,7 +42,7 @@ The extension looks for ``db:refpurpose`` elements in the ``http://docbook.org/n
     **File: book.rng**
 
 .. Comment 2
-    .. literalinclude:: book.rng
+    .. literalinclude:: product-config-schema.rng
       :language: xml
       :caption: Example RNG Schema with Annotations
 

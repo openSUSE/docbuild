@@ -111,19 +111,18 @@ class SchemaWalker:
         self._collect_element_content(element_node, rnc_element)
 
         # 2. Build textual content model (e.g. "(foo | bar)+")
-        model = self._build_content_model_str(element_node)
+        model = self._build_content_model_str(element_node, level=0)
         if model:
             rnc_element.content_model = model
 
-    def _build_content_model_str(self, node: etree._Element) -> str | None:
+    def _build_content_model_str(self, node: etree._Element, level: int = 0) -> str | None:
         """Recursive function to build content model string, ignoring attributes."""
         tag = etree.QName(node).localname
 
-        # Determine if we are at the root element definition (so treat it as group)
-        is_root = node.get("name") and tag == "element"
-
-        # If we are visiting a child element definition INSIDE the parent, prevent infinite recursion?
-        # Actually in _build_content_model_str, the input 'node' is the <element> node itself initially.
+        indent = "  " * level
+        # Indent for children of this node
+        sub_indent = "  " * (level + 1)
+        nl = "\n"
 
         # Check children recursively
         children_strs = []
@@ -142,8 +141,8 @@ class SchemaWalker:
                 if name:
                     children_strs.append(f"<{name}>")
                 else:
-                    # Recursive anonymous element? Should be rare in named patterns
-                    res = self._build_content_model_str(child)
+                    # Recursive anonymous element
+                    res = self._build_content_model_str(child, level + 1)
                     if res: children_strs.append(res)
             elif child_tag == "ref":
                 children_strs.append(f"{{{child.get('name')}}}")
@@ -156,38 +155,78 @@ class SchemaWalker:
             elif child_tag == "value":
                 children_strs.append(f'"{child.text}"')
             elif child_tag in ("group", "choice", "interleave", "optional", "zeroOrMore", "oneOrMore"):
-                res = self._build_content_model_str(child)
+                res = self._build_content_model_str(child, level + 1)
                 if res: children_strs.append(res)
 
         if not children_strs:
             return None
 
+        # Helper to decide if we need multiline
+        is_complex = len(children_strs) > 1
+
         # Combine children based on current node type
         if tag == "optional":
-            inner = " | ".join(children_strs) if len(children_strs) > 1 else children_strs[0]
-            # If inner is complex, wrap?
-            return f"({inner})?" if len(children_strs) > 1 or " " in inner else f"{inner}?"
+            # For optional/zeroOrMore/oneOrMore, we wrap the content
+            # If content is single item and simple, standard wrap.
+            # If multiple items (implicitly group?), treat as group?
+            # Usually parent handles group. But if <optional><a/><b/></optional>, it implies group.
+
+            if is_complex:
+                 sep = f"{nl}{sub_indent}| " # Logic check: optional with multiple children implies choice usually in DTDs but in RNG it is group unless <choice> used?
+                 # RNG spec: <optional> content is a pattern. If multiple elements, it's a group.
+                 sep = f",{nl}{sub_indent}"
+                 inner = sep.join(children_strs)
+                 return f"({nl}{sub_indent}{inner}{nl}{indent})?"
+            else:
+                 inner = children_strs[0]
+                 # If inner is already multiline (because it was complex), wrap it nicely?
+                 if nl in inner:
+                     return f"{inner}?" # It already has parens?
+                     # Wait, if inner is a "choice" it returns "(...)"
+                     # So "((...))?"
+                     # We can rely on inner return value.
+                 return f"{inner}?"
 
         elif tag == "zeroOrMore":
-            inner = " | ".join(children_strs) if len(children_strs) > 1 else children_strs[0]
-            return f"({inner})*" if len(children_strs) > 1 or " " in inner else f"{inner}*"
+            if is_complex:
+                 sep = f",{nl}{sub_indent}"
+                 inner = sep.join(children_strs)
+                 return f"({nl}{sub_indent}{inner}{nl}{indent})*"
+            else:
+                 inner = children_strs[0]
+                 return f"{inner}*"
 
         elif tag == "oneOrMore":
-            inner = " | ".join(children_strs)
-            return f"({inner})+" if len(children_strs) > 1 or " " in inner else f"{inner}+"
+            if is_complex:
+                 sep = f",{nl}{sub_indent}"
+                 inner = sep.join(children_strs)
+                 return f"({nl}{sub_indent}{inner}{nl}{indent})+"
+            else:
+                 inner = children_strs[0]
+                 return f"{inner}+"
 
         elif tag == "choice":
-            return f"({' | '.join(children_strs)})" if len(children_strs) > 1 else children_strs[0]
+            # ( A | B )
+            sep = f"{nl}{sub_indent}| "
+            inner = sep.join(children_strs)
+            return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
         elif tag == "group":
-            return f"({', '.join(children_strs)})"
+            sep = f",{nl}{sub_indent}"
+            inner = sep.join(children_strs)
+            return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
         elif tag == "interleave":
-            return f"({' & '.join(children_strs)})"
+            sep = f" &{nl}{sub_indent}"
+            inner = sep.join(children_strs)
+            return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
         # Default (element definition or implicit sequence)
-        if hasattr(node, "__iter__") and len(children_strs) > 1:
-             return f"({', '.join(children_strs)})"
+        if hasattr(node, "__iter__") and is_complex:
+             sep = f",{nl}{sub_indent}"
+             inner = sep.join(children_strs)
+             return f"({nl}{sub_indent}{inner}{nl}{indent})"
+
         return children_strs[0] if children_strs else None
 
     def _collect_element_content(self, node: etree._Element, rnc_element: RncElement, cardinality: str = "1") -> None:

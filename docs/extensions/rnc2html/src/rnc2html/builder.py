@@ -43,9 +43,9 @@ def generate_rnc_docs(app: Sphinx) -> None:
             elements = walker.walk()
 
             if multi_page:
-                _generate_multi_page(elements, out_dir, schema_path.stem)
+                generate_multi_page(elements, out_dir, schema_path.stem)
             else:
-                _generate_single_page(elements, out_dir, schema_path.stem)
+                generate_single_page(elements, out_dir, schema_path.stem)
 
         except Exception:
             logger.exception(f"[rnc2html] Failed to generate docs for {schema_path}")
@@ -100,14 +100,16 @@ def _generate_content_model(element: RncElement) -> str:
     # Replace {foo} with {``foo``} (pattern ref)
     cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
 
-    rst.append(f"   {cm_str}")
+    # Indent every line for the parsed-literal block
+    indented_cm = "\n".join("   " + line for line in cm_str.splitlines())
+    rst.append(indented_cm)
     rst.append("")
 
     return "\n".join(rst)
 
 
 
-def _generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
+def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
     """Generate one RST file per element."""
     index_content = [
         _rst_title(f"{schema_name} Reference"),
@@ -153,7 +155,7 @@ def _generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name:
         f.write("\n".join(index_content))
 
 
-def _generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
+def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
     """Generate one big RST file."""
     file_path = out_dir / f"{schema_name}.rst"
 
