@@ -77,7 +77,7 @@ def test_walker_basic() -> None:
 
 # Verify Children references
     # The walker appends "Ref:name" for pattern references
-    assert "Ref:chapter" in book.children
+    assert ("Ref:chapter", "1") in book.children
     assert book.content_model is not None
 
 

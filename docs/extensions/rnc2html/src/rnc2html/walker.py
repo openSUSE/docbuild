@@ -2,7 +2,6 @@
 Schema traversal and documentation extraction.
 """
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Union
 
 from lxml import etree  # type: ignore[import-untyped]
 
@@ -21,27 +20,26 @@ NAMESPACES = {
 class RncAttribute:
     name: str
     required: bool = False
-    description: Optional[str] = None
-    default: Optional[str] = None
-
+    description: str | None = None
+    default: str | None = None
 
 @dataclass
 class RncElement:
     name: str
-    pattern_name: Optional[str] = None  # The define name if applicable
-    description: Optional[str] = None
-    attributes: List[RncAttribute] = field(default_factory=list)
-    children: List[str] = field(default_factory=list)  # Names of child elements or patterns
-    content_model: Optional[str] = None  # Textual representation of content model
+    pattern_name: str | None = None  # The define name if applicable
+    description: str | None = None
+    attributes: list[RncAttribute] = field(default_factory=list)
+    children: list[tuple[str, str]] = field(default_factory=list)  # (Name, Cardinality) of child elements or patterns
+    content_model: str | None = None  # Textual representation of content model
 
 
 class SchemaWalker:
     def __init__(self, tree: etree._ElementTree):
         self.tree = tree
         self.root = tree.getroot()
-        self.defines: Dict[str, etree._Element] = {}
-        self.elements: Dict[str, RncElement] = {}
-        self.visited_patterns: Set[str] = set()
+        self.defines: dict[str, etree._Element] = {}
+        self.elements: dict[str, RncElement] = {}
+        self.visited_patterns: set[str] = set()
         self._collect_defines()
 
     def _collect_defines(self) -> None:
@@ -51,14 +49,14 @@ class SchemaWalker:
             if name:
                 self.defines[name] = define
 
-    def walk(self) -> List[RncElement]:
+    def walk(self) -> list[RncElement]:
         """Start traversal from the start element."""
         start_node = self.root.find("rng:start", namespaces=NAMESPACES)
         if start_node is not None:
             self._visit(start_node)
         return list(self.elements.values())
 
-    def _get_doc(self, node: etree._Element) -> Optional[str]:
+    def _get_doc(self, node: etree._Element) -> str | None:
         """Extract documentation from db:refpurpose or a:documentation."""
         # Try DocBook refpurpose
         refpurpose = node.xpath(".//db:refpurpose", namespaces=NAMESPACES)
@@ -73,7 +71,7 @@ class SchemaWalker:
 
         return None
 
-    def _visit(self, node: etree._Element, current_element: Optional[RncElement] = None) -> None:
+    def _visit(self, node: etree._Element, current_element: RncElement | None = None) -> None:
         tag = etree.QName(node).localname
 
         if tag == "element":
@@ -114,7 +112,7 @@ class SchemaWalker:
         if model:
             rnc_element.content_model = model
 
-    def _build_content_model_str(self, node: etree._Element) -> Optional[str]:
+    def _build_content_model_str(self, node: etree._Element) -> str | None:
         """Recursive function to build content model string, ignoring attributes."""
         tag = etree.QName(node).localname
 
@@ -145,11 +143,11 @@ class SchemaWalker:
                     res = self._build_content_model_str(child)
                     if res: children_strs.append(res)
             elif child_tag == "ref":
-                children_strs.append(child.get("name"))
+                children_strs.append(f"{{{child.get('name')}}}")
             elif child_tag == "text":
-                children_strs.append("text")
+                children_strs.append("<text/>")
             elif child_tag == "empty":
-                children_strs.append("empty")
+                children_strs.append("<empty/>")
             elif child_tag == "data":
                 children_strs.append(f"data({child.get('type','')})")
             elif child_tag == "value":
@@ -189,7 +187,7 @@ class SchemaWalker:
              return f"({', '.join(children_strs)})"
         return children_strs[0] if children_strs else None
 
-    def _collect_element_content(self, node: etree._Element, rnc_element: RncElement) -> None:
+    def _collect_element_content(self, node: etree._Element, rnc_element: RncElement, cardinality: str = "1") -> None:
         if not hasattr(node, "iter"):
             return
 
@@ -219,21 +217,50 @@ class SchemaWalker:
             elif tag == "element":
                 child_name = child.get("name")
                 if child_name:
-                     rnc_element.children.append(child_name)
+                     # For choice/optional/oneOrMore, we update cardinality
+                     rnc_element.children.append((child_name, cardinality))
                 # Recurse to define this child element globally
                 self._visit(child)
 
             elif tag == "ref":
                 ref_name = child.get("name")
                 if ref_name:
-                     # This ref contributes to the content model
-                    rnc_element.children.append(f"Ref:{ref_name}")
-                    # Also follow it to see if it defines elements
-                    if ref_name not in self.visited_patterns:
+                     rnc_element.children.append((f"Ref:{ref_name}", cardinality))
+                     if ref_name not in self.visited_patterns:
                          self.visited_patterns.add(ref_name)
                          if ref_name in self.defines:
                              self._visit(self.defines[ref_name])
 
-            elif tag in ("group", "choice", "interleave", "optional", "zeroOrMore", "oneOrMore"):
-                # Recurse
-                self._collect_element_content(child, rnc_element)
+            elif tag == "optional":
+                 # 1 -> ?
+                 # + -> *
+                 # * -> *
+                 # ? -> ?
+                 new_card = "*" if cardinality in ("*", "+") else "?"
+                 self._collect_element_content(child, rnc_element, new_card)
+
+            elif tag == "zeroOrMore":
+                 # Always *
+                 self._collect_element_content(child, rnc_element, "*")
+
+            elif tag == "oneOrMore":
+                 # 1 -> +
+                 # ? -> *
+                 # * -> *
+                 # + -> +
+                 new_card = "*" if cardinality in ("?", "*") else "+"
+                 self._collect_element_content(child, rnc_element, new_card)
+
+            elif tag == "choice":
+                 # Items inside choice are effectively optional (unless one MUST be chosen, but which one?)
+                 # Standard RELAX NG choice: (a | b).
+                 # If wrapped in nothing (1), exactly one of a or b appears (1). But individually a appears 0..1, b 0..1.
+                 # So effectively ? for children.
+                 new_card = "*" if cardinality in ("*", "+") else "?"
+                 self._collect_element_content(child, rnc_element, new_card)
+
+            elif tag in ("group", "interleave", "define"):
+                 # Recurse with same cardinality context
+                 self._collect_element_content(child, rnc_element, cardinality)
+
+

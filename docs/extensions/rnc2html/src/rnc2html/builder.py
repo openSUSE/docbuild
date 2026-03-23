@@ -1,8 +1,9 @@
 """
 Builder logic for multi-page generation via Sphinx hook.
 """
+import re
 from pathlib import Path
-from typing import List, Any
+from typing import Any
 
 from sphinx.application import Sphinx
 from sphinx.util.logging import getLogger
@@ -80,40 +81,33 @@ def _generate_attributes_table(attributes: list) -> str:
 
 def _generate_content_model(element: RncElement) -> str:
     """Generate content model section."""
-    if not element.children and not element.content_model:
+    if not element.content_model:
         return ""
 
     rst = [
         "Content Model",
         "-------------",
+        "",
+        ".. parsed-literal::",
         ""
     ]
 
-    # 1. Show abstract model with cardinality
-    if element.content_model:
-        rst.append(f"**Model**: ``{element.content_model}``")
-        rst.append("")
+    cm_str = element.content_model
+    # Replace <foo> with < :ref:`foo <rnc_element_foo>` >
+    # This puts brackets distinct from the link text to help RST parser.
+    cm_str = re.sub(r"<([a-zA-Z0-9_.-]+)>", r"<:ref:`\g<1> <rnc_element_\g<1>>`>", cm_str)
 
-    # 2. List clickable children
-    if element.children:
-        rst.append("Allowed children:")
-        rst.append("")
+    # Replace {foo} with {``foo``} (pattern ref)
+    cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
 
-        # Deduplicate children
-        for child in sorted(set(element.children)):
-            # Link to other elements if they are known elements
-            if child.startswith("Ref:"):
-                # Clean ref name
-                ref_name = child.split(":", 1)[1]
-                # We link to it assuming it might be an element or a pattern we documented
-                # Since we don't track pattern vs element perfectly in refs, we just link
-                rst.append(f"* ``{ref_name}`` (pattern)")
-            else:
-                # It's an element name
-                rst.append(f"* :ref:`rnc_element_{child}`")
+    rst.append(f"   {cm_str}")
+    rst.append("")
+
+    return "\n".join(rst)
 
 
-def _generate_multi_page(elements: List[RncElement], out_dir: Path, schema_name: str) -> None:
+
+def _generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
     """Generate one RST file per element."""
     index_content = [
         _rst_title(f"{schema_name} Reference"),
@@ -159,7 +153,7 @@ def _generate_multi_page(elements: List[RncElement], out_dir: Path, schema_name:
         f.write("\n".join(index_content))
 
 
-def _generate_single_page(elements: List[RncElement], out_dir: Path, schema_name: str) -> None:
+def _generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
     """Generate one big RST file."""
     file_path = out_dir / f"{schema_name}.rst"
 

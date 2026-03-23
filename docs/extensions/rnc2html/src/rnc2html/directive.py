@@ -1,9 +1,11 @@
 """Directive implementation for rnc-reference."""
 
+import re
 from typing import ClassVar
 
 from docutils import nodes
 from docutils.parsers.rst import directives
+from docutils.statemachine import ViewList
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.logging import getLogger
 
@@ -97,37 +99,24 @@ class RncReferenceDirective(SphinxDirective):
                 section += table
 
             # Content Model
-            if el.content_model or el.children:
-                cm_section = nodes.rubric(text="Content Model")
-                section += cm_section
+            if el.content_model:
+                section += nodes.rubric(text="Content Model")
 
-                if el.content_model:
-                    section += nodes.paragraph(text=f"Model: {el.content_model}")
+                # Transform content model string to RST with links
+                cm_str = el.content_model
 
-                if el.children:
-                    section += nodes.paragraph(text="Allowed children:")
-                    child_list = nodes.bullet_list()
-                    for child in sorted(set(el.children)):
-                        item = nodes.list_item()
-                        para = nodes.paragraph()
+                # Replace <foo> with < :ref:`foo <rnc-element-foo>` >
+                # Only match standard element names, skip <text/> etc.
+                cm_str = re.sub(r"<([a-zA-Z0-9_.-]+)>", r"<:ref:`\g<1> <rnc-element-\g<1>>`>", cm_str)
+                # Replace {foo} (patterns) with literal
+                cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
 
-                        if child.startswith("Ref:"):
-                            ref_name = child.split(":", 1)[1]
-                            para += nodes.literal(text=f"{ref_name} (pattern)")
-                        else:
-                            # Standard docutils reference
-                            ref = nodes.reference(
-                                text=child,
-                                refid=f"rnc-element-{child}",
-                                internal=True,
-                            )
-                            ref['refid'] = f"rnc-element-{child}" # Ensure ID match
-                            para += ref
+                # Render using parsed-literal for verbatim block with links
+                rst_lines = [".. parsed-literal::", "", f"   {cm_str}"]
 
-                        item += para
-                        child_list += item
-                    section += child_list
-
+                from docutils.statemachine import ViewList
+                vl = ViewList(rst_lines, source="<rnc-directive>")
+                self.state.nested_parse(vl, 0, section)
             container += section
 
         return [container]
