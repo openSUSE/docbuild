@@ -44,7 +44,8 @@ jobs:
           - '3.13'
           - '3.14'
     container:
-      image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
+      # image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
+      image: ghcr.io/opensuse/doc-container:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
