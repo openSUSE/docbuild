@@ -1,0 +1,1 @@
+Switch the Ubuntu CI toolchain to use the modernized ``doc-container`` hosted on GitHub Container Registry (GHCR), providing Python 3.12 support and improved build reliability.
