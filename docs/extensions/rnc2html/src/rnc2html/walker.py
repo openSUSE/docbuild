@@ -95,8 +95,13 @@ class SchemaWalker:
                     self._visit(self.defines[name], current_element)
 
         elif tag == "start":
-             for child in node:
-                 self._visit(child, current_element)
+             # Document the start element
+             name = "start"
+             if name not in self.elements:
+                desc = self._get_doc(node)
+                el = RncElement(name=name, description=desc)
+                self.elements[name] = el
+                self._analyze_children(node, el)
 
         elif tag in ("group", "choice", "interleave", "optional", "zeroOrMore", "oneOrMore", "define"):
              for child in node:

@@ -131,7 +131,10 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
         # Label for cross-referencing
         content.append(f".. _rnc_element_{el.name}:\n")
 
-        content.append(_rst_title(f"Element: <{el.name}>"))
+        if el.name == "start":
+            content.append(_rst_title("Start"))
+        else:
+            content.append(_rst_title(f"Element: <{el.name}>"))
 
         if el.description:
             content.append(f"{el.description}\n")
@@ -164,7 +167,11 @@ def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name:
 
     for el in elements:
         content.append(f".. _rnc_element_{el.name}:\n")
-        content.append(_rst_title(f"<{el.name}>", "-"))
+
+        if el.name == "start":
+            content.append(_rst_title("Start", "-"))
+        else:
+            content.append(_rst_title(f"<{el.name}>", "-"))
 
         if el.description:
             content.append(f"{el.description}\n")
