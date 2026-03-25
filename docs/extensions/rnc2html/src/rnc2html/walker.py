@@ -49,6 +49,99 @@ class SchemaWalker:
             if name:
                 self.defines[name] = define
 
+    def _is_attribute_def(self, ref_name: str) -> bool:
+        """Check if the referenced define contains attributes at the top level (not nested in elements)."""
+        if ref_name not in self.defines:
+            return False
+        node = self.defines[ref_name]
+        return self._node_has_attribute(node)
+
+    def _node_has_attribute(self, node: etree._Element) -> bool:
+        """Recursive check for attribute, stopping at element boundaries."""
+        tag = etree.QName(node).localname
+        if tag == "attribute":
+            return True
+        if tag == "element":
+            return False
+
+        for child in node:
+            if not isinstance(child.tag, str): continue
+            if self._node_has_attribute(child):
+                return True
+        return False
+
+    def _is_attribute_def(self, ref_name: str) -> bool:
+        """Check if the referenced define contains attributes, possibly nested."""
+        if ref_name not in self.defines:
+            return False
+        node = self.defines[ref_name]
+        return self._node_has_attribute(node)
+
+    def _node_has_attribute(self, node: etree._Element, visited: set[str] | None = None) -> bool:
+        """Recursive check for attribute, stopping at element boundaries."""
+        if visited is None:
+            visited = set()
+
+        tag = etree.QName(node).localname
+        if tag == "attribute":
+            return True
+        if tag == "element":
+            return False
+
+        # If we see a ref, we must check if that ref resolves to attributes
+        # UNLESS the ref resolves to an element (because elements are handled via _resolve_ref_to_element logic)
+        # But _node_has_attribute is purely checking "does this node PROVIDE attributes to its parent?"
+
+        if tag == "ref":
+            ref_name = node.get("name")
+            if ref_name:
+                # If the ref points to an element definition, it DOES NOT provide attributes
+                if self._resolve_ref_to_element(ref_name):
+                     return False
+
+                if ref_name in self.defines and ref_name not in visited:
+                    visited.add(ref_name)
+                    if self._node_has_attribute(self.defines[ref_name], visited):
+                        return True
+
+        for child in node:
+            if not isinstance(child.tag, str): continue
+            if self._node_has_attribute(child, visited):
+                return True
+        return False
+
+    def _resolve_ref_to_element(self, ref_name: str) -> str | None:
+        """
+        If a reference points to a define containing exactly one element,
+        return that element's name.
+        """
+        if ref_name not in self.defines:
+            return None
+
+        define = self.defines[ref_name]
+        found_element = None
+
+        for child in define:
+            if not isinstance(child.tag, str):
+                continue
+
+            qname = etree.QName(child)
+            # Skip documentation/annotations
+            if qname.namespace in (A_NS, DOCBOOK_NS):
+                continue
+
+            if found_element is not None:
+                # More than one meaningful child
+                return None
+
+            if qname.localname == "element":
+                found_element = child.get("name")
+            else:
+                # Contains something other than an element (e.g. group, optional, text)
+                return None
+
+        return found_element
+
     def walk(self) -> list[RncElement]:
         """Start traversal from the start element."""
         start_node = self.root.find("rng:start", namespaces=NAMESPACES)
@@ -150,7 +243,16 @@ class SchemaWalker:
                     res = self._build_content_model_str(child, level + 1)
                     if res: children_strs.append(res)
             elif child_tag == "ref":
-                children_strs.append(f"{{{child.get('name')}}}")
+                ref_name = child.get('name')
+                if ref_name:
+                    if self._is_attribute_def(ref_name):
+                         continue
+
+                    resolved = self._resolve_ref_to_element(ref_name)
+                    if resolved:
+                        children_strs.append(f"<{resolved}>")
+                    else:
+                        children_strs.append(f"{{{ref_name}}}")
             elif child_tag == "text":
                 children_strs.append("<text/>")
             elif child_tag == "empty":
@@ -252,12 +354,14 @@ class SchemaWalker:
                 if attr_name:
                     # check for optional wrapper
                     parent_tag = etree.QName(child.getparent()).localname
-                    required = parent_tag != "optional"
+                    # Also consider inherited cardinality
+                    inherited_optional = cardinality in ("?", "*")
+                    is_optional = (parent_tag == "optional") or inherited_optional
 
                     desc = self._get_doc(child)
                     rnc_element.attributes.append(RncAttribute(
                         name=attr_name,
-                        required=required,
+                        required=not is_optional,
                         description=desc
                     ))
 
@@ -272,11 +376,18 @@ class SchemaWalker:
             elif tag == "ref":
                 ref_name = child.get("name")
                 if ref_name:
-                     rnc_element.children.append((f"Ref:{ref_name}", cardinality))
-                     if ref_name not in self.visited_patterns:
-                         self.visited_patterns.add(ref_name)
+                     if self._is_attribute_def(ref_name):
+                         # If this ref points to attributes, inline them into the current element's attributes
                          if ref_name in self.defines:
-                             self._visit(self.defines[ref_name])
+                             # Recurse into the definition to extract attributes
+                             # Use the same cardinality context
+                             self._collect_element_content(self.defines[ref_name], rnc_element, cardinality)
+                     else:
+                         rnc_element.children.append((f"Ref:{ref_name}", cardinality))
+                         if ref_name not in self.visited_patterns:
+                             self.visited_patterns.add(ref_name)
+                             if ref_name in self.defines:
+                                 self._visit(self.defines[ref_name])
 
             elif tag == "optional":
                  # 1 -> ?

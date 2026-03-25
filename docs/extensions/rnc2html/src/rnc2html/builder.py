@@ -95,7 +95,8 @@ def _generate_content_model(element: RncElement) -> str:
     cm_str = element.content_model
     # Replace <foo> with < :ref:`foo <rnc_element_foo>` >
     # This puts brackets distinct from the link text to help RST parser.
-    cm_str = re.sub(r"<([a-zA-Z0-9_.-]+)>", r"<:ref:`\g<1> <rnc_element_\g<1>>`>", cm_str)
+    # Updated regex to include colons for namespaced elements (e.g. xi:include)
+    cm_str = re.sub(r"<([a-zA-Z0-9_:.-]+)>", r"<:ref:`\g<1> <rnc_element_\g<1>>`>", cm_str)
 
     # Replace {foo} with {``foo``} (pattern ref)
     cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
