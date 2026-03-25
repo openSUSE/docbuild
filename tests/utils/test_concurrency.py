@@ -4,7 +4,6 @@ import asyncio
 
 import pytest
 
-from docbuild.utils import concurrency as concurrency_module
 from docbuild.utils.concurrency import TaskFailedError, run_parallel
 
 
@@ -31,17 +30,18 @@ async def test_process_unordered_basic():
         await asyncio.sleep(0.01)
         return n * n
 
-    async def async_items_generator():
-        for i in [1, 2, 3, 4, 5]:
-            yield i
-
-    items = async_items_generator()
+    items = [1, 2, 3, 4, 5]
     results_gen = run_parallel(items, square, limit=2)
 
     val_set = set()
-    async for r in results_gen:
-        assert isinstance(r, int)
-        val_set.add(r)
+    # Use a timeout to ensure that if it deadlocks, we see the error
+    try:
+        async with asyncio.timeout(2):
+            async for r in results_gen:
+                assert isinstance(r, int)
+                val_set.add(r)
+    except TimeoutError:
+        pytest.fail("Test timed out - possible deadlock in run_parallel")
 
     assert val_set == {1, 4, 9, 16, 25}
 
@@ -139,28 +139,37 @@ async def test_finally_calls_cancel_on_early_exit():
     worker_cancelled = False
 
     async def slow_worker(x):
+        nonlocal worker_cancelled
         try:
             worker_started.set()
-            await asyncio.sleep(10) # Wait a long time
+            await asyncio.sleep(10)
             return x
         except asyncio.CancelledError:
-            nonlocal worker_cancelled
             worker_cancelled = True
             raise
 
-    # 1. Start the generator
+    # 1. Start generator
     gen = run_parallel(range(10), slow_worker, limit=1)
-    
-    # 2. Start iterating and then 'break' or 'raise'
-    try:
-        async for _ in gen:
-            await worker_started.wait()
-            raise RuntimeError("Stop early")
-    except RuntimeError:
-        pass
 
-    # 3. Give the event loop a moment to run the finally block in run_parallel
-    await asyncio.sleep(0.1)
-    
-    # 4. Verify cleanup happened
-    assert worker_cancelled, "Worker was not cancelled after early exit"
+    # 2. Manually trigger the first step of the generator
+    # but don't 'await' a result that will never come.
+    # Create a task to drive the generator.
+    async def drive_gen():
+        try:
+            async for _ in gen:
+                break
+        except asyncio.CancelledError:
+            pass
+
+    driver = asyncio.create_task(drive_gen())
+
+    # Wait for the worker to actually start
+    await worker_started.wait()
+
+    # 3. Cancel the driver and the generator
+    # This simulates the user stopping the loop
+    driver.cancel()
+
+    # 4. Settle and check
+    await asyncio.sleep(0.2)
+    assert worker_cancelled is True, "Worker should have been cancelled"

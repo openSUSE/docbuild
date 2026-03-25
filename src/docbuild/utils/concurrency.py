@@ -62,17 +62,15 @@ async def producer[T](
         else:
             for item in items:
                 await input_queue.put(item)
-
-    except asyncio.CancelledError:
-        # We were cancelled — workers are being cancelled too, so there's
-        # nobody left to consume sentinels. Don't bother sending them.
-        raise
-
     finally:
-        # Normal completion only — workers are still running and need sentinels.
+        # Use put_nowait and we must not block here.
+        # If the queue is full, skip. Workers don't need more than one
+        # sentinel to know it's time to quit.
         for _ in range(num_workers):
-            await input_queue.put(SENTINEL)
-
+            try:
+                input_queue.put_nowait(SENTINEL)
+            except (asyncio.QueueFull, Exception):
+                break
 
 async def worker[T, R](
     worker_fn: Callable[[T], Awaitable[R]],
@@ -86,20 +84,22 @@ async def worker[T, R](
     :param result_queue: The queue for results from the workers.
     """
     while True:
-        item = await input_queue.get()
-        if item is SENTINEL:
-            return
+        # If the loop is closing, get() might raise CancelledError
         try:
+            item = await input_queue.get()
+        except asyncio.CancelledError:
+            return
+
+        try:
+            if item is SENTINEL:
+                return
+
             result = await worker_fn(item)
             await result_queue.put(result)
-        except asyncio.CancelledError:
-            raise
         except Exception as exc:
             await result_queue.put(TaskFailedError(item, exc))
-
         finally:
             input_queue.task_done()
-
 
 async def run_all[T, R](
     items: Iterable[T] | AsyncIterableABC[T],
@@ -116,14 +116,17 @@ async def run_all[T, R](
     :param result_queue: The queue for results from the workers.
     :param limit: The maximum number of concurrent workers.
     """
-    try:
-        async with asyncio.TaskGroup() as tg:
-            tg.create_task(producer(items, input_queue, limit))
-            for _ in range(limit):
-                tg.create_task(worker(worker_fn, input_queue, result_queue))
+    # Remove the internal .join() and let TaskGroup manage the lifecycle
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(producer(items, input_queue, limit))
+        for _ in range(limit):
+            tg.create_task(worker(worker_fn, input_queue, result_queue))
 
-    finally:
-        await result_queue.put(SENTINEL)
+    # Once we are here, TaskGroup has successfully joined all tasks.
+    try:
+        result_queue.put_nowait(SENTINEL)
+    except (asyncio.QueueFull, Exception):
+            pass
 
 
 async def run_parallel[T, R, **P](
@@ -191,10 +194,8 @@ async def run_parallel[T, R, **P](
         functools.partial(worker_fn, *worker_args, **worker_kwargs) if worker_kwargs else worker_fn
     )
 
-    input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 2)
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(
-        maxsize=limit * 2
-    )
+    input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 5)
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(maxsize=0)
 
     runner = asyncio.create_task(
         run_all(items, bound_fn, input_queue, result_queue, limit)
