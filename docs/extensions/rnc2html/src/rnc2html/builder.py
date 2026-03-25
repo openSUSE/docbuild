@@ -128,8 +128,11 @@ def _generate_element_index(elements_files: list[tuple[RncElement, str]]) -> str
     for el, filename in sorted_elements:
         first_char = el.name[0].upper()
         if first_char != current_char:
+            if current_char is not None:
+                rst.append("")
             rst.append(f"{first_char}")
             rst.append("-")
+            rst.append("")
             current_char = first_char
 
         display_name = f"<{el.name}>"
@@ -169,9 +172,12 @@ def _generate_attribute_index(elements_files: list[tuple[RncElement, str]]) -> s
         clean_name = attr_name.lstrip("@")
         first_char = clean_name[0].upper() if clean_name else '?'
         if first_char != current_char:
-             rst.append(f"{first_char}")
-             rst.append("-")
-             current_char = first_char
+            if current_char is not None:
+                 rst.append("")
+            rst.append(f"{first_char}")
+            rst.append("-")
+            rst.append("")
+            current_char = first_char
 
         rst.append(f"* ``{attr_name}``")
         # List elements
@@ -200,6 +206,9 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
     # Track element -> filename mapping for indices
     elements_files: list[tuple[RncElement, str]] = []
 
+    # Track element names for canonical labels
+    labeled_names = set()
+
     for el in elements:
         # Determine filename
         filename = f"{el.name}"
@@ -223,8 +232,20 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
         index_content.append(f"   {filename}")
 
         content = []
-        # Label for cross-referencing
-        content.append(f".. _rnc_element_{el.name}_{el.pattern_name or ''}:\n")
+        # Labels for cross-referencing
+        # 1. Canonical label (rnc_element_name) - for first occurrence
+        # 2. Specific label (rnc_element_name_pattern) - always if different
+
+        canonical_label = f"rnc_element_{el.name}"
+        label_suffix = f"_{el.pattern_name}" if el.pattern_name else ""
+        specific_label = f"rnc_element_{el.name}{label_suffix}"
+
+        if el.name not in labeled_names:
+            content.append(f".. _{canonical_label}:\n")
+            labeled_names.add(el.name)
+
+        if specific_label != canonical_label:
+            content.append(f".. _{specific_label}:\n")
 
         if el.name == "start":
             content.append(_rst_title("Start"))
@@ -289,6 +310,7 @@ def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name:
 
     # Need to handle duplicate names to ensure labels are unique
     counts = {}
+    labeled_names = set()
 
     for el in elements:
         # Create a unique-ish label.
@@ -301,7 +323,15 @@ def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name:
             if num > 1:
                 label_suffix = f"_{num}"
 
-        content.append(f".. _rnc_element_{el.name}{label_suffix}:\n")
+        canonical_label = f"rnc_element_{el.name}"
+        specific_label = f"rnc_element_{el.name}{label_suffix}"
+
+        if el.name not in labeled_names:
+            content.append(f".. _{canonical_label}:\n")
+            labeled_names.add(el.name)
+
+        if specific_label != canonical_label:
+            content.append(f".. _{specific_label}:\n")
 
         if el.name == "start":
             content.append(_rst_title("Start", "-"))
