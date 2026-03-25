@@ -300,6 +300,8 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
     with open(out_dir / "index.rst", "w", encoding="utf-8") as f:
         f.write("\n".join(index_content))
 
+    logger.info(f"[rnc2html] Generated {len(generated_files)} RST files for schema '{schema_name}'")
+
 
 def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
     """Generate one big RST file."""
