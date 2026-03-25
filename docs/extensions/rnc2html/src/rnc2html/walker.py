@@ -32,6 +32,7 @@ class RncElement:
     attributes: list[RncAttribute] = field(default_factory=list)
     children: list[tuple[str, str]] = field(default_factory=list)  # (Name, Cardinality) of child elements or patterns
     content_model: str | None = None  # Textual representation of content model
+    data_type: str | None = None  # Data type if element contains simple content (e.g. data, value)
     example: str | None = None  # Example code from db:example or db:screen
     example_title: str | None = None  # Title for the example from db:title
 
@@ -317,6 +318,69 @@ class SchemaWalker:
         model = self._build_content_model_str(element_node, level=0)
         if model:
             rnc_element.content_model = model
+
+        # 3. Infer simple data type if applicable
+        rnc_element.data_type = self._get_simple_content_type(element_node)
+
+    def _get_simple_content_type(self, node: etree._Element, visited: set[str] | None = None) -> str | None:
+        """
+        Check if the node defines a simple data type (data, value, or enum) and return its description.
+        Returns None if the content is complex (elements, mixed, etc).
+        """
+        if visited is None:
+            visited = set()
+
+        for child in node:
+            if not isinstance(child.tag, str): continue
+            tag = etree.QName(child).localname
+
+            if tag in ("attribute", "documentation", "refpurpose", "example", "param"):
+                continue
+
+            if tag == "data":
+                return self._get_attribute_type(node) # Reuse logic which handles data/params
+
+            if tag == "choice":
+                 # Check if it looks like an enum (choice of values)
+                 type_info = self._get_attribute_type(node)
+                 if type_info and "Enum" in type_info:
+                     return type_info
+                 # Otherwise drill down?
+                 # If it is Choice of Refs to Data?
+                 pass
+
+            if tag == "value":
+                if child.text:
+                    return f"Value: {child.text}"
+
+            if tag == "ref":
+                ref_name = child.get("name")
+                if ref_name:
+                    if self._is_attribute_def(ref_name):
+                         continue
+
+                    if self._resolve_ref_to_element(ref_name):
+                        # Points to element -> Complex
+                        return None
+
+                    if ref_name in self.defines and ref_name not in visited:
+                        visited.add(ref_name)
+                        # We recurse into the definition
+                        # Logic: if the definition returns a type, we take it.
+                        res = self._get_simple_content_type(self.defines[ref_name], visited)
+                        if res:
+                            return res
+
+            if tag in ("group", "interleave", "optional", "zeroOrMore", "oneOrMore"):
+                res = self._get_simple_content_type(child, visited)
+                if res:
+                    return res
+
+            if tag in ("element", "text", "empty"):
+                return None
+
+        return None
+
 
     def _dedent(self, text: str) -> str:
         """Dedent a multiline string by 2 spaces (ignoring first line)."""

@@ -90,30 +90,39 @@ def _generate_attributes_table(attributes: list) -> str:
 
 def _generate_content_model(element: RncElement) -> str:
     """Generate content model section."""
-    if not element.content_model:
+    if not element.content_model and not element.data_type:
         return ""
 
     rst = [
         "Content Model",
         "-------------",
-        "",
-        ".. parsed-literal::",
         ""
     ]
 
-    cm_str = element.content_model
-    # Replace <foo> with < :ref:`foo <rnc_element_foo>` >
-    # This puts brackets distinct from the link text to help RST parser.
-    # Updated regex to include colons for namespaced elements (e.g. xi:include)
-    cm_str = re.sub(r"<([a-zA-Z0-9_:.-]+)>", r"<:ref:`\g<1> <rnc_element_\g<1>>`>", cm_str)
+    if element.content_model or element.data_type:
+        rst.append(".. parsed-literal::")
+        rst.append("")
 
-    # Replace {foo} with {``foo``} (pattern ref)
-    cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
+        if element.data_type:
+            # If we have a detected simple data type (e.g. enum, token, pattern),
+            # we use that as the content description.
+            cm_str = element.data_type
+        else:
+            # Otherwise use the structural content model
+            cm_str = element.content_model
 
-    # Indent every line for the parsed-literal block
-    indented_cm = "\n".join("   " + line for line in cm_str.splitlines())
-    rst.append(indented_cm)
-    rst.append("")
+            # Replace <foo> with < :ref:`foo <rnc_element_foo>` >
+            # This puts brackets distinct from the link text to help RST parser.
+            # Updated regex to include colons for namespaced elements (e.g. xi:include)
+            cm_str = re.sub(r"<([a-zA-Z0-9_:.-]+)>", r"<:ref:`\g<1> <rnc_element_\g<1>>`>", cm_str)
+
+            # Replace {foo} with {``foo``} (pattern ref)
+            cm_str = re.sub(r"\{([^}]+)\}", r"{``\g<1>``}", cm_str)
+
+        # Indent every line for the parsed-literal block
+        indented_cm = "\n".join("   " + line for line in cm_str.splitlines())
+        rst.append(indented_cm)
+        rst.append("")
 
     return "\n".join(rst)
 
