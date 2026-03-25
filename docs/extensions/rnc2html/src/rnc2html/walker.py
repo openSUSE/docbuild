@@ -43,6 +43,7 @@ class SchemaWalker:
         # Stores list of elements because names are not unique (different patterns can define same element name)
         self.elements: list[RncElement] = []
         self.visited_patterns: set[str] = set()
+        self.expanding_refs: set[str] = set()
         self._collect_defines()
 
     def _collect_defines(self) -> None:
@@ -161,6 +162,26 @@ class SchemaWalker:
                 return None
 
         return found_element
+
+    def _expand_ref_to_content(self, ref_name: str, level: int) -> str | None:
+        """
+        If a ref points to a define that is just a group/choice of elements,
+        expand it inline rather than showing {patternName}.
+        Used for things like ds.htmlblock which is a choice of p, div, pre, etc.
+        """
+        if ref_name not in self.defines:
+            return None
+
+        # Avoid infinite recursion
+        if ref_name in self.expanding_refs:
+            return f"{{``{ref_name}``}}"
+
+        self.expanding_refs.add(ref_name)
+        try:
+            define_node = self.defines[ref_name]
+            return self._build_content_model_str(define_node, level)
+        finally:
+            self.expanding_refs.remove(ref_name)
 
     def walk(self) -> list[RncElement]:
         """Start traversal from the start element."""
@@ -357,7 +378,14 @@ class SchemaWalker:
                     if resolved:
                         children_strs.append(f"<{resolved}>")
                     else:
-                        children_strs.append(f"{{{ref_name}}}")
+                        # If a pattern ref does not resolve to a SINGLE element,
+                        # it might be a choice/group of elements (like ds.htmlblock).
+                        # We should try to expand it if it's purely content.
+                        expanded = self._expand_ref_to_content(ref_name, level)
+                        if expanded:
+                            children_strs.append(expanded)
+                        else:
+                            children_strs.append(f"{{{ref_name}}}")
             elif child_tag == "text":
                 children_strs.append("``text``")
             elif child_tag == "empty":
