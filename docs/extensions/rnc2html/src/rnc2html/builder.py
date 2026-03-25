@@ -9,7 +9,7 @@ from sphinx.application import Sphinx
 from sphinx.util.logging import getLogger
 
 from rnc2html.loader import load_schema
-from rnc2html.walker import SchemaWalker, RncElement
+from rnc2html.walker import SchemaWalker, RncElement, RncAttribute
 
 logger = getLogger(__name__)
 
@@ -21,6 +21,8 @@ def generate_rnc_docs(app: Sphinx) -> None:
     """
     files = app.config.rnc_html_files
     multi_page = app.config.rnc_html_multi_page
+    gen_element_index = app.config.rnc_html_gen_element_index
+    gen_attribute_index = app.config.rnc_html_gen_attribute_index
 
     if not files:
         return
@@ -43,7 +45,7 @@ def generate_rnc_docs(app: Sphinx) -> None:
             elements = walker.walk()
 
             if multi_page:
-                generate_multi_page(elements, out_dir, schema_path.stem)
+                generate_multi_page(elements, out_dir, schema_path.stem, gen_element_index, gen_attribute_index)
             else:
                 generate_single_page(elements, out_dir, schema_path.stem)
 
@@ -112,8 +114,77 @@ def _generate_content_model(element: RncElement) -> str:
     return "\n".join(rst)
 
 
+def _generate_element_index(elements_files: list[tuple[RncElement, str]]) -> str:
+    """Generate sorted list of elements."""
+    sorted_elements = sorted(elements_files, key=lambda x: x[0].name.lower())
 
-def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
+    rst = [
+        _rst_title("Element Index"),
+        ""
+    ]
+
+    current_char = None
+
+    for el, filename in sorted_elements:
+        first_char = el.name[0].upper()
+        if first_char != current_char:
+            rst.append(f"{first_char}")
+            rst.append("-")
+            current_char = first_char
+
+        display_name = f"<{el.name}>"
+        if el.pattern_name:
+            display_name += f" ({el.pattern_name})"
+
+        rst.append(f"* :doc:`{display_name} <{filename}>`")
+
+    return "\n".join(rst)
+
+
+def _generate_attribute_index(elements_files: list[tuple[RncElement, str]]) -> str:
+    """Generate index of attributes."""
+    # Attribute Name -> List of (Element Display Name, Filename)
+    attr_map: dict[str, list[tuple[str, str]]] = {}
+
+    for el, filename in elements_files:
+        display_element = f"<{el.name}>"
+        if el.pattern_name:
+             display_element += f" ({el.pattern_name})"
+
+        for attr in el.attributes:
+             link = (display_element, filename)
+             if attr.name not in attr_map:
+                 attr_map[attr.name] = []
+             attr_map[attr.name].append(link)
+
+    sorted_attrs = sorted(attr_map.keys())
+
+    rst = [
+        _rst_title("Attribute Index"),
+        ""
+    ]
+
+    current_char = None
+    for attr_name in sorted_attrs:
+        clean_name = attr_name.lstrip("@")
+        first_char = clean_name[0].upper() if clean_name else '?'
+        if first_char != current_char:
+             rst.append(f"{first_char}")
+             rst.append("-")
+             current_char = first_char
+
+        rst.append(f"* ``{attr_name}``")
+        # List elements
+        # Sort usages by element name
+        usages = sorted(attr_map[attr_name], key=lambda x: x[0].lower())
+        for (el_display, filename) in usages:
+            rst.append(f"  - :doc:`{el_display} <{filename}>`")
+
+    return "\n".join(rst)
+
+
+def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str,
+                        gen_element_index: bool = False, gen_attribute_index: bool = False) -> None:
     """Generate one RST file per element."""
     index_content = [
         _rst_title(f"{schema_name} Reference"),
@@ -126,6 +197,8 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
 
     # Track generated filenames to handle duplicates
     generated_files = set()
+    # Track element -> filename mapping for indices
+    elements_files: list[tuple[RncElement, str]] = []
 
     for el in elements:
         # Determine filename
@@ -142,6 +215,8 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
              counter += 1
 
         generated_files.add(filename)
+        elements_files.append((el, filename))
+
         file_path = out_dir / f"{filename}.rst"
 
         # Add to index
@@ -176,6 +251,30 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("\n".join(content))
+
+    # Generate Indices if requested
+    indices_toctree = []
+
+    if gen_element_index:
+        idx_content = _generate_element_index(elements_files)
+        with open(out_dir / "genindex-elements.rst", "w", encoding="utf-8") as f:
+            f.write(idx_content)
+        indices_toctree.append("genindex-elements")
+
+    if gen_attribute_index:
+        idx_content = _generate_attribute_index(elements_files)
+        with open(out_dir / "genindex-attributes.rst", "w", encoding="utf-8") as f:
+            f.write(idx_content)
+        indices_toctree.append("genindex-attributes")
+
+    if indices_toctree:
+        index_content.append("")
+        index_content.append(".. toctree::")
+        index_content.append("   :maxdepth: 1")
+        index_content.append("   :caption: Indices")
+        index_content.append("")
+        for idx in indices_toctree:
+            index_content.append(f"   {idx}")
 
     with open(out_dir / "index.rst", "w", encoding="utf-8") as f:
         f.write("\n".join(index_content))

@@ -18,6 +18,10 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.add_config_value("rnc_html_files", [], "env")
     # Whether to generate separate pages for elements
     app.add_config_value("rnc_html_multi_page", False, "env")
+    # Whether to generate an elements index page
+    app.add_config_value("rnc_html_gen_element_index", False, "env")
+    # Whether to generate an attributes index page
+    app.add_config_value("rnc_html_gen_attribute_index", False, "env")
 
     # Hook to generate RST files before build
     app.connect("builder-inited", generate_rnc_docs)

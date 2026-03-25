@@ -44,3 +44,5 @@ rnc_html_files = [
     "portal-config-schema.rng",
 ]
 rnc_html_multi_page = True
+rnc_html_gen_element_index = True
+rnc_html_gen_attribute_index = True
