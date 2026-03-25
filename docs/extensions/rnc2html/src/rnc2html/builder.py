@@ -1,22 +1,19 @@
-"""
-Builder logic for multi-page generation via Sphinx hook.
-"""
-import re
+"""Builder logic for multi-page generation via Sphinx hook."""
 from pathlib import Path
-from typing import Any
+import re
 
 from sphinx.application import Sphinx
 from sphinx.util.logging import getLogger
 
 from rnc2html.loader import load_schema
-from rnc2html.walker import SchemaWalker, RncElement, RncAttribute
+from rnc2html.walker import RncElement, SchemaWalker
 
 logger = getLogger(__name__)
 
 
 def generate_rnc_docs(app: Sphinx) -> None:
-    """
-    Generate RST files for configured RNC schemas.
+    """Generate RST files for configured RNC schemas.
+
     Hook connected to 'builder-inited'.
     """
     files = app.config.rnc_html_files
@@ -202,7 +199,7 @@ def _generate_attribute_index(elements_files: list[tuple[RncElement, str]]) -> s
     return "\n".join(rst)
 
 
-def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str,
+def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: str,  # noqa: C901
                         gen_element_index: bool = False, gen_attribute_index: bool = False) -> None:
     """Generate one RST file per element."""
     index_content = [
@@ -327,7 +324,7 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
     logger.info(f"[rnc2html] Generated {len(generated_files)} RST files for schema '{schema_name}'")
 
 
-def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:
+def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name: str) -> None:  # noqa: C901
     """Generate one big RST file."""
     file_path = out_dir / f"{schema_name}.rst"
 

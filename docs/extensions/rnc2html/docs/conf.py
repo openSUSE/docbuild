@@ -1,17 +1,19 @@
+"""Configuration file for the Sphinx documentation builder."""
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-import os
-import sys
 from pathlib import Path
+import sys
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+"""Configuration file for the Sphinx documentation builder."""
+
 project = 'rnc2html'
-copyright = '2026, SUSE'
+copyright = '2026, SUSE'  # noqa: A001
 author = 'SUSE'
 release = '0.1.0'
 

@@ -5,7 +5,6 @@ from typing import ClassVar
 
 from docutils import nodes
 from docutils.parsers.rst import directives
-from docutils.statemachine import ViewList
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.logging import getLogger
 

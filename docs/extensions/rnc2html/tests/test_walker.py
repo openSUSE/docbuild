@@ -1,10 +1,8 @@
-"""
-Tests for RNC schema walker logic.
-"""
-import sys
+"""Tests for RNC schema walker logic."""
 from pathlib import Path
+import sys
+
 from lxml import etree  # type: ignore[import-untyped]
-import pytest
 
 # Add extension source to path
 # We are in docs/extensions/rnc2html/tests

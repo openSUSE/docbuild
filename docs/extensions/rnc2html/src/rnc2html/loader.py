@@ -1,10 +1,8 @@
-"""
-Schema loader and converter for RELAX NG.
-"""
+"""Schema loader and converter for RELAX NG."""
+from pathlib import Path
 import shutil
 import subprocess
 import tempfile
-from pathlib import Path
 
 from lxml import etree  # type: ignore[import-untyped]
 from sphinx.errors import ExtensionError
@@ -20,8 +18,7 @@ def check_trang_availability() -> None:
 
 
 def load_schema(schema_path: str | Path) -> etree._ElementTree:
-    """
-    Load a RELAX NG schema, converting from RNC if necessary.
+    """Load a RELAX NG schema, converting from RNC if necessary.
 
     :param schema_path: Path to the schema file (.rnc or .rng)
     :return: The parsed ElementTree
@@ -39,7 +36,7 @@ def load_schema(schema_path: str | Path) -> etree._ElementTree:
         try:
             return etree.parse(str(path))
         except etree.XMLSyntaxError as e:
-            raise ExtensionError(f"Failed to parse RNG: {e}")
+            raise ExtensionError(f"Failed to parse RNG: {e}") from e
     else:
         raise ExtensionError(f"Unsupported schema format: {path.suffix}")
 
@@ -65,7 +62,7 @@ def _convert_and_load_rnc(rnc_path: Path) -> etree._ElementTree:
         try:
             tree = etree.parse(str(output_path))
         except etree.XMLSyntaxError as e:
-            raise ExtensionError(f"Failed to parse converted RNG: {e}")
+            raise ExtensionError(f"Failed to parse converted RNG: {e}") from e
 
         return tree
 
