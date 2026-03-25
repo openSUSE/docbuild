@@ -49,39 +49,49 @@ class SchemaWalker:
             if name:
                 self.defines[name] = define
 
+
     def _is_attribute_def(self, ref_name: str) -> bool:
-        """Check if the referenced define contains attributes at the top level (not nested in elements)."""
+        """Check if the referenced define contains attributes, possibly nested, but NO content."""
         if ref_name not in self.defines:
             return False
         node = self.defines[ref_name]
-        return self._node_has_attribute(node)
+        # It is an attribute definition only if it has attributes AND has no elements/text
+        return self._node_has_attribute(node) and not self._node_has_content(node)
 
-    def _node_has_attribute(self, node: etree._Element) -> bool:
-        """Recursive check for attribute, stopping at element boundaries."""
+    def _node_has_content(self, node: etree._Element, visited: set[str] | None = None) -> bool:
+        """Recursive check for content elements (element, text, data, etc.)."""
+        if visited is None:
+            visited = set()
+
         tag = etree.QName(node).localname
-        if tag == "attribute":
+        if tag in ("element", "text", "data", "value", "empty"):
             return True
-        if tag == "element":
+        if tag == "attribute":
             return False
+
+        if tag == "ref":
+            ref_name = node.get("name")
+            if ref_name:
+                if self._resolve_ref_to_element(ref_name):
+                     return True
+
+                if ref_name in self.defines and ref_name not in visited:
+                    visited.add(ref_name)
+                    if self._node_has_content(self.defines[ref_name], visited):
+                        return True
 
         for child in node:
             if not isinstance(child.tag, str): continue
-            if self._node_has_attribute(child):
+            if self._node_has_content(child, visited):
                 return True
         return False
-
-    def _is_attribute_def(self, ref_name: str) -> bool:
-        """Check if the referenced define contains attributes, possibly nested."""
-        if ref_name not in self.defines:
-            return False
-        node = self.defines[ref_name]
-        return self._node_has_attribute(node)
 
     def _node_has_attribute(self, node: etree._Element, visited: set[str] | None = None) -> bool:
         """Recursive check for attribute, stopping at element boundaries."""
         if visited is None:
             visited = set()
 
+        tag = etree.QName(node).localname
         tag = etree.QName(node).localname
         if tag == "attribute":
             return True
@@ -107,6 +117,13 @@ class SchemaWalker:
         for child in node:
             if not isinstance(child.tag, str): continue
             if self._node_has_attribute(child, visited):
+                return True
+        return False
+
+        for child in node:
+            if not isinstance(child.tag, str): continue
+            if self._node_has_attribute(child, visited):
+                print(f"DEBUG: Child {etree.QName(child).localname} of {tag} returned True!")
                 return True
         return False
 
@@ -213,6 +230,19 @@ class SchemaWalker:
         if model:
             rnc_element.content_model = model
 
+    def _dedent(self, text: str) -> str:
+        """Dedent a multiline string by 2 spaces (ignoring first line)."""
+        if "\n" not in text:
+            return text
+        lines = text.split("\n")
+        new_lines = [lines[0]]
+        for line in lines[1:]:
+            if line.startswith("  "):
+                new_lines.append(line[2:])
+            else:
+                new_lines.append(line)
+        return "\n".join(new_lines)
+
     def _build_content_model_str(self, node: etree._Element, level: int = 0) -> str | None:
         """Recursive function to build content model string, ignoring attributes."""
         tag = etree.QName(node).localname
@@ -254,9 +284,9 @@ class SchemaWalker:
                     else:
                         children_strs.append(f"{{{ref_name}}}")
             elif child_tag == "text":
-                children_strs.append("<text/>")
+                children_strs.append("text")
             elif child_tag == "empty":
-                children_strs.append("<empty/>")
+                children_strs.append("empty")
             elif child_tag == "data":
                 children_strs.append(f"data({child.get('type','')})")
             elif child_tag == "value":
@@ -286,13 +316,7 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})?"
             else:
                  inner = children_strs[0]
-                 # If inner is already multiline (because it was complex), wrap it nicely?
-                 if nl in inner:
-                     return f"{inner}?" # It already has parens?
-                     # Wait, if inner is a "choice" it returns "(...)"
-                     # So "((...))?"
-                     # We can rely on inner return value.
-                 return f"{inner}?"
+                 return f"{self._dedent(inner)}?"
 
         elif tag == "zeroOrMore":
             if is_complex:
@@ -301,7 +325,7 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})*"
             else:
                  inner = children_strs[0]
-                 return f"{inner}*"
+                 return f"{self._dedent(inner)}*"
 
         elif tag == "oneOrMore":
             if is_complex:
@@ -310,20 +334,25 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})+"
             else:
                  inner = children_strs[0]
-                 return f"{inner}+"
+                 return f"{self._dedent(inner)}+"
 
         elif tag == "choice":
-            # ( A | B )
+            if not is_complex:
+                 return self._dedent(children_strs[0])
             sep = f"{nl}{sub_indent}| "
             inner = sep.join(children_strs)
             return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
         elif tag == "group":
+            if not is_complex:
+                 return self._dedent(children_strs[0])
             sep = f",{nl}{sub_indent}"
             inner = sep.join(children_strs)
             return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
         elif tag == "interleave":
+            if not is_complex:
+                 return self._dedent(children_strs[0])
             sep = f" &{nl}{sub_indent}"
             inner = sep.join(children_strs)
             return f"({nl}{sub_indent}{inner}{nl}{indent})"
@@ -334,7 +363,7 @@ class SchemaWalker:
              inner = sep.join(children_strs)
              return f"({nl}{sub_indent}{inner}{nl}{indent})"
 
-        return children_strs[0] if children_strs else None
+        return self._dedent(children_strs[0]) if children_strs else None
 
     def _collect_element_content(self, node: etree._Element, rnc_element: RncElement, cardinality: str = "1") -> None:
         if not hasattr(node, "iter"):

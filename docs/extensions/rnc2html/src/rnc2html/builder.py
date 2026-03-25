@@ -147,7 +147,7 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
             content.append(_rst_title("Attributes", "-"))
             content.append(_generate_attributes_table(el.attributes))
 
-        if el.children:
+        if el.content_model:
             cm = _generate_content_model(el)
             if cm:
                 content.append(cm)
@@ -183,7 +183,7 @@ def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name:
         if el.attributes:
             content.append(_generate_attributes_table(el.attributes))
 
-        if el.children:
+        if el.content_model:
              content.append(_generate_content_model(el))
 
         content.append("\n----\n") # Separator
