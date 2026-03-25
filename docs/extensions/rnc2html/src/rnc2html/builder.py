@@ -258,6 +258,17 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
         if el.description:
             content.append(f"{el.description}\n")
 
+        if el.example:
+            content.append(_rst_title("Example", "-"))
+            content.append(".. code-block:: xml")
+            if el.example_title:
+                content.append(f"   :caption: {el.example_title}")
+            content.append("")
+            # Indent example code
+            for line in el.example.splitlines():
+                content.append(f"   {line}")
+            content.append("")
+
         if el.attributes:
             content.append(_rst_title("Attributes", "-"))
             content.append(_generate_attributes_table(el.attributes))

@@ -31,6 +31,8 @@ class RncElement:
     attributes: list[RncAttribute] = field(default_factory=list)
     children: list[tuple[str, str]] = field(default_factory=list)  # (Name, Cardinality) of child elements or patterns
     content_model: str | None = None  # Textual representation of content model
+    example: str | None = None  # Example code from db:example or db:screen
+    example_title: str | None = None  # Title for the example from db:title
 
 
 class SchemaWalker:
@@ -182,6 +184,27 @@ class SchemaWalker:
 
         return None
 
+    def _get_example(self, node: etree._Element) -> tuple[str | None, str | None]:
+        """Extract example code and title.
+        Returns: (example_code, example_title)
+        """
+        # First, check inside the node itself for <db:example>
+        example_node = node.find(".//db:example", namespaces=NAMESPACES)
+        if example_node is not None:
+             screen = example_node.find("db:screen", namespaces=NAMESPACES)
+             title_node = example_node.find("db:title", namespaces=NAMESPACES)
+             title = "".join(title_node.itertext()).strip() if title_node is not None else None
+
+             if screen is not None and screen.text:
+                 return (screen.text.strip(), title)
+
+        # Check for <db:screen> directly
+        screen_node = node.find(".//db:screen", namespaces=NAMESPACES)
+        if screen_node is not None and screen_node.text:
+            return (screen_node.text.strip(), None)
+
+        return (None, None)
+
     def _visit(self, node: etree._Element, current_element: RncElement | None = None, current_pattern: str | None = None) -> None:
         if not isinstance(node.tag, str):
             return
@@ -192,7 +215,42 @@ class SchemaWalker:
             name = node.get("name")
             if name:
                 desc = self._get_doc(node)
-                el = RncElement(name=name, pattern_name=current_pattern, description=desc)
+                # Find example
+                example, example_title = self._get_example(node)
+
+                # If not found directly, look at parent define's siblings (the <div> logic)
+                if not example:
+                     parent = node.getparent()
+                     if parent is not None and etree.QName(parent).localname == "define":
+                         grandparent = parent.getparent()
+                         if grandparent is not None:
+                             # Search grandparent's children
+                             for child in grandparent:
+                                 if not isinstance(child.tag, str): continue
+                                 child_qname = etree.QName(child)
+
+                                 if child_qname.namespace == DOCBOOK_NS:
+                                     if child_qname.localname == "example":
+                                         screen = child.find("db:screen", namespaces=NAMESPACES)
+                                         title_node = child.find("db:title", namespaces=NAMESPACES)
+
+                                         if screen is not None and screen.text:
+                                             example = screen.text.strip()
+                                             if title_node is not None:
+                                                 example_title = "".join(title_node.itertext()).strip()
+                                             break
+
+                                     elif child_qname.localname == "screen" and child.text:
+                                         example = child.text.strip()
+                                         break
+
+                el = RncElement(
+                    name=name,
+                    pattern_name=current_pattern,
+                    description=desc,
+                    example=example,
+                    example_title=example_title
+                )
                 self.elements.append(el)
 
                 # Check for attributes and children
