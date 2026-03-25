@@ -359,10 +359,13 @@ class SchemaWalker:
                     is_optional = (parent_tag == "optional") or inherited_optional
 
                     desc = self._get_doc(child)
+                    default_val = child.get(f"{{{A_NS}}}defaultValue")
+
                     rnc_element.attributes.append(RncAttribute(
                         name=attr_name,
                         required=not is_optional,
-                        description=desc
+                        description=desc,
+                        default=default_val
                     ))
 
             elif tag == "element":

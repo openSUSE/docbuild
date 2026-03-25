@@ -62,19 +62,22 @@ def _generate_attributes_table(attributes: list) -> str:
 
     rst = [
         ".. list-table:: Attributes",
-        "   :widths: 20 10 70",
+        "   :widths: 20 10 10 60",
         "   :header-rows: 1",
         "",
         "   * - Name",
         "     - Required?",
+        "     - Default",
         "     - Description",
     ]
 
     for attr in attributes:
         req = "Yes" if attr.required else "No"
         desc = attr.description.replace("\n", " ") if attr.description else ""
+        default_val = f"``{attr.default}``" if attr.default else "n/a"
         rst.append(f"   * - ``{attr.name}``")
         rst.append(f"     - {req}")
+        rst.append(f"     - {default_val}")
         rst.append(f"     - {desc}")
 
     return "\n".join(rst) + "\n\n"
