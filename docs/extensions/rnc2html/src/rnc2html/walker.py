@@ -243,6 +243,15 @@ class SchemaWalker:
                 new_lines.append(line)
         return "\n".join(new_lines)
 
+    def _quantify(self, text: str, op: str) -> str:
+        """Apply quantifier, escaping the operator if necessary (e.g. after backticks)."""
+        # If text ends with backticks (inline literal) or a closing delimiter that creates ambiguity,
+        # we must escape the quantifier asterisk/plus/opt to prevent RST parsing errors.
+        # Specifically "Inline literal start-string without end-string".
+        if text.strip().endswith("``"):
+             return f"{text}\\{op}"
+        return f"{text}{op}"
+
     def _build_content_model_str(self, node: etree._Element, level: int = 0) -> str | None:
         """Recursive function to build content model string, ignoring attributes."""
         tag = etree.QName(node).localname
@@ -284,9 +293,9 @@ class SchemaWalker:
                     else:
                         children_strs.append(f"{{{ref_name}}}")
             elif child_tag == "text":
-                children_strs.append("text")
+                children_strs.append("``text``")
             elif child_tag == "empty":
-                children_strs.append("empty")
+                children_strs.append("``empty``")
             elif child_tag == "data":
                 children_strs.append(f"data({child.get('type','')})")
             elif child_tag == "value":
@@ -316,7 +325,7 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})?"
             else:
                  inner = children_strs[0]
-                 return f"{self._dedent(inner)}?"
+                 return self._quantify(self._dedent(inner), "?")
 
         elif tag == "zeroOrMore":
             if is_complex:
@@ -325,7 +334,7 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})*"
             else:
                  inner = children_strs[0]
-                 return f"{self._dedent(inner)}*"
+                 return self._quantify(self._dedent(inner), "*")
 
         elif tag == "oneOrMore":
             if is_complex:
@@ -334,7 +343,7 @@ class SchemaWalker:
                  return f"({nl}{sub_indent}{inner}{nl}{indent})+"
             else:
                  inner = children_strs[0]
-                 return f"{self._dedent(inner)}+"
+                 return self._quantify(self._dedent(inner), "+")
 
         elif tag == "choice":
             if not is_complex:
