@@ -38,7 +38,8 @@ class SchemaWalker:
         self.tree = tree
         self.root = tree.getroot()
         self.defines: dict[str, etree._Element] = {}
-        self.elements: dict[str, RncElement] = {}
+        # Stores list of elements because names are not unique (different patterns can define same element name)
+        self.elements: list[RncElement] = []
         self.visited_patterns: set[str] = set()
         self._collect_defines()
 
@@ -164,7 +165,7 @@ class SchemaWalker:
         start_node = self.root.find("rng:start", namespaces=NAMESPACES)
         if start_node is not None:
             self._visit(start_node)
-        return list(self.elements.values())
+        return self.elements
 
     def _get_doc(self, node: etree._Element) -> str | None:
         """Extract documentation from db:refpurpose or a:documentation."""
@@ -181,7 +182,7 @@ class SchemaWalker:
 
         return None
 
-    def _visit(self, node: etree._Element, current_element: RncElement | None = None) -> None:
+    def _visit(self, node: etree._Element, current_element: RncElement | None = None, current_pattern: str | None = None) -> None:
         if not isinstance(node.tag, str):
             return
 
@@ -189,10 +190,10 @@ class SchemaWalker:
 
         if tag == "element":
             name = node.get("name")
-            if name and name not in self.elements:
+            if name:
                 desc = self._get_doc(node)
-                el = RncElement(name=name, description=desc)
-                self.elements[name] = el
+                el = RncElement(name=name, pattern_name=current_pattern, description=desc)
+                self.elements.append(el)
 
                 # Check for attributes and children
                 self._analyze_children(node, el)
@@ -202,20 +203,27 @@ class SchemaWalker:
             if name and name not in self.visited_patterns:
                 self.visited_patterns.add(name)
                 if name in self.defines:
-                    self._visit(self.defines[name], current_element)
+                    # Switch to the define node, treating 'name' as current pattern for children
+                    self._visit(self.defines[name], current_element, current_pattern=name)
 
         elif tag == "start":
              # Document the start element
              name = "start"
-             if name not in self.elements:
+             # Avoid re-adding start if visited (though start is usually unique)
+             if not any(e.name == "start" for e in self.elements):
                 desc = self._get_doc(node)
                 el = RncElement(name=name, description=desc)
-                self.elements[name] = el
+                self.elements.append(el)
                 self._analyze_children(node, el)
 
-        elif tag in ("group", "choice", "interleave", "optional", "zeroOrMore", "oneOrMore", "define"):
+        elif tag == "define":
+             pattern_name = node.get("name")
              for child in node:
-                 self._visit(child, current_element)
+                 self._visit(child, current_element, current_pattern=pattern_name)
+
+        elif tag in ("group", "choice", "interleave", "optional", "zeroOrMore", "oneOrMore"):
+             for child in node:
+                 self._visit(child, current_element, current_pattern=current_pattern)
 
     def _analyze_children(self, element_node: etree._Element, rnc_element: RncElement) -> None:
         """

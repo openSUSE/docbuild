@@ -124,21 +124,40 @@ def generate_multi_page(elements: list[RncElement], out_dir: Path, schema_name: 
         ""
     ]
 
+    # Track generated filenames to handle duplicates
+    generated_files = set()
+
     for el in elements:
-        filename = f"{el.name}.rst"
-        file_path = out_dir / filename
+        # Determine filename
+        filename = f"{el.name}"
+        if el.pattern_name and (filename in generated_files or any(e.name == el.name and e is not el for e in elements)):
+            # Disambiguate with pattern name
+             filename = f"{el.name}-{el.pattern_name}"
+
+        # Ensure uniqueness if pattern name isn't enough (unlikely but safe)
+        base_filename = filename
+        counter = 1
+        while filename in generated_files:
+             filename = f"{base_filename}-{counter}"
+             counter += 1
+
+        generated_files.add(filename)
+        file_path = out_dir / f"{filename}.rst"
 
         # Add to index
-        index_content.append(f"   {el.name}")
+        index_content.append(f"   {filename}")
 
         content = []
         # Label for cross-referencing
-        content.append(f".. _rnc_element_{el.name}:\n")
+        content.append(f".. _rnc_element_{el.name}_{el.pattern_name or ''}:\n")
 
         if el.name == "start":
             content.append(_rst_title("Start"))
         else:
-            content.append(_rst_title(f"Element: <{el.name}>"))
+             title = f"Element: <{el.name}>"
+             if el.pattern_name:
+                 title += f" ({el.pattern_name})"
+             content.append(_rst_title(title))
 
         if el.description:
             content.append(f"{el.description}\n")
@@ -169,13 +188,29 @@ def generate_single_page(elements: list[RncElement], out_dir: Path, schema_name:
     content = []
     content.append(_rst_title(f"{schema_name} Reference"))
 
+    # Need to handle duplicate names to ensure labels are unique
+    counts = {}
+
     for el in elements:
-        content.append(f".. _rnc_element_{el.name}:\n")
+        # Create a unique-ish label.
+        # If pattern name exists, use it.
+        label_suffix = f"_{el.pattern_name}" if el.pattern_name else ""
+        if not label_suffix:
+            # Fallback for duplicates without pattern name (unlikely for top-level defines)
+            num = counts.get(el.name, 0) + 1
+            counts[el.name] = num
+            if num > 1:
+                label_suffix = f"_{num}"
+
+        content.append(f".. _rnc_element_{el.name}{label_suffix}:\n")
 
         if el.name == "start":
             content.append(_rst_title("Start", "-"))
         else:
-            content.append(_rst_title(f"<{el.name}>", "-"))
+            title = f"<{el.name}>"
+            if el.pattern_name:
+                title += f" ({el.pattern_name})"
+            content.append(_rst_title(title, "-"))
 
         if el.description:
             content.append(f"{el.description}\n")
