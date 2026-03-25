@@ -22,6 +22,7 @@ class RncAttribute:
     required: bool = False
     description: str | None = None
     default: str | None = None
+    type_info: str | None = None
 
 @dataclass
 class RncElement:
@@ -492,12 +493,14 @@ class SchemaWalker:
 
                     desc = self._get_doc(child)
                     default_val = child.get(f"{{{A_NS}}}defaultValue")
+                    type_info = self._get_attribute_type(child)
 
                     rnc_element.attributes.append(RncAttribute(
                         name=attr_name,
                         required=not is_optional,
                         description=desc,
-                        default=default_val
+                        default=default_val,
+                        type_info=type_info
                     ))
 
             elif tag == "element":
@@ -538,22 +541,63 @@ class SchemaWalker:
 
             elif tag == "oneOrMore":
                  # 1 -> +
-                 # ? -> *
-                 # * -> *
                  # + -> +
-                 new_card = "*" if cardinality in ("?", "*") else "+"
+                 # * -> *
+                 # ? -> * (optional repeated -> *)
+                 new_card = "+" if cardinality in ("1", "+") else "*"
                  self._collect_element_content(child, rnc_element, new_card)
 
             elif tag == "choice":
-                 # Items inside choice are effectively optional (unless one MUST be chosen, but which one?)
-                 # Standard RELAX NG choice: (a | b).
-                 # If wrapped in nothing (1), exactly one of a or b appears (1). But individually a appears 0..1, b 0..1.
-                 # So effectively ? for children.
-                 new_card = "*" if cardinality in ("*", "+") else "?"
-                 self._collect_element_content(child, rnc_element, new_card)
+                 # Choice doesn't change cardinality directly for children unless specific
+                 # But in content model it's (A|B).
+                 # We just pass through cardinality.
+                 self._collect_element_content(child, rnc_element, cardinality)
 
             elif tag in ("group", "interleave", "define"):
-                 # Recurse with same cardinality context
                  self._collect_element_content(child, rnc_element, cardinality)
+
+    def _get_attribute_type(self, node: etree._Element, visited: set[str] | None = None) -> str | None:
+        """Extract type information (data type, enum values) from an attribute definition."""
+        if visited is None:
+            visited = set()
+
+        # Check for <data type="...">
+        data_node = node.find("rng:data", namespaces=NAMESPACES)
+        if data_node is not None:
+            type_name = data_node.get("type", "string")
+            params = []
+            for param in data_node.findall("rng:param", namespaces=NAMESPACES):
+                p_name = param.get("name")
+                if param.text:
+                    params.append(f"{p_name}: {param.text}")
+
+            result = type_name
+            if params:
+                result += f" ({', '.join(params)})"
+            return result
+
+        # Check for <choice> (enum)
+        choice_node = node.find("rng:choice", namespaces=NAMESPACES)
+        if choice_node is not None:
+             values = []
+             for val in choice_node.findall("rng:value", namespaces=NAMESPACES):
+                 if val.text:
+                     values.append(val.text)
+
+             if values:
+                 return f"Enum: {', '.join(values)}"
+
+        # Check for <ref> (reference to type definition)
+        ref_node = node.find("rng:ref", namespaces=NAMESPACES)
+        if ref_node is not None:
+            ref_name = ref_node.get("name")
+            if ref_name and ref_name not in visited:
+                visited.add(ref_name)
+                if ref_name in self.defines:
+                    return self._get_attribute_type(self.defines[ref_name], visited)
+
+        return None
+
+
 
 
