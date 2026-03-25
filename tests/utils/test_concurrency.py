@@ -133,33 +133,34 @@ async def test_process_unordered_kwargs():
     assert set(int_results) == {3, 6, 9}
 
 
-async def test_finally_calls_cancel_on_early_exit(monkeypatch):
-    cancelled = False
-    original_create_task = asyncio.create_task
+async def test_finally_calls_cancel_on_early_exit():
+    """Verify that if the caller stops iterating, the runner task is cancelled."""
+    worker_started = asyncio.Event()
+    worker_cancelled = False
 
-    def patched_create_task(coro, **kwargs):
-        task = original_create_task(coro, **kwargs)
-        original_cancel = task.cancel
+    async def slow_worker(x):
+        try:
+            worker_started.set()
+            await asyncio.sleep(10) # Wait a long time
+            return x
+        except asyncio.CancelledError:
+            nonlocal worker_cancelled
+            worker_cancelled = True
+            raise
 
-        def tracking_cancel(*args, **kwargs):
-            nonlocal cancelled
-            cancelled = True
-            return original_cancel(*args, **kwargs)
+    # 1. Start the generator
+    gen = run_parallel(range(10), slow_worker, limit=1)
+    
+    # 2. Start iterating and then 'break' or 'raise'
+    try:
+        async for _ in gen:
+            await worker_started.wait()
+            raise RuntimeError("Stop early")
+    except RuntimeError:
+        pass
 
-        task.cancel = tracking_cancel
-        return task
-
-    monkeypatch.setattr(concurrency_module, "asyncio", asyncio)
-    monkeypatch.setattr(asyncio, "create_task", patched_create_task)
-
-    async def worker(x):
-        await asyncio.sleep(0)
-        return x
-
-    with pytest.raises(RuntimeError):
-        async for _ in run_parallel(range(100), worker, limit=2):
-            raise RuntimeError("caller crashed")
-
-    for _ in range(5):
-        await asyncio.sleep(0)
-    assert cancelled
+    # 3. Give the event loop a moment to run the finally block in run_parallel
+    await asyncio.sleep(0.1)
+    
+    # 4. Verify cleanup happened
+    assert worker_cancelled, "Worker was not cancelled after early exit"
