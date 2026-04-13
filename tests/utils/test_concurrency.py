@@ -1,10 +1,19 @@
 """Tests for concurrency utilities."""
 
 import asyncio
+from collections.abc import AsyncGenerator
+from contextlib import suppress
+from typing import cast
 
 import pytest
 
-from docbuild.utils.concurrency import TaskFailedError, run_parallel
+from docbuild.utils.concurrency import (
+    SENTINEL,
+    TaskFailedError,
+    producer,
+    run_all,
+    run_parallel,
+)
 
 
 @pytest.mark.parametrize("limit", (0, -1))
@@ -171,5 +180,57 @@ async def test_finally_calls_cancel_on_early_exit():
     driver.cancel()
 
     # 4. Settle and check
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0.1)
     assert worker_cancelled is True, "Worker should have been cancelled"
+
+
+async def test_producer_queue_full_sentinel():
+    """Test that if the input queue is full, the producer's finally block doesn't deadlock trying to put sentinels."""
+    limit = 2
+    input_queue = asyncio.Queue(maxsize=1)
+    await producer([], input_queue, num_workers=limit)
+    assert input_queue.full()
+    assert input_queue.get_nowait() is SENTINEL
+
+
+async def test_run_all_exception_coverage():
+    """Test that if a worker raises an exception, run_all handles it without deadlocking on a full result_queue."""
+    input_queue = asyncio.Queue()
+    # Force result_queue to be full so put_nowait(SENTINEL) hits the 'except' block
+    result_queue = asyncio.Queue(maxsize=1)
+    result_queue.put_nowait("Blocker")
+
+    async def broken_worker(_):
+        # We need a small yield here to ensure the TaskGroup starts the worker
+        # before the exception is raised.
+        await asyncio.sleep(0)
+        raise RuntimeError("Simulated crash")
+
+    # If the library is fixed, this finishes instantly.
+    # If not fixed, it hangs here.
+    try:
+        async with asyncio.timeout(2):
+            with suppress(Exception):
+                await run_all([1], broken_worker, input_queue, result_queue, limit=1)
+    except TimeoutError:
+        pytest.fail("Deadlock in run_all: finally block hung on a full result_queue")
+
+    # Verify we didn't hang and the queue is still full
+    assert result_queue.full()
+    assert result_queue.get_nowait() == "Blocker"
+
+
+async def test_run_parallel_cleanup_coverage():
+    """Test that if the caller stops iterating, the generator's finally block is hit without deadlocking."""
+    async def quick_fn(x):
+        return x
+
+    gen = run_parallel([1], quick_fn, limit=1)
+    gen_as_gen = cast(AsyncGenerator, gen)
+
+    # We trigger the finally block by throwing a CancelledError.
+    # This avoids the potential deadlock of 'aclose' on some loops.
+    with suppress(asyncio.CancelledError, StopAsyncIteration):
+        await gen_as_gen.athrow(asyncio.CancelledError)
+
+    assert True

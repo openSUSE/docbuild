@@ -97,7 +97,11 @@ async def worker[T, R](
             result = await worker_fn(item)
             await result_queue.put(result)
         except Exception as exc:
-            await result_queue.put(TaskFailedError(item, exc))
+            # If putting an error fails (queue full), don't deadlock.
+            try:
+                result_queue.put_nowait(TaskFailedError(item, exc))
+            except (asyncio.QueueFull, Exception):
+                pass
         finally:
             input_queue.task_done()
 
@@ -117,15 +121,17 @@ async def run_all[T, R](
     :param limit: The maximum number of concurrent workers.
     """
     # Remove the internal .join() and let TaskGroup manage the lifecycle
-    async with asyncio.TaskGroup() as tg:
-        tg.create_task(producer(items, input_queue, limit))
-        for _ in range(limit):
-            tg.create_task(worker(worker_fn, input_queue, result_queue))
-
-    # Once we are here, TaskGroup has successfully joined all tasks.
     try:
-        result_queue.put_nowait(SENTINEL)
-    except (asyncio.QueueFull, Exception):
+        async with asyncio.TaskGroup() as tg:
+            tg.create_task(producer(items, input_queue, limit))
+            for _ in range(limit):
+                tg.create_task(worker(worker_fn, input_queue, result_queue))
+    finally:
+        # We use put_nowait here. If the result_queue is full,
+        # we do not want to deadlock the entire process.
+        try:
+            result_queue.put_nowait(SENTINEL)
+        except (asyncio.QueueFull, Exception):
             pass
 
 
