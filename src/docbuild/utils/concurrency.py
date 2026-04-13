@@ -72,6 +72,7 @@ async def producer[T](
             except (asyncio.QueueFull, Exception):
                 break
 
+
 async def worker[T, R](
     worker_fn: Callable[[T], Awaitable[R]],
     input_queue: asyncio.Queue,
@@ -104,6 +105,7 @@ async def worker[T, R](
                 pass
         finally:
             input_queue.task_done()
+
 
 async def run_all[T, R](
     items: Iterable[T] | AsyncIterableABC[T],
