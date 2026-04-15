@@ -43,7 +43,7 @@ docbuild.cli.context.DocBuildContext
 
 
    .. py:attribute:: appconfig
-      :type:  dict[str, Any] | None
+      :type:  docbuild.models.config.app.AppConfig | None
       :value: None
 
 

@@ -37,7 +37,7 @@ Module Contents
      status code after handling the error.
 
 
-.. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, **kwargs: dict) -> None
+.. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, max_workers: str | None, **kwargs: dict) -> None
 
    Acts as a main entry point for CLI tool.
 
