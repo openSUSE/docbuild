@@ -1,7 +1,7 @@
 docbuild.models.lifecycle.LifecycleFlag
 =======================================
 
-.. py:class:: docbuild.models.lifecycle.LifecycleFlag(*args, **kwds)
+.. py:class:: docbuild.models.lifecycle.LifecycleFlag
 
    Bases: :py:obj:`enum.Flag`
 

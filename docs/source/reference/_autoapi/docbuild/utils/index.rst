@@ -15,10 +15,12 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /reference/_autoapi/docbuild/utils/concurrency/index
    /reference/_autoapi/docbuild/utils/contextmgr/index
    /reference/_autoapi/docbuild/utils/convert/index
    /reference/_autoapi/docbuild/utils/decorators/index
    /reference/_autoapi/docbuild/utils/doc/index
+   /reference/_autoapi/docbuild/utils/errors/index
    /reference/_autoapi/docbuild/utils/git/index
    /reference/_autoapi/docbuild/utils/merge/index
    /reference/_autoapi/docbuild/utils/paths/index

@@ -42,12 +42,12 @@ docbuild.models.manifest.Document
       :classmethod:
 
 
-      Coerce rank from string to int, handling empty strings.
+      Coerce rank to an integer, treating empty strings or None as None to match legacy parity.
 
 
 
    .. py:method:: serialize_rank(value: int | str | None, info: pydantic.SerializationInfo) -> str
 
-      Serialize rank to an empty string if None.
+      Serialize rank to an empty string if None to match legacy parity.
 
 

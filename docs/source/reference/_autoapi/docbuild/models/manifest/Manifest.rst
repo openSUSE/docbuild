@@ -11,3 +11,9 @@ docbuild.models.manifest.Manifest
 
    Represents the aggregated metadata manifest for a product/docset.
 
+
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+

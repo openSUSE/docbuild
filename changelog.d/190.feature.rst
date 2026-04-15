@@ -1,1 +1,0 @@
-Add a global CLI option ``-j``/``--workers`` to manage concurrency. This option overrides the configuration file and supports both explicit integer values and dynamic keywords (``all``, ``half``, ``all2``).

@@ -29,7 +29,15 @@ docbuild.models.manifest.SingleDocument
        }
 
 
-   .. py:method:: serialize_date(value: datetime.date | None, info: pydantic.SerializationInfo) -> str
+   .. py:method:: warn_missing_title(v: str | None, info: pydantic.ValidationInfo) -> str | None
+      :classmethod:
+
+
+      Check for missing titles and log a warning with the document origin.
+
+
+
+   .. py:method:: serialize_date(value: datetime.date | None, _info: pydantic.SerializationInfo) -> str
 
       Serialize date to 'YYYY-MM-DD' or an empty string if None.
 

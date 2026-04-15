@@ -21,6 +21,59 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.17.0
+==============
+
+Improved Documentation
+----------------------
+
+- Describe some missing features:
+
+  * Document the command :command:`docbuild check files` in the new seciton
+    "Checking your Environment"
+  * Add Pydantic definition into glossary
+  * Adjusted "Configuring the Tool" section and included placeholders
+    (static & dynamic), key naming conventions, and more. (:gh:`173`)
+- Streamlined CLI subcommands by removing redundant environment configuration
+  checks and implementing strict typing with EnvConfig models.
+  Updated :class:`~docbuild.utils.git.ManagedGitRepo` to support both string
+  and :class:`~docbuild.models.repo.Repo` model initialization. (:gh:`181`)
+
+
+Features
+--------
+
+- Add serialization of missing :class:`~docserv.models.deliverable.Description`. (:gh:`155`)
+- Added a rich-formatted Pydantic validation error reporter for the CLI, providing field descriptions, expected values, and documentation links. (:gh:`158`)
+- Implement manifest parity with legacy JSON portal configuration, including support for nested product metadata collection, full locale (BCP 47) support, and a new manifest audit utility for structural verification. (:gh:`183`)
+- Introduce the ``max_workers`` configuration key in the application config. This allows users to define concurrency limits using integers or hardware-aware keywords such as ``all``, ``half``, or ``all2``. (:gh:`189`)
+- Add a global CLI option ``-j``/``--workers`` to manage concurrency. This option overrides the configuration file and supports both explicit integer values and dynamic keywords (``all``, ``half``, ``all2``). (:gh:`190`)
+- Add a producer/consumer model implementation. (:gh:`191`)
+- Enhance metadata pipeline resilience by implementing default values for missing legacy fields and added a comprehensive suite of catalog-wide audit tools. (:gh:`192`)
+
+
+Infrastructure
+--------------
+
+- Integrated GitHub CodeQL for automated security scanning and data-flow analysis of Python source code. (:gh:`164`)
+- Improve test coverage for :file:`git.py`, :file:`env.py`, and
+  :file:`lifecycle.py`. Raises coverage report by 1%. (:gh:`168`)
+- Added a project security policy (SECURITY.md) to define a coordinated disclosure process for reporting vulnerabilities. (:gh:`179`)
+- Print more information from the setup-uv step. (:gh:`186`)
+- In the bug reporting template, remove "Windows" and add "Generic". (:gh:`196`)
+- Add :file:`AGENTS.md` for guiding coding agents. (:gh:`203`)
+- Switch the Ubuntu CI toolchain to use the modernized ``doc-container`` hosted on GitHub Container Registry (GHCR), providing Python 3.12 support and improved build reliability. (:gh:`205`)
+
+
+Code Refactoring
+----------------
+
+- The implementation of :func:`~docbuild.config.app.deep_merge` has been
+  fixed to properly handle deep copies of lists, tuples, and sets.
+  Refactored to be more robust and handle a wider variety of data types
+  (including lists, tuples, and sets) correctly during the merging process. (:gh:`202`)
+
+
 Version 0.16.0
 ==============
 

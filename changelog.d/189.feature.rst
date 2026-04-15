@@ -1,1 +1,0 @@
-Introduce the ``max_workers`` configuration key in the application config. This allows users to define concurrency limits using integers or hardware-aware keywords such as ``all``, ``half``, or ``all2``.
