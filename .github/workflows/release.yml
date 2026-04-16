@@ -87,7 +87,7 @@ jobs:
         run: uv build --wheel
 
       - name: Generate GitHub Release & Upload wheel
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ env.VERSION }}
           generate_release_notes: true
