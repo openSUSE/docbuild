@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 import click
 from pydantic import ValidationError
 import pytest
+import tomllib
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
@@ -267,3 +268,32 @@ def test_cli_verbose_and_debug(
     assert result.exit_code == 0
     assert context.verbose == 3
     assert context.debug is True
+
+
+@pytest.mark.parametrize("is_app_config_failure", [True, False])
+def test_cli_toml_syntax_error(
+    runner,
+    fake_handle_config,
+    mock_config_models,
+    is_app_config_failure,
+):
+    """Verify that the CLI handles TOML syntax errors gracefully (Issue #175)."""
+    
+    # Define a resolver that raises TOMLDecodeError
+    def resolver_with_syntax_error(user_path, *args, **kwargs):
+        # We simulate the exact error raised by tomllib
+        raise tomllib.TOMLDecodeError("Invalid value", "test.toml", 0)
+
+    fake_handle_config(resolver_with_syntax_error)
+
+    # Invoke the CLI. Whether it's app or env config, the handle_config 
+    # call is now wrapped in a try/except in cmd_cli.py
+    result = runner.invoke(cli, ["capture"])
+
+    assert result.exit_code == 1
+    assert "Syntax error in config file" in result.output
+    assert "Invalid value" in result.output
+    # Verify our specific 'Note' from the formatter appears
+    assert "Booleans must be lowercase" in result.output
+    # Crucially, ensure no raw Python traceback is leaked to the user
+    assert "Traceback (most recent call last)" not in result.output

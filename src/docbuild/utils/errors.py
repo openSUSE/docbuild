@@ -4,6 +4,7 @@
 from pydantic import BaseModel, ValidationError
 from rich.console import Console
 from rich.text import Text
+import tomllib
 
 from ..constants import DEFAULT_ERROR_LIMIT
 
@@ -112,3 +113,31 @@ def format_pydantic_error(
             f"[dim]... and {error_count - max_display} more errors. "
             "Use '-vv' to see all errors.[/dim]\n"
         )
+
+def format_toml_error(
+    error: tomllib.TOMLDecodeError,
+    config_file: str,
+    console: Console | None = None,
+) -> None:
+    """Format TOML syntax errors using Rich.
+
+    :param error: The caught TOMLDecodeError object.
+    :param config_file: The name/path of the config file with the syntax error.
+    :param console: Optional Rich console object.
+    """
+    con = console or Console(stderr=True)
+
+    header = Text.assemble(
+        ("Syntax error ", "bold red"),
+        ("in config file ", "white"),
+        (f"'{config_file}'", "bold cyan"),
+        (":", "white")
+    )
+    con.print(header)
+    
+    # tomllib error messages include the line and column info naturally
+    con.print(f"    [red]{error}[/red]")
+    con.print()
+    con.print("    [dim]Please verify that the file is a valid TOML file.[/dim]")
+    con.print("    [dim]Note: Booleans must be lowercase (true/false) in TOML.[/dim]")
+    

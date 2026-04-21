@@ -10,6 +10,7 @@ import click
 from pydantic import BaseModel, ValidationError
 import rich.console
 from rich.traceback import install as install_traceback
+import tomllib
 
 from ..__about__ import __version__
 from ..config.load import handle_config
@@ -24,7 +25,7 @@ from ..constants import (
 from ..logging import setup_logging
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
-from ..utils.errors import format_pydantic_error
+from ..utils.errors import format_pydantic_error, format_toml_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
@@ -68,16 +69,16 @@ def handle_validation_error(
     :param ctx: The Click context, used to exit the CLI with an appropriate
       status code after handling the error.
     """
-    config_label = "Application" if model_class == AppConfig else "Environment"
+    # Determine which file we were working on
+    config_file = str((config_files or ["unknown"])[0])
 
-    if isinstance(e, ValidationError):
-        # Safely extract the first config file name for the error header
-        config_file = str((config_files or ["unknown"])[0])
-        format_pydantic_error(
-            e, model_class, config_file, verbose, console=CONSOLE
-        )
+    if isinstance(e, tomllib.TOMLDecodeError):
+        format_toml_error(e, config_file, console=CONSOLE)
+    elif isinstance(e, ValidationError):
+        format_pydantic_error(e, model_class, config_file, verbose, console=CONSOLE)
     else:
-        log.error("%s configuration failed validation:", config_label)
+        config_label = "Application" if model_class == AppConfig else "Environment"
+        log.error("%s configuration failed:", config_label)
         log.error("Error in config file(s): %s", config_files)
         log.error(e)
     ctx.exit(1)
@@ -171,18 +172,26 @@ def cli(
     context.dry_run = dry_run
     context.debug = debug
 
+    # --- INITIALIZE TO AVOID UNBOUND ERRORS ---
+    raw_appconfig: dict[str, Any] = {}
+    raw_envconfig: dict[str, Any] = {}
+
     # --- PHASE 1: Load and Validate Application Config ---
-    (
-        context.appconfigfiles,
-        raw_appconfig,
-        context.appconfig_from_defaults,
-    ) = handle_config(
-        app_config,
-        CONFIG_PATHS,
-        APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
-        None,
-        DEFAULT_APP_CONFIG,
-    )
+    try:
+        # We cast the return of handle_config to the expected tuple type
+        result = handle_config(
+            app_config,
+            CONFIG_PATHS,
+            APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
+            None,
+            DEFAULT_APP_CONFIG,
+        )
+        context.appconfigfiles, raw_appconfig, context.appconfig_from_defaults = cast(
+            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+        )
+    except tomllib.TOMLDecodeError as e:
+        files = (app_config,) if app_config else None
+        handle_validation_error(e, AppConfig, files, verbose, ctx)
 
     raw_appconfig = cast(dict[str, Any], raw_appconfig)
 
@@ -200,18 +209,21 @@ def cli(
     )
     setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
-    # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
-    (
-        context.envconfigfiles,
-        raw_envconfig,
-        context.envconfig_from_defaults,
-    ) = handle_config(
-        env_config,
-        (PROJECT_DIR,),
-        None,
-        DEFAULT_ENV_CONFIG_FILENAME,
-        DEFAULT_ENV_CONFIG,
-    )
+    # --- PHASE 2: Load Environment Config ---
+    try:
+        result = handle_config(
+            env_config,
+            (PROJECT_DIR,),
+            None,
+            DEFAULT_ENV_CONFIG_FILENAME,
+            DEFAULT_ENV_CONFIG,
+        )
+        context.envconfigfiles, raw_envconfig, context.envconfig_from_defaults = cast(
+            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+        )
+    except tomllib.TOMLDecodeError as e:
+        files = (env_config,) if env_config else None
+        handle_validation_error(e, EnvConfig, files, verbose, ctx)
 
     raw_envconfig = cast(dict[str, Any], raw_envconfig)
 

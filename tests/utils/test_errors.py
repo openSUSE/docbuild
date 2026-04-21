@@ -1,6 +1,7 @@
 """Tests for the Pydantic error formatting utility."""
 
 from typing import Any
+import tomllib
 
 from pydantic import BaseModel, Field, IPvAnyAddress, ValidationError, create_model
 from rich.console import Console
@@ -94,3 +95,23 @@ def test_format_pydantic_error_path_cleaning(capsys):
     assert "In 'host':" in captured.err
     # Verify no bracketed pydantic internals leaked in the path part
     assert "[" not in captured.err.split("In '")[1].split("':")[0]
+
+
+def test_format_toml_error_smoke(capsys):
+    """Verify that the TOML syntax error formatter prints correctly."""
+    from docbuild.utils.errors import format_toml_error
+    
+    # 1. Manually trigger a TOML syntax error
+    bad_toml_content = "enable_mail = True"  # Invalid: Capital T
+    try:
+        tomllib.loads(bad_toml_content)
+    except tomllib.TOMLDecodeError as e:
+        # 2. Call our new formatter
+        format_toml_error(e, "env.devel.toml")
+
+    captured = capsys.readouterr()
+
+    # 3. Assertions to verify the "Rich" output content
+    assert "Syntax error in config file 'env.devel.toml'" in captured.err
+    assert "Invalid value" in captured.err
+    assert "Booleans must be lowercase" in captured.err
