@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles-sap.trento" path="trento">
+  <version includes-productname="true">Trento</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Trento Premium is an open cloud-native web console that aims to
+          help SAP administrators to improve monitoring and checking of SAP
+          Applications.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/trento-project/docs.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>latest</branch>
+      <subdir>trento</subdir>
+      <deliverable id="sles-sap.trento.dc-sles-sap-trento" type="dc">
+        <dc file="DC-SLES-SAP-trento">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

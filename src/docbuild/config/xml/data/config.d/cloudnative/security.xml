@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.security" path="security">
+  <version>SUSE Security (NeuVector)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Security provides a powerful end-to-end container security
+          platform. This includes end-to-end vulnerability scanning and
+          complete run-time protection for containers, pods and hosts.
+        </p>
+        <p>
+          SUSE Security is the only fully open source, Zero Trust container
+          security platform. It offers enhanced runtime security, advanced
+          threat detection, and expanded compliance features such as continuously
+          scanning throughout the container lifecycle, removing security
+          roadblocks, and baking in security policies at the start to maximize
+          developer agility.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.security.security.5.4-en-overview.suse-security-overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Security Overview</title>
+          <url format="html" href="/cloudnative/security/5.4/en/overview.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-5x.suse-security-release-notes" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Security Release Notes</title>
+          <url format="html" href="/cloudnative/security/5.4/en/5x.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-requirements.understanding-suse-security" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Understanding SUSE Security</title>
+          <url format="html" href="/cloudnative/security/5.4/en/requirements.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-users.operational-tasks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Operational Tasks</title>
+          <url format="html" href="/cloudnative/security/5.4/en/users.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-rancher.deploying-suse-security" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Deploying SUSE Security</title>
+          <url format="html" href="/cloudnative/security/5.4/en/rancher.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-navigation.suse-security-interface" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Security Interface</title>
+          <url format="html" href="/cloudnative/security/5.4/en/navigation.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-customcompliance.security-policy" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Security Policy</title>
+          <url format="html" href="/cloudnative/security/5.4/en/customcompliance.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-admission.admission-controls" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Admission Controls</title>
+          <url format="html" href="/cloudnative/security/5.4/en/admission.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-usingcrd.custom-resource-definitions" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Custom Resource Definitions</title>
+          <url format="html" href="/cloudnative/security/5.4/en/usingcrd.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-scanning.scanning-and-compliance" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Scanning and Compliance</title>
+          <url format="html" href="/cloudnative/security/5.4/en/scanning.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-registry-scanning-configuration.registry-scanning" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Registry Scanning</title>
+          <url format="html" href="/cloudnative/security/5.4/en/registry-scanning-configuration.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-build-image-scanning.build-phase-image-scanning" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Build Phase Image Scanning</title>
+          <url format="html" href="/cloudnative/security/5.4/en/build-image-scanning.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.security.5.4-en-integration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Integration</title>
+          <url format="html" href="/cloudnative/security/5.4/en/integration.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-security/neuvector-performance-tuning.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>SUSE Security Performance Tuning</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

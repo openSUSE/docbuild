@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="releasenotes.sles-vmware" path="sles-vmware">
+  <version includes-productname="true">SUSE Linux Enterprise Server for VMware</version>
+  <resources>
+    <git remote="https://github.com/SUSE/release-notes.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="rn.sles-vmware.dc-releasenotes_sles-vmware_11-sp4" type="dc">
+        <dc file="DC-releasenotes_sles-vmware_11-SP4">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles-vmware.dc-releasenotes_sles-vmware_11-sp3" type="dc">
+        <dc file="DC-releasenotes_sles-vmware_11-SP3">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.cloud" path="cloud">
+  <version includes-productname="true">Cloud computing</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category contain information targeting cloud service providers
+          and help you set up specific workloads on public clouds.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Deployment -->
+      <deliverable id="sbp.cloud.dc-sbp-csp-updateinfra" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-CSP-UpdateInfra">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.cloud.dc-sbp-cloudls-master" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-CloudLS-master">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.sap-other.dc-sap-eic-harvester" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-other.dc-sap-eic" titleformat="title subtitle product"/>
+    <!-- <ref product="sbp" docset="sap-15" dc="DC-TRD-SLES-SAP-HA-automation-quickstart-cloud-aws"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="sap-15" dc="DC-TRD-SLES-SAP-HA-automation-quickstart-cloud-azure"
+        titleformat="title subtitle product"/> -->
+    <ref linkend="sbp.sap-15.dc-trd-sles-sap-ha-automation-quickstart-cloud-gcp" titleformat="title subtitle product"/>
+  </internal>
+</docset>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.rancher-developer-access" path="rancher-developer-access">
+  <version>SUSE Rancher Developer Access</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>SUSE Rancher Developer Access brings Kubernetes and trusted content
+        directly into the developer’s local environment, with minimal cognitive
+        overhead. The local cluster is powered by Rancher Desktop and its K3s
+        engine, a Kubernetes distribution that also serves as the embedded
+        engine in RKE2. From the first line of code, local development runs on
+        the same runtime and the same content as production.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.rancher-developer-access.latest-en-developing-for-kubernetes.overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Overview</title>
+          <url format="html" href="/cloudnative/rancher-developer-access/latest/en/developing-for-kubernetes.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-developer-access.latest-en-onboarding-and-implementation" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Onboarding</title>
+          <url format="html" href="/cloudnative/rancher-developer-access/latest/en/onboarding-and-implementation.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="fr-fr">
+    <title>Pilotes paravirtualisés pour SUSE Linux Enterprise</title>
+    <p>
+     Les pilotes paravirtualisés compris dans le SUSE Virtual Machine Driver
+     Pack offrent les performances de la paravirtualisation et la haute
+     disponibilité de la virtualisation complète.
+     Pour ce faire, la solution active des canaux de communication
+     supplémentaires entre les hyperviseurs Xen et KVM dans SUSE Linux
+     Enterprise et les systèmes d'exploitation invités non modifiés
+     d'un environnement virtuel.
+     Ainsi, les entrées et les sorties du stockage et du réseau sont
+     accélérées et l'efficacité de votre environnement est renforcée.
+    </p>
+  </desc>

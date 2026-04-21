@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.suse-private-registry" path="suse-private-registry" navigation="disabled">
+  <version>SUSE Private Registry: 1.0</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <title>On-premises container registry for SUSE customers.</title>
+        <p>
+          SUSE Private Registry is an on-premises container registry designed for
+          SUSE customers who need a container registry that works well with other
+          SUSE services and products.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/rancher/private-registry-product-docs.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="cn.suse-private-registry.dc-private-registry" type="dc" category="cat.deployment">
+        <dc file="DC-private-registry">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

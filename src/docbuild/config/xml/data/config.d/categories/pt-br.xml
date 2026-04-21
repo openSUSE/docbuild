@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category lang="pt-br">
+  <language linkend="cat.about" title="Sobre"/>
+  <language linkend="cat.deployment" title="Implantação"/>
+  <language linkend="cat.initial-config" title="Configuração inicial"/>
+  <language linkend="cat.update-upgrade" title="Atualização e upgrade"/>
+  <language linkend="cat.administration" title="Administração"/>
+  <language linkend="cat.container-virtualization" title="Containers e virtualização"/>
+  <language linkend="cat.product-usage" title="Uso do produto"/>
+  <language linkend="cat.security-compliance" title="Segurança e conformidade"/>
+  <language linkend="cat.tuning-performance" title="Ajuste e desempenho"/>
+  <language linkend="cat.solution-doc" title="Documentação da solução"/>
+  <language linkend="cat.additional-doc" title="Documentação adicional"/>
+  <language linkend="cat.best-practices" title="Práticas recomendadas"/>
+</category>

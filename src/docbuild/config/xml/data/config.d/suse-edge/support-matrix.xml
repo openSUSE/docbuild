@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suse-edge.support-matrix" path="support-matrix" navigation="hidden">
+  <version>all</version>
+  <resources>
+    <git remote="https://gitlab.suse.de/edge-engineering/support-matrix-docs.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>public</subdir>
+      <deliverable id="suse-edge.support-matrix.dc-support-matrix" type="dc" category="cat.suse-edge.core-doc">
+        <dc file="DC-support-matrix">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

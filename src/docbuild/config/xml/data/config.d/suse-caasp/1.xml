@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="suse-caasp.1" path="1">
+  <version>1</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-caasp.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/CaaS1</branch>
+      <deliverable id="suse-caasp.1.dc-caasp-deployment" type="dc" category="cat.suse-caasp.core-doc">
+        <dc file="DC-caasp-deployment">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- DC-caasp-quickstart is irrelevant and never shipped -->
+      <deliverable id="rn.suse-caasp.1.1-0.release-notes" type="prebuilt" category="cat.suse-caasp.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/suse-caasp/1.0/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="suse-caasp.4.2" path="4.2">
+  <version>4.2</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-caasp.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/CaaS4</branch>
+      <deliverable id="suse-caasp.4.2.dc-caasp-admin" type="dc" category="cat.suse-caasp.core-doc">
+        <dc file="DC-caasp-admin">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-caasp.4.2.dc-caasp-deployment" type="dc" category="cat.suse-caasp.core-doc">
+        <dc file="DC-caasp-deployment">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- DC-caasp-quickstart is irrelevant and did not ship for 4.x -->
+      <deliverable id="rn.suse-caasp.4.2.4.release-notes" type="prebuilt" category="cat.suse-caasp.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/suse-caasp/4/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

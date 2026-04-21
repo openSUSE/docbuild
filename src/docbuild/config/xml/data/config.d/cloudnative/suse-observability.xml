@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.suse-observability" path="suse-observability">
+  <version>SUSE Observability</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Observability delivers real-time monitoring, alerting, and
+          analytics for Kubernetes environments. Integrated with SUSE Rancher
+          Prime, cost optimization, full OpenTelemetry (OTEL) support, and
+          Application Performance Monitoring (APM) for complete system visibility.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.suse-observability.latest-en-classic.suse-observability" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Observability</title>
+          <url format="html" href="/cloudnative/suse-observability/latest/en/classic.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-observability.latest-en-k8s-quick-start-guide.quick-start" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Quick Start</title>
+          <url format="html" href="/cloudnative/suse-observability/latest/en/k8s-quick-start-guide.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-observability.latest-en-k8s-suse-rancher-prime.suse-observability-for-rancher-prime" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Observability for Rancher Prime</title>
+          <url format="html" href="/cloudnative/suse-observability/latest/en/k8s-suse-rancher-prime.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

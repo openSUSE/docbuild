@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.high-availability" path="high-availability">
+  <version includes-productname="true">High availability</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category contain information and instructions about how to set up
+           highly available environments.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Backup and recovery -->
+      <deliverable id="sbp.high-availability.dc-sbp-drbd" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-DRBD">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles-sap.sap-ha-support.dc-sap-ha-support" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sap-s4ha10-setupguide-sle15" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-12.dc-sbp-sap-multi-sid" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sles4sap-hana-sr-guide-perfopt-15-aws" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sles4sap-hana-sr-guide-perfopt-15" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sbp-sap-hana-peropt-ha-azure" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sap-nw740-sle15-setupguide" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sap-netweaver-7.50-sle-15-setup-guide-alicloud" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sles4sap-hana-sr-guide-costopt-15" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sles4sap-hana-scaleout-perfopt-15" titleformat="title subtitle product"/>
+  </internal>
+</docset>

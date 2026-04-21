@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+  <xi:include href="categories.xml"/>
+  <productfamilies>
+    <item id="f.linux">Linux</item>
+    <item id="f.cn">Cloud Native</item>
+    <item id="f.suse-edge">SUSE Edge</item>
+    <item id="f.suse-ai">SUSE AI</item>
+  </productfamilies>
+  <series>
+    <item id="s.pas">Products &amp; Solutions</item>
+    <item id="s.sbp">SUSE Best Practices</item>
+    <item id="s.trd">Technical References</item>
+    <item id="s.rn">Release Notes</item>
+  </series>
+  <xi:include href="appliance/appliance.xml"/>
+  <xi:include href="cloudnative/cloudnative.xml"/>
+  <xi:include href="compliance/compliance.xml"/>
+  <xi:include href="container/container.xml"/>
+  <xi:include href="liberty/liberty.xml"/>
+  <xi:include href="releasenotes/releasenotes.xml"/>
+  <xi:include href="sbp/sbp.xml"/>
+  <xi:include href="ses/ses.xml"/>
+  <xi:include href="sled/sled.xml"/>
+  <xi:include href="sle-ha/sle-ha.xml"/>
+  <xi:include href="sle-hpc/sle-hpc.xml"/>
+  <xi:include href="sle-micro/sle-micro.xml"/>
+  <xi:include href="sle-public-cloud/sle-public-cloud.xml"/>
+  <xi:include href="sle-rt/sle-rt.xml"/>
+  <xi:include href="sles-sap/sles-sap.xml"/>
+  <xi:include href="sles/sles.xml"/>
+  <xi:include href="sle-vmdp/sle-vmdp.xml"/>
+  <xi:include href="smart/smart.xml"/>
+  <xi:include href="smt/smt.xml"/>
+  <xi:include href="soc/soc.xml"/>
+  <xi:include href="style/style.xml"/>
+  <xi:include href="subscription/subscription.xml"/>
+  <xi:include href="suma-retail/suma-retail.xml"/>
+  <xi:include href="suma/suma.xml"/>
+  <xi:include href="suse-ai/suse-ai.xml"/>
+  <xi:include href="suse-caasp/suse-caasp.xml"/>
+  <xi:include href="suse-cap/suse-cap.xml"/>
+  <xi:include href="suse-distribution-migration-system/suse-distribution-migration-system.xml"/>
+  <xi:include href="suse-edge/suse-edge.xml"/>
+  <xi:include href="trd/trd.xml"/>
+</portal>

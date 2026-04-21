@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="suse-cap.1.4.1" path="1.4.1">
+  <version>1.4.1</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-cap.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/1.4.1</branch>
+      <deliverable id="suse-cap.1.4.1.dc-cap-guides" type="dc" category="cat.suse-cap.core-doc">
+        <dc file="DC-cap-guides">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.suse-cap.1.4.1.1.release-notes" type="prebuilt" category="cat.suse-cap.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/suse-cap/1/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

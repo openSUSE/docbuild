@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category lang="zh-cn">
+  <language linkend="cat.about" title="关于"/>
+  <language linkend="cat.deployment" title="部署"/>
+  <language linkend="cat.initial-config" title="初始配置"/>
+  <language linkend="cat.update-upgrade" title="更新和升级"/>
+  <language linkend="cat.administration" title="管理"/>
+  <language linkend="cat.container-virtualization" title="容器和虚拟化"/>
+  <language linkend="cat.product-usage" title="产品用途"/>
+  <language linkend="cat.security-compliance" title="安全与合规"/>
+  <language linkend="cat.tuning-performance" title="performance"/>
+  <language linkend="cat.solution-doc" title="解决方案文档"/>
+  <language linkend="cat.additional-doc" title="其他文档"/>
+  <language linkend="cat.best-practices" title="最佳做法"/>
+</category>

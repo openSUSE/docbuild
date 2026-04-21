@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.intel" path="intel">
+  <version includes-productname="true">Intel</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Intel products or technologies.</p>
+      </desc>
+  </descriptions>
+  <internal>
+    <ref linkend="trd.telco.dc-rc_suse-telco_supermicro-intel_ai-native" titleformat="title subtitle product"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

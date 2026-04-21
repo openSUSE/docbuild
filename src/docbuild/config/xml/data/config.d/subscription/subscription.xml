@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="subscription" family="f.linux" series="s.pas" rank="04140">
+  <name>Subscription Management</name>
+  <acronym>subscription</acronym>
+  <maintainers>
+    <contact>tbazant@suse.com</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="suseconnect.xml"/>
+  <xi:include href="hypervisor-collector.xml"/>
+  <xi:include href="system-uptime-tracking.xml"/>
+</product>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.sap-12" path="sap-12">
+  <version includes-productname="true">SAP applications on SUSE Linux Enterprise 12</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category guide you through the setup and usage of
+          enterprise application software from SAP on top of SUSE Linux Enterprise 12
+          and Kubernetes offerings.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Security -->
+      <deliverable id="sbp.sap-12.dc-os_security_hardening_guide_for_sap_hana_sles12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-OS_Security_Hardening_Guide_for_SAP_HANA_SLES12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Automation -->
+      <deliverable id="sbp.sap-12.dc-sbp-sap-azuresolutiontemplates" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SAP-AzureSolutionTemplates">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Virtualization -->
+      <deliverable id="sbp.sap-12.dc-sbp-hanaonkvm-sles12sp2" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-HANAonKVM-SLES12SP2">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- High Availability -->
+      <deliverable id="sbp.sap-12.dc-sap_s4ha10_setupguide-sle12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SAP_S4HA10_SetupGuide-SLE12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles4sap-hana-scaleout-perfopt-12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES4SAP-hana-scaleOut-PerfOpt-12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles4sap-hana-sr-guide-perfopt-12-alicloud" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES4SAP-hana-sr-guide-PerfOpt-12-Alicloud">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sap_ha740_setupguide_aws" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SAP_HA740_SetupGuide_AWS">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles4sap-hana-sr-guide-perfopt-12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES4SAP-hana-sr-guide-PerfOpt-12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sbp-sap-multi-sid" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SAP-MULTI-SID">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles4sap-hana-sr-guide-perfopt-12_aws" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES4SAP-hana-sr-guide-PerfOpt-12_AWS">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sap_nw740_sle12_setupguide" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SAP_NW740_SLE12_SetupGuide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles-sap-hana-scaleout-perfopt-12-aws" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES-SAP-hana-scaleOut-PerfOpt-12-AWS">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-12.dc-sles4sap-hana-sr-guide-costopt-12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES4SAP-hana-sr-guide-CostOpt-12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.all.sles-sap-12-netweaver-high-availability-simple-stack.simple-stack---sap-netweaver-high-availability-on-suse-linux-enterprise-12--sp1-or-newer-" type="prebuilt">
+        <prebuilt>
+          <title>Simple Stack - SAP NetWeaver High Availability on SUSE Linux Enterprise 12 (SP1 or newer)</title>
+          <url format="pdf" href="external-tree/en-us/sbp/all/sles-sap-12-netweaver-high-availability-simple-stack.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <!-- Japanese-->
+    <locale lang="ja-jp" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <!-- SAP-12-related -->
+      <deliverable type="ref">
+        <ref linkend="sbp.sap-12.dc-sles-sap-hana-scaleout-perfopt-12-aws"/>
+      </deliverable>
+    </locale>
+    <!--Korean-->
+    <locale lang="ko-kr" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ko-kr</subdir>
+      <!-- SAP-12-related -->
+      <deliverable type="ref">
+        <ref linkend="sbp.sap-12.dc-sap_ha740_setupguide_aws"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles-sap.sap-ha-support.dc-sap-ha-support" titleformat="title subtitle product"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2023" titleformat="title subtitle product"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2022" titleformat="title subtitle product"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" titleformat="title subtitle product"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" titleformat="title subtitle product"/>
+    <!-- <ref product="sbp" docset="containerization" dc="DC-CaaSP3-DataHub2"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization" dc="DC-SBP-CaaSP4-SAP-Data-Hub-2"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization" dc="DC-SBP-CaaSP4-SAP-Data-Intelligence-3"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization" dc="DC-SBP-DI-30-CaaSP42-Install-Guide"
+        titleformat="title subtitle product"/> -->
+    <!-- <ref product="sbp" docset="sap-15" dc="DC-TRD-SLES-SAP-HA-automation-quickstart-cloud-aws"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="sap-15" dc="DC-TRD-SLES-SAP-HA-automation-quickstart-cloud-azure"
+       titleformat="title subtitle product"/> -->
+    <ref linkend="sbp.sap-15.dc-trd-sles-sap-ha-automation-quickstart-cloud-gcp" titleformat="title subtitle product"/>
+  </internal>
+</docset>

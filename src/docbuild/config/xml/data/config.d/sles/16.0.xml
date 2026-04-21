@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles.16.0" path="16.0">
+  <version>16.0</version>
+  <canonical>sles/16.0</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <!--************************ about ************************-->
+      <deliverable id="sles.16.0.dc-sle-comparison" type="dc" category="cat.about">
+        <dc file="DC-SLE-comparison">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sle-differences-faq" type="dc" category="cat.about">
+        <dc file="DC-SLE-differences-faq">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sle-packages-lifecycle" type="dc" category="cat.about">
+        <dc file="DC-SLE-packages-lifecycle">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sle-os-identification" type="dc" category="cat.about">
+        <dc file="DC-SLE-os-identification">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable id="sles.16.0.dc-sles-x86-64-agama-based-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-x86-64-agama-based-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-s390-agama-based-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-s390-agama-based-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-ppc-agama-based-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-ppc-agama-based-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-x86-64-agama-automated-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-x86-64-agama-automated-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-pxe-server" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-PXE-server">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-deployment-pxe-client" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-deployment-pxe-client">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable id="sles.16.0.dc-sles-klp" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SLES-klp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-ulp" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SLES-ulp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-upgrading" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SLES-upgrading">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** administration ***************-->
+      <deliverable id="sles.16.0.dc-sles-ansible" type="dc" category="cat.administration">
+        <dc file="DC-SLES-Ansible">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-ansible-roles" type="dc" category="cat.administration">
+        <dc file="DC-SLES-ansible-roles">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-cockpit" type="dc" category="cat.administration">
+        <dc file="DC-SLES-cockpit">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-copy-file-rsync" type="dc" category="cat.administration">
+        <dc file="DC-SLES-copy-file-rsync">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-gnome-remote-desktop" type="dc" category="cat.administration">
+        <dc file="DC-SLES-gnome-remote-desktop">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-networkmanager-nmcli" type="dc" category="cat.administration">
+        <dc file="DC-SLES-networkmanager-nmcli">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-ntp-time-synchronization" type="dc" category="cat.administration">
+        <dc file="DC-SLES-ntp-time-synchronization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-predictable-naming" type="dc" category="cat.administration">
+        <dc file="DC-SLES-predictable-naming">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-snapper-basics" type="dc" category="cat.administration">
+        <dc file="DC-SLES-snapper-basics">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-subnet-manager" type="dc" category="cat.administration">
+        <dc file="DC-SLES-subnet-manager">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-sudo-run-commands-as-superuser" type="dc" category="cat.administration">
+        <dc file="DC-SLES-sudo-run-commands-as-superuser">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-supportconfig" type="dc" category="cat.administration">
+        <dc file="DC-SLES-supportconfig">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-systemd-basics" type="dc" category="cat.administration">
+        <dc file="DC-SLES-systemd-basics">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-systemd-timers" type="dc" category="cat.administration">
+        <dc file="DC-SLES-systemd-timers">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <deliverable id="sles.16.0.dc-sles-apache-tomcat-cloud" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-apache-tomcat-cloud">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-disk-cache" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-disk-cache">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-io" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-io">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-libvirt" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-libvirt">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-qemu" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-qemu">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-spice-removal" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-spice-removal">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-virtualization-support" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-support">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-vm-host-network-multihome-setup" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-vm-host-network-multihome-setup">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--****************** product-usage ******************-->
+      <deliverable id="sles.16.0.dc-sles-gnome-getting-started" type="dc" category="cat.product-usage">
+        <dc file="DC-SLES-GNOME-getting-started">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-valkey" type="dc" category="cat.product-usage">
+        <dc file="DC-SLES-valkey">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable id="sles.16.0.dc-sles-intro-firewalld" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-intro-firewalld">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-selinux" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-SELinux">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.16.0.dc-sles-sudo-configure-superuser-privileges" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-sudo-configure-superuser-privileges">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*********tuning-performance******-->
+      <deliverable id="sles.16.0.dc-sap-saptune" type="dc" category="cat.tuning-performance">
+        <dc file="DC-SAP-saptune">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.16.0.16.0-index.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles/16.0/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/de-de</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/es-es</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/fr-fr</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/pt-br</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/zh-cn</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLE-differences-faq</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLE-packages-lifecycle</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-s390-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-x86-64-agama-automated-installation</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-deployment-pxe-client"/>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-ulp</dc>
+        </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+          <dc>DC-SLES-upgrading</dc>
+        </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-Ansible</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-ansible-roles</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-ntp-time-synchronization"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-predictable-naming</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-snapper-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-supportconfig</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-systemd-basics</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-systemd-timers"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-subnet-manager</dc>
+        </deliverable>-->
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+          <dc>DC-SLES-apache-tomcat-cloud</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-virtualization</dc>
+        </deliverable>-->
+      <!--<deliverable>
+          <dc>DC-SLES-vm-host-network-multihome-setup</dc>
+        </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable>
+          <dc>DC-SLES-SELinux</dc>
+        </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles.16.0.dc-sles-sudo-configure-superuser-privileges"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="app.keg-2.dc-keg" category="cat.product-usage"/>
+    <ref linkend="app.kiwi-9.dc-kiwi" category="cat.product-usage"/>
+    <ref linkend="cont.all.dc-container-guide" category="cat.container-virtualization" titleformat="title subtitle"/>
+    <ref linkend="sle-ha.16.0" category="cat.additional-doc"/>
+  </internal>
+</docset>

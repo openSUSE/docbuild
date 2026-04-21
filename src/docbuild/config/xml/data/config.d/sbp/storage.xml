@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.storage" path="storage">
+  <version includes-productname="true">SUSE Best Practices: Storage</version>
+  <listingversion includes-productname="true">Storage</listingversion>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p> Information about storage technologies, processes, and systems</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="sbp.storage.dc-sbp-rook-ceph-kubernetes" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-rook-ceph-kubernetes">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

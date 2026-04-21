@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.msp" path="msp">
+  <version includes-productname="true">Managed Service Providers</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>
+          Documents published in this area focus on solutions for or involving
+          Managed Service Providers.​</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Getting started -->
+      <deliverable id="trd.msp.dc-gs_suma_msp" type="dc" titleformat="title subtitle product">
+        <dc file="DC-gs_suma_msp">
+          <subdir>linux/start/msp</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Managed Service Providers</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.cloud.dc-sbp-csp-updateinfra" titleformat="title subtitle product"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

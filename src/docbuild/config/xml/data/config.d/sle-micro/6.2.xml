@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-micro.6.2" path="6.2">
+  <version>Micro 6.2</version>
+  <canonical>sle-micro/6.2/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <deliverable id="sle-micro.6.2.dc-sle-os-identification" type="dc" category="cat.about">
+        <dc file="DC-SLE-os-identification">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-active-directory" type="dc" category="cat.administration">
+        <dc file="DC-Micro-active-directory">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-cockpit" type="dc" category="cat.administration">
+        <dc file="DC-Micro-cockpit">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-managing-system-logfiles" type="dc" category="cat.administration">
+        <dc file="DC-Micro-managing-system-logfiles">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-network-configuration" type="dc" category="cat.administration">
+        <dc file="DC-Micro-network-configuration">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-ntp-time-synchronization" type="dc" category="cat.administration">
+        <dc file="DC-Micro-ntp-time-synchronization">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-raids" type="dc" category="cat.administration">
+        <dc file="DC-Micro-raids">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-sudo-run-commands-as-superuser" type="dc" category="cat.administration">
+        <dc file="DC-Micro-sudo-run-commands-as-superuser">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-systemd-basics" type="dc" category="cat.administration">
+        <dc file="DC-Micro-systemd-basics">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-systemd-working-with-timers" type="dc" category="cat.administration">
+        <dc file="DC-Micro-systemd-working-with-timers">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-supportconfig" type="dc" category="cat.administration">
+        <dc file="DC-Micro-supportconfig">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-toolbox" type="dc" category="cat.administration">
+        <dc file="DC-Micro-toolbox">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-transactional-updates" type="dc" category="cat.administration">
+        <dc file="DC-Micro-transactional-updates">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-snapper-basic-concepts" type="dc" category="cat.administration">
+        <dc file="DC-Micro-snapper-basic-concepts">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-compose" type="dc" category="cat.container-virtualization">
+        <dc file="DC-Micro-compose">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-podman" type="dc" category="cat.container-virtualization">
+        <dc file="DC-Micro-podman">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-vhostmd" type="dc" category="cat.container-virtualization">
+        <dc file="DC-Micro-vhostmd">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-images" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-raw-images" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-raw-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-pxe" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-pxe">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-zseries-deployment-pxe" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-zseries-deployment-pxe">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-raw-images-ibmz" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-raw-images-ibmz">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-raw-images-ibmz-zfcp" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-raw-images-ibmz-zfcp">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-raw-images-virtual-machines" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-raw-images-virtual-machines">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-selfinstall-images" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-selfinstall-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-deployment-vmdk" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-deployment-vmdk">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-developers-guide" type="dc" category="cat.deployment">
+        <dc file="DC-Micro-developers-guide">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--  <deliverable category="deploy-upgrade">
+          <dc>DC-Micro-NVIDIA-jetson</dc>
+          <format epub="0" html="1" pdf="1" single-html="0" />
+        </deliverable>
+
+      -->
+      <deliverable id="sle-micro.6.2.dc-micro-zram" type="dc" category="cat.product-usage">
+        <dc file="DC-Micro-zram">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!-- <deliverable category="micro-clouds">
+          <dc>DC-Micro-public-cloud</dc>
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </deliverable>
+      -->
+      <deliverable id="sle-micro.6.2.dc-micro-selinux" type="dc" category="cat.security-compliance">
+        <dc file="DC-Micro-selinux">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-setroubleshoot" type="dc" category="cat.security-compliance">
+        <dc file="DC-Micro-setroubleshoot">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-sudo-configure-superuser-privileges" type="dc" category="cat.security-compliance">
+        <dc file="DC-Micro-sudo-configure-superuser-privileges">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-keylime" type="dc" category="cat.security-compliance">
+        <dc file="DC-Micro-keylime">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-pam-security" type="dc" category="cat.security-compliance">
+        <dc file="DC-Micro-PAM-security">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-pcp" type="dc" category="cat.sle-micro.systemtuning-performance">
+        <dc file="DC-Micro-pcp">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-pf_bb_config" type="dc" category="cat.sle-micro.systemtuning-performance">
+        <dc file="DC-Micro-pf_bb_config">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.2.dc-micro-upgrade" type="dc" category="cat.update-upgrade">
+        <dc file="DC-Micro-upgrade">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-micro.6.2.6-2.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-micro/6.2/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <!--
+      <language lang="de-de" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/de-de</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+        </deliverable>
+      </language>
+
+      <language lang="es-es" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/es-es</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+        </deliverable>
+
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+        </deliverable>
+      </language>
+
+      <language lang="pt-br" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/pt-br</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+
+        </deliverable>
+
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+
+        </deliverable>
+      </language>
+
+      <language lang="fr-fr" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/fr-fr</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+
+<deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+
+        </deliverable>
+
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+
+        </deliverable>
+      </language>
+
+      <language lang="ja-jp" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/ja-jp</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+
+        </deliverable>
+
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+
+        </deliverable>
+      </language>
+
+      <language lang="zh-cn" translation-type="list">
+        <branch>maintenance/SLE16.0</branch>
+        <subdir>l10n/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-Micro-active-directory</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-cockpit</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-compose</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-images</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-deployment-pxe</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-ibmz-zfcp</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-raw-images-virtual-machines</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-deployment-selfinstall-images</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-developers-guide</dc>
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-keylime</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-managing-system-logfiles</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-network-configuration</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-ntp-time-synchronization</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-PAM-security</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pcp</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-pf_bb_config</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-podman</dc>
+
+        </deliverable>
+
+
+        <deliverable>
+          <dc>DC-Micro-raids</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-selinux</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-setroubleshoot</dc>
+
+        </deliverable>
+
+        <deliverable>
+          <dc>DC-Micro-snapper-basic-concepts</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-configure-superuser-privileges</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-sudo-run-commands-as-superuser</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-basics</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-systemd-working-with-timers</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-toolbox</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-transactional-updates</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-upgrade</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-vhostmd</dc>
+
+        </deliverable>
+        <deliverable>
+          <dc>DC-Micro-zram</dc>
+
+        </deliverable>
+      </language>
+    -->
+  </resources>
+</docset>

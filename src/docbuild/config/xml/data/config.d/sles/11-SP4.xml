@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sles.11-SP4" path="11-SP4">
+  <version>11 SP4</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle-legacy.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE11SP4</branch>
+      <deliverable id="sles.11-SP4.dc-sles-all" type="dc">
+        <dc file="DC-SLES-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.deployment">book-autoyast</subdeliverable>
+          <subdeliverable category="cat.administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="cat.deployment">book-sle-deployment</subdeliverable>
+          <subdeliverable category="cat.administration">book-hardening</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-kvm</subdeliverable>
+          <subdeliverable category="cat.security-compliance">book-security</subdeliverable>
+          <subdeliverable category="cat.administration">stor-admin</subdeliverable>
+          <subdeliverable category="cat.administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-xen</subdeliverable>
+          <subdeliverable category="cat.deployment">art-sles-installquick</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">art-lxcquick</subdeliverable>
+          <subdeliverable category="cat.security-compliance">art-aaquick</subdeliverable>
+          <subdeliverable category="cat.security-compliance">art-auditquick</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-autoupgrade" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SLES-autoupgrade">
+          <format epub="1" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-autoyast" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-autoyast">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-xen2kvmquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-xen2kvmquick">
+          <format epub="1" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-kvm4zseries" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-kvm4zseries">
+          <format epub="1" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-apparmor-quick" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-apparmor-quick">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-audit-quick" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-audit-quick">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-admin" type="dc" category="cat.administration">
+        <dc file="DC-SLES-admin">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-deployment" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-deployment">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-hardening" type="dc" category="cat.administration">
+        <dc file="DC-SLES-hardening">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-installquick" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-installquick">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-kvm" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-kvm">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-lxcquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-lxcquick">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-security" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-security">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-storage" type="dc" category="cat.administration">
+        <dc file="DC-SLES-storage">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-tuning" type="dc" category="cat.administration">
+        <dc file="DC-SLES-tuning">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.11-SP4.dc-sles-xen" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-xen">
+          <format epub="1" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.11-SP4.11-sp4.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles/11-SP4"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <!--
+      <language lang="ar-ar" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/ar</subdir>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="cs-cz" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/cs</subdir>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="de-de" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/de</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="es-es" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/es</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="fr-fr" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/fr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="hu-hu" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/hu</subdir>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="it-it" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/it</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ja-jp" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/ja</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+          <subdeliverable>stor-admin</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+      </language>
+      <language lang="ko-kr" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/ko</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pl-pl" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/pl</subdir>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="pt-br" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/pt-br</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+      <language lang="ru-ru" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/ru</subdir>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+      </language>
+    <language lang="zh-cn" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/zh-cn</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+          <subdeliverable>stor-admin</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+      </language>
+      <language lang="zh-tw" translation-type="list">
+        <branch>trans/SLE11SP4</branch>
+        <subdir>sles/zh-tw</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-sle-admin</subdeliverable>
+          <subdeliverable>book-sle-deployment</subdeliverable>
+          <subdeliverable>art-sles-installquick</subdeliverable>
+          <subdeliverable>stor-admin</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-admin</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installquick</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-storage</dc>
+        </deliverable>
+      </language>
+-->
+  </resources>
+  <internal>
+    <!--      <ref product="sbp" docset="all" dc="DC-SBP-securitymodule" category="best-practices" titleformat="title subtitle"/>-->
+    <ref linkend="sbp.systems-management.dc-sbp-kmp-manual" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-sle-offline-upgrade-local-boot" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

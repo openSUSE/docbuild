@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.admission-controller" path="admission-controller">
+  <version>SUSE Security Admission Controller</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Security Admission Controller is a Kubernetes Policy
+          Engine aiming to be the Universal Policy Engine for Kubernetes. It
+          supports reusing policies from other policy engines without having to
+          rewrite them. You can write your own policies in any programming
+          language that generates WebAssembly binaries, reusing your language
+          tooling and libraries. Policies may run both outside the cluster and
+          as part of your CI/CD processes. SUSE Security Admission Controller
+          also provides an audit scanner to actively and continuously
+          check policy enforcement over time.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.admission-controller.latest-en-introduction.suse-security-admission-controller" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Security Admission Controller</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/introduction.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-quick-start.quick-start" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Quick Start</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/quick-start.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-tutorials-writing-policies-index.tutorial---writing-policies" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Tutorial - writing policies</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/tutorials/writing-policies/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-tutorials-testing-policies-index.tutorial---testing-policies" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Tutorial - testing policies</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/tutorials/testing-policies/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-tutorials-verifying-kubewarden.tutorial---verifying-admission-controller" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Tutorial - verifying Admission Controller</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/tutorials/verifying-kubewarden.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-explanations-mutating-policies.explanation---mutating-policies" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Explanation - mutating policies</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/explanations/mutating-policies.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-explanations-distributing-policies.explanation---distributing-policies" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Explanation - distributing policies</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/explanations/distributing-policies.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-explanations-audit-scanner-audit-scanner.explanation---audit-scanner" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Explanation - audit scanner</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/explanations/audit-scanner/audit-scanner.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-explanations-architecture.explanation---suse-security-admission-controller-architecture" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Explanation - SUSE Security Admission Controller architecture</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/explanations/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-explanations-comparisons-opa-comparison.comparing-suse-security-admission-controller-and-opa-gatekeeper" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Comparing SUSE Security Admission Controller and OPA Gatekeeper</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/explanations/comparisons/opa-comparison.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.admission-controller.latest-en-howtos-tasks.howtos---common-tasks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Howtos - common tasks</title>
+          <url format="html" href="/cloudnative/admission-controller/latest/en/howtos/tasks.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

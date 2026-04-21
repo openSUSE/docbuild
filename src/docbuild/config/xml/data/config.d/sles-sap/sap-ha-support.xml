@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles-sap.sap-ha-support" path="sap-ha-support">
+  <version includes-productname="true">Supported HA solutions</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+       <p>
+        Two of the key components of SLES for SAP applications are the
+        SUSE Linux Enterprise High Availability Extension and resource agents.
+       </p>
+       <p>
+        This document provides an overview of the High Availability solutions
+        that SUSE supports for SAP HANA, S/4HANA, and NetWeaver.
+       </p>
+     </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>sap-ha-support</subdir>
+      <deliverable id="sles-sap.sap-ha-support.dc-sap-ha-support" type="dc">
+        <dc file="DC-sap-ha-support">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

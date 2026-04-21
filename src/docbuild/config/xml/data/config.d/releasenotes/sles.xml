@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="releasenotes.sles" path="sles">
+  <version includes-productname="true">SUSE Linux Enterprise Server</version>
+  <resources>
+    <git remote="https://github.com/SUSE/release-notes.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="rn.sles.dc-releasenotes_sles_16.0" type="dc">
+        <dc file="DC-releasenotes_sles_16.0">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_15-sp2" type="dc">
+        <dc file="DC-releasenotes_sles_15-SP2">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_15-sp1" type="dc">
+        <dc file="DC-releasenotes_sles_15-SP1">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_15" type="dc">
+        <dc file="DC-releasenotes_sles_15">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_12-sp4" type="dc">
+        <dc file="DC-releasenotes_sles_12-SP4">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_12-sp3" type="dc">
+        <dc file="DC-releasenotes_sles_12-SP3">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_12-sp2" type="dc">
+        <dc file="DC-releasenotes_sles_12-SP2">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_12-sp1" type="dc">
+        <dc file="DC-releasenotes_sles_12-SP1">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_12" type="dc">
+        <dc file="DC-releasenotes_sles_12">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_11-sp4" type="dc">
+        <dc file="DC-releasenotes_sles_11-SP4">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_11-sp3" type="dc">
+        <dc file="DC-releasenotes_sles_11-SP3">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_10-sp4" type="dc">
+        <dc file="DC-releasenotes_sles_10-SP4">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.dc-releasenotes_sles_9" type="dc">
+        <dc file="DC-releasenotes_sles_9">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

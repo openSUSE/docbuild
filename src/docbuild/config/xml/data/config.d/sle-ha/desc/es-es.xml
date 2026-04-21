@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="es-es">
+    <title>Continuidad, integridad y tiempo de actividad máximo en cualquier entorno</title>
+    <p>
+      Sistema de agrupación en clúster de código abierto y alta disponibilidad líder
+      del sector diseñado para eliminar el tiempo de inactividad no planificado.
+      Su uso e implantación son sencillos tanto en entornos físicos como virtuales.
+      La agrupación en clúster de alta disponibilidad (HA) contribuye a minimizar la pérdida de
+      datos provocada por daños o fallos mediante la protección de los activos con la
+      infraestructura de TI existente.
+    </p>
+    <p>
+      Esta característica se utiliza para automatizar la recuperación de datos y aplicaciones.
+      Puede usar nuestra solución de agrupación en clúster flexible y basada en directivas para
+      implantar clústeres Linux altamente disponibles y eliminar puntos únicos de error.
+      Sus servidores se encontrarán bajo supervisión constante y, si se produce algún fallo o error,
+      la carga de trabajo se transferirá de un servidor a otro, o la aplicación se reiniciará
+      automáticamente en un sistema que funcione correctamente. Así, podrá mantener la continuidad
+      del negocio y minimizar tiempos de inactividad no programados.
+    </p>
+  </desc>

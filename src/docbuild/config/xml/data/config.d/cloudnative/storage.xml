@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.storage" path="storage">
+  <version>SUSE Storage (Longhorn)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Storage is a lightweight, reliable and easy-to-use distributed
+          block storage system for Kubernetes.
+        </p>
+        <p>
+          SUSE Storage implements distributed block storage using containers and
+          microservices. It creates a dedicated storage controller for
+          each block device volume and synchronously replicates the volume
+          across multiple replicas stored on multiple nodes. The storage
+          controller and replicas are themselves orchestrated using Kubernetes.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.storage.latest-en-introduction-concepts.architecture-and-concepts" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Architecture and Concepts</title>
+          <url format="html" href="/cloudnative/storage/latest/en/introduction/concepts.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-installation-setup-requirements.installation-and-setup-requirements" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Installation and Setup Requirements</title>
+          <url format="html" href="/cloudnative/storage/latest/en/installation-setup/requirements.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-upgrades-upgrades" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Upgrades</title>
+          <url format="html" href="/cloudnative/storage/latest/en/upgrades/upgrades.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-migration-migration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Migration</title>
+          <url format="html" href="/cloudnative/storage/latest/en/migration/migration.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-longhorn-system-system-access-system-access.system-access" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>System Access</title>
+          <url format="html" href="/cloudnative/storage/latest/en/longhorn-system/system-access/system-access.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-longhorn-system-settings" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Settings</title>
+          <url format="html" href="/cloudnative/storage/latest/en/longhorn-system/settings.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-nodes-default-disk-and-node-config.node-and-disk-management" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Node and Disk Management</title>
+          <url format="html" href="/cloudnative/storage/latest/en/nodes/default-disk-and-node-config.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-volumes-create-volumes.volume-creation" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Volume Creation</title>
+          <url format="html" href="/cloudnative/storage/latest/en/volumes/create-volumes.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-nodes-multiple-disks.multiple-disks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Multiple Disks</title>
+          <url format="html" href="/cloudnative/storage/latest/en/nodes/multiple-disks.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-snapshots-backups-volume-snapshots-backups-volume-snapshots-backups.volume-snapshots-and-backups" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Volume Snapshots and Backups</title>
+          <url format="html" href="/cloudnative/storage/latest/en/snapshots-backups/volume-snapshots-backups/volume-snapshots-backups.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-high-availability-automatic-replica-balancing.high-availability-and-locality" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>High Availability and Locality</title>
+          <url format="html" href="/cloudnative/storage/latest/en/high-availability/automatic-replica-balancing.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-observability-configure-prometheus-grafana.monitoring-using-prometheus-and-grafana" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Monitoring Using Prometheus and Grafana</title>
+          <url format="html" href="/cloudnative/storage/latest/en/observability/configure-prometheus-grafana.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-data-integrity-recovery-data-recovery-recover-from-data-errors.data-errors" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Data errors</title>
+          <url format="html" href="/cloudnative/storage/latest/en/data-integrity-recovery/data-recovery/recover-from-data-errors.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.latest-en-troubleshooting-maintenance-troubleshooting" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Troubleshooting</title>
+          <url format="html" href="/cloudnative/storage/latest/en/troubleshooting-maintenance/troubleshooting.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

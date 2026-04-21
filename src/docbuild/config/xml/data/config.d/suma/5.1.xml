@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suma.5.1" path="5.1">
+  <version>5.1</version>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="suma.5.1.index.reporting-database-schema" type="prebuilt" category="cat.suma.core-doc">
+        <prebuilt>
+          <title>Reporting Database Schema</title>
+          <url format="html" href="multi-linux-manager/5.1/database/schema/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="suma.5.1.suse-multi-linux-manager-docs_en-pdf.original-documentation-as-zip-archive--english--complete-" type="prebuilt" category="cat.suma.archive">
+        <prebuilt>
+          <title>Original documentation as ZIP archive (English, complete)</title>
+          <url format="zip" href="multi-linux-manager/5.1/en/suse-multi-linux-manager-docs_en-pdf.zip"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="rn.suma.5.1.5-1.release-notes-suse-multi-linux-manager-server" type="prebuilt" category="cat.suma.release-notes">
+        <prebuilt>
+          <title>Release Notes SUSE Multi-Linux Manager Server</title>
+          <url format="html" href="/releasenotes/suma/5.1/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="rn.suma-proxy.5-1.release-notes-suse-multi-linux-manager-proxy" type="prebuilt" category="cat.suma.release-notes">
+        <prebuilt>
+          <title>Release Notes SUSE Multi-Linux Manager Proxy</title>
+          <url format="html" href="/releasenotes/suma-proxy/5.1/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="spc.all.dc-public-cloud" category="cat.additional-doc"/>
+    <ref linkend="sbp.systems-management.dc-sbp-susemanager" category="cat.best-practices"/>
+    <ref linkend="sbp.systems-management.dc-sbp-suma-on-ibm-powervm" category="cat.best-practices"/>
+    <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf" category="cat.best-practices"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+  <external>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/installation-and-upgrade/installation-and-upgrade-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_installation-and-upgrade_guide.pdf"/>
+      <url lang="ja-jp" format="html" href="multi-linux-manager/5.1/ja/docs/installation-and-upgrade/installation-and-upgrade-overview.html"/>
+      <url lang="ja-jp" format="pdf" href="multi-linux-manager/5.1/pdf/ja/suse_multi_linux_manager_installation-and-upgrade_guide.pdf"/>
+      <url lang="ko-kr" format="html" href="multi-linux-manager/5.1/ko/docs/installation-and-upgrade/installation-and-upgrade-overview.html"/>
+      <url lang="ko-kr" format="pdf" href="multi-linux-manager/5.1/pdf/ko/suse_multi_linux_manager_installation-and-upgrade_guide.pdf"/>
+      <url lang="zh-cn" format="html" href="multi-linux-manager/5.1/zh_CN/docs/installation-and-upgrade/installation-and-upgrade-overview.html"/>
+      <url lang="zh-cn" format="pdf" href="multi-linux-manager/5.1/pdf/zh_CN/suse_multi_linux_manager_installation-and-upgrade_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Installation and Upgrade Guide</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ja-jp">
+          <title>インストールガイド</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ko-kr">
+          <title>설치 안내서</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="zh-cn">
+          <title>安装指南</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/client-configuration/client-config-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_client-configuration_guide.pdf"/>
+      <url lang="ja-jp" format="html" href="multi-linux-manager/5.1/ja/docs/client-configuration/client-config-overview.html"/>
+      <url lang="ja-jp" format="pdf" href="multi-linux-manager/5.1/pdf/ja/suse_multi_linux_manager_client-configuration_guide.pdf"/>
+      <url lang="ko-kr" format="html" href="multi-linux-manager/5.1/ko/docs/client-configuration/client-config-overview.html"/>
+      <url lang="ko-kr" format="pdf" href="multi-linux-manager/5.1/pdf/ko/suse_multi_linux_manager_client-configuration_guide.pdf"/>
+      <url lang="zh-cn" format="html" href="multi-linux-manager/5.1/zh_CN/docs/client-configuration/client-config-overview.html"/>
+      <url lang="zh-cn" format="pdf" href="multi-linux-manager/5.1/pdf/zh_CN/suse_multi_linux_manager_client-configuration_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Client Configuration Guide</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ja-jp">
+          <title>クライアント設定ガイド</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ko-kr">
+          <title>클라이언트 구성 안내서</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="zh-cn">
+          <title>客户端配置指南</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/administration/admin-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_administration_guide.pdf"/>
+      <url lang="ja-jp" format="html" href="multi-linux-manager/5.1/ja/docs/administration/admin-overview.html"/>
+      <url lang="ja-jp" format="pdf" href="multi-linux-manager/5.1/pdf/ja/suse_multi_linux_manager_administration_guide.pdf"/>
+      <url lang="ko-kr" format="html" href="multi-linux-manager/5.1/ko/docs/administration/admin-overview.html"/>
+      <url lang="ko-kr" format="pdf" href="multi-linux-manager/5.1/pdf/ko/suse_multi_linux_manager_administration_guide.pdf"/>
+      <url lang="zh-cn" format="html" href="multi-linux-manager/5.1/zh_CN/docs/administration/admin-overview.html"/>
+      <url lang="zh-cn" format="pdf" href="multi-linux-manager/5.1/pdf/zh_CN/suse_multi_linux_manager_administration_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Administration Guide</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ja-jp">
+          <title>ドキュメンテーション</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="ko-kr">
+          <title>관리 가이드</title>
+          <p>TODO</p>
+        </desc>
+        <desc lang="zh-cn">
+          <title>管理指南</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/reference/reference-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_reference_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Reference Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/retail/retail-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_retail_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Retail Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/common-workflows/common-workflows-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_common-workflows_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Common Workflows Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/specialized-guides/specialized-guides-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_specialized-guides_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Specialized Guides</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/api/docs/index.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/api/pdf/suse_multi_linux_manager_api_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>API Documentation</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

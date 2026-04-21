@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.third-party" path="third-party">
+  <version includes-productname="true">Third Party</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category contain information about the installation and usage
+          of third party software on top of SUSE products.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Integration -->
+      <deliverable id="sbp.third-party.dc-sbp-suse-oem-identification" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-oem-identification">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.dc-sbp-intelsupport" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-intelsupport">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Configuration -->
+      <deliverable id="sbp.third-party.dc-sbp-sles-sql" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SLES-SQL">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.dc-sbp-sles-mfad" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SLES-MFAD">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.dc-sbp-oracleweblogic-sles12sp3" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-OracleWeblogic-SLES12SP3">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.dc-sbp-oraclerac" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-oraclerac">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.dc-sbp-oracleweblogic" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-oracleweblogic">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.third-party.oracledb_19c_on_sles15_sp2.oracle-database-19c--19.8.0.0--on-sles-15-sp2" type="prebuilt">
+        <prebuilt>
+          <title>Oracle Database 19c (19.8.0.0) on SLES 15 SP2</title>
+          <url format="pdf" href="trd/all/pdf/OracleDB_19c_on_SLES15_SP2.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="sbp.third-party.oracle_fmw12c_on_sles15_sp2.oracle-fusion-middleware-12c-on-sles-15-sp2--x86-64-" type="prebuilt">
+        <prebuilt>
+          <title>Oracle Fusion Middleware 12c on SLES 15 SP2 (x86-64)</title>
+          <url format="pdf" href="trd/all/pdf/Oracle_FMW12c_on_SLES15_SP2.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="sbp.third-party.oracle_rac_19c_on_sles15-sp1.oracle-rac-19c--19.4--on-sles-15-sp1--x86-64-" type="prebuilt">
+        <prebuilt>
+          <title>Oracle RAC 19c (19.4) on SLES 15 SP1 (x86-64)</title>
+          <url format="pdf" href="trd/all/pdf/Oracle_RAC_19c_on_SLES15-SP1.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="sbp.third-party.oracle_weblogicserver_14c_on_sles15-sp2.oracle-fusion-middleware--weblogic-server-14c--14.1.1.0.0--on-sles-15-sp2--x86-64-" type="prebuilt">
+        <prebuilt>
+          <title>Oracle Fusion Middleware: WebLogic Server 14c (14.1.1.0.0) on SLES 15 SP2 (x86-64)</title>
+          <url format="pdf" href="trd/all/pdf/Oracle_WebLogicServer_14c_on_SLES15-SP2.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

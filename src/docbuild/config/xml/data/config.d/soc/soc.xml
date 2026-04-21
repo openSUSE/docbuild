@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="soc" family="f.linux" series="s.pas" rank="04300">
+  <name>SUSE OpenStack Cloud</name>
+  <acronym>SOC</acronym>
+  <maintainers>
+    <!-- <contact>dpopov@suse.de</contact> -->
+    <!-- <contact>asettle@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.soc.soc-clm" title="SUSE OpenStack Cloud Lifecycle Manager documentation">
+        <p>
+        Cloud Lifecycle Manager (CLM) was
+        introduced in the SUSE OpenStack Cloud 8 release in 2018. Based on
+        Ansible and taking some of the functionality of the HPE Helion
+        Lifecycle Manager that SUSE acquired in 2017, it supports
+        template-oriented deployments of larger clouds that can scale out
+        without downtime.
+      </p>
+      </language>
+      <language id="cat.soc.soc-crow" title="SUSE OpenStack Cloud Crowbar documentation">
+        <p>
+        Crowbar has been the deployment engine of choice for SUSE OpenStack
+        Cloud prior to version 8. Based on Chef, Crowbar makes it fast and
+        easy to deploy private cloud environments, and is better suited to
+        smaller deployments.
+      </p>
+      </language>
+      <language id="cat.soc.soc-general" title="SUSE OpenStack Cloud general documentation"/>
+      <language id="cat.soc.ostack-upstream" title="OpenStack upstream documentation"/>
+      <language id="cat.soc.release-notes" title="Release notes"/>
+      <language id="cat.soc.best-practice" title="Best practices"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.soc.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.soc.best-practice" title="Best Practices"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.soc.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.soc.best-practice" title="Prácticas recomendadas"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.soc.release-notes" title="Notes de version"/>
+      <language linkend="cat.soc.best-practice" title="Meilleures pratiques"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.soc.release-notes" title="リリースノート"/>
+      <language linkend="cat.soc.best-practice" title="ベストプラクティス"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.soc.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.soc.best-practice" title="Melhores práticas"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.soc.release-notes" title="发行说明"/>
+      <language linkend="cat.soc.best-practice" title="最佳实践"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- SOC 9 has official support through Apr 2022, but has reactive
+  support until Dec 2024 for Vattenfall:
+  https://confluence.suse.com/display/SOC/Maintenance+Timeline -->
+  <xi:include href="9.xml"/>
+  <!-- SOC 8 had official support through May 2021, but has reactive
+  support until Dec 2024 for Airbus:
+  https://confluence.suse.com/display/SOC/Maintenance+Timeline -->
+  <xi:include href="8.xml"/>
+  <xi:include href="7.xml"/>
+</product>

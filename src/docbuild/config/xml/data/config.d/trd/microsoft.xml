@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.microsoft" path="microsoft">
+  <version includes-productname="true">Microsoft</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Microsoft products or technologies. </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="trd.microsoft.dc-gs_rancher-security_azure-sentinel" type="dc" titleformat="title subtitle product">
+        <dc file="DC-gs_rancher-security_azure-sentinel">
+          <subdir>kubernetes/start/azure</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Microsoft</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

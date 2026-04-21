@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-hpc.15-SP6" path="15-SP6">
+  <version>15 SP6</version>
+  <canonical>sle-hpc/15-SP7</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-hpc.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP6</branch>
+      <deliverable id="sle-hpc.15-SP6.dc-hpc-guide" type="dc" category="cat.sle-hpc.core-doc">
+        <dc file="DC-hpc-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-hpc.15-SP6.15-sp6.release-notes" type="prebuilt" category="cat.sle-hpc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-hpc/15-SP6/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

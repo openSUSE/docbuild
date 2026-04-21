@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="soc.7" path="7">
+  <version>7</version>
+  <resources>
+    <git remote="https://github.com/SUSE-Cloud/doc-cloud.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/cloud_7</branch>
+      <!-- Regular -->
+      <!-- In this case, "all" only includes the Deployment Guide, so it makes
+        no sense to build this. -->
+      <!-- <deliverable>
+          <dc>DC-suse-openstack-cloud-all</dc>
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable>book-cloud-deploy</subdeliverable>
+        </deliverable> -->
+      <deliverable id="soc.7.dc-suse-openstack-cloud-admin" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-admin">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.7.dc-suse-openstack-cloud-deployment" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-deployment">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.7.dc-suse-openstack-cloud-supplement" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-supplement">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.7.dc-suse-openstack-cloud-user" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-user">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Monitoring -->
+      <deliverable id="soc.7.dc-suse-openstack-cloud-monitor-msoperator" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-monitor-msoperator">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.7.dc-suse-openstack-cloud-monitor-osoperator" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-monitor-osoperator">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.7.dc-suse-openstack-cloud-monitor-overview" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-monitor-overview">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.soc.7.7.release-notes" type="prebuilt" category="cat.soc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/soc/7/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

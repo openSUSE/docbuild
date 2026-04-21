@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suse-distribution-migration-system.15" path="15" navigation="disabled">
+  <version>for SLE 15</version>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-migration-services.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>master</branch>
+      <subdir>doc</subdir>
+      <deliverable id="suma-dms.15.dc-distribution-migration-system" type="dc">
+        <dc file="DC-distribution-migration-system">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

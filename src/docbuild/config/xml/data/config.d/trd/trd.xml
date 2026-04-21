@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="trd" docset-sort="ascending" family="f.linux" series="s.trd" rank="0">
+  <name>Technical Reference Documentation</name>
+  <acronym>TRD</acronym>
+  <maintainers>
+    <!-- <contact>meike.chabowski@suse.com</contact> -->
+    <!-- <contact>terry.smith@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <!-- When in doubt & a document fits multiple categories, use GS, RI, or RA,
+  exclusively. -->
+  <!-- <category categoryid="getting-started">
+    <language lang="en-us" default="1" title="Getting started (GS)">
+      <p>
+        Guides with basic steps to quickly deploy one layer of the referenced
+        component of the SUSE portfolio, with pointers to other required
+        elements.
+      </p>
+    </language>
+  </category>
+  <category categoryid="reference-implementation">
+    <language lang="en-us" default="1" title="Reference implementation (RI)">
+      <p>
+        Guides with basic steps to deploy the highlighted components of the
+        SUSE portfolio, including pointers to other layers and elements. An
+        introductory approach and a basis for other tested variations.
+      </p>
+    </language>
+  </category>
+  <category categoryid="reference-architecture">
+    <language lang="en-us" default="1" title="Reference architecture (RA)">
+      <p>
+        Guides with general steps to deploy and validate the solution
+        components from SUSE and its partners. These documents provide
+        blueprints to build production-ready solutions on. They include
+        design considerations, implementation suggestions, and best practices.
+      </p>
+    </language>
+  </category>
+  <category categoryid="reference-configuration">
+    <language lang="en-us" default="1" title="Reference configuration (RC)">
+      <p>
+        Guides with basic steps to deploy the layered stack of components
+        from both SUSE and its partners. A fundament to demonstrating a
+        specific, tested configuration of components.
+      </p>
+    </language>
+  </category>
+  <category categoryid="solution-stack">
+    <language lang="en-us" default="1" title="Solution Stack (SS)">
+      <p>
+        Framework guides combining SUSE offerings and partner components
+        to address challenges of a broad spectrum of customers.
+      </p>
+    </language>
+  </category>
+  <category categoryid="enterprise-architecture">
+    <language lang="en-us" default="1" title="Enterprise architecture (EA)">
+      <p>
+        Complete guides that address business and IT concerns within an
+        organization. These guides lay out a motivation for an architecture,
+        creating views of the architecture to show how it addresses and balances
+        stakeholder concerns.
+      </p>
+    </language>
+  </category>
+    <category categoryid="contributors-information">
+    <language lang="en-us" default="1" title="Contributors information">
+      <p>
+        Provides information about tools, technique, workflow, and style guidance for architects,
+        engineers, and technical writers to make successful contributions to the open repository
+        of technical reference documentation.
+      </p>
+    </language>
+  </category> -->
+  <xi:include href="ai.xml"/>
+  <xi:include href="ampere.xml"/>
+  <xi:include href="cisco.xml"/>
+  <!-- <docset lifecycle="supported" setid="clastix">
+    <version includes-productname="true">Clastix</version>
+       <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Clastix products or technologies.</p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Getting started -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/start/clastix</subdir>
+          <dc>DC-gs_rancher_clastix-kamaji</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Clastix</partner>
+          </partners>
+        </deliverable>
+       </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset> -->
+  <xi:include href="clearml.xml"/>
+  <xi:include href="csp.xml"/>
+  <xi:include href="dell.xml"/>
+  <!-- <docset lifecycle="supported" setid="fortinet">
+    <version includes-productname="true">Fortinet</version>
+    <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Fortinet products or technologies.​</p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+       <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Getting started -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>linux/start/fortinet</subdir>
+          <dc>DC-linux_gs_slessap_fortinet_azure_landscape-automation</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Fortinet</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset> -->
+  <xi:include href="hitachi.xml"/>
+  <xi:include href="hpe.xml"/>
+  <!-- 
+  <docset lifecycle="supported" setid="hpq">
+    <version includes-productname="true">HP</version>
+       <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating products or technologies from HP, Inc.</p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Reference Configuration -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/reference</subdir>
+          <dc>DC-kubernetes_rc_k3s-slemicro_hpq-zcentral4r</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>HP</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset> -->
+  <xi:include href="ibm.xml"/>
+  <xi:include href="intel.xml"/>
+  <xi:include href="jupyter.xml"/>
+  <xi:include href="kubeflow.xml"/>
+  <!-- <docset lifecycle="supported" setid="lenovo">
+    <version includes-productname="true">Lenovo</version>
+       <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Lenovo products or technologies.</p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Reference Configuration -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/reference</subdir>
+          <dc>DC-kubernetes_rc_k3s-slemicro_lnvgy-se350-se450</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Lenovo</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset> -->
+  <xi:include href="microsoft.xml"/>
+  <!-- <docset lifecycle="supported" setid="minio">
+    <version includes-productname="true">MinIO</version>
+       <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>
+          Documents published in this area provide guidance for solutions
+          incorporating MinIO products or technologies. </p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Getting started -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/start/minio</subdir>
+           <dc>DC-gs_rancher_minio</dc>
+           <format html="1" pdf="1" single-html="1"/>
+           <partners>
+            <partner>MinIO</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset> -->
+  <xi:include href="msp.xml"/>
+  <xi:include href="netapp.xml"/>
+  <!--
+  <docset lifecycle="supported" setid="nvidia">
+    <version includes-productname="true">NVIDIA</version>
+       <overridedesc treatment="prepend">
+      <desc default="1" lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating NVIDIA products or technologies. </p>
+      </desc>
+    </overridedesc>
+    <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch>
+
+<deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/start/nvidia</subdir>
+          <dc>DC-gs_rke2-slebci_nvidia-gpu-operator</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>NVIDIA</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs>
+
+    <internal>
+      <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    </internal>
+
+  </docset>
+-->
+  <xi:include href="supermicro.xml"/>
+  <xi:include href="suse.xml"/>
+  <xi:include href="telco.xml"/>
+  <xi:include href="veeam.xml"/>
+  <xi:include href="wordpress.xml"/>
+  <xi:include href="wso2.xml"/>
+  <xi:include href="contributors.xml"/>
+</product>

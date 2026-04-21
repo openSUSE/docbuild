@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="soc.9" path="9">
+  <version>9</version>
+  <resources>
+    <git remote="https://github.com/SUSE-Cloud/doc-cloud.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/cloud_9</branch>
+      <!-- The upstream-admin-guide and the upstream-user-guide from *this
+        branch* are irrelevant. These guides have been replaced by guides
+        generated with a different process. -->
+      <!-- CLM -->
+      <deliverable id="soc.9.dc-suse-openstack-cloud-clm-all" type="dc">
+        <dc file="DC-suse-openstack-cloud-clm-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.soc.soc-clm">book-deployment</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-security</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-operations</subdeliverable>
+          <subdeliverable category="cat.soc.soc-general">book-supplement</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-deployment" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-operations" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-operations">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-security" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Crowbar -->
+      <deliverable id="soc.9.dc-suse-openstack-cloud-crowbar-all" type="dc">
+        <dc file="DC-suse-openstack-cloud-crowbar-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.soc.soc-crow">book-poc-crowbar</subdeliverable>
+          <subdeliverable category="cat.soc.soc-crow">book-crowbar-deployment</subdeliverable>
+          <subdeliverable category="cat.soc.soc-crow">book-crowbar-operations</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-crowbar-deployment" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-crowbar-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-crowbar-operations" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-crowbar-operations">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-poc-crowbar" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-poc-crowbar">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.dc-suse-openstack-cloud-supplement" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-supplement">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.9.openstack-admin-html.administration-guide" type="prebuilt" category="cat.soc.ostack-upstream">
+        <prebuilt>
+          <title>Administration Guide</title>
+          <url format="html" href="external-tree/en-us/soc/9/openstack/admin/html/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="soc.9.openstack-user-html.user-guide" type="prebuilt" category="cat.soc.ostack-upstream">
+        <prebuilt>
+          <title>User Guide</title>
+          <url format="html" href="external-tree/en-us/soc/9/openstack/user/html/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="rn.soc.9.9.release-notes" type="prebuilt" category="cat.soc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/soc/9/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

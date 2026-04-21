@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.suse-virtual-clusters" path="suse-virtual-clusters">
+  <version>SUSE Virtual Clusters</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE's Cloud Native product family introduces additional value with
+          greater security assurances, extended lifecycles, access to focused
+          architectures and Kubernetes advisories. It will also offer options
+          to get production support for innovative Cloud Native projects. With
+          SUSE's Cloud Native, installation assets are hosted on a trusted
+          registry owned and managed by SUSE.
+        </p>
+        <p>
+          SUSE Virtual Clusters, a key feature of SUSE Rancher Prime, brings
+          together the lightweight power of the open source engine K3k and the
+          enterprise-grade management capabilities of SUSE Virtual Cluster
+          Management. It is designed to deliver the next generation of
+          multi-tenancy in Kubernetes, making it easier for platform teams to
+          manage and for developers to innovate with self-service.
+        </p>
+        <p>
+          Items marked with the padlock icon are premium content only available
+          to customers subscribed to SUSE Rancher Prime.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-introduction" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Introduction</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/introduction.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-architecture" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Architecture</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-advanced-usage.advanced-usage" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Advanced Usage</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/advanced-usage.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-advanced-usage.virtualclusterpolicy--concepts" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>VirtualClusterPolicy: Concepts</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/advanced-usage.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-how-tos-for-user-addons" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Add-ons</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/how-tos-for-user/addons.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-how-tos-for-user-create-virtual-clusters.how-tos-for-users" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>How-tos for Users</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/how-tos-for-user/create-virtual-clusters.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-how-tos-for-admin-choose-mode.how-tos-for-admins" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>How-tos for Admins</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/how-tos-for-admin/choose-mode.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-references-crds" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>References</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/references/crds.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.suse-virtual-clusters.latest-en-how-tos-for-user-troubleshooting" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Troubleshooting</title>
+          <url format="html" href="/cloudnative/suse-virtual-clusters/latest/en/how-tos-for-user/troubleshooting.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtual-cluster/quickstart.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Quick Start: Installation and Cluster Creation via the Graphical UI</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtual-cluster/what-is-suse-vc.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>What is SUSE Virtual Clusters</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtual-cluster/how-to-guides/cert-manager-create-custom-cas.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Creating a Virtual Cluster with Custom CAs Using cert-manager</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtual-cluster/how-to-guides/provision-VC-with-fleet.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Provisioning Virtual Clusters with Rancher Continuous Delivery</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtual-cluster/administration/virtualclusterpolicy.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>VirtualClusterPolicy: Create policies</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

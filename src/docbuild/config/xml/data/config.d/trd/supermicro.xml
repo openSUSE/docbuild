@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.supermicro" path="supermicro">
+  <version includes-productname="true">Supermicro</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Supermicro products or technologies.</p>
+      </desc>
+  </descriptions>
+  <!-- <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Reference Configuration -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/reference</subdir>
+          <dc>DC-kubernetes_rc_k3s-slemicro_smci-superserver</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Supermicro</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs> -->
+  <internal>
+    <ref linkend="trd.telco.dc-rc_suse-telco_supermicro-intel_ai-native" titleformat="title subtitle product"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

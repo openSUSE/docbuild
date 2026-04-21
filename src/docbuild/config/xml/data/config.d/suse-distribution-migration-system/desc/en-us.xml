@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Upgrade path between major versions of SUSE Linux Enterprise</title>
+    <p>
+      The Distribution Migration System provides an upgrade path for an
+      installed SUSE Linux Enterprise system from one major version to
+      another, for example, from SUSE Linux Enterprise Server 12 SP4 to SUSE
+      Linux Enterprise Server 15. For a Service Pack upgrade from one Service
+      Pack (SP) to another within a given major version release series the
+      existing Zypper migration workflow provides the supported upgrade path.
+      The distribution migration system provides the ability to upgrade
+      across major distributions without the need to use the next major
+      version installation media to perform the system upgrade.
+    </p>
+  </desc>

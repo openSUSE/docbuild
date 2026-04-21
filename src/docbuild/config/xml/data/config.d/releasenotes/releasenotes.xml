@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="releasenotes" family="f.linux" series="s.rn" rank="0">
+  <name>SUSE Release Notes</name>
+  <acronym>RN</acronym>
+  <maintainers>
+    <contact>lukas.kucharczyk@suse.com</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="sles.xml"/>
+  <xi:include href="sles-vmware.xml"/>
+  <xi:include href="sle-micro.xml"/>
+  <xi:include href="sle-ha.xml"/>
+  <xi:include href="sles-sap.xml"/>
+</product>

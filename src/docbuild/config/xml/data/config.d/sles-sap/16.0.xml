@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles-sap.16.0" path="16.0">
+  <version>16.0</version>
+  <canonical>sles-sap/16.0</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <!--************************ about ************************-->
+      <deliverable id="sles-sap.16.0.dc-sle-comparison" type="dc" category="cat.about">
+        <dc file="DC-SLE-comparison">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sle-differences-faq" type="dc" category="cat.about">
+        <dc file="DC-SLE-differences-faq">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sle-packages-lifecycle" type="dc" category="cat.about">
+        <dc file="DC-SLE-packages-lifecycle">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sle-os-identification" type="dc" category="cat.about">
+        <dc file="DC-SLE-os-identification">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable id="sles-sap.16.0.dc-sap-x86-64-agama-based-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-x86-64-agama-based-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-ppc-agama-based-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-ppc-agama-based-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-x86-64-agama-automated-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-x86-64-agama-automated-installation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-pxe-server" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-PXE-server">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-deployment-pxe-client" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-deployment-pxe-client">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-sles-to-sap" type="dc" category="cat.deployment">
+        <dc file="DC-SAP-sles-to-sap">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--***************** update-upgrade *****************-->
+      <deliverable id="sles-sap.16.0.dc-sap-klp" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SAP-klp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-ulp" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SAP-ulp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-upgrading" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SAP-upgrading">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** administration ***************-->
+      <deliverable id="sles-sap.16.0.dc-sap-ansible" type="dc" category="cat.administration">
+        <dc file="DC-SAP-Ansible">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-ansible-roles" type="dc" category="cat.administration">
+        <dc file="DC-SAP-ansible-roles">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-intro-sap-ansible-automation" type="dc" category="cat.administration">
+        <dc file="DC-SAP-intro-sap-ansible-automation">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-cockpit" type="dc" category="cat.administration">
+        <dc file="DC-SAP-cockpit">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-copy-file-rsync" type="dc" category="cat.administration">
+        <dc file="DC-SAP-copy-file-rsync">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-gnome-remote-desktop" type="dc" category="cat.administration">
+        <dc file="DC-SAP-gnome-remote-desktop">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-networkmanager-nmcli" type="dc" category="cat.administration">
+        <dc file="DC-SAP-networkmanager-nmcli">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-ntp-time-synchronization" type="dc" category="cat.administration">
+        <dc file="DC-SAP-ntp-time-synchronization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-predictable-naming" type="dc" category="cat.administration">
+        <dc file="DC-SAP-predictable-naming">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-snapper-basics" type="dc" category="cat.administration">
+        <dc file="DC-SAP-snapper-basics">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-subnet-manager" type="dc" category="cat.administration">
+        <dc file="DC-SAP-subnet-manager">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser" type="dc" category="cat.administration">
+        <dc file="DC-SAP-sudo-run-commands-as-superuser">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-supportconfig" type="dc" category="cat.administration">
+        <dc file="DC-SAP-supportconfig">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-systemd-basics" type="dc" category="cat.administration">
+        <dc file="DC-SAP-systemd-basics">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-systemd-timers" type="dc" category="cat.administration">
+        <dc file="DC-SAP-systemd-timers">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <deliverable id="sles-sap.16.0.dc-sap-virtualization" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SAP-virtualization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-vm-host-network-multihome-setup" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SAP-vm-host-network-multihome-setup">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--****************** product-usage ******************-->
+      <deliverable id="sles-sap.16.0.dc-sap-gnome-getting-started" type="dc" category="cat.product-usage">
+        <dc file="DC-SAP-GNOME-getting-started">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-valkey" type="dc" category="cat.product-usage">
+        <dc file="DC-SAP-valkey">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable id="sles-sap.16.0.dc-sap-intro-firewalld" type="dc" category="cat.security-compliance">
+        <dc file="DC-SAP-intro-firewalld">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-selinux" type="dc" category="cat.security-compliance">
+        <dc file="DC-SAP-SELinux">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges" type="dc" category="cat.security-compliance">
+        <dc file="DC-SAP-sudo-configure-superuser-privileges">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <deliverable id="sles-sap.16.0.dc-sap-saptune" type="dc" category="cat.tuning-performance">
+        <dc file="DC-SAP-saptune">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles-sap.16.0.16.0-index.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles-sap/16.0/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/de-de</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-intro-sap-ansible-automation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+        </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/es-es</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-intro-sap-ansible-automation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+      </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/fr-fr</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-intro-sap-ansible-automation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+      </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-intro-sap-ansible-automation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+      </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/pt-br</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+      </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable category="security-compliance">
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE16.0</branch>
+      <subdir>l10n/zh-cn</subdir>
+      <!--************************ about ************************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-comparison"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SLE-differences-faq</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SLE-packages-lifecycle</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sle-os-identification"/>
+      </deliverable>
+      <!--**************** deployement ****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-x86-64-agama-based-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ppc-agama-based-installation"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-x86-64-agama-automated-installation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-pxe-server"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-deployment-pxe-client"/>
+      </deliverable>
+      <!-- <deliverable>
+        <dc>DC-SAP-sles-to-sap</dc>
+      </deliverable> -->
+      <!--***************** update-upgrade *****************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-klp"/>
+      </deliverable>
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-ulp</dc>
+      </deliverable>-->
+      <!--<deliverable category="update-upgrade">
+        <dc>DC-SAP-upgrading</dc>
+      </deliverable>-->
+      <!--*************** administration ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-Ansible</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-ansible-roles</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-intro-sap-ansible-automation</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-copy-file-rsync"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-remote-desktop"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-networkmanager-nmcli"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-ntp-time-synchronization"/>
+      </deliverable>
+      <!--
+      <deliverable>
+        <dc>DC-SAP-predictable-naming</dc>
+      </deliverable>
+      -->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-snapper-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-supportconfig</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-systemd-basics</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-systemd-timers"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-subnet-manager</dc>
+      </deliverable>-->
+      <!--*************** container-virtualization ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-virtualization</dc>
+      </deliverable>-->
+      <!--<deliverable>
+        <dc>DC-SAP-vm-host-network-multihome-setup</dc>
+      </deliverable>-->
+      <!--****************** product-usage ******************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-gnome-getting-started"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-valkey"/>
+      </deliverable>
+      <!--*************** security-compliance ***************-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-intro-firewalld"/>
+      </deliverable>
+      <!--<deliverable>
+        <dc>DC-SAP-SELinux</dc>
+      </deliverable>-->
+      <deliverable type="ref">
+        <ref linkend="sles-sap.16.0.dc-sap-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <!--*************** tuning-performance ***************-->
+      <!--<deliverable>
+        <dc>DC-SAP-saptune</dc>
+      </deliverable>-->
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles-sap.trento.dc-sles-sap-trento" titleformat="title subtitle" category="cat.administration"/>
+    <ref linkend="sle-ha.16.0" category="cat.additional-doc"/>
+  </internal>
+</docset>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="soc.8" path="8">
+  <version>8</version>
+  <resources>
+    <git remote="https://github.com/SUSE-Cloud/doc-cloud.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/cloud_8</branch>
+      <!-- CLM -->
+      <deliverable id="soc.8.dc-suse-openstack-cloud-clm-all" type="dc">
+        <dc file="DC-suse-openstack-cloud-clm-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.soc.soc-clm">book-planning</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-installation</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-security</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-operations</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-user</subdeliverable>
+          <subdeliverable category="cat.soc.soc-clm">book-opsconsole</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-installation" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-installation">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-operations" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-operations">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-opsconsole" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-opsconsole">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-planning" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-planning">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-security" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-user" type="dc" category="cat.soc.soc-clm">
+        <dc file="DC-suse-openstack-cloud-user">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Crowbar -->
+      <deliverable id="soc.8.dc-suse-openstack-cloud-crowbar-all" type="dc">
+        <dc file="DC-suse-openstack-cloud-crowbar-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.soc.soc-crow">book-deployment</subdeliverable>
+          <subdeliverable category="cat.soc.ostack-upstream">book-upstream-admin</subdeliverable>
+          <subdeliverable category="cat.soc.soc-general">book-supplement</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-deployment" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-upstream-admin" type="dc" category="cat.soc.ostack-upstream">
+        <dc file="DC-suse-openstack-cloud-upstream-admin">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-upstream-user" type="dc" category="cat.soc.ostack-upstream">
+        <dc file="DC-suse-openstack-cloud-upstream-user">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-supplement" type="dc" category="cat.soc.soc-general">
+        <dc file="DC-suse-openstack-cloud-supplement">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Crowbar Monitoring -->
+      <deliverable id="soc.8.dc-suse-openstack-cloud-socmmsoperator" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-socmmsoperator">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-socmosoperator" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-socmosoperator">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="soc.8.dc-suse-openstack-cloud-socmoverview" type="dc" category="cat.soc.soc-crow">
+        <dc file="DC-suse-openstack-cloud-socmoverview">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.soc.8.8.release-notes" type="prebuilt" category="cat.soc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/soc/8/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

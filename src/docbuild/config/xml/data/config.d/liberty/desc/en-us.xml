@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Mixed Linux support without vendor lock-in</title>
+    <p>
+      SUSE Liberty Linux was the former name for SUSE's offering that provided support for
+      environments using a 100% binary-compatible version of RHEL. It has now been integrated into
+      SUSE Multi-Linux Support. Customers utilizing SUSE Liberty Linux ISOs and repositories may
+      still encounter references to "SUSE Liberty Linux" as part of the service. The name change
+      reflects the service-oriented nature of SUSE Multi-Linux Support and SUSE's commitment to
+      supporting multiple Linux distributions within a unified service, emphasizing its capability
+      to handle complex, heterogeneous Linux environments. Additionally, it avoids the
+      misunderstanding of perceiving it as another Linux distribution. No migration is needed.
+      SUSE Multi-Linux Support is a service that can be provided without requiring a migration from
+      CentOS or RHEL to SUSE Liberty Linux. It allows you to maintain your existing infrastructure
+      while benefiting from SUSE's comprehensive support. SUSE Multi-Linux Support is a 100%
+      binary-compatible version of RHEL (including API and ABI 100% compatibility). This ensures
+      that applications certified for RHEL will run seamlessly on SUSE Liberty Linux without any
+      modifications.
+    </p>
+  </desc>

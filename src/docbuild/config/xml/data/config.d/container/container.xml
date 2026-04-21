@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="container" family="f.linux" series="s.pas" rank="04130">
+  <name>Container Documentation</name>
+  <acronym>container</acronym>
+  <maintainers>
+    <contact>dpopov@suse.de</contact>
+    <contact>tbazant@suse.cz</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="all.xml"/>
+</product>

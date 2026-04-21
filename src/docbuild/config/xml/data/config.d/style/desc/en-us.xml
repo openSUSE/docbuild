@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <p>
+      Welcome to the hub for SUSE’s writing standards. On this page, you can
+      choose two fully maintained guides—one for DocBook XML, the other for
+      AsciiDoc. Both guides answer the same questions about voice, terminology,
+      structure and layout, but each applies rules that fit its own format.
+      Choose your format, follow the conventions, and you’ll make your content
+      clearer for readers, easier for translators and smoother for
+      contributors—no matter which toolchain you prefer.
+    </p>
+  </desc>

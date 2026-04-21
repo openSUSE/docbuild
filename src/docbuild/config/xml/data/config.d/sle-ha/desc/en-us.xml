@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Business continuity, data integrity and maximized uptime for all environments</title>
+    <p>
+      An industry-leading open source high availability clustering system designed to
+      virtually eliminate unplanned downtime, be easy to use and be deployed in both
+      physical and virtual environments. High availability
+      clustering helps to minimize data loss due to corruption or failure by protecting your data
+      assets using your existing IT infrastructure.
+    </p>
+    <p>
+      High availability clustering is used to automate application and data recovery.
+      You can use our flexible, policy-driven clustering solution to implement highly available
+      Linux clusters and eliminate single points of failure. Your servers are continuously
+      monitored, and when a fault or failure occurs, the workload is transferred from one server
+      to another, or the application is automatically restarted on a known working system.
+      This helps you maintain business continuity and minimize unplanned downtime.
+    </p>
+  </desc>

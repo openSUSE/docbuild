@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.containerization" path="containerization">
+  <version includes-productname="true">Containerization</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category cover a wide range of containerization
+          setups and technologies.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Data Intelligence -->
+      <deliverable id="sbp.containerization.dc-rke-sap-di31" type="dc" titleformat="title subtitle product">
+        <dc file="DC-RKE-SAP-DI31">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.containerization.dc-rke2-sap-di31" type="dc" titleformat="title subtitle product">
+        <dc file="DC-RKE2-SAP-DI31">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- <deliverable titleformat="title subtitle product">
+          <dc>DC-SBP-CaaSP4-SAP-Data-Hub-2</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable titleformat="title subtitle product">
+          <dc>DC-SBP-CaaSP4-SAP-Data-Intelligence-3</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable titleformat="title subtitle product">
+          <dc>DC-SBP-DI-30-CaaSP42-Install-Guide</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable>
+        <deliverable titleformat="title subtitle product">
+          <dc>DC-CaaSP3-DataHub2</dc>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </deliverable> -->
+    </locale>
+    <!--Korean-->
+    <locale lang="ko-kr" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ko-kr</subdir>
+      <!-- Containers -->
+      <deliverable type="ref">
+        <ref linkend="sbp.containerization.dc-rke2-sap-di31"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <!-- Data Intelligence -->
+    <ref linkend="sbp.sap-15.dc-sapdi3-rke2-installation" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-other.dc-sap-eic-harvester" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-other.dc-sap-eic" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-sapdi3-suse-vmware-vsan" titleformat="title subtitle product"/>
+  </internal>
+</docset>

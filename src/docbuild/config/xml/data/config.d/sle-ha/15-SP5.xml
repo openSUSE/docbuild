@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-ha.15-SP5" path="15-SP5">
+  <name>SUSE Linux Enterprise High Availability</name>
+  <version>15 SP5</version>
+  <canonical>sle-ha/15-SP7/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sleha.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-all" type="dc">
+        <dc file="DC-SLE-HA-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.administration">book-administration</subdeliverable>
+          <subdeliverable category="cat.deployment">article-installation</subdeliverable>
+          <subdeliverable category="cat.product-usage">article-nfs-storage</subdeliverable>
+          <subdeliverable category="cat.administration">article-pacemaker-remote</subdeliverable>
+          <subdeliverable category="cat.sle-ha.initial-config">book-geo-clustering</subdeliverable>
+          <subdeliverable category="cat.sle-ha.initial-config">article-geo-clustering</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-geo-clustering-guide" type="dc" category="cat.sle-ha.initial-config">
+        <dc file="DC-SLE-HA-geo-clustering-guide">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-geo-clustering" type="dc" category="cat.sle-ha.initial-config">
+        <dc file="DC-SLE-HA-geo-clustering">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-administration" type="dc" category="cat.administration">
+        <dc file="DC-SLE-HA-administration">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLE-HA-installation">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-nfs-storage" type="dc" category="cat.product-usage">
+        <dc file="DC-SLE-HA-nfs-storage">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-ha.15-SP5.dc-sle-ha-pacemaker-remote" type="dc" category="cat.administration">
+        <dc file="DC-SLE-HA-pacemaker-remote">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-ha.15-SP5.15-sp5.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-ha/15-SP5/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <subdir>l10n/sleha/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-geo-clustering"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <subdir>l10n/sleha/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-geo-clustering"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <subdir>l10n/sleha/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-geo-clustering"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <subdir>l10n/sleha/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-administration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-geo-clustering"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLEHA15SP5</branch>
+      <subdir>l10n/sleha/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-ha.15-SP5.dc-sle-ha-geo-clustering"/>
+      </deliverable>
+    </locale>
+    <!--
+        <language lang="zh-cn" translation-type="full">
+          <branch>maintenance/SLEHA15SP5</branch>
+          <subdir>l10n/sleha/zh-cn</subdir>
+        </language>
+      -->
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP5" category="cat.additional-doc"/>
+    <ref linkend="sles-sap.sap-ha-support.dc-sap-ha-support" category="cat.solution-doc" titleformat="title subtitle"/>
+    <ref linkend="sles-sap.15-SP5.dc-sles-sap-automation" category="cat.solution-doc"/>
+    <ref linkend="sles-sap.15-SP5.dc-sles-sap-monitoring" category="cat.solution-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2023" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

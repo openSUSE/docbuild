@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Security compliance documentation for SUSE Linux Enterprise</title>
+    <p>
+      The following documents aim to provide a basic understanding of how
+      SUSE Linux Enterprise Server can be configured to comply with different
+      Security specifications.
+    </p>
+    <p>
+      SUSE seeks to provide customers with quick and easy guides that can assist
+      them in maintaining security compliance. Before implementing the settings contained
+      within the documents below, make sure to test them in a non-operational environment.
+      The developers of these profiles and documentation have made reasonable efforts to
+      ensure overall compliance. They assume no responsibility for its use by other parties,
+      and make no guarantee, expressed or implied, about its quality, reliability, or any
+      other characteristic.
+    </p>
+  </desc>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="smt" family="f.linux" series="s.pas" rank="04330">
+  <name>SUSE Linux Enterprise Subscription Management Tool</name>
+  <acronym>SMT</acronym>
+  <maintainers>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <!-- SLES 12 versions of SMT are documented as part of the SLES documentation.
+  With SLES 15, SMT was replaced by RMT. -->
+  <xi:include href="11.3.xml"/>
+</product>

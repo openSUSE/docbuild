@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Locally hosted generative AI</title>
+    <p>
+      The SUSE AI service is a locally hosted generative AI. It provides secure
+      auditable AI capabilities and allows organizations to deploy AI models on
+      their own infrastructure.
+    </p>
+  </desc>

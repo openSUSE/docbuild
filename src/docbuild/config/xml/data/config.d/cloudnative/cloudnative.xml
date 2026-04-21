@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="cloudnative" family="f.cn" series="s.pas" rank="00030">
+  <name>Cloud Native</name>
+  <acronym>rancher</acronym>
+  <maintainers>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.cloudnative.initial-config" title="Initial configuration"/>
+      <language id="cat.cloudnative.rancher" title="Cloud Native Documentation"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.cloudnative.initial-config" title="Erstmalige Konfiguration"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.cloudnative.initial-config" title="Configuración inicial"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.cloudnative.initial-config" title="Configuration initiale"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.cloudnative.initial-config" title="初期設定"/>
+    </category>
+    <category lang="ko-kr">
+      <language linkend="cat.cloudnative.initial-config" title="초기 구성"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.cloudnative.initial-config" title="Configuração inicial"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.cloudnative.initial-config" title="初始配置"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="continuous-delivery.xml"/>
+  <xi:include href="admission-controller.xml"/>
+  <xi:include href="storage.xml"/>
+  <xi:include href="cluster-api.xml"/>
+  <xi:include href="k3s.xml"/>
+  <xi:include href="rke2.xml"/>
+  <xi:include href="virtualization.xml"/>
+  <xi:include href="rancher-manager.xml"/>
+  <xi:include href="security.xml"/>
+  <xi:include href="os-manager.xml"/>
+  <xi:include href="suse-private-registry.xml"/>
+  <xi:include href="suse-observability.xml"/>
+  <xi:include href="suse-virtual-clusters.xml"/>
+  <xi:include href="rancher-srfa.xml"/>
+  <xi:include href="rancher-ai.xml"/>
+  <xi:include href="rancher-developer-access.xml"/>
+</product>

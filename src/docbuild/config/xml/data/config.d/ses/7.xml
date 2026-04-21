@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="ses.7" path="7">
+  <version>7</version>
+  <canonical>ses/7.1/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-ses.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <deliverable id="ses.7.dc-ses-all" type="dc">
+        <dc file="DC-ses-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.ses.ses-doc">book-storage-admin</subdeliverable>
+          <subdeliverable category="cat.ses.ses-doc">book-storage-deployment</subdeliverable>
+          <subdeliverable category="cat.ses.ses-doc">book-storage-troubleshooting</subdeliverable>
+          <subdeliverable category="cat.ses.ses-doc">book-storage-security</subdeliverable>
+          <subdeliverable category="cat.ses.windows-ses-doc">book-storage-windows</subdeliverable>
+          <subdeliverable category="cat.ses.rook-ses-doc-tp">book-storage-rook</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-admin" type="dc" category="cat.ses.ses-doc">
+        <dc file="DC-ses-admin">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-deployment" type="dc" category="cat.ses.ses-doc">
+        <dc file="DC-ses-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-troubleshooting" type="dc" category="cat.ses.ses-doc">
+        <dc file="DC-ses-troubleshooting">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-security" type="dc" category="cat.ses.ses-doc">
+        <dc file="DC-ses-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-windows" type="dc" category="cat.ses.windows-ses-doc">
+        <dc file="DC-ses-windows">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-rook" type="dc" category="cat.ses.rook-ses-doc-tp">
+        <dc file="DC-ses-rook">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="ses.7.dc-ses-man" type="dc" category="cat.ses.ses-man-pages">
+        <dc file="DC-ses-man">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.ses.7.7.suse-enterprise-storage-release-notes" type="prebuilt" category="cat.ses.release-notes">
+        <prebuilt>
+          <title>SUSE Enterprise Storage Release Notes</title>
+          <url format="html" href="/releasenotes/ses/7/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/ses7</branch>
+      <subdir>l10n/ses/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="ses.7.dc-ses-deployment"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.storage.dc-sbp-rook-ceph-kubernetes" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

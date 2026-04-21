@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.deploy-upgrade" path="deploy-upgrade" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Deployment &amp; Upgrade</version>
+  <listingversion includes-productname="true">Deployment &amp; Upgrade</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Documents featured in this category relate to various deployment and upgrade scenarios.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP6</branch>
+      <deliverable id="smart.deploy-upgrade.dc-freeradius-setup-server" type="dc">
+        <dc file="DC-freeradius-setup-server">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.deploy-upgrade.dc-http-boot-setting-up-server" type="dc">
+        <dc file="DC-http-boot-setting-up-server">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.deploy-upgrade.dc-sles-nvidia-jetson" type="dc">
+        <dc file="DC-SLES-NVIDIA-jetson">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

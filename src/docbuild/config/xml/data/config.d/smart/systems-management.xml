@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.systems-management" path="systems-management" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Systems Management</version>
+  <listingversion includes-productname="true">Systems Management</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          This section spans a wide range of topics all related to maintaining and
+          improving services and infrastructure.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP7</branch>
+      <deliverable id="smart.systems-management.dc-sudo-run-commands-as-superuser" type="dc">
+        <dc file="DC-sudo-run-commands-as-superuser">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-sudo-configure-superuser-privileges" type="dc">
+        <dc file="DC-sudo-configure-superuser-privileges">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-concept-zypper" type="dc">
+        <dc file="DC-concept-zypper">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-reference-zypper-install" type="dc">
+        <dc file="DC-reference-zypper-install">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-systemd-working-with-timers" type="dc">
+        <dc file="DC-systemd-working-with-timers">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-systemd-management" type="dc">
+        <dc file="DC-systemd-management">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-systemd-setting-up-service" type="dc">
+        <dc file="DC-systemd-setting-up-service">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-kernel-boot-parameters-modify" type="dc">
+        <dc file="DC-kernel-boot-parameters-modify">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-ulp-livepatching" type="dc">
+        <dc file="DC-ulp-livepatching">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-supportconfig" type="dc">
+        <dc file="DC-supportconfig">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-klp" type="dc">
+        <dc file="DC-klp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-systemd-basics" type="dc">
+        <dc file="DC-systemd-basics">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-snapper-basic-concepts" type="dc">
+        <dc file="DC-snapper-basic-concepts">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-sles-copy-file-rsync" type="dc">
+        <dc file="DC-SLES-copy-file-rsync">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.systems-management.dc-sles-valkey" type="dc">
+        <dc file="DC-SLES-valkey">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="pt-br">
+    <title>Continuidade de negócios, integridade de dados e mais tempo ativo para ambientes</title>
+    <p>
+      Um sistema de cluster de alta disponibilidade (HA) de código-fonte aberto e líder do
+      setor, projetado para praticamente eliminar o tempo de espera não planejado, para fácil
+      utilização e para ser implantado em ambientes físicos e virtuais.
+      O cluster de alta disponibilidade (HA) ajuda a minimizar a perda de dados causada
+      por falhas ou corrupção, protegendo seus ativos de dados usando sua infraestrutura existente de TI.
+    </p>
+    <p>
+      O cluster de alta disponibilidade (HA) é usado para automatizar a recuperação de aplicativos
+      e dados. Você pode usar nossa solução de cluster flexível e orientada por políticas para
+      implementar clusters Linux altamente disponíveis e eliminar pontos únicos de falha. Seus
+      servidores são monitorados continuamente e, quando ocorre uma falha ou pane, a carga de trabalho
+      é transferida de um servidor para outro ou o aplicativo é reiniciado automaticamente em um sistema
+      que se sabe que tem bom funcionamento. Isso o ajuda a manter a continuidade dos negócios e a
+      minimizar o tempo de espera não planejado.
+    </p>
+  </desc>

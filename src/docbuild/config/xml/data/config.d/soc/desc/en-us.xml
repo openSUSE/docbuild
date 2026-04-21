@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Manage and deploy heterogeneous cloud infrastructure</title>
+    <p>
+      <strong>SUSE OpenStack Cloud is no longer under active development.
+      There will be no new major versions of SUSE OpenStack Cloud.</strong></p>
+    <p>
+      For details on support, see the
+      <a href="https://www.suse.com/lifecycle/">Product Support Lifecycle</a> page.
+    </p>
+    <p>
+      SUSE OpenStack Cloud provides an easy to deploy and manage heterogeneous cloud
+      infrastructure for provisioning your development, test and production workloads
+      in a way that is supportable, compliant and secure.
+    </p>
+  </desc>

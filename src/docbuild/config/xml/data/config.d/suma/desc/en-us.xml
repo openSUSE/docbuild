@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Infrastructure management for all your Linux distros</title>
+    <p>
+      SUSE Multi-Linux Manager is a best-in-class open source infrastructure management
+      solution for your software-defined infrastructure.
+    </p>
+    <p>
+      SUSE Multi-Linux Manager was designed to help your enterprise DevOps and IT
+      Operations teams reduce complexity and regain control of your IT assets
+      with a single tool to manage Linux systems across a variety of hardware
+      architectures, hypervisors as well as container, IoT and cloud
+      platforms. It automates Linux server and IoT device provisioning,
+      patching and configuration for faster, consistent and repeatable server
+      deployment helping to optimize operations and reduce costs. And with
+      automated monitoring, tracking, auditing and reporting of your systems,
+      VMs, and containers across your development, test and production
+      environments, you can ensure compliance with internal security policies
+      and external regulations.
+    </p>
+  </desc>

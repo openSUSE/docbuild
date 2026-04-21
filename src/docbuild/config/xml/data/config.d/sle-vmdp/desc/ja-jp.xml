@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="ja-jp">
+    <title>SUSE Linux Enterprise向け並行仮想化ドライバ</title>
+    <p>
+     SUSE Virtual Machine Driver Packに含まれる準仮想化ドライバにより、完全仮想化の可用性が向上され、準仮想化のパフォーマンスが強化されます。これは、SUSE Linux Enterprise上のXenおよびKVMハイパーバイザと、仮想環境で修正せずに実行されるゲストOSとの間で、追加の通信チャネルを開き、ネットワークとストレージの入出力を加速し、全体的な効率性を向上させることによって実現されます。
+    </p>
+  </desc>

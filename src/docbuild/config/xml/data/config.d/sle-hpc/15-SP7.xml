@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-hpc.15-SP7" path="15-SP7">
+  <version>15 SP7</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-hpc.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="sle-hpc.15-SP7.dc-hpc-guide" type="dc" category="cat.sle-hpc.core-doc">
+        <dc file="DC-hpc-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-hpc.15-SP7.15-sp7.release-notes" type="prebuilt" category="cat.sle-hpc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-hpc/15-SP7/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

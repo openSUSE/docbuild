@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.sap-other" path="sap-other">
+  <version includes-productname="true">SAP applications on Other SUSE Products</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category focus on solutions built with SAP applications
+          and a broader range of SUSE products.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Cloud, containerization -->
+      <deliverable id="sbp.sap-other.dc-sap-eic" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SAP-EIC">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.sap-other.dc-sap-eic-harvester" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SAP-EIC-Harvester">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <!-- Containerization -->
+    <!-- <ref product="sbp" docset="containerization" dc="DC-CaaSP3-DataHub2"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization" dc="DC-SBP-CaaSP4-SAP-Data-Hub-2"
+        titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization"
+        dc="DC-SBP-CaaSP4-SAP-Data-Intelligence-3" titleformat="title subtitle product"/>
+      <ref product="sbp" docset="containerization" dc="DC-SBP-DI-30-CaaSP42-Install-Guide"
+       titleformat="title subtitle product"/> -->
+    <ref linkend="sbp.containerization.dc-rke-sap-di31" titleformat="title subtitle product"/>
+    <ref linkend="sbp.containerization.dc-rke2-sap-di31" titleformat="title subtitle product"/>
+  </internal>
+</docset>

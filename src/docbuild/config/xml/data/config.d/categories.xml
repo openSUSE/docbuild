@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="categories/en-us.xml"/>
+  <xi:include href="categories/de-de.xml"/>
+  <xi:include href="categories/es-es.xml"/>
+  <xi:include href="categories/fr-fr.xml"/>
+  <xi:include href="categories/ja-jp.xml"/>
+  <xi:include href="categories/ko-kr.xml"/>
+  <xi:include href="categories/pt-br.xml"/>
+  <xi:include href="categories/zh-cn.xml"/>
+</categories>

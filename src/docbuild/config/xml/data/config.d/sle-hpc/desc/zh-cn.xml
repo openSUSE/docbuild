@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="zh-cn">
+    <title>为解决要求严苛的计算密集型、数据密集型问题而量身定制的 Linux 操作系统</title>
+    <p>
+      SUSE Linux Enterprise for High Performance Computing 是一套高度可缩放的高性能开源操作系统，可利用并行计算的强大能力进行建模、模拟，以及处理高级分析工作负载。SUSE Linux Enterprise High-Performance Computing 提供了与高性能计算有关的工具和库，包括工作负载管理器、远程和并行外壳、监视和测量工具，以及用于完成 HPC 任务的库。
+    </p>
+  </desc>

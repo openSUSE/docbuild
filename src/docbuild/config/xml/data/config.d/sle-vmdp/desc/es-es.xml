@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="es-es">
+    <title>Controladores paravirtualizados para SUSE Linux Enterprise</title>
+    <p>
+     Los controladores paravirtualizados de SUSE Virtual Machine Driver Pack
+     (Paquete de controladores para máquinas virtuales SUSE) ofrecen las
+     ventajas de rendimiento de la paravirtualización, con la virtualización
+     total disponible de forma más amplia.
+     Esto se consigue mediante la apertura de canales de comunicación
+     adicionales entre los hipervisores Xen y KVM de SUSE Linux Enterprise y
+     los sistemas operativos invitados sin modificar que se ejecutan en
+     entornos virtuales, lo que acelera las operaciones de entrada y salida
+     de almacenamiento y red, y mejora la eficacia general.
+    </p>
+  </desc>

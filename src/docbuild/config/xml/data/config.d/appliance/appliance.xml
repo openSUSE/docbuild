@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="appliance" family="f.linux" series="s.pas" rank="04150">
+  <name>Appliance building</name>
+  <acronym>appliance</acronym>
+  <maintainers>
+    <!-- <contact>dcassany@suse.de</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <!-- Description is needed for validation, even if empty. Do not remove! -->
+  <xi:include href="kiwi-9.xml"/>
+  <xi:include href="keg-2.xml"/>
+</product>

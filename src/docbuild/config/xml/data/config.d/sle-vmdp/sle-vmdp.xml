@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="sle-vmdp" family="f.linux" series="s.pas" rank="04120">
+  <name>SUSE Linux Enterprise Virtual Machine Driver Pack</name>
+  <acronym>SLE VMDP</acronym>
+  <maintainers>
+    <!-- <contact>cbosdonnat@suse.com</contact>
+    <contact>aginies@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="2.5.xml"/>
+</product>

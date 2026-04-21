@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.rancher" path="rancher" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Rancher</version>
+  <listingversion includes-productname="true">Rancher</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          This category contains Rancher documents.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP6</branch>
+      <deliverable id="smart.rancher.dc-rancher-os" type="dc">
+        <dc file="DC-Rancher-OS">
+          <format html="1" pdf="0" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

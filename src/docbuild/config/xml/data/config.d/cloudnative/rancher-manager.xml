@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.rancher-manager" path="rancher-manager">
+  <version>SUSE Rancher Prime (Rancher Manager)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Rancher Prime is a complete container management platform for
+          Kubernetes, giving you the tools to successfully run Kubernetes
+          anywhere.
+        </p>
+        <p>
+          SUSE Rancher Prime can provision Kubernetes from a hosted
+          provider, provision compute nodes and then install Kubernetes onto
+          them, or import existing Kubernetes clusters running anywhere.
+          It adds significant value on top of Kubernetes, first by
+          centralizing authentication and role-based access control (RBAC) for
+          all of the clusters, giving global admins the ability to control
+          cluster access from one location.
+        </p>
+        <p>
+          SUSE Rancher Prime enables detailed monitoring and alerting for
+          clusters and their resources, ships logs to external providers, and
+          integrates directly with Helm via the Application Catalog. To
+          automatically deploy and upgrade workloads you can
+          either plug-in an existing CI/CD systems or use SUSE Rancher Prime:
+          Continous Delivery.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.rancher-manager.latest-en-about-rancher-what-is-rancher.about-suse-rancher-prime" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>About SUSE Rancher Prime</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/about-rancher/what-is-rancher.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-installation-and-upgrade-installation-and-upgrade.installation-and-upgrades" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Installation and Upgrades</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/installation-and-upgrade/installation-and-upgrade.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-rancher-admin-rancher-admin.suse-rancher-prime-administration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Rancher Prime Administration</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/rancher-admin/rancher-admin.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-cluster-deployment-cluster-deployment.cluster-deployment" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Cluster Deployment</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/cluster-deployment/cluster-deployment.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-cluster-admin-manage-clusters-manage-clusters.cluster-administration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Cluster Administration</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/cluster-admin/manage-clusters/manage-clusters.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-security-security-overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Security</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/security/security-overview.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-integrations-integrations" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Integrations</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/integrations/integrations.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-observability-rancher-cluster-tools" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Observability</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/observability/rancher-cluster-tools.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-api-quickstart" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>API</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/api/quickstart.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-troubleshooting-general-troubleshooting" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Troubleshooting</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/troubleshooting/general-troubleshooting.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.latest-en-faq-technical-items" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>FAQ</title>
+          <url format="html" href="/cloudnative/rancher-manager/latest/en/faq/technical-items.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/cluster-autoscaler.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Cluster Autoscaler</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/alibaba-hosted-clusters/setting-up-rancher.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Alibaba Hosted Clusters</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/dual-stack.html)"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>IPv4/IPv6 Dual-Stack</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/migrating-to-the-prime-registry.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Migrating to SUSE Rancher Prime</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/operating-at-scale.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Operating at Scale</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime/restricted-admin-replacement.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Replacing the Restricted Admin Role</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

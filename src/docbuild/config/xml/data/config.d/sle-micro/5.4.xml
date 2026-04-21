@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-micro.5.4" path="5.4">
+  <version>Enterprise Micro 5.4</version>
+  <canonical>sle-micro/5.4/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.4</branch>
+      <deliverable id="sle-micro.5.4.dc-sle-micro-all" type="dc">
+        <dc file="DC-SLE-Micro-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.sle-micro.core-doc">book-autoyast</subdeliverable>
+          <subdeliverable category="cat.sle-micro.core-doc">book-deployment-slemicro</subdeliverable>
+          <subdeliverable category="cat.sle-micro.core-doc">book-upgrade-slemicro</subdeliverable>
+          <!-- <subdeliverable category="core-doc">book-administration-slemicro</subdeliverable> -->
+          <subdeliverable category="cat.sle-micro.core-doc">article-podman</subdeliverable>
+          <subdeliverable category="cat.sle-micro.core-doc">book-security-slemicro</subdeliverable>
+          <!-- <subdeliverable category="core-doc">article-cockpit-slemicro</subdeliverable> -->
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.4.dc-sle-micro-autoyast" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-autoyast">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!--
+        <deliverable category="core-doc">
+          <dc>DC-SLE-Micro-administration</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable>
+        -->
+      <deliverable id="sle-micro.5.4.dc-sle-micro-deployment" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.4.dc-sle-micro-upgrade" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-upgrade">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.4.dc-sle-micro-podman" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-podman">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.4.dc-sle-micro-security" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- <deliverable category="core-doc">
+          <dc>DC-SLE-Micro-cockpit</dc>
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </deliverable> -->
+      <deliverable id="rn.sle-micro.5.4.5-4.release-notes" type="prebuilt" category="cat.sle-micro.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-micro/5.4/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.4</branch>
+      <subdir>l10n/micro/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.4</branch>
+      <subdir>l10n/micro/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-deployment"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.4</branch>
+      <subdir>l10n/micro/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.4.dc-sle-micro-deployment"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="smart.micro-clouds.dc-sle-micro-public-cloud" category="cat.sle-micro.core-doc" titleformat="title subtitle"/>
+    <ref linkend="smart.micro-clouds.dc-micro-5.4-cockpit" category="cat.sle-micro.core-doc" titleformat="title subtitle"/>
+    <ref linkend="smart.micro-clouds.dc-sle-micro-5.4-admin" category="cat.sle-micro.core-doc" titleformat="title subtitle"/>
+    <ref linkend="sles.15-SP4" category="cat.additional-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2022" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-suse-oem-identification" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

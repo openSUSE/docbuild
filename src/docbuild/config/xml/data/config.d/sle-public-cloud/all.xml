@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-public-cloud.all" path="all">
+  <version includes-productname="true">SUSE Linux Enterprise in public clouds</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-public-cloud.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="spc.all.dc-public-cloud" type="dc">
+        <dc file="DC-public-cloud">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="suma-dms.15.dc-distribution-migration-system" titleformat="title"/>
+  </internal>
+</docset>

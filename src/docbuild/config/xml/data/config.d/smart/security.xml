@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.security" path="security" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Security</version>
+  <listingversion includes-productname="true">Security</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Documents posted in this category focus on security solutions and technologies.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP6</branch>
+      <deliverable id="smart.security.dc-pam-security" type="dc">
+        <dc file="DC-PAM-security">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.security.dc-systemd-securing" type="dc">
+        <dc file="DC-systemd-securing">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.security.dc-tls-certificates" type="dc">
+        <dc file="DC-tls-certificates">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.security.dc-sle-micro-security" type="dc">
+        <dc file="DC-SLE-Micro-security">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

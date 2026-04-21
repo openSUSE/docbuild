@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="smart" family="f.linux" series="s.pas" rank="0">
+  <name>SUSE Smart Docs</name>
+  <acronym>Smart</acronym>
+  <maintainers>
+    <contact>taroth@suse.de</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.smart.container" title="Containerization"/>
+      <language id="cat.smart.deploy-upgrade" title="Deployment &amp; Upgrade"/>
+      <language id="cat.smart.network" title="Network"/>
+      <language id="cat.smart.systems-management" title="System Management"/>
+      <language id="cat.smart.systemtuning-performance" title="System Tuning &amp; Performance"/>
+      <language id="cat.smart.virtualization-cloud" title="Virtualization &amp; Cloud"/>
+      <language id="cat.smart.security" title="Security"/>
+      <language id="cat.smart.access-control" title="Access Control"/>
+      <language id="cat.smart.ha" title="High Availability"/>
+      <language id="cat.smart.storage" title="Storage"/>
+      <language id="cat.smart.sap" title="SAP"/>
+      <language id="cat.smart.rancher" title="Rancher"/>
+      <language id="cat.smart.desktop" title="Desktop Applications"/>
+      <language id="cat.smart.micro-clouds" title="SLE Micro in Public Clouds"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- Out categories -->
+  <!-- Unused categories (yet) -->
+  <!-- For the two ones we aren't completely sure  -->
+  <!--
+   Best Practice for editing:
+
+   * Look at the contents and group them logically. Introductory stuff goes first, become more
+     specific on the way down
+   * Note that the stylesheets are stubbornly ignoring the order of deliverables right now.
+     They seem to go A to Z.
+
+  -->
+  <xi:include href="sap.xml"/>
+  <xi:include href="desktop.xml"/>
+  <xi:include href="container.xml"/>
+  <xi:include href="network.xml"/>
+  <xi:include href="deploy-upgrade.xml"/>
+  <xi:include href="virtualization-cloud.xml"/>
+  <xi:include href="systemtuning-performance.xml"/>
+  <xi:include href="systems-management.xml"/>
+  <xi:include href="micro-clouds.xml"/>
+  <xi:include href="security.xml"/>
+  <xi:include href="rancher.xml"/>
+</product>

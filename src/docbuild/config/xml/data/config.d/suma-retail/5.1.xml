@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suma-retail.5.1" path="5.1">
+  <version>5.1</version>
+  <external>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="multi-linux-manager/5.1/en/docs/retail/retail-overview.html"/>
+      <url lang="en-us" format="pdf" href="multi-linux-manager/5.1/pdf/en/suse_multi_linux_manager_retail_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Retail Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

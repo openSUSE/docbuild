@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suse-ai.1.0" path="1.0" navigation="disabled">
+  <version includes-productname="true">SUSE AI</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-suse-ai.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="suse-ai.1.0.dc-ai-intro" type="dc" category="cat.suse-ai.introduction">
+        <dc file="DC-AI-intro">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-requirements" type="dc" category="cat.deployment">
+        <dc file="DC-AI-requirements">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-deployment" type="dc" category="cat.deployment">
+        <dc file="DC-AI-deployment">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-deployment-airgapped" type="dc" category="cat.deployment">
+        <dc file="DC-AI-deployment-airgapped">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-openwebui-using" type="dc" category="cat.administration">
+        <dc file="DC-openwebui-using">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-monitoring" type="dc" category="cat.suse-ai.configuration">
+        <dc file="DC-AI-monitoring">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-openwebui-configuring" type="dc" category="cat.suse-ai.configuration">
+        <dc file="DC-openwebui-configuring">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-preventing-hallucinations" type="dc" category="cat.best-practices">
+        <dc file="DC-AI-preventing-hallucinations">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-system-prompts" type="dc" category="cat.best-practices">
+        <dc file="DC-AI-system-prompts">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-ai.1.0.dc-ai-data-integrity" type="dc" category="cat.best-practices">
+        <dc file="DC-AI-data-integrity">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

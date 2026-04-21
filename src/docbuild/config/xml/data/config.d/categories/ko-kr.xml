@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category lang="ko-kr">
+  <language linkend="cat.about" title="소개"/>
+  <language linkend="cat.deployment" title="배포"/>
+  <language linkend="cat.initial-config" title="초기 구성"/>
+  <language linkend="cat.update-upgrade" title="업데이트 및 업그레이드"/>
+  <language linkend="cat.administration" title="관리"/>
+  <language linkend="cat.container-virtualization" title="컨테이너와 가상화"/>
+  <language linkend="cat.product-usage" title="제품 사용"/>
+  <language linkend="cat.security-compliance" title="보안 및 규정 준수"/>
+  <language linkend="cat.tuning-performance" title="튜닝 및 성능"/>
+  <language linkend="cat.solution-doc" title="솔루션 문서"/>
+  <language linkend="cat.additional-doc" title="추가 문서"/>
+  <language linkend="cat.best-practices" title="추가 문서"/>
+</category>

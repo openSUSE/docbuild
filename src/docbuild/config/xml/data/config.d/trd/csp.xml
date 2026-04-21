@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.csp" path="csp">
+  <version includes-productname="true">Cloud Service Providers</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>
+          Documents published in this area focus on solutions for or involving
+          Cloud Service Providers.​</p>
+      </desc>
+  </descriptions>
+  <internal>
+    <!-- <ref product="sbp" docset="cloud" dc="DC-SBP-CSP-UpdateInfra" titleformat="title subtitle product"/> -->
+    <ref linkend="sbp.sap-15.dc-trd-sles-sap-ha-automation-quickstart-cloud-gcp" titleformat="title subtitle product"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+    <!-- <ref product="trd" docset="fortinet" dc="DC-linux_gs_slessap_fortinet_azure_landscape-automation" titleformat="title subtitle product"/> -->
+  </internal>
+</docset>

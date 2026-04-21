@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sles-sap.15-SP2" path="15-SP2">
+  <version>15 SP2</version>
+  <canonical>sles-sap/15-SP7</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-slesforsap.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/15_SP2</branch>
+      <deliverable id="sles-sap.15-SP2.dc-sles-sap-guide" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-SAP-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.15-SP2.dc-sles-sap-quick" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-SAP-quick">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.15-SP2.dc-sles-sap-sol-automation" type="dc" category="cat.solution-doc">
+        <dc file="DC-SLES-SAP-sol-automation">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.15-SP2.dc-sles-sap-sol-monitoring" type="dc" category="cat.solution-doc">
+        <dc file="DC-SLES-SAP-sol-monitoring">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles-sap.15-SP2.15-sp2.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles-sap/15-SP2/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/15_SP2</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.15-SP2.dc-sles-sap-guide"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles-sap.15-SP2.dc-sles-sap-quick"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP2" category="cat.additional-doc"/>
+    <ref linkend="sle-ha.15-SP2" category="cat.additional-doc"/>
+    <ref linkend="sles-sap.sap-ha-support.dc-sap-ha-support" category="cat.sles-sap.solution-overview" titleformat="title subtitle"/>
+    <ref linkend="sles-sap.trento.dc-sles-sap-trento" titleformat="title subtitle"/>
+    <ref linkend="sbp.sap-15" category="cat.additional-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-suse-oem-identification" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

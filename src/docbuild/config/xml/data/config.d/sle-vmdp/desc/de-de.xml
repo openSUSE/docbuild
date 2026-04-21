@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="de-de">
+    <title>Paravirtualisierte Treiber für SUSE Linux Enterprise</title>
+    <p>
+     Die paravirtualisierten Treiber im SUSE Virtual Machine Driver Pack
+     bieten die Leistungsvorteile der Paravirtualisierung und zugleich die
+     höhere Verfügbarkeit der Komplettvirtualisierung.
+     Dabei werden zusätzliche Kommunikationskanäle zwischen dem Xen- und
+     KVM-Hypervisoren in SUSE Linux Enterprise und den in einer virtuellen
+     Umgebung ausgeführten unmodifizierten Gast-Betriebssystemen geöffnet,
+     was wiederum die Netzwerk- und Speicher-Eingabe/Ausgabe beschleunigt und
+     die Gesamteffizienz verbessert.
+    </p>
+  </desc>

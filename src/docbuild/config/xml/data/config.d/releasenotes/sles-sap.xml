@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="releasenotes.sles-sap" path="sles-sap">
+  <version includes-productname="true">SUSE Linux Enterprise Server for SAP applications</version>
+  <resources>
+    <git remote="https://github.com/SUSE/release-notes.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="rn.sles-sap.dc-releasenotes_sles-sap_16.0" type="dc">
+        <dc file="DC-releasenotes_sles-sap_16.0">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

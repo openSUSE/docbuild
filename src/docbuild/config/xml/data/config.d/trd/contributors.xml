@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.contributors" path="contributors" navigation="hidden">
+  <version includes-productname="true">Contributors Information</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+         <p>
+        Provides information about tools, technique, workflow, and style guidance for architects,
+        engineers, and technical writers to make successful contributions to the open repository
+        of technical reference documentation.
+      </p>
+    </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Contributors guide -->
+      <deliverable id="trd.contributors.dc-suse-trd_contrib-guide" type="dc" titleformat="title subtitle">
+        <dc file="DC-suse-trd_contrib-guide">
+          <subdir>contributors</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>SUSE</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

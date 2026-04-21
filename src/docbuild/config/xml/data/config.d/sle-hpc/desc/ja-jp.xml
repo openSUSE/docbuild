@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="ja-jp">
+    <title>要求の厳しい計算やデータ集約型の問題を解決するためにカスタマイズされたLinux OS</title>
+    <p>
+      SUSE Linux Enterprise High-Performance Computingは、モデリング、シミュレーション、および高度な分析ワークロードに並列処理能力を活用するように設定された、高度にスケーラブルで、ハイパフォーマンスなオープンソースOSです。SUSE Linux Enterprise High-Performance Computingは、ワークロードマネージャ、リモートおよび並列シェル、モニタリングおよび測定ツール、HPCタスクを実行するためのライブラリなど、ハイパフォーマンスコンピューティングに関連するツールとライブラリを提供します。
+    </p>
+  </desc>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.k3s" path="k3s">
+  <version>SUSE Rancher Prime: K3s (K3s)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Rancher Prime: K3s delivers a lightweight yet powerful certified
+          Kubernetes distribution designed for production workloads across
+          resource-restrained, remote locations or on IoT devices. When used
+          with SUSE Rancher Prime, K3s is simple to install, lightweight yet
+          high availability Kubernetes distribution that can be easily managed
+          within the Cloud Native orchestration platform.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.k3s.latest-en-introduction.an-introduction-to-suse-rancher-prime--k3s" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>An introduction to SUSE Rancher Prime: K3s</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/introduction.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-quick-start.quick-start-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Quick start guide</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/quick-start.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-architecture" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Architecture</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-installation-installation.installation-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Installation guide</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/installation/installation.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-datastore-datastore.running-k3s-with-a-datastore-other-than-etcd" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Running K3s with a datastore other than etcd</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/datastore/datastore.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-upgrades-upgrades.upgrading-k3s-clusters" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Upgrading K3s clusters</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/upgrades/upgrades.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-security-security.securing-your-k3s-cluster" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Securing your K3s cluster</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/security/security.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-networking-networking.networking-configuration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Networking configuration</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/networking/networking.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-storage.using-persistant-storage" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Using persistant storage</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/storage.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-add-ons-helm.using-helm-package-manager" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Using Helm package manager</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/add-ons/helm.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-advanced.advanced-options---configuration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Advanced Options &amp; Configuration</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/advanced.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-cli-cli.cli-tools" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>CLI Tools</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/cli/cli.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-reference-env-variables" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Reference</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/reference/env-variables.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-known-issues.known-issues" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Known issues</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/known-issues.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.latest-en-faq" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>FAQ</title>
+          <url format="html" href="/cloudnative/k3s/latest/en/faq.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

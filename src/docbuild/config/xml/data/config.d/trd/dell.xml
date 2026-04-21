@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.dell" path="dell">
+  <version includes-productname="true">Dell</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Dell products or technologies.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Reference Configuration -->
+      <deliverable id="trd.dell.dc-kubernetes_rc_rancher-k3s-slemicro_dell-poweredge" type="dc" titleformat="title subtitle product">
+        <dc file="DC-kubernetes_rc_rancher-k3s-slemicro_dell-poweredge">
+          <subdir>kubernetes/reference</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Dell Technologies</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

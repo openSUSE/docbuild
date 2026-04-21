@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.ampere" path="ampere">
+  <version includes-productname="true">Ampere</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Ampere products or technologies.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Reference Configuration -->
+      <deliverable id="trd.ampere.dc-rc_suse-telco_ampere" type="dc" titleformat="title subtitle product">
+        <dc file="DC-rc_suse-telco_ampere">
+          <subdir>references/ampere</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Ampere</partner>
+          </partners>
+        </dc>
+      </deliverable>
+      <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/reference</subdir>
+          <dc>DC-kubernetes_rc_k3s-slemicro_ampere-altra</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Ampere</partner>
+          </partners>
+        </deliverable> -->
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

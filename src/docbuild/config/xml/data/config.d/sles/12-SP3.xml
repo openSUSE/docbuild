@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sles.12-SP3" path="12-SP3">
+  <version>12 SP3</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE12SP3</branch>
+      <deliverable id="sles.12-SP3.dc-sles-all" type="dc">
+        <dc file="DC-SLES-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="cat.deployment">book-sle-deployment</subdeliverable>
+          <subdeliverable category="cat.product-usage">book-gnomeuser</subdeliverable>
+          <subdeliverable category="cat.deployment">book-autoyast</subdeliverable>
+          <subdeliverable category="cat.security-compliance">book-security</subdeliverable>
+          <subdeliverable category="cat.administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="cat.administration">book-smt</subdeliverable>
+          <subdeliverable category="cat.administration">stor-admin</subdeliverable>
+          <subdeliverable category="cat.administration">book-hardening</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-sles-docker</subdeliverable>
+          <subdeliverable category="cat.deployment">art-sle-installquick</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-vt-best-practices</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-amazon-ecs" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-amazon-ecs">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-kgraft" type="dc" category="cat.administration">
+        <dc file="DC-SLES-kgraft">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-pcidss" type="dc" category="cat.administration">
+        <dc file="DC-SLES-pcidss">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-admin" type="dc" category="cat.administration">
+        <dc file="DC-SLES-admin">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-deployment" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-gnomeuser" type="dc" category="cat.product-usage">
+        <dc file="DC-SLES-gnomeuser">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-autoyast" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-autoyast">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-security" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-tuning" type="dc" category="cat.administration">
+        <dc file="DC-SLES-tuning">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-smt" type="dc" category="cat.administration">
+        <dc file="DC-SLES-smt">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-storage" type="dc" category="cat.administration">
+        <dc file="DC-SLES-storage">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-hardening" type="dc" category="cat.administration">
+        <dc file="DC-SLES-hardening">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-virtualization" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-dockerquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-dockerquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-installquick" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-installquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-xen2kvmquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-xen2kvmquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP3.dc-sles-vt-best-practices" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-vt-best-practices">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.12-SP3.12-sp3.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles/12-SP3/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

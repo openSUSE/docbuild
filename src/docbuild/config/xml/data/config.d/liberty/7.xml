@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="liberty.7" path="7">
+  <version>7</version>
+  <canonical>liberty/9/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-liberty.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLL7</branch>
+      <deliverable id="lib.7.dc-quickstart" type="dc">
+        <dc file="DC-quickstart">
+          <format html="1" pdf="1" single-html="1" epub="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="lib.7.dc-quickstart-scc" type="dc">
+        <dc file="DC-quickstart-scc">
+          <format html="1" pdf="1" single-html="1" epub="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="lib.7.dc-quickstart-smt" type="dc">
+        <dc file="DC-quickstart-smt">
+          <format html="1" pdf="1" single-html="1" epub="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="lib.7.dc-suma-quickstart" type="dc">
+        <dc file="DC-suma-quickstart">
+          <format html="1" pdf="1" single-html="1" epub="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="lib.7.dc-compliance-scans" type="dc">
+        <dc file="DC-compliance-scans">
+          <format html="1" pdf="1" single-html="1" epub="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="lib.SUSE_Liberty_Linux_Inclusions_and_Exclusions.pdf.liberty-7.supported-and-unsupported-packages" type="prebuilt">
+        <prebuilt>
+          <title>Supported and unsupported packages</title>
+          <url format="pdf" href="external-tree/en-us/liberty/SUSE_Liberty_Linux_Inclusions_and_Exclusions.pdf"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

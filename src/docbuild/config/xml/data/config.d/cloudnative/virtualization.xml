@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.virtualization" path="virtualization">
+  <version>SUSE Virtualization (Harvester)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Virtualization is a modern, open, interoperable, hyperconverged
+          infrastructure (HCI) solution built on Kubernetes. It is an open-source
+          alternative designed for operators seeking a cloud-native HCI
+          solution. SUSE Virtualization runs on bare metal servers and provides
+          integrated virtualization and distributed storage capabilities.
+        </p>
+        <p>
+          In addition to traditional virtual machines (VMs), SUSE Virtualization
+          supports containerized environments automatically through integration
+          with SUSE Rancher Prime. It offers a solution that unifies legacy virtualized
+          infrastructure while enabling the adoption of containers from core to
+          edge locations.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.virtualization.latest-en-deploy-ha-cluster.deploying-a-high-availability-cluster" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Deploying a High-Availability Cluster</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/deploy-ha-cluster.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-installation-setup-requirements.hardware-and-network-requirements" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Hardware and Network Requirements</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/installation-setup/requirements.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-upgrades-upgrades" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Upgrades</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/upgrades/upgrades.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-hosts-hosts.host-management" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Host Management</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/hosts/hosts.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-virtual-machines-create-vm.virtual-machines" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Virtual Machines</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/virtual-machines/create-vm.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-virtual-machines-backup-restore.virtual-machine-backup-and-restore" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Virtual Machine Backup and Restore</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/virtual-machines/backup-restore.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-virtual-machines-live-migration.live-migration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Live Migration</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/virtual-machines/live-migration.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-storage-volumes-create-volume.creating-a-volume" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Creating a Volume</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/storage/volumes/create-volume.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-storage-csidriver.third-party-storage-support" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Third-Party Storage Support</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/storage/csidriver.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-networking-cluster-network.cluster-networks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Cluster Networks</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/networking/cluster-network.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-rancher-rancher-integration.suse-rancher-manager-integration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Rancher Manager Integration</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/rancher/rancher-integration.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.virtualization.latest-en-add-ons-add-ons.add-ons" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Add-Ons</title>
+          <url format="html" href="/cloudnative/virtualization/latest/en/add-ons/add-ons.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtualization/hardening-guide/suse-virtualization-hardening.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Hardening Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtualization/rancher-agent-image-repository.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Environment Variable for Rancher Agent Image Repository</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-virtualization/creating-mig-backed-vgpu.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Creating MIG-backed vGPUs</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

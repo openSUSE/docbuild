@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="ses" family="f.linux" series="s.pas" rank="04160">
+  <name>SUSE Enterprise Storage</name>
+  <acronym>SES</acronym>
+  <maintainers>
+    <!-- <contact>asettle@suse.com</contact> -->
+    <!-- <contact>tbazant@suse.cz</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.ses.ses-doc" title="SES product documentation"/>
+      <language id="cat.ses.windows-ses-doc" title="SES for Windows product documentation"/>
+      <language id="cat.ses.rook-ses-doc-tp" title="SES with Rook product documentation (limited availability)"/>
+      <language id="cat.ses.ses-man-pages" title="Man pages"/>
+      <language id="cat.ses.release-notes" title="Release notes"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.ses.release-notes" title="Versionshinweise"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.ses.release-notes" title="Notas de la versión"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.ses.release-notes" title="Notes de version"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.ses.release-notes" title="リリースノート"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.ses.release-notes" title="Detalhes da versão"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.ses.release-notes" title="发行说明"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- For SES 7: -->
+  <!-- For everything: -->
+  <xi:include href="7.1.xml"/>
+  <xi:include href="7.xml"/>
+</product>

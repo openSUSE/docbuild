@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suma-retail.5.0" path="5.0">
+  <version>5.0</version>
+  <external>
+    <link category="cat.suma.core-doc">
+      <url lang="en-us" format="html" href="suma/5.0/en/suse-manager/retail/retail-overview.html"/>
+      <url lang="en-us" format="pdf" href="suma/5.0/en/pdf/suse_manager_retail_guide.pdf"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Retail Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="zh-cn">
+    <title>适用于 SUSE Linux Enterprise 的半虚拟化驱动程序</title>
+    <p>
+     SUSE 虚拟机驱动程序包中的半虚拟化驱动程序可以实现半虚拟化的性能优势，而全虚拟化则具有更广泛的适用范围。其实现方式是在 SUSE Linux Enterprise 的 Xen 和 KVM 超级管理程序与在虚拟环境中运行的未经修改的 Guest 操作系统之间打开额外的通讯通道，从而加快网络和储存输入/输出速度，并提高整体效率。
+    </p>
+  </desc>

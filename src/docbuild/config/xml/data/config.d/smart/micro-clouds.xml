@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.micro-clouds" path="micro-clouds" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">SLE Micro 5.4/5.5</version>
+  <listingversion includes-productname="true">SLE Micro 5.4/5.5</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Documents in this category cover the SLE Micro images intended for deployment in public clouds.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <deliverable id="smart.micro-clouds.dc-sle-micro-5.4-admin" type="dc">
+        <dc file="DC-SLE-Micro-5.4-admin">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.micro-clouds.dc-sle-micro-5.5-admin" type="dc">
+        <dc file="DC-SLE-Micro-5.5-admin">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.micro-clouds.dc-micro-5.4-cockpit" type="dc">
+        <dc file="DC-Micro-5.4-cockpit">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.micro-clouds.dc-micro-5.5-cockpit" type="dc">
+        <dc file="DC-Micro-5.5-cockpit">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.micro-clouds.dc-sle-micro-public-cloud" type="dc">
+        <dc file="DC-SLE-Micro-public-cloud">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

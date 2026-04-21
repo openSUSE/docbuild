@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="sles-sap" family="f.linux" series="s.pas" rank="00050">
+  <name>SUSE Linux Enterprise Server for SAP applications</name>
+  <acronym>SLES for SAP</acronym>
+  <maintainers>
+    <!-- <contact>thomas.schraitle@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>dmitri.popov@suse.com</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.sles-sap.initial-config" title="Initial configuration"/>
+      <language id="cat.sles-sap.solution-overview" title="Solution overview">
+        <p>
+     This document describes the supported High Availability solutions for
+     SAP HANA, S/4HANA, and NetWeaver.
+    </p>
+      </language>
+      <language id="cat.sles-sap.core-doc" title="Core product documentation"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.sles-sap.initial-config" title="Erstmalige Konfiguration"/>
+      <language linkend="cat.sles-sap.core-doc" title="Haupt-Produktdokumentation"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.sles-sap.initial-config" title="Configuración inicial"/>
+      <language linkend="cat.sles-sap.core-doc" title="Documentación principal del producto"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.sles-sap.initial-config" title="Configuration initiale"/>
+      <language linkend="cat.sles-sap.core-doc" title="Documentation produit de base"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.sles-sap.initial-config" title="初期設定"/>
+      <language linkend="cat.sles-sap.core-doc" title="コア製品のマニュアル"/>
+    </category>
+    <category lang="ko-kr">
+      <language linkend="cat.sles-sap.initial-config" title="초기 구성"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.sles-sap.initial-config" title="Configuração inicial"/>
+      <language linkend="cat.sles-sap.core-doc" title="Documentação do produto principal"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.sles-sap.initial-config" title="初始配置"/>
+      <language linkend="cat.sles-sap.core-doc" title="核心产品文档"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="trento.xml"/>
+  <xi:include href="sap-ha-support.xml"/>
+  <!--here be dragons START-->
+  <xi:include href="16.0.xml"/>
+  <!--here be dragons END-->
+  <xi:include href="15-SP7.xml"/>
+  <xi:include href="15-SP6.xml"/>
+  <xi:include href="15-SP5.xml"/>
+  <xi:include href="15-SP4.xml"/>
+  <xi:include href="15-SP3.xml"/>
+  <xi:include href="15-SP2.xml"/>
+  <xi:include href="15-SP1.xml"/>
+  <xi:include href="15-GA.xml"/>
+  <xi:include href="12-SP5.xml"/>
+  <!-- LTSS Core ends ch 2028 -->
+  <xi:include href="11-SP4.xml"/>
+</product>

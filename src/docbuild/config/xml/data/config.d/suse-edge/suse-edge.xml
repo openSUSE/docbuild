@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suse-edge" family="f.suse-edge" series="s.pas" rank="00040">
+  <name>SUSE Edge</name>
+  <maintainers>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.suse-edge.core-doc" title="SUSE Edge Solution Documentation"/>
+      <language id="cat.suse-edge.slmicro" title="SUSE Linux Micro">
+        <p>
+        SUSE Linux Micro is used as the base Operating System for the SUSE Edge
+        platform stack. It provides a secure, stable, and minimal starting
+        point to start building on.
+      </p>
+      </language>
+      <language id="cat.suse-edge.suma" title="SUSE Multi Linux Manager">
+        <p>
+       SUSE Multi Linux Manager is a best-in-class open source infrastructure management
+       solution for your software-defined infrastructure.
+      </p>
+      </language>
+      <language id="cat.suse-edge.container" title="Container Management">
+        <p>
+        Container management tools shipping with SUSE Edge.
+      </p>
+      </language>
+      <language id="cat.suse-edge.kubernetes" title="Kubernetes">
+        <p>
+        Kubernetes distributions shipping with SUSE Edge.
+      </p>
+      </language>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.suse-edge.core-doc" title="Documentation SUSE Edge"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.suse-edge.core-doc" title="SUSE Edge Dokumentation"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.suse-edge.core-doc" title="Documentación de SUSE Edge"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.suse-edge.core-doc" title="SUSE Edgeドキュメント"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.suse-edge.core-doc" title="Documentação do SUSE Edge"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.suse-edge.core-doc" title="SUSE Edge 文档"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- Hidden docset for the support matrix
+       will be added as <internal> to the other docsets -->
+  <xi:include href="support-matrix.xml"/>
+  <xi:include href="3.5.xml"/>
+  <xi:include href="3.4.xml"/>
+  <xi:include href="3.3.xml"/>
+  <xi:include href="3.2.xml"/>
+  <xi:include href="3.1.xml"/>
+  <xi:include href="3.0.xml"/>
+</product>

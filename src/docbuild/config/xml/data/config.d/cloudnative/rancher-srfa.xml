@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.rancher-srfa" path="rancher-srfa">
+  <version>SUSE Rancher for AWS</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>SUSE Rancher for AWS delivers a cloud native Kubernetes management experience built with AWS, for AWS. Designed to simplify EKS operations, it provides a unified and secure way to manage, monitor, and scale Kubernetes clusters across your AWS environment — all through a fully managed SaaS offering available on the AWS Marketplace.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.rancher-srfa.latest-en-about-rancher-what-is-rancher.about-suse-rancher-for-aws" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>About SUSE Rancher for AWS</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/about-rancher/what-is-rancher.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-rancher-admin-rancher-admin.suse-rancher-for-aws-administration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Rancher for AWS Administration</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/rancher-admin/rancher-admin.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-cluster-deployment-cluster-deployment.cluster-deployment" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Cluster Deployment</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/cluster-deployment/cluster-deployment.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-cluster-admin-manage-clusters-manage-clusters.cluster-administration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Cluster Administration</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/cluster-admin/manage-clusters/manage-clusters.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-security-security-overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Security</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/security/security-overview.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-observability-rancher-cluster-tools" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Observability</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/observability/rancher-cluster-tools.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-api-quickstart" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>API</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/api/quickstart.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-troubleshooting-general-troubleshooting" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Troubleshooting</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/troubleshooting/general-troubleshooting.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-srfa.latest-en-troubleshooting-faq-general-faq" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>FAQ</title>
+          <url format="html" href="/cloudnative/rancher-srfa/latest/en/troubleshooting/faq/general-faq.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

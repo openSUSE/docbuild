@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.rancher-ai" path="rancher-ai">
+  <version>Liz: The SUSE Rancher AI Assistant</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>Liz is a context-aware AI agent integrated into the SUSE Rancher
+        Prime environment. It is designed to understand the live state of your
+        clusters, namespaces, and workloads. Available as an extension, Liz
+        resides within your workspace to provide real-time guidance where you
+        need it.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.rancher-ai.latest-en-introduction.liz--the-suse-rancher-ai-assistant" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Liz: The SUSE Rancher AI Assistant</title>
+          <url format="html" href="/cloudnative/rancher-ai/latest/en/introduction.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-ai.latest-en-quick-start.quick-start" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Quick Start</title>
+          <url format="html" href="/cloudnative/rancher-ai/latest/en/quick-start.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-ai.latest-en-explanations-architecture" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Architecture</title>
+          <url format="html" href="/cloudnative/rancher-ai/latest/en/explanations/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.16.0" category="cat.additional-doc"/>
+    <ref linkend="suse-ai.1.0" category="cat.additional-doc"/>
+  </internal>
+</docset>

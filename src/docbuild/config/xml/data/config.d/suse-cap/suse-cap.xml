@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suse-cap" family="f.linux" series="s.pas" rank="04320">
+  <name>SUSE Cloud Application Platform</name>
+  <acronym>SUSE CAP</acronym>
+  <maintainers>
+    <!-- <contact>btat@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.suse-cap.core-doc" title="Core product documentation"/>
+      <language id="cat.suse-cap.release-notes" title="Release notes"/>
+      <language id="cat.suse-cap.best-practice" title="Best practices"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.suse-cap.core-doc" title="Haupt-Produktdokumentation"/>
+      <language linkend="cat.suse-cap.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.suse-cap.best-practice" title="Best Practices"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.suse-cap.core-doc" title="Documentación principal del producto"/>
+      <language linkend="cat.suse-cap.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.suse-cap.best-practice" title="Prácticas recomendadas"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.suse-cap.core-doc" title="Documentation produit de base"/>
+      <language linkend="cat.suse-cap.release-notes" title="Notes de version"/>
+      <language linkend="cat.suse-cap.best-practice" title="Meilleures pratiques"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.suse-cap.core-doc" title="コア製品のマニュアル"/>
+      <language linkend="cat.suse-cap.release-notes" title="リリースノート"/>
+      <language linkend="cat.suse-cap.best-practice" title="ベストプラクティス"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.suse-cap.core-doc" title="Documentação do produto principal"/>
+      <language linkend="cat.suse-cap.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.suse-cap.best-practice" title="Melhores práticas"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.suse-cap.core-doc" title="核心产品文档"/>
+      <language linkend="cat.suse-cap.release-notes" title="发行说明"/>
+      <language linkend="cat.suse-cap.best-practice" title="最佳实践"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="2.1.xml"/>
+  <xi:include href="2.0.xml"/>
+  <!-- All CAP 1.x releases are officially unsupported since 2021-05-31. As
+  of 2021-07-06, there's still a customer officially supported on 1.5.2 though,
+  possibly through Dec 2022. Info via Stephane Nguyen on Rocketchat. -->
+  <xi:include href="1.5.2.xml"/>
+  <xi:include href="1.4.1.xml"/>
+</product>

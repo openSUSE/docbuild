@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sle-rt.15-SP5" path="15-SP5">
+  <version>15 SP5</version>
+  <canonical>sle-rt/15-SP7/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-slert.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLERT15SP5</branch>
+      <deliverable id="sle-rt.15-SP5.dc-sle-rt-all" type="dc">
+        <dc file="DC-SLE-RT-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.sle-rt.core-doc">book-shielding</subdeliverable>
+          <subdeliverable category="cat.sle-rt.core-doc">article-setup</subdeliverable>
+          <subdeliverable category="cat.sle-rt.core-doc">article-hardware-testing</subdeliverable>
+          <subdeliverable category="cat.sle-rt.core-doc">article-virtualization</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-rt.15-SP5.dc-sle-rt-hardware-testing" type="dc" category="cat.sle-rt.core-doc">
+        <dc file="DC-SLE-RT-hardware-testing">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-rt.15-SP5.dc-sle-rt-setup" type="dc" category="cat.sle-rt.core-doc">
+        <dc file="DC-SLE-RT-setup">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-rt.15-SP5.dc-sle-rt-shielding" type="dc" category="cat.sle-rt.core-doc">
+        <dc file="DC-SLE-RT-shielding">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-rt.15-SP5.dc-sle-rt-virtualization" type="dc" category="cat.sle-rt.core-doc">
+        <dc file="DC-SLE-RT-virtualization">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-rt.15-SP5.15-sp5.release-notes" type="prebuilt" category="cat.sle-rt.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-rt/15-SP5/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP5" category="cat.additional-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2023" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

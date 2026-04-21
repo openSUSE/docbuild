@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" navigation="hidden" id="style.current" path="current">
+  <version includes-productname="true">SUSE Documentation Style Guide for DocBook XML</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-styleguide.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="style.current.dc-style-guide-db" type="dc">
+        <dc file="DC-style-guide-db">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="style.current.dc-style-guide-adoc" type="dc">
+        <dc file="DC-style-guide-adoc">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

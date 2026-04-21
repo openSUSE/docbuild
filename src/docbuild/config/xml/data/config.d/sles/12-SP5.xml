@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles.12-SP5" path="12-SP5">
+  <version>12 SP5</version>
+  <!--  <canonical>sles/12-SP6/</canonical>-->
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <deliverable id="sles.12-SP5.dc-sles-all" type="dc">
+        <dc file="DC-SLES-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="cat.deployment">book-sle-deployment</subdeliverable>
+          <subdeliverable category="cat.product-usage">book-gnomeuser</subdeliverable>
+          <subdeliverable category="cat.deployment">book-autoyast</subdeliverable>
+          <subdeliverable category="cat.security-compliance">book-security</subdeliverable>
+          <subdeliverable category="cat.administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="cat.administration">book-smt</subdeliverable>
+          <subdeliverable category="cat.administration">stor-admin</subdeliverable>
+          <subdeliverable category="cat.administration">book-hardening</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-virt</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-sles-docker</subdeliverable>
+          <subdeliverable category="cat.deployment">art-sle-installquick</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">art-sles-xen2kvmquick</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-vt-best-practices</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-amazon-ecs" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-amazon-ecs">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-amd-sev" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-amd-sev">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-kgraft" type="dc" category="cat.administration">
+        <dc file="DC-SLES-kgraft">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-pcidss" type="dc" category="cat.administration">
+        <dc file="DC-SLES-pcidss">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-admin" type="dc" category="cat.administration">
+        <dc file="DC-SLES-admin">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-deployment" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-gnomeuser" type="dc" category="cat.product-usage">
+        <dc file="DC-SLES-gnomeuser">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-autoyast" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-autoyast">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-security" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-tuning" type="dc" category="cat.administration">
+        <dc file="DC-SLES-tuning">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-smt" type="dc" category="cat.administration">
+        <dc file="DC-SLES-smt">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-storage" type="dc" category="cat.administration">
+        <dc file="DC-SLES-storage">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-hardening" type="dc" category="cat.administration">
+        <dc file="DC-SLES-hardening">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-virtualization" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-dockerquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-dockerquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-installquick" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-installquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-xen2kvmquick" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-xen2kvmquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.12-SP5.dc-sles-vt-best-practices" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-vt-best-practices">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.12-SP5.12-sp5.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles/12-SP5/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-storage"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="ko-kr" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/ko-kr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE12SP5</branch>
+      <subdir>l10n/sles/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-storage"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.12-SP5.dc-sles-installquick"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="smart.sap.dc-sap-sapconf" category="cat.sles.smart-docs"/>
+    <ref linkend="spc.all.dc-public-cloud" category="cat.container-virtualization"/>
+    <ref linkend="suma-dms.15.dc-distribution-migration-system" category="cat.update-upgrade"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-amd-epyc-sles12sp3" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-kmp-manual" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-kmp-manual-sle12sp2" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-intelsupport" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-sle-offline-upgrade-local-boot" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-multi-pxe-install" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sles12sp3-rpiquick" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-performance-tuning" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-oracleweblogic-sles12sp3" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-oraclerac" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="comp.all.dc-sles-openscap" category="cat.security-compliance" titleformat="title subtitle"/>
+    <ref linkend="comp.all.dc-sles-pci-dss" category="cat.security-compliance" titleformat="title subtitle"/>
+    <ref linkend="cont.all.dc-container-guide" category="cat.container-virtualization" titleformat="title subtitle"/>
+  </internal>
+</docset>

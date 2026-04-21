@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="zh-cn">
+    <title>所有 Linux 发行套件的基础架构管理</title>
+    <p>
+      SUSE Multi-Linux Manager 是一套顶尖的开源基础设施管理解决方案，适用于软件定义的基础设施。
+    </p>
+    <p>
+      SUSE Multi-Linux Manager 可帮助您的企业开发运维团队和 IT 运维团队降低复杂性，并重新掌控您的 IT 资产。借助 SUSE Multi-Linux Manager 这项工具，您可以跨各种硬件体系结构、超级管理程序以及容器、物联网和云平台集中管理 Linux 系统。它可以自动进行 Linux 服务器和物联网设备的供应、增补和配置，从而实现快速、一致、可重复的服务器部署，有助于优化运营和降低成本。通过自动监视、跟踪、审计和报告开发、测试和生产环境中的系统、虚拟机和容器，您可以确保遵守内部安全策略和外部法规。
+    </p>
+  </desc>

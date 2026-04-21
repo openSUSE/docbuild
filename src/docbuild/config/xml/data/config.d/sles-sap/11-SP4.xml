@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sles-sap.11-SP4" path="11-SP4">
+  <version>11 SP4</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-slesforsap.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/11_SP4</branch>
+      <deliverable id="sles-sap.11-SP4.dc-sles4sap-guide" type="dc" category="cat.deployment">
+        <dc file="DC-SLES4SAP-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles-sap.11-SP4.11-sp4.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles-sap/11-SP4/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

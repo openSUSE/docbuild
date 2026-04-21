@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.hitachi" path="hitachi">
+  <version includes-productname="true">Hitachi</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating Hitachi products or technologies.​</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Getting started -->
+      <deliverable id="trd.hitachi.dc-gs_virtualization_hitachi-storage" type="dc" titleformat="title subtitle product">
+        <dc file="DC-gs_virtualization_hitachi-storage">
+          <subdir>references/hitachi</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Hitachi</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="style" family="f.linux" series="s.pas" rank="0">
+  <name>SUSE Documentation Style Guide</name>
+  <acronym>Style Guide</acronym>
+  <maintainers>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="current.xml"/>
+</product>

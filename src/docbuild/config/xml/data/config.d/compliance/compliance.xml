@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="compliance" family="f.linux" series="s.pas" rank="04130">
+  <name>Compliance Documentation</name>
+  <maintainers>
+    <contact>toms@suse.de</contact>
+    <contact>souvik.sarkar@suse.com</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.compliance.core-doc" title="Core documentation"/>
+      <language id="cat.compliance.release-notes" title="Release notes"/>
+      <language id="cat.compliance.solution" title="Solution documentation"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.compliance.core-doc" title="Haupt-Produktdokumentation"/>
+      <language linkend="cat.compliance.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.compliance.solution" title="Dokumentation für Lösungen"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.compliance.core-doc" title="Documentación principal del producto"/>
+      <language linkend="cat.compliance.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.compliance.solution" title="Documentación de la solución"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.compliance.core-doc" title="Documentation produit de base"/>
+      <language linkend="cat.compliance.release-notes" title="Notes de version"/>
+      <language linkend="cat.compliance.solution" title="Documentation de la solution"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.compliance.core-doc" title="コア製品のマニュアル"/>
+      <language linkend="cat.compliance.release-notes" title="リリースノート"/>
+      <language linkend="cat.compliance.solution" title="ソリューションマニュアル"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.compliance.core-doc" title="Documentação do produto principal"/>
+      <language linkend="cat.compliance.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.compliance.solution" title="Documentação da solução"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.compliance.core-doc" title="核心产品文档"/>
+      <language linkend="cat.compliance.release-notes" title="发行说明"/>
+      <language linkend="cat.compliance.solution" title="解决方案文档"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!--  <acronym>compliance</acronym>-->
+  <xi:include href="all.xml"/>
+</product>

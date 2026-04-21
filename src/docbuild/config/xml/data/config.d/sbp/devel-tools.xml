@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.devel-tools" path="devel-tools">
+  <version includes-productname="true">Development Tools</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents in this category provide information about the installation and usage of
+          tools needed for software development.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Library -->
+      <deliverable id="sbp.devel-tools.dc-sbp-pydantic" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-pydantic">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Tuning and performance -->
+      <deliverable id="sbp.devel-tools.dc-sbp-gcc-14" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-GCC-14">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.devel-tools.dc-sbp-gcc-12" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-GCC-12">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.devel-tools.dc-sbp-gcc-11" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-GCC-11">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.devel-tools.dc-sbp-gcc-10" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-GCC-10">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

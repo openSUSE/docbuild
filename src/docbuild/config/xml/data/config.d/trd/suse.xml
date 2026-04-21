@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.suse" path="suse">
+  <version includes-productname="true">SUSE</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          whose primary components are SUSE products or technologies.</p>
+      </desc>
+  </descriptions>
+  <!-- <builddocs>
+      <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Getting started -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/start/suse</subdir>
+          <dc>DC-gs_rancher_edge-analytics_finance_stocks</dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>SUSE</partner>
+          </partners>
+        </deliverable>
+        <deliverable titleformat="title subtitle product">
+          <subdir>kubernetes/start/suse</subdir>
+          <dc>DC-gs_rancher_edge-analytics_healthcare_cancer-prediction</dc>
+          <format html="1" pdf="1" single-html="1"/>
+           <partners>
+            <partner>SUSE</partner>
+          </partners>
+        </deliverable> -->
+  <!-- </language>
+    </builddocs> -->
+  <internal>
+    <ref linkend="trd.clearml.dc-rc_suse-ai_clearml" titleformat="title subtitle"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

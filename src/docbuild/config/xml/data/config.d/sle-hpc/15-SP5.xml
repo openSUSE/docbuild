@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-hpc.15-SP5" path="15-SP5">
+  <version>15 SP5</version>
+  <canonical>sle-hpc/15-SP7</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-hpc.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP5</branch>
+      <deliverable id="sle-hpc.15-SP5.dc-hpc-guide" type="dc" category="cat.sle-hpc.core-doc">
+        <dc file="DC-hpc-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-hpc.15-SP5.15-sp5.release-notes" type="prebuilt" category="cat.sle-hpc.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-hpc/15-SP5/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP5" category="cat.additional-doc"/>
+    <ref linkend="spc.all.dc-public-cloud" category="cat.additional-doc" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2023" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

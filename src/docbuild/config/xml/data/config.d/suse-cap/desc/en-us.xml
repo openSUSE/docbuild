@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>A modern application delivery platform</title>
+    <p>
+      SUSE Cloud Application Platform is a modern application delivery platform
+      used to bring an advanced cloud native developer experience to
+      Kubernetes—the de facto standard for enterprise container orchestration.
+      SUSE Cloud Application platform eliminates manual IT configuration and helps
+      accelerate innovation by getting applications to market faster.
+      Developers can serve themselves and get apps to the cloud in minutes
+      instead of weeks, while staying within IT guidelines, and without relying
+      on scarce IT resources to perform manual configuration each step of the
+      way. Streamlining application delivery opens a clear path to increased
+      business agility, led by enterprise development, operations, and DevOps
+      teams.
+    </p>
+  </desc>

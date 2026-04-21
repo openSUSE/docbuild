@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suma-retail" family="f.linux" series="s.pas" rank="0">
+  <name>SUSE Multi-Linux Manager for Retail</name>
+  <acronym>SUSE Multi-Linux Manager for Retail</acronym>
+  <maintainers>
+    <!-- <contact>ke@suse.de</contact> -->
+    <!-- <contact>lbrindley@suse.com</contact> -->
+    <!-- <contact>jcayouette@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="5.1.xml"/>
+  <xi:include href="5.0.xml"/>
+  <xi:include href="4.3.xml"/>
+</product>

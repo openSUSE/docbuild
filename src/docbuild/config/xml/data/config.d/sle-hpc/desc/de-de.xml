@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="de-de">
+    <title>Linux-Betriebssystem für die Lösung rechen- und datenintensiver Probleme</title>
+    <p>
+      SUSE Linux Enterprise High-Performance Computing ist ein hochgradig
+      skalierbares, quelloffenes High-Performance Computing-Betriebssystem,
+      das entwickelt wurde, um paralleles Computing für Modellierungs-,
+      Simulations- und anspruchsvolle Analyse-Workloads optimal zu nutzen.
+      SUSE Linux Enterprise High-Performance Computing enthält Werkzeuge und
+      Bibliotheken für High-Performance Computing. Dazu gehören ein
+      Workload-Manager, parallele und Fernverwaltungsshells, Überwachungs-
+      und Messwerkzeuge sowie Bibliotheken, um HPC-Aufgaben zu erledigen.
+    </p>
+  </desc>

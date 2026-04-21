@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sles.15-SP7" path="15-SP7">
+  <version>15 SP7</version>
+  <!-- <canonical>sles/15-SP7</canonical> -->
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="sles.15-SP7.dc-sles-all" type="dc">
+        <dc file="DC-SLES-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.administration">book-rmt</subdeliverable>
+          <subdeliverable category="cat.administration">book-administration</subdeliverable>
+          <subdeliverable category="cat.administration">book-tuning</subdeliverable>
+          <subdeliverable category="cat.administration">book-storage</subdeliverable>
+          <subdeliverable category="cat.update-upgrade">book-upgrade</subdeliverable>
+          <subdeliverable category="cat.deployment">book-autoyast</subdeliverable>
+          <subdeliverable category="cat.security-compliance">book-security</subdeliverable>
+          <subdeliverable category="cat.product-usage">book-gnome-user</subdeliverable>
+          <subdeliverable category="cat.deployment">book-deployment</subdeliverable>
+          <subdeliverable category="cat.deployment">article-installation</subdeliverable>
+          <subdeliverable category="cat.deployment">article-modules</subdeliverable>
+          <subdeliverable category="cat.deployment">article-raspberry-pi</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">book-virtualization</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-virtualization-best-practices</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-nvidia-vgpu</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-kubevirt</subdeliverable>
+          <subdeliverable category="cat.container-virtualization">article-amd-sev</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-administration" type="dc" category="cat.administration">
+        <dc file="DC-SLES-administration">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-autoyast" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-autoyast">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-deployment" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-gnome-user" type="dc" category="cat.product-usage">
+        <dc file="DC-SLES-gnome-user">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-installation" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-installation">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-modules" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-modules">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-nvidia-vgpu" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-nvidia-vgpu">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sle-kubevirt" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLE-kubevirt">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-rmt" type="dc" category="cat.administration">
+        <dc file="DC-SLES-rmt">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-security" type="dc" category="cat.security-compliance">
+        <dc file="DC-SLES-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-storage" type="dc" category="cat.administration">
+        <dc file="DC-SLES-storage">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-tuning" type="dc" category="cat.administration">
+        <dc file="DC-SLES-tuning">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-upgrade" type="dc" category="cat.update-upgrade">
+        <dc file="DC-SLES-upgrade">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-virtualization" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-virtualization-best-practices" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-virtualization-best-practices">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-amd-sev" type="dc" category="cat.container-virtualization">
+        <dc file="DC-SLES-amd-sev">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles.15-SP7.dc-sles-raspberry-pi" type="dc" category="cat.deployment">
+        <dc file="DC-SLES-raspberry-pi">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles.15-SP7.15-sp7.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles/15-SP7/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="rn.sle-hpc.15-sp7.release-notes-for-hpc" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes for HPC</title>
+          <url format="html" href="/releasenotes/sle-hpc/15-SP7/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-administration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-gnome-user"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-administration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-gnome-user"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-storage"/>
+      </deliverable>
+    </locale>
+    <!-- <language lang="ko-kr" translation-type="list">
+        <branch>main</branch>
+        <subdir>l10n/sles/ko-kr</subdir>
+        <deliverable>
+          <dc>DC-SLES-all</dc>
+          <subdeliverable>book-deployment</subdeliverable>
+          <subdeliverable>book-upgrade</subdeliverable>
+          <subdeliverable>article-installation</subdeliverable>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-deployment</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-upgrade</dc>
+        </deliverable>
+        <deliverable>
+          <dc>DC-SLES-installation</dc>
+        </deliverable>
+      </language> -->
+    <locale lang="pt-br" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-gnome-user"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/sles/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-installation"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-autoyast"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-administration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-gnome-user"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-modules"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-rmt"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-storage"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-tuning"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-virtualization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-virtualization-best-practices"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-amd-sev"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sles.15-SP7.dc-sles-raspberry-pi"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="smart.container.dc-rootless-podman" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.desktop.dc-gnome-getting-started" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-network-bond-managing-devices" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-network-team-managing-devices" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-ntp-time-synchronization" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-forward-root-mail" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-subnet-manager-configuring" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.network.dc-network-interface-predictable-naming" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.sap.dc-sap-sapconf" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systemtuning-performance.dc-cpu-check-temperature" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-sudo-run-commands-as-superuser" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-sudo-configure-superuser-privileges" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-systemd-working-with-timers" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-systemd-management" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-systemd-setting-up-service" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-systemd-basics" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-kernel-boot-parameters-modify" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-ulp-livepatching" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-supportconfig" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-klp" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-snapper-basic-concepts" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-sles-copy-file-rsync" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.systems-management.dc-sles-valkey" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-virtualization" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-manage-vm-on-commandline" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-minimal-vm" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-vm-assign-pci-device" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-virtual-disk-cache-mode-configure" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-virt-scenario-creating-customized-vm-guests" category="cat.sles.smart-docs"/>
+    <ref linkend="smart.virtualization-cloud.dc-vxlan" category="cat.sles.smart-docs"/>
+    <!---->
+    <ref linkend="sle-hpc.15-SP7.dc-hpc-guide" category="cat.administration" titleformat="title subtitle"/>
+    <ref linkend="spc.all.dc-public-cloud" category="cat.container-virtualization" titleformat="title subtitle"/>
+    <ref linkend="suma-dms.15.dc-distribution-migration-system" category="cat.update-upgrade"/>
+    <ref linkend="smart.virtualization-cloud.dc-minimal-vm" category="cat.administration"/>
+    <ref linkend="smart.deploy-upgrade.dc-sles-nvidia-jetson" category="cat.update-upgrade"/>
+    <ref linkend="smart.systems-management.dc-sles-valkey" category="cat.administration"/>
+    <ref linkend="app.keg-2.dc-keg" category="cat.product-usage"/>
+    <ref linkend="app.kiwi-9.dc-kiwi" category="cat.product-usage"/>
+    <ref linkend="sbp.systems-management.dc-sbp-kmp-manual-sle12sp2" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-intelsupport" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-sle15-custom-installation-medium" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-sle-offline-upgrade-local-boot" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-performance-tuning" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-amd-epyc-2-sles15sp1" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-amd-epyc-3-sles15sp2" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.tuning-performance.dc-sbp-amd-epyc-4-sles15sp4" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.devel-tools.dc-sbp-gcc-11" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2023" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+    <!--      <ref product="sbp" docset="tuning-performance" dc="DC-SBP-AMD-EPYC-4-SLES15SP4" category="best-practices" titleformat="title subtitle"/>-->
+    <ref linkend="trd.wordpress.dc-linux_gs_wordpress-lamp-sles" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="comp.all.dc-sles-openscap" category="cat.security-compliance" titleformat="title subtitle"/>
+    <ref linkend="comp.all.dc-sles-pci-dss" category="cat.security-compliance" titleformat="title subtitle"/>
+    <ref linkend="cont.all.dc-container-guide" category="cat.container-virtualization" titleformat="title subtitle"/>
+  </internal>
+</docset>

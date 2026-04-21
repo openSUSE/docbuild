@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+   <title>Cloud native edge computing platform</title>
+    <p>
+      The SUSE Edge is a purpose-built cloud native edge computing platform for
+      managing the full lifecycle of edge devices at scale. It is built by
+      putting together open source components into a set of validated designs
+      that we know work together to solve the different constraints we find
+      when designing for and operating edge environments.
+    </p>
+  </desc>

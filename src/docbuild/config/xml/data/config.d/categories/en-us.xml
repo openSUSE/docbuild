@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category lang="en-us">
+  <language id="cat.about" title="About"/>
+  <language id="cat.deployment" title="Deployment"/>
+  <language id="cat.initial-config" title="Initial configuration"/>
+  <language id="cat.update-upgrade" title="Update &amp; Upgrade"/>
+  <language id="cat.administration" title="Administration"/>
+  <language id="cat.container-virtualization" title="Containers and virtualization"/>
+  <language id="cat.product-usage" title="Product usage"/>
+  <language id="cat.security-compliance" title="Security &amp; compliance"/>
+  <language id="cat.tuning-performance" title="Tuning &amp; performance"/>
+  <language id="cat.solution-doc" title="Solution documentation"/>
+  <language id="cat.additional-doc" title="Additional documentation"/>
+  <language id="cat.best-practices" title="Best practices"/>
+</category>

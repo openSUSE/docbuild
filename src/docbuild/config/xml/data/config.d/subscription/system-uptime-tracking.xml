@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="subscription.system-uptime-tracking" path="system-uptime-tracking" navigation="hidden">
+  <version includes-productname="true">Monitoring client system's uptime in SUSE Customer Center</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+        This document describes how to monitor when a client system is up or offline.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>system-uptime-tracking</subdir>
+      <deliverable id="sub.system-uptime-tracking.dc-sle-system-uptime-tracking" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLE-system-uptime-tracking">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

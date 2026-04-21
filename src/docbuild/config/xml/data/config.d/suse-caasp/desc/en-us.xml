@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Enterprise-class container management</title>
+    <p>
+      SUSE CaaS Platform is an enterprise-class container management solution
+      that enables IT and DevOps professionals to more easily deploy, manage,
+      and scale container-based applications and services. It includes Kubernetes
+      to automate lifecycle management of modern applications, and surrounding
+      technologies that enrich Kubernetes and make the platform itself easy
+      to operate. As a result, enterprises that use SUSE CaaS Platform can reduce
+      application delivery cycle times and improve business agility.
+    </p>
+  </desc>

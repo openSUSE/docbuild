@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.tuning-performance" path="tuning-performance">
+  <version includes-productname="true">Tuning and performance</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category provide information about how to optimize systems
+          for better performance.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Configuration -->
+      <deliverable id="sbp.tuning-performance.dc-sbp-amd-epyc-5-sles15sp6" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-AMD-EPYC-5-SLES15SP6">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.tuning-performance.dc-sbp-amd-epyc-4-sles15sp4" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-AMD-EPYC-4-SLES15SP4">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.tuning-performance.dc-sbp-amd-epyc-sles12sp3" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-AMD-EPYC-SLES12SP3">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.tuning-performance.dc-sbp-amd-epyc-2-sles15sp1" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-AMD-EPYC-2-SLES15SP1">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.tuning-performance.dc-sbp-amd-epyc-3-sles15sp2" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-AMD-EPYC-3-SLES15SP2">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.tuning-performance.dc-sbp-performance-tuning" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-performance-tuning">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.devel-tools.dc-sbp-gcc-10" titleformat="title subtitle product"/>
+    <ref linkend="sbp.devel-tools.dc-sbp-gcc-11" titleformat="title subtitle product"/>
+    <ref linkend="sbp.devel-tools.dc-sbp-gcc-12" titleformat="title subtitle product"/>
+    <ref linkend="sbp.devel-tools.dc-sbp-gcc-14" titleformat="title subtitle product"/>
+  </internal>
+</docset>

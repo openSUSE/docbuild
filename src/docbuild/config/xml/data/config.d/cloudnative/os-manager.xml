@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.os-manager" path="os-manager">
+  <version>SUSE Rancher Prime: OS Manager (Elemental)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Rancher Prime: OS Manager is a software stack enabling
+          centralized, full cloud-native OS management with Kubernetes.
+        </p>
+        <p>
+          The SUSE Rancher Prime: OS Manager Operator and the Rancher System
+          Agent enable SUSE Rancher Prime to fully control SUSE Rancher Prime OS
+          Manager clusters, from the installation and management of the OS on
+          the Nodes to the provisioning of new K3s or RKE2 clusters in a
+          centralized way.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.os-manager.latest-en-index.suse-rancher-prime--os-manager-overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>SUSE Rancher Prime: OS Manager Overview</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.os-manager.latest-en-quickstart-cli.quickstarts" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Quickstarts</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/quickstart-cli.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.os-manager.latest-en-architecture.understanding-suse-rancher-prime--os-manager" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Understanding SUSE Rancher Prime: OS Manager</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.os-manager.latest-en-installation" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Installation</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/installation.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.os-manager.latest-en-upgrade.node-operational-tasks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Node operational tasks</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/upgrade.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.os-manager.latest-en-backup.operational-tasks" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Operational tasks</title>
+          <url format="html" href="/cloudnative/os-manager/latest/en/backup.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

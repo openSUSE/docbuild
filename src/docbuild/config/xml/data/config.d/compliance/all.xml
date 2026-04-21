@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="compliance.all" path="all">
+  <version includes-productname="true">Compliance documentation</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="comp.all.dc-sles-pci-dss" type="dc" titleformat="title subtitle product" category="cat.compliance.core-doc">
+        <dc file="DC-SLES-pci-dss">
+          <subdir>pcidss</subdir>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="comp.all.dc-sles-openscap" type="dc" titleformat="title subtitle product" category="cat.compliance.core-doc">
+        <dc file="DC-SLES-openscap">
+          <subdir>openscap</subdir>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="comp.all.dc-sles-stig" type="dc" titleformat="title subtitle product" category="cat.compliance.core-doc">
+        <dc file="DC-SLES-stig">
+          <subdir>stig</subdir>
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>main</branch>
+      <deliverable type="ref">
+        <ref linkend="comp.all.dc-sles-pci-dss"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP4" category="cat.additional-doc"/>
+    <ref linkend="spc.all.dc-public-cloud" category="cat.additional-doc" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

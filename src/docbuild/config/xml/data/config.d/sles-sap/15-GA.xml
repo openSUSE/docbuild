@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sles-sap.15-GA" path="15-GA">
+  <version>15 GA</version>
+  <canonical>sles-sap/15-SP7</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-slesforsap.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/15_GA</branch>
+      <deliverable id="sles-sap.15-GA.dc-sles4sap-guide" type="dc" category="cat.deployment">
+        <dc file="DC-SLES4SAP-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sles-sap.15-GA.dc-sles4sap-quick" type="dc" category="cat.deployment">
+        <dc file="DC-SLES4SAP-quick">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sles-sap.15-GA.15.release-notes" type="prebuilt" category="cat.about">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sles-sap/15/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-GA" category="cat.additional-doc"/>
+    <ref linkend="sle-ha.15-GA" category="cat.additional-doc"/>
+    <ref linkend="sbp.sap-15" category="cat.additional-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.third-party.dc-sbp-suse-oem-identification" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

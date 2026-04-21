@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.network" path="network" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Network</version>
+  <listingversion includes-productname="true">Network</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Documents in this category cover different networking technologies and
+          strategies.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP7</branch>
+      <deliverable id="smart.network.dc-network-bond-managing-devices" type="dc">
+        <dc file="DC-network-bond-managing-devices">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.network.dc-network-team-managing-devices" type="dc">
+        <dc file="DC-network-team-managing-devices">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.network.dc-ntp-time-synchronization" type="dc">
+        <dc file="DC-ntp-time-synchronization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.network.dc-forward-root-mail" type="dc">
+        <dc file="DC-forward-root-mail">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.network.dc-network-interface-predictable-naming" type="dc">
+        <dc file="DC-network-interface-predictable-naming">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.network.dc-subnet-manager-configuring" type="dc">
+        <dc file="DC-subnet-manager-configuring">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

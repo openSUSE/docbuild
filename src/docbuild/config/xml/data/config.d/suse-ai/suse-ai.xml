@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suse-ai" family="f.suse-ai" series="s.pas" rank="00010">
+  <name>SUSE AI</name>
+  <acronym>SUSE AI</acronym>
+  <maintainers>
+    <contact>tbazant@suse.com</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.suse-ai.introduction" title="Introduction">
+        <p>
+        This section presents documents that help you understand what
+        AI is, how it works, and why SUSE AI is the right product for your
+        locally hosed AI workloads.
+      </p>
+      </language>
+      <language id="cat.suse-ai.installation-upgrade" title="Deployment">
+        <p>
+        This section includes documents that describe how to install and upgrade
+        the operating system components, such as hardware drivers or GPU related
+        software.
+      </p>
+      </language>
+      <language id="cat.suse-ai.configuration" title="Configuration">
+        <p>
+        This section describes how to configure the SUSE AI product. Here you
+        can find, for example, tasks related to configuring the OpenWebUI
+        interface.
+      </p>
+      </language>
+      <language id="cat.suse-ai.additional" title="Additional Resources">
+        <p>
+        Here you can find references to the documentation of the products and
+        components that SUSE AI requires.
+      </p>
+      </language>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!--
+  <category categoryid="release-notes">
+    <language lang="en-us" default="1" title="Release notes"/>
+    <language lang="de-de" title="Versionshinweise"/>
+    <language lang="es-es" title="Notas de la versión"/>
+    <language lang="fr-fr" title="Notes de version"/>
+    <language lang="ja-jp" title="リリースノート"/>
+    <language lang="pt-br" title="Detalhes da versão"/>
+    <language lang="zh-cn" title="发行说明"/>
+  </category>
+  -->
+  <xi:include href="1.0.xml"/>
+</product>

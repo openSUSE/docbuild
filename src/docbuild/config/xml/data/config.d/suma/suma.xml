@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suma" family="f.linux" series="s.pas" rank="0">
+  <name>SUSE Multi-Linux Manager</name>
+  <acronym>SUSE Multi-Linux Manager</acronym>
+  <maintainers>
+    <!-- <contact>jcayouette@suse.com</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.suma.release-notes" title="Release notes"/>
+      <language id="cat.suma.core-doc" title="Core product documentation"/>
+      <language id="cat.suma.archive" title="Archives">
+        <p>
+       Archives only contain core product documentation but not related
+       documents.
+     </p>
+      </language>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.suma.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.suma.core-doc" title="Haupt-Produktdokumentation"/>
+      <language linkend="cat.suma.archive" title="Archive">
+        <p>
+        Archive enthalten nur die Haupt-Produktdokumentation, aber keine
+        weiteren Dokumente.
+      </p>
+      </language>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.suma.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.suma.core-doc" title="Documentación principal del producto"/>
+      <language linkend="cat.suma.archive" title="Archivos de reserva">
+        <p>
+        Los archivos de reserva solo contienen documentación básica del
+        producto, pero no documentos relacionados.
+      </p>
+      </language>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.suma.release-notes" title="Notes de version"/>
+      <language linkend="cat.suma.core-doc" title="Documentation produit de base"/>
+      <language linkend="cat.suma.archive" title="Archives">
+        <p>
+        Les archives contiennent uniquement la documentation produit de base,
+        mais pas les documents connexes.
+      </p>
+      </language>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.suma.release-notes" title="リリースノート"/>
+      <language linkend="cat.suma.core-doc" title="コア製品のマニュアル"/>
+      <language linkend="cat.suma.archive" title="アーカイブ">
+        <p>
+        アーカイブには、コア製品のマニュアルのみが含まれ、関連ドキュメントは含まれません。
+      </p>
+      </language>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.suma.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.suma.core-doc" title="Documentação do produto principal"/>
+      <language linkend="cat.suma.archive" title="Arquivos">
+        <p>
+        Os arquivos contêm apenas a documentação do produto principal, mas
+        não os documentos relacionados.
+      </p>
+      </language>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.suma.release-notes" title="发行说明"/>
+      <language linkend="cat.suma.core-doc" title="核心产品文档"/>
+      <language linkend="cat.suma.archive" title="存档">
+        <p>
+        存档只包含核心产品文档，而不包含相关文档。
+      </p>
+      </language>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="5.2.xml"/>
+  <xi:include href="5.1.xml"/>
+  <xi:include href="5.0.xml"/>
+  <xi:include href="4.3.xml"/>
+</product>

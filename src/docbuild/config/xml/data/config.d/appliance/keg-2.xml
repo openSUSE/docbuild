@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="appliance.keg-2" path="keg-2">
+  <name>Keg Image Description Generator</name>
+  <version>2</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Keg is a tool which helps to create and manage image descriptions
+          suitable for the KIWI appliance builder. The primary use case for keg
+          are situations where many image descriptions must be managed and the
+          image descriptions have considerable overlap with respect to content
+          and setup.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE-Enceladus/keg.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>doc</subdir>
+      <deliverable id="app.keg-2.dc-keg" type="dc">
+        <dc file="DC-keg">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

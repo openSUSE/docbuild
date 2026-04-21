@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="suse-edge.3.3" path="3.3">
+  <version>3.3</version>
+  <canonical>suse-edge/3.5/</canonical>
+  <resources>
+    <git remote="https://github.com/suse-edge/suse-edge.github.io.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>release-3.3</branch>
+      <subdir>asciidoc</subdir>
+      <deliverable id="suse-edge.3.3.dc-edge" type="dc" category="cat.suse-edge.core-doc">
+        <dc file="DC-edge">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="suse-edge.support-matrix.3.3.html-support-matrix.suse-edge-support-matrix" type="prebuilt" category="cat.suse-edge.core-doc">
+        <prebuilt>
+          <title>SUSE Edge support matrix</title>
+          <url format="html" href="/suse-edge/support-matrix/html/support-matrix/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rancher-manager.v2.11-en-about-rancher-what-is-rancher.suse-rancher-manager--rancher-manager-" type="prebuilt" category="cat.suse-edge.container">
+        <prebuilt>
+          <title>SUSE Rancher Manager (Rancher Manager)</title>
+          <url format="html" href="/cloudnative/rancher-manager/v2.11/en/about-rancher/what-is-rancher.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.storage.1.8-en-longhorn-documentation.suse-storage--longhorn-" type="prebuilt" category="cat.suse-edge.container">
+        <prebuilt>
+          <title>SUSE Storage (Longhorn)</title>
+          <url format="html" href="/cloudnative/storage/1.8/en/longhorn-documentation.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.security.3.3.5.4-en-overview.suse-security--neuvector-" type="prebuilt" category="cat.suse-edge.container">
+        <prebuilt>
+          <title>SUSE Security (NeuVector)</title>
+          <url format="html" href="/cloudnative/security/5.4/en/overview.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.v0.21-en-index.suse-rancher-prime--cluster-api--turtles-" type="prebuilt" category="cat.suse-edge.container">
+        <prebuilt>
+          <title>SUSE Rancher Prime: Cluster API (Turtles)</title>
+          <url format="html" href="/cloudnative/cluster-api/v0.21/en/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.k3s.suse-edge-3.3.suse-rancher-prime-k3s--k3s-" type="prebuilt" category="cat.suse-edge.kubernetes">
+        <prebuilt>
+          <title>SUSE Rancher Prime K3s (K3s)</title>
+          <url format="html" href="/cloudnative/k3s/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.suse-edge-3.3.suse-rancher-prime-rke2--rke2-" type="prebuilt" category="cat.suse-edge.kubernetes">
+        <prebuilt>
+          <title>SUSE Rancher Prime RKE2 (RKE2)</title>
+          <url format="html" href="/cloudnative/rke2/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>release-3.3</branch>
+      <subdir>l10n/translated/ja</subdir>
+      <deliverable type="ref">
+        <ref linkend="suse-edge.3.3.dc-edge"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>release-3.3</branch>
+      <subdir>l10n/translated/zh-CN</subdir>
+      <deliverable type="ref">
+        <ref linkend="suse-edge.3.3.dc-edge"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>release-3.3</branch>
+      <subdir>l10n/translated/es</subdir>
+      <deliverable type="ref">
+        <ref linkend="suse-edge.3.3.dc-edge"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>release-3.3</branch>
+      <subdir>l10n/translated/pt-BR</subdir>
+      <deliverable type="ref">
+        <ref linkend="suse-edge.3.3.dc-edge"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sle-micro.6.1" category="cat.suse-edge.slmicro"/>
+    <ref linkend="suma.5.0" category="cat.suse-edge.suma"/>
+  </internal>
+</docset>

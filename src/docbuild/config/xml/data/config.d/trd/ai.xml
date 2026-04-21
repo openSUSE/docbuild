@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.ai" path="ai">
+  <version includes-productname="true">Artificial Intelligence</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>
+          Documents published in this area focus on AI-based solutions.​</p>
+      </desc>
+  </descriptions>
+  <!-- <builddocs>
+       <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+      <language default="1" lang="en-us">
+        <branch>main</branch> -->
+  <!-- Reference configuration -->
+  <!-- <deliverable titleformat="title subtitle product">
+          <subdir>references/supermicro</subdir>
+          <dc></dc>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Artificial Intelligence</partner>
+          </partners>
+        </deliverable>
+
+      </language>
+    </builddocs> -->
+  <internal>
+    <ref linkend="trd.clearml.dc-rc_suse-ai_clearml" titleformat="title subtitle"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

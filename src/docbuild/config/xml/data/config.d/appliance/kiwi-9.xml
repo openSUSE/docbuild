@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="appliance.kiwi-9" path="kiwi-9">
+  <name>KIWI Appliance Builder</name>
+  <version>9</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+      <p>
+        KIWI NG (Next Generation) is the command-line utility to build Linux
+        system appliances. The documentation published here is written for the
+        latest KIWI NG upstream version. The upstream version may be slightly
+        ahead of the version shipped in the latest release of SUSE Linux
+        Enterprise.
+      </p>
+      <p>
+        Builds of the upstream version of KIWI NG for your OS version are
+        <a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">available from OBS</a>.
+        These builds are supported on a best-effort basis.
+      </p>
+      </desc>
+    <desc lang="de-de">
+        <p>
+        KIWI NG (Nächste Generation) ist ein Kommandozeilenwerkzeug, mit dem sich
+        Linux-System-Appliances erstellen lassen.
+        Die hier veröffentlichte Dokumentation wurde für die neueste Version von
+        KIWI NG erstellt.
+        Diese Upstream-Version kann etwas anders funktionieren, als die Version,
+        die in der aktuellen Version von SUSE Linux Enterprise enthalten ist.
+      </p>
+      <p>
+        Builds der Upstream-Version von KIWI NG für Ihr Betriebssystem finden Sie
+        <a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">im OBS</a>.
+        Wir bemühen uns, diese Builds zu unterstützen.
+      </p>
+      </desc>
+    <desc lang="es-es">
+      <p>
+        KIWI NG (Next Generation) es la utilidad de línea de comandos para crear
+        dispositivos de sistema Linux.
+        La documentación publicada aquí está escrita para la versión de nivel
+        superior más reciente de KIWI NG.
+        Esta versión puede funcionar de forma ligeramente diferente a la versión
+        incluida en la versión más reciente de SUSE Linux Enterprise.
+      </p>
+      <p>
+        Las compilaciones de la versión de nivel superior de KIWI NG para la
+        versión de su sistema operativo están
+        <a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">disponibles en OBS</a>.
+        La asistencia para estas compilaciones se ofrece con una filosofía de
+        mejor esfuerzo.
+      </p>
+    </desc>
+    <desc lang="fr-fr">
+      <p>
+        KIWI NG (Next Generation) est l'utilitaire de ligne de
+        commande qui permet de créer des applicatifs système Linux.
+        La documentation publiée ici est destinée à la dernière version en
+        amont de KIWI NG.
+        Cette version en amont peut fonctionner légèrement différemment de
+        celle livrée dans la dernière édition de SUSE Linux Enterprise.
+      </p>
+      <p>
+        Les builds de la version en amont de KIWI NG pour votre version de
+        système d'exploitation sont
+        <a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">disponibles sur OBS</a>.
+        Ces builds sont pris en charge du mieux possible.
+      </p>
+    </desc>
+    <desc lang="ja-jp">
+      <p>
+        KIWI NG (Next Generation)は、Linuxシステムアプライアンスを構築するためのコマンドラインユーティリティです。ここで公開されているマニュアルは、最新のKIWI NGアップストリームバージョン用に作成されています。このアップストリームバージョンは、SUSE Linux Enterpriseの最新リリースで出荷されたバージョンとは若干異なる動作をする場合があります。
+      </p>
+      <p>
+        ご使用のOSバージョン向けKIWI NGのアップストリームバージョンのビルドは、<a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">OBSから入手可能</a>です。これらのビルドは、ベストエフォートベースでサポートされています。
+      </p>
+    </desc>
+    <desc lang="pt-br">
+      <p>
+        KIWI NG (Next Generation) é o utilitário de linha de comando para criar
+        aplicações de sistema Linux.
+        A documentação publicada aqui foi escrita para a versão de upstream
+        mais recente do KIWI NG.
+        Essa versão de upstream pode funcionar de maneira um pouco diferente da
+        versão fornecida no último lançamento do SUSE Linux Enterprise.
+      </p>
+      <p>
+        Os builds da versão de upstream do KIWI NG referentes à sua versão do OS estão
+        <a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">disponíveis no OBS</a>.
+        Esses builds são suportados na base dos melhores esforços.
+      </p>
+    </desc>
+    <desc lang="zh-cn">
+      <p>
+        KIWI NG（下一代）是用于构建 Linux 系统设备的命令行实用程序。此处发布的文档是为最新的 KIWI NG 上游版本编写的。此上游版本的工作方式可能与最新的 SUSE Linux Enterprise 版本中随附的版本略有不同。
+      </p>
+      <p>
+        适用于您的操作系统版本的 KIWI NG 上游版本的内部版本<a href="https://download.opensuse.org/repositories/Virtualization:/Appliances:/Builder">可从 OBS 获得</a>。我们会尽最大努力为这些内部版本提供支持。
+      </p>
+    </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/OSInside/kiwi-suse-doc.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>master</branch>
+      <subdir>doc/build</subdir>
+      <deliverable id="app.kiwi-9.dc-kiwi" type="dc">
+        <dc file="DC-kiwi">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

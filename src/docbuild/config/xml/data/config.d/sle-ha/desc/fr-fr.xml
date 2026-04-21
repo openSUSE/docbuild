@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="fr-fr">
+    <title>Continuité des activités Intégrité des données Temps de fonctionnement optimisé</title>
+    <p>
+      Système de mise en cluster Open Source à haute disponibilité de pointe conçu pour éliminer
+      pratiquement toutes les interruptions de service et être facile à utiliser et à déployer
+      dans les environnements physiques et virtuels.
+      La mise en cluster à haute disponibilité permet de limiter les
+      pertes de données liées aux corruptions ou aux pannes en tirant parti de votre infrastructure
+      informatique existante pour protéger vos actifs.
+    </p>
+    <p>
+      La mise en cluster à haute disponibilité est utilisée pour automatiser l’application et la
+      restauration des données. Grâce à sa souplesse et son fonctionnement basé sur les stratégies,
+      vous pouvez mettre en oeuvre des clusters Linux hautement disponibles et éliminer les points
+      d’échec uniques. Vos serveurs font l’objet d’une surveillance constante. En cas de panne ou
+      de dysfonctionnement, l’environnement système est transféré à un autre serveur ou l’application
+      est automatiquement redémarrée sur un système dont l’état de marche est avéré. La continuité
+      des opérations est ainsi garantie et les arrêts de service inopinés sont réduits au minimum.
+    </p>
+  </desc>

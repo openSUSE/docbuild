@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.virtualization-cloud" path="virtualization-cloud" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: Virtualization &amp; Cloud</version>
+  <listingversion includes-productname="true">Virtualization &amp; Cloud</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          This section spans a wide range of topics related to virtualization technologies and
+          cloud scenarios.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP7</branch>
+      <deliverable id="smart.virtualization-cloud.dc-virtualization" type="dc">
+        <dc file="DC-virtualization">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-virt-components" type="dc">
+        <dc file="DC-virt-components">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-manage-vm-on-commandline" type="dc">
+        <dc file="DC-manage-vm-on-commandline">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-minimal-vm" type="dc">
+        <dc file="DC-minimal-vm">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-virtual-disk-cache-mode-configure" type="dc">
+        <dc file="DC-virtual-disk-cache-mode-configure">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-vm-assign-pci-device" type="dc">
+        <dc file="DC-vm-assign-pci-device">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-virt-scenario-creating-customized-vm-guests" type="dc">
+        <dc file="DC-virt-scenario-creating-customized-vm-guests">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="smart.virtualization-cloud.dc-vxlan" type="dc">
+        <dc file="DC-vxlan">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE15SP7</branch>
+      <subdir>l10n/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="smart.virtualization-cloud.dc-minimal-vm"/>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Short solution-based articles to complement product documentation</title>
+    <p>
+      <strong>Welcome to SUSE Smart Documentation!</strong>
+    </p>
+    <p>
+      SUSE Smart Documentation focuses on short and
+      solution-based articles to complement our regular product documentation.
+    </p>
+    <p>
+      Refer to SUSE Smart Documentation for step-by-step instructions for
+      specific tasks, short references and explanations of concepts below.
+      Each topic puts the relevant information at your fingertips.
+    </p>
+    <p>
+      The content on this page is neither complete nor final. As the
+      project evolves over time, we will add more content and improve functionality.
+    </p>
+    <p>
+      We would like to hear from you! Please send your feedback to
+      doc-team@suse.com.
+    </p>
+  </desc>

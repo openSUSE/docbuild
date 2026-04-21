@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="releasenotes.sle-ha" path="sle-ha">
+  <version includes-productname="true">SUSE Linux Enterprise High Availability </version>
+  <resources>
+    <git remote="https://github.com/SUSE/release-notes.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="rn.sle-ha.dc-releasenotes_sle-ha_16.0" type="dc">
+        <dc file="DC-releasenotes_sle-ha_16.0">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

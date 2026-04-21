@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="sle-public-cloud" family="f.linux" series="s.pas" rank="04060">
+  <name>SUSE Linux Enterprise in Public Clouds</name>
+  <acronym>SLE CSP</acronym>
+  <maintainers>
+    <contact>toms@suse.de</contact>
+    <contact>cwickert@suse.de</contact>
+    <contact>taroth@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <xi:include href="desc/desc.xml"/>
+  <xi:include href="all.xml"/>
+</product>

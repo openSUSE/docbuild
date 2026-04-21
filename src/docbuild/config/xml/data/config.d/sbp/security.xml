@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.security" path="security">
+  <version includes-productname="true">Security</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category provide information about vulnerabilities and
+          compliance in general and guidance on resolving security issues and securing
+          server environments.</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Vulnerabilitiy -->
+      <deliverable id="sbp.security.dc-sbp-suse-security-report-2025" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-security-report-2025">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.security.dc-sbp-suse-security-report-2024" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-security-report-2024">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.security.dc-sbp-suse-security-report-2023" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-security-report-2023">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.security.dc-sbp-suse-security-report-2022" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-security-report-2022">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.security.dc-sbp-suse-security-report-2021" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUSE-security-report-2021">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.security.dc-sbp-spectre-meltdown-l1tf" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-Spectre-Meltdown-L1TF">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!-- Compliance -->
+      <deliverable id="sbp.security.dc-sbp-slsa4" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SLSA4">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <!--Japanese-->
+    <locale lang="ja-jp" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <!-- Security -->
+      <deliverable type="ref">
+        <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf"/>
+      </deliverable>
+    </locale>
+    <!-- Korean-->
+    <locale lang="ko-kr" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ko-kr</subdir>
+      <!-- Security -->
+      <deliverable type="ref">
+        <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.sap-15.dc-os_security_hardening_guide_for_sap_hana_sles15" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-15.dc-os_security_hardening_guide_for_sap_hana_sles15_sp2_and_later" titleformat="title subtitle product"/>
+    <ref linkend="sbp.sap-12.dc-os_security_hardening_guide_for_sap_hana_sles12" titleformat="title subtitle product"/>
+  </internal>
+</docset>

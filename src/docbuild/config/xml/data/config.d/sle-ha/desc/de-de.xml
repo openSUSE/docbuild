@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="de-de">
+    <title>Geschäftskontinuität, Datenintegrität und maximale Betriebszeit</title>
+    <p>
+      Ein branchenweit führendes Open Source-System für Hochverfügbarkeitsclustering,
+      das ungeplante Ausfallzeiten praktisch ausschließt, einfach zu bedienen ist und
+      sowohl in physischen als auch in virtuellen Umgebungen implementiert werden kann.
+      Hochverfügbarkeits-Clustering minimiert Datenverluste aufgrund
+      von Beschädigung oder Ausfällen, indem es Ihre Daten-Assets mit der vorhandenen
+      IT-Infrastruktur schützt.
+    </p>
+    <p>
+      Hochverfügbarkeits-Clustering wird dazu verwendet, die Wiederherstellung von
+      Anwendungen und Daten zu automatisieren. Mit unserer flexiblen, richtlinienbasierten
+      Clustering-Lösung können Sie hochverfügbare Linux-Cluster implementieren und
+      Ausfallrisiken beseitigen. Ihre Server werden laufend überwacht, und wenn es zu
+      einem Fehler oder Ausfall kommt, wird der Workload von einem Server auf einen
+      anderen verlagert, oder die Anwendung wird automatisch auf einem ordnungsgemäß
+      funktionierenden System neu gestartet. So gewährleisten Sie die Geschäftskontinuität
+      und minimieren ungeplante Ausfallzeiten.
+    </p>
+  </desc>

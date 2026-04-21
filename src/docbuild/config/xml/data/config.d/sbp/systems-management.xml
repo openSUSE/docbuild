@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sbp.systems-management" path="systems-management">
+  <version includes-productname="true">Systems management</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents posted in this category cover a wide variety of subjects related
+          to maintaining and improving services and infrastructure.</p>
+       </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/suse-best-practices.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!--Deployment-->
+      <deliverable id="sbp.systems-management.dc-sbp-multi-pxe-install" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-Multi-PXE-Install">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-sle15-custom-installation-medium" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SLE15-Custom-Installation-Medium">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-suma-on-ibm-powervm" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SUMA-on-IBM-PowerVM">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-susemanager" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-susemanager">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sles12sp3-rpiquick" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLES12SP3-rpiquick">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!--Update and Upgrade-->
+      <deliverable id="sbp.systems-management.dc-sbp-sle-offline-upgrade-local-boot" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-SLE-OffLine-Upgrade-Local-Boot">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <!--Packaging-->
+      <deliverable id="sbp.systems-management.dc-sbp-quilting-osc" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-Quilting-OSC">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-rpm-packaging" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-RPM-Packaging">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-kmp-manual" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-KMP-Manual">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sbp.systems-management.dc-sbp-kmp-manual-sle12sp2" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SBP-KMP-Manual-SLE12SP2">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <!-- Japanese-->
+    <locale lang="ja-jp" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <!-- SUMA & Systems Management -->
+      <deliverable type="ref">
+        <ref linkend="sbp.systems-management.dc-sbp-susemanager"/>
+      </deliverable>
+    </locale>
+    <!--Korean-->
+    <locale lang="ko-kr" sitemap="false">
+      <branch>main</branch>
+      <subdir>l10n/ko-kr</subdir>
+      <!-- SUMA & Systems Management -->
+      <deliverable type="ref">
+        <ref linkend="sbp.systems-management.dc-sbp-susemanager"/>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

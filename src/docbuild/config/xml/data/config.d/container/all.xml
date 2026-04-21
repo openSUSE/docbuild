@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="container.all" path="all">
+  <version includes-productname="true">Container Guide</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          The container guide provides an in-depth coverage of container
+          technologies along with SUSE container-related products and services. The
+          guide offers a general introduction to obtaining and using container
+          images as well as running and managing containers. The guide also includes
+          detailed information about Base Container Images.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>container-guide</subdir>
+      <deliverable id="cont.all.dc-container-guide" type="dc" titleformat="title subtitle product">
+        <dc file="DC-Container-guide">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>main</branch>
+      <subdir>container-guide/l10n/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="cont.all.dc-container-guide"/>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

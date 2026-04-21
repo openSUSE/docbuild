@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-vmdp.2.5" path="2.5">
+  <version>2.5</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-vmdp"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="sle-vmdp.2.5.dc-vmdp" type="dc">
+        <dc file="DC-vmdp">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.cluster-api" path="cluster-api">
+  <version>SUSE Rancher Prime: Cluster API (Turtles)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Rancher Prime: Cluster API is a Kubernetes Operator that
+          provides integration between SUSE Rancher Prime and Cluster API (CAPI)
+          with the aim of bringing full CAPI support to SUSE Rancher Prime. With SUSE
+          Rancher Prime: Cluster API, you can automatically import CAPI
+          clusters into Rancher and configure the CAPI Operator.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.cluster-api.latest-en-index.overview" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Overview</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-tutorials-first-cluster" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Tutorials</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/tutorials/first-cluster.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-reference-capiprovider" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Reference</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/reference/capiprovider.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-user-clusterclass.user-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>User Guide</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/user/clusterclass.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-operator-clusterclass.operator-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Operator Guide</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/operator/clusterclass.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-developer-development.developer-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Developer Guide</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/developer/development.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-security-slsa" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Security</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/security/slsa.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-troubleshooting-troubleshooting.troubleshooting-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Troubleshooting Guide</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/troubleshooting/troubleshooting.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.cluster-api.latest-en-changelogs-index.release-notes" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/cloudnative/cluster-api/latest/en/changelogs/index.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-rancher-prime-capi/vsphere-vm-template.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>Create a SUSE Linux Micro VM Template in vSphere (Deploy Using CAPV and CAPRKE2)</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

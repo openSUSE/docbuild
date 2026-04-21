@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="sle-micro.6.0" path="6.0">
+  <version>Enterprise Micro 6.0</version>
+  <canonical>sle-micro/6.0/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-images" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-raw-images" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-raw-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-raw-images-ibmz">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz-zfcp" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-raw-images-ibmz-zfcp">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-raw-images-virtual-machines">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-deployment-selfinstall-images" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-deployment-selfinstall-images">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-upgrade" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-upgrade">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-nvidia-jetson" type="dc" category="cat.sle-micro.deploy-upgrade">
+        <dc file="DC-Micro-NVIDIA-jetson">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-pam-security" type="dc" category="cat.sle-micro.security">
+        <dc file="DC-Micro-PAM-security">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-keylime" type="dc" category="cat.sle-micro.security">
+        <dc file="DC-Micro-keylime">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-selinux" type="dc" category="cat.sle-micro.security">
+        <dc file="DC-Micro-selinux">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-setroubleshoot" type="dc" category="cat.sle-micro.security">
+        <dc file="DC-Micro-setroubleshoot">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-6.0-cockpit" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-6.0-cockpit">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-managing-system-logfiles" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-managing-system-logfiles">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-ntp-time-synchronization" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-ntp-time-synchronization">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-systemd-basics" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-systemd-basics">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-systemd-working-with-timers" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-systemd-working-with-timers">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-toolbox" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-toolbox">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-transactional-updates" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-transactional-updates">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-sudo-configure-superuser-privileges">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-sudo-run-commands-as-superuser">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-snapper-basic-concepts" type="dc" category="cat.sle-micro.systems-management">
+        <dc file="DC-Micro-snapper-basic-concepts">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-compose" type="dc" category="cat.sle-micro.container">
+        <dc file="DC-Micro-compose">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-podman" type="dc" category="cat.sle-micro.container">
+        <dc file="DC-Micro-podman">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-6.0-public-cloud" type="dc" category="cat.sle-micro.micro-clouds">
+        <dc file="DC-Micro-6.0-public-cloud">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-network-configuration" type="dc" category="cat.sle-micro.network">
+        <dc file="DC-Micro-network-configuration">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-pcp" type="dc" category="cat.sle-micro.systemtuning-performance">
+        <dc file="DC-Micro-pcp">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.6.0.dc-micro-raids" type="dc" category="cat.sle-micro.storage">
+        <dc file="DC-Micro-raids">
+          <format epub="0" html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-micro.6.0.6-0.release-notes" type="prebuilt" category="cat.sle-micro.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sle-micro/6.0/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE_Micro_6.0</branch>
+      <subdir>l10n/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-ibmz"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-raw-images-virtual-machines"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-deployment-selfinstall-images"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pam-security"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-keylime"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-selinux"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-setroubleshoot"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-cockpit"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-managing-system-logfiles"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-ntp-time-synchronization"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-basics"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-systemd-working-with-timers"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-toolbox"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-transactional-updates"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-configure-superuser-privileges"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-sudo-run-commands-as-superuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-compose"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-podman"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-6.0-public-cloud"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-network-configuration"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-pcp"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.6.0.dc-micro-raids"/>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

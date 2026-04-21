@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.wso2" path="wso2">
+  <version includes-productname="true">WSO2</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>Documents published in this area provide guidance for solutions
+          incorporating WSO2 products or technologies.​</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Reference Configuration -->
+      <deliverable id="trd.wso2.dc-rc_suse-rancher_wso2-openchoreo_dev-platform" type="dc" titleformat="title subtitle product">
+        <dc file="DC-rc_suse-rancher_wso2-openchoreo_dev-platform">
+          <subdir>references/wso2</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>WSO2</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

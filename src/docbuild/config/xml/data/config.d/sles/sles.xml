@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="sles" family="f.linux" series="s.pas" rank="00080">
+  <name>SUSE Linux Enterprise Server</name>
+  <acronym>SLES</acronym>
+  <maintainers>
+    <contact>taroth@suse.de</contact>
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.sles.initial-config" title="Initial configuration"/>
+      <language id="cat.sles.smart-docs" title="Smart Docs"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.sles.initial-config" title="Erstmalige Konfiguration"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.sles.initial-config" title="Configuración inicial"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.sles.initial-config" title="Configuration initiale"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.sles.initial-config" title="初期設定"/>
+    </category>
+    <category lang="ko-kr">
+      <language linkend="cat.sles.initial-config" title="초기 구성"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.sles.initial-config" title="Configuração inicial"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.sles.initial-config" title="初始配置"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- Only use the Smart Docs category for SLES 15 SPx. The term is not translated -->
+  <xi:include href="16.0.xml"/>
+  <xi:include href="15-SP7.xml"/>
+  <xi:include href="15-SP6.xml"/>
+  <xi:include href="15-SP5.xml"/>
+  <xi:include href="15-SP4.xml"/>
+  <xi:include href="15-SP3.xml"/>
+  <xi:include href="15-SP2.xml"/>
+  <xi:include href="15-SP1.xml"/>
+  <xi:include href="15-GA.xml"/>
+  <xi:include href="12-SP5.xml"/>
+  <xi:include href="12-SP4.xml"/>
+  <xi:include href="12-SP3.xml"/>
+  <xi:include href="12-SP2.xml"/>
+  <xi:include href="12-SP1.xml"/>
+  <xi:include href="11-SP4.xml"/>
+</product>

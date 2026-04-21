@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<descriptions xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="en-us.xml"/>
+  <xi:include href="de-de.xml"/>
+  <xi:include href="fr-fr.xml"/>
+  <xi:include href="pt-br.xml"/>
+  <xi:include href="ja-jp.xml"/>
+  <xi:include href="zh-cn.xml"/>
+  <xi:include href="es-es.xml"/>
+</descriptions>

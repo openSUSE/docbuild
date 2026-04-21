@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="cloudnative.rke2" path="rke2">
+  <version>SUSE Rancher Prime: RKE2 (RKE2)</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          SUSE Rancher Prime: RKE2, also known as RKE Government, is SUSE’s
+          next-generation Kubernetes distribution.
+        </p>
+        <p>
+          It is a fully conformant Kubernetes distribution that focuses on
+          security and compliance within the U.S. Federal Government sector. To
+          meet these goals, SUSE Rancher Prime: RKE2 does provides defaults and
+          configuration options that allow clusters to pass the CIS Kubernetes
+          Benchmark v1.6 or v1.23 with minimal operator intervention. It alsoe
+          nables FIPS 140-2 compliance and regularly scans components for CVEs
+          using trivy in our build pipeline.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://TODO"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="cn.rke2.latest-en-introduction.an-introduction-to-suse-rancher-prime--rke2" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>An Introduction to SUSE Rancher Prime: RKE2</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/introduction.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-architecture" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Architecture</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/architecture.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-install-quickstart.installation-guide" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Installation Guide</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/install/quickstart.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-eupgrade-upgrade.upgrades" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Upgrades</title>
+          <url format="html" href="/cloudnative/rke2/latest/eupgrade/upgrade.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-backup_restore.backing-up-and-restoring-an-rke2-cluster" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Backing up and Restoring an RKE2 Cluster</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/backup_restore.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-security-about_hardened_images.securing-your-rke2-cluster" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Securing your RKE2 Cluster</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/security/about_hardened_images.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-networking-basic_network_options.networking-configuration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Networking Configuration</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/networking/basic_network_options.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-add-ons-helm.using-helm-package-manager" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Using Helm Package Manager</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/add-ons/helm.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-advanced.advanced-options-and-configuration" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Advanced Options and Configuration</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/advanced.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-reference-server_config" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Reference</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/reference/server_config.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+      <deliverable id="cn.rke2.latest-en-known_issues.known-issues-and-limitations" type="prebuilt" category="cat.cloudnative.rancher">
+        <prebuilt>
+          <title>Known Issues and Limitations</title>
+          <url format="html" href="/cloudnative/rke2/latest/en/known_issues.html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+  <external>
+    <link category="cat.cloudnative.rancher" gated="true">
+      <url lang="en-us" format="html" href="https://scc.suse.com/rancher-docs/rancherprime/latest/en/suse-k8s-distributions/rke-to-rke2-replatforming-guide.html"/>
+      <descriptions>
+        <desc lang="en-us">
+          <title>RKE to RKE2 Replatforming Guide</title>
+          <p>TODO</p>
+        </desc>
+      </descriptions>
+    </link>
+  </external>
+</docset>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" id="smart.systemtuning-performance" path="systemtuning-performance" lifecycle="supported" navigation="hidden">
+  <version includes-productname="true">Smart Docs: System Tuning &amp; Performance</version>
+  <listingversion includes-productname="true">System Tuning &amp; Performance</listingversion>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          Documents in this category introduce you to various aspects related
+          to system tuning and performance. Learn how to monitor and fine-tune several
+          vital system parameters.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP7</branch>
+      <deliverable id="smart.systemtuning-performance.dc-cpu-check-temperature" type="dc">
+        <dc file="DC-cpu-check-temperature">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

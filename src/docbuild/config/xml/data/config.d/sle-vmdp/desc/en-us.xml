@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Paravirtualized drivers for SUSE Linux Enterprise</title>
+    <p>
+     The paravirtualized drivers in the SUSE Virtual Machine Driver Pack
+     deliver the performance benefits of paravirtualization, with the wider
+     availability of full virtualization. It does this by opening additional
+     channels of communication between the Xen and KVM hypervisors in SUSE
+     Linux Enterprise and the unmodified guest operating systems running in a
+     virtual environment, thus accelerating network and storage input/output
+     and improving overall efficiency.
+    </p>
+  </desc>

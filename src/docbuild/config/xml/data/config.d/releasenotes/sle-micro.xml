@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="releasenotes.sle-micro" path="sle-micro">
+  <version includes-productname="true">SUSE Linux Micro</version>
+  <resources>
+    <git remote="https://github.com/SUSE/release-notes.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <deliverable id="rn.sle-micro.dc-releasenotes_sle-micro_6.2" type="dc">
+        <dc file="DC-releasenotes_sle-micro_6.2">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-micro.dc-releasenotes_sle-micro_6.1" type="dc">
+        <dc file="DC-releasenotes_sle-micro_6.1">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sle-micro.dc-releasenotes_sle-micro_6.0" type="dc">
+        <dc file="DC-releasenotes_sle-micro_6.0">
+          <format epub="0" single-html="0" html="1" pdf="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

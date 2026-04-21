@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+    <title>Subscription management for SUSE Linux Enterprise 11</title>
+    <p>
+      The Subscription Management Tool 11 for SUSE Linux Enterprise helps
+      customers manage their SUSE Linux Enterprise software updates. It is
+      packaged as an add-on product to be installed on an SUSE Linux
+      Enterprise Server 11 server.
+    </p>
+    <p>
+      <strong>Documentation for newer versions of SMT and its successor RMT
+      are part of the <a href="/sles/">SLES documentation</a>.</strong>
+    </p>
+  </desc>

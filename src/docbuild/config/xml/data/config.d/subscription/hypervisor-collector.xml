@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="subscription.hypervisor-collector" path="hypervisor-collector">
+  <version includes-productname="true">Collecting hypervisor details in SUSE Customer Center</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+        This document describes how to provide customers with details about the
+        hypervisors they use.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>scc-hypervisor-collector</subdir>
+      <deliverable id="sub.hypervisor-collector.dc-sle-scc-hypervisor-collector" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLE-scc-hypervisor-collector">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

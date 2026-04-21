@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="trd.telco" path="telco">
+  <version includes-productname="true">Telco</version>
+  <descriptions treatment="prepend">
+    <desc lang="en-us">
+        <p>
+          Documents published in this area focus on solutions for Telco.​</p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/technical-reference-documentation.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!-- Reference configuration -->
+      <deliverable id="trd.telco.dc-rc_suse-telco_supermicro-intel_ai-native" type="dc" titleformat="title subtitle product">
+        <dc file="DC-rc_suse-telco_supermicro-intel_ai-native">
+          <subdir>references/supermicro</subdir>
+          <format html="1" pdf="1" single-html="1"/>
+          <partners>
+            <partner>Telco</partner>
+          </partners>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="trd.ampere.dc-rc_suse-telco_ampere" titleformat="title subtitle"/>
+    <ref linkend="trd.contributors.dc-suse-trd_contrib-guide" titleformat="title subtitle"/>
+  </internal>
+</docset>

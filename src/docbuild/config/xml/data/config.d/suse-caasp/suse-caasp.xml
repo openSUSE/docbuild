@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product xmlns:xi="http://www.w3.org/2001/XInclude" id="suse-caasp" family="f.linux" series="s.pas" rank="04310">
+  <name>SUSE CaaS Platform</name>
+  <acronym>SUSE CaaSP</acronym>
+  <maintainers>
+    <!-- <contact>nkoranova@suse.cz</contact> -->
+    <contact>toms@suse.de</contact>
+    <contact>fs@suse.com</contact>
+  </maintainers>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.suse-caasp.core-doc" title="Core product documentation"/>
+      <language id="cat.suse-caasp.release-notes" title="Release notes"/>
+      <language id="cat.suse-caasp.best-practice" title="Best practices"/>
+    </category>
+    <category lang="de-de">
+      <language linkend="cat.suse-caasp.core-doc" title="Haupt-Produktdokumentation"/>
+      <language linkend="cat.suse-caasp.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.suse-caasp.best-practice" title="Best Practices"/>
+    </category>
+    <category lang="es-es">
+      <language linkend="cat.suse-caasp.core-doc" title="Documentación principal del producto"/>
+      <language linkend="cat.suse-caasp.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.suse-caasp.best-practice" title="Prácticas recomendadas"/>
+    </category>
+    <category lang="fr-fr">
+      <language linkend="cat.suse-caasp.core-doc" title="Documentation produit de base"/>
+      <language linkend="cat.suse-caasp.release-notes" title="Notes de version"/>
+      <language linkend="cat.suse-caasp.best-practice" title="Meilleures pratiques"/>
+    </category>
+    <category lang="ja-jp">
+      <language linkend="cat.suse-caasp.core-doc" title="コア製品のマニュアル"/>
+      <language linkend="cat.suse-caasp.release-notes" title="リリースノート"/>
+      <language linkend="cat.suse-caasp.best-practice" title="ベストプラクティス"/>
+    </category>
+    <category lang="pt-br">
+      <language linkend="cat.suse-caasp.core-doc" title="Documentação do produto principal"/>
+      <language linkend="cat.suse-caasp.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.suse-caasp.best-practice" title="Melhores práticas"/>
+    </category>
+    <category lang="zh-cn">
+      <language linkend="cat.suse-caasp.core-doc" title="核心产品文档"/>
+      <language linkend="cat.suse-caasp.release-notes" title="发行说明"/>
+      <language linkend="cat.suse-caasp.best-practice" title="最佳实践"/>
+    </category>
+  </categories>
+  <xi:include href="desc/desc.xml"/>
+  <!-- Larry Morris, 2021-12-06: We extended support for a couple key customers.
+  * You can take CaaSP 4.5 down on January 1, 2022.
+  * CaaSP 4.2 however[...] can be taken down January 1, 2023 [sic!]. -->
+  <xi:include href="4.5.xml"/>
+  <xi:include href="4.2.xml"/>
+  <xi:include href="4.1.xml"/>
+  <xi:include href="4.0.xml"/>
+  <xi:include href="3.xml"/>
+  <xi:include href="2.xml"/>
+  <xi:include href="1.xml"/>
+</product>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desc lang="en-us">
+   <h2>About</h2>
+    <p>Technical Reference Documentation provides guidance for implementing
+          solutions with SUSE products, often in combination with the
+          products of hardware and software partners (IHVs and ISVs).
+          These documents offer blueprints for specific scenarios and use
+          cases and are created by SUSE specialists in close collaboration
+          with technology partner experts.​</p>
+    <h2>Disclaimer</h2>
+    <p class="ds-legal">
+      Documents published as part of the SUSE Technical Reference Documentation
+      series have been contributed voluntarily by SUSE employees and third parties.
+      They are meant to serve as examples of how particular actions can be performed.
+      They have been compiled with utmost attention to detail.
+      However, this does not guarantee complete accuracy.
+
+      SUSE cannot verify that actions described in these documents do what is
+      claimed or whether actions described have unintended consequences.
+      SUSE LLC, its affiliates, the authors, and the translators may not
+      be held liable for possible errors or the consequences thereof.
+    </p>
+  </desc>

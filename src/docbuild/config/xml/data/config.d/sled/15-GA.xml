@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sled.15-GA" path="15-GA">
+  <version>15 GA</version>
+  <canonical>sled/15-SP7/</canonical>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <deliverable id="sled.15-GA.dc-sled-all" type="dc">
+        <dc file="DC-SLED-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.administration">book-sle-admin</subdeliverable>
+          <subdeliverable category="cat.sled.installation-upgrade">book-sle-deployment</subdeliverable>
+          <subdeliverable category="cat.sled.end-user">book-gnomeuser</subdeliverable>
+          <subdeliverable category="cat.sled.installation-upgrade">book-sle-upgrade</subdeliverable>
+          <subdeliverable category="cat.administration">book-security</subdeliverable>
+          <subdeliverable category="cat.administration">book-sle-tuning</subdeliverable>
+          <subdeliverable category="cat.sled.installation-upgrade">art-sle-installquick</subdeliverable>
+          <subdeliverable category="cat.sled.installation-upgrade">art-modules</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-admin" type="dc" category="cat.administration">
+        <dc file="DC-SLED-admin">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-deployment" type="dc" category="cat.sled.installation-upgrade">
+        <dc file="DC-SLED-deployment">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-gnomeuser" type="dc" category="cat.sled.end-user">
+        <dc file="DC-SLED-gnomeuser">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-upgrade" type="dc" category="cat.sled.installation-upgrade">
+        <dc file="DC-SLED-upgrade">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-security" type="dc" category="cat.administration">
+        <dc file="DC-SLED-security">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-tuning" type="dc" category="cat.administration">
+        <dc file="DC-SLED-tuning">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-installquick" type="dc" category="cat.sled.installation-upgrade">
+        <dc file="DC-SLED-installquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sled.15-GA.dc-sled-modulesquick" type="dc" category="cat.sled.installation-upgrade">
+        <dc file="DC-SLED-modulesquick">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="rn.sled.15-GA.15.release-notes" type="prebuilt" category="cat.sled.release-notes">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url format="html" href="/releasenotes/sled/15/"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>
+                <!--TODO-->
+              </p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-deployment"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-upgrade"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="es-es" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/es-es</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="fr-fr" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/fr-fr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="ko-kr" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/ko-kr</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="pt-br" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/pt-br</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE15SP0</branch>
+      <subdir>l10n/sled/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-admin"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-gnomeuser"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sled.15-GA.dc-sled-installquick"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sbp.systems-management.dc-sbp-kmp-manual-sle12sp2" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-spectre-meltdown-l1tf" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.systems-management.dc-sbp-sle-offline-upgrade-local-boot" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

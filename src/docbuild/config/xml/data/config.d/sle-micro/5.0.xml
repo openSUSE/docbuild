@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="unsupported" id="sle-micro.5.0" path="5.0">
+  <version>Enterprise Micro 5.0</version>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-sle.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.0</branch>
+      <deliverable id="sle-micro.5.0.dc-sle-micro-all" type="dc">
+        <dc file="DC-SLE-Micro-all">
+          <format epub="0" html="1" pdf="0" single-html="0"/>
+          <subdeliverable category="cat.sle-micro.core-doc">article-installation</subdeliverable>
+          <subdeliverable category="cat.sle-micro.core-doc">book-autoyast</subdeliverable>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.0.dc-sle-micro-autoyast" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-autoyast">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+      <deliverable id="sle-micro.5.0.dc-sle-micro-installation" type="dc" category="cat.sle-micro.core-doc">
+        <dc file="DC-SLE-Micro-installation">
+          <format epub="0" html="0" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <locale lang="de-de" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.0</branch>
+      <subdir>l10n/micro/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-installation"/>
+      </deliverable>
+    </locale>
+    <locale lang="ja-jp" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.0</branch>
+      <subdir>l10n/micro/ja-jp</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-installation"/>
+      </deliverable>
+    </locale>
+    <locale lang="zh-cn" sitemap="false">
+      <branch>maintenance/SLE_Micro_5.0</branch>
+      <subdir>l10n/micro/zh-cn</subdir>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-all"/>
+      </deliverable>
+      <deliverable type="ref">
+        <ref linkend="sle-micro.5.0.dc-sle-micro-installation"/>
+      </deliverable>
+    </locale>
+  </resources>
+  <internal>
+    <ref linkend="sles.15-SP2" category="cat.additional-doc"/>
+    <ref linkend="sbp.security.dc-sbp-suse-security-report-2021" category="cat.best-practices" titleformat="title subtitle"/>
+    <ref linkend="sbp.security.dc-sbp-slsa4" category="cat.best-practices" titleformat="title subtitle"/>
+  </internal>
+</docset>

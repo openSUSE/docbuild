@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" id="subscription.suseconnect" path="suseconnect">
+  <version includes-productname="true">Enriched system visibility in the SUSE Customer Center</version>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          This document describes what SUSEConnect is and how the SUSE Customer Center
+          (SCC) and Repository Mirroring Tool (RMT) use it to gather information about
+          active systems and their hardware environment.
+        </p>
+      </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-unversioned.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <subdir>suseconnect-visibility</subdir>
+      <deliverable id="sub.suseconnect.dc-sle-suseconnect-visibility" type="dc" titleformat="title subtitle product">
+        <dc file="DC-SLE-suseconnect-visibility">
+          <format epub="0" html="1" pdf="1" single-html="1"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>
