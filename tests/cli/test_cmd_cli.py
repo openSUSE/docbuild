@@ -277,23 +277,40 @@ def test_cli_toml_syntax_error(
     mock_config_models,
     is_app_config_failure,
 ):
-    """Verify that the CLI handles TOML syntax errors gracefully (Issue #175)."""
+    """Verify that the CLI handles TOML syntax errors gracefully."""
 
-    # Define a resolver that raises TOMLDecodeError
     def resolver_with_syntax_error(user_path, *args, **kwargs):
-        # We simulate the exact error raised by tomllib
+        # If we are testing Env failure, let the App config pass first
+        if not is_app_config_failure and "default_app" in str(user_path):
+             return (Path("app.toml"),), {"logging": {"version": 1}}, False
+
         raise tomllib.TOMLDecodeError("Invalid value", "test.toml", 0)
 
     fake_handle_config(resolver_with_syntax_error)
 
-    # Invoke the CLI. Whether it's app or env config, the handle_config
-    # call is now wrapped in a try/except in cmd_cli.py
     result = runner.invoke(cli, ["capture"])
 
     assert result.exit_code == 1
     assert "Syntax error in config file" in result.output
     assert "Invalid value" in result.output
-    # Verify our specific 'Note' from the formatter appears
     assert "Booleans must be lowercase" in result.output
-    # Crucially, ensure no raw Python traceback is leaked to the user
     assert "Traceback (most recent call last)" not in result.output
+
+
+def test_load_config_helpers_populate_context(fake_handle_config, mock_config_models):
+    """Verify that the refactored helper functions correctly update the context object."""
+    from docbuild.cli.cmd_cli import load_app_config, load_env_config
+
+    # Setup mock resolver
+    fake_handle_config(lambda *a, **k: ((Path("test.toml"),), {"key": "val"}, False))
+
+    mock_ctx = Mock()
+    mock_ctx.obj = DocBuildContext()
+
+    # Test App Loader
+    load_app_config(mock_ctx, Path("app.toml"), max_workers="5")
+    assert mock_ctx.obj.appconfig is not None
+
+    # Test Env Loader
+    load_env_config(mock_ctx, Path("env.toml"))
+    assert mock_ctx.obj.envconfig is not None
