@@ -1,7 +1,7 @@
 """Tests for the Pydantic error formatting utility."""
 
-from typing import Any
 import tomllib
+from typing import Any
 
 from pydantic import BaseModel, Field, IPvAnyAddress, ValidationError, create_model
 from rich.console import Console
@@ -100,7 +100,7 @@ def test_format_pydantic_error_path_cleaning(capsys):
 def test_format_toml_error_smoke(capsys):
     """Verify that the TOML syntax error formatter prints correctly."""
     from docbuild.utils.errors import format_toml_error
-    
+
     # 1. Manually trigger a TOML syntax error
     bad_toml_content = "enable_mail = True"  # Invalid: Capital T
     try:

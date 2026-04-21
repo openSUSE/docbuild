@@ -1,12 +1,12 @@
 """Tests for the main CLI entry point and configuration loading flow."""
 
 from pathlib import Path
+import tomllib
 from unittest.mock import Mock, patch
 
 import click
 from pydantic import ValidationError
 import pytest
-import tomllib
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
@@ -278,7 +278,7 @@ def test_cli_toml_syntax_error(
     is_app_config_failure,
 ):
     """Verify that the CLI handles TOML syntax errors gracefully (Issue #175)."""
-    
+
     # Define a resolver that raises TOMLDecodeError
     def resolver_with_syntax_error(user_path, *args, **kwargs):
         # We simulate the exact error raised by tomllib
@@ -286,7 +286,7 @@ def test_cli_toml_syntax_error(
 
     fake_handle_config(resolver_with_syntax_error)
 
-    # Invoke the CLI. Whether it's app or env config, the handle_config 
+    # Invoke the CLI. Whether it's app or env config, the handle_config
     # call is now wrapped in a try/except in cmd_cli.py
     result = runner.invoke(cli, ["capture"])
 

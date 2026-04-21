@@ -4,13 +4,13 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
+import tomllib
 from typing import Any, cast
 
 import click
 from pydantic import BaseModel, ValidationError
 import rich.console
 from rich.traceback import install as install_traceback
-import tomllib
 
 from ..__about__ import __version__
 from ..config.load import handle_config
@@ -82,6 +82,83 @@ def handle_validation_error(
         log.error("Error in config file(s): %s", config_files)
         log.error(e)
     ctx.exit(1)
+
+
+def _load_app_config(
+    ctx: click.Context,
+    app_config: Path,
+    verbose: int,
+    max_workers: str | None
+) -> None:
+    """Load and validate Application configuration.
+
+    Args:
+        ctx: The Click context object.
+        app_config: The path to the application config file provided via CLI.
+        verbose: The verbosity level from CLI options.
+        max_workers: The max_workers value from CLI options.
+
+    """
+    context = ctx.obj
+    # Initialize to satisfy Pylance control-flow analysis
+    raw_appconfig: dict[str, Any] = {}
+
+    try:
+        result = handle_config(
+            app_config,
+            CONFIG_PATHS,
+            APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
+            None,
+            DEFAULT_APP_CONFIG,
+        )
+        context.appconfigfiles, raw_appconfig, context.appconfig_from_defaults = cast(
+            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+        )
+    except tomllib.TOMLDecodeError as e:
+        files = (app_config,) if app_config else None
+        handle_validation_error(e, AppConfig, files, verbose, ctx)
+
+    if max_workers is not None:
+        raw_appconfig["max_workers"] = max_workers
+
+    try:
+        context.appconfig = AppConfig.from_dict(raw_appconfig)
+    except (ValueError, ValidationError) as e:
+        handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
+
+
+def _load_env_config(ctx: click.Context, env_config: Path, verbose: int) -> None:
+    """Load and validate Environment configuration.
+
+    Args:
+        ctx: The Click context object.
+        env_config: The path to the environment config file provided via CLI.
+        verbose: The verbosity level from CLI options.
+
+    """
+    context = ctx.obj
+    # Initialize to satisfy Pylance control-flow analysis
+    raw_envconfig: dict[str, Any] = {}
+
+    try:
+        result = handle_config(
+            env_config,
+            (PROJECT_DIR,),
+            None,
+            DEFAULT_ENV_CONFIG_FILENAME,
+            DEFAULT_ENV_CONFIG,
+        )
+        context.envconfigfiles, raw_envconfig, context.envconfig_from_defaults = cast(
+            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+        )
+    except tomllib.TOMLDecodeError as e:
+        files = (env_config,) if env_config else None
+        handle_validation_error(e, EnvConfig, files, verbose, ctx)
+
+    try:
+        context.envconfig = EnvConfig.from_dict(raw_envconfig)
+    except (ValueError, ValidationError) as e:
+        handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
 
 
 @click.group(
@@ -168,86 +245,32 @@ def cli(
         ctx.ensure_object(DocBuildContext)
 
     context = ctx.obj
-    context.verbose = verbose
-    context.dry_run = dry_run
-    context.debug = debug
+    context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
-    # --- INITIALIZE TO AVOID UNBOUND ERRORS ---
-    raw_appconfig: dict[str, Any] = {}
-    raw_envconfig: dict[str, Any] = {}
+    # 1. Load Application Config
+    _load_app_config(ctx, app_config, verbose, max_workers)
 
-    # --- PHASE 1: Load and Validate Application Config ---
-    try:
-        # We cast the return of handle_config to the expected tuple type
-        result = handle_config(
-            app_config,
-            CONFIG_PATHS,
-            APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
-            None,
-            DEFAULT_APP_CONFIG,
-        )
-        context.appconfigfiles, raw_appconfig, context.appconfig_from_defaults = cast(
-            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
-        )
-    except tomllib.TOMLDecodeError as e:
-        files = (app_config,) if app_config else None
-        handle_validation_error(e, AppConfig, files, verbose, ctx)
-
-    raw_appconfig = cast(dict[str, Any], raw_appconfig)
-
-    if max_workers is not None:
-        raw_appconfig["max_workers"] = max_workers
-
-    try:
-        context.appconfig = AppConfig.from_dict(raw_appconfig)
-    except (ValueError, ValidationError) as e:
-        handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
-
-    # 3. Setup logging using the validated config object
-    logging_config = context.appconfig.logging.model_dump(
-        by_alias=True, exclude_none=True
-    )
+    # 2. Setup logging
+    logging_config = context.appconfig.logging.model_dump(by_alias=True, exclude_none=True)
     setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
-    # --- PHASE 2: Load Environment Config ---
-    try:
-        result = handle_config(
-            env_config,
-            (PROJECT_DIR,),
-            None,
-            DEFAULT_ENV_CONFIG_FILENAME,
-            DEFAULT_ENV_CONFIG,
-        )
-        context.envconfigfiles, raw_envconfig, context.envconfig_from_defaults = cast(
-            tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
-        )
-    except tomllib.TOMLDecodeError as e:
-        files = (env_config,) if env_config else None
-        handle_validation_error(e, EnvConfig, files, verbose, ctx)
+    # 3. Load Environment Config
+    _load_env_config(ctx, env_config, verbose)
 
-    raw_envconfig = cast(dict[str, Any], raw_envconfig)
-
-    try:
-        context.envconfig = EnvConfig.from_dict(raw_envconfig)
-    except (ValueError, ValidationError) as e:
-        handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
-
+    # 4. Setup Concurrency Lock
     env_config_path = (context.envconfigfiles or [None])[0]
-
-    # --- CONCURRENCY CONTROL ---
     if env_config_path:
         ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
         try:
             ctx.obj.env_lock.__enter__()
             log.info("Acquired lock for environment config: %r", env_config_path.name)
+            ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
         except LockAcquisitionError as e:
             log.error(str(e))
             ctx.exit(1)
         except Exception as e:
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
-
-        ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
 
 
 # Add subcommands

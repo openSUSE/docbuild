@@ -1,10 +1,11 @@
 """Utilities for handling and formatting application errors."""
 
 
+import tomllib
+
 from pydantic import BaseModel, ValidationError
 from rich.console import Console
 from rich.text import Text
-import tomllib
 
 from ..constants import DEFAULT_ERROR_LIMIT
 
@@ -134,10 +135,9 @@ def format_toml_error(
         (":", "white")
     )
     con.print(header)
-    
+
     # tomllib error messages include the line and column info naturally
     con.print(f"    [red]{error}[/red]")
     con.print()
     con.print("    [dim]Please verify that the file is a valid TOML file.[/dim]")
     con.print("    [dim]Note: Booleans must be lowercase (true/false) in TOML.[/dim]")
-    
