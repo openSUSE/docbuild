@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="file:portal-config-schema.rnc" type="application/relax-ng-compact-syntax"?>
+<portal schemaversion="7.0">
+  <categories>
+    <category lang="en-us">
+      <language id="about" title="About" />
+      <language id="deployment" title="Deployment" />
+      <language id="inital-config" title="Initial configuration" />
+      <language id="update-upgrade" title="Update &amp; Upgrade" />
+      <language id="administration" title="Administration" />
+      <language id="container-virtualization"
+        title="Containers and virtualization" />
+      <language id="product-usage" title="Product usage" />
+      <language id="security-compliance" title="Security &amp; compliance" />
+      <language id="tuning-performance" title="Tuning &amp; performance" />
+      <language id="solution-doc" title="Solution documentation" />
+      <language id="additional-doc" title="Additional documentation" />
+      <language id="best-practices" title="Best practices" />
+    </category>
+    <!-- more categories for different languages -->
+  </categories>
+  <productfamilies>
+    <!-- Order is determined by the order of elements -->
+    <item id="linux">Linux</item>
+    <item id="cn">Cloud Native</item>
+    <item id="suse-edge">SUSE Edge</item>
+    <item id="suse-ai">SUSE AI</item>
+  </productfamilies>
+  <series>
+    <item id="pas">Products &amp; Solutions</item>
+    <item id="sbp">SUSE Best Practices</item>
+    <item id="trd">Technical References</item>
+    <item id="rn">Release Notes</item>
+  </series>
+
+  <product id="sles" family="linux" series="pas" rank="004">
+    <name>SUSE Linux Enterprise Server</name>
+    <acronym>SLES</acronym>
+    <maintainers>
+      <contact>taroth@suse.de</contact>
+      <contact>toms@suse.de</contact>
+      <contact>fs@suse.com</contact>
+    </maintainers>
+    <!-- optional categories -->
+    <!-- optional descriptions -->
+
+    <docset id="sles-16.0" path="16.0" lifecycle="supported">
+      <version>16.0</version>
+      <canonical>sles/16.0</canonical>
+      <resources>
+        <git remote="https://github.com/SUSE/doc-modular.git" />
+        <locale lang="en-us">
+          <branch>maintenance/SLE16.0</branch>
+          <deliverable category="about" id="sles-16.0-sle-comparison">
+            <dc file="DC-SLE-comparison">
+              <format html="1" pdf="1" />
+            </dc>
+          </deliverable>
+          <deliverable id="hello-world" type="prebuilt">
+            <prebuilt>
+              <title>Hello</title>
+              <subtitle>World</subtitle>
+              <url href="/foo/bar/" format="html"/>
+              <url href="/foo/bar/foo-bar.pdf" format="pdf"/>
+              <descriptions>
+                <desc lang="en-us">
+                  <p>The bla-bla</p>
+                </desc>
+              </descriptions>
+            </prebuilt>
+          </deliverable>
+        </locale>
+
+        <locale lang="de-de">
+          <branch>maintenance/SLE16.0</branch>
+          <subdir>l10n/de-de</subdir>
+          <deliverable type="ref">
+            <ref linkend="sles-16.0-sle-comparison" />
+          </deliverable>
+          <deliverable type="ref">
+            <ref linkend="hello-world">
+              <descriptions>
+                <desc lang="en-us">
+                  <p>A different description</p>
+                </desc>
+              </descriptions>
+            </ref>
+          </deliverable>
+        </locale>
+      </resources>
+    </docset>
+  </product>
+
+  <product id="cloudnative" family="linux" series="pas" rank="005">
+    <name>Cloud Native</name>
+    <acronym>rancher</acronym>
+    <maintainers>
+      <contact>fs@suse.com</contact>
+    </maintainers>
+
+    <categories>
+      <category lang="en-us">
+        <language id="rancher" title="Cloud Native Documentation" />
+      </category>
+    </categories>
+    <descriptions>
+      <desc lang="en-us">
+        <title>The enterprise, production-ready Kubernetes platform</title>
+        <p> SUSE's Cloud Native product family introduces additional value with
+          greater security assurances, extended lifecycles, access to focused
+          architectures and Kubernetes advisories. It will also offer options to
+          get production support for innovative Cloud Native projects. With
+          SUSE's Cloud Native, installation assets are hosted on a trusted
+          registry owned and managed by SUSE.</p>
+      </desc>
+    </descriptions>
+
+    <docset id="cn-continuous-delivery" path="continuous-delivery" lifecycle="supported">
+      <version>SUSE Rancher Prime: Continuous Delivery (Fleet)</version>
+      <descriptions treatment="append">
+        <desc lang="en-us">
+          <p>
+            SUSE Rancher Prime: Continuous Delivery is a set of Kubernetes custom
+            resource definitions (CRDs) and controllers that manage GitOps for a
+            single Kubernetes cluster or a large scale deployment of Kubernetes
+            clusters. It is a distributed initialization system that makes it
+            easy to customize applications and manage HA clusters from a single
+            point.
+          </p>
+        </desc>
+      </descriptions>
+
+      <resources>
+        <git remote="https://github.com/..." />
+        <locale lang="en-us">
+          <branch>main</branch>
+          <deliverable id="cn-continuous-delivery-overview" type="prebuilt">
+            <prebuilt>
+              <title>Overview</title>
+              <url href="/cloudnative/continuous-delivery/latest/en/index.html" format="html" />
+              <descriptions>
+                <desc lang="en-us">
+                  <p>The bla-bla</p>
+                </desc>
+              </descriptions>
+            </prebuilt>
+          </deliverable>
+        </locale>
+      </resources>
+      <internal>
+        <ref linkend="sles-16.0-sle-comparison" />
+      </internal>
+      <external>
+        <link>
+          <url href="https://github.com" format="html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <title>Collaboration</title>
+              <p>The bla-bla</p>
+            </desc>
+          </descriptions>
+        </link>
+      </external>
+    </docset>
+  </product>
+</portal>
