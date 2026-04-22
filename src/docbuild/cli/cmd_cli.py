@@ -91,11 +91,9 @@ def load_app_config(
 ) -> None:
     """Load and validate Application configuration.
 
-    Args:
-        ctx: The Click context object.
-        app_config: The path to the application config file provided via CLI.
-        max_workers: The max_workers value from CLI options.
-
+    :param ctx: The Click context object. The result will be added to ``ctx.obj.appconfig``.
+    :param app_config: The path to the application config file provided via CLI.
+    :param max_workers: The max_workers value from CLI options.
     """
     context = ctx.obj
     result = handle_config(
@@ -118,10 +116,8 @@ def load_app_config(
 def load_env_config(ctx: click.Context, env_config: Path) -> None:
     """Load and validate Environment configuration.
 
-    Args:
-        ctx: The Click context object.
-        env_config: The path to the environment config file provided via CLI.
-
+    :param ctx: The Click context object. The result will be added to ``ctx.obj.envconfig``.
+    :param env_config: The path to the environment config file provided via CLI.
     """
     context = ctx.obj
     result = handle_config(

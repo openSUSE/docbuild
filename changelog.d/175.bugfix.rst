@@ -1,0 +1,1 @@
+Improved error handling for configuration loading. Malformed TOML files now trigger a formatted diagnostic message with line and column details instead of a Python traceback.
