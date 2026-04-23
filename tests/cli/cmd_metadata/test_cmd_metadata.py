@@ -326,8 +326,10 @@ class TestProcessDeliverable:
     )
     @patch.object(metaprocess_pkg, "edit_json")
     @patch.object(metaprocess_pkg, "ManagedGitRepo")
+    @patch("docbuild.cli.cmd_metadata.metaprocess.log")
     async def test_process_deliverable_scenarios(
         self,
+        mock_log: Mock,
         mock_managed_git_repo: Mock,
         mock_edit_json: Mock,
         deliverable: Deliverable,
@@ -371,6 +373,7 @@ class TestProcessDeliverable:
         # Create a mock context for the new function signature
         mock_context = MagicMock(spec=DocBuildContext)
 
+        mock_context.envconfig = MagicMock()
         # Link the mock context to the actual temporary paths created by the test setup
         mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
         mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
@@ -382,14 +385,15 @@ class TestProcessDeliverable:
             deliverable=deliverable,
             dapstmpl=dapstmpl,
         )
-
         # Assert
         success, res_deliverable = result
         assert success is expected_result
         assert res_deliverable == deliverable
 
         if expected_log:
-            assert any(expected_log in record.message for record in caplog.records)
+            # Check the mock_log calls instead of caplog
+            all_messages = " ".join([str(c) for c in mock_log.mock_calls])
+            assert expected_log in all_messages, f"Expected '{expected_log}' in log calls, but got: {all_messages}"
 
 
 @pytest.mark.asyncio
@@ -841,8 +845,12 @@ class TestUpdateRepositories:
         # mock_clone_bare.assert_awaited_once_with(expected_path)
 
     @patch.object(metaprocess_pkg.ManagedGitRepo, "clone_bare", new_callable=AsyncMock)
+    @patch("docbuild.cli.cmd_metadata.metaprocess.log")
     async def test_update_repositories_failed(
-        self, mock_clone_bare: AsyncMock, tmp_path: Path, caplog
+        self,
+        mock_log: Mock,
+        mock_clone_bare: AsyncMock,
+        tmp_path: Path, caplog
     ):
         """Verify that update_repositories handles a git clone failure."""
         # Arrange
@@ -864,5 +872,7 @@ class TestUpdateRepositories:
 
         # Assert
         mock_clone_bare.assert_awaited_once()
-        assert "Failed to update" in caplog.text
-        # assert error_message in caplog.text
+
+        # Verify mock_log was called with "Failed to update"
+        all_messages = " ".join([str(c) for c in mock_log.mock_calls])
+        assert "Failed to update" in all_messages, f"Log calls were: {all_messages}"

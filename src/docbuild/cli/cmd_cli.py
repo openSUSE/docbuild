@@ -219,7 +219,13 @@ def cli(
     context = ctx.obj
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
-    # State tracking for centralized error handling
+    # --- THE TRUE LAZY FIX ---
+    # If the user is just asking for help, STOP HERE.
+    # Click will handle the help display for the subcommands automatically.
+    if ctx.resilient_parsing or "--help" in sys.argv or "-h" in sys.argv:
+        return
+
+    # 2. Only load config if we aren't displaying help
     current_model: type[BaseModel] = AppConfig
     current_files: Sequence[Path] | None = None
 
@@ -229,11 +235,12 @@ def cli(
         current_files = (app_config,) if app_config else None
         load_app_config(ctx, app_config, max_workers)
 
-        # Setup logging
-        logging_config = context.appconfig.logging.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
+        # Access logging safely
+        if context.appconfig and context.appconfig.logging:
+            logging_config = context.appconfig.logging.model_dump(
+                by_alias=True, exclude_none=True
+            )
+            setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig
