@@ -219,7 +219,7 @@ def cli(
     context = ctx.obj
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
-    # --- THE TRUE LAZY FIX ---
+    # --- LAZY FIX ---
     # If the user is just asking for help, STOP HERE.
     # Click will handle the help display for the subcommands automatically.
     if ctx.resilient_parsing or "--help" in sys.argv or "-h" in sys.argv:
