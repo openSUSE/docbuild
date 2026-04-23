@@ -1,0 +1,1541 @@
+# RELAX NG Schema for portal product configuration
+#
+# See also https://confluence.suse.com/x/0QB5e
+#
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+namespace db = "http://docbook.org/ns/docbook"
+namespace xi = "http://www.w3.org/2001/XInclude"
+namespace local = ""
+default namespace = ""
+
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+# BASICS
+[
+  db:refname [ "start" ]
+  db:refpurpose [ "The start elements of the schema" ]
+]
+start = (ds.portal
+  | ds.product
+  | ds.docset
+  | ds.categories
+  | ds.category.default
+  | ds.category.translation
+  | ds.descriptions
+)
+
+
+# XIncludes
+[
+   db:refname [ "xi:include" ]
+   db:refpurpose [ "An XInclude element pointing to an external XML or text resource" ]
+]
+div {
+   xi.any.other.attribute = attribute * - local:* { text }
+
+   xi.href.attr =
+    ## Target URL for the link (if the URL has no protocol prefix, the link is assumed to be local to the current host and a `/` will be added automatically)
+    [
+      db:refpurpose [ "Target URL for the link (if the URL has no protocol prefix, the link is assumed to be local to the current host and a / will be added automatically)" ]
+    ]
+    attribute href { xsd:anyURI { pattern = "[^#]+" } }
+
+   xi.parse.attr =
+    ## How to parse the included resource (default: xml)
+    [
+      a:defaultValue="xml"
+      db:refpurpose [ "How to parse the included resource (default: xml)" ]
+    ]
+    attribute parse { "xml" | "text" }?
+
+   xi.set-xml-id.attr =
+    ## Set the XML ID of the included content to the value of this attribute (optional)
+    [
+      db:refpurpose [ "Set the XML ID of the included content to the value of this attribute (optional)" ]
+    ]
+    attribute set-xml-id { text }?
+
+   xi.encoding.attr =
+    ## The encoding of the included resource (optional)
+    [
+      db:refpurpose [ "The encoding of the included resource (optional)" ]
+    ]
+    attribute encoding { text }?
+
+   xi.accept.attr =
+    ## The media type(s) that the included resource must match (optional)
+    [
+      db:refpurpose [ "The media type(s) that the included resource must match (optional)" ]
+    ]
+    attribute accept { text }?
+
+   xi.language.attr =
+    ## The language(s) that the included resource must match (optional)
+    [
+      db:refpurpose [ "The language(s) that the included resource must match (optional)" ]
+    ]
+    attribute accept-language { text }?
+
+   xi.include.attlist =
+      xi.href.attr?,
+      xi.parse.attr?,
+      # attribute xpointer { text }?,
+      # attribute fragid { text }?,
+      # xi.language.attr?,
+      # xi.accept.attr?,
+      xi.set-xml-id.attr?,
+      xi.encoding.attr?,
+      xi.any.other.attribute*
+
+   xi.include =
+      element xi:include {
+         xi.include.attlist,
+         empty
+         # We don't use fallbacks at the moment.
+         # xi.fallback?
+      }
+}
+
+
+# CONSTANTS
+
+# Whenever there is a backward-incompatible schema revision, bump this
+# version to the version of the software itself that this schema is shipped
+# with. If the schema remains backward-compatible and there are only minor
+# changes, leave the version as is.
+ds.schema.version =
+  ## Schema version
+  [
+    db:refpurpose [ "Schema version" ]
+  ]
+  "7.0"
+
+
+# TYPES
+[
+    db:refpurpose [ "Custom data types used in the schema"]
+]
+div {
+ds.type.class =
+  ## A space-separated list of HTML classes
+  [
+    db:refpurpose [ "A space-separated list of HTML classes" ]
+  ]
+  xsd:token { pattern = "[\-_\+\.a-zA-Z0-9]+( [\-_\+\.a-zA-Z0-9]+)*" }
+
+ds.type.email =
+  ## An email address
+  # http://www.dpawson.co.uk/relaxng/schema/datatypes/datatypes.html#d1034e184
+  # Works for both normal addresses and forms like
+  # "David Tolpin"@[Obscure Place]
+  # The expression above is slightly more allowing than required,
+  # but should be appropriate for the majority of cases.
+  [
+    db:refpurpose [ "An email address" ]
+
+  ]
+  xsd:token {
+    pattern="""([a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+(\.[a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+)*|"[^"\\]*")@([a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+(\.[a-zA-Z0-9!#$%&'*+\-/=?\^_`{|}~]+)*|\[[^\[\]\\]*\])"""
+  }
+
+ds.type.lang =
+  ## A language code
+  [
+    db:refpurpose [ "A language code (la-ng style)" ]
+  ]
+  xsd:language {
+    pattern="""[a-z]{2}(-[a-z]{2,8})?"""
+  }
+
+ds.type.gitremote =
+  ## URL to a Git remote ("http[s]" URLs only)
+  # (Let's not support SSH URLs for the moment since that needs authentication)
+  [
+    db:refpurpose [ "URL to a Git remote (https URLs only)" ]
+  ]
+  xsd:anyURI {
+    pattern="""https?://.*"""
+  }
+
+ds.type.dirname =
+  ## A relative directory name
+  [
+    db:refpurpose [ "A relative directory name" ]
+  ]
+  xsd:anyURI {
+    pattern="""[^/\\]*[^/\\:](/[^/\\]+)*"""
+  }
+
+ds.type.branch =
+  ## A Git branch name
+  [
+    db:refpurpose [ "A Git branch name" ]
+  ]
+  xsd:token {
+    pattern="""[^\s\\]+"""
+  }
+
+ds.type.dcfile =
+  ## A DC file name
+  [
+    db:refpurpose [ "A DC file name" ]
+  ]
+  xsd:string {
+    pattern="""DC-[\-_\.\+a-zA-Z0-9]+"""
+  }
+
+ds.type.alphanumeric =
+  ## An alphanumeric value + "-" + "_"
+  [
+    db:refpurpose [ "An alphanumeric value with dash and underscore" ]
+  ]
+  xsd:token {
+    pattern="""[\-_a-zA-Z0-9]+"""
+  }
+
+ds.type.id =
+  ## An unique ID (unlike xml:ids, this allows initial digits)
+  [
+    db:refpurpose [ "An ID (unlike xml:ids, this allows initial digits)" ]
+  ]
+  xsd:token {
+    pattern="""[\-_\.\+a-zA-Z0-9]+"""
+  }
+
+ds.type.idmulti =
+  ## A space-separated list of IDs
+  [
+    db:refpurpose [ "A space-separated list of IDs" ]
+  ]
+  xsd:token {
+    # TODO: Change that to xsd:IDREF or xsd:IDREFS?
+    pattern="""([\-_\.\+a-zA-Z0-9]+ )*[\-_\.\+a-zA-Z0-9]+"""
+  }
+
+
+
+
+# A basic title template that allows strings like "title subtitle product/docset",
+# in exactly that order, but everything except the title can be
+# left away. product and docset will in many cases just be the same, and thus
+# are set up to exclude each other.
+# There is no guarantee that the title string will be formatted
+# exactly this way or in this order, just that, if available, all of the
+# information requested will come out.
+ds.type.titleformat.build =
+  ## Elements of titles displayed on navigational pages for documents built within the portal
+  "title" | "title docset" | "title product" | "title subtitle" | "title subtitle product" | "title subtitle docset"
+# For external links, some metadata is never available: product name and
+# subtitle cannot be generated in any way currently (but you're free to
+# create whatever title you want and that should make up for it).
+ds.type.titleformat.link =
+  ## Elements of titles displayed on navigational pages for externally-hosted documents
+  "title" | "title docset"
+
+}
+
+# TAG/ATTRIBUTE SETS
+
+div
+{
+# FIXME: add img? (It is a bit unclear whether our script would need to take
+# care of copying stuff then.)
+ds.htmlblock =
+  ## HTML block elements
+  ds.p
+  | ds.div
+  | ds.pre
+  | ds.ul
+  | ds.ol
+  | ds.dl
+  | ds.h1
+  | ds.h2
+  | ds.h3
+  | ds.h4
+  | ds.h5
+  | ds.h6
+}
+
+div
+{
+ds.htmlinline =
+  ## HTML inline elements
+    ds.a
+  | ds.br
+  | ds.cite
+  | ds.code
+  | ds.em
+  | ds.hr
+  | ds.q
+  | ds.s
+  | ds.span
+  | ds.strong
+  | ds.sub
+  | ds.sup
+  | ds.u
+}
+
+div
+{
+ds.htmlattr =
+  ds.id.attr?,
+  ds.class.attr?
+}
+
+div
+{
+ds.htmlinlinecontent =
+  ds.htmlattr,
+  (ds.htmlinline |
+  text)*
+}
+
+#
+# Common attributes
+#
+ds.xmlbase.attr =
+  ## Specifies the base URI of the element and its descendants
+  [
+     db:refpurpose [ "Specifies the base URI of the element and its descendants" ]
+  ]
+  attribute xml:base { xsd:anyURI }
+
+ds.id.attr =
+  ## ID attribute for identifying an object
+  [
+    db:refpurpose [ "ID attribute for identifying an object" ]
+  ]
+  attribute id { xsd:ID }
+
+ds.path.attr =
+  ## Relative path to a file or directory, with no leading or trailing slash
+  [
+    db:refpurpose [ "Relative path to a file or directory, with no leading or trailing slash" ]
+  ]
+  attribute path { ds.type.dirname }
+
+ds.class.attr =
+  ## Class attribute (HTML)
+  [
+    db:refpurpose [ "Class attribute (HTML)" ]
+  ]
+  attribute class { ds.type.class }
+
+ds.gated.attr =
+  ## Is the content behind a paywall? (default "false")
+  [
+    a:defaultValue = "false"
+    db:refpurpose [ "Is the content behind a paywall?" ]
+  ]
+  attribute gated { xsd:boolean }
+
+ds.lang.attr =
+  ## Language code (`la-ng` style) of this description
+  [
+    db:refpurpose [ "Language code (la-ng style) of this description" ]
+  ]
+  attribute lang { ds.type.lang }
+
+ds.lang.en-us.attr =
+    ## Language code strictly locked to US English
+    [
+      db:refpurpose [ "Language code strictly locked to US English" ]
+    ]
+    attribute lang { "en-us" }
+
+ds.title.attr =
+    ## Localized title of description
+    [
+      db:refpurpose [ "Localized title of description" ]
+    ]
+    attribute title { text }
+
+ds.titleformat.attr =
+  ## How to display the document title on the product version navigational page, a combination of the following values:
+  ## * `title`: title as extracted from the document
+  ## * `subtitle`: subtitle as extracted from the document (can be empty)
+  ## * `docset`: product and version number as classified in the portal product configuration
+  ## * `product`: product and version number as extracted from the document (can be empty)
+  ## Note the following:
+  ## * `title` is mandatory
+  ## * `docset` and `product` are mutually exclusive.
+  ## * the order of values must be `title`, `subtitle`, `docset`/`product`
+  ## Default: `title subtitle`
+  [
+    db:refpurpose [ "How to display the document title on the product version navigational page, a combination of the following values: title, subtitle, docset, product. Note the following: title is mandatory, docset and product are mutually exclusive, and the order of values must be title, subtitle, docset/product. Default: title subtitle" ]
+  ]
+  attribute titleformat { ds.type.titleformat.build }
+
+
+ds.category.attr =
+  ## What category or categories to display this document under on the product version navigational page
+  [
+    db:refpurpose [ "What category or categories to display this document under on the product version navigational page" ]
+  ]
+  attribute category { ds.type.idmulti }
+
+ds.includes-productname.attr =
+  ## * <version/> is a normal version (number) that is normally combined with a
+  ##   product name and shown in all situations. When @includes-productname=true is
+  ##   set for <version/>, we will always only display the <version/> text rather
+  ##   than displaying the product name alongside it.
+  ## * <listingversion/> is also a version (number), also normally combined with a
+  ##   product name. However, it is only ever shown on the home page's selection
+  ##   boxes, but not used within internal references or for product pages.
+  [
+    a:defaultValue = "false"
+    db:refpurpose [ "Whether the version number name includes the product name (default: false)" ]
+  ]
+  attribute includes-productname { xsd:boolean }
+
+ds.remarks.attr =
+  ## Enable DocBook remarks in this document (`daps ... --remarks`;
+  ## the default value varies depending on the site configuration)
+  [
+    db:refpurpose [ "Enable DocBook remarks in this document (daps ... --remarks; the default value varies depending on the site configuration)" ]
+  ]
+  attribute remarks { xsd:boolean }
+
+ds.draft.attr =
+  ## Enable DocBook draft watermark in this document (`daps ... --draft`;
+  ## the default value varies depending on the site configuration and product lifecycle)
+  [
+    db:refpurpose [ "Enable DocBook draft watermark in this document (daps ... --draft; the default value varies depending on the site configuration and product lifecycle)" ]
+  ]
+  attribute draft { xsd:boolean }
+
+ds.meta.attr =
+  ## Enable DocBook meta information in this document (`daps ... --meta`;
+  ## the default value varies depending on the site configuration)
+  [
+    db:refpurpose [ "Enable DocBook meta information in this document (daps ... --meta; the default value varies depending on the site configuration)" ]
+  ]
+  # TODO: Is this still needed?
+  attribute meta { xsd:boolean }
+
+ds.href.attr =
+  ## Target URL for the link (if the URL has no protocol prefix, the link is assumed
+  ## to be local to the current host and a `/` will be added automatically)
+  [
+    db:refpurpose [ "Target URL for the link" ]
+  ]
+  attribute href { xsd:anyURI }
+
+
+# --- ROOT ---
+[
+  db:refname [ "portal" ]
+  db:refpurpose [ "The root element of all portal configuration" ]
+]
+div {
+  ds.portal =
+    ## The root element of all portal configuration
+    element portal {
+      ds.schemaversion.attr,
+      ds.spotlight?,
+      ds.categories,
+      ds.productfamilies,
+      db.series,
+      (ds.product+ & xi.include*)
+    }
+}
+
+
+[
+  db:refname [ "spotlight" ]
+  db:refpurpose [ "Highlights a specific product, docset, or deliverable on the entry page." ]
+]
+div {
+  ds.spotlight =
+    ## Highlights a specific product, docset, or deliverable on the entry page.
+    element spotlight {
+      ds.ref.linkend.attr,
+      (text | empty)
+    }
+}
+
+[
+  db:refname [ "productfamilies"]
+  db:refpurpose [ "Product families definition" ]
+]
+div {
+  ds.productfamilies =
+    ## Product families definition
+    element productfamilies {
+      ds.xmlbase.attr?,
+      db.item+
+    }
+}
+
+[
+  db:refname [ "series" ]
+  db:refpurpose [ "Series definition" ]
+]
+div {
+  db.series =
+    ## Series definition
+    element series {
+      ds.xmlbase.attr?,
+      db.item+
+    }
+}
+
+[
+  db:refname [ "item" ]
+  db:refpurpose [ "An item of a product family or a series" ]
+]
+div {
+  db.item =
+    ## An item of a product family or a series
+    element item {
+      # ds.xmlbase.attr?,
+      ds.id.attr,
+      text
+    }
+}
+
+[
+  db:refname [ "product"]
+  db:refpurpose [ "Product definition" ]
+]
+div {
+  ds.schemaversion.attr =
+    ## Version of the schema, verifies that portal schema major version and version of product configuration match
+    [
+      db:refpurpose [ "Version of the schema, verifies that portal schema major version and version of product configuration match" ]
+    ]
+    # TODO: Simplify to version?
+    attribute schemaversion { ds.schema.version }
+
+  ds.enabled.attr =
+    ## Whether to enable this configuration file (`true` by default)
+    [
+      a:defaultValue = "true"
+      db:refpurpose [ "Whether to enable this configuration file (true by default)" ]
+    ]
+    attribute enabled { xsd:boolean }
+
+  ds.site-section.attr =
+    ## Site section this configuration belongs to
+    [
+      db:refpurpose [ "Site section this configuration belongs to" ]
+    ]
+    # TODO: Do we still need this attribute?
+    # TODO: Is it similar to a (product) family now?
+    attribute site-section { ds.type.alphanumeric }?
+
+  ds.series.attr =
+    ## Where a product belongs to which tab (SBP, TRD, Products & Solution)
+    [
+      db:refpurpose [ "Where a product belongs to which tab (SBP, TRD, Products & Solution)" ]
+    ]
+    attribute series { xsd:IDREF  } # ds.type.alphanumeric TODO: IDREF?
+
+  ds.family.attr =
+    ## Product family this product belongs to
+    [
+      db:refpurpose [ "Product family this product belongs to" ]
+    ]
+    attribute family { xsd:IDREF }
+
+  ds.rank.attr =
+    ## Rank of this product in the homepage listing (lower ranks are listed first; products with the same rank are sorted alphabetically by product name)
+    [
+      db:refpurpose [ "Rank of this product in the homepage listing (lower ranks are listed first; products with the same rank are sorted alphabetically by product name)" ]
+    ]
+    attribute rank { xsd:nonNegativeInteger }
+
+  ds.docset-sort.attr =
+    ## Whether to sort docsets of this product Z-A9-0 (`descending`, default) or 0-9A-Z (`ascending`)
+    [
+      a:defaultValue = "descending"
+      db:refpurpose [ "Whether to sort docsets of this product" ]
+    ]
+    attribute docset-sort {
+       ## Sort 0-9A-Z
+       "ascending"
+       |
+       ## Sort Z-A9-0
+       "descending" }?
+
+ds.product =
+  ## Product (or top-level category, root element)
+  element product {
+    # This ID value can only be checked when we take all of the productconfig
+    # files together (i.e. after we have run stitch.sh). In any case, it does
+    # not make sense to use xsd:id here because there can only ever be one
+    # of these ID per productconfig file.
+    (
+      ds.id.attr &
+      ds.xmlbase.attr? &
+      ds.path.attr? &
+      ds.schemaversion.attr? &
+      ds.enabled.attr? &
+      ds.site-section.attr? & # TODO: Do we still need this attribute?
+      ds.series.attr &
+      ds.family.attr &
+      ds.rank.attr? &
+      ds.docset-sort.attr? &
+      ds.gated.attr?
+    ),
+    ds.name,
+    ds.sortname?,
+    ds.acronym?,
+    ds.maintainers,
+    # TODO: Adjust the content model?
+    (ds.categories | xi.include)?,
+    (ds.descriptions | xi.include)?,
+    (ds.docset | xi.include)+
+  }
+}
+
+
+# PRODUCT DESCRIPTION
+[
+  db:refname [ "name" ]
+  db:refpurpose [ "Name of product or top-level category" ]
+]
+div {
+ds.name =
+  ## Name of product or top-level category
+  element name {
+    text
+  }
+}
+
+
+[
+  db:refname [ "sortname" ]
+  db:refpurpose [ "Sort name of product or top-level category" ]
+]
+div {
+ds.sortname =
+  ## Sort name of product or top-level category
+  element sortname {
+    text
+  }
+}
+
+
+[
+  db:refname [ "acronym" ]
+  db:refpurpose [ "Acronym of name of product or top-level category" ]
+]
+div {
+ds.acronym =
+  ## Acronym of name of product or top-level category
+  element acronym {
+    text
+  }
+}
+
+
+[
+  db:refname [ "maintainers" ]
+  db:refpurpose [ "Collection of email addresses to send mail about build failures to" ]
+]
+div {
+ds.maintainers =
+  ## Collection of email addresses to send mail about build failures to
+  element maintainers {
+    ds.contact+
+  }
+}
+
+
+[
+  db:refname [ "contact" ]
+  db:refpurpose [ "Email address to send mail about build failures to" ]
+]
+div {
+ds.contact =
+  ## Email address to send mail about build failures to
+  element contact {
+    ds.type.email
+  }
+}
+
+
+[
+  db:refname [ "descriptions" ]
+  db:refpurpose [ "Wrapper of desc element" ]
+]
+div {
+  ds.treatment.attr =
+    ## How to treat version-specific product descriptions
+    [
+      a:defaultValue = "append"
+      db:refpurpose [ "How to treat version-specific product descriptions" ]
+    ]
+    attribute treatment {
+      ## Append this description to the original product description
+      'append' |
+      ## Prepend this description to the original product description
+      'prepend' |
+      ## Replace the original product description with this description
+      'replace'
+    }
+
+  ds.descriptions =
+    ## Wrapper of desc element
+    element descriptions {
+      ds.xmlbase.attr?, ds.treatment.attr?,
+      ds.desc_default,
+      ds.desc_translation*
+    }
+}
+
+[
+  db:refname [ "desc" ]
+  db:refpurpose [ "Description of product or top-level category" ]
+]
+div {
+ds.desc_default =
+  ## Description of product or top-level category (default language)
+  element desc {
+    ds.xmlbase.attr?,
+    ds.lang.en-us.attr,
+    ds.title?,
+    ds.htmlblock*
+  }
+}
+
+
+[
+  db:refname [ "desc" ]
+  db:refpurpose [ "Description of product or top-level category (dependent languages)" ]
+]
+div {
+ds.desc_translation =
+  ## Description of product or top-level category (dependent languages)
+  element desc {
+    ## Language code (`la-ng` style) of this description
+    ds.xmlbase.attr?,
+    ds.lang.attr,
+    ds.title?,
+    ds.htmlblock*
+  }
+}
+
+
+ds.title_text =
+  xsd:string { pattern = "[^\n]{1,80}" }
+
+
+[
+  db:refname [ "shortdesc" ]
+  db:refpurpose [ "A short description of the product"]
+]
+div {
+ds.title =
+  ## A short description of the product
+  element title {
+    ds.title_text
+  }
+}
+
+[
+  db:refname [ "subtitle" ]
+  db:refpurpose [ "A short subtitle of the product"]
+]
+div {
+ds.subtitle =
+  ## A short subtitle of the product
+  element subtitle {
+    text
+  }
+}
+
+[
+  db:refname [ "categories" ]
+  db:refpurpose [ "Wrapper for all category elements" ]
+]
+div {
+  ds.categories =
+    ## Wrapper for all category elements
+    element categories {
+      ds.xmlbase.attr?,
+      (
+        (ds.category.default, ds.category.translation*)
+        | xi.include+
+      )
+    }
+}
+
+
+[
+  db:refname [ "category" ]
+  db:refpurpose [ "Definition of category (default language)" ]
+]
+div {
+  # UNUSED
+  # ds.categoryid.attr =
+  #  ## Category ID, must be unique across the configuration for a single product
+  #  [
+  #    db:refpurpose [ "Category ID, must be unique across the configuration for a single product" ]
+  #  ]
+  #  attribute categoryid { ds.type.id }
+
+  ds.category.default =
+    ## Definition of category (default language)
+    element category {
+      ds.xmlbase.attr?,
+      ds.lang.en-us.attr,
+      ds.category_language+
+    }
+}
+
+
+[
+  db:refname [ "category" ]
+  db:refpurpose [ "Definition of category (dependent languages)" ]
+]
+div {
+
+  ds.category.translation =
+    ## Definition of category (dependent languages)
+    element category {
+      ds.xmlbase.attr?,
+      ds.lang.attr,
+      ds.category_language+
+    }
+}
+
+
+[
+  db:refname [ "language" ]
+  db:refpurpose [ "Metadata for category displayed on product detail navigational page" ]
+]
+div {
+ds.category_language =
+  ## Metadata for category displayed on product detail navigational page
+  element language {
+    ds.id.attr,
+    ds.title.attr,
+    ds.htmlblock*
+  }
+}
+
+
+
+# DOCSETS
+[
+  db:refname [ "docset" ]
+  db:refpurpose [ "Product version definition" ]
+]
+div {
+  ds.lifecycle.attr =
+    ## Lifecycle value of this product version
+    [
+      a:defaultValue = "supported"
+      db:refpurpose [ "Lifecycle value of this product version" ]
+    ]
+    attribute lifecycle {
+       ## Product versions can only be built for instances defined as internal in the INI configuration
+       "unpublished" |
+       ## Product versions can be built without restriction but contain a draft watermark
+       "beta" |
+       ## Product versions can be built without restriction
+       "supported" |
+       ## Product versions can be built without restriction but are only published as Zip archives
+       "unsupported"
+    }
+
+  ds.navigation.attr =
+    ## Whether to build a navigational page for this product version
+    [
+      a:defaultValue = "linked"
+      db:refpurpose [ "Whether to build a navigational page for this product version: linked for navigational pages linked from the homepage (default), hidden for navigational pages not linked from the homepage, disabled to disable creation of a navigational page" ]
+    ]
+    attribute navigation {
+      ## For navigational pages linked from the homepage (default)
+      "linked" |
+      ## For navigational pages not linked from the homepage
+      "hidden" |
+      ## To disable creation of a navigational page
+      "disabled" }
+
+ds.docset =
+  ## Product version or second-level category
+  element docset {
+    (
+    ds.xmlbase.attr? &
+    ds.path.attr? &
+    ds.id.attr &
+    ds.lifecycle.attr &
+    ds.navigation.attr? &
+    ds.gated.attr?
+    ),
+    #
+    # To allow for name changes between versions, as in the example of SUSE
+    # Cloud -> SUSE OpenStack Cloud: optional ds.name here
+    ds.name?,
+    ds.sortname?,
+    ds.acronym?,
+    ds.version,
+    ds.canonical?,
+    ds.listingversion?,
+    ds.descriptions?,
+    (
+      (ds.resources,
+       ds.internal?,
+       ds.external?)
+       |
+      (ds.internal,
+       ds.external?) |
+      ds.external
+    )
+  }
+}
+
+
+[
+  db:refname [ "version" ]
+  db:refpurpose [ "User-visible version number (or name of second-level category)" ]
+]
+div {
+# * <version/> is a normal version (number) that is normally combined with a
+#   product name and shown in all situations. When @includes-productname=true is
+#   set for <version/>, we will always only display the <version/> text rather
+#   than displaying the product name alongside it.
+# * <listingversion/> is also a version (number), also normally combined with a
+#   product name. However, it is only ever shown on the home page's selection
+#   boxes, but not used within internal references or for product pages.
+#
+# FIXME: version v/ listingversion v/ @includes-productname is a bit of a mess,
+# clean up eventually when use cases are clearer
+
+ds.version =
+  ## User-visible version number (or name of second-level category)
+  element version {
+    ## Whether the version number name includes the product name (default: `false`)
+    ds.includes-productname.attr?,
+    text
+  }
+}
+
+
+[
+  db:refname [ "canonical" ]
+  db:refpurpose [ "For canonical links; from previous, obsolete SPs to the latest" ]
+]
+div {
+ds.canonical =
+  ## For canonical links; from previous, obsolete SPs to the latest
+  element canonical {
+    xsd:anyURI
+  }
+}
+
+
+[
+  db:refname [ "listingversion" ]
+  db:refpurpose [ "Version number (or name of second-level category) displayed in homepage listing" ]
+]
+div {
+  ds.listingversion =
+  ## User-visible version number (or name of second-level category) displayed in homepage listing
+  element listingversion {
+    ## Whether the version number name includes the product name (default: `false`)
+    ds.includes-productname.attr?,
+    text
+  }
+}
+
+
+[
+  db:refname [ "resources" ]
+  db:refpurpose [ "Container for definitions of documents to build (formerly builddocs)" ]
+]
+div {
+ds.resources =
+  ## Container for definitions of documents to build
+  element resources {
+    ds.git,
+    ds.locale_default,
+    ds.locale_translation*
+  }
+}
+
+
+[
+  db:refname [ "git" ]
+  db:refpurpose [ "Definition of Git remote URL to use for documentation of a specific product version (or second-level category)" ]
+]
+div {
+ds.git =
+  ## Definition of Git remote URL to use for documentation of a specific product version (or second-level category)
+  element git {
+    ## Git remote URL
+    attribute remote { ds.type.gitremote },
+    empty
+  }
+}
+
+
+# About @translation-type:
+# * "list" creates a list of documents that will be built for the
+#   translation in question. This is advantageous in the common case that only
+#   a small subset of documents are translated into a particular language.
+# * "full" means there is a full translation in this language for
+#   this docset
+[
+  db:refname [ "locale (en-us)" ]
+  db:refpurpose [ "Set of deliverables to build for the default language" ]
+]
+div {
+ds.locale_default =
+  ## Set of deliverables to build for the default language
+  element locale {
+    ds.lang.en-us.attr,
+    ds.branch,
+    ds.subdir?,
+    (
+     ds.deliverable_en_us_dc
+     | ds.deliverable_subdeliverable
+     | ds.deliverable_en_us_prebuilt
+    )+
+  }
+}
+
+
+[
+  db:refname [ "locale (translations)" ]
+  db:refpurpose [ "Set of deliverables to build for the default language" ]
+]
+div {
+ds.locale_translation =
+  ## Set of documents to build (default language, must list full set of documents available for product version)
+  element locale {
+    ds.lang.attr,
+    ds.branch,
+    ds.subdir?,
+
+    ds.deliverable_trans+
+  }
+}
+
+
+div {
+  ds.deliverable.trans.type.attr =
+    [ a:defaultValue = "ref" ]
+    attribute type { "ref" }
+
+  ds.deliverable_trans =
+    ## A document to build for a translation, identified by the DC file of the default language deliverable
+    element deliverable {
+      (
+        ds.gated.attr?
+        & ds.deliverable.trans.type.attr
+      ),
+      #
+      # TODO: Do we want only have references in translations?
+      # The <ref> content model allows also descriptions.
+      ds.ref # | ds.deliverable.prebuilt
+    }
+
+}
+
+
+[
+  db:refname [ "branch" ]
+  db:refpurpose [ "Branch of the source Git repository" ]
+]
+div {
+ds.branch =
+  ## Branch of the source Git repository
+  element branch {
+    ds.type.branch
+  }
+}
+
+
+[
+  db:refname [ "subdir" ]
+  db:refpurpose [ "Subdirectory within the source Git repository"]
+]
+div {
+ds.subdir =
+  ## Subdirectory within the source Git repository
+  element subdir {
+    ds.type.dirname
+  }
+}
+
+
+[
+  db:refname [ "partners" ]
+  db:refpurpose [ "A list of partners (usually for TRDs)" ]
+]
+div {
+ds.partners =
+  ## A list of partners (usually for TRDs)
+  element partners {
+    ## An individual partner
+    element partner { text }+
+  }
+}
+
+
+[
+  db:refname [ "deliverable (dc)" ]
+  db:refpurpose [ "Definition of an individual document built by DAPS (default language)" ]
+]
+div {
+  ds.deliverable.dc.type.attr =
+    [ a:defaultValue = "dc" ]
+    attribute type { "dc" }
+
+ds.deliverable_en_us_dc =
+  ## An individual document built by DAPS (default language)
+  element deliverable {
+    (
+      ds.deliverable.dc.type.attr?
+      & ds.remarks.attr?
+      & ds.draft.attr?
+      # & ds.meta.attr?
+      & ds.category.attr?
+      & ds.titleformat.attr?
+      & ds.gated.attr?
+      & ds.id.attr
+    ),
+    #
+    ds.dc
+    #ds.git?,
+    #ds.subdir?,
+    #ds.format,
+    #ds.partners*
+  }
+}
+
+
+[
+  db:refname [ "deliverable (prebuilt)" ]
+  db:refpurpose [ "Definition of an individual prebuilt document (default language)" ]
+]
+div {
+ds.deliverable.prebuilt.type.attr =
+    [ a:defaultValue = "prebuilt" ]
+    attribute type { "prebuilt" }
+
+ds.deliverable_en_us_prebuilt =
+  ##
+  element deliverable {
+    (
+      ds.deliverable.prebuilt.type.attr?
+      & ds.category.attr?
+      & ds.titleformat.attr?
+      & ds.gated.attr?
+      & ds.id.attr
+    ),
+    #
+    ds.deliverable.prebuilt
+  }
+}
+
+
+
+[
+  db:refname [ "prebuilt" ]
+  db:refpurpose [ "Pre-built content definition" ]
+]
+div {
+  ds.deliverable.prebuilt =
+    ## Pre-built content definition
+    element prebuilt {
+      ds.title,
+      ds.subtitle?,
+      ds.url+,
+      ds.descriptions
+      # ds.metadata  # TODO
+    }
+}
+
+
+[
+  db:refname [ "metadata" ]
+  db:refpurpose [ "" ]
+]
+div {
+ds.metadata =
+  ##
+  element metadata {
+    empty  # TODO
+  }
+}
+
+
+[
+  db:refname [ "deliverable" ]
+  db:refpurpose [ "Definition of an individual document that is a DocBook set/book that includes articles/book (default language)" ]
+]
+div {
+ds.deliverable_subdeliverable =
+  ## An individual document that is a DocBook set/book that includes articles/book (default language)
+  element deliverable {
+    ds.remarks.attr?,
+    ds.draft.attr?,
+    ds.meta.attr?,
+    ds.gated.attr?,
+    ds.subdir?,
+    ds.dc,
+    ds.format,
+    ds.subdeliverable+
+  }
+}
+
+
+[
+  db:refname [ "dc" ]
+  db:refpurpose [ "Wrapper to structure DC file reference" ]
+]
+div {
+  ds.dc.file.attr =
+    ##
+    attribute file {
+      ds.type.dcfile
+    }
+
+ds.dc =
+  ## Wrapper to structure DC file reference
+  element dc {
+    ds.dc.file.attr,
+    ds.git?,
+    ds.subdir?,
+    ds.format,
+    ds.partners*
+  }
+}
+
+
+[
+  db:refname [ "format" ]
+  db:refpurpose [ "Enabling/disabling document formats to build" ]
+]
+div {
+# Unfortunately, this way, I can't force people to choose at least one format
+# they actually want to build.
+ds.format =
+  ## Allows enabling/disabling document formats, at least one format must be enabled
+  element format {
+    ## Whether to enable multi-page HTML builds
+    attribute html { xsd:boolean }?,
+    ## Whether to enable single-page HTML builds
+    attribute single-html { xsd:boolean }?,
+    ## Whether to enable PDF builds
+    attribute pdf { xsd:boolean }?,
+    ## Whether to enable EPUB builds
+    attribute epub { xsd:boolean }?
+  }
+}
+
+
+[
+  db:refname [ "subdeliverable" ]
+  db:refpurpose [ "Individual document within a DocBook set as identified by their XML ID (default language)" ]
+]
+div {
+ds.subdeliverable =
+  ## Individual document within a DocBook set as identified by their XML ID (default language)
+  element subdeliverable {
+    ds.category.attr?,
+    ds.titleformat.attr?,
+    ds.type.id
+  }
+}
+
+
+[
+  db:refname [ "internal" ]
+  db:refpurpose [ "Wrapper for internal references" ]
+]
+div {
+ds.internal =
+  ## Wrapper for internal references
+  element internal {
+    ds.ref+
+  }
+}
+
+
+[
+  db:refname [ "ref" ]
+  db:refpurpose [ "Reference to a document or navigational page" ]
+]
+div {
+  ds.ref.linkend.attr =
+    ## Link ID of referenced external link
+    [
+      db:refpurpose [ "Link ID of referenced external link" ]
+    ]
+    attribute linkend { xsd:IDREF }
+
+  ds.ref =
+    ## Internal reference
+    element ref {
+      (
+        ds.ref.linkend.attr &
+        ds.category.attr? &
+        ds.titleformat.attr?
+      ),
+
+      ds.descriptions?
+    }
+}
+
+
+[
+  db:refname [ "external" ]
+  db:refpurpose [ "Container for references to externally-hosted documents" ]
+]
+div {
+ds.external =
+  ## Container for references to externally-hosted documents
+  element external {
+    ds.link*
+  }
+}
+
+
+[
+  db:refname [ "link" ]
+  db:refpurpose [ "Collection of URLs for a single externally-hosted document in different languages and formats" ]
+]
+div {
+ds.link =
+  ## Collection of URLs for a single externally-hosted document in different languages and formats
+  element link {
+    # attribute linkid { ds.type.id }?,
+    ds.category.attr?,
+    ## How to display the document title on the product version navigational page, a combination of the following values:
+    ## * `title`: title as extracted from the document
+    ## * `docset`: product and version number as classified in the portal product configuration
+    ## Note the following:
+    ## * `title` is mandatory
+    ## * the order of values must be `title`, `docset`
+    ## Default: `title`
+    attribute titleformat { ds.type.titleformat.link }?,
+    ds.gated.attr?,
+    ds.url+,
+    ds.descriptions
+  }
+}
+
+
+[
+  db:refname [ "url" ]
+  db:refpurpose [ "URL of externally-hosted document"]
+]
+div {
+ds.url =
+  ## URL of externally-hosted document
+  element url {
+    ds.href.attr,
+    ## Target file format of the link for display in the UI
+    attribute format {
+      "html"
+      | "single-html"
+      | "pdf"
+      | "epub"
+      | "zip"
+      | "tar"
+      | "other"
+      },
+    empty
+  }
+}
+
+# SUPPORTED HTML SUBSET
+
+ds.p =
+  ## Paragraph (HTML, block)
+  element p {
+    ds.htmlinlinecontent
+  }
+
+ds.div =
+  ## Generic block element (HTML, block)
+  element div {
+    ds.htmlattr,
+    (
+      ds.htmlinline |
+      ds.htmlblock |
+      text
+    )*
+  }
+
+ds.pre =
+  ## Preformatted text (HTML, block)
+  element pre {
+    ds.htmlattr,
+    text*
+  }
+
+ds.ul =
+  ## Unordered list (HTML, block)
+  element ul {
+    ds.htmlattr,
+    ds.li+
+  }
+
+ds.ol =
+  ## Ordered (itemized) list (HTML, block)
+  element ol {
+    ds.htmlattr,
+    ds.li+
+  }
+
+ds.dl =
+  ## Definition list (HTML, block)
+  element dl {
+    ds.htmlattr,
+    (ds.dt, ds.dd)+
+  }
+
+ds.dt =
+  ## Term in definition list (HTML, block)
+  element dt {
+    ds.htmlattr,
+    ds.htmlblock*
+  }
+
+ds.dd =
+  ## Definition in definition list (HTML, block)
+  element dd {
+    ds.htmlattr,
+    ds.htmlblock*
+  }
+
+ds.li =
+  ## List item in unordered or ordered list (HTML, block)
+  element li {
+    ds.htmlattr,
+    ds.htmlblock*
+  }
+
+ds.h1 =
+  ## Heading of level 1 (HTML, block)
+  element h1 {
+    ds.htmlinlinecontent
+  }
+
+ds.h2 =
+  ## Heading of level 2 (HTML, block)
+  element h2 {
+    ds.htmlinlinecontent
+  }
+
+ds.h3 =
+  ## Heading of level 3 (HTML, block)
+  element h3 {
+    ds.htmlinlinecontent
+  }
+
+ds.h4 =
+  ## Heading of level 4 (HTML, block)
+  element h4 {
+    ds.htmlinlinecontent
+  }
+
+ds.h5 =
+  ## Heading of level 5 (HTML, block)
+  element h5 {
+    ds.htmlinlinecontent
+  }
+
+ds.h6 =
+  ## Heading of level 6 (HTML, block)
+  element h6 {
+    ds.htmlinlinecontent
+  }
+
+
+ds.sup =
+  ## Superscript text (HTML, inline)
+  element sup {
+    ds.htmlinlinecontent
+  }
+
+ds.sub =
+  ## Subscript text (HTML, inline)
+  element sub {
+    ds.htmlinlinecontent
+  }
+
+ds.s =
+  ## Struck text (HTML, inline)
+  element s {
+    ds.htmlinlinecontent
+  }
+
+ds.u =
+  ## Underlined text (HTML, inline)
+  element u {
+    ds.htmlinlinecontent
+  }
+
+ds.q =
+  ## Short quote (HTML, inline)
+  element q {
+    ds.htmlinlinecontent
+  }
+
+ds.em =
+  ## Emphasized text, displayed in italics (HTML, inline)
+  element em {
+    ds.htmlinlinecontent
+  }
+
+ds.a =
+  ## Web link (HTML, inline)
+  element a {
+    ds.href.attr,
+    ## Whether to open the link in a new tab/window (`_blank`)
+    attribute target { "_blank" }?,
+    ## Attributes of the link:
+    ## * `nofollow`: Ask search engine spiders not to follow the link
+    ## * `prev`: Link target is the previous in a series of documents
+    ## * `next`: Link target is the next in a series of documents
+    ## * `license`: Link target represents a license of the current page
+    ## * `alternate`: Link target represents an alternate variant of the current page (such as a different language or format)
+    attribute rel { "nofollow" | "prev" | "next" | "license" | "alternate" }?,
+    ds.htmlinlinecontent
+  }
+
+ds.strong =
+  ## Strongly emphasized text, displayed in boldface (HTML, inline)
+  element strong {
+    ds.htmlinlinecontent
+  }
+
+ds.code =
+  ## Code/command (HTML, inline)
+  element code {
+    ds.htmlinlinecontent
+  }
+
+ds.cite =
+  ## Citation (HTML, inline)
+  element cite {
+    ds.htmlinlinecontent
+  }
+
+ds.span =
+  ## Generic inline element (HTML, inline)
+  element span {
+    ds.htmlinlinecontent
+  }
+
+ds.br =
+  ## Manual line break (HTML, inline)
+  element br {
+    ds.htmlattr,
+    empty
+  }
+
+ds.hr =
+  ## Horizontal rule (HTML, inline)
+  element hr {
+    ds.htmlattr,
+    empty
+  }
