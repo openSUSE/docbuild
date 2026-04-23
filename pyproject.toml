@@ -67,7 +67,7 @@ tests = [
     "pytest-cov>=6.1.1",
 ]
 changelog = [
-    "towncrier>=24.8.0",
+    "towncrier>=25.8.0",
 ]
 docs = [
     "pydata-sphinx-theme>=0.16.1",
