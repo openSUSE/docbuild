@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
@@ -44,3 +45,6 @@ class DocBuildContext:
 
     validation_method: str = "jing"
     """Method used to validate XML files: 'jing' (default) or 'lxml'"""
+
+    env_lock: Any = None
+    """The PID file lock for the current environment, if acquired"""

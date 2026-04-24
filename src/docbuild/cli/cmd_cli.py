@@ -33,7 +33,6 @@ from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_metadata import metadata
 from .cmd_repo import repo
-from .cmd_validate import validate
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
 
@@ -168,7 +167,7 @@ def load_env_config(ctx: click.Context, env_config: Path) -> None:
     "--app-config",
     metavar="APP_CONFIG_FILE",
     type=click.Path(
-        exists=True,
+        exists=False,
         dir_okay=False,
         readable=True,
         resolve_path=True,
@@ -179,7 +178,7 @@ def load_env_config(ctx: click.Context, env_config: Path) -> None:
 @click.option(
     "--env-config",
     metavar="ENV_CONFIG_FILE",
-    type=click.Path(exists=True, dir_okay=False),
+    type=click.Path(exists=False, dir_okay=False),
     help=(
         "Filename to a environment's TOML config file. "
         f"If not set, {APP_NAME} uses the default filename "
@@ -208,18 +207,51 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
-    if ctx.invoked_subcommand is None:
-        click.echo(10 * "-")
-        click.echo(ctx.get_help())
-        ctx.exit(0)
+    # 1. Handle the "Help" case immediately to avoid unnecessary config loading and errors when users just want to see the help menu.
+    # This also allows us to show help even if the config files are missing or invalid.
+    # The 'resilient_parsing' flag is set by Click when --help is invoked, so we can use it to short-circuit our logic.
+    if ctx.resilient_parsing:
+        return
 
+    # 2. Initialize the dumb container
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
     context = ctx.obj
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
-    # State tracking for centralized error handling
+    # 3. Handle the "No command" case BEFORE loading config
+    if ctx.invoked_subcommand is None:
+        click.echo(ctx.get_help())
+        ctx.exit(0)
+
+    # 4. Setup the console and logging early, so that any errors during config loading are properly formatted.
+    if any(arg in ctx.help_option_names for arg in ctx.args):
+        return
+
+    # 5. Load configurations and setup logging. This is where most errors will occur, so we handle them gracefully.
+    initialize_config(ctx, app_config, env_config, max_workers, verbose)
+
+
+def initialize_config(
+    ctx: click.Context,
+    app_config: Path | None,
+    env_config: Path | None,
+    max_workers: str | None,
+    verbose: int,
+) -> None:
+    """Initialize application/environment configurations and setup logging.
+
+    This is separated from the main cli group to allow for 'lazy loading',
+    ensuring that configuration errors don't block the display of help menus.
+
+    :param ctx: The Click context object.
+    :param app_config: The path to the application config file provided via CLI.
+    :param env_config: The path to the environment config file provided via CLI.
+    :param max_workers: The max_workers value from CLI options.
+    :param verbose: The verbosity level from CLI options.
+    """
+    context: DocBuildContext = ctx.obj
     current_model: type[BaseModel] = AppConfig
     current_files: Sequence[Path] | None = None
 
@@ -227,31 +259,55 @@ def cli(
         # --- PHASE 1: Load Application Config ---
         current_model = AppConfig
         current_files = (app_config,) if app_config else None
-        load_app_config(ctx, app_config, max_workers)
 
-        # Setup logging
-        logging_config = context.appconfig.logging.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
+        # Cast to Path to satisfy the loader if it accepts Path but Click gives Path | None
+        # If your loader truly requires a Path, the 'if app_config' check handles it.
+        load_app_config(ctx, cast(Path, app_config), max_workers)
+
+        # Configure logging based on the loaded TOML settings
+        if context.appconfig and context.appconfig.logging:
+            logging_config = context.appconfig.logging.model_dump(
+                by_alias=True, exclude_none=True
+            )
+            setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
 
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig
         current_files = (env_config,) if env_config else None
-        load_env_config(ctx, env_config)
+        load_env_config(ctx, cast(Path, env_config))
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
         handle_validation_error(e, current_model, current_files, verbose, ctx)
 
     # --- PHASE 3: Setup Concurrency Lock ---
-    # (Remains outside the try block as it has its own specialized error handling)
-    env_config_path = (context.envconfigfiles or [None])[0]
-    if env_config_path:
-        ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
+    setup_env_lock(ctx)
+
+
+def setup_env_lock(ctx: click.Context) -> None:
+    """Initialize and acquire the PID file lock for the current environment.
+
+    :param ctx: The Click context object containing the loaded configuration.
+    """
+    context: DocBuildContext = ctx.obj
+
+    # Safely get the first config path
+    env_files = context.envconfigfiles or []
+    first_file = env_files[0] if env_files else None
+
+    if first_file:
+        # Ensure it's a Path object so .name exists
+        env_config_path = Path(first_file)
+
+        # This will now be recognized by Pylance thanks to the context update
+        context.env_lock = PidFileLock(resource_path=env_config_path)
+
         try:
-            ctx.obj.env_lock.__enter__()
-            log.info("Acquired lock for environment config: %r", env_config_path.name)
-            ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
+            context.env_lock.__enter__()
+            log.info("Acquired lock for environment config: %s", env_config_path.name)
+
+            # Register cleanup
+            ctx.call_on_close(lambda: context.env_lock.__exit__(None, None, None))
+
         except LockAcquisitionError as e:
             log.error(str(e))
             ctx.exit(1)
@@ -266,5 +322,4 @@ cli.add_command(c14n)
 cli.add_command(config)
 cli.add_command(repo)
 cli.add_command(metadata)
-cli.add_command(validate)
 cli.add_command(cmd_check)

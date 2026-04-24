@@ -89,7 +89,6 @@ def test_cli_no_subcommand_shows_help(runner):
     result = runner.invoke(cli)
     assert result.exit_code == 0
     assert "Main CLI tool for document operations" in result.output
-    assert "----------" in result.output
 
 
 def test_cli_defaults(

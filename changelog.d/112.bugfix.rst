@@ -1,0 +1,1 @@
+Refactored the config CLI into task-oriented 'list' and 'validate' subcommands and fixed a crash that occurred when requesting help while having an invalid configuration file.
