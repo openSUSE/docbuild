@@ -25,7 +25,7 @@ dependencies = [
     "lxml>=6.1.0",
     "pydantic>=2.13.3",
     "rich>=14.0.0",
-    "tomlkit>=0.13.2",
+    "tomlkit>=0.14.0",
 ]
 authors = [
   {name = "Tom Schraitle", email = "tomschr@users.noreply.github.com"},
