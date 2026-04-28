@@ -1,29 +1,26 @@
-Showing Configuration
-=====================
+Viewing and Validating Configuration
+------------------------------------
 
-The docbuild tool distinguishes between two types of configuration files:
+You can Use the :command:`config` subcommand to list or validate your current settings.
 
-* Application configuration files ("app config")
+Listing Configuration
+~~~~~~~~~~~~~~~~~~~~~
 
-* Environment configuration files ("env config")
+To see the current merged configuration:
 
-Additionally, the docbuild tool has also hardcoded default values for both types of configuration.
+.. code-block:: shell
 
-If no env or app configuration files are found, the docbuild tool will
-fallback to these hardcoded default values.
+   docbuild config list
 
-Keep in mind that these defaults may not be suitable for all use cases, and it is recommended to create and use a configuration file to customize the behavior of the docbuild tool.
+Use the ``--flat`` flag to see the dotted-path format, or filter by ``--app`` or ``--env``.
 
+Validating Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. admonition:: TOML as default format
+To ensure your TOML files match the required schema:
 
-   Both configuration types are written in TOML format, which is a human-readable data serialization standard. See `TOML docs <https://toml.io/en/>`_ for more information on its syntax and structure.
+.. code-block:: shell
 
-The following subsections provide more details on how to view and manage the configuration files for both application and environment settings.
+   docbuild config validate
 
-
-.. toctree::
-   :maxdepth: 2
-
-   application
-   environment
+This checks both application and environment files. You can also validate them individually using the ``--app`` or ``--env`` flags.
