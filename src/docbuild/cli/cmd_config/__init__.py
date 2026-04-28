@@ -1,21 +1,17 @@
-"""CLI interface to shows config files how docbuild sees it."""
+"""CLI interface to manage and view configuration."""
 
 import click
 
-from .application import app
-from .environment import env
+from .list import list_config
+from .validate import validate
 
 
-@click.group(
-    name="config",
-    help=__doc__,
-)
+@click.group(name="config", help="Manage and view docbuild configuration.")
 @click.pass_context
 def config(ctx: click.Context) -> None:
-    """Subcommand to show the configuration files and their content."""
+    """Subcommand to manage the configuration files and their content."""
     pass
 
 
-# Register the subcommands for the config group
-config.add_command(env)
-config.add_command(app)
+config.add_command(list_config)
+config.add_command(validate)

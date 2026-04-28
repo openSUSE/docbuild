@@ -208,6 +208,15 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param kwargs: Additional keyword arguments.
     """
+    # 1. Click's internal guard for completion/resilient parsing
+    if ctx.resilient_parsing:
+        return
+
+    # 2. Check if the user is asking for help ANYWHERE in the command
+    # This covers 'docbuild -h', 'docbuild config -h', and 'docbuild config list -h'
+    if any(arg in ctx.help_option_names for arg in sys.argv):
+        return
+
     if ctx.invoked_subcommand is None:
         click.echo(10 * "-")
         click.echo(ctx.get_help())
