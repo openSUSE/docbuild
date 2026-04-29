@@ -7,6 +7,7 @@ User Guide
 
    install
    config
+   portal-config/index
    run-docbuild
    config/index
    build

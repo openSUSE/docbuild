@@ -9,9 +9,12 @@
 from datetime import datetime
 from pathlib import Path
 import sys
+from typing import Self
 
+from docutils import nodes
 from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
+from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
 
 from docbuild.__about__ import __version__
@@ -287,7 +290,143 @@ def run_toml_generator(app: Sphinx) -> None:
         generate_toml_reference(toml_input, rst_output, **config_data)
 
 
+class GlossaryRearranger(SphinxTransform):
+    """Group glossary terms by first letter into section nodes.
+
+    The glossary directive emits a flat definition list. This transform rewrites
+    it into per-letter sections so each letter gets its own heading and anchor.
+    """
+
+    default_priority = 400
+
+    @staticmethod
+    def _is_glossary_definition_list(node: nodes.definition_list) -> bool:
+        """Return whether a definition list belongs to a glossary block."""
+        parent = node.parent
+        if parent is None:
+            return False
+
+        return "glossary" in parent.get("classes", []) or "glossary" in node.get(
+            "classes", []
+        )
+
+    @staticmethod
+    def _group_terms_by_letter(
+        node: nodes.definition_list,
+    ) -> dict[str, list[nodes.definition_list_item]]:
+        """Group glossary items by the first letter of each term."""
+        groups: dict[str, list[nodes.definition_list_item]] = {}
+        for item in list(node.children):
+            if not isinstance(item, nodes.definition_list_item):
+                continue
+
+            term_node = item.next_node(nodes.term)
+            if not term_node:
+                continue
+
+            term_text = term_node.astext().strip()
+            if not term_text:
+                continue
+
+            letter = term_text[0].upper()
+            groups.setdefault(letter, []).append(item)
+
+        return groups
+
+    @staticmethod
+    def _build_letter_sections(
+        groups: dict[str, list[nodes.definition_list_item]],
+    ) -> list[nodes.section]:
+        """Build one section per glossary letter group."""
+        new_sections: list[nodes.section] = []
+        for letter in sorted(groups.keys()):
+            sec = nodes.section(
+                ids=[letter],
+                classes=["glossary-section", f"glossary-letter-{letter.lower()}"],
+            )
+            sec += nodes.title(letter, letter, classes=["glossary-letter-title"])
+
+            letter_list = nodes.definition_list()
+            letter_list.extend(groups[letter])
+            sec += letter_list
+            new_sections.append(sec)
+
+        return new_sections
+
+    @staticmethod
+    def _replace_with_sections(
+        parent: nodes.Element,
+        node: nodes.definition_list,
+        new_sections: list[nodes.section],
+    ) -> None:
+        """Replace glossary list with generated sections in the proper parent."""
+        if getattr(parent, "tagname", "") == "glossary" and parent.parent is not None:
+            # Sphinx's ToC collector ignores <section> nodes nested inside a
+            # <glossary> node. Hoist sections one level up so they are indexed.
+            grandparent = parent.parent
+            idx = grandparent.index(parent)
+            for sec in reversed(new_sections):
+                grandparent.insert(idx, sec)
+            parent.remove(node)
+            if not parent.children:
+                grandparent.remove(parent)
+            return
+
+        node.replace_self(new_sections)
+
+    def apply(self: Self) -> None:
+        """Rewrite glossary definition lists into grouped letter sections."""
+        for node in list(self.document.findall(nodes.definition_list)):
+            if node.get("_glossary_rearranged", False):
+                continue
+
+            if not self._is_glossary_definition_list(node):
+                continue
+
+            groups = self._group_terms_by_letter(node)
+            if not groups:
+                continue
+
+            new_sections = self._build_letter_sections(groups)
+            parent = node.parent
+            if not isinstance(parent, nodes.Element):
+                continue
+
+            self._replace_with_sections(parent, node, new_sections)
+
+            node["_glossary_rearranged"] = True
+            logger.info("GlossaryRearranger: Grouped %d letters.", len(groups))
+
+
+class GlossaryToCBuilder(SphinxTransform):
+    """Add glossary term permalinks used by the rendered HTML output.
+
+    This transform keeps generated glossary terms linkable via header links.
+    """
+
+    default_priority = 950
+
+    def apply(self) -> None:
+        """Attach permalink references to glossary term nodes."""
+        # Inject Term Permalinks (existing logic)
+        for term_node in self.document.findall(nodes.term):
+            t_ids = term_node.get("ids", [])
+            if t_ids and not any(
+                isinstance(c, nodes.reference) for c in term_node.children
+            ):
+                t_ref = nodes.reference(
+                    "",
+                    "#",
+                    refuri=f"#{t_ids[0]}",
+                    classes=["headerlink"],
+                    reftitle="Permalink",
+                )
+                term_node += t_ref
+
+
 def setup(app: Sphinx) -> None:
     """Sphinx setup function to connect the TOML generator to the build process."""
     # This hook ensures the file exists before Sphinx tries to 'include' it
     app.connect("builder-inited", run_toml_generator)
+    app.add_transform(GlossaryRearranger)
+    app.add_transform(GlossaryToCBuilder)
