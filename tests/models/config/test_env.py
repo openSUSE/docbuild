@@ -295,3 +295,22 @@ def test_envconfig_with_non_dict_input():
     # Pydantic will then raise a ValidationError because the input is not a dict.
     with pytest.raises(ValidationError, match="Input should be a valid dictionary"):
         EnvConfig.model_validate("not a dict")
+
+
+def test_env_config_invalid_placeholder_syntax():
+    """Ensure EnvConfig raises ValueError for malformed placeholders."""
+    invalid_data = {
+        "server": {"name": "test", "role": "production", "host": "127.0.0.1", "enable_mail": False},
+        "config": {"default_lang": "en-us", "languages": ["en-us"], "canonical_url_domain": "https://example.com"},
+        "paths": {
+            # ... other required paths ...
+            "base_server_cache_dir": "{base_cache_dir}/{server.name" # THE BUG
+        },
+        "build": {
+            "daps": {"command": "daps", "meta": "daps metadata"},
+            "container": {"container": "some-image"}
+        }
+    }
+    # We expect a ValueError because our model validator wraps PlaceholderSyntaxError
+    with pytest.raises(ValueError, match="Configuration placeholder error"):
+        EnvConfig.from_dict(invalid_data)

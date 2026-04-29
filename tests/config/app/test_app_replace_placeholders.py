@@ -11,6 +11,7 @@ from docbuild.config.app import (
     replace_placeholders,
 )
 from docbuild.models.config.app import AppConfig
+from docbuild.config.app import PlaceholderResolver, PlaceholderSyntaxError
 
 
 def test_replace_placeholders():
@@ -331,3 +332,24 @@ def test_nested_list_processing_appends_stack_items():
     out = replace_placeholders(config)
     assert out["seq"][0]["inner"] == "VAL"
     assert out["seq"][1] == "VAL"
+
+
+def test_placeholder_syntax_missing_end():
+    """Test orphaned opening brace."""
+    resolver = PlaceholderResolver({"key": "{server.name"})
+    with pytest.raises(PlaceholderSyntaxError, match="Missing end curly brace"):
+        resolver.replace()
+
+
+def test_placeholder_syntax_missing_start():
+    """Test orphaned closing brace."""
+    resolver = PlaceholderResolver({"key": "server.name}"})
+    with pytest.raises(PlaceholderSyntaxError, match="Missing start curly brace"):
+        resolver.replace()
+
+
+def test_placeholder_syntax_swapped_escapes():
+    """Test the reviewer's edge case: }} hello {{."""
+    resolver = PlaceholderResolver({"key": "}} hello {{"})
+    with pytest.raises(PlaceholderSyntaxError, match="Invalid placeholder syntax"):
+        resolver.replace()

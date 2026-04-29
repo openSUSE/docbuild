@@ -24,6 +24,12 @@ class CircularReferenceError(ValueError):
     pass
 
 
+class PlaceholderSyntaxError(ValueError):
+    """Exception raised when a placeholder has invalid syntax."""
+
+    pass
+
+
 class PlaceholderResolver:
     """Handles placeholder resolution in configuration data."""
 
@@ -88,15 +94,15 @@ class PlaceholderResolver:
 
     def _resolve_string_placeholders(self, text: str) -> str:
         """Resolve all placeholders in a string with recursion protection."""
+        original_text = text
         count = 0
         cls = self.__class__
+        
+        # 1. Resolve valid placeholders
         while count < self.max_recursion_depth:
             new_text = cls.PLACEHOLDER_PATTERN.sub(self._resolve_placeholder, text)
-
             if new_text == text:
-                # No more changes, we're done
                 break
-
             text = new_text
             count += 1
 
@@ -106,7 +112,34 @@ class PlaceholderResolver:
                 f"Too many nested placeholder expansions in key '{key_name}'."
             )
 
-        # Replace escaped braces with literal ones
+        # 2. Syntax Validation using a Brace Counter
+        # This mathematically ensures braces are matched and in the correct order.
+        brace_level = 0
+        for char in text:
+            if char == "{":
+                brace_level += 1
+            elif char == "}":
+                brace_level -= 1
+            
+            # If it ever drops below 0, we've hit a '}' before a '{' (e.g., '}} hello {{')
+            if brace_level < 0:
+                break
+
+        # If the level isn't exactly 0 at the end, the syntax is broken
+        if brace_level != 0:
+            container_name = self._get_container_name()
+            
+            if "{" in text and "}" not in text:
+                msg = f"Missing end curly brace in placeholder in value: '{original_text}'"
+            elif "}" in text and "{" not in text:
+                msg = f"Missing start curly brace in placeholder in value: '{original_text}'"
+            else:
+                # Catches inverted braces like '}} hello {{'
+                msg = f"Invalid placeholder syntax in value: '{original_text}'"
+
+            raise PlaceholderSyntaxError(f"In configuration key '{container_name}': {msg}")
+
+        # 3. Final cleanup of escapes
         return text.replace("{{", "{").replace("}}", "}")
 
     def _get_container_name(self) -> str:
@@ -134,6 +167,7 @@ class PlaceholderResolver:
         :return: The configuration with all placeholders resolved.
         :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
         :raises CircularReferenceError: If a circular reference is detected.
+        :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
         """
         # Use a stack to process all items iteratively
         # Stack items: (container, key, context) where container can be dict or list
@@ -183,6 +217,7 @@ def replace_placeholders(
     :return: A new dictionary with placeholders replaced.
     :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
     :raises CircularReferenceError: If a circular reference is detected.
+    :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
     """
     if not isinstance(config, dict):
         return config

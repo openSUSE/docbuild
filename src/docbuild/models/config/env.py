@@ -17,6 +17,7 @@ from pydantic import (
 from ...config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
+    PlaceholderSyntaxError,
     replace_placeholders,
 )
 from ..language import LanguageCode
@@ -407,7 +408,11 @@ class EnvConfig(BaseModel):
         if isinstance(data, dict):
             try:
                 return replace_placeholders(deepcopy(data))
-            except (PlaceholderResolutionError, CircularReferenceError) as e:
+            except (
+                PlaceholderResolutionError, 
+                CircularReferenceError,
+                PlaceholderSyntaxError
+            ) as e:
                 raise ValueError(f"Configuration placeholder error: {e}") from e
         return data
 

@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from docbuild.config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
+    PlaceholderSyntaxError,
     replace_placeholders,
 )
 from docbuild.logging import DEFAULT_LOGGING_CONFIG
@@ -235,7 +236,12 @@ class AppConfig(BaseModel):
         if isinstance(data, dict):
             try:
                 return replace_placeholders(deepcopy(data))
-            except (PlaceholderResolutionError, CircularReferenceError) as e:
+            except (
+                PlaceholderResolutionError, 
+                CircularReferenceError, 
+                PlaceholderSyntaxError
+            ) as e:
+                # This wraps the error so Pydantic reports it as a validation failure
                 raise ValueError(f"Configuration placeholder error: {e}") from e
         return data
 
