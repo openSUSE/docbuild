@@ -92,12 +92,38 @@ class PlaceholderResolver:
                 f"key '{placeholder}' not found in current section.",
             )
 
+    def validate_brace_syntax(self, text: str, original_text: str) -> None:
+        """Validate that curly braces are balanced and properly ordered."""
+        brace_level = 0
+        for char in text:
+            if char == "{":
+                brace_level += 1
+            elif char == "}":
+                brace_level -= 1
+
+            # If it ever drops below 0, we've hit a '}' before a '{'
+            if brace_level < 0:
+                break
+
+        # If the level isn't exactly 0 at the end, the syntax is broken
+        if brace_level != 0:
+            container_name = self._get_container_name()
+
+            if "{" in text and "}" not in text:
+                msg = f"Missing end curly brace in placeholder in value: '{original_text}'"
+            elif "}" in text and "{" not in text:
+                msg = f"Missing start curly brace in placeholder in value: '{original_text}'"
+            else:
+                msg = f"Invalid placeholder syntax in value: '{original_text}'"
+
+            raise PlaceholderSyntaxError(f"In configuration key '{container_name}': {msg}")
+
     def _resolve_string_placeholders(self, text: str) -> str:
         """Resolve all placeholders in a string with recursion protection."""
         original_text = text
         count = 0
         cls = self.__class__
-        
+
         # 1. Resolve valid placeholders
         while count < self.max_recursion_depth:
             new_text = cls.PLACEHOLDER_PATTERN.sub(self._resolve_placeholder, text)
@@ -112,32 +138,8 @@ class PlaceholderResolver:
                 f"Too many nested placeholder expansions in key '{key_name}'."
             )
 
-        # 2. Syntax Validation using a Brace Counter
-        # This mathematically ensures braces are matched and in the correct order.
-        brace_level = 0
-        for char in text:
-            if char == "{":
-                brace_level += 1
-            elif char == "}":
-                brace_level -= 1
-            
-            # If it ever drops below 0, we've hit a '}' before a '{' (e.g., '}} hello {{')
-            if brace_level < 0:
-                break
-
-        # If the level isn't exactly 0 at the end, the syntax is broken
-        if brace_level != 0:
-            container_name = self._get_container_name()
-            
-            if "{" in text and "}" not in text:
-                msg = f"Missing end curly brace in placeholder in value: '{original_text}'"
-            elif "}" in text and "{" not in text:
-                msg = f"Missing start curly brace in placeholder in value: '{original_text}'"
-            else:
-                # Catches inverted braces like '}} hello {{'
-                msg = f"Invalid placeholder syntax in value: '{original_text}'"
-
-            raise PlaceholderSyntaxError(f"In configuration key '{container_name}': {msg}")
+        # 2. Syntax Validation using the helper method
+        self.validate_brace_syntax(text, original_text)
 
         # 3. Final cleanup of escapes
         return text.replace("{{", "{").replace("}}", "}")

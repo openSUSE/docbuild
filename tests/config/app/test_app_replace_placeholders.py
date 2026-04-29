@@ -8,10 +8,10 @@ from docbuild.config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
     PlaceholderResolver,
+    PlaceholderSyntaxError,
     replace_placeholders,
 )
 from docbuild.models.config.app import AppConfig
-from docbuild.config.app import PlaceholderResolver, PlaceholderSyntaxError
 
 
 def test_replace_placeholders():

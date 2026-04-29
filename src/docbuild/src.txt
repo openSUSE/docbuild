@@ -1,0 +1,83 @@
+.
+├── __about__.py
+├── __init__.py
+├── __main__.py
+├── cli
+│   ├── __init__.py
+│   ├── callback.py
+│   ├── cmd_build
+│   │   ├── __init__.py
+│   ├── cmd_c14n
+│   │   ├── __init__.py
+│   ├── cmd_check
+│   │   ├── __init__.py
+│   │   └── process.py
+│   ├── cmd_cli.py
+│   ├── cmd_config
+│   │   ├── __init__.py
+│   │   ├── list.py
+│   │   └── validate.py
+│   ├── cmd_metadata
+│   │   ├── __init__.py
+│   │   └── metaprocess.py
+│   ├── cmd_repo
+│   │   ├── __init__.py
+│   │   ├── cmd_clone.py
+│   │   ├── cmd_dir.py
+│   │   ├── cmd_list.py
+│   │   └── process.py
+│   ├── cmd_validate
+│   │   ├── __init__.py
+│   │   └── process.py
+│   ├── config
+│   ├── context.py
+│   └── defaults.py
+├── config
+│   ├── __init__.py
+│   ├── app.py
+│   ├── load.py
+│   ├── merge.py
+│   └── xml
+│       ├── __init__.py
+│       ├── checks.py
+│       ├── data
+│       │   ├── [CONTAINS XML FILES]
+│       ├── list.py
+│       ├── references.py
+│       └── stitch.py
+├── constants.py
+├── etc
+│   └── git
+│       └── gitconfig
+├── logging.py
+├── models
+│   ├── __init__.py
+│   ├── config
+│   │   ├── __init__.py
+│   │   ├── app.py
+│   │   └── env.py
+│   ├── deliverable.py
+│   ├── doctype.py
+│   ├── language.py
+│   ├── lifecycle.py
+│   ├── manifest.py
+│   ├── metadata.py
+│   ├── path.py
+│   ├── product.py
+│   ├── repo.py
+│   └── serverroles.py
+├── py.typed
+└── utils
+    ├── __init__.py
+    ├── concurrency.py
+    ├── contextmgr.py
+    ├── convert.py
+    ├── decorators.py
+    ├── doc.py
+    ├── errors.py
+    ├── flatten.py
+    ├── git.py
+    ├── merge.py
+    ├── paths.py
+    ├── pidlock.py
+    └── shell.py

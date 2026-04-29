@@ -237,8 +237,8 @@ class AppConfig(BaseModel):
             try:
                 return replace_placeholders(deepcopy(data))
             except (
-                PlaceholderResolutionError, 
-                CircularReferenceError, 
+                PlaceholderResolutionError,
+                CircularReferenceError,
                 PlaceholderSyntaxError
             ) as e:
                 # This wraps the error so Pydantic reports it as a validation failure

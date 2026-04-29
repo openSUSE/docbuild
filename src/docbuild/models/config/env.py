@@ -409,7 +409,7 @@ class EnvConfig(BaseModel):
             try:
                 return replace_placeholders(deepcopy(data))
             except (
-                PlaceholderResolutionError, 
+                PlaceholderResolutionError,
                 CircularReferenceError,
                 PlaceholderSyntaxError
             ) as e:
