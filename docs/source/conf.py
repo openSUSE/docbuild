@@ -133,6 +133,8 @@ extlinks = {
     "gh_tree": (f"{gh_repo_url}/tree/main/%s", "%s"),
     # Linking to the GH issue tracker:
     "gh": (f"{gh_repo_url}/issues/%s", "GH #%s"),
+    # Linking to a GH pull request:
+    "pr": (f"{gh_repo_url}/pull/%s", "PR #%s"),
 }
 
 
