@@ -70,7 +70,7 @@ changelog = [
     "towncrier>=25.8.0",
 ]
 docs = [
-    "pydata-sphinx-theme>=0.16.1",
+    "pydata-sphinx-theme>=0.17.1",
     "sphinx>=8.2.3",
     "sphinx-autoapi>=3.8.0",
     "sphinx-autodoc-typehints>=3.2.0",
