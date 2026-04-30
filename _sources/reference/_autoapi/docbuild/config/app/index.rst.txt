@@ -26,11 +26,13 @@ Exceptions
 
    /reference/_autoapi/docbuild/config/app/PlaceholderResolutionError
    /reference/_autoapi/docbuild/config/app/CircularReferenceError
+   /reference/_autoapi/docbuild/config/app/PlaceholderSyntaxError
 
 .. autoapisummary::
 
    docbuild.config.app.PlaceholderResolutionError
    docbuild.config.app.CircularReferenceError
+   docbuild.config.app.PlaceholderSyntaxError
 
 
 Classes
@@ -85,5 +87,6 @@ Module Contents
    :return: A new dictionary with placeholders replaced.
    :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
    :raises CircularReferenceError: If a circular reference is detected.
+   :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
 
 

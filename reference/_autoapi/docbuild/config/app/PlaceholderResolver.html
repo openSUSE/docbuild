@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="../../../../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../../../../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../../../../../_static/documentation_options.js?v=0c3dd48d"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
@@ -52,7 +52,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
     <link rel="next" title="docbuild.config.load" href="../load/index.html" />
-    <link rel="prev" title="docbuild.config.app.CircularReferenceError" href="CircularReferenceError.html" />
+    <link rel="prev" title="docbuild.config.app.PlaceholderSyntaxError" href="PlaceholderSyntaxError.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -73,7 +73,9 @@
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -413,8 +415,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/application/index.html">docbuild.cli.cmd_config.application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/environment/index.html">docbuild.cli.cmd_config.environment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -443,6 +445,7 @@
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.config.app</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
 <li class="toctree-l4"><a class="reference internal" href="CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="PlaceholderSyntaxError.html">docbuild.config.app.PlaceholderSyntaxError</a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.config.app.PlaceholderResolver</a></li>
 </ul>
 </details></li>
@@ -536,6 +539,7 @@
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../utils/errors/index.html">docbuild.utils.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utils/flatten/index.html">docbuild.utils.flatten</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/git/index.html">docbuild.utils.git</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/git/ManagedGitRepo.html">docbuild.utils.git.ManagedGitRepo</a></li>
 </ul>
@@ -636,6 +640,12 @@ files (like <code class="docutils literal notranslate"><span class="pre">{placeh
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docbuild.config.app.PlaceholderResolver.validate_brace_syntax">
+<span class="sig-name descname"><span class="pre">validate_brace_syntax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.config.app.PlaceholderResolver.validate_brace_syntax" title="Link to this definition">#</a></dt>
+<dd><p>Validate that curly braces are balanced and properly ordered.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docbuild.config.app.PlaceholderResolver.get_container_name">
 <span class="sig-name descname"><span class="pre">get_container_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.app.PlaceholderResolver.get_container_name" title="Link to this definition">#</a></dt>
 <dd><p>Public accessor for the current container/key name.</p>
@@ -656,6 +666,7 @@ private attributes.</p>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="PlaceholderResolutionError.html#docbuild.config.app.PlaceholderResolutionError" title="docbuild.config.app.PlaceholderResolutionError"><strong>PlaceholderResolutionError</strong></a> – If a placeholder cannot be resolved.</p></li>
 <li><p><a class="reference internal" href="CircularReferenceError.html#docbuild.config.app.CircularReferenceError" title="docbuild.config.app.CircularReferenceError"><strong>CircularReferenceError</strong></a> – If a circular reference is detected.</p></li>
+<li><p><a class="reference internal" href="PlaceholderSyntaxError.html#docbuild.config.app.PlaceholderSyntaxError" title="docbuild.config.app.PlaceholderSyntaxError"><strong>PlaceholderSyntaxError</strong></a> – If a placeholder has invalid syntax.</p></li>
 </ul>
 </dd>
 </dl>
@@ -676,12 +687,12 @@ private attributes.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="CircularReferenceError.html"
+       href="PlaceholderSyntaxError.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.config.app.CircularReferenceError</p>
+        <p class="prev-next-title">docbuild.config.app.PlaceholderSyntaxError</p>
       </div>
     </a>
     <a class="right-next"
@@ -714,6 +725,7 @@ private attributes.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.PlaceholderResolver"><code class="docutils literal notranslate"><span class="pre">docbuild.config.app.PlaceholderResolver</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.PlaceholderResolver.PLACEHOLDER_PATTERN"><code class="docutils literal notranslate"><span class="pre">docbuild.config.app.PlaceholderResolver.PLACEHOLDER_PATTERN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.PlaceholderResolver.validate_brace_syntax"><code class="docutils literal notranslate"><span class="pre">docbuild.config.app.PlaceholderResolver.validate_brace_syntax()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.PlaceholderResolver.get_container_name"><code class="docutils literal notranslate"><span class="pre">docbuild.config.app.PlaceholderResolver.get_container_name()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.PlaceholderResolver.replace"><code class="docutils literal notranslate"><span class="pre">docbuild.config.app.PlaceholderResolver.replace()</span></code></a></li>
 </ul>
@@ -759,8 +771,8 @@ private attributes.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -794,7 +806,7 @@ private attributes.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
 </p></div>
       
     </div>

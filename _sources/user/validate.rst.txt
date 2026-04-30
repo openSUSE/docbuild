@@ -1,15 +1,24 @@
-Validating XML configuration
-============================
+Validating Configuration
+========================
 
-The :command:`docbuild build` subcommand is used to validate XML configuration files. It checks the syntax and structure of the XML files against a RelaxNG schema to ensure they conform to the expected format.
+The :command:`docbuild config validate` subcommand is used to verify that your TOML configuration files are syntactically correct and conform to the required schema.
 
 .. code-block:: shell
-   :caption: Synopsis of :command:`docbuild validate`
+   :caption: Synopsis of :command:`docbuild config validate`
 
-   docbuild validate [OPTIONS]
+   docbuild config validate [OPTIONS]
 
-The process is a two step approach:
+The tool validates:
 
-1. It first validates the XML config file individually against the RNG schema to ensure it is structurally correct. After this, it applies several check rules to ensure the XML file is semantically correct.
-2. If the first step is successful, it then creates a combined XML file that includes all the individual XML files ("stitchfile"). This combined file is checked if references inside are correct.
+1. **Application Configuration**: Ensures core settings like logging and worker limits are valid.
+2. **Environment Configuration**: Checks paths, server roles, and build parameters.
 
+Options
+-------
+
+* ``--app``: Validate only the application configuration.
+* ``--env``: Validate only the environment configuration.
+* ``--all``: Validate everything (default).
+
+.. note::
+   Deep XML/Portal validation is currently handled as part of the build process or via external tools. Modular XML validation will be reintroduced in a future update.

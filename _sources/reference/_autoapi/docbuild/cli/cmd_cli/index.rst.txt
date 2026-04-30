@@ -15,6 +15,8 @@ Functions
 .. autoapisummary::
 
    docbuild.cli.cmd_cli.handle_validation_error
+   docbuild.cli.cmd_cli.load_app_config
+   docbuild.cli.cmd_cli.load_env_config
    docbuild.cli.cmd_cli.cli
 
 
@@ -35,6 +37,23 @@ Module Contents
      used to control the level of detail in the error output.
    :param ctx: The Click context, used to exit the CLI with an appropriate
      status code after handling the error.
+
+
+.. py:function:: load_app_config(ctx: click.Context, app_config: pathlib.Path, max_workers: str | None) -> None
+
+   Load and validate Application configuration.
+
+   :param ctx: The Click context object. The result will be added to ``ctx.obj.appconfig``.
+   :param app_config: The path to the application config file provided via CLI.
+   :param max_workers: The max_workers value from CLI options.
+
+
+.. py:function:: load_env_config(ctx: click.Context, env_config: pathlib.Path) -> None
+
+   Load and validate Environment configuration.
+
+   :param ctx: The Click context object. The result will be added to ``ctx.obj.envconfig``.
+   :param env_config: The path to the environment config file provided via CLI.
 
 
 .. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, max_workers: str | None, **kwargs: dict) -> None

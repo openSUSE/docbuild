@@ -5,7 +5,7 @@ docbuild.cli.cmd_config
 
 .. autoapi-nested-parse::
 
-   CLI interface to shows config files how docbuild sees it.
+   CLI interface to manage and view configuration.
 
 
 
@@ -15,8 +15,8 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
-   /reference/_autoapi/docbuild/cli/cmd_config/application/index
-   /reference/_autoapi/docbuild/cli/cmd_config/environment/index
+   /reference/_autoapi/docbuild/cli/cmd_config/list/index
+   /reference/_autoapi/docbuild/cli/cmd_config/validate/index
 
 
 Functions
@@ -32,6 +32,6 @@ Package Contents
 
 .. py:function:: config(ctx: click.Context) -> None
 
-   Subcommand to show the configuration files and their content.
+   Subcommand to manage the configuration files and their content.
 
 

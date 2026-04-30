@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Validating XML configuration &#8212; docbuild 0.17.0 documentation</title>
+    <title>Validating Configuration &#8212; docbuild 0.17.0 documentation</title>
   
   
   
@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -36,10 +36,10 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
     <script src="../_static/documentation_options.js?v=0c3dd48d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
@@ -73,7 +73,9 @@
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -411,13 +413,9 @@
 
 
 <li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="config/index.html">Showing Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="config/application.html">Showing App’s Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config/environment.html">Showing Env’s Configuration</a></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="config/index.html">Viewing and Validating Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build.html">Building Deliverables</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Validating XML configuration</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Validating Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="check-env.html">Checking your Environment</a></li>
@@ -464,7 +462,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Validating XML configuration</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Validating Configuration</span></li>
   </ul>
 </nav>
 </div>
@@ -481,20 +479,32 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="validating-xml-configuration">
-<h1>Validating XML configuration<a class="headerlink" href="#validating-xml-configuration" title="Link to this heading">#</a></h1>
-<p>The <strong class="command">docbuild build</strong> subcommand is used to validate XML configuration files. It checks the syntax and structure of the XML files against a RelaxNG schema to ensure they conform to the expected format.</p>
+  <section id="validating-configuration">
+<h1>Validating Configuration<a class="headerlink" href="#validating-configuration" title="Link to this heading">#</a></h1>
+<p>The <strong class="command">docbuild config validate</strong> subcommand is used to verify that your TOML configuration files are syntactically correct and conform to the required schema.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Synopsis of <strong class="command">docbuild validate</strong></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<div class="code-block-caption"><span class="caption-text">Synopsis of <strong class="command">docbuild config validate</strong></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 </div>
-<p>The process is a two step approach:</p>
+<p>The tool validates:</p>
 <ol class="arabic simple">
-<li><p>It first validates the XML config file individually against the RNG schema to ensure it is structurally correct. After this, it applies several check rules to ensure the XML file is semantically correct.</p></li>
-<li><p>If the first step is successful, it then creates a combined XML file that includes all the individual XML files (“stitchfile”). This combined file is checked if references inside are correct.</p></li>
+<li><p><strong>Application Configuration</strong>: Ensures core settings like logging and worker limits are valid.</p></li>
+<li><p><strong>Environment Configuration</strong>: Checks paths, server roles, and build parameters.</p></li>
 </ol>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--app</span></code>: Validate only the application configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--env</span></code>: Validate only the environment configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--all</span></code>: Validate everything (default).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Deep XML/Portal validation is currently handled as part of the build process or via external tools. Modular XML validation will be reintroduced in a future update.</p>
+</div>
+</section>
 </section>
 
 
@@ -537,6 +547,18 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#options">Options</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
@@ -574,8 +596,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -609,7 +631,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
 </p></div>
       
     </div>
