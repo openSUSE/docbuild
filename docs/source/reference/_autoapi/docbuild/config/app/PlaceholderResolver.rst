@@ -14,6 +14,12 @@ docbuild.config.app.PlaceholderResolver
 
 
 
+   .. py:method:: validate_brace_syntax(text: str, original_text: str) -> None
+
+      Validate that curly braces are balanced and properly ordered.
+
+
+
    .. py:method:: get_container_name() -> str
 
       Public accessor for the current container/key name.
@@ -31,5 +37,6 @@ docbuild.config.app.PlaceholderResolver
       :return: The configuration with all placeholders resolved.
       :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
       :raises CircularReferenceError: If a circular reference is detected.
+      :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
 
 

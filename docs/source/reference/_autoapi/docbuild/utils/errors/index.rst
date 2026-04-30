@@ -15,6 +15,7 @@ Functions
 .. autoapisummary::
 
    docbuild.utils.errors.format_pydantic_error
+   docbuild.utils.errors.format_toml_error
 
 
 Module Contents
@@ -29,5 +30,14 @@ Module Contents
    :param config_file: The name/path of the config file being processed.
    :param verbose: Verbosity level to control error detail.
    :param console: Optional Rich console object. If None, creates a stderr console.
+
+
+.. py:function:: format_toml_error(error: tomllib.TOMLDecodeError, config_file: str, console: rich.console.Console | None = None) -> None
+
+   Format TOML syntax errors using Rich.
+
+   :param error: The caught TOMLDecodeError object.
+   :param config_file: The name/path of the config file with the syntax error.
+   :param console: Optional Rich console object.
 
 
