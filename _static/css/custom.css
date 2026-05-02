@@ -6,3 +6,10 @@ html {
     --pst-font-family-heading: SUSE, sans-serif, var(--pst-font-family-base-system);
     --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
 }
+
+/* Add a horizontal line below the glossary letter titles */
+.glossary-letter-title {
+    border-bottom: 1px solid var(--pst-color-border); /* Use theme's border color */
+    padding-bottom: 0.5em; /* Space between title text and the line */
+    margin-bottom: 1em;    /* Space between the line and the content below */
+}

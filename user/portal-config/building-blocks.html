@@ -1,0 +1,964 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Building Blocks &#8212; docbuild 0.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=8462f869" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=0c3dd48d"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/portal-config/building-blocks';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Creating a Portal Configuration" href="create-portal.html" />
+    <link rel="prev" title="Managing Portal Configuration" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">Documentation is under construction.</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Docbuild Documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference/index.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/openSUSE/docbuild" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://gitlab.suse.de/susedoc/docserv-config" title="GitLab susedoc/docserv-config" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-gitlab fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitLab susedoc/docserv-config</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/orgs/openSUSE/projects/27/" title="Kanban board" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-table-columns fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Kanban board</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../developer/index.html">
+    Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference/index.html">
+    Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../changelog.html">
+    Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../glossary.html">
+    Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/openSUSE/docbuild" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://gitlab.suse.de/susedoc/docserv-config" title="GitLab susedoc/docserv-config" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-gitlab fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitLab susedoc/docserv-config</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/orgs/openSUSE/projects/27/" title="Kanban board" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-table-columns fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Kanban board</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing docbuild</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuring the Tool</a></li>
+
+
+
+
+
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Managing Portal Configuration</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Building Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-portal.html">Creating a Portal Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-product.html">Creating a Product</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add-deliverable.html">Adding Deliverables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add-translations.html">Adding Translations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="change-lifecycle.html">Changing the Lifecycle of a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group-deliverables.html">Grouping Deliverables with Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-xrefs.html">Creating Cross-References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-links.html">Creating external Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mark-spotlight.html">Create a Notice (“Spotlight”)</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../run-docbuild.html">Running docbuild</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config/index.html">Viewing and Validating Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build.html">Building Deliverables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../validate.html">Validating Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clone.html">Cloning Repositories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metadata.html">Creating Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../check-env.html">Checking your Environment</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Managing Portal Configuration</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Building Blocks</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="building-blocks">
+<h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Link to this heading">#</a></h1>
+<p>The portal schema consists the following main parts:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code>: The root element of the portal configuration.</p></li>
+<li><p>Global settings like a spotlight, categories, product families and series.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code>: Defines a product, its lifecycle, and its releases.</p></li>
+</ul>
+<p>In the following sections, we will go through these parts in more detail and explain how to use them to configure your documentation portal.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The portal configuration is very flexible and allows you to define
+your own structure and filenames. The following sections provide
+guidelines and recommendations for a good structure, but you are
+free to deviate from them if it suits your needs better.</p>
+</div>
+<section id="portal-definition">
+<h2>Portal Definition<a class="headerlink" href="#portal-definition" title="Link to this heading">#</a></h2>
+<p>The portal configuration is defined with the <code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code> root element.
+It contains the following child elements:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;spotlight&gt;</span></code> (optional)</p>
+<p>A spotlight section that can be used to highlight important information
+on the portal. See section <a class="reference internal" href="mark-spotlight.html#create-spotlight"><span class="std std-ref">Create a Notice (“Spotlight”)</span></a> for more information.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;products&gt;</span></code> (required)</p>
+<p>The products of the portal. Each product is defined with a
+<code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element. A portal must have at least one product.
+See next section <a class="reference internal" href="#product-definition"><span class="std std-ref">Product Definition</span></a> for more information about products.</p>
+</li>
+</ul>
+</section>
+<section id="global-settings">
+<span id="id1"></span><h2>Global Settings<a class="headerlink" href="#global-settings" title="Link to this heading">#</a></h2>
+<p>These are the following elements:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;categories&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;productfamilies&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;series&gt;</span></code></p></li>
+</ul>
+<section id="category-settings">
+<h3>Category settings<a class="headerlink" href="#category-settings" title="Link to this heading">#</a></h3>
+<p>Categories are used to group related deliverables together and give them a common title.</p>
+<p>Provide at least English (<code class="docutils literal notranslate"><span class="pre">lang=&quot;en-us&quot;</span></code>). Other languages are optional.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">&lt;category&gt;</span></code> element consists of the following structure:</p>
+<ul>
+<li><p>A required <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute for the <code class="docutils literal notranslate"><span class="pre">&lt;category&gt;</span></code> element itself.
+The language code consists of a language and a country code,
+for example, <code class="docutils literal notranslate"><span class="pre">en-us</span></code> for English (United States) or <code class="docutils literal notranslate"><span class="pre">de-de</span></code> for
+German (Germany).</p></li>
+<li><p>One or more <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> elements. Each <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> element
+consists of the following attributes:</p>
+<ul class="simple">
+<li><p>A required <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute, which is used to reference the category
+from deliverables. Per convention, each category ID should start with
+the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix.</p></li>
+<li><p>A required <code class="docutils literal notranslate"><span class="pre">title</span></code> attribute, which defines the title of the
+category in this language. This will be used as a headline in
+the product index page.</p></li>
+</ul>
+<p>If needed, additional text can be added as HTML content (limited).</p>
+</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="global-categories">
+<div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code> Configuration</span><a class="headerlink" href="#global-categories" title="Link to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;categories&gt;</span>
+<span class="w">   </span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.about&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;About&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.deployment&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;Deployment&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="cm">&lt;!-- ... --&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/category&gt;</span>
+<span class="w">   </span><span class="cm">&lt;!-- ... other languages ... --&gt;</span>
+<span class="nt">&lt;/categories&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>For translated categories, the situation is a bit different.</p>
+<p>Translated categories don’t have an ID. They are linked to the original
+English category with the <code class="docutils literal notranslate"><span class="pre">linkend</span></code> attribute:</p>
+<div class="literal-block-wrapper docutils container" id="category-translations">
+<div class="code-block-caption"><span class="caption-text">Translations of Categories</span><a class="headerlink" href="#category-translations" title="Link to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;de-de&quot;</span><span class="nt">&gt;</span>
+<span class="w">   </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;cat.about&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;Über&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/category&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>This design was chosen that it makes possible to identify typos in the category IDs.</p>
+</section>
+<section id="product-family-settings">
+<h3>Product Family Settings<a class="headerlink" href="#product-family-settings" title="Link to this heading">#</a></h3>
+<p>Product families are used to group related products together. They
+form the overall “flavor”.
+On the main entry page of the portal, the “Products &amp; Solutions” tab
+lists all product families:</p>
+<div class="literal-block-wrapper docutils container" id="global-productfamilies">
+<div class="code-block-caption"><span class="caption-text">Example global_productfamilies.xml Configuration</span><a class="headerlink" href="#global-productfamilies" title="Link to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;productfamilies&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.linux&quot;</span><span class="nt">&gt;</span>Linux<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.cn&quot;</span><span class="nt">&gt;</span>Cloud<span class="w"> </span>Native<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.suse-edge&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Edge<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.suse-ai&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>AI<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/productfamilies&gt;</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="series-settings">
+<h3>Series settings<a class="headerlink" href="#series-settings" title="Link to this heading">#</a></h3>
+<p>Series are used to group products under a global tab. Each product
+can be assigned to only one series.</p>
+<div class="literal-block-wrapper docutils container" id="global-series">
+<div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code> Configuration</span><a class="headerlink" href="#global-series" title="Link to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;series&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.pas&quot;</span><span class="nt">&gt;</span>Products<span class="w"> </span><span class="ni">&amp;amp;</span><span class="w"> </span>Solutions<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.sbp&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Best<span class="w"> </span>Practices<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.trd&quot;</span><span class="nt">&gt;</span>Technical<span class="w"> </span>References<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.rn&quot;</span><span class="nt">&gt;</span>Release<span class="w"> </span>Notes<span class="nt">&lt;/item&gt;</span>
+<span class="nt">&lt;/series&gt;</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="product-definition">
+<span id="id2"></span><h2>Product Definition<a class="headerlink" href="#product-definition" title="Link to this heading">#</a></h2>
+<p>A product is defined with the <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element.
+It contains the following attributes:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (required)</p>
+<p>The unique identifier for the product.
+It must not start with a number and must be unique across
+the whole portal configuration.
+The product ID should be short and descriptive.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">family</span></code> (required)</p>
+<p>The product family this product belongs to.
+It must match an existing product family ID that is defined
+in the <code class="docutils literal notranslate"><span class="pre">&lt;productfamily&gt;</span></code> element.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">series</span></code> (required)</p>
+<p>The series this product belongs to.
+It must match an existing series ID that is defined
+in the <code class="docutils literal notranslate"><span class="pre">&lt;series&gt;</span></code> element.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rank</span></code> (optional)</p>
+<p>A number to determine the order of the products on the portal.
+Look at the existing products to determine a good rank for
+your product.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sitemap</span></code> (optional)</p>
+<p>Whether the product should be included in the sitemap.
+By default, all products are included in the sitemap.
+Set this attribute to “false” to exclude the product
+and all of its releases and deliverables from the sitemap.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code> (optional)</p>
+<p>Whether the product is behind a login.
+A gated product cannot be accessed without logging in.
+By default, products are public. Set this attribute to “true”
+to make the product gated.</p>
+</li>
+</ul>
+<p>Furthermore, a product contains the following child elements:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> (required)</p>
+<p>The name of the product.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;acronym&gt;</span></code> (optional)</p>
+<p>An optional acronym for the product.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;maintainers&gt;</span></code> (required)</p>
+<p>The maintainers of the product. A product must have at
+least one maintainer.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;categories&gt;</span></code> (optional)</p>
+<p>Categories that are specific for this product.
+See section <a class="reference internal" href="group-deliverables.html#group-deliverables"><span class="std std-ref">Grouping Deliverables with Categories</span></a> for more information
+about categories.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;descriptions&gt;</span></code> (optional)</p>
+<p>A description of the product. This element contains one
+or more <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> elements.
+Each <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element has a <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute for the
+language content.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element contains additional child elements:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code></p>
+<p>The title of the product shown in the tile on the main
+portal page.</p>
+</li>
+<li><p>HTML elements (<code class="docutils literal notranslate"><span class="pre">&lt;p&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;div&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;ul&gt;</span></code>, etc.)</p>
+<p>Additional description content that is shown on the product
+page. The allowed HTML elements are limited to a subset of
+HTML5.</p>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> (required)</p>
+<p>A release of the product. Each product must have at least
+one release defined with a <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element.
+Each <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element contains the deliverables for
+this release for at least English. Other languages are optional.</p>
+</li>
+</ul>
+</section>
+<section id="single-vs-multi-file-configuration">
+<h2>Single vs. Multi File Configuration<a class="headerlink" href="#single-vs-multi-file-configuration" title="Link to this heading">#</a></h2>
+<p>Technically it doesn’t matter if you put all the configuration in a
+single file or split it into multiple files and refer to them.</p>
+<p>A single configuration file may be helpful when you validate the
+file or to get a quick overview of the whole configuration. However,
+such a file can get very long (&gt;20.000 lines!)</p>
+<p>However, for better maintainability and readability, it is highly
+recommended to split the configuration into multiple files.</p>
+<p>To refer to other files, use XInclude. This is a standard XML mechanism
+to include other XML files and looks like this:</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Example XInclude</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;path/to/a/different/unit.xml&quot;</span>
+<span class="w">   </span><span class="na">xmlns:xi=</span><span class="s">&quot;http://www.w3.org/2001/XInclude&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>In most cases, the XInclude namespace can be omitted when you put the namespace
+into the root element (which you should do).</p>
+</section>
+<section id="directory-hierarchy">
+<h2>Directory Hierarchy<a class="headerlink" href="#directory-hierarchy" title="Link to this heading">#</a></h2>
+<p>When splitting the configuration into multiple files, it is recommended to follow a clear directory hierarchy:</p>
+<ul>
+<li><p><strong>A main directory</strong></p>
+<p>Contains all configuration files. This directory can be named
+as you like. In this documentation, we use <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>
+as an example.</p>
+</li>
+<li><p><strong>A main config file</strong></p>
+<p>Contains the main configuration for the portal.
+This file can be named as you like. In this documentation,
+we use <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code> as an example.
+This file contains the <code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code> root element and includes
+the other files with XInclude.</p>
+</li>
+<li><p><strong>Optional global setting files</strong></p>
+<p>These file can be placed directly in the main directory or they can
+be kept inside the main config file. This is basically a matter of taste.
+Examples for global setting files are:</p>
+<ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code> for categories</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">global_productfamilies.xml</span></code> for product families</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code> for series</p></li>
+</ul>
+</li>
+<li><p><strong>Product directories</strong></p>
+<p>Each product gets its own directory, for example <code class="file docutils literal notranslate"><span class="pre">productA/</span></code>.
+This directory contains the product configuration and all releases
+of this individual product.
+For example:</p>
+<ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">productA/productA.xml</span></code> is the main product configuration
+file, which contains the <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element.
+It includes all releases of this product with XInclude.
+By convention, this file should be named the same than the directory
+with the <code class="file docutils literal notranslate"><span class="pre">.xml</span></code> suffix.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">product/release-1.xml</span></code> for release 1</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">product/release-2.xml</span></code> for release 2</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">product/desc/desc.xml</span></code> for additional descriptions of the
+product.
+Usually each language gets its own description file,
+for example <code class="file docutils literal notranslate"><span class="pre">product/desc/en-us.xml</span></code> for English
+descriptions. Same applies for other languages.
+All languages are included in the <code class="file docutils literal notranslate"><span class="pre">desc.xml</span></code> file.</p></li>
+</ul>
+</li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Example Directory Hierarchy</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>config.d/
+├── global_categories.xml
+├── global_productfamilies.xml
+├── global_series.xml
+├── portal.xml
+├── productA/
+│   ├── productA.xml
+│   ├── release-1.xml
+│   └── release-2.xml
+└── [... more products ...]
+</pre></div>
+</div>
+</div>
+</section>
+<section id="about-ids-and-idrefs">
+<h2>About IDs and IDREFs<a class="headerlink" href="#about-ids-and-idrefs" title="Link to this heading">#</a></h2>
+<p>The portal configuration relies heavily on ID/IDREFs to reference to
+different parts:</p>
+<ul>
+<li><p>An ID (an “anchor”) is an unique identifier for an element.</p>
+<p>IDs are used for products, releases, deliverables, categories, product families, and series.
+It must not start with a number and must be unique across the
+whole portal configuration.
+It is defined with the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.
+The value of the ID can be freely chosen, but it is recommended to
+use a clear naming convention.</p>
+</li>
+<li><p>An IDREF is a cross reference to an ID.</p>
+<p>It is defined with the <code class="docutils literal notranslate"><span class="pre">linkend</span></code> attribute and must match an existing ID.
+However, the attributes <code class="docutils literal notranslate"><span class="pre">family</span></code>, <code class="docutils literal notranslate"><span class="pre">series</span></code>, and <code class="docutils literal notranslate"><span class="pre">category</span></code> are also
+of type IDREFs.</p>
+</li>
+</ul>
+<p>Both ID and IDREF are checked during validation of the portal configuration.
+Possible errors can be:</p>
+<ul class="simple">
+<li><p>The ID is not unique.
+For example, if two deliverables have the same ID.</p></li>
+<li><p>The ID does not follow the XML naming rules.
+For example, it starts with a number.</p></li>
+<li><p>The IDREF does not match any existing ID.
+For example, if a deliverable references a non-existing category.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Managing Portal Configuration</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="create-portal.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Creating a Portal Configuration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#portal-definition">Portal Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#global-settings">Global Settings</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#category-settings">Category settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#product-family-settings">Product Family Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#series-settings">Series settings</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#product-definition">Product Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-vs-multi-file-configuration">Single vs. Multi File Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-hierarchy">Directory Hierarchy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#about-ids-and-idrefs">About IDs and IDREFs</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/portal-config/building-blocks.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/user/portal-config/building-blocks.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Tom Schraitle | Sushant Gaurav.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
