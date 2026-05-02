@@ -19,7 +19,8 @@ Docbuild builds documentation from DocBook 5/ASCIIDoc, manages XML configs, clon
 * Models: `docbuild/models/`
 * Logging helper: `docbuild/logging.py`
 * CI: `.github/workflows/ci.yml` (pytest tests), `.github/workflows/release.yml` (release on merge).
-* Shell Aliases: `devel/activate-aliases.sh`
+* Custom shell aliases: `devel/activate-aliases.sh`
+* Sphinx docs: `docs/` (built with `makedocs` from our custom shell alias), source: `docs/source/`, config: `docs/source/conf.py`.
 
 
 ## Primary goals
@@ -52,6 +53,7 @@ Ensure the generated code conforms to these points:
 * Follow repository formatting with `ruff`.
 * Small functions, single responsibility, readable code.
 
+
 ## Behavior & Priorities
 
 1. Follow direct user directives first.
@@ -65,3 +67,10 @@ Ensure the generated code conforms to these points:
 * Provide minimal explanations.
 * When returning code, include file path and only the changed code block(s).
 * Show how to run tests that verify the change.
+
+
+## Documentation
+
+* For code changes, update or add docstrings in the affected functions/classes.
+* For user-facing features, update the Sphinx docs in `docs/source/` and ensure they build correctly with `makedocs`.
+* For any new CLI commands, add usage examples in the CLI help and update the relevant documentation sections.

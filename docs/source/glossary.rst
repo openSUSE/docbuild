@@ -1,5 +1,5 @@
-Glossary
-========
+:octicon:`question` Glossary
+============================
 
 For Python specific terms, look into:
 

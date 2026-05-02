@@ -13,3 +13,8 @@ html {
     padding-bottom: 0.5em; /* Space between title text and the line */
     margin-bottom: 1em;    /* Space between the line and the content below */
 }
+
+.homepage-nav-card .sd-card-title {
+    font-size: 1.3rem;
+    line-height: 1.25;
+}

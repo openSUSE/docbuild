@@ -29,14 +29,16 @@ Module Contents
 
    Outsourced logic to avoid code duplication between App and Env config phases.
    Using Sequence[Path] ensures compatibility with both lists and tuples.
+
    :param e: The exception that was raised during validation.
    :param model_class: The Pydantic model class that was being validated
-     (AppConfig or EnvConfig).
-   :param config_files: The list of config files that were attempted to be loaded, used for error context.
+      (AppConfig or EnvConfig).
+   :param config_files: The list of config files that were attempted to be
+      loaded, used for error context.
    :param verbose: The verbosity level from the CLI options, which can be
-     used to control the level of detail in the error output.
+      used to control the level of detail in the error output.
    :param ctx: The Click context, used to exit the CLI with an appropriate
-     status code after handling the error.
+      status code after handling the error.
 
 
 .. py:function:: load_app_config(ctx: click.Context, app_config: pathlib.Path, max_workers: str | None) -> None

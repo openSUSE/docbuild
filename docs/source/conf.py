@@ -53,6 +53,12 @@ rst_prolog = f"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    #
+    # AutoAPI must run early to generate API files before other extensions
+    # Generate API documentation from source code
+    # https://sphinx-autoapi.readthedocs.io/en/latest/
+    "autoapi.extension",
+    #
     # Include documentation from docstrings
     # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
     "sphinx.ext.autodoc",
@@ -81,17 +87,21 @@ extensions = [
     # https://sphinx-copybutton.readthedocs.io/en/latest/
     "sphinx_copybutton",
     #
+    # Card/grid components for richer documentation landing pages
+    # https://sphinx-design.readthedocs.io/
+    "sphinx_design",
+    #
     # Render type hints in signatures
     # https://github.com/tox-dev/sphinx-autodoc-typehints
     "sphinx_autodoc_typehints",
-    #
-    # Generate API documentation from source code
-    # https://sphinx-autoapi.readthedocs.io/en/latest/
-    "autoapi.extension",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This pattern also affects html_static_path and html_extra_path.
+exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "__pycache__"]
 
 language = "en"
 
@@ -171,7 +181,7 @@ html_context = {
 }
 
 html_theme_options = {
-    "announcement": "Documentation is under construction.",
+    # "announcement": "Documentation is under construction.",
     "show_prev_next": True,
     # "html_last_updated_fmt": "%b %d, %Y",
     "content_footer_items": ["last-updated"],
