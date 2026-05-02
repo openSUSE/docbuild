@@ -1,5 +1,5 @@
-Developer Guide
-===============
+:octicon:`code-review` Developer Guide
+======================================
 
 This guide provides all the necessary information for contributing to the project. It covers core concepts, design principles, and instructions for setting up your development environment. You will also find detailed procedures for testing, creating releases, and other common development tasks.
 

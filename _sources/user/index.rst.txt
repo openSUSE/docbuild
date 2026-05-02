@@ -1,5 +1,5 @@
-User Guide
-==========
+:octicon:`person` User Guide
+============================
 
 .. toctree::
    :maxdepth: 2
