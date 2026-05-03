@@ -29,6 +29,7 @@ This guide provides all the necessary information for contributing to the projec
    create-release
    trigger-actions
 
+   migrate-config
    build-docs
    howto
 

@@ -1,0 +1,2 @@
+Add a new topic into the Developer Guide about how to migrate the
+old Docserv config (version 6) into new Portal config (version 7).
