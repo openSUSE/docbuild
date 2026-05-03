@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a New Release &#8212; docbuild 0.17.0 documentation</title>
+    <title>Creating a New Release &#8212; docbuild 0.18.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../_static/documentation_options.js?v=0c3dd48d"></script>
+    <script src="../_static/documentation_options.js?v=ba2e7b09"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -491,24 +491,42 @@
                   
   <section id="creating-a-new-release">
 <span id="create-release"></span><h1>Creating a New Release<a class="headerlink" href="#creating-a-new-release" title="Link to this heading">#</a></h1>
-<p>When you are ready to release a new version of the project, start with creating a new release branch. There you bump the version, build the changelog, and adjust minor things like the documentation. Avoid commiting changes that introduces new features or add breaking changes.</p>
+<p>A release is a snapshot of the project at a specific point in time, typically
+associated with a version number. It represents a stable and tested state of
+the project that can be shared with users. Creating a release involves several
+steps to ensure that the project is properly packaged, documented, and ready
+for distribution.</p>
+<p>Ensure the the following pre-requisites are met before starting the release process:</p>
+<ul class="simple">
+<li><p>You have pulled the latest changes from the main branch of the repository.</p></li>
+<li><p>You have the necessary permissions to create a release.</p></li>
+</ul>
 <p>Follow these steps:</p>
 <ol class="arabic">
-<li><p>Ensure that you have the latest changes from the main branch of the repository.</p></li>
 <li><p>Create a new branch named <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p></li>
 <li><p><a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">Bump the version</span></a>.</p></li>
 <li><p><a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Update the project</span></a>.</p></li>
 <li><p><a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">Build the changelog</span></a>.</p></li>
+<li><p><a class="reference internal" href="build-docs.html#build-docs"><span class="std std-ref">Build the documentation</span></a>.</p></li>
+<li><p>Optionally, look for Ruff issues:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ruff check .</span>
+</pre></div>
+</div>
+</li>
 <li><p>In your current branch, push the branch to the remote repository:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git push -u origin HEAD</span>
 </pre></div>
 </div>
 </li>
-<li><p>Wait for the CI to pass. If it fails, fix the issues and commit again.</p></li>
+<li><p>Wait for the CI to pass.</p>
+<ul class="simple">
+<li><p>If it fails, fix the issues and commit again.</p></li>
 <li><p>If the CI passes, (squash-)merge your release branch into the main branch.
 The GitHub Action workflow will automatically create a new release based on the name of the release branch.</p></li>
-<li><p>Find the release in the GitHub repository under the <a class="reference external" href="https://github.com/openSUSE/docbuild/releases/">Releases</a> section.</p></li>
+</ul>
+</li>
 </ol>
+<p>Find the new release in the GitHub repository under the <a class="reference external" href="https://github.com/openSUSE/docbuild/releases/">Releases</a> section.</p>
 </section>
 
 

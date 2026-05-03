@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building Documentation &#8212; docbuild 0.17.0 documentation</title>
+    <title>Building Documentation &#8212; docbuild 0.18.0 documentation</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../_static/documentation_options.js?v=0c3dd48d"></script>
+    <script src="../_static/documentation_options.js?v=ba2e7b09"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -495,15 +495,18 @@
 <ol class="arabic">
 <li><p>Prepare your environment by following the instructions in <a class="reference internal" href="prepare-environment.html#prepare-devel-env"><span class="std std-ref">Preparing Your Development Environment</span></a>.</p></li>
 <li><p>Build the HTML documentation using the <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">makedocs</span></a> command:</p>
-<div class="literal-block-wrapper docutils container" id="makedocs">
-<div class="code-block-caption"><span class="caption-text">Building the documentation</span><a class="headerlink" href="#makedocs" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">makedocs</span>
+<div class="highlight-shell-session notranslate" id="makedocs"><div class="highlight"><pre><span></span><span class="go">makedocs</span>
 </pre></div>
 </div>
+<p>If you want to have a bit more control, use this command:</p>
+<div class="highlight-shell-session notranslate" id="sphinx-build"><div class="highlight"><pre><span></span><span class="go">uv run --frozen make -C docs html</span>
+</pre></div>
 </div>
 </li>
-<li><p>Find the generated documentation in the <code class="file docutils literal notranslate"><span class="pre">docs/build/html</span></code> directory.</p></li>
+<li><p>Watch for warnings and errors during the build process.
+If you encounter any issues, review the output and fix them accordingly.</p></li>
 </ol>
+<p>Find the generated documentation in the <code class="file docutils literal notranslate"><span class="pre">docs/build/html</span></code> directory.</p>
 </section>
 
 
