@@ -21,6 +21,83 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.18.0
+==============
+
+Bug Fixes
+---------
+
+- Fixed the ``config`` subcommand to prevent crashes when displaying help (``-h/--help``) with an invalid configuration file. The ``app`` and ``env`` subcommands have been unified into ``config list`` and ``config validate`` for a more streamlined user experience. (:gh:`112`)
+- Improved error handling for configuration loading. Malformed TOML files now trigger a formatted diagnostic message with line and column details instead of a Python traceback. (:gh:`175`)
+- Added strict syntax validation for configuration placeholders. The application will now explicitly report an error and halt when encountering malformed placeholders (e.g., missing or incorrectly ordered curly braces like ``{server.name``) instead of silently leaving them unresolved. (:gh:`233`)
+
+
+Improved Documentation
+----------------------
+
+- Describe the new portal schema from the perspective of a user trying to add
+  or change the config.
+  Additionally, rework on the glossary page to improve the layout and readability of terms and definitions. (:gh:`238`)
+- Improve usability and readability of docs by adding
+  homepage navigation cards using Sphinx Design extension. (:gh:`247`)
+
+
+Infrastructure
+--------------
+
+- Several dependency updates:
+
+  * `Update pytest-cov requirement from >=6.1.1 to >=7.1.0 <https://github.com/openSUSE/docbuild/pull/244>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.2.0 to >=3.10.2 <https://github.com/openSUSE/docbuild/pull/243>`_
+  * `Update sphobjinv requirement from >=2.3.1.3 to >=2.4 <https://github.com/openSUSE/docbuild/pull/242>`_
+  * `Update sphinx requirement from >=8.2.3 to >=9.1.0 <https://github.com/openSUSE/docbuild/pull/241>`_
+  * `Update pydata-sphinx-theme requirement from >=0.16.1 to >=0.17.1 <https://github.com/openSUSE/docbuild/pull/240>`_
+  * `Update sphinx-autoapi requirement from >=3.6.0 to >=3.8.0 <https://github.com/openSUSE/docbuild/pull/229>`_
+  * `Update towncrier requirement from >=24.8.0 to >=25.8.0 <https://github.com/openSUSE/docbuild/pull/228>`_
+  * `Update pydantic requirement from >=2.11.4 to >=2.13.3 <https://github.com/openSUSE/docbuild/pull/227>`_
+  * `Update tomlkit requirement from >=0.13.2 to >=0.14.0 <https://github.com/openSUSE/docbuild/pull/226>`_
+  * `Update rich requirement from >=14.0.0 to >=15.0.0 <https://github.com/openSUSE/docbuild/pull/225>`_
+  * `Bump softprops/action-gh-release from 2 to 2.6.2 <https://github.com/openSUSE/docbuild/pull/219>`_
+  * `Update pyright requirement from >=1.1.401 to >=1.1.408 <https://github.com/openSUSE/docbuild/pull/218>`_
+  * `Update setuptools requirement from >=77 to >=82.0.1 <https://github.com/openSUSE/docbuild/pull/217>`_
+  * `Update ruff requirement from >=0.11.12 to >=0.15.10 <https://github.com/openSUSE/docbuild/pull/216>`_
+  * `Update pytest-asyncio requirement from >=1.0.0 to >=1.3.0 <https://github.com/openSUSE/docbuild/pull/215>`_
+  * `Update docformatter requirement from >=1.7.5 to >=1.7.7 <https://github.com/openSUSE/docbuild/pull/214>`_
+
+
+Code Refactoring
+----------------
+
+- Refactor product schema (:pr:`197`)
+
+  These changes reflect broad architectural shifts and naming conventions
+  throughout the entire configuration system.
+
+  * **Rebranding**: The naming convention has shifted from Docserv to Portal.
+    This is reflected in namespace changes and element renaming
+    (e.g., ``<product>`` is now part of a portal root).
+
+  * **Documentation-First Design**: The schema now heavily utilizes ``db:refname``
+    and ``db:refpurpose`` annotations for almost every element and attribute.
+    This allows for automated generation of human-readable documentation directly
+    from the RNC file.
+
+  * **Enhanced Modularity**: The schema now explicitly supports splitting large
+    configuration files into smaller, more manageable parts. By utilizing
+    inclusion mechanisms, you can maintain different sections of the portal
+    (like ``<categories>`` or specific products) in separate files, leading to
+    a cleaner and more maintainable structure.
+
+  * **Implicit Language Logic**: Master/source language identification
+    has shifted from a boolean attribute (``@default``) to a value-based system.
+    The schema now assumes ``en-us`` is the source locale for products and deliverables.
+
+  * **Migration Tooling**: To facilitate the transition, an XSLT migration
+    stylesheet is available. This tool automates the conversion of version
+    6.0 configuration files to the 7.0 format, handling the renaming of
+    elements, restructuring of attributes, and the removal of deprecated metadata. (:gh:`187`)
+
+
 Version 0.17.0
 ==============
 

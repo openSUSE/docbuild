@@ -1,1 +1,0 @@
-Added strict syntax validation for configuration placeholders. The application will now explicitly report an error and halt when encountering malformed placeholders (e.g., missing or incorrectly ordered curly braces like ``{server.name``) instead of silently leaving them unresolved.

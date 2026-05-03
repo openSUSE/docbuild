@@ -1,1 +1,0 @@
-Fixed the ``config`` subcommand to prevent crashes when displaying help (``-h/--help``) with an invalid configuration file. The ``app`` and ``env`` subcommands have been unified into ``config list`` and ``config validate`` for a more streamlined user experience.

@@ -1,2 +1,0 @@
-Improve usability and readability of docs by adding
-homepage navigation cards using Sphinx Design extension.
