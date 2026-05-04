@@ -264,6 +264,7 @@ fabric.properties
 /*.py
 # but not this file:
 !/setup.py
+!/_docbuild_backend.py
 
 # For node
 node_modules/
