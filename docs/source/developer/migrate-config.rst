@@ -13,7 +13,7 @@ With the introduction of the new Portal Schema in version 7, the schema got
 a massive overhaul.
 
 Therefore, the old Docserv config is not compatible with the new Portal Schema
-anymore  and needs to be migrated. The migration process can be done by a
+anymore and needs to be migrated. The migration process can be done by a
 migration XSLT stylesheet.
 
 You have two options how the result can look like:
