@@ -1,0 +1,1 @@
+Added an in-tree PEP 517 build backend to automatically compile RELAX NG Compact (``.rnc``) schemas into XML (``.rng``) format during the build process, ensuring both formats are available in the distributed package.

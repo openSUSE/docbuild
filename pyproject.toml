@@ -8,8 +8,12 @@
 [build-system]
 requires = [
   "setuptools>=82.0.1",
+  "wheel"
 ]
-build-backend = "setuptools.build_meta"
+# Use the local script as the backend
+build-backend = "_docbuild_backend"
+# Tell Python to look in the current directory for the script
+backend-path = ["."]
 
 [project]
 name = "docbuild"
@@ -106,6 +110,7 @@ docbuild = "docbuild.__main__:cli"
 package-dir = {"" = "src"}
 package-data = { "docbuild" = ["py.typed",
                                "config/xml/data/*.rnc",
+                               "config/xml/data/*.rng",
                                "config/xml/data/*.xsl",
                                "etc/git/*"
                                ]}
