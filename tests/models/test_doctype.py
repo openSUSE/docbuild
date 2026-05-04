@@ -262,47 +262,47 @@ def test_sorted_langs_in_doctype_instantiation():
         (
             "sles/15-SP6/en-us",
             (
-                "product[@productid='sles']"
-                "/docset[@setid='15-SP6']"
-                "/builddocs/language[@lang='en-us']"
+                "product[@id='sles']"
+                "/docset[@path='15-SP6']"
+                "/resources/locale[@lang='en-us']"
             ),
         ),
         # 2: product + all docsets + a single language
         (
             "sles//en-us",
-            ("product[@productid='sles']/docset/builddocs/language[@lang='en-us']"),
+            ("product[@id='sles']/docset/resources/locale[@lang='en-us']"),
         ),
         # 3: product + one docset + one lifecycle + multiple languages
         (
             "sles/15-SP6@supported/en-us,de-de",
             (
-                "product[@productid='sles']"
-                "/docset[@setid='15-SP6'][@lifecycle='supported']"
-                "/builddocs/language[@lang='de-de' or @lang='en-us']"
+                "product[@id='sles']"
+                "/docset[@path='15-SP6'][@lifecycle='supported']"
+                "/resources/locale[@lang='de-de' or @lang='en-us']"
             ),
         ),
         # 4: product + one docset + multiple lifecycles + one language
         (
             "sles/15-SP7@supported,beta/de-de",
             (
-                "product[@productid='sles']"
-                "/docset[@setid='15-SP7'][@lifecycle='supported' or @lifecycle='beta']"
-                "/builddocs/language[@lang='de-de']"
+                "product[@id='sles']"
+                "/docset[@path='15-SP7'][@lifecycle='supported' or @lifecycle='beta']"
+                "/resources/locale[@lang='de-de']"
             ),
         ),
         # 5: product + one docset + multiple lifecycles + all languages
         (
             "sles/15-SP6@supported/*",
             (
-                "product[@productid='sles']"
-                "/docset[@setid='15-SP6'][@lifecycle='supported']"
-                "/builddocs/language"
+                "product[@id='sles']"
+                "/docset[@path='15-SP6'][@lifecycle='supported']"
+                "/resources/locale"
             ),
         ),
         # 6: many products + many docsets + many lifecycles + English
-        ("//en-us", "product/docset/builddocs/language[@lang='en-us']"),
+        ("//en-us", "product/docset/resources/locale[@lang='en-us']"),
         # 7: all products, docsets, lifecycles, and languages
-        ("//*", "product/docset/builddocs/language"),
+        ("//*", "product/docset/resources/locale"),
     ],
 )
 def test_xpath_in_doctype(string, xpath):

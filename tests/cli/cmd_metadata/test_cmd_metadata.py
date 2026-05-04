@@ -100,36 +100,39 @@ def mock_context_with_config_dir(
     [
         (
             """
-            <docservconfig>
-              <product productid="sles">
-                <docset setid="15-sp6">
-                  <builddocs>
-                    <language lang="en-us">
-                        <deliverable>
-                            <dc>DC-SLE-Micro-5.5-admin</dc>
-                            <format html="1"/>
+            <portal>
+              <product id="sles">
+                <docset id="sles.16-sp6" path="15-sp6">
+                  <resources>
+                    <locale lang="en-us">
+                        <deliverable id="sles.16-sp6.admin">
+                            <dc file="DC-SLE-Micro-5.5-admin">
+                                <format html="1"/>
+                            </dc>
                         </deliverable>
-                    </language>
-                  </builddocs>
+                    </locale>
+                  </resources>
                 </docset>
               </product>
-              <product productid="other">
-                <docset setid="1.0">
-                   <builddocs>
-                     <language lang="en-us">
+              <product id="other">
+                <docset id="other.1.0" path="1.0">
+                   <resources>
+                     <locale lang="en-us">
                         <deliverable>
-                            <dc>DC-Micro-5.4-cockpit</dc>
-                            <format html="1"/>
+                            <dc file="DC-Micro-5.4-cockpit">
+                                <format html="1"/>
+                            </dc>
                         </deliverable>
                         <deliverable>
-                            <dc>DC-Micro-5.5-cockpit</dc>
-                            <format html="1"/>
+                            <dc file="DC-Micro-5.5-cockpit">
+                                <format html="1"/>
+                            </dc>
                         </deliverable>
-                    </language>
-                   </builddocs>
+                    </locale>
+                   </resources>
                 </docset>
               </product>
-            </docservconfig>
+            </portal>
             """,
             "sles/15-sp6/en-us",
             1,
@@ -137,32 +140,34 @@ def mock_context_with_config_dir(
         ),
         (
             """
-            <docservconfig>
-              <product productid="sles">
-                <docset setid="15-sp6">
-                    <builddocs>
-                        <language lang="en-us">
+            <portal>
+              <product id="sles">
+                <docset id="sles.16-sp6" path="15-sp6">
+                    <resources>
+                        <locale lang="en-us">
                             <deliverable>
-                                <dc>DC-SLE-Micro-5.5-admin</dc>
-                                <format html="1"/>
+                                <dc file="DC-SLE-Micro-5.5-admin">
+                                    <format html="1"/>
+                                </dc>
                             </deliverable>
-                        </language>
-                    </builddocs>
+                        </locale>
+                    </resources>
                 </docset>
               </product>
-              <product productid="other">
-              <docset setid="1.0">
-                  <builddocs>
-                    <language lang="en-us">
+              <product id="other">
+              <docset id="other.1.0" path="1.0">
+                  <resources>
+                    <locale lang="en-us">
                       <deliverable>
-                        <dc>DC-Micro-5.4-cockpit</dc>
-                        <format html="1"/>
+                        <dc file="DC-Micro-5.4-cockpit">
+                            <format html="1"/>
+                        </dc>
                       </deliverable>
-                    </language>
-                  </builddocs>
+                    </locale>
+                  </resources>
                 </docset>
               </product>
-            </docservconfig>
+            </portal>
             """,
             "//en-us",
             2,
@@ -171,13 +176,13 @@ def mock_context_with_config_dir(
                 "sles/15-sp6/en-us:DC-SLE-Micro-5.5-admin",
             },
         ),
-        ("<docservconfig/>", "nonexistent/1.0/en-us", 0, set()),
+        ("<portal/>", "nonexistent/1.0/en-us", 0, set()),
         (
-            """<docservconfig>
-                 <product productid='sles'>
-                    <docset setid='15-sp6'/>
+            """<portal>
+                 <product id='sles'>
+                    <docset id='sles.15-sp6' path="15-sp6" />
                  </product>
-               </docservconfig>""",
+               </portal>""",
             "sles/15-sp6/de-de",
             0,
             set(),
@@ -217,25 +222,27 @@ def deliverable() -> Deliverable:
     """Provide a mock Deliverable object for testing."""
     xml_string = """
     <docservconfig>
-      <product productid="sles">
-        <docset setid="15-SP7">
-          <builddocs>
+      <product id="sles">
+        <docset id="sles.15-sp7" path="15-SP7">
+          <resources>
              <git remote="https://github.com/SUSE/doc-sle.git"/>
-             <language default="1" lang="en-us">
+             <locale lang="en-us">
                 <branch>main</branch>
                 <subdir>l10n/sles/en-us</subdir>
                 <deliverable>
-                    <dc>DC-SLES-deployment</dc>
-                    <format html="1" pdf="1" single-html="0"/>
+                    <dc file="DC-SLES-deployment">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
                 </deliverable>
-             </language>
-          </builddocs>
+             </locale>
+          </resources>
         </docset>
       </product>
     </docservconfig>
     """
     root = etree.fromstring(xml_string)
-    deliverable_node = root.find(".//deliverable")
+    locale_node = root.find(".//locale")
+    deliverable_node = locale_node.find("deliverable")
     return Deliverable(deliverable_node)
 
 
@@ -245,11 +252,11 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
 
     Provides the common product/docset/name/acronym structure used by tests.
     """
-    prod_node = etree.Element("product", productid=deliverable.productid)
+    prod_node = etree.Element("product", id=deliverable.xml.productid, productid=deliverable.xml.productid)
     name_el = etree.SubElement(prod_node, "name")
     name_el.text = "SUSE Linux Enterprise Server"
     etree.SubElement(prod_node, "acronym").text = "SLES"
-    etree.SubElement(prod_node, "docset", setid=deliverable.docsetid)
+    etree.SubElement(prod_node, "docset", id=deliverable.xml.docsetid, path=deliverable.xml.docsetid, setid=deliverable.xml.docsetid, productid=deliverable.xml.productid)
     root = etree.Element("docservconfig")
     root.append(prod_node)
     return etree.ElementTree(root)
@@ -540,10 +547,10 @@ class TestProcessEmptyDoctypes:
         # and docset to avoid the AttributeError.
         xml_string = """
         <docservconfig>
-            <product productid="sles">
+            <product id="sles">
               <name>SUSE Linux Enterprise Server</name>
               <acronym>SLES</acronym>
-              <docset setid="15-SP6"/>
+              <docset id="sles.15-sp6" path="15-SP6"/>
             </product>
         </docservconfig>
         """
@@ -583,10 +590,10 @@ class TestProcessEmptyDoctypes:
         # Arrange (use the fixture for the context)
         xml_string = """
         <docservconfig>
-            <product productid="sles">
+            <product id="sles">
               <name>SUSE Linux Enterprise Server</name>
               <acronym>SLES</acronym>
-              <docset setid="15-SP6"/>
+              <docset id="sles.15-sp6" path="15-SP6"/>
             </product>
         </docservconfig>
         """
@@ -640,7 +647,7 @@ class TestProcessEmptyDoctypes:
         # Simulate a failing deliverable returned by process_doctype
         mock_deliverable = Mock(spec=Deliverable)
         mock_deliverable.full_id = (
-            f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}:DC-FAIL"
+            f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}:DC-FAIL"
         )
         mock_process_doctype.return_value = [mock_deliverable]
 
@@ -681,21 +688,21 @@ def test_store_productdocset_json_merges_and_writes(
     meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
+        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
     # Patch collect_files_flat to return our file (relative path)
     with patch.object(
         metaprocess_pkg,
         "collect_files_flat",
-        return_value=[(doctype, deliverable.docsetid, [Path("meta1.json")])],
+        return_value=[(doctype, deliverable.xml.docsetid, [Path("meta1.json")])],
     ):
         metaprocess_pkg.store_productdocset_json(
             mock_context_with_config_dir, [doctype], stitchnode
         )
 
     # Assert written JSON exists and contains merged document
-    out_file = Path(meta_cache_dir) / deliverable.productid / f"{deliverable.docsetid}.json"
+    out_file = Path(meta_cache_dir) / deliverable.xml.productid / f"{deliverable.xml.docsetid}.json"
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
     # Updated assertions to match your new model structure
@@ -716,14 +723,14 @@ def test_store_productdocset_json_warns_on_empty_metadata(
     meta_file.write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
+        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
     with (
         patch.object(
             metaprocess_pkg,
             "collect_files_flat",
-            return_value=[(doctype, deliverable.docsetid, [Path("empty.json")])],
+            return_value=[(doctype, deliverable.xml.docsetid, [Path("empty.json")])],
         ),
         patch.object(metaprocess_pkg, "log") as mock_log,
     ):
@@ -742,19 +749,19 @@ def test_store_productdocset_json_handles_read_error(
 ):  # sourcery skip: extract-duplicate-method
     """If reading a metadata file raises, it should be caught and an error logged."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    bad_file = Path(meta_cache_dir) / "bad.json"
+    bad_file = meta_cache_dir / "bad.json"
     # Write invalid JSON to cause json.load to raise
     bad_file.write_text("{ not json }", encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.productid}/{deliverable.docsetid}/{deliverable.lang}"
+        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
     with (
         patch.object(
             metaprocess_pkg,
             "collect_files_flat",
-            return_value=[(doctype, deliverable.docsetid, [Path("bad.json")])],
+            return_value=[(doctype, deliverable.xml.docsetid, [Path("bad.json")])],
         ),
         patch.object(metaprocess_pkg, "log") as mock_log,
     ):

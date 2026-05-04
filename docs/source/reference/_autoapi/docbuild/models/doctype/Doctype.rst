@@ -147,9 +147,9 @@ docbuild.models.doctype.Doctype
 
       >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
       >>> expected = (
-      ...     "product[@productid='sles']/docset[@setid='15-SP6']"
+      ...     "product[@id='sles']/docset[@path='15-SP6']"
       ...     "[@lifecycle='supported']"
-      ...     "/builddocs/language[@lang='de-de' or @lang='en-us']"
+      ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
       ... )
       >>> result == expected
       True

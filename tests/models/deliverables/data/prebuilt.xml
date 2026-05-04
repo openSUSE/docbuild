@@ -1,0 +1,16 @@
+<product id="sles" schemaversion="6.0">
+  <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">
+    <resources>
+      <git remote="https://github.com/SUSE/doc-sle.git" />
+      <locale lang="en-us">
+        <branch>maintenance/SLE15SP6</branch>
+        <deliverable id="sles.15-SP6.prebuilt.release-notes" type="prebuilt">
+          <prebuilt>
+            <url format="html">https://example.invalid/html/product/</url>
+            <url format="single-html">https://example.invalid/html/product/product.html</url>
+          </prebuilt>
+        </deliverable>
+      </locale>
+    </resources>
+  </docset>
+</product>

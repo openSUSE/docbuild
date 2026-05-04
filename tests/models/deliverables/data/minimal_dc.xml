@@ -1,0 +1,32 @@
+<product id="sles" schemaversion="6.0">
+  <name>SUSE Linux Enterprise Server</name>
+  <acronym>SLES</acronym>
+  <categories>
+    <category lang="en-us">
+      <language id="cat.about" title="About" />
+    </category>
+  </categories>
+  <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">
+    <version>15 SP6</version>
+    <resources>
+      <git remote="https://github.com/SUSE/doc-sle.git" />
+      <locale lang="en-us">
+        <branch>maintenance/SLE15SP6</branch>
+        <deliverable id="sles.15-SP6.dc-sles-administration" type="dc" category="cat.about">
+          <dc file="DC-SLES-administration">
+            <format epub="0" html="0" pdf="1" single-html="1" />
+          </dc>
+        </deliverable>
+      </locale>
+      <locale lang="de-de">
+        <branch>maintenance/SLE15SP6</branch>
+        <subdir>l10n/sles/de-de</subdir>
+        <deliverable id="sles.15-SP6.dc-sles-administration.de" type="dc">
+          <dc file="DC-SLES-administration">
+            <format epub="0" html="0" pdf="1" single-html="1" />
+          </dc>
+        </deliverable>
+      </locale>
+    </resources>
+  </docset>
+</product>
