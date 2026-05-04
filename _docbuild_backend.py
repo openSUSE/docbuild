@@ -11,6 +11,10 @@ prepare_metadata_for_build_wheel = _orig.prepare_metadata_for_build_wheel
 get_requires_for_build_wheel = _orig.get_requires_for_build_wheel
 get_requires_for_build_sdist = _orig.get_requires_for_build_sdist
 
+# Proxy PEP 660 editable install hooks to standard setuptools
+get_requires_for_build_editable = getattr(_orig, "get_requires_for_build_editable", None)
+prepare_metadata_for_build_editable = getattr(_orig, "prepare_metadata_for_build_editable", None)
+
 
 def run_trang() -> None:
     """Find and convert .rnc files to .rng using trang."""
@@ -64,3 +68,18 @@ def build_sdist(
     """
     run_trang()
     return _orig.build_sdist(sdist_directory, config_settings)
+
+
+def build_editable(
+    wheel_directory: str,
+    config_settings: dict[str, Any] | None = None,
+    metadata_directory: str | None = None,
+) -> str:
+    """Build an editable wheel for local development/CI.
+
+    :param wheel_directory: The directory where the wheel should be placed.
+    :param config_settings: Optional configuration settings for the build.
+    :param metadata_directory: Optional directory for metadata.
+    """
+    run_trang()
+    return _orig.build_editable(wheel_directory, config_settings, metadata_directory)
