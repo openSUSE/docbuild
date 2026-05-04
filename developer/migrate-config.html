@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating the Project &#8212; docbuild 0.18.0 documentation</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; docbuild 0.18.0 documentation</title>
   
   
   
@@ -48,13 +48,13 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/update-project';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/migrate-config';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Adding News Fragments" href="add-newsfragments.html" />
-    <link rel="prev" title="Bumping the Version" href="bump-version.html" />
+    <link rel="next" title="Building Documentation" href="build-docs.html" />
+    <link rel="prev" title="Triggering Actions Manually" href="trigger-actions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -418,12 +418,12 @@
 <li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a Specific Package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updating the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
 <li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-changelog.html">Building the Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
-<li class="toctree-l1"><a class="reference internal" href="migrate-config.html">Migrating old Docserv Config to new Portal Config</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Migrating old Docserv Config to new Portal Config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto.html">Howto</a></li>
 </ul>
@@ -473,7 +473,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code-review" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1ZM1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0Zm2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06Z"></path></svg> Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Updating the Project</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Migrating old Docserv Config to new Portal Config</span></li>
   </ul>
 </nav>
 </div>
@@ -490,16 +490,176 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="updating-the-project">
-<span id="update-project"></span><h1>Updating the Project<a class="headerlink" href="#updating-the-project" title="Link to this heading">#</a></h1>
-<p>When you change the version of this project it should be reflected already in your VENV when you have installed it in “editable mode”.</p>
-<p>In some cases, it may be helpful to manually update the project.</p>
-<div class="literal-block-wrapper docutils container" id="uv-pip-update-project">
-<div class="code-block-caption"><span class="caption-text">Updating the project</span><a class="headerlink" href="#uv-pip-update-project" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv pip install --upgrade -e .</span>
+  <section id="migrating-old-docserv-config-to-new-portal-config">
+<span id="migrate-config"></span><h1>Migrating old Docserv Config to new Portal Config<a class="headerlink" href="#migrating-old-docserv-config-to-new-portal-config" title="Link to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section is used to document the migration process from the old Docserv config to the new Portal Schema. It has to be done only once and is not
+relevant for the regular users of the new Portal Schema or users starting
+from scratch.</p>
+</div>
+<p>With the introduction of the new Portal Schema in version 7, the schema got
+a massive overhaul.</p>
+<p>Therefore, the old Docserv config is not compatible with the new Portal Schema
+anymore and needs to be migrated. The migration process can be done by a
+migration XSLT stylesheet.</p>
+<p>You have two options how the result can look like:</p>
+<ul>
+<li><p>A directory with multiple files.</p>
+<p>This is the recommended approach if you want to organize your configuration
+in a modular way and split the configuration into multiple files.
+It allows for better tracking of changes and easier collaboration.
+Files are referenced by XInclude elements and resolved during the validation
+process.</p>
+</li>
+<li><p>A single configuration file.</p>
+<p>This is useful if you want to debug the whole file, want to search for
+specific entries or values, or just prefer a single file.</p>
+</li>
+</ul>
+<section id="pre-requisites">
+<span id="migration-prerequisites"></span><h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading">#</a></h2>
+<p>Before starting the migration process, ensure you have the following tools installed:</p>
+<ul class="simple">
+<li><p><strong class="command">xmllint</strong></p></li>
+<li><p><strong class="command">xsltproc</strong></p></li>
+<li><p><strong class="command">jing</strong></p></li>
+</ul>
+<p>Furthermore, you need a Docserv stitchfile:</p>
+<ul>
+<li><p>Copy it with <strong class="command">scp</strong> from the Docserv server to your local machine.</p>
+<p>The Docserv stitchfile, typically located at
+<code class="file docutils literal notranslate"><span class="pre">/tmp/docserv-stitch-$</span><em><span class="pre">{DATE</span></em><span class="pre">}.xml</span></code> (whereas <code class="docutils literal notranslate"><span class="pre">${DATE}</span></code> is the
+ISO date of the stitchfile creation in the YYYY-MM-DD format).</p>
+</li>
+<li><p>Create it locally by following the instructions in <a class="reference internal" href="#prepare-stitchfile"><span class="std std-ref">Preparing the Docserv Stitchfile</span></a>.</p></li>
+</ul>
+</section>
+<section id="preparing-the-docserv-stitchfile">
+<span id="prepare-stitchfile"></span><h2>Preparing the Docserv Stitchfile<a class="headerlink" href="#preparing-the-docserv-stitchfile" title="Link to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The steps below is what the command <strong class="command">docserv-stitch</strong> does on
+the Docserv server to create the stitchfile. Of course, the script is
+more complex and takes care of validation and other checks, but the above steps are the core of the stitchfile creation process.</p>
+<p>As such, make sure your Docserv configs are valid.</p>
+</div>
+<p>If you don’t have access to the Docserv server or prefer to create the stitchfile locally, follow these steps to prepare it:</p>
+<ol class="arabic">
+<li><p>Clone the Docserv config repo if you haven’t already:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://gitlab.suse.de/susedoc/docserv-config.git</span>
+<span class="go">cd docserv-config/config.d</span>
 </pre></div>
 </div>
+</li>
+<li><p>Set the result file name and path:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">stitchfile=&quot;/tmp/docserv-stitch-$(date --iso-8601).xml&quot;</span>
+</pre></div>
 </div>
+</li>
+<li><p>Prepare the header of the stitchfile:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat &lt;&lt; EOF &gt; &quot;$stitchfile&quot;</span>
+<span class="go">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="go">&lt;docservconfig&gt;</span>
+<span class="go">&lt;!-- &lt;hashes&gt;...&lt;/hashes&gt; --&gt;</span>
+
+<span class="go">EOF</span>
+</pre></div>
+</div>
+</li>
+<li><p>Copy content from all categories into result:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xpath &quot;/*&quot; _categories.xml &gt;&gt; &quot;$stitchfile&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Append all config files to the result:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xpath &quot;/*&quot; [a-z]*.xml &gt;&gt; &quot;$stitchfile&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Close the root element:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">printf &quot;&lt;/docservconfig&gt;\n&quot; &gt;&gt; &quot;$stitchfile&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="converting-the-stitchfile">
+<span id="convert-stitchfile"></span><h2>Converting the Stitchfile<a class="headerlink" href="#converting-the-stitchfile" title="Link to this heading">#</a></h2>
+<p>To convert the stitchfile to the new Portal Schema format, use:</p>
+<ul class="simple">
+<li><p>the command <strong class="command">xsltproc</strong> to run the XSLT transformation,</p></li>
+<li><p>some of the available XSLT parameters to customize the output as needed (see <a class="reference internal" href="#available-xslt-parameters"><span class="std std-ref">Available XSLT Parameters</span></a>),</p></li>
+<li><p>the migration XSLT stylesheet located at <code class="file docutils literal notranslate"><span class="pre">src/docbuild/config/xml/data/convert-v6-to-v7.xsl</span></code>, and</p></li>
+<li><p>the stitchfile you prepared in the <a class="reference internal" href="#prepare-stitchfile"><span class="std std-ref">previous section</span></a>.</p></li>
+</ul>
+<section id="available-xslt-parameters">
+<span id="id1"></span><h3>Available XSLT Parameters<a class="headerlink" href="#available-xslt-parameters" title="Link to this heading">#</a></h3>
+<p>The migration XSLT stylesheet accepts the following XSLT parameters:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cat.prefix</span></code> (default <code class="docutils literal notranslate"><span class="pre">cat.</span></code>)</p>
+<p>The prefix for category IDs.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schemafile</span></code> (default empty)</p>
+<p>The path to the new Portal Schema file (e.g., <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code>).
+The stylesheet recognize the format (RNC or RNG) and changes the <code class="docutils literal notranslate"><span class="pre">&lt;?xml-model?&gt;</span></code> PI accordingly.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">outputfile</span></code> (default <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code>)</p>
+<p>The name of the main configuration file.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">outputdir</span></code> (default <code class="file docutils literal notranslate"><span class="pre">output/</span></code>)</p>
+<p>The base directory where the output file(s) will be saved.
+If you want to use the current directory, use <code class="docutils literal notranslate"><span class="pre">./</span></code>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use.xincludes</span></code> (default <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
+<p>A boolean parameter that determines whether to use XInclude elements in the output.
+Set it to <code class="docutils literal notranslate"><span class="pre">true</span></code> to create a directory with multiple files, or use the
+default to create a single configuration file.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schemaversion</span></code> (default latest)</p>
+<p>The version of the new Portal Schema to target. This is used to determine the necessary transformations to apply during the migration process.</p>
+</li>
+</ul>
+</section>
+<section id="creating-multiple-files">
+<span id="create-config-file-with-multiple-files"></span><h3>Creating Multiple Files<a class="headerlink" href="#creating-multiple-files" title="Link to this heading">#</a></h3>
+<p>To create a directory with multiple files, do the following:</p>
+<ol class="arabic">
+<li><p>Run the XSLT transformation with the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xsltproc --stringparam outputfile portal.xml \</span>
+<span class="go">  --stringparam outputdir &quot;./output/&quot; \</span>
+<span class="go">  --param use.xincludes &#39;true()&#39; \</span>
+<span class="go">  src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile</span>
+</pre></div>
+</div>
+<p>This will create all files in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory, with the main
+configuration file named <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code> and additional files for
+each category as needed.</p>
+</li>
+<li><p>Copy the generated files to the desired location.</p></li>
+<li><p>Adjust the env configuration to point to the main configuration file,
+use the variable <code class="docutils literal notranslate"><span class="pre">paths.config_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.main_portal_config</span></code>.</p></li>
+</ol>
+</section>
+<section id="creating-a-single-file">
+<span id="create-single-config-file"></span><h3>Creating a Single File<a class="headerlink" href="#creating-a-single-file" title="Link to this heading">#</a></h3>
+<p>To create a single configuration file, , do the following:</p>
+<ol class="arabic">
+<li><p>Run the XSLT transformation with the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xsltproc --stringparam schemafile &quot;portal-config.rnc&quot; \</span>
+<span class="go">  --stringparam outputfile portal-$(date --iso-8601).xml \</span>
+<span class="go">  --stringparam outputdir &quot;./&quot; \</span>
+<span class="go">  src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile</span>
+</pre></div>
+</div>
+<p>This will create a file named <code class="file docutils literal notranslate"><span class="pre">portal-&lt;DATE&gt;.xml</span></code> in the current directory.</p>
+</li>
+<li><p>Copy the generated output file to the desired location.</p></li>
+<li><p>Adjust the env configuration to point to the main configuration file,
+use the variable <code class="docutils literal notranslate"><span class="pre">paths.config_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.main_portal_config</span></code>.</p></li>
+</ol>
+</section>
+</section>
 </section>
 
 
@@ -513,20 +673,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="bump-version.html"
+       href="trigger-actions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Bumping the Version</p>
+        <p class="prev-next-title">Triggering Actions Manually</p>
       </div>
     </a>
     <a class="right-next"
-       href="add-newsfragments.html"
+       href="build-docs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Adding News Fragments</p>
+        <p class="prev-next-title">Building Documentation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -542,10 +702,29 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requisites">Pre-requisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-docserv-stitchfile">Preparing the Docserv Stitchfile</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#converting-the-stitchfile">Converting the Stitchfile</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-xslt-parameters">Available XSLT Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-multiple-files">Creating Multiple Files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-single-file">Creating a Single File</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/update-project.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/migrate-config.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -560,7 +739,7 @@
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/developer/update-project.rst.txt">
+    <a href="../_sources/developer/migrate-config.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
