@@ -3,6 +3,7 @@
 from pathlib import Path
 import subprocess
 from typing import Any
+import sys
 
 from setuptools import build_meta as _orig  # type: ignore
 
@@ -32,14 +33,15 @@ def run_trang() -> None:
         try:
             # Run trang command
             subprocess.run(["trang", str(rnc_path), str(rng_path)], check=True)
+            print(f"Successfully converted {rnc_path} -> {rng_path}")
         except FileNotFoundError:
             print(
                 "WARNING: 'trang' command not found. "
-                "Ensure it is installed to generate RNG schemas."
+                "Ensure it is installed to generate RNG schemas.",
+                file=sys.stderr
             )
         except subprocess.CalledProcessError as e:
-            print(f"ERROR: trang conversion failed for {rnc_path}")
-            raise e
+            print(f"ERROR: trang conversion failed for {rnc_path}", file=sys.stderr)
 
 
 def build_wheel(
