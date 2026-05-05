@@ -2,8 +2,8 @@
 
 from pathlib import Path
 import subprocess
-from typing import Any
 import sys
+from typing import Any
 
 from setuptools import build_meta as _orig  # type: ignore
 
@@ -40,7 +40,7 @@ def run_trang() -> None:
                 "Ensure it is installed to generate RNG schemas.",
                 file=sys.stderr
             )
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             print(f"ERROR: trang conversion failed for {rnc_path}", file=sys.stderr)
 
 
