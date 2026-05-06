@@ -1193,21 +1193,33 @@ div {
       ds.title,
       ds.subtitle?,
       ds.url+,
-      ds.descriptions
-      # ds.metadata  # TODO: We need to check what we need
+      ds.descriptions,
+      ds.metadata?
     }
 }
 
+[
+  db:refname [ "meta" ]
+  db:refpurpose [ "A single, separate metadata" ]
+]
+div {
+ds.meta =
+  ## A single named metadata entry
+  element meta {
+    attribute name { text },
+    text
+  }
+}
 
 [
   db:refname [ "metadata" ]
-  db:refpurpose [ "" ]
+  db:refpurpose [ "A collection of additional metadata" ]
 ]
 div {
 ds.metadata =
-  ##
+  ## A collection of additional metadata
   element metadata {
-    text  # TODO
+    ds.meta+
   }
 }
 
