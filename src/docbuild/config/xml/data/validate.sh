@@ -95,9 +95,10 @@ fi
 echo "Validating $INPUT against $SCHEMAFILE..."
 
 if [ "$USE_XINCLUDE" = true ]; then
-    # We set both JAVA_OPTS (openSUSE/Fedora) and JAVA_ARGS (Debian/Ubuntu)
-    # to ensure the XInclude parser configuration is picked up regardless of the wrapper.
-    ADDITIONAL_FLAGS="$XINCLUDE_PROP" jing $JING_FLAGS "$SCHEMAFILE" "$INPUT"
+    # We set ADDITIONAL_FLAGS (openSUSE), JAVA_OPTS (Fedora)
+    # and JAVA_ARGS (Debian/Ubuntu) to ensure the XInclude parser
+    # configuration is picked up regardless of the wrapper.
+    ADDITIONAL_FLAGS="$XINCLUDE_PROP" JAVA_OPTS="$XINCLUDE_PROP" JAVA_ARGS="$XINCLUDE_PROP" jing $JING_FLAGS "$SCHEMAFILE" "$INPUT"
 else
     jing $JING_FLAGS "$SCHEMAFILE" "$INPUT"
 fi
