@@ -12,6 +12,11 @@ USE_XINCLUDE=false
 DISABLE_ID_CHECK=false
 INPUT=""
 
+if ! command -v jing >/dev/null 2>&1; then
+    echo "Error: 'jing' is required but not installed." >&2
+    exit 1
+fi
+
 # --- Help Function ---
 usage() {
     SCRIPT_NAME=${0##*/}
@@ -77,13 +82,14 @@ XINCLUDE_PROP="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.
 # Detect if the schema is in compact syntax (.rnc)
 case "$SCHEMAFILE" in
     *.rnc)
-        JING_FLAGS+="-c "
+        JING_FLAGS="$JING_FLAGS -c"
         ;;
 esac
 
 if [ "$DISABLE_ID_CHECK" = true ]; then
-    JING_FLAGS+="-i "
+    JING_FLAGS="$JING_FLAGS -i"
 fi
+
 
 # --- Execution ---
 echo "Validating $INPUT against $SCHEMAFILE..."

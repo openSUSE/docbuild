@@ -17,6 +17,13 @@ XSLT="$SCRIPT_DIR/convert-v6-to-v7.xsl"
 INPUT="docserv-stitch-2026-04-27.xml"
 USE_XINCLUDE=false
 
+
+if ! command -v xsltproc >/dev/null 2>&1; then
+    echo "Error: 'xsltproc' is required but not installed." >&2
+    exit 1
+fi
+
+
 # --- Help Function ---
 usage() {
     # Using shell parameter expansion ${0##*/} instead of basename $0
@@ -80,7 +87,7 @@ if [ "$USE_XINCLUDE" = true ]; then
     # --stringparam use.xincludes 1 passes the parameter to your XSLT logic
     # Note: You may also need to add the physical --xinclude flag here if xsltproc
     # needs to resolve the tags before passing them to the XSLT.
-    XINCLUDE_FLAGS="--stringparam use.xincludes 1"
+    XINCLUDE_FLAGS="--xinclude --stringparam use.xincludes 1"
 fi
 
 # --- Execution ---
