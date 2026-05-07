@@ -57,17 +57,6 @@ body:
       required: true
 
   - type: textarea
-    id: expected_behavior
-    attributes:
-      label: Expected Behavior
-      description: What did you expect to happen?
-      placeholder: |
-        I expected the command to return this output...
-        Or, I expected the application to behave like this...
-    validations:
-      required: false
-
-  - type: textarea
     id: actual_behavior
     attributes:
       label: Actual Behavior
@@ -75,6 +64,17 @@ body:
       placeholder: |
         Instead, I got this output...
         Or, the application crashed with this error...
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: |
+        I expected the command to return this output...
+        Or, I expected the application to behave like this...
     validations:
       required: false
 

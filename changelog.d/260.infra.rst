@@ -1,0 +1,1 @@
+Switch order in GH issue template (bug report)
