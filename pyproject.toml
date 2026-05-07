@@ -62,7 +62,7 @@ typing = [
     "pyright>=1.1.408",
 ]
 formatting = [
-    "docformatter>=1.7.7",
+    "docformatter>=1.7.8",
     "ruff>=0.15.10",
 ]
 tests = [
