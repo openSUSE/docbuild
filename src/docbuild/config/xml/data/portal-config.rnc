@@ -1147,10 +1147,6 @@ ds.deliverable_en_us_dc =
     ),
     #
     ds.dc
-    #ds.git?,
-    #ds.subdir?,
-    #ds.format,
-    #ds.partners*
   }
 }
 
@@ -1228,8 +1224,13 @@ ds.dc =
   element dc {
     ds.dc.file.attr,
     #
-    ds.git?,
-    ds.subdir?,
+    (
+      ds.git,
+      (
+        ds.branch? &
+        ds.subdir?
+      )
+    )?,
     ds.format,
     ds.subdeliverable*,
     ds.partners*
