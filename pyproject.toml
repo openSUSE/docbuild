@@ -85,7 +85,7 @@ docs = [
     "sphobjinv>=2.4",
 ]
 repl = [
-    "ipython>=9.3.0",
+    "ipython>=9.13.0",
 ]
 devel = [
   {include-group = "typing"},
