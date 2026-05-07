@@ -63,7 +63,7 @@ typing = [
 ]
 formatting = [
     "docformatter>=1.7.8",
-    "ruff>=0.15.10",
+    "ruff>=0.15.12",
 ]
 tests = [
     "pytest>=9.0.3",
