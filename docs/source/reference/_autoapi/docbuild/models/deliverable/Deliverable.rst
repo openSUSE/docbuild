@@ -3,7 +3,7 @@ docbuild.models.deliverable.Deliverable
 
 .. py:class:: docbuild.models.deliverable.Deliverable
 
-   Deliverable model class.
+   Deliverable model class operated on a validated config.
 
    * DeliverableXMLView owns facts you can derive from the XML node alone.
    * DeliverablePaths owns path construction.

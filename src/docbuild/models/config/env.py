@@ -286,9 +286,32 @@ class EnvPathsConfig(BaseModel):
     config_dir: Path = Field(
         title="Configuration Directory",
         description="The configuration directory containing application and environment files (e.g. app.toml).",
-        examples=["/etc/docbuild"],
+        examples=["/etc/docbuild/config.d"],
     )
     "Path to configuration files."
+
+    main_portal_config: Path = Field(
+        title="Main Portal XML Configuration File",
+        description="Path of the main Portal XML configuration file.",
+        examples=[
+            "/etc/docbuild/config.d/portal.xml",
+            " ~/.config/docbuild/config.d/portal.xml"
+        ],
+    )
+    "Path to the main portal XML configuration file."
+
+    portal_rncschema: Path = Field(
+        title="Portal RELAX NG (RNC) Schema File",
+        description=(
+            "Path of the RELAX NG (RNC) schema file used for "
+            "validating the Portal configuration."
+        ),
+        examples=[
+            "/etc/docbuild/portal-config.rnc",
+            " ~/.config/docbuild/portal-config.rnc"
+        ],
+    )
+    "Path to the portal RELAX NG (RNC) schema file."
 
     root_config_dir: Path = Field(
         title="Root Configuration Directory",

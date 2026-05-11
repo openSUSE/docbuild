@@ -4,8 +4,8 @@ import asyncio
 import logging
 from pathlib import Path
 
+from ...cli.cmd_portal.process import parse_portal_config
 from ...cli.context import DocBuildContext
-from ...config.xml.stitch import create_stitchfile
 from ...constants import GITLOGGER_NAME
 from ...models.repo import Repo
 from ...utils.contextmgr import make_timer
@@ -24,16 +24,12 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     """
     # The calling command function is expected to have checked context.envconfig.
     envcfg = context.envconfig
-    config_dir_str = envcfg.paths.config_dir
     repo_dir_str = envcfg.paths.repo_dir
+    main_portal_config = Path(envcfg.paths.main_portal_config).expanduser()
 
-    configdir = Path(config_dir_str).expanduser()
     repo_dir = Path(repo_dir_str).expanduser()
 
-    xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
-    stitchnode = await create_stitchfile(xmlconfigs)
-    if stitchnode is None:
-        raise ValueError("Stitch node could not be created.")
+    stitchnode = await parse_portal_config(main_portal_config)
 
     if not repos:
         git_nodes = await asyncio.to_thread(stitchnode.xpath, ".//git")

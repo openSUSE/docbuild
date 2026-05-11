@@ -19,15 +19,15 @@ def mock_deliverable():
     deli.git.surl = "gh://org/repo"
     return deli
 
-@patch.object(process, "create_stitchfile", new_callable=AsyncMock)
+@patch.object(process, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(process, "get_deliverable_from_doctype")
 @patch.object(process, "ManagedGitRepo")
 async def test_process_check_files_all_found(
-    mock_repo_class, mock_get_deli, mock_stitch, tmp_path, mock_deliverable
+    mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
 ):
     """Test full process when all files exist in the repo."""
     # 1. Setup mocks
-    mock_stitch.return_value = MagicMock()
+    mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [mock_deliverable]
 
     mock_repo = AsyncMock()
@@ -51,14 +51,15 @@ async def test_process_check_files_all_found(
     mock_repo.clone_bare.assert_called_once()
     mock_repo.ls_tree.assert_called_with("main")
 
-@patch.object(process, "create_stitchfile", new_callable=AsyncMock)
+
+@patch.object(process, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(process, "get_deliverable_from_doctype")
 @patch.object(process, "ManagedGitRepo")
 async def test_process_check_files_missing(
-    mock_repo_class, mock_get_deli, mock_stitch, tmp_path, mock_deliverable
+    mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
 ):
     """Test full process when a file is missing in the repo."""
-    mock_stitch.return_value = MagicMock()
+    mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [mock_deliverable]
 
     mock_repo = AsyncMock()
@@ -79,14 +80,15 @@ async def test_process_check_files_missing(
     expected_error = "[gh://org/repo] sles/16.0/en-us:README.md"
     assert expected_error in result
 
-@patch.object(process, "create_stitchfile", new_callable=AsyncMock)
+
+@patch.object(process, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(process, "get_deliverable_from_doctype")
 @patch.object(process, "ManagedGitRepo")
 async def test_process_git_failure(
-    mock_repo_class, mock_get_deli, mock_stitch, tmp_path, mock_deliverable
+    mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
 ):
     """Test coverage for the branch where Git cloning/fetching fails."""
-    mock_stitch.return_value = MagicMock()
+    mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [mock_deliverable]
 
     mock_repo = AsyncMock()
@@ -105,11 +107,12 @@ async def test_process_git_failure(
     expected_error = "[gh://org/repo] sles/16.0/en-us:README.md"
     assert expected_error in result
 
-@patch.object(process, "create_stitchfile", new_callable=AsyncMock)
+
+@patch.object(process, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(process, "get_deliverable_from_doctype")
-async def test_process_no_deliverables_found(mock_get_deli, mock_stitch, tmp_path):
+async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_config, tmp_path):
     """Test path where stitch tree returns no deliverables."""
-    mock_stitch.return_value = MagicMock()
+    mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [] # No deliverables
 
     ctx = MagicMock()
@@ -121,13 +124,16 @@ async def test_process_no_deliverables_found(mock_get_deli, mock_stitch, tmp_pat
     result = await process_check_files(ctx, doctypes=None)
     assert result == []
 
-@patch.object(process, "create_stitchfile", new_callable=AsyncMock)
-async def test_process_no_xml_files(mock_stitch, tmp_path):
-    """Verify behavior when no XML files are present at all."""
+
+@patch.object(process, "parse_portal_config", new_callable=AsyncMock)
+async def test_process_no_xml_files(mock_parse_portal_config, tmp_path):
+    """Verify behavior when the main portal config is missing."""
     ctx = MagicMock()
     config_dir = tmp_path / "empty"
     config_dir.mkdir()
     ctx.envconfig.paths.config_dir = config_dir
+    ctx.envconfig.paths.main_portal_config = tmp_path / "missing.xml"
 
     result = await process_check_files(ctx, doctypes=None)
     assert result == []
+    mock_parse_portal_config.assert_not_awaited()

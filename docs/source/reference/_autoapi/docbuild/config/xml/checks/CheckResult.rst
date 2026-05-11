@@ -5,9 +5,5 @@ docbuild.config.xml.checks.CheckResult
 
    Result of a validation check.
 
-
-   .. py:method:: __bool__() -> bool
-
-      Return True if the check was successful, False otherwise.
-
+   Represents a single validation problem found at a specific location.
 

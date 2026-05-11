@@ -121,6 +121,22 @@ Key naming convention:
 
     Path to the directory for additional configuration files.
 
+.. _envtoml-paths-main-portal-config:
+
+``main_portal_config``
+    :Type: :code:`str`
+    :Default: ``{config_dir}/portal.xml``
+
+    Absolute path to the main Portal XML configuration file.
+
+.. _envtoml-paths-portal-schema:
+
+``portal_schema``
+    :Type: :code:`str`
+    :Default: ``{root_config_dir}/portal-schema.rnc``
+
+    Absolute path to the Portal RELAX NG (RNC) schema file used for validation.
+
 .. _envtoml-paths-server-rootfiles-dir:
 
 ``server_rootfiles_dir``

@@ -15,6 +15,7 @@ DEFAULT_APP_CONFIG = {
     "max_workers": "half",
     "paths": {
         "config_dir": "/etc/docbuild",
+        "": "",
         "repo_dir": "/data/docserv/repos/permanent-full/",
         "tmp_repo_dir": "/data/docserv/repos/temporary-branches/",
     },
@@ -40,7 +41,8 @@ DEFAULT_ENV_CONFIG = {
         "canonical_url_domain": "http://localhost/",
     },
     "paths": {
-        "config_dir": "/etc/docbuild",
+        "config_dir": "/etc/docbuild/config.d",
+        "main_portal_config": "/etc/docbuild/config.d/portal.xml",
         "root_config_dir": "/etc/docbuild",
         "jinja_dir": "/etc/docbuild/jinja",
         "server_rootfiles_dir": "/etc/docbuild/root-files",

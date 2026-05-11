@@ -5,8 +5,8 @@ import logging
 from pathlib import Path
 
 from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
+from docbuild.cli.cmd_portal.process import parse_portal_config
 from docbuild.cli.context import DocBuildContext
-from docbuild.config.xml.stitch import create_stitchfile
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
@@ -55,16 +55,15 @@ async def process_check_files(
     log.info("Starting DC file availability check...")
 
     env_config = ctx.envconfig
-    config_dir = env_config.paths.config_dir.expanduser()
+    main_portal_config = env_config.paths.main_portal_config.expanduser()
     repo_root = env_config.paths.repo_dir.expanduser()
 
-    # 1. Prepare XML and Stitch Tree
-    xml_files = list(config_dir.rglob("*.xml"))
-    if not xml_files:
-        log.warning(f"No XML files found in {config_dir}")
+    # 1. Parse the main portal config (including XIncludes)
+    if not main_portal_config.exists():
+        log.warning("Main portal config not found: %s", main_portal_config)
         return []
 
-    stitch_tree = await create_stitchfile(xml_files)
+    stitch_tree = await parse_portal_config(main_portal_config)
 
     # 2. Identify target doctypes (use defaults if none provided)
     if not doctypes:

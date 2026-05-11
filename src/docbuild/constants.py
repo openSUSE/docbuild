@@ -146,15 +146,19 @@ used in production."""
 GIT_CONFIG_FILENAME = Path(__file__).parent / "etc/git/gitconfig"
 """The project-specific Git configuration file (relative to this project)"""
 
-# --- State and Logging Constants (Refactored) ---
+# --- State and Logging Constants ---
 
 BASE_STATE_DIR = Path.home() / ".local" / "state" / APP_NAME
 """The directory where application state, logs, and locks are stored,
 per XDG Base Directory Specification."""
 
-GITLOGGER_NAME = "docbuild.git"
+GITLOGGER_NAME = f"{APP_NAME}.git"
 """The standardized name for the Git-related logger."""
 
+PORTALLOGGER_NAME = f"{APP_NAME}.portal"
+"""The standardized name for the Portal-related logger."""
+
+# --- State constants ---
 BASE_LOG_DIR = BASE_STATE_DIR / "logs"
 """The directory where log files will be stored."""
 
@@ -169,3 +173,18 @@ XMLDATADIR = Path(__file__).parent / "config" / "xml" / "data"
 
 DEFAULT_ERROR_LIMIT = 5
 """The maximum number of validation errors to display before truncating the output."""
+
+
+# --- XML namespaces ---
+
+XML_NS = "http://www.w3.org/XML/1998/namespace"
+"""The XML namespace URI for XML elements."""
+
+XINCLUDE_NS = "http://www.w3.org/2001/XInclude"
+"""The XML namespace URI for XInclude elements."""
+
+DOCBOOK_NS = "http://docbook.org/ns/docbook"
+"""The XML namespace URI for DocBook elements."""
+
+XLINK_NS = "http://www.w3.org/1999/xlink"
+"""The XML namespace URI for XLink attributes."""

@@ -1,7 +1,6 @@
 """Tests for the 'docbuild repo clone' command."""
 
 import logging
-import re
 from unittest.mock import AsyncMock
 
 import pytest
@@ -23,6 +22,7 @@ class _DummyPaths:
     def __init__(self, *, config_dir: str, repo_dir: str) -> None:
         self.config_dir = config_dir
         self.repo_dir = repo_dir
+        self.main_portal_config = f"{config_dir}/portal.xml"
 
 
 class _DummyEnv:
@@ -85,7 +85,7 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
   </product>
 </docservconfig>
 """
-    (config_dir / "sles.xml").write_text(xml_content)
+    (config_dir / "portal.xml").write_text(xml_content)
 
     context = DocBuildContext(
         envconfig=_DummyEnv(
@@ -106,9 +106,9 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
 
 # @pytest.mark.asyncio
 async def test_process_stitchnode_none(monkeypatch, tmp_path):
-    """Test that process raises ValueError if create_stitchfile returns None."""
-    # Patch create_stitchfile to return None
-    monkeypatch.setattr(mod_process, "create_stitchfile", AsyncMock(return_value=None))
+    """Test that process raises when parse_portal_config does not return a valid node."""
+    # Patch parse_portal_config to return None (invalid return for this code path)
+    monkeypatch.setattr(mod_process, "parse_portal_config", AsyncMock(return_value=None))
 
     context = DocBuildContext(
         envconfig=_DummyEnv(
@@ -121,8 +121,7 @@ async def test_process_stitchnode_none(monkeypatch, tmp_path):
     (tmp_path / "config").mkdir()
     (tmp_path / "repos").mkdir()
 
-    with pytest.raises(ValueError,
-                       match=re.escape("Stitch node could not be created.")):
+    with pytest.raises(AttributeError):
         await mod_process.process(context, repos=())
 
 
@@ -139,8 +138,8 @@ async def test_process_configdir_none():
         envconfig=_DummyEnv(config_dir="/non/existent/config", repo_dir="/tmp/repos"),
     )
 
-    result = await mod_process.process(context, repos=())
-    assert isinstance(result, int)
+    with pytest.raises(OSError):
+        await mod_process.process(context, repos=())
 
 
 async def test_process_repodir_none():
@@ -150,5 +149,5 @@ async def test_process_repodir_none():
         envconfig=_DummyEnv(config_dir="/tmp/config", repo_dir="/non/existent/repos"),
     )
 
-    result = await mod_process.process(context, repos=())
-    assert isinstance(result, int)
+    with pytest.raises(OSError):
+        await mod_process.process(context, repos=())

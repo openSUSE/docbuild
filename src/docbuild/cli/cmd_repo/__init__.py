@@ -10,7 +10,7 @@ from .cmd_list import cmd_list
 @click.group(help=__doc__)
 @click.pass_context
 def repo(ctx: click.Context) -> None:
-    """Subcommand to validate XML configuration files.
+    """Subcommand to repo management.
 
     :param ctx: The Click context object.
     """

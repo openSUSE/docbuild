@@ -15,6 +15,7 @@ class _DummyPaths:
     def __init__(self, *, config_dir: str, repo_dir: str) -> None:
         self.config_dir = config_dir
         self.repo_dir = repo_dir
+        self.main_portal_config = f"{config_dir}/portal.xml"
 
 
 class _DummyEnv:
@@ -39,8 +40,8 @@ def mock_managed_git_repo(monkeypatch) -> AsyncMock:
 
 
 @pytest.fixture
-def mock_create_stitchfile(monkeypatch) -> AsyncMock:
-    """Fixture to mock create_stitchfile to return a predefined set of repos."""
+def mock_parse_portal_config(monkeypatch) -> AsyncMock:
+    """Fixture to mock parse_portal_config to return a predefined set of repos."""
     stitch_mock = Mock()
     git_node1 = Mock()
     git_node1.attrib.get.return_value = "https://github.com/fakeorg/repo1.git"
@@ -50,7 +51,7 @@ def mock_create_stitchfile(monkeypatch) -> AsyncMock:
     stitch_mock.xpath = Mock(return_value=[git_node1, git_node2])
 
     mock = AsyncMock(return_value=stitch_mock)
-    monkeypatch.setattr(process_module, "create_stitchfile", mock)
+    monkeypatch.setattr(process_module, "parse_portal_config", mock)
     return mock
 
 
@@ -58,9 +59,9 @@ async def test_process_with_specific_repos(
     tmp_path, mock_managed_git_repo, monkeypatch
 ):
     """Test `process` when specific repos are provided, including duplicates."""
-    # We don't need the stitchfile logic for this test, so we can patch it.
+    # We don't need XML parsing logic for this test, so we can patch it.
     monkeypatch.setattr(
-        process_module, "create_stitchfile", AsyncMock(return_value=Mock())
+        process_module, "parse_portal_config", AsyncMock(return_value=Mock())
     )
 
     repo_dir = tmp_path / "repos"
@@ -89,7 +90,7 @@ async def test_process_with_specific_repos(
 
 
 async def test_process_with_all_repos_from_xml(
-    tmp_path, mock_managed_git_repo, mock_create_stitchfile
+    tmp_path, mock_managed_git_repo, mock_parse_portal_config
 ):
     """Test `process` when no specific repos are provided, using XML config."""
     repo_dir = tmp_path / "repos"
@@ -105,7 +106,7 @@ async def test_process_with_all_repos_from_xml(
     exit_code = await process(context, repos=())
 
     assert exit_code == 0
-    mock_create_stitchfile.assert_awaited_once()
+    mock_parse_portal_config.assert_awaited_once()
 
     assert mock_managed_git_repo.call_count == 2
     called_repos = [Repo(call[0][0]) for call in mock_managed_git_repo.call_args_list]
@@ -120,11 +121,11 @@ async def test_process_with_no_repos_found(
     tmp_path, mock_managed_git_repo, monkeypatch
 ):
     """Test `process` when no repositories are found, ensuring it exits gracefully."""
-    # Mock create_stitchfile to return a stitch node that has no git remotes
+    # Mock parse_portal_config to return a stitch node that has no git remotes
     stitch_mock = Mock()
     stitch_mock.xpath.return_value = []  # No git nodes found
     monkeypatch.setattr(
-        process_module, "create_stitchfile", AsyncMock(return_value=stitch_mock)
+        process_module, "parse_portal_config", AsyncMock(return_value=stitch_mock)
     )
 
     # Mock the logger to check for the "No repositories" message
@@ -153,9 +154,9 @@ async def test_process_failure_if_one_clone_fails(
     tmp_path, mock_managed_git_repo, monkeypatch
 ):
     """Test that `process` returns 1 if any clone operation fails."""
-    # We don't need the stitchfile logic for this test.
+    # We don't need XML parsing logic for this test.
     monkeypatch.setattr(
-        process_module, "create_stitchfile", AsyncMock(return_value=Mock())
+        process_module, "parse_portal_config", AsyncMock(return_value=Mock())
     )
 
     # Configure the mock to simulate one success and one failure from clone_bare()

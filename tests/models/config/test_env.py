@@ -21,8 +21,10 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
     # Define resolved paths based on the EnvConfig structure
     tmp_general = "/var/tmp/docbuild/doc-example-com"
 
-    resolved_data["paths"]["config_dir"] = "/etc/docbuild"
+    resolved_data["paths"]["config_dir"] = "/etc/docbuild/config.d"
     resolved_data["paths"]["root_config_dir"] = "/etc/docbuild"
+    resolved_data["paths"]["main_portal_config"] = "/etc/docbuild/config.d/portal.xml"
+    resolved_data["paths"]["portal_rncschema"] = "/etc/docbuild/portal-config.rnc"
     resolved_data["paths"]["jinja_dir"] = "/etc/docbuild/jinja-doc-suse-com"
     resolved_data["paths"]["server_rootfiles_dir"] = (
         "/etc/docbuild/server-root-files-doc-suse-com"
@@ -113,6 +115,8 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
         },
         "paths": {
             "config_dir": str(base / "config"),
+            "main_portal_config": str(base / "config/portal.xml"),
+            "portal_rncschema": str(base / "portal-config.rnc"),
             "root_config_dir": str(base / "etc/docbuild"),
             "jinja_dir": str(base / "etc/docbuild/jinja"),
             "server_rootfiles_dir": str(base / "etc/docbuild/rootfiles"),
@@ -229,6 +233,8 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
         },
         "paths": {
             "config_dir": str(tmp_path / "config"),
+            "main_portal_config": str(tmp_path / "config/portal.xml"),
+            "portal_rncschema": str(tmp_path / "portal-config.rnc"),
             "root_config_dir": str(tmp_path),
             "jinja_dir": str(tmp_path),
             "server_rootfiles_dir": str(tmp_path),
@@ -278,9 +284,17 @@ def test_envconfig_invalid_role_fails(mock_valid_raw_env_data: dict[str, Any]):
 
 
 def test_envconfig_unresolved_placeholder_fails(
-    mock_valid_raw_env_data: dict[str, Any]
+    mock_valid_raw_env_data: dict[str, Any],
+    monkeypatch
 ):
     """Test that an unresolved placeholder raises a ValueError."""
+    from docbuild.config.app import PlaceholderResolutionError
+
+    def mock_raise(*args, **kwargs):
+        raise PlaceholderResolutionError("Unresolved placeholder")
+
+    monkeypatch.setattr(config_app_mod, "replace_placeholders", mock_raise)
+
     data = mock_valid_raw_env_data.copy()
     # Introduce an unresolvable placeholder
     data["paths"]["jinja_dir"] = "/etc/docbuild/{UNRESOLVED_PLACEHOLDER}"
@@ -297,8 +311,15 @@ def test_envconfig_with_non_dict_input():
         EnvConfig.model_validate("not a dict")
 
 
-def test_env_config_invalid_placeholder_syntax():
+def test_env_config_invalid_placeholder_syntax(monkeypatch):
     """Ensure EnvConfig raises ValueError for malformed placeholders."""
+    from docbuild.config.app import PlaceholderSyntaxError
+
+    def mock_raise(*args, **kwargs):
+        raise PlaceholderSyntaxError("Malformed placeholder syntax")
+
+    monkeypatch.setattr(config_app_mod, "replace_placeholders", mock_raise)
+
     invalid_data = {
         "server": {"name": "test", "role": "production", "host": "127.0.0.1", "enable_mail": False},
         "config": {"default_lang": "en-us", "languages": ["en-us"], "canonical_url_domain": "https://example.com"},

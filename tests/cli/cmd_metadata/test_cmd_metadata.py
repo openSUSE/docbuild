@@ -84,6 +84,7 @@ def mock_context_with_config_dir(
 
     # Customize the mock_envconfig for this fixture's needs
     mock_envconfig.paths.config_dir = config_dir
+    mock_envconfig.paths.main_portal_config = config_dir / "dummy.xml"
     mock_envconfig.paths.meta_cache_dir.mkdir(parents=True)  # Ensure it exists
 
     # Create a mock for envconfig.paths.tmp
@@ -526,12 +527,12 @@ class TestProcessEmptyDoctypes:
 
     @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
     @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
-    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_process_empty_doctypes(
         self,
         mock_process_doctype: AsyncMock,
-        mock_create_stitchfile: AsyncMock,
+        mock_parse_portal_config: AsyncMock,
         mock_collect_files_flat: Mock,
         mock_store_json: Mock,
         mock_context_with_config_dir: DocBuildContext,
@@ -555,7 +556,7 @@ class TestProcessEmptyDoctypes:
         </docservconfig>
         """
         mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
-        mock_create_stitchfile.return_value = mock_stitch_node
+        mock_parse_portal_config.return_value = mock_stitch_node
 
         mock_collect_files_flat.return_value = [
             (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
@@ -563,8 +564,8 @@ class TestProcessEmptyDoctypes:
 
         await process(mock_context_with_config_dir, doctypes=())
 
-        # Assert that create_stitchfile was called
-        mock_create_stitchfile.assert_called_once()
+        # Assert that parse_portal_config was called
+        mock_parse_portal_config.assert_called_once()
         # Assert that process_doctype was called with the default doctype
         mock_process_doctype.assert_called()
         # Assert that store_productdocset_json was called
@@ -572,12 +573,12 @@ class TestProcessEmptyDoctypes:
 
     @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
     @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
-    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_no_doctypes_uses_default(
         self,
         mock_process_doctype: AsyncMock,
-        mock_create_stitchfile: AsyncMock,
+        mock_parse_portal_config: AsyncMock,
         mock_collect_files_flat: Mock,
         mock_store_json: Mock,
         mock_context_with_config_dir: DocBuildContext,
@@ -599,7 +600,7 @@ class TestProcessEmptyDoctypes:
         """
         mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
 
-        mock_create_stitchfile.return_value = mock_stitch_node
+        mock_parse_portal_config.return_value = mock_stitch_node
         mock_process_doctype.return_value = []
         mock_collect_files_flat.return_value = [
             (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
@@ -611,7 +612,7 @@ class TestProcessEmptyDoctypes:
 
         # Assert
         assert result == 0
-        mock_create_stitchfile.assert_awaited_once()
+        mock_parse_portal_config.assert_awaited_once()
         mock_store_json.assert_called()
         default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
         mock_process_doctype.assert_awaited_once_with(
@@ -624,12 +625,12 @@ class TestProcessEmptyDoctypes:
 
     @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
     @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
-    @patch.object(metaprocess_pkg, "create_stitchfile", new_callable=AsyncMock)
+    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_process_reports_failed_deliverables_and_returns_one(
         self,
         mock_process_doctype: AsyncMock,
-        mock_create_stitchfile: AsyncMock,
+        mock_parse_portal_config: AsyncMock,
         mock_collect_files_flat: Mock,
         mock_store_json: Mock,
         mock_context_with_config_dir: DocBuildContext,
@@ -642,7 +643,7 @@ class TestProcessEmptyDoctypes:
         instead of an inline XML string.
         """
         # Use stitched node fixture rather than constructing manually
-        mock_create_stitchfile.return_value = stitchnode
+        mock_parse_portal_config.return_value = stitchnode
 
         # Simulate a failing deliverable returned by process_doctype
         mock_deliverable = Mock(spec=Deliverable)

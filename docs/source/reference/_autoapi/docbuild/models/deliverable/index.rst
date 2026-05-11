@@ -7,6 +7,13 @@ docbuild.models.deliverable
 
    Deliverable model facade.
 
+   .. warning::
+
+       The deliverable model assumes that the XML node has already been successfully
+       validated against the schema. As such, the model does NOT have defensive checks
+       for missing or malformed XML data.
+       If the XML is invalid, behavior is undefined and may raise exceptions.
+
 
 
 Submodules
