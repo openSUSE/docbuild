@@ -1225,7 +1225,7 @@ ds.dc =
     ds.dc.file.attr,
     #
     (
-      ds.git,
+      ds.git?,
       (
         ds.branch? &
         ds.subdir?
