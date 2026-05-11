@@ -12,13 +12,13 @@ from lxml import etree
 from pydantic import ValidationError
 from rich.console import Console
 
-from ...config.xml.stitch import create_stitchfile
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.manifest import Category, Description, Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
+from ..cmd_portal.process import parse_portal_config
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
@@ -433,12 +433,9 @@ async def process(
     """
     env = context.envconfig
     configdir = Path(env.paths.config_dir).expanduser()
+    main_portal_config = Path(env.paths.main_portal_config).expanduser()
     stdout.print(f"Config path: {configdir}")
-    xmlconfigs = tuple(configdir.rglob("[a-z]*.xml"))
-    try:
-        stitchnode: etree._ElementTree = await create_stitchfile(xmlconfigs)
-    except ValueError as e:
-        log.warning(e)
+    stitchnode: etree._ElementTree = await parse_portal_config(main_portal_config)
 
     tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?

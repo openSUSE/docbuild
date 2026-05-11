@@ -27,6 +27,24 @@ docbuild.models.config.env.EnvPathsConfig
 
 
 
+   .. py:attribute:: main_portal_config
+      :type:  pathlib.Path
+      :value: None
+
+
+      Path to the main portal XML configuration file.
+
+
+
+   .. py:attribute:: portal_rncschema
+      :type:  pathlib.Path
+      :value: None
+
+
+      Path to the portal RELAX NG (RNC) schema file.
+
+
+
    .. py:attribute:: root_config_dir
       :type:  pathlib.Path
       :value: None

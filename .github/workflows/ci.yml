@@ -57,24 +57,26 @@ jobs:
 
       - name: Get dependencies
         run: |
-          rpm -q daps \
+          rpm -q --queryformat="%{NAME}: %{VERSION}\n" daps \
             suse-xsl-stylesheets \
             suse-xsl-stylesheets-sbp \
             geekodoc \
-            docbook-xsl-stylesheets \
-            docbook-xsl-ns \
+            docbook5-xsl-stylesheets \
             xmlgraphics-fop \
             git \
             ditaa \
             libreoffice-draw \
             novdoc \
-            ruby2.5-rubygem-asciidoctor \
             curl \
             tar \
             w3m \
             jq \
+            jing \
+            trang \
             rsvg-convert \
             openssh-clients || true
+          rpm -q --whatprovides --queryformat="%{NAME}: %{VERSION}\n" \
+            "rubygem(asciidoctor)" || true
 
       - name: Setup Python
         uses: actions/setup-python@v6

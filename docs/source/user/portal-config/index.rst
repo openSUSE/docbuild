@@ -21,3 +21,4 @@ Furthermore, it defines translations for specific products that docbuild will bu
    create-xrefs
    create-links
    mark-spotlight
+   validate-portal

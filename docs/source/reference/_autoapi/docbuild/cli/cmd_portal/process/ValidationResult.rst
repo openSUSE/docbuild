@@ -1,7 +1,7 @@
-docbuild.cli.cmd_validate.process.ValidationResult
-==================================================
+docbuild.cli.cmd_portal.process.ValidationResult
+================================================
 
-.. py:class:: docbuild.cli.cmd_validate.process.ValidationResult
+.. py:class:: docbuild.cli.cmd_portal.process.ValidationResult
 
    Normalized result of RNG validation.
 

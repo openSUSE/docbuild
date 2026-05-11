@@ -18,6 +18,7 @@ Submodules
    /reference/_autoapi/docbuild/config/xml/checks/index
    /reference/_autoapi/docbuild/config/xml/list/index
    /reference/_autoapi/docbuild/config/xml/references/index
-   /reference/_autoapi/docbuild/config/xml/stitch/index
+   /reference/_autoapi/docbuild/config/xml/semantic_xpath/index
+   /reference/_autoapi/docbuild/config/xml/xinclude/index
 
 
