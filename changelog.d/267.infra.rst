@@ -1,1 +1,1 @@
-RNC: Correct ``<git>`` tag inside ``<dc>``
+Portal Config: Correct ``<git>`` tag inside ``<dc>``
