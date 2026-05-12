@@ -222,9 +222,9 @@ class Doctype(BaseModel):
 
         >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
         >>> expected = (
-        ...     "product[@productid='sles']/docset[@setid='15-SP6']"
+        ...     "product[@id='sles']/docset[@path='15-SP6']"
         ...     "[@lifecycle='supported']"
-        ...     "/builddocs/language[@lang='de-de' or @lang='en-us']"
+        ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
         ... )
         >>> result == expected
         True
@@ -235,9 +235,9 @@ class Doctype(BaseModel):
         # Example: /sles/15-SP6@supported/en-us,de-de
         product = "product"
         if self.product != Product.ALL:
-            product += f"[@productid={self.product.value!r}]"
+            product += f"[@id={self.product.value!r}]"
 
-        setids = [f"@setid={d!r}" for d in self.docset if d != "*"]
+        setids = [f"@path={d!r}" for d in self.docset if d != "*"]
 
         setids_str = " or ".join(setids)
         if setids_str:
@@ -256,12 +256,12 @@ class Doctype(BaseModel):
             docset += f"[{lifecycle}]"
 
         if "*" in self.langs:
-            language = "language"
+            language = "locale"
         else:
             language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
-            language = f"language[{language}]"
+            language = f"locale[{language}]"
 
-        return f"{product}/{docset}/builddocs/{language}"
+        return f"{product}/{docset}/resources/{language}"
 
     def product_xpath_segment(self: Self) -> str:
         """Return the XPath segment for the product node.

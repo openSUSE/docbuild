@@ -96,14 +96,15 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
     fmt = deliverable.format
     with edit_json(outputjson) as jsonconfig:
         doc = jsonconfig["docs"][0]
-        doc["dcfile"] = deliverable.dcfile
-        doc["format"]["html"] = deliverable.html_path
+        doc["dcfile"] = deliverable.xml.dcfile
+        doc["format"]["html"] = deliverable.paths.html_path
         if fmt.get("pdf"):
-            doc["format"]["pdf"] = deliverable.pdf_path
+            doc["format"]["pdf"] = deliverable.paths.pdf_path
         if fmt.get("single-html"):
-            doc["format"]["single-html"] = deliverable.singlehtml_path
+            doc["format"]["single-html"] = deliverable.paths.singlehtml_path
         if not doc.get("lang"):
-            doc["lang"] = deliverable.lang
+            doc["lang"] = deliverable.xml.lang
+
 
 async def process_deliverable(
     context: DocBuildContext,
@@ -136,14 +137,14 @@ async def process_deliverable(
         log.error("Bare repository not found for %s at %s", deliverable.git.name, bare_repo_path)
         return False, deliverable
 
-    outputdir = meta_cache_dir / deliverable.relpath
+    outputdir = meta_cache_dir / deliverable.paths.relpath
     outputdir.mkdir(parents=True, exist_ok=True)
-    outputjson = outputdir / deliverable.dcfile
+    outputjson = outputdir / deliverable.xml.dcfile
 
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(tmp_repo_dir),
-            prefix=f"clone-{deliverable.productid}-{deliverable.docsetid}-{deliverable.lang}-{deliverable.dcfile}_",
+            prefix=f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}-{deliverable.xml.lang}-{deliverable.xml.dcfile}_",
         ) as worktree_dir:
             mg = ManagedGitRepo(deliverable.git.url, repo_dir)
             if not await mg.clone_bare():
@@ -155,7 +156,7 @@ async def process_deliverable(
                 raise RuntimeError(f"Failed to create worktree for {deliverable.full_id}: {e}") from e
 
             # Use absolute path within worktree to avoid DAPS "Missing DC-file" error
-            full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.dcfile
+            full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.xml.dcfile
 
             cmd = get_daps_command(
                 Path(worktree_dir),
@@ -183,6 +184,7 @@ async def process_deliverable(
     except Exception as e:
         log.error("Error processing %s: %s", deliverable.full_id, str(e))
         return False, deliverable
+
 
 async def update_repositories(
     deliverables: list[Deliverable], bare_repo_dir: Path
@@ -254,6 +256,7 @@ async def _run_metadata_tasks(
         return await run_tasks_fail_fast(tasks)
     return await run_tasks_collect_all(tasks, deliverables)
 
+
 async def process_doctype(
     root: etree._ElementTree,
     context: DocBuildContext,
@@ -291,6 +294,7 @@ async def process_doctype(
 
     # Complexity reduced by delegating task execution to the helper
     return await _run_metadata_tasks(tasks, deliverables, exitfirst)
+
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency."""

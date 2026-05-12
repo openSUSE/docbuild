@@ -3,103 +3,26 @@ docbuild.models.deliverable.Deliverable
 
 .. py:class:: docbuild.models.deliverable.Deliverable
 
-   A class to represent a deliverable.
+   Deliverable model class.
 
-   Usually called with a ``<deliverable>`` node from the XML
-   configuration file. It contains information about the product,
-   docset, language, branch, and other metadata related to the
-   deliverable.
-
-
-   .. py:property:: all_categories
-      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+   * DeliverableXMLView owns facts you can derive from the XML node alone.
+   * DeliverablePaths owns path construction.
+   * Deliverable owns orchestration and non-XML domain objects.
 
 
-      Return the groups (formerly categories) of the deliverable.
+   .. py:property:: xml
+      :type: view.DeliverableXMLView
 
-      Yield all elements from the product and root node.
 
-      :yield: The elements categories/category and category.
+      Return the XML view of this deliverable.
 
 
 
-   .. py:property:: categories
-      :type: collections.abc.Generator[lxml.etree._Element, None, None]
+   .. py:property:: paths
+      :type: paths.DeliverablePaths
 
 
-      Return the groups (formerly categories) from the product node.
-
-      Yield all elements under the product were this deliverable belongs to.
-
-      :yield: The elements categories/category and category.
-
-
-
-   .. py:property:: categories_from_root
-      :type: collections.abc.Generator[lxml.etree._Element, None, None]
-
-
-      Return the groups (formerly categories) from the root node.
-
-      Yield all elements under the root node.
-
-      :yield: The elements categories/category and category.
-
-
-
-   .. py:property:: desc
-      :type: collections.abc.Generator[lxml.etree._Element, None, None]
-
-
-      Return the <desc> from the product node.
-
-
-
-   .. py:property:: productid
-      :type: str | None
-
-
-      Return the product ID.
-
-
-
-   .. py:property:: productname
-      :type: str | None
-
-
-      Return the product name.
-
-
-
-   .. py:property:: docsetid
-      :type: str
-
-
-      Return the docset ID.
-
-
-
-   .. py:property:: lang
-      :type: str
-
-
-      Returns the language and country code (e.g., 'en-us').
-
-
-
-   .. py:property:: language
-      :type: str
-
-
-      Returns only the language (e.g., 'en').
-
-
-
-   .. py:property:: product_docset
-      :type: str
-
-
-      Returns product and docset.
+      Return the path helper for this deliverable.
 
 
 
@@ -107,7 +30,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return product, docset, and language.
+      Return product/docset/language identifier.
 
 
 
@@ -115,7 +38,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return product, docset, language and DC filename.
+      Return product/docset/language plus DC filename identifier.
 
 
 
@@ -123,15 +46,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the full ID of the deliverable.
-
-
-
-   .. py:property:: lang_is_default
-      :type: bool
-
-
-      Check if the language is the default language.
+      Return the canonical unique identifier for this deliverable.
 
 
 
@@ -139,7 +54,15 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the product, docset, language and the DC filename.
+      Return docsuite identifier in ``product/docset/lang:dc`` format.
+
+
+
+   .. py:property:: lang_is_default
+      :type: bool
+
+
+      Return ``True`` when the language node is marked as default.
 
 
 
@@ -147,13 +70,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return the branch where to find the deliverable.
-
-      Searches for the branch in the English language node first,
-      then in the current language node.
-
-      :return: The branch name as a string.
-      :raises ValueError: If no branch is found
+      Return the branch for this deliverable, with fallback lookup.
 
 
 
@@ -161,7 +78,7 @@ docbuild.models.deliverable.Deliverable
       :type: str
 
 
-      Return subdirectory or an empty string if not found.
+      Return configured subdirectory or an empty string.
 
 
 
@@ -169,26 +86,7 @@ docbuild.models.deliverable.Deliverable
       :type: docbuild.models.repo.Repo
 
 
-      Return the git repository.
-
-      :return: The git remote URL as a string.
-      :raises ValueError: If no git remote is found for the deliverable.
-
-
-
-   .. py:property:: dcfile
-      :type: str
-
-
-      Return the DC filename or None if not found.
-
-
-
-   .. py:property:: basefile
-      :type: str
-
-
-      Return the DC filename without the DC prefix.
+      Return the Git repository configuration for this deliverable.
 
 
 
@@ -196,108 +94,7 @@ docbuild.models.deliverable.Deliverable
       :type: dict[Literal['html', 'single-html', 'pdf', 'epub'], bool]
 
 
-      Return the formats of the deliverable.
-
-      Normalize the format attributes to boolean values.
-
-      :return: A dictionary with format names as keys and boolean values.
-      :raises ValueError: If no format is found for the deliverable.
-
-
-
-   .. py:property:: node
-      :type: lxml.etree._Element
-
-
-      Return the node of the deliverable.
-
-
-
-   .. py:property:: acronym
-      :type: str
-
-
-      Return the product acronym or None if not found.
-
-
-
-   .. py:property:: version
-      :type: str
-
-
-      Return the version of the docset or None if not found.
-
-
-
-   .. py:property:: lifecycle
-      :type: str
-
-
-      Return the lifecycle of the docset.
-
-
-
-   .. py:property:: relpath
-      :type: str
-
-
-      Return the relative path of the deliverable.
-
-
-
-   .. py:property:: repo_path
-      :type: pathlib.Path
-
-
-      Return the "slug" path of the repository.
-
-
-
-   .. py:property:: zip_path
-      :type: str
-
-
-      Return the path to the ZIP file.
-
-
-
-   .. py:property:: html_path
-      :type: str
-
-
-      Return the path to the HTML directory.
-
-
-
-   .. py:property:: singlehtml_path
-      :type: str
-
-
-      Return the path to the single HTML directory.
-
-
-
-   .. py:property:: pdf_path
-      :type: str
-
-
-      Return the path to the PDF file.
-
-
-
-   .. py:property:: product_node
-      :type: lxml.etree._Element
-
-
-      Return the product node of the deliverable.
-
-
-
-   .. py:property:: docset_node
-      :type: lxml.etree._Element
-
-
-      Return the docset node of the deliverable.
+      Return enabled output formats normalized to booleans.
 
 
 
@@ -305,7 +102,7 @@ docbuild.models.deliverable.Deliverable
       :type: str | None
 
 
-      Return the metadata file.
+      Return the metadata file path.
 
 
 
@@ -313,27 +110,19 @@ docbuild.models.deliverable.Deliverable
       :type: docbuild.models.metadata.Metadata | None
 
 
-      Return the metadata object of the deliverable.
+      Return parsed metadata for this deliverable.
 
 
 
    .. py:method:: __hash__() -> int
 
-      Implement hash(self).
+      Return a hash based on the stable full identifier.
 
 
 
    .. py:method:: __repr__() -> str
 
-      Implement repr(self).
-
-
-
-   .. py:method:: to_dict() -> dict
-      :abstractmethod:
-
-
-      Return the deliverable as a JSON object.
+      Return a concise debug representation of this deliverable.
 
 
 
@@ -341,6 +130,6 @@ docbuild.models.deliverable.Deliverable
       :staticmethod:
 
 
-      Make a name safe for use in a filename or directory.
+      Normalize a string for safe use in filenames and path fragments.
 
 

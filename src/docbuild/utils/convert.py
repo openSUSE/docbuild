@@ -12,10 +12,12 @@ def convert2bool(value: str | bool) -> bool:
     :raises ValueError: If the value cannot be converted to a valid boolean
     """
     mapping = {
+        # Truthy values
         "yes": True,
         "true": True,
         "1": True,
         "on": True,
+        # Falsy values
         "no": False,
         "false": False,
         "0": False,

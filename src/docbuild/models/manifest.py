@@ -22,6 +22,7 @@ from ..models.lifecycle import LifecycleFlag
 
 log = logging.getLogger(__name__)
 
+
 class Description(BaseModel):
     """Represents a description for a product/docset.
 

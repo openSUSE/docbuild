@@ -1,0 +1,29 @@
+<product id="sles" schemaversion="6.0">
+  <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">
+    <resources>
+      <git remote="https://github.com/SUSE/doc-sle.git" />
+      <locale lang="en-us">
+        <deliverable id="sles.15-SP6.dc-sles-administration" type="dc">
+          <dc file="DC-SLES-administration">
+            <format epub="0" html="0" pdf="1" single-html="1" />
+          </dc>
+        </deliverable>
+      </locale>
+      <locale lang="de-de">
+        <branch>maintenance/SLE15SP6-de</branch>
+        <deliverable id="sles.15-SP6.dc-sles-administration.de" type="dc">
+          <dc file="DC-SLES-administration">
+            <format epub="0" html="0" pdf="1" single-html="1" />
+          </dc>
+        </deliverable>
+      </locale>
+      <locale lang="fr-fr">
+        <deliverable id="sles.15-SP6.dc-sles-administration.fr" type="dc">
+          <dc file="DC-SLES-administration">
+            <format epub="1" html="1" pdf="0" single-html="0" />
+          </dc>
+        </deliverable>
+      </locale>
+    </resources>
+  </docset>
+</product>
