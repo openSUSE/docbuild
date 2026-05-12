@@ -54,7 +54,7 @@
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
     <link rel="next" title="docbuild.models.doctype" href="../doctype/index.html" />
-    <link rel="prev" title="docbuild.models.deliverable" href="index.html" />
+    <link rel="prev" title="docbuild.models.deliverable.view.DeliverableXMLView" href="view/DeliverableXMLView.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -468,6 +468,8 @@
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.models.deliverable</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="paths/index.html">docbuild.models.deliverable.paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="view/index.html">docbuild.models.deliverable.view</a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
@@ -630,288 +632,106 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.deliverable.</span></span><span class="sig-name descname"><span class="pre">Deliverable</span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable" title="Link to this definition">#</a></dt>
-<dd><p>A class to represent a deliverable.</p>
-<p>Usually called with a <code class="docutils literal notranslate"><span class="pre">&lt;deliverable&gt;</span></code> node from the XML
-configuration file. It contains information about the product,
-docset, language, branch, and other metadata related to the
-deliverable.</p>
+<dd><p>Deliverable model class operated on a validated config.</p>
+<ul class="simple">
+<li><p>DeliverableXMLView owns facts you can derive from the XML node alone.</p></li>
+<li><p>DeliverablePaths owns path construction.</p></li>
+<li><p>Deliverable owns orchestration and non-XML domain objects.</p></li>
+</ul>
 <dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.all_categories">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">all_categories</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.all_categories" title="Link to this definition">#</a></dt>
-<dd><p>Return the groups (formerly categories) of the deliverable.</p>
-<p>Yield all elements from the product and root node.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yield<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The elements categories/category and category.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.xml">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">xml</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView" title="docbuild.models.deliverable.view.DeliverableXMLView"><span class="pre">view.DeliverableXMLView</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.xml" title="Link to this definition">#</a></dt>
+<dd><p>Return the XML view of this deliverable.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.categories">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">categories</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.categories" title="Link to this definition">#</a></dt>
-<dd><p>Return the groups (formerly categories) from the product node.</p>
-<p>Yield all elements under the product were this deliverable belongs to.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yield<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The elements categories/category and category.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.categories_from_root">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">categories_from_root</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.categories_from_root" title="Link to this definition">#</a></dt>
-<dd><p>Return the groups (formerly categories) from the root node.</p>
-<p>Yield all elements under the root node.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Yield<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The elements categories/category and category.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.desc">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">desc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.desc" title="Link to this definition">#</a></dt>
-<dd><p>Return the &lt;desc&gt; from the product node.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productid">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">productid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productid" title="Link to this definition">#</a></dt>
-<dd><p>Return the product ID.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.productname">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">productname</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.productname" title="Link to this definition">#</a></dt>
-<dd><p>Return the product name.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.docsetid">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">docsetid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.docsetid" title="Link to this definition">#</a></dt>
-<dd><p>Return the docset ID.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.lang">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lang</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.lang" title="Link to this definition">#</a></dt>
-<dd><p>Returns the language and country code (e.g., ‘en-us’).</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.language">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">language</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.language" title="Link to this definition">#</a></dt>
-<dd><p>Returns only the language (e.g., ‘en’).</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.product_docset">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">product_docset</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.product_docset" title="Link to this definition">#</a></dt>
-<dd><p>Returns product and docset.</p>
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.paths">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">paths</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="paths/DeliverablePaths.html#docbuild.models.deliverable.paths.DeliverablePaths" title="docbuild.models.deliverable.paths.DeliverablePaths"><span class="pre">paths.DeliverablePaths</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.paths" title="Link to this definition">#</a></dt>
+<dd><p>Return the path helper for this deliverable.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.pdlang">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">pdlang</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.pdlang" title="Link to this definition">#</a></dt>
-<dd><p>Return product, docset, and language.</p>
+<dd><p>Return product/docset/language identifier.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.pdlangdc">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">pdlangdc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.pdlangdc" title="Link to this definition">#</a></dt>
-<dd><p>Return product, docset, language and DC filename.</p>
+<dd><p>Return product/docset/language plus DC filename identifier.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.full_id">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">full_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.full_id" title="Link to this definition">#</a></dt>
-<dd><p>Return the full ID of the deliverable.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.lang_is_default">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lang_is_default</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.lang_is_default" title="Link to this definition">#</a></dt>
-<dd><p>Check if the language is the default language.</p>
+<dd><p>Return the canonical unique identifier for this deliverable.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.docsuite">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">docsuite</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.docsuite" title="Link to this definition">#</a></dt>
-<dd><p>Return the product, docset, language and the DC filename.</p>
+<dd><p>Return docsuite identifier in <code class="docutils literal notranslate"><span class="pre">product/docset/lang:dc</span></code> format.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.lang_is_default">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lang_is_default</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.lang_is_default" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> when the language node is marked as default.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.branch">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">branch</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.branch" title="Link to this definition">#</a></dt>
-<dd><p>Return the branch where to find the deliverable.</p>
-<p>Searches for the branch in the English language node first,
-then in the current language node.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The branch name as a string.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If no branch is found</p>
-</dd>
-</dl>
+<dd><p>Return the branch for this deliverable, with fallback lookup.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.subdir">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">subdir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.subdir" title="Link to this definition">#</a></dt>
-<dd><p>Return subdirectory or an empty string if not found.</p>
+<dd><p>Return configured subdirectory or an empty string.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.git">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">git</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../repo/Repo.html#docbuild.models.repo.Repo" title="docbuild.models.repo.Repo"><span class="pre">docbuild.models.repo.Repo</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.git" title="Link to this definition">#</a></dt>
-<dd><p>Return the git repository.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The git remote URL as a string.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If no git remote is found for the deliverable.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.dcfile">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dcfile</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.dcfile" title="Link to this definition">#</a></dt>
-<dd><p>Return the DC filename or None if not found.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.basefile">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basefile</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.basefile" title="Link to this definition">#</a></dt>
-<dd><p>Return the DC filename without the DC prefix.</p>
+<dd><p>Return the Git repository configuration for this deliverable.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.format">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">format</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'html'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'single-html'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'pdf'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'epub'</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.format" title="Link to this definition">#</a></dt>
-<dd><p>Return the formats of the deliverable.</p>
-<p>Normalize the format attributes to boolean values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A dictionary with format names as keys and boolean values.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If no format is found for the deliverable.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.node">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">node</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.node" title="Link to this definition">#</a></dt>
-<dd><p>Return the node of the deliverable.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.acronym">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">acronym</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.acronym" title="Link to this definition">#</a></dt>
-<dd><p>Return the product acronym or None if not found.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.version">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">version</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.version" title="Link to this definition">#</a></dt>
-<dd><p>Return the version of the docset or None if not found.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.lifecycle">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lifecycle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.lifecycle" title="Link to this definition">#</a></dt>
-<dd><p>Return the lifecycle of the docset.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.relpath">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">relpath</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.relpath" title="Link to this definition">#</a></dt>
-<dd><p>Return the relative path of the deliverable.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.repo_path">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">repo_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.repo_path" title="Link to this definition">#</a></dt>
-<dd><p>Return the “slug” path of the repository.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.zip_path">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">zip_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.zip_path" title="Link to this definition">#</a></dt>
-<dd><p>Return the path to the ZIP file.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.html_path">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">html_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.html_path" title="Link to this definition">#</a></dt>
-<dd><p>Return the path to the HTML directory.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.singlehtml_path">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">singlehtml_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.singlehtml_path" title="Link to this definition">#</a></dt>
-<dd><p>Return the path to the single HTML directory.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.pdf_path">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">pdf_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.pdf_path" title="Link to this definition">#</a></dt>
-<dd><p>Return the path to the PDF file.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.product_node">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">product_node</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.product_node" title="Link to this definition">#</a></dt>
-<dd><p>Return the product node of the deliverable.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.docset_node">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">docset_node</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.docset_node" title="Link to this definition">#</a></dt>
-<dd><p>Return the docset node of the deliverable.</p>
+<dd><p>Return enabled output formats normalized to booleans.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.metafile">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">metafile</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.metafile" title="Link to this definition">#</a></dt>
-<dd><p>Return the metadata file.</p>
+<dd><p>Return the metadata file path.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.meta">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">meta</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../metadata/Metadata.html#docbuild.models.metadata.Metadata" title="docbuild.models.metadata.Metadata"><span class="pre">docbuild.models.metadata.Metadata</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.meta" title="Link to this definition">#</a></dt>
-<dd><p>Return the metadata object of the deliverable.</p>
+<dd><p>Return parsed metadata for this deliverable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.__hash__">
 <span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.__hash__" title="Link to this definition">#</a></dt>
-<dd><p>Implement hash(self).</p>
+<dd><p>Return a hash based on the stable full identifier.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.__repr__">
 <span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.__repr__" title="Link to this definition">#</a></dt>
-<dd><p>Implement repr(self).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.to_dict">
-<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.to_dict" title="Link to this definition">#</a></dt>
-<dd><p>Return the deliverable as a JSON object.</p>
+<dd><p>Return a concise debug representation of this deliverable.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.Deliverable.make_safe_name">
 <span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">make_safe_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.deliverable.Deliverable.make_safe_name" title="Link to this definition">#</a></dt>
-<dd><p>Make a name safe for use in a filename or directory.</p>
+<dd><p>Normalize a string for safe use in filenames and path fragments.</p>
 </dd></dl>
 
 </dd></dl>
@@ -929,12 +749,12 @@ then in the current language node.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="view/DeliverableXMLView.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.models.deliverable</p>
+        <p class="prev-next-title">docbuild.models.deliverable.view.DeliverableXMLView</p>
       </div>
     </a>
     <a class="right-next"
@@ -966,44 +786,21 @@ then in the current language node.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.all_categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.all_categories</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.categories</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.categories_from_root"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.categories_from_root</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.desc"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.desc</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.productname"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.productname</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.docsetid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.docsetid</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lang</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.language"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.language</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.product_docset"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.product_docset</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.xml"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.xml</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.paths"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.paths</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.pdlang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.pdlang</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.pdlangdc"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.pdlangdc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.full_id"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.full_id</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lang_is_default"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lang_is_default</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.docsuite"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.docsuite</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lang_is_default"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lang_is_default</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.branch"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.branch</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.subdir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.subdir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.git"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.git</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.dcfile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.dcfile</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.basefile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.basefile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.format"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.format</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.node"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.node</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.acronym"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.acronym</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.version"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.version</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.lifecycle"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.lifecycle</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.relpath"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.relpath</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.repo_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.repo_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.zip_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.zip_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.html_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.html_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.singlehtml_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.singlehtml_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.pdf_path"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.pdf_path</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.product_node"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.product_node</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.docset_node"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.docset_node</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.metafile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.metafile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.meta"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.meta</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.__hash__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.__hash__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.__repr__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.__repr__()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.to_dict"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.to_dict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.Deliverable.make_safe_name"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.Deliverable.make_safe_name()</span></code></a></li>
 </ul>
 </li>

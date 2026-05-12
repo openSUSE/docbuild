@@ -53,7 +53,7 @@
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.models.deliverable.Deliverable" href="Deliverable.html" />
+    <link rel="next" title="docbuild.models.deliverable.paths" href="paths/index.html" />
     <link rel="prev" title="docbuild.models.config.env.EnvConfig" href="../config/env/EnvConfig.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -468,6 +468,8 @@
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.models.deliverable</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="paths/index.html">docbuild.models.deliverable.paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="view/index.html">docbuild.models.deliverable.view</a></li>
 <li class="toctree-l4"><a class="reference internal" href="Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
@@ -624,7 +626,23 @@
                   
   <section id="module-docbuild.models.deliverable">
 <span id="docbuild-models-deliverable"></span><h1>docbuild.models.deliverable<a class="headerlink" href="#module-docbuild.models.deliverable" title="Link to this heading">#</a></h1>
-<p>Module for defining the Deliverable model.</p>
+<p>Deliverable model facade.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The deliverable model assumes that the XML node has already been successfully
+validated against the schema. As such, the model does NOT have defensive checks
+for missing or malformed XML data.
+If the XML is invalid, behavior is undefined and may raise exceptions.</p>
+</div>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="paths/index.html">docbuild.models.deliverable.paths</a></li>
+<li class="toctree-l1"><a class="reference internal" href="view/index.html">docbuild.models.deliverable.view</a></li>
+</ul>
+</div>
+</section>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -632,7 +650,7 @@
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Deliverable</span></code></a></p></td>
-<td><p>A class to represent a deliverable.</p></td>
+<td><p>Deliverable model class operated on a validated config.</p></td>
 </tr>
 </tbody>
 </table>
@@ -660,11 +678,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="Deliverable.html"
+       href="paths/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.models.deliverable.Deliverable</p>
+        <p class="prev-next-title">docbuild.models.deliverable.paths</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -687,6 +705,7 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 </ul>
   </nav></div>

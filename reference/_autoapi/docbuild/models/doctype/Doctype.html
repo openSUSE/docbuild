@@ -468,6 +468,8 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../deliverable/index.html">docbuild.models.deliverable</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../deliverable/paths/index.html">docbuild.models.deliverable.paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../deliverable/view/index.html">docbuild.models.deliverable.view</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../deliverable/Deliverable.html">docbuild.models.deliverable.Deliverable</a></li>
 </ul>
 </details></li>
@@ -748,9 +750,9 @@
 <dd><p>Return an XPath expression for this Doctype to find all deliverables.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="s2">&quot;product[@productid=&#39;sles&#39;]/docset[@setid=&#39;15-SP6&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;product[@id=&#39;sles&#39;]/docset[@path=&#39;15-SP6&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;[@lifecycle=&#39;supported&#39;]&quot;</span>
-<span class="gp">... </span>    <span class="s2">&quot;/builddocs/language[@lang=&#39;de-de&#39; or @lang=&#39;en-us&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;/resources/locale[@lang=&#39;de-de&#39; or @lang=&#39;en-us&#39;]&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">==</span> <span class="n">expected</span>
 <span class="go">True</span>
