@@ -81,7 +81,7 @@ docs = [
     "sphinx-autodoc-typehints>=3.10.2",
     "sphinx-click>=6.2.0",
     "sphinx-copybutton>=0.5.2",
-    "sphinx-design>=0.6.1",
+    "sphinx-design>=0.7.0",
     "sphobjinv>=2.4",
 ]
 repl = [
