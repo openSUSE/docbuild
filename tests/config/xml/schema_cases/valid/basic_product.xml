@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+    <categories>
+        <category lang="en-us">
+            <language id="base" title="General Documentation"/>
+        </category>
+    </categories>
+
+    <productfamilies>
+        <item id="os">Operating Systems</item>
+    </productfamilies>
+
+    <series>
+        <item id="products">Main Products</item>
+    </series>
+
+    <product id="sles" series="products" family="os">
+        <name>SUSE Linux Enterprise Server</name>
+        <maintainers>
+            <contact>doc-team@example.com</contact>
+        </maintainers>
+        <docset id="v15-sp6" lifecycle="supported">
+            <version>15 SP6</version>
+            <external/>
+        </docset>
+    </product>
+</portal>

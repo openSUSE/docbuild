@@ -1,0 +1,2 @@
+Add a data-driven test suite for the Portal XML Schema using Jing. 
+Includes valid and invalid test cases to ensure schema integrity and XInclude support.

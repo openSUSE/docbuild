@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product id="test" series="s" family="f" schemaversion="7.0">
+    <name>Test</name>
+    <maintainers><contact>a@b.com</contact></maintainers>
+    <docset id="1" lifecycle="supported">
+        <version>1</version>
+        <resources>
+            <git remote="https://github.com/test/repo"/>
+            <locale lang="en-us">
+                <branch>main</branch>
+                <deliverable id="d1" type="dc">
+                    <dc file="manual.xml">
+                        <format html="true"/>
+                    </dc>
+                </deliverable>
+            </locale>
+        </resources>
+    </docset>
+</product>
