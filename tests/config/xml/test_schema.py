@@ -1,6 +1,6 @@
+from pathlib import Path
 import shutil
 import subprocess
-from pathlib import Path
 
 import pytest
 
@@ -22,7 +22,7 @@ def run_jing(xml_path: Path) -> tuple[int, str]:
 
     xinclude_prop = "-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=" \
                     "org.apache.xerces.parsers.XIncludeParserConfiguration"
-    
+
     env = {
         "JAVA_OPTS": xinclude_prop,
         "JAVA_ARGS": xinclude_prop,
@@ -32,11 +32,11 @@ def run_jing(xml_path: Path) -> tuple[int, str]:
     cmd = [jing_bin]
     if SCHEMA.suffix == ".rnc":
         cmd.append("-c")
-    
+
     cmd.extend([str(SCHEMA), str(xml_path)])
 
     result = subprocess.run(cmd, capture_output=True, text=True, env=env)
-    
+
     # Combine stdout and stderr for the error message
     output = (result.stdout + result.stderr).strip()
     return result.returncode, output
