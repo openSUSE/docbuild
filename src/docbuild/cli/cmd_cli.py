@@ -32,6 +32,7 @@ from .cmd_c14n import c14n
 from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_metadata import metadata
+from .cmd_portal import portal
 from .cmd_repo import repo
 from .cmd_validate import validate
 from .context import DocBuildContext
@@ -275,6 +276,7 @@ def cli(
 cli.add_command(build)
 cli.add_command(c14n)
 cli.add_command(config)
+cli.add_command(portal)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(validate)

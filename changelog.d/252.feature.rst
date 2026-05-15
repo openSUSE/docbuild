@@ -1,0 +1,1 @@
+Added a new ``portal`` CLI group with a ``list`` subcommand to provide a compact tree overview of products, docsets, and deliverables from the Portal schema.
