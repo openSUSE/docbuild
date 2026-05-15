@@ -5,7 +5,7 @@ on:
       JING_VERSION:
         description: "Jing version to use"
         required: false
-        default: "20091111"  # Default value
+        default: ""  # Leave empty to use the general default
   pull_request:
   push:
     branches:
@@ -13,6 +13,8 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - '.github/workflows/ci.yml'
+      - 'pyproject.toml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,6 +33,8 @@ env:
   PYTHONSTARTMETHOD: spawn
   # The group to use for installing/testing dependencies, see pyproject.toml
   PYPROJECT_GROUP: github-action
+  # The default version of Jing
+  DEFAULT_JING_VERSION: "20241231"
 
 jobs:
   test-ubuntu:
@@ -205,31 +209,46 @@ jobs:
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
         run: |
-          brew install libxml2 libxslt openjdk
+          brew install libxml2 libxslt
 
-          # Define the version and URL for jing.jar, using the input version from workflow_dispatch
-          JING_VERSION="${{ github.event.inputs.JING_VERSION || '20091111' }}"
-          JING_URL="https://repo1.maven.org/maven2/com/thaiopensource/jing/${JING_VERSION}/jing-${JING_VERSION}.jar"
+      - name: Setup Jing
+        run: |
+          set -euo pipefail
 
-          # Download jing.jar file for XML validation
-          curl -sL -f $JING_URL -o jing.jar
+          JING_VERSION="${{ github.event.inputs.JING_VERSION || env.DEFAULT_JING_VERSION }}"
+          JING_URL="https://github.com/relaxng/jing-trang/releases/download/V${JING_VERSION}/jing-${JING_VERSION}.zip"
+          LIB_DIR="${GITHUB_WORKSPACE}/.github/workflows/MacOS/lib"
+          BIN_DIR="${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin"
+          mkdir -p "$LIB_DIR"
 
-          # Ensures the jar file is successfully downloaded, else exit with error
-          if [ ! -f jing.jar ]; then
-              echo "::error file=$JING_URL:: Failed to download jing.jar"
-              exit 1
-          fi
+          echo "${BIN_DIR}" >> "$GITHUB_PATH"
+          hash -r
+          echo "Downloading: $JING_URL"
+          curl -fSL --progress-bar "$JING_URL" -o jing.zip
+          unzip -j jing.zip "jing-*/bin/*.jar" -d "$LIB_DIR"
+          rm jing.zip
+          echo "Installed JARs:"
+          ls -la "$LIB_DIR"
 
-          # Create a bash script to run jing.jar easily from the command line
-          echo '#!/bin/bash' > jing
-          echo 'java -jar jing.jar "$@"' >> jing
-          chmod +x jing
+      - name: Echo PATH env
+        run: echo "PATH=$PATH"
 
-          # Add paths of installed tools to GitHub Actions environment for easy access
-          echo "$(pwd)" >> $GITHUB_PATH
-          echo "/opt/homebrew/opt/openjdk/bin" >> $GITHUB_PATH
-          echo "/opt/homebrew/opt/libxml2/bin" >> $GITHUB_PATH
-          echo "/opt/homebrew/opt/libxslt/bin" >> $GITHUB_PATH
+      - name: Inspect jing script
+        run: |
+          # 1. Show the first line with invisible characters
+          head -n 1 "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" | cat -e
+          
+          # 2. Check file type and line endings
+          file "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing"
+          
+          # 3. Try running it explicitly with bash to bypass the shebang
+          bash "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" || true 
+
+      - name: Verify Jing wrapper
+        env:
+           DEBUG: 1
+        run: |
+          jing || true
 
       # Run the tests using pytest inside the created virtual environment
       - name: Run tests

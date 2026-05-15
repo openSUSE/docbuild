@@ -1,0 +1,1 @@
+GHA: Provide :command:`jing` custom wrapper for MacOS to resolve XInclude elements
