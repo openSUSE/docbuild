@@ -39,10 +39,15 @@ Attributes
    docbuild.constants.GIT_CONFIG_FILENAME
    docbuild.constants.BASE_STATE_DIR
    docbuild.constants.GITLOGGER_NAME
+   docbuild.constants.PORTALLOGGER_NAME
    docbuild.constants.BASE_LOG_DIR
    docbuild.constants.BASE_LOCK_DIR
    docbuild.constants.XMLDATADIR
    docbuild.constants.DEFAULT_ERROR_LIMIT
+   docbuild.constants.XML_NS
+   docbuild.constants.XINCLUDE_NS
+   docbuild.constants.DOCBOOK_NS
+   docbuild.constants.XLINK_NS
 
 
 Module Contents
@@ -202,6 +207,13 @@ Module Contents
    The standardized name for the Git-related logger.
 
 
+.. py:data:: PORTALLOGGER_NAME
+   :value: 'docbuild.portal'
+
+
+   The standardized name for the Portal-related logger.
+
+
 .. py:data:: BASE_LOG_DIR
 
    The directory where log files will be stored.
@@ -222,5 +234,33 @@ Module Contents
 
 
    The maximum number of validation errors to display before truncating the output.
+
+
+.. py:data:: XML_NS
+   :value: 'http://www.w3.org/XML/1998/namespace'
+
+
+   The XML namespace URI for XML elements.
+
+
+.. py:data:: XINCLUDE_NS
+   :value: 'http://www.w3.org/2001/XInclude'
+
+
+   The XML namespace URI for XInclude elements.
+
+
+.. py:data:: DOCBOOK_NS
+   :value: 'http://docbook.org/ns/docbook'
+
+
+   The XML namespace URI for DocBook elements.
+
+
+.. py:data:: XLINK_NS
+   :value: 'http://www.w3.org/1999/xlink'
+
+
+   The XML namespace URI for XLink attributes.
 
 

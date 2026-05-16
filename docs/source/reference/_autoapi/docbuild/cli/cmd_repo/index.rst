@@ -34,7 +34,7 @@ Package Contents
 
 .. py:function:: repo(ctx: click.Context) -> None
 
-   Subcommand to validate XML configuration files.
+   Subcommand to repo management.
 
    :param ctx: The Click context object.
 

@@ -2,7 +2,6 @@
 # TODO: Use docbuild.models.deliverable.Deliverable class for checks?
 
 from collections import Counter
-from collections.abc import Generator
 from dataclasses import dataclass, field
 
 from lxml import etree
@@ -10,6 +9,7 @@ from lxml import etree
 from ...constants import ALLOWED_LANGUAGES
 from ...utils.convert import convert2bool
 from ...utils.decorators import factory_registry
+from .semantic_xpath import semantic_xpath
 
 # log = logging.getLogger(LOGGERNAME)
 
@@ -20,6 +20,7 @@ class CheckResult:
 
     success: bool
     messages: list[str] = field(default_factory=list)
+    xpath: str | None = None
 
     def __bool__(self) -> bool:
         """Return True if the check was successful, False otherwise."""
@@ -29,35 +30,69 @@ class CheckResult:
 register_check = factory_registry()
 
 
+def docset_id(node: etree._Element) -> str:
+    """Return a stable docset identifier for error messages."""
+    ids = node.xpath("ancestor-or-self::docset/@id")
+    return ids[0] if ids else "n/a"
+
+
+def dc_identifier(deliverable: etree._Element) -> str:
+    """Return a DC identifier from legacy or current schema representation."""
+    dc_node = deliverable.find("dc")
+    if dc_node is None:
+        return deliverable.get("id", "n/a")
+
+    file_attr = dc_node.get("file")
+    if file_attr:
+        return file_attr
+
+    text = (dc_node.text or "").strip()
+    return text if text else deliverable.get("id", "n/a")
+
+
 @register_check
 def check_dc_in_language(tree: etree._Element | etree._ElementTree) -> CheckResult:
     """Make sure each DC appears only once within a language.
 
     .. code-block:: xml
 
-        <language lang="en-us" default="1">
-            <deliverable>
-                <dc>DC-foo</dc>
-                <format html="1" pdf="1" single-html="0"/>
+        <locale lang="en-us">
+            <branch>main</branch>
+            <deliverable id="deli-1" type="dc">
+                <dc file="DC-foo">
+                    <format html="1" pdf="0" single-html="0" epub="0"/>
+                </dc>
             </deliverable>
-            <deliverable>
-                <dc>DC-foo</dc>
-                <format html="1" pdf="1" single-html="0"/>
+            <deliverable id="deli-2" type="dc">
+                <dc file="DC-foo">
+                    <format html="1" pdf="0" single-html="0" epub="0"/>
+                </dc>
             </deliverable>
-        </language>
+        </locale>
 
     :param tree: The XML tree to check.
     :return: CheckResult with success status and any error messages.
     """
     messages = []
-    for language in tree.findall(".//language", namespaces=None):
-        dc_values = [d.findtext("dc") for d in language.findall("deliverable")]
+    first_xpath: str | None = None
+    language_nodes = list(tree.findall(".//docset/resources/locale", namespaces=None))
+    for language in language_nodes:
+        dc_values = []
+        for deliverable in language.findall("deliverable"):
+            dc_node = deliverable.find("dc")
+            if dc_node is None:
+                continue
+            dc_value = dc_node.get("file").strip()
+            dc_values.append(dc_value)
+
         if len(dc_values) != len(set(dc_values)):
             duplicates = [
                 item for item, count in Counter(dc_values).items() if count > 1
             ]
-            setid = language.getparent().getparent().get("setid", "n/a")
+            setid = docset_id(language)
             langcode = language.get("lang", "n/a")
+            if first_xpath is None:
+                first_xpath = semantic_xpath(language)
             message = (
                 f"Some dc elements within a language have non-unique values. "
                 f"Check for occurrences of the following duplicated dc "
@@ -67,35 +102,7 @@ def check_dc_in_language(tree: etree._Element | etree._ElementTree) -> CheckResu
             messages.append(message)
             # log.critical(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
-
-
-@register_check
-def check_duplicated_categoryid(
-    tree: etree._Element | etree._ElementTree,
-) -> CheckResult:
-    """Check that categoryid is unique within a product.
-
-    .. code-block:: xml
-
-        <category categoryid="container"> ... </category>
-        <category categoryid="container"> ... </category>
-
-    :param tree: The XML tree to check.
-    :return: CheckResult with success status and any error messages.
-    """
-    categoryids = [
-        cat.get("categoryid") for cat in tree.findall(".//category", namespaces=None)
-    ]
-    if len(categoryids) != len(set(categoryids)):
-        duplicates = [item for item, count in Counter(categoryids).items() if count > 1]
-        message = (
-            "Some category elements have non-unique categoryid values: "
-            f"{', '.join(duplicates)}"
-        )
-        # log.critical(message)
-        return CheckResult(success=False, messages=[message])
-    return CheckResult(success=True, messages=[])
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -106,79 +113,46 @@ def check_duplicated_format_in_extralinks(
 
     .. code-block:: xml
 
-        <external>
-          <link>
-            <language>
-              <url href="https://example.com/page1" format="html" lang="en-us"/>
-              <url href="https://example.com/page1.pdf" format="pdf" lang="en-us"/>
-              <!-- Duplicate format: -->
-              <url href="https://example.com/page1_again" format="html" lang="en-us"/>
-            </language>
-          </link>
-        </external>
+       <external>
+           <link>
+                <url lang="en-us" href="https://example.com/page1" format="html"/>
+                <url lang="en-us" href="https://example.com/page1.pdf" format="pdf"/>
+                <!-- Duplicate format: -->
+                <url lang="en-us" href="https://example.com/page1-again" format="html"/>
+                <descriptions>
+                    <desc lang="en-us"/>
+                </descriptions>
+           </link>
+       </external>
 
     :param tree: The XML tree to check.
     :return: CheckResult with success status and any error messages.
     """
     messages = []
-    for language in tree.findall("./docset/external/link/language", namespaces=None):
-        formats = language.xpath("./url/@format")
-        docset = language.xpath("ancestor::docset/@setid")[0]
-        duplicates = [item for item, count in Counter(formats).items() if count > 1]
+    first_xpath: str | None = None
+    link_nodes = tree.findall(".//docset/external/link", namespaces=None)
+    for link in link_nodes:
+        grouped_formats: dict[str, list[str]] = {}
+        for url in link.findall("url", namespaces=None):
+            language_code = url.get("lang", "unknown")
+            fmt = url.get("format")
+            if fmt:
+                grouped_formats.setdefault(language_code, []).append(fmt)
 
-        if duplicates:
-            message = (
-                f"Duplicated format attributes found in external/link/language/url "
-                f"in docset={docset}: {', '.join(duplicates)}"
-            )
-            messages.append(message)
-            # log.critical(message)
+        for language_code, formats in grouped_formats.items():
+            duplicates = [item for item, count in Counter(formats).items() if count > 1]
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+            if duplicates:
+                if first_xpath is None:
+                    first_xpath = semantic_xpath(link)
+                message = (
+                    "Duplicated format attributes found in external/link/url "
+                    f"for language={language_code} in docset={docset_id(link)}: "
+                    f"{', '.join(duplicates)}"
+                )
+                messages.append(message)
 
-
-@register_check
-def check_duplicated_linkid(tree: etree._Element | etree._ElementTree) -> CheckResult:
-    """Check that linkid is unique within an external element.
-
-    .. code-block:: xml
-
-        <external>
-          <link linkid="fake-link">
-            <language>
-              <url href="https://example.com/page1" format="html" lang="en-US"/>
-            </language>
-          </link>
-          <link linkid="fake-link"> <!-- Duplicate linkid -->
-            <language>
-              <url href="https://example.com/page2" format="html" lang="en-US"/>
-            </language>
-          </link>
-        </external>
-
-    :param tree: The XML tree to check.
-    :return: CheckResult with success status and any error messages.
-    """
-    messages = []
-
-    # Check each docset separately
-    for docset in tree.findall(".//docset", namespaces=None):
-        setid = docset.get("setid", "unknown")
-        linkids = [
-            link.get("linkid")
-            for link in docset.findall("./external/link", namespaces=None)
-            if link.get("linkid") is not None
-        ]
-
-        duplicates = [item for item, count in Counter(linkids).items() if count > 1]
-        if duplicates:
-            message = (
-                f"Some link elements have non-unique linkid values in "
-                f"docset={setid}: {', '.join(duplicates)}"
-            )
-            messages.append(message)
-
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -192,43 +166,44 @@ def check_duplicated_url_in_extralinks(
 
     .. code-block:: xml
 
-        <external>
-          <link>
-            <language lang="en-US">
-              <url href="https://example.com/page1" lang="en-US"/>
-            </language>
-          </link>
-          <link>
-            <language lang="en-US">
-              <url href="https://example.com/page1" lang="en-US"/><!-- Duplicate -->
-            </language>
-          </link>
-        </external>
+       <external>
+           <link>
+               <url lang="en-us" href="https://example.com/page1" format="html"/>
+               <url lang="en-us" href="https://example.com/page1" format="pdf"/>
+               <descriptions>
+                  <desc lang="en-us"/>
+               </descriptions>
+           </link>
+       </external>
 
     :param tree: The XML tree to check.
     :return: CheckResult with success status and any error messages.
     """
     messages = []
+    first_xpath: str | None = None
 
-    # Group URLs by language
-    for language in tree.findall(".//external/link/language", namespaces=None):
-        lang_code = language.get("lang", "unknown")
-        urls = [url.get("href") for url in language.findall("url", namespaces=None)]
+    # Group URLs by language in current schema (<link><url lang=.../></link>).
+    for link in tree.findall(".//external/link", namespaces=None):
+        grouped_values: dict[str, list[str]] = {}
+        for url in link.findall("url", namespaces=None):
+            lang_code = url.get("lang", "unknown")
+            value = url.get("href") or (url.text or "").strip()
+            if value:
+                grouped_values.setdefault(lang_code, []).append(value)
 
-        duplicates = [item for item, count in Counter(urls).items() if count > 1]
-        if duplicates:
-            docset = (
-                language.xpath("ancestor::docset/@setid")[0]
-                if language.xpath("ancestor::docset/@setid")
-                else "unknown"
-            )
-            message = (
-                "Some url elements have non-unique href values in "
-                f"language={lang_code} for docset={docset}: {', '.join(duplicates)}"
-            )
-            messages.append(message)
+        for lang_code, values in grouped_values.items():
+            duplicates = [item for item, count in Counter(values).items() if count > 1]
+            if duplicates:
+                if first_xpath is None:
+                    first_xpath = semantic_xpath(link)
+                message = (
+                    "Some url elements have non-unique href values in "
+                    f"language={lang_code} for docset={docset_id(link)}: "
+                    f"{', '.join(duplicates)}"
+                )
+                messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -237,29 +212,38 @@ def check_enabled_format(tree: etree._Element | etree._ElementTree) -> CheckResu
 
     .. code-block:: xml
 
-        <deliverable>
-          <dc>DC-fake-doc</dc>
-          <!-- All formats here are disabled: -->
-          <format epub="0" html="0" pdf="0" single-html="0"/>
-        </deliverable>
+       <deliverable id="deli-1" type="dc">
+         <dc file="DC-fake-doc">
+            <!-- All formats here are disabled: -->
+            <format epub="0" html="0" pdf="0" single-html="0"/>
+         </dc>
+       </deliverable>
 
     :param tree: The XML tree to check.
     :return: CheckResult with success status and any error messages.
     """
     messages = []
-    for fmt in tree.findall(".//deliverable/format", namespaces=None):
+    first_xpath: str | None = None
+    for deliverable in tree.findall(".//deliverable", namespaces=None):
+        fmt = deliverable.find("format")
+        if fmt is None:
+            fmt = deliverable.find("dc/format")
+        if fmt is None:
+            continue
+
         format_issues = [convert2bool(value) for value in fmt.attrib.values()]
         if not any(format_issues):
-            docset = fmt.xpath("ancestor::docset/@setid")[0]
-            deli = fmt.find("../dc")
-            deli_text = deli.text  # if deli is not None else 'n/a'
+            if first_xpath is None:
+                first_xpath = semantic_xpath(deliverable)
+            docset = docset_id(deliverable)
+            deli_text = dc_identifier(deliverable)
             message = (
                 f"No enabled format found in docset={docset} "
                 f"for deliverable={deli_text}"
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -270,75 +254,53 @@ def check_format_subdeliverable(
 
     .. code-block:: xml
 
-         <deliverable>
-            <dc>DC-fake-all</dc>
-            <!-- PDF enabled, but subdeliverables present: -->
-            <format epub="0" html="1" pdf="1" single-html="1" />
-            <subdeliverable> ... </subdeliverable>
-         </deliverable>
+       <deliverable id="deli-1" type="dc">
+          <dc file="DC-fake-all">
+             <!-- PDF enabled, but subdeliverables present: -->
+             <format epub="0" html="1" pdf="1" single-html="1"/>
+             <subdeliverable>book-1</subdeliverable>
+          </dc>
+       </deliverable>
 
     :param tree: The XML tree to check.
     :return: True if all subdeliverables have at least one enabled format,
         False otherwise.
     """
     messages = []
+    first_xpath: str | None = None
     for deli in tree.findall(".//deliverable", namespaces=None):
-        subdeli = deli.find("subdeliverable")
-        if subdeli is not None:
-            formats = deli.find("format")
-            if formats is None:
-                # Create "fake" <format> element if it doesn't exist:
-                formats = etree.Element("format", attrib=None, nsmap=None)
+        subdeliverables = deli.findall("subdeliverable", namespaces=None) + deli.findall(
+            "dc/subdeliverable", namespaces=None
+        )
+        if not subdeliverables:
+            continue
 
-            pdf = convert2bool(formats.attrib.get("pdf", False))
-            epub = convert2bool(formats.attrib.get("epub", False))
+        formats = deli.find("format")
+        if formats is None:
+            formats = deli.find("dc/format")
+        if formats is None:
+            # Create "fake" <format> element if it doesn't exist:
+            formats = etree.Element("format", attrib=None, nsmap=None)
 
-            if any([pdf, epub]):
-                setid = deli.xpath("ancestor::docset/@setid")[0]
-                dc = deli.findtext("dc", default="n/a")
-                language = deli.xpath("ancestor::language/@lang")[0]
-                message = (
-                    "A deliverable that has subdeliverables has PDF or EPUB "
-                    "enabled as a format: "
-                    f"docset={setid}/language={language}/deliverable={dc} "
-                    "but no enabled format is present"
-                )
-                messages.append(message)
+        pdf = convert2bool(formats.attrib.get("pdf", False))
+        epub = convert2bool(formats.attrib.get("epub", False))
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
-
-
-@register_check
-def check_lang_code_in_category(
-    tree: etree._Element | etree._ElementTree,
-) -> CheckResult:
-    """Ensure that each language code appears only once within <category>.
-
-    .. code-block:: xml
-
-        <category categoryid="container">
-            <language lang="en-us" title="..." />
-            <language lang="en-us" title="..."/> <!-- Duplicate -->
-        </category>
-
-    :param tree: The XML tree to check.
-    :return: True if all lang attributes in categories are valid, False otherwise.
-    """
-    messages = []
-    for category in tree.findall(".//category", namespaces=None):
-        langs = [lng.attrib.get("lang") for lng in category.iterchildren("language")]
-        duplicates = [item for item, count in Counter(langs).items() if count > 1]
-
-        if duplicates:
-            catid = category.get("categoryid", "n/a")
+        if any([pdf, epub]):
+            if first_xpath is None:
+                first_xpath = semantic_xpath(deli)
+            setid = docset_id(deli)
+            dc = dc_identifier(deli)
+            languages = deli.xpath("ancestor::locale/@lang")
+            language = languages[0] if languages else "n/a"
             message = (
-                f"Some of the name translation of category {catid!r} "
-                "have non-unique lang attributes. "
-                f"Found duplicates: {', '.join(duplicates)}"
+                "A deliverable that has subdeliverables has PDF or EPUB "
+                "enabled as a format: "
+                f"docset={setid}/language={language}/deliverable={dc} "
+                "but no enabled format is present"
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -349,31 +311,39 @@ def check_lang_code_in_desc(
 
     .. code-block:: xml
 
-        <product>
-           <!-- ... -->
-           <desc lang="en-us">...</desc>
-           <desc lang="en-us">...</desc> <!-- Duplicate -->
-        </product>
+       <descriptions>
+            <desc lang="en-us"/>
+            <desc lang="en-us"/> <!-- Duplicate -->
+       </descriptions>
 
     :param tree: The XML tree to check.
     :return: True if all lang attributes in desc are valid, False otherwise.
     """
-    langs = [
-        desc.attrib.get("lang") for desc in tree.findall("./desc", namespaces=None)
-    ]
-    duplicates = [item for item, count in Counter(langs).items() if count > 1]
+    messages = []
+    first_xpath: str | None = None
+    parent_to_descs: dict[etree._Element, list[etree._Element]] = {}
+    for desc in tree.findall(".//desc", namespaces=None):
+        parent = desc.getparent()
+        if parent is None:
+            continue
+        parent_to_descs.setdefault(parent, []).append(desc)
 
-    if duplicates:
-        xpath_lang = " or ".join([f'@lang="{lang}"' for lang in duplicates])
-        titles = tree.xpath(f".//desc[{xpath_lang}]/@title")
-        message: str = (
-            "Some <desc> elements have non-unique lang attributes. "
-            f"Found duplicates: {', '.join(duplicates)} for titles: "
-            f"{', '.join(titles)}"
-        )
-        return CheckResult(success=False, messages=[message])
+    for desc_nodes in parent_to_descs.values():
+        langs = [desc.attrib.get("lang") for desc in desc_nodes if desc.attrib.get("lang")]
+        duplicates = [item for item, count in Counter(langs).items() if count > 1]
 
-    return CheckResult(success=True, messages=[])
+        if duplicates:
+            if first_xpath is None:
+                first_xpath = semantic_xpath(desc_nodes[0].getparent())
+            titles = [desc.attrib.get("title", "") for desc in desc_nodes]
+            message: str = (
+                "Some <desc> elements have non-unique lang attributes. "
+                f"Found duplicates: {', '.join(duplicates)} for titles: "
+                f"{', '.join([title for title in titles if title])}"
+            )
+            messages.append(message)
+
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -384,104 +354,82 @@ def check_lang_code_in_docset(
 
     .. code-block:: xml
 
-        <docset setid="..." lifecycle="...">
-            <!-- ... -->
-            <builddocs>
-                <git remote="..." />
-                <language lang="en-us" default="1">...</language>
-                <language lang="en-us" default="1">...</language> <!-- Duplicate -->
-            </builddocs>
-        </external>
+       <docset id="docset1" lifecycle="supported">
+           <resources>
+                <git remote="https://example.invalid/repo.git"/>
+                <locale lang="en-us"><branch>main</branch></locale>
+                <locale lang="en-us"><branch>main</branch></locale> <!-- Duplicate -->
+           </resources>
+       </docset>
 
     :param tree: The XML tree to check.
     :return: True if all lang attributes in extralinks are valid, False otherwise.
     """
     messages = []
+    first_xpath: str | None = None
     for docset in tree.findall(".//docset", namespaces=None):
         langs = [
-            lng.attrib.get("lang")
-            for lng in docset.findall("./builddocs/language", namespaces=None)
+            node.get("lang")
+            for node in docset.findall("./resources/locale", namespaces=None)
+            if node.get("lang")
         ]
         duplicates = [item for item, count in Counter(langs).items() if count > 1]
 
         if duplicates:
-            setid = docset.get("setid", "n/a")
+            if first_xpath is None:
+                first_xpath = semantic_xpath(docset)
+            setid = docset.get("setid") or docset.get("id", "n/a")
             message = (
                 "Some language elements within a set have non-unique lang attributes "
-                f"In docset={setid}, check for duplicate builddocs/language. "
+                f"In docset={setid}, check for duplicate resources/locale. "
                 f"Found duplicates: {', '.join(duplicates)}"
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
-@register_check
+# @register_check
 def check_lang_code_in_extralinks(
     tree: etree._Element | etree._ElementTree,
 ) -> CheckResult:
-    """Ensure that each language code appears only once within <external>.
+    """Ensure that each language code appears only once within ``external/link/url``.
 
     .. code-block:: xml
 
-        <external>
-            <link>
-                <language lang="en-us" default="1">...</language>
-                <language lang="en-us" default="1">...</language> <!-- Duplicate -->
-            </link>
-        </external>
+       <external>
+         <link>
+            <url lang="en-us" href="https://example.invalid/one" format="html"/>
+            <url lang="en-us" href="https://example.invalid/two" format="pdf"/><!-- Wrong: duplicate lang -->
+            <descriptions>
+                <desc lang="en-us"/>
+            </descriptions>
+         </link>
+       </external>
 
     :param tree: The XML tree to check.
-    :return: True if all lang attributes in extralinks are valid, False otherwise.
+    :return: CheckResult with success status and any error messages.
     """
     messages = []
+    first_xpath: str | None = None
     for link in tree.findall(".//external/link", namespaces=None):
-        langs = [lng.attrib.get("lang") for lng in link.findall("language")]
-        duplicates = [item for item, count in Counter(langs).items() if count > 1]
-
-        if duplicates:
-            docsetid = link.xpath("ancestor::docset/@setid")[0]
-            message = (
-                "Some language elements within a link have non-unique lang attributes. "
-                f"In docset={docsetid}, check for duplicate external/link/language. "
-                f"Found duplicates: {', '.join(duplicates)}"
-            )
-            messages.append(message)
-
-    return CheckResult(success=len(messages) == 0, messages=messages)
-
-
-@register_check
-def check_lang_code_in_overridedesc(
-    tree: etree._Element | etree._ElementTree,
-) -> CheckResult:
-    """Ensure that each language code appears only once within <overridedesc>.
-
-    .. code-block:: xml
-
-        <overridedesc>
-            <language lang="en-us" default="1">...</language>
-            <language lang="en-us" default="1">...</language> <!-- Duplicate -->
-        </overridedesc>
-
-    :param tree: The XML tree to check.
-    :return: True if all lang attributes in overridedesc are valid, False otherwise.
-    """
-    messages = []
-    for node in tree.findall(".//docset/overridedesc", namespaces=None):
         langs = [
-            lng.attrib.get("lang") for lng in node.findall("./desc", namespaces=None)
+            url.get("lang") for url in link.findall("url", namespaces=None) if url.get("lang")
         ]
         duplicates = [item for item, count in Counter(langs).items() if count > 1]
 
         if duplicates:
+            if first_xpath is None:
+                first_xpath = semantic_xpath(link)
+            docsetid = docset_id(link)
             message = (
-                "Some language elements within overridedesc have non-unique "
-                f"lang attributes. Found duplicates: {', '.join(duplicates)}"
+                "Some external/link/url elements have non-unique lang attributes. "
+                f"Found duplicates: {', '.join(duplicates)} in docset={docsetid} "
+                "(duplicate external/link/url/@lang)"
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
@@ -492,27 +440,31 @@ def check_subdeliverable_in_deliverable(
 
     .. code-block:: xml
 
-        <deliverable>
-            <dc>DC-fake-doc</dc>
-            <subdeliverable>sub-1</subdeliverable>
-            <subdeliverable>sub-2</subdeliverable>
-            <subdeliverable>sub-1</subdeliverable> <!-- Duplicate -->
+        <deliverable id="deli-1" type="dc">
+            <dc file="DC-fake-doc">
+                <subdeliverable>sub-1</subdeliverable>
+                <subdeliverable>sub-2</subdeliverable>
+                <subdeliverable>sub-1</subdeliverable> <!-- Duplicate -->
+            </dc>
         </deliverable>
 
     :param tree: The XML tree to check.
     :return: True if site/section is present, False otherwise.
     """
     messages = []
+    first_xpath: str | None = None
     for deliverables in tree.iter("deliverable"):
-        subdelis = [
-            node.text
-            for node in deliverables.findall("subdeliverable", namespaces=None)
-        ]
+        sub_nodes = deliverables.findall("subdeliverable", namespaces=None)
+        sub_nodes.extend(deliverables.findall("dc/subdeliverable", namespaces=None))
+        subdelis = [node.text for node in sub_nodes]
         duplicates = [item for item, count in Counter(subdelis).items() if count > 1]
 
         if duplicates:
-            setid = deliverables.xpath("ancestor::docset/@setid")[0]
-            language = deliverables.xpath("ancestor::language/@lang")[0]
+            if first_xpath is None:
+                first_xpath = semantic_xpath(deliverables)
+            setid = docset_id(deliverables)
+            languages = deliverables.xpath("ancestor::locale/@lang")
+            language = languages[0] if languages else "n/a"
             message = (
                 "Some subdeliverable elements within a deliverable have non-unique "
                 "values. "
@@ -521,103 +473,39 @@ def check_subdeliverable_in_deliverable(
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
 
 
 @register_check
-def check_translation_deliverables(
+def check_unsupported_language_code(
     tree: etree._Element | etree._ElementTree,
 ) -> CheckResult:
-    """Check that deliverables have translations in all languages.
+    """Check for language codes that match the portal format but are not supported.
 
-    Make sure that deliverables defined in translations are a subset
-    of the deliverables defined in the default language.
+    Catches subtle mistakes like ``de-at`` which matches the ``xx-yy`` regex
+    but is not in :data:`~docbuild.constants.ALLOWED_LANGUAGES`.
 
     .. code-block:: xml
 
-        <language default="1" lang="en-us">
-            <branch>main</branch>
-            <deliverable>
-            <dc>DC-SLES-all</dc>
-            <format epub="0" html="1" pdf="0" single-html="0"/>
-            <subdeliverable>book-rmt</subdeliverable>
-            </deliverable>
-        </language>
-        <language  lang="de-de">
-            <branch>main</branch>
-            <deliverable>
-            <dc>DC-SLES-all</dc>
-            <!-- This subdeliverable is not present in the default language: -->
-            <subdeliverable>book-abc</subdeliverable>
-            </deliverable>
-        </language>
-
-    :param tree: The XML tree to check.
-    :return: True if all deliverables have translations in all languages,
-        False otherwise.
-    """
-    messages = []
-    for deliverable in tree.xpath(
-        "./docset/builddocs/language["
-        "  not(@default) or not(@default='true' or @default='1')"
-        "]/deliverable",
-        namespaces=None,
-    ):
-        current_dc = deliverable.findtext("dc")
-        for subdeli in deliverable.iterchildren("subdeliverable"):
-            current_subdeli = subdeli.text
-            xpath = (
-                "ancestor::builddocs/language[@default='1' or @default='true']/"
-                f"descendant::deliverable[dc={current_dc!r}]/"
-                f"subdeliverable[. = {subdeli.text!r}]"
-            )
-
-            # We expect that a subdeliverable in translation contains the same
-            # subdeliverable in the default language deliverable.
-            if not deliverable.xpath(xpath, namespaces=None):
-                setid = deliverable.xpath("ancestor::docset/@setid")[0]
-                lang = deliverable.xpath("ancestor::language/@lang")[0]
-                message = (
-                    f"The subdeliverable {current_subdeli!r} is configured for "
-                    f"docset={setid}/language={lang}/deliverable={current_dc} "
-                    "but not for same deliverable of the default language. "
-                    "Documents configured for translation languages must be a "
-                    "subset of the documents configured for the default language."
-                )
-                messages.append(message)
-
-    return CheckResult(success=len(messages) == 0, messages=messages)
-
-
-@register_check
-def check_valid_languages(
-    tree: etree._Element | etree._ElementTree,
-) -> CheckResult:
-    """Check that all languages are valid.
-
-    .. code-block:: xml
-
-        <language lang="en-us" default="1">...</language>
-        <language lang="invalid-lang" default="0">...</language> <!-- Invalid -->
+        <!-- Valid format but unsupported language: -->
+        <locale lang="de-at"><branch>main</branch></locale>
 
     :param tree: The XML tree to check.
     :return: CheckResult with success status and any error messages.
     """
-
-    def iter_lang_attrib() -> Generator[tuple[etree._Element, str], None, None]:
-        for node in tree.iter(tag=None):  # "desc", "language"
-            lang = node.attrib.get("lang")
-            if lang:
-                yield node, lang
-
     messages = []
-    for node, lang in iter_lang_attrib():
-        if lang not in ALLOWED_LANGUAGES:
-            setid = node.xpath("ancestor-or-self::docset/@setid")[0]
+    first_xpath: str | None = None
+    for node in tree.iter():
+        lang = node.attrib.get("lang")
+        if lang is not None and lang not in ALLOWED_LANGUAGES:
+            if first_xpath is None:
+                first_xpath = semantic_xpath(node)
+            setid = docset_id(node)
             message = (
-                f"In docset={setid}, invalid language code found: {lang}. "
-                f"Valid codes are: {', '.join(ALLOWED_LANGUAGES)}"
+                f"In docset={setid}, language '{lang}' matches the portal format "
+                f"but is not supported. Allowed languages: "
+                f"{', '.join(sorted(ALLOWED_LANGUAGES))}"
             )
             messages.append(message)
 
-    return CheckResult(success=len(messages) == 0, messages=messages)
+    return CheckResult(success=len(messages) == 0, messages=messages, xpath=first_xpath)
