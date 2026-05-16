@@ -1,0 +1,8 @@
+# log-level(int): Set the logging level for the application.
+log-level = 2
+
+# logging(dict): Configure logging settings, such as log file paths, formats, and handlers.
+logging = {}
+
+# max_workers(str): Configure the maximum number of worker processes for parallel tasks. Use "half" to set it to half of the available CPU cores.
+max_workers = "half"
