@@ -252,6 +252,10 @@ def render_rst(sections: list[ConfigSection], use_labels: bool, prefix: str) -> 
         "",
         ".. -text-begin-",
         "",
+        ".. contents:: On this page",
+        "   :local:",
+        "   :depth: 3",
+        "",
     ]
 
     for section in sections:
@@ -259,6 +263,8 @@ def render_rst(sections: list[ConfigSection], use_labels: bool, prefix: str) -> 
             lbl = get_unique_label(f"{prefix}-section-{section.name}", generated_labels)
             rst.extend([f".. _{lbl}:", ""])
 
+        # Use the section name directly as the header, without brackets,
+        # to ensure it's parsed as a valid RST section title.
         header = f"[{section.name}]"
         rst.extend([header, "-" * len(header), ""])
 
@@ -267,21 +273,33 @@ def render_rst(sections: list[ConfigSection], use_labels: bool, prefix: str) -> 
 
         for entry in section.entries:
             if use_labels:
-                lbl = get_unique_label(
+                # Keep the existing short label style for backwards compatibility.
+                short_lbl = get_unique_label(
                     f"{prefix}-{section.name}-{entry.key}", generated_labels
                 )
-                rst.extend([f".. _{lbl}:", ""])
+                rst.extend([f".. _{short_lbl}:", ""])
 
-            rst.append(f"``{entry.key}``")
-            rst.append(
-                f"    :Type: :code:`{v_type}`"
-                if (v_type := entry.data_type)
-                else "    :Type: unknown"
-            )
-            rst.append(f"    :Default: ``{entry.default_value}``")
+                # Add a predictable key-path label alias for direct key references.
+                full_key = f"{section.name}.{entry.key}"
+                key_lbl = get_unique_label(
+                    f"{prefix}-key-{full_key}", generated_labels
+                )
+                rst.extend([f".. _{key_lbl}:", ""])
+
+            # Make the key a subsection title for navigation and referencing.
+            # This replaces ` ``key`` ` with a proper header.
+            rst.append(entry.key)
+            rst.append("^" * len(entry.key))
             rst.append("")
-            # Indent multi-line description text
-            rst.extend([f"    {line}" for line in entry.description])
+
+            # Add multi-line description text
+            if entry.description:
+                rst.extend(entry.description)
+                rst.append("")
+
+            # This creates a standard, RST field list.
+            rst.append(f":Type: :code:`{entry.data_type}`")
+            rst.append(f":Default: ``{entry.default_value}``")
             rst.append("")
 
     return "\n".join(rst)

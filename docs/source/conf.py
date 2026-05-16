@@ -266,6 +266,7 @@ def run_toml_generator(app: Sphinx) -> None:
     from toml_parser import generate_toml_reference
 
     conf_dir = Path(app.confdir)
+    generator_script = (conf_dir / "toml_parser.py").resolve()
     for input_rel, output_rel, config_data in toml_doc_config:
         toml_input = (conf_dir / input_rel).resolve()
         rst_output = (conf_dir / output_rel).resolve()
@@ -282,9 +283,10 @@ def run_toml_generator(app: Sphinx) -> None:
         # Optimization: Only generate if input is newer than output
         if rst_output.exists():
             input_mtime = toml_input.stat().st_mtime
+            generator_mtime = generator_script.stat().st_mtime
             output_mtime = rst_output.stat().st_mtime
 
-            if input_mtime <= output_mtime:
+            if input_mtime <= output_mtime and generator_mtime <= output_mtime:
                 logger.info(
                     "Skipping TOML reference generation: %s is up to date.",
                     rst_output.name,
