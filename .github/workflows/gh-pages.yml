@@ -5,9 +5,19 @@ on:
   push:
     branches:
       - main
+      - 'test-docs?-**'
+    tags:
+      - '[0-9]*.[0-9]*.[0-9]*'
     paths:
       - 'docs/**'
       - '.github/workflows/gh-pages.yml'
+      - 'src/docbuild/__about__.py'
+
+permissions:
+  contents: write
+
+env:
+  CI_BIN_DIR: .github/bin
 
 jobs:
   build-and-deploy:
@@ -16,6 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Install Graphviz
         run: sudo apt-get update && sudo apt-get install -y graphviz
@@ -37,16 +49,29 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen --group docs
 
+      - name: Determine documentation version
+        run: ${{ env.CI_BIN_DIR }}/determine-version.sh
+
       - name: Build documentation
+        env:
+          DOC_VERSION: ${{ env.DOC_VERSION }}
         run: |
+          # The DOC_VERSION is handled inside conf.py using os.environ
           uv run make -C docs html
+
+      - name: Prepare deployment
+        run: ${{ env.CI_BIN_DIR }}/prepare-deploy.sh
+
+      - name: Generate versions.json
+        run: ${{ env.CI_BIN_DIR }}/generate-versions.py --output versions.json
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html
-    
+          publish_dir: deploy
+
       - name: Print documentation URL
         run: |
-            echo "Your documentation will be available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+            echo "Documentation URL: "
+            echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"

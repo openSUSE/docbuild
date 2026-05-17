@@ -7,6 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 from datetime import datetime
+import os
 from pathlib import Path
 import sys
 from typing import Self
@@ -212,6 +213,11 @@ html_theme_options = {
         # "image_light": "_static/logo-light.png",
         # "image_dark": "_static/logo-dark.png",
     },
+    "switcher": {
+        "json_url": "https://opensuse.github.io/docbuild/versions.json",
+        "version_match": os.environ.get("DOC_VERSION", "latest"),
+    },
+    "navbar_end": ["theme-switcher", "version-switcher"],
 }
 
 html_logo = "_static/logo.png"
