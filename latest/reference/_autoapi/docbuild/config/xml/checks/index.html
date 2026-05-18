@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -614,50 +616,41 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_dc_in_language" title="docbuild.config.xml.checks.check_dc_in_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_dc_in_language</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.docset_id" title="docbuild.config.xml.checks.docset_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">docset_id</span></code></a>(→ str)</p></td>
+<td><p>Return a stable docset identifier for error messages.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.dc_identifier" title="docbuild.config.xml.checks.dc_identifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dc_identifier</span></code></a>(→ str)</p></td>
+<td><p>Return a DC identifier from legacy or current schema representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_dc_in_language" title="docbuild.config.xml.checks.check_dc_in_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_dc_in_language</span></code></a>(...)</p></td>
 <td><p>Make sure each DC appears only once within a language.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_categoryid" title="docbuild.config.xml.checks.check_duplicated_categoryid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_categoryid</span></code></a>(→ CheckResult)</p></td>
-<td><p>Check that categoryid is unique within a product.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_format_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_format_in_extralinks</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_format_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_format_in_extralinks</span></code></a>(...)</p></td>
 <td><p>Check that format attributes in extralinks are unique.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_linkid" title="docbuild.config.xml.checks.check_duplicated_linkid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_linkid</span></code></a>(→ CheckResult)</p></td>
-<td><p>Check that linkid is unique within an external element.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_url_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_url_in_extralinks</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_url_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_url_in_extralinks</span></code></a>(...)</p></td>
 <td><p>Check that url attributes in extralinks are unique within each language.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_enabled_format" title="docbuild.config.xml.checks.check_enabled_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_enabled_format</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_enabled_format" title="docbuild.config.xml.checks.check_enabled_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_enabled_format</span></code></a>(...)</p></td>
 <td><p>Check if at least one format is enabled.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="docbuild.config.xml.checks.check_format_subdeliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_format_subdeliverable</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="docbuild.config.xml.checks.check_format_subdeliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_format_subdeliverable</span></code></a>(...)</p></td>
 <td><p>Make sure that deliverables with subdeliverables have only HTML formats enabled.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_category" title="docbuild.config.xml.checks.check_lang_code_in_category"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_category</span></code></a>(→ CheckResult)</p></td>
-<td><p>Ensure that each language code appears only once within &lt;category&gt;.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="docbuild.config.xml.checks.check_lang_code_in_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_desc</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="docbuild.config.xml.checks.check_lang_code_in_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_desc</span></code></a>(...)</p></td>
 <td><p>Ensure that each language code appears only once within &lt;desc&gt;.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="docbuild.config.xml.checks.check_lang_code_in_docset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_docset</span></code></a>(→ CheckResult)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="docbuild.config.xml.checks.check_lang_code_in_docset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_docset</span></code></a>(...)</p></td>
 <td><p>Ensure that each language code appears only once within &lt;docset&gt;.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks</span></code></a>(→ CheckResult)</p></td>
-<td><p>Ensure that each language code appears only once within &lt;external&gt;.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks</span></code></a>(...)</p></td>
+<td><p>Ensure that each language code appears only once within <code class="docutils literal notranslate"><span class="pre">external/link/url</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_overridedesc" title="docbuild.config.xml.checks.check_lang_code_in_overridedesc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_overridedesc</span></code></a>(→ CheckResult)</p></td>
-<td><p>Ensure that each language code appears only once within &lt;overridedesc&gt;.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable</span></code></a>(...)</p></td>
+<td><p>Check that subdeliverables within a deliverable are unique.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable</span></code></a>(→ CheckResult)</p></td>
-<td><p>Check that site section is present in the XML tree.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_translation_deliverables" title="docbuild.config.xml.checks.check_translation_deliverables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_translation_deliverables</span></code></a>(→ CheckResult)</p></td>
-<td><p>Check that deliverables have translations in all languages.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_valid_languages" title="docbuild.config.xml.checks.check_valid_languages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_valid_languages</span></code></a>(→ CheckResult)</p></td>
-<td><p>Check that all languages are valid.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="docbuild.config.xml.checks.check_unsupported_language_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_unsupported_language_code</span></code></a>(...)</p></td>
+<td><p>Check for language codes that match the portal format but are not supported.</p></td>
 </tr>
 </tbody>
 </table>
@@ -666,250 +659,59 @@
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_dc_in_language">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_dc_in_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_dc_in_language" title="Link to this definition">#</a></dt>
-<dd><p>Make sure each DC appears only once within a language.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">        </span><span class="nt">&lt;dc&gt;</span>DC-foo<span class="nt">&lt;/dc&gt;</span>
-<span class="w">        </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">        </span><span class="nt">&lt;dc&gt;</span>DC-foo<span class="nt">&lt;/dc&gt;</span>
-<span class="w">        </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="nt">&lt;/language&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.docset_id">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">docset_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.docset_id" title="Link to this definition">#</a></dt>
+<dd><p>Return a stable docset identifier for error messages.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_duplicated_categoryid">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_categoryid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_categoryid" title="Link to this definition">#</a></dt>
-<dd><p>Check that categoryid is unique within a product.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">categoryid=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span><span class="w"> </span>...<span class="w"> </span><span class="nt">&lt;/category&gt;</span>
-<span class="nt">&lt;category</span><span class="w"> </span><span class="na">categoryid=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span><span class="w"> </span>...<span class="w"> </span><span class="nt">&lt;/category&gt;</span>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.dc_identifier">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">dc_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliverable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.dc_identifier" title="Link to this definition">#</a></dt>
+<dd><p>Return a DC identifier from legacy or current schema representation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_dc_in_language">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_dc_in_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_dc_in_language" title="Link to this definition">#</a></dt>
+<dd><p>Make sure each DC appears only once within a language.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-foo&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/dc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-2&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-foo&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/dc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
+<span class="nt">&lt;/locale&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each language with duplicated DCs.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.config.xml.checks.check_duplicated_format_in_extralinks">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_format_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_format_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="Link to this definition">#</a></dt>
 <dd><p>Check that format attributes in extralinks are unique.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1.pdf&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;pdf&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
-<span class="w">      </span><span class="cm">&lt;!-- Duplicate format: --&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1_again&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
-<span class="nt">&lt;/external&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_duplicated_linkid">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_linkid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_linkid" title="Link to this definition">#</a></dt>
-<dd><p>Check that linkid is unique within an external element.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link</span><span class="w"> </span><span class="na">linkid=</span><span class="s">&quot;fake-link&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link</span><span class="w"> </span><span class="na">linkid=</span><span class="s">&quot;fake-link&quot;</span><span class="nt">&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate linkid --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page2&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
-<span class="nt">&lt;/external&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_duplicated_url_in_extralinks">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_url_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="Link to this definition">#</a></dt>
-<dd><p>Check that url attributes in extralinks are unique within each language.</p>
-<p>Make sure each URL appears only once within a given language in external
-links section.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">&gt;</span>
-<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-US&quot;</span><span class="nt">/&gt;</span><span class="cm">&lt;!-- Duplicate --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
-<span class="nt">&lt;/external&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_enabled_format">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_enabled_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_enabled_format" title="Link to this definition">#</a></dt>
-<dd><p>Check if at least one format is enabled.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">  </span><span class="nt">&lt;dc&gt;</span>DC-fake-doc<span class="nt">&lt;/dc&gt;</span>
-<span class="w">  </span><span class="cm">&lt;!-- All formats here are disabled: --&gt;</span>
-<span class="w">  </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/deliverable&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_format_subdeliverable">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_format_subdeliverable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="Link to this definition">#</a></dt>
-<dd><p>Make sure that deliverables with subdeliverables have only HTML formats enabled.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">   </span><span class="nt">&lt;dc&gt;</span>DC-fake-all<span class="nt">&lt;/dc&gt;</span>
-<span class="w">   </span><span class="cm">&lt;!-- PDF enabled, but subdeliverables present: --&gt;</span>
-<span class="w">   </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="w">   </span><span class="nt">&lt;subdeliverable&gt;</span><span class="w"> </span>...<span class="w"> </span><span class="nt">&lt;/subdeliverable&gt;</span>
-<span class="nt">&lt;/deliverable&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all subdeliverables have at least one enabled format,
-False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_category">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_category" title="Link to this definition">#</a></dt>
-<dd><p>Ensure that each language code appears only once within &lt;category&gt;.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">categoryid=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;...&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;...&quot;</span><span class="nt">/&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
-<span class="nt">&lt;/category&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all lang attributes in categories are valid, False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_desc">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="Link to this definition">#</a></dt>
-<dd><p>Ensure that each language code appears only once within &lt;desc&gt;.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;product&gt;</span>
-<span class="w">   </span><span class="cm">&lt;!-- ... --&gt;</span>
-<span class="w">   </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/desc&gt;</span>
-<span class="w">   </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/desc&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
-<span class="nt">&lt;/product&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all lang attributes in desc are valid, False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_docset">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_docset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="Link to this definition">#</a></dt>
-<dd><p>Ensure that each language code appears only once within &lt;docset&gt;.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">setid=</span><span class="s">&quot;...&quot;</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;...&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="cm">&lt;!-- ... --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;builddocs&gt;</span>
-<span class="w">        </span><span class="nt">&lt;git</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;...&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="w">        </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span>
-<span class="w">        </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/builddocs&gt;</span>
-<span class="nt">&lt;/external&gt;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all lang attributes in extralinks are valid, False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_extralinks">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="Link to this definition">#</a></dt>
-<dd><p>Ensure that each language code appears only once within &lt;external&gt;.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
 <span class="w">    </span><span class="nt">&lt;link&gt;</span>
-<span class="w">        </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span>
-<span class="w">        </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
+<span class="w">         </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="nt">/&gt;</span>
+<span class="w">         </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1.pdf&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;pdf&quot;</span><span class="nt">/&gt;</span>
+<span class="w">         </span><span class="cm">&lt;!-- Duplicate format: --&gt;</span>
+<span class="w">         </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1-again&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="nt">/&gt;</span>
+<span class="w">         </span><span class="nt">&lt;descriptions&gt;</span>
+<span class="w">             </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
+<span class="w">         </span><span class="nt">&lt;/descriptions&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/link&gt;</span>
 <span class="nt">&lt;/external&gt;</span>
 </pre></div>
@@ -918,41 +720,48 @@ False otherwise.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all lang attributes in extralinks are valid, False otherwise.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each link with duplicated formats.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_overridedesc">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_overridedesc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_overridedesc" title="Link to this definition">#</a></dt>
-<dd><p>Ensure that each language code appears only once within &lt;overridedesc&gt;.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;overridedesc&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span>
-<span class="w">    </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
-<span class="nt">&lt;/overridedesc&gt;</span>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_duplicated_url_in_extralinks">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_duplicated_url_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="Link to this definition">#</a></dt>
+<dd><p>Check that url attributes in extralinks are unique within each language.</p>
+<p>Make sure each URL appears only once within a given language in external
+links section.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
+<span class="w">    </span><span class="nt">&lt;link&gt;</span>
+<span class="w">        </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.com/page1&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;pdf&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;descriptions&gt;</span>
+<span class="w">           </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/descriptions&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/link&gt;</span>
+<span class="nt">&lt;/external&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all lang attributes in overridedesc are valid, False otherwise.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each link with duplicated URLs.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_subdeliverable_in_deliverable">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_subdeliverable_in_deliverable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="Link to this definition">#</a></dt>
-<dd><p>Check that site section is present in the XML tree.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;dc&gt;</span>DC-fake-doc<span class="nt">&lt;/dc&gt;</span>
-<span class="w">    </span><span class="nt">&lt;subdeliverable&gt;</span>sub-1<span class="nt">&lt;/subdeliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;subdeliverable&gt;</span>sub-2<span class="nt">&lt;/subdeliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;subdeliverable&gt;</span>sub-1<span class="nt">&lt;/subdeliverable&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_enabled_format">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_enabled_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_enabled_format" title="Link to this definition">#</a></dt>
+<dd><p>Check if at least one format is enabled.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-doc&quot;</span><span class="nt">&gt;</span>
+<span class="w">     </span><span class="cm">&lt;!-- All formats here are disabled: --&gt;</span>
+<span class="w">     </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dc&gt;</span>
 <span class="nt">&lt;/deliverable&gt;</span>
 </pre></div>
 </div>
@@ -960,61 +769,142 @@ False otherwise.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if site/section is present, False otherwise.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each deliverable with no enabled formats.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_translation_deliverables">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_translation_deliverables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_translation_deliverables" title="Link to this definition">#</a></dt>
-<dd><p>Check that deliverables have translations in all languages.</p>
-<p>Make sure that deliverables defined in translations are a subset
-of the deliverables defined in the default language.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;dc&gt;</span>DC-SLES-all<span class="nt">&lt;/dc&gt;</span>
-<span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;subdeliverable&gt;</span>book-rmt<span class="nt">&lt;/subdeliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="nt">&lt;/language&gt;</span>
-<span class="nt">&lt;language</span><span class="w">  </span><span class="na">lang=</span><span class="s">&quot;de-de&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;dc&gt;</span>DC-SLES-all<span class="nt">&lt;/dc&gt;</span>
-<span class="w">    </span><span class="cm">&lt;!-- This subdeliverable is not present in the default language: --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;subdeliverable&gt;</span>book-abc<span class="nt">&lt;/subdeliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="nt">&lt;/language&gt;</span>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_format_subdeliverable">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_format_subdeliverable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="Link to this definition">#</a></dt>
+<dd><p>Make sure that deliverables with subdeliverables have only HTML formats enabled.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">   </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-all&quot;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="cm">&lt;!-- PDF enabled, but subdeliverables present: --&gt;</span>
+<span class="w">      </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;subdeliverable&gt;</span>book-1<span class="nt">&lt;/subdeliverable&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/dc&gt;</span>
+<span class="nt">&lt;/deliverable&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if all deliverables have translations in all languages,
-False otherwise.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each subdeliverable with improper formats.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_valid_languages">
-<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_valid_languages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_valid_languages" title="Link to this definition">#</a></dt>
-<dd><p>Check that all languages are valid.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span>
-<span class="nt">&lt;language</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;invalid-lang&quot;</span><span class="w"> </span><span class="na">default=</span><span class="s">&quot;0&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/language&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Invalid --&gt;</span>
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_desc">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="Link to this definition">#</a></dt>
+<dd><p>Ensure that each language code appears only once within &lt;desc&gt;.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;descriptions&gt;</span>
+<span class="w">     </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
+<span class="nt">&lt;/descriptions&gt;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CheckResult with success status and any error messages.</p>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each descriptions group with duplicate lang codes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_docset">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_docset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="Link to this definition">#</a></dt>
+<dd><p>Ensure that each language code appears only once within &lt;docset&gt;.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;docset1&quot;</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;supported&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;resources&gt;</span>
+<span class="w">         </span><span class="nt">&lt;git</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;https://example.invalid/repo.git&quot;</span><span class="nt">/&gt;</span>
+<span class="w">         </span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;&lt;/locale&gt;</span>
+<span class="w">         </span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;&lt;/locale&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/resources&gt;</span>
+<span class="nt">&lt;/docset&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
+</dd>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each docset with duplicate language codes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_lang_code_in_extralinks">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_lang_code_in_extralinks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="Link to this definition">#</a></dt>
+<dd><p>Ensure that each language code appears only once within <code class="docutils literal notranslate"><span class="pre">external/link/url</span></code>.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
+<span class="w">  </span><span class="nt">&lt;link&gt;</span>
+<span class="w">     </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.invalid/one&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://example.invalid/two&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;pdf&quot;</span><span class="nt">/&gt;</span><span class="cm">&lt;!-- Wrong: duplicate lang --&gt;</span>
+<span class="w">     </span><span class="nt">&lt;descriptions&gt;</span>
+<span class="w">         </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/descriptions&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
+<span class="nt">&lt;/external&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
+</dd>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each link with duplicate language codes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_subdeliverable_in_deliverable">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_subdeliverable_in_deliverable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="Link to this definition">#</a></dt>
+<dd><p>Check that subdeliverables within a deliverable are unique.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-doc&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subdeliverable&gt;</span>sub-1<span class="nt">&lt;/subdeliverable&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subdeliverable&gt;</span>sub-2<span class="nt">&lt;/subdeliverable&gt;</span>
+<span class="w">        </span><span class="nt">&lt;subdeliverable&gt;</span>sub-1<span class="nt">&lt;/subdeliverable&gt;</span><span class="w"> </span><span class="cm">&lt;!-- Duplicate --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/dc&gt;</span>
+<span class="nt">&lt;/deliverable&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
+</dd>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each deliverable with duplicate subdeliverables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_unsupported_language_code">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_unsupported_language_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="Link to this definition">#</a></dt>
+<dd><p>Check for language codes that match the portal format but are not supported.</p>
+<p>Catches subtle mistakes like <code class="docutils literal notranslate"><span class="pre">de-at</span></code> which matches the <code class="docutils literal notranslate"><span class="pre">xx-yy</span></code> regex
+but is not in <a class="reference internal" href="../../../constants/index.html#docbuild.constants.ALLOWED_LANGUAGES" title="docbuild.constants.ALLOWED_LANGUAGES"><code class="xref py py-data docutils literal notranslate"><span class="pre">ALLOWED_LANGUAGES</span></code></a>.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="cm">&lt;!-- Valid format but unsupported language: --&gt;</span>
+<span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;de-at&quot;</span><span class="nt">&gt;&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;&lt;/locale&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
+</dd>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each unsupported language found.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1072,21 +962,18 @@ False otherwise.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.docset_id"><code class="docutils literal notranslate"><span class="pre">docset_id()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.dc_identifier"><code class="docutils literal notranslate"><span class="pre">dc_identifier()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_dc_in_language"><code class="docutils literal notranslate"><span class="pre">check_dc_in_language()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_duplicated_categoryid"><code class="docutils literal notranslate"><span class="pre">check_duplicated_categoryid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks"><code class="docutils literal notranslate"><span class="pre">check_duplicated_format_in_extralinks()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_duplicated_linkid"><code class="docutils literal notranslate"><span class="pre">check_duplicated_linkid()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks"><code class="docutils literal notranslate"><span class="pre">check_duplicated_url_in_extralinks()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_enabled_format"><code class="docutils literal notranslate"><span class="pre">check_enabled_format()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_format_subdeliverable"><code class="docutils literal notranslate"><span class="pre">check_format_subdeliverable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_category"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_category()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_desc"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_desc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_docset"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_docset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_overridedesc"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_overridedesc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_translation_deliverables"><code class="docutils literal notranslate"><span class="pre">check_translation_deliverables()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_valid_languages"><code class="docutils literal notranslate"><span class="pre">check_valid_languages()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_unsupported_language_code"><code class="docutils literal notranslate"><span class="pre">check_unsupported_language_code()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -61,7 +61,7 @@
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="docbuild.logging" href="../logging/index.html" />
-    <link rel="prev" title="docbuild.config.xml.stitch" href="../config/xml/stitch/index.html" />
+    <link rel="prev" title="docbuild.config.xml.xinclude" href="../config/xml/xinclude/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../config/xml/list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../config/xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -670,17 +672,32 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
 <td><p>The standardized name for the Git-related logger.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.PORTALLOGGER_NAME" title="docbuild.constants.PORTALLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PORTALLOGGER_NAME</span></code></a></p></td>
+<td><p>The standardized name for the Portal-related logger.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
 <td><p>The directory where log files will be stored.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOCK_DIR" title="docbuild.constants.BASE_LOCK_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOCK_DIR" title="docbuild.constants.BASE_LOCK_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></p></td>
 <td><p>The directory where PID lock files will be stored.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XMLDATADIR" title="docbuild.constants.XMLDATADIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></p></td>
 <td><p>Directory where additional files (RNC, XSLT) for XML processing are stored.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_ERROR_LIMIT" title="docbuild.constants.DEFAULT_ERROR_LIMIT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_ERROR_LIMIT</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_ERROR_LIMIT" title="docbuild.constants.DEFAULT_ERROR_LIMIT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_ERROR_LIMIT</span></code></a></p></td>
 <td><p>The maximum number of validation errors to display before truncating the output.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XML_NS" title="docbuild.constants.XML_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XML_NS</span></code></a></p></td>
+<td><p>The XML namespace URI for XML elements.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XINCLUDE_NS" title="docbuild.constants.XINCLUDE_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></p></td>
+<td><p>The XML namespace URI for XInclude elements.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DOCBOOK_NS" title="docbuild.constants.DOCBOOK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></p></td>
+<td><p>The XML namespace URI for DocBook elements.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XLINK_NS" title="docbuild.constants.XLINK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></p></td>
+<td><p>The XML namespace URI for XLink attributes.</p></td>
 </tr>
 </tbody>
 </table>
@@ -844,6 +861,12 @@ per XDG Base Directory Specification.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.PORTALLOGGER_NAME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">PORTALLOGGER_NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild.portal'</span></span><a class="headerlink" href="#docbuild.constants.PORTALLOGGER_NAME" title="Link to this definition">#</a></dt>
+<dd><p>The standardized name for the Portal-related logger.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.BASE_LOG_DIR">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_LOG_DIR</span></span><a class="headerlink" href="#docbuild.constants.BASE_LOG_DIR" title="Link to this definition">#</a></dt>
 <dd><p>The directory where log files will be stored.</p>
@@ -867,6 +890,30 @@ per XDG Base Directory Specification.</p>
 <dd><p>The maximum number of validation errors to display before truncating the output.</p>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.XML_NS">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XML_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/XML/1998/namespace'</span></span><a class="headerlink" href="#docbuild.constants.XML_NS" title="Link to this definition">#</a></dt>
+<dd><p>The XML namespace URI for XML elements.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.XINCLUDE_NS">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XINCLUDE_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/2001/XInclude'</span></span><a class="headerlink" href="#docbuild.constants.XINCLUDE_NS" title="Link to this definition">#</a></dt>
+<dd><p>The XML namespace URI for XInclude elements.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.DOCBOOK_NS">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DOCBOOK_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://docbook.org/ns/docbook'</span></span><a class="headerlink" href="#docbuild.constants.DOCBOOK_NS" title="Link to this definition">#</a></dt>
+<dd><p>The XML namespace URI for DocBook elements.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.XLINK_NS">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XLINK_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/1999/xlink'</span></span><a class="headerlink" href="#docbuild.constants.XLINK_NS" title="Link to this definition">#</a></dt>
+<dd><p>The XML namespace URI for XLink attributes.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -881,12 +928,12 @@ per XDG Base Directory Specification.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../config/xml/stitch/index.html"
+       href="../config/xml/xinclude/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.config.xml.stitch</p>
+        <p class="prev-next-title">docbuild.config.xml.xinclude</p>
       </div>
     </a>
     <a class="right-next"
@@ -944,10 +991,15 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GIT_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">GIT_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_STATE_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GITLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.PORTALLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">PORTALLOGGER_NAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOCK_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ERROR_LIMIT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ERROR_LIMIT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XML_NS"><code class="docutils literal notranslate"><span class="pre">XML_NS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XINCLUDE_NS"><code class="docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DOCBOOK_NS"><code class="docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XLINK_NS"><code class="docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -598,7 +600,10 @@
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.decorators.F" title="docbuild.utils.decorators.F"><code class="xref py py-obj docutils literal notranslate"><span class="pre">F</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.decorators.CheckFunc" title="docbuild.utils.decorators.CheckFunc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CheckFunc</span></code></a></p></td>
+<td><p>Concrete callable type for registered XML checks.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.decorators.F" title="docbuild.utils.decorators.F"><code class="xref py py-obj docutils literal notranslate"><span class="pre">F</span></code></a></p></td>
 <td><p>A type variable representing a callable that takes an XML element or tree</p></td>
 </tr>
 </tbody>
@@ -622,7 +627,7 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.decorators.factory_registry" title="docbuild.utils.decorators.factory_registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">factory_registry</span></code></a>(→ collections.abc.Callable[[F], F])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.decorators.factory_registry" title="docbuild.utils.decorators.factory_registry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">factory_registry</span></code></a>(→ RegistryDecorator)</p></td>
 <td><p>Create a decorator that registers functions in its own registry.</p></td>
 </tr>
 </tbody>
@@ -632,6 +637,12 @@
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.utils.decorators.CheckFunc">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.decorators.</span></span><span class="sig-name descname"><span class="pre">CheckFunc</span></span><a class="headerlink" href="#docbuild.utils.decorators.CheckFunc" title="Link to this definition">#</a></dt>
+<dd><p>Concrete callable type for registered XML checks.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.utils.decorators.F">
 <span class="sig-prename descclassname"><span class="pre">docbuild.utils.decorators.</span></span><span class="sig-name descname"><span class="pre">F</span></span><a class="headerlink" href="#docbuild.utils.decorators.F" title="Link to this definition">#</a></dt>
 <dd><p>A type variable representing a callable that takes an XML element or tree</p>
@@ -639,13 +650,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.utils.decorators.factory_registry">
-<span class="sig-prename descclassname"><span class="pre">docbuild.utils.decorators.</span></span><span class="sig-name descname"><span class="pre">factory_registry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">collections.abc.Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docbuild.utils.decorators.F" title="docbuild.utils.decorators.F"><span class="pre">F</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#docbuild.utils.decorators.F" title="docbuild.utils.decorators.F"><span class="pre">F</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.decorators.factory_registry" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.decorators.</span></span><span class="sig-name descname"><span class="pre">factory_registry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="RegistryDecorator.html#docbuild.utils.decorators.RegistryDecorator" title="docbuild.utils.decorators.RegistryDecorator"><span class="pre">RegistryDecorator</span></a></span></span><a class="headerlink" href="#docbuild.utils.decorators.factory_registry" title="Link to this definition">#</a></dt>
 <dd><p>Create a decorator that registers functions in its own registry.</p>
 <p>Example usage:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">register_check</span> <span class="o">=</span> <span class="n">factory_registry</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@register_check</span>
-<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">check_example</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span> <span class="o">|</span> <span class="n">etree</span><span class="o">.</span><span class="n">_ElementTree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="kc">True</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">check_example</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">tree</span><span class="p">:</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span> <span class="o">|</span> <span class="n">etree</span><span class="o">.</span><span class="n">_ElementTree</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">CheckResult</span><span class="p">]:</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">CheckResult</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s2">&quot;example&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">register_check</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span>
 <span class="go">&#39;check_example&#39;</span>
 </pre></div>
@@ -712,6 +726,7 @@ see <a class="reference internal" href="RegistryDecorator.html#docbuild.utils.de
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.decorators.CheckFunc"><code class="docutils literal notranslate"><span class="pre">CheckFunc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.decorators.F"><code class="docutils literal notranslate"><span class="pre">F</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.decorators.factory_registry"><code class="docutils literal notranslate"><span class="pre">factory_registry()</span></code></a></li>
 </ul>

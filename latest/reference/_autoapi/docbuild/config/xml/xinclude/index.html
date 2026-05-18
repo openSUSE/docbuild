@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_validate.process.ValidationResult &#8212; docbuild 0.18.0 documentation</title>
+    <title>docbuild.config.xml.xinclude &#8212; docbuild 0.18.0 documentation</title>
   
   
   
@@ -48,7 +48,7 @@
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/cmd_validate/process/ValidationResult';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/config/xml/xinclude/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -60,8 +60,8 @@
     <link rel="icon" href="../../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
-    <link rel="next" title="docbuild.cli.context" href="../../context/index.html" />
-    <link rel="prev" title="docbuild.cli.cmd_validate.process" href="index.html" />
+    <link rel="next" title="docbuild.constants" href="../../../constants/index.html" />
+    <link rel="prev" title="docbuild.config.xml.semantic_xpath" href="../semantic_xpath/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -375,53 +375,55 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../index.html">docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../../__about__/index.html">docbuild.__about__</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../__main__/index.html">docbuild.__main__</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">docbuild.cli</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../callback/index.html">docbuild.cli.callback</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cmd_build/index.html">docbuild.cli.cmd_build</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/callback/index.html">docbuild.cli.callback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">docbuild.cli.cmd_validate</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="reference internal" href="index.html">docbuild.cli.cmd_validate.process</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/defaults/index.html">docbuild.cli.defaults</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../config/app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/app/PlaceholderSyntaxError.html">docbuild.config.app.PlaceholderSyntaxError</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../index.html">docbuild.config</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../app/index.html">docbuild.config.app</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../app/PlaceholderResolutionError.html">docbuild.config.app.PlaceholderResolutionError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../app/CircularReferenceError.html">docbuild.config.app.CircularReferenceError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../app/PlaceholderSyntaxError.html">docbuild.config.app.PlaceholderSyntaxError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../app/PlaceholderResolver.html">docbuild.config.app.PlaceholderResolver</a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../config/load/index.html">docbuild.config.load</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../config/merge/index.html">docbuild.config.merge</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../config/xml/index.html">docbuild.config.xml</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../load/index.html">docbuild.config.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../merge/index.html">docbuild.config.merge</a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../index.html">docbuild.config.xml</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../checks/index.html">docbuild.config.xml.checks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../list/index.html">docbuild.config.xml.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../references/index.html">docbuild.config.xml.references</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -572,15 +574,12 @@
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">docbuild</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild.cli</a></li>
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">docbuild.config</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.cli.cmd_validate</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.config.xml</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">docbuild.cli.cmd_validate.process</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.cli.cmd_validate.process.ValidationResult</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.config.xml.xinclude</span></li>
   </ul>
 </nav>
 </div>
@@ -597,23 +596,121 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="docbuild-cli-cmd-validate-process-validationresult">
-<h1>docbuild.cli.cmd_validate.process.ValidationResult<a class="headerlink" href="#docbuild-cli-cmd-validate-process-validationresult" title="Link to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.process.ValidationResult">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.process.</span></span><span class="sig-name descname"><span class="pre">ValidationResult</span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.process.ValidationResult" title="Link to this definition">#</a></dt>
-<dd><p>Normalized result of RNG validation.</p>
+  <section id="module-docbuild.config.xml.xinclude">
+<span id="docbuild-config-xml-xinclude"></span><h1>docbuild.config.xml.xinclude<a class="headerlink" href="#module-docbuild.config.xml.xinclude" title="Link to this heading">#</a></h1>
+<p>Resolve XInclude and preserve source file metadata on inserted nodes.</p>
+<p>Any XInclude element is replaced with the content of the included file,
+and the included nodes are tagged with an <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> attribute containing
+the path to the included file relative to the root config file.</p>
+<p>This allows to identify the source file for any node in the final merged XML tree, which is essential for validation.</p>
+<p>Use <a class="reference internal" href="#docbuild.config.xml.xinclude.parse_xml_with_xinclude_base" title="docbuild.config.xml.xinclude.parse_xml_with_xinclude_base"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_xml_with_xinclude_base()</span></code></a> to
+parse XML files with XInclude support:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tree</span> <span class="o">=</span> <span class="k">await</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">parse_xml_with_xinclude_base</span><span class="p">,</span>
+                                     <span class="s2">&quot;path/to/portal.xml&quot;</span><span class="p">)</span>
+<span class="c1"># Nodes from included files are tagged with xml:base</span>
+</pre></div>
+</div>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.XML_BASE_ATTR" title="docbuild.config.xml.xinclude.XML_BASE_ATTR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XML_BASE_ATTR</span></code></a></p></td>
+<td><p>The fully qualified name of the <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> attribute in Clark notation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.XINCLUDE_TAG" title="docbuild.config.xml.xinclude.XINCLUDE_TAG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XINCLUDE_TAG</span></code></a></p></td>
+<td><p>The fully qualified name of the <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> element in Clark notation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.as_relative_posix" title="docbuild.config.xml.xinclude.as_relative_posix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_relative_posix</span></code></a>(→ str)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">path</span></code> relative to <code class="docutils literal notranslate"><span class="pre">root_dir</span></code> when possible.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.xpointer_to_xpath" title="docbuild.config.xml.xinclude.xpointer_to_xpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpointer_to_xpath</span></code></a>(→ str | None)</p></td>
+<td><p>Extract XPath from <code class="docutils literal notranslate"><span class="pre">xpointer(...)</span></code> expressions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.mark_source" title="docbuild.config.xml.xinclude.mark_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mark_source</span></code></a>(→ list[lxml.etree._Element])</p></td>
+<td><p>Copy selected nodes and set their <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> attribute.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.replace_include_with_nodes" title="docbuild.config.xml.xinclude.replace_include_with_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_include_with_nodes</span></code></a>(→ None)</p></td>
+<td><p>Replace one <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> element with one or more resolved nodes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.resolve_includes" title="docbuild.config.xml.xinclude.resolve_includes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_includes</span></code></a>(→ None)</p></td>
+<td><p>Resolve all <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> elements in <code class="docutils literal notranslate"><span class="pre">tree</span></code> recursively.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.xinclude.parse_xml_with_xinclude_base" title="docbuild.config.xml.xinclude.parse_xml_with_xinclude_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_xml_with_xinclude_base</span></code></a>(→ lxml.etree._ElementTree)</p></td>
+<td><p>Parse XML and resolve XIncludes while preserving include source paths.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.XML_BASE_ATTR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">XML_BASE_ATTR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{http://www.w3.org/XML/1998/namespace}base'</span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.XML_BASE_ATTR" title="Link to this definition">#</a></dt>
+<dd><p>The fully qualified name of the <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> attribute in Clark notation.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.XINCLUDE_TAG">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">XINCLUDE_TAG</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{http://www.w3.org/2001/XInclude}include'</span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.XINCLUDE_TAG" title="Link to this definition">#</a></dt>
+<dd><p>The fully qualified name of the <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> element in Clark notation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.as_relative_posix">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">as_relative_posix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.as_relative_posix" title="Link to this definition">#</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">path</span></code> relative to <code class="docutils literal notranslate"><span class="pre">root_dir</span></code> when possible.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.xpointer_to_xpath">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">xpointer_to_xpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xpointer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.xpointer_to_xpath" title="Link to this definition">#</a></dt>
+<dd><p>Extract XPath from <code class="docutils literal notranslate"><span class="pre">xpointer(...)</span></code> expressions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.mark_source">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">mark_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.mark_source" title="Link to this definition">#</a></dt>
+<dd><p>Copy selected nodes and set their <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> attribute.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.replace_include_with_nodes">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">replace_include_with_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.replace_include_with_nodes" title="Link to this definition">#</a></dt>
+<dd><p>Replace one <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> element with one or more resolved nodes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.resolve_includes">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">resolve_includes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._ElementTree</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">active_stack</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.resolve_includes" title="Link to this definition">#</a></dt>
+<dd><p>Resolve all <code class="docutils literal notranslate"><span class="pre">xi:include</span></code> elements in <code class="docutils literal notranslate"><span class="pre">tree</span></code> recursively.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.xinclude.parse_xml_with_xinclude_base">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.xinclude.</span></span><span class="sig-name descname"><span class="pre">parse_xml_with_xinclude_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">lxml.etree._ElementTree</span></span></span><a class="headerlink" href="#docbuild.config.xml.xinclude.parse_xml_with_xinclude_base" title="Link to this definition">#</a></dt>
+<dd><p>Parse XML and resolve XIncludes while preserving include source paths.</p>
+<p>Nodes inserted from included files are stamped with <code class="docutils literal notranslate"><span class="pre">xml:base</span></code> so callers
+can report the originating source file after include expansion.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>success</strong> – True when validation passed.</p></li>
-<li><p><strong>exit_code</strong> – Exit code to return when validation fails (0 for success).</p></li>
-<li><p><strong>message</strong> – Optional human-readable message describing the failure.</p></li>
-</ul>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filepath</strong> – Path to the root XML file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parsed and include-resolved XML tree.</p>
 </dd>
 </dl>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -627,20 +724,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="../semantic_xpath/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.cli.cmd_validate.process</p>
+        <p class="prev-next-title">docbuild.config.xml.semantic_xpath</p>
       </div>
     </a>
     <a class="right-next"
-       href="../../context/index.html"
+       href="../../../constants/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.cli.context</p>
+        <p class="prev-next-title">docbuild.constants</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -663,7 +760,19 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.process.ValidationResult"><code class="docutils literal notranslate"><span class="pre">docbuild.cli.cmd_validate.process.ValidationResult</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.XML_BASE_ATTR"><code class="docutils literal notranslate"><span class="pre">XML_BASE_ATTR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.XINCLUDE_TAG"><code class="docutils literal notranslate"><span class="pre">XINCLUDE_TAG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.as_relative_posix"><code class="docutils literal notranslate"><span class="pre">as_relative_posix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.xpointer_to_xpath"><code class="docutils literal notranslate"><span class="pre">xpointer_to_xpath()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.mark_source"><code class="docutils literal notranslate"><span class="pre">mark_source()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.replace_include_with_nodes"><code class="docutils literal notranslate"><span class="pre">replace_include_with_nodes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.resolve_includes"><code class="docutils literal notranslate"><span class="pre">resolve_includes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.xinclude.parse_xml_with_xinclude_base"><code class="docutils literal notranslate"><span class="pre">parse_xml_with_xinclude_base()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -671,7 +780,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/cli/cmd_validate/process/ValidationResult.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/config/xml/xinclude/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -686,7 +795,7 @@
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../../../_sources/reference/_autoapi/docbuild/cli/cmd_validate/process/ValidationResult.rst.txt">
+    <a href="../../../../../../_sources/reference/_autoapi/docbuild/config/xml/xinclude/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

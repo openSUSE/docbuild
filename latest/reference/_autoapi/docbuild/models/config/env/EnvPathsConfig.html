@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../config/xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../config/xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -620,6 +622,18 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvPathsConfig.main_portal_config">
+<span class="sig-name descname"><span class="pre">main_portal_config</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvPathsConfig.main_portal_config" title="Link to this definition">#</a></dt>
+<dd><p>Path to the main portal XML configuration file.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvPathsConfig.portal_rncschema">
+<span class="sig-name descname"><span class="pre">portal_rncschema</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvPathsConfig.portal_rncschema" title="Link to this definition">#</a></dt>
+<dd><p>Path to the portal RELAX NG (RNC) schema file.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvPathsConfig.root_config_dir">
 <span class="sig-name descname"><span class="pre">root_config_dir</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvPathsConfig.root_config_dir" title="Link to this definition">#</a></dt>
 <dd><p>Path to the root configuration files.</p>
@@ -739,6 +753,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.model_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.model_config</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.config_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.config_dir</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.main_portal_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.main_portal_config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.portal_rncschema"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.portal_rncschema</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.root_config_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.root_config_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.jinja_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.jinja_dir</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvPathsConfig.server_rootfiles_dir"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvPathsConfig.server_rootfiles_dir</span></code></a></li>

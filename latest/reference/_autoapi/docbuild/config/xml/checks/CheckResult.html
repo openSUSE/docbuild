@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_validate/index.html">docbuild.cli.cmd_validate</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_validate/process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4 current active"><a class="reference internal" href="index.html">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -603,12 +605,7 @@
 <dt class="sig sig-object py" id="docbuild.config.xml.checks.CheckResult">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">CheckResult</span></span><a class="headerlink" href="#docbuild.config.xml.checks.CheckResult" title="Link to this definition">#</a></dt>
 <dd><p>Result of a validation check.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docbuild.config.xml.checks.CheckResult.__bool__">
-<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.CheckResult.__bool__" title="Link to this definition">#</a></dt>
-<dd><p>Return True if the check was successful, False otherwise.</p>
-</dd></dl>
-
+<p>Represents a single validation problem found at a specific location.</p>
 </dd></dl>
 
 </section>
@@ -660,10 +657,7 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.CheckResult"><code class="docutils literal notranslate"><span class="pre">docbuild.config.xml.checks.CheckResult</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.CheckResult.__bool__"><code class="docutils literal notranslate"><span class="pre">docbuild.config.xml.checks.CheckResult.__bool__()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.CheckResult"><code class="docutils literal notranslate"><span class="pre">docbuild.config.xml.checks.CheckResult</span></code></a></li>
 </ul>
   </nav></div>
 

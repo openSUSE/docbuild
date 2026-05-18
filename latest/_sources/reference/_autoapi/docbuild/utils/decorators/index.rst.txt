@@ -14,6 +14,7 @@ Attributes
 
 .. autoapisummary::
 
+   docbuild.utils.decorators.CheckFunc
    docbuild.utils.decorators.F
 
 
@@ -41,12 +42,17 @@ Functions
 Module Contents
 ---------------
 
+.. py:data:: CheckFunc
+
+   Concrete callable type for registered XML checks.
+
+
 .. py:data:: F
 
    A type variable representing a callable that takes an XML element or tree
 
 
-.. py:function:: factory_registry() -> collections.abc.Callable[[F], F]
+.. py:function:: factory_registry() -> RegistryDecorator
 
    Create a decorator that registers functions in its own registry.
 
@@ -54,8 +60,11 @@ Module Contents
 
    >>> register_check = factory_registry()
    >>> @register_check
-   ... def check_example(tree: etree._Element | etree._ElementTree) -> bool:
-   ...     return True
+   ... def check_example(
+   ...     tree: etree._Element | etree._ElementTree,
+   ... ) -> Iterator[CheckResult]:
+   ...     if False:
+   ...         yield CheckResult(message="example")
    >>> register_check.registry[0].__name__
    'check_example'
 

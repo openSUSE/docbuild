@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_validate &#8212; docbuild 0.18.0 documentation</title>
+    <title>docbuild.cli.cmd_portal &#8212; docbuild 0.18.0 documentation</title>
   
   
   
@@ -48,7 +48,7 @@
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/cmd_validate/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/cli/cmd_portal/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -60,8 +60,8 @@
     <link rel="icon" href="../../../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" />
-    <link rel="next" title="docbuild.cli.cmd_validate.process" href="process/index.html" />
-    <link rel="prev" title="docbuild.cli.cmd_repo.process" href="../cmd_repo/process/index.html" />
+    <link rel="next" title="docbuild.cli.cmd_portal.cmd_validate" href="cmd_validate/index.html" />
+    <link rel="prev" title="docbuild.cli.cmd_metadata.metaprocess" href="../cmd_metadata/metaprocess/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -389,15 +389,16 @@
 <li class="toctree-l4"><a class="reference internal" href="../cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.cli.cmd_portal</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process/index.html">docbuild.cli.cmd_portal.process</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#">docbuild.cli.cmd_validate</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="process/index.html">docbuild.cli.cmd_validate.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -421,7 +422,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/checks/index.html">docbuild.config.xml.checks</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/list/index.html">docbuild.config.xml.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../config/xml/references/index.html">docbuild.config.xml.references</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../config/xml/stitch/index.html">docbuild.config.xml.stitch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/semantic_xpath/index.html">docbuild.config.xml.semantic_xpath</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../config/xml/xinclude/index.html">docbuild.config.xml.xinclude</a></li>
 </ul>
 </details></li>
 </ul>
@@ -574,7 +576,7 @@
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">docbuild.cli</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.cli.cmd_validate</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild.cli.cmd_portal</span></li>
   </ul>
 </nav>
 </div>
@@ -591,14 +593,15 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-docbuild.cli.cmd_validate">
-<span id="docbuild-cli-cmd-validate"></span><h1>docbuild.cli.cmd_validate<a class="headerlink" href="#module-docbuild.cli.cmd_validate" title="Link to this heading">#</a></h1>
-<p>CLI interface to validate XML configuration files.</p>
+  <section id="module-docbuild.cli.cmd_portal">
+<span id="docbuild-cli-cmd-portal"></span><h1>docbuild.cli.cmd_portal<a class="headerlink" href="#module-docbuild.cli.cmd_portal" title="Link to this heading">#</a></h1>
+<p>Manage Portal XML configuration.</p>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="process/index.html">docbuild.cli.cmd_validate.process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process/index.html">docbuild.cli.cmd_portal.process</a></li>
 </ul>
 </div>
 </section>
@@ -606,8 +609,8 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_validate.validate" title="docbuild.cli.cmd_validate.validate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code></a>(→ None)</p></td>
-<td><p>Subcommand to validate XML configuration files.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_portal.portal" title="docbuild.cli.cmd_portal.portal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">portal</span></code></a>(→ None)</p></td>
+<td><p>Subcommand to Portal XML management.</p></td>
 </tr>
 </tbody>
 </table>
@@ -616,16 +619,12 @@
 <section id="package-contents">
 <h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="docbuild.cli.cmd_validate.validate">
-<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_validate.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.4.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmlfiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_validate.validate" title="Link to this definition">#</a></dt>
-<dd><p>Subcommand to validate XML configuration files.</p>
+<dt class="sig sig-object py" id="docbuild.cli.cmd_portal.portal">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.</span></span><span class="sig-name descname"><span class="pre">portal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.4.x)"><span class="pre">click.Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.portal" title="Link to this definition">#</a></dt>
+<dd><p>Subcommand to Portal XML management.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ctx</strong> – The Click context object.</p></li>
-<li><p><strong>xmlfiles</strong> – XML files to validate, if empty all XMLs in config dir are used.</p></li>
-<li><p><strong>validation_method</strong> – Validation method to use, ‘jing’ or ‘lxml’.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>ctx</strong> – The Click context object.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -644,20 +643,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../cmd_repo/process/index.html"
+       href="../cmd_metadata/metaprocess/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.cli.cmd_repo.process</p>
+        <p class="prev-next-title">docbuild.cli.cmd_metadata.metaprocess</p>
       </div>
     </a>
     <a class="right-next"
-       href="process/index.html"
+       href="cmd_validate/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">docbuild.cli.cmd_validate.process</p>
+        <p class="prev-next-title">docbuild.cli.cmd_portal.cmd_validate</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -683,7 +682,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_validate.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_portal.portal"><code class="docutils literal notranslate"><span class="pre">portal()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -693,7 +692,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/cli/cmd_validate/index.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/reference/_autoapi/docbuild/cli/cmd_portal/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -708,7 +707,7 @@
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../../../../_sources/reference/_autoapi/docbuild/cli/cmd_validate/index.rst.txt">
+    <a href="../../../../../_sources/reference/_autoapi/docbuild/cli/cmd_portal/index.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
