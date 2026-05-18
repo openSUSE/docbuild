@@ -31,7 +31,7 @@ This guide provides all the necessary information for contributing to the projec
 
    migrate-config
    build-docs
-   howto
+   howto/index
 
 .. toctree::
    :maxdepth: 2

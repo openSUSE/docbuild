@@ -1,3 +1,5 @@
+.. _user-config:
+
 Viewing and Validating Configuration
 ====================================
 
