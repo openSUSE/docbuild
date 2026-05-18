@@ -352,13 +352,13 @@ def load_and_validate_documents(
 def store_productdocset_json(
     context: DocBuildContext,
     doctypes: Sequence[Doctype],
-    stitchnode: etree._ElementTree,
+    portalnode: etree._ElementTree,
 ) -> None:
     """Collect all JSON files for product/docset and create a single file.
 
     :param context: DocBuildContext object
     :param doctypes: Sequence of Doctype objects
-    :param stitchnode: The stitched XML tree
+    :param portalnode: The parsed portal XML tree
     """
     env = context.envconfig
     meta_cache_dir = Path(env.paths.meta_cache_dir)
@@ -369,10 +369,24 @@ def store_productdocset_json(
         # Use the docset directly as the version string
         version_str = str(docset)
 
+        # Prefer legacy xpath helpers first, then fall back to current portal attrs.
         productxpath = f"./{doctype.product_xpath_segment()}"
-        productnode = stitchnode.find(productxpath)
+        productnode = portalnode.find(productxpath)
+        if productnode is None:
+            productnode = portalnode.find(f"./product[@id={product!r}]")
+
+        if productnode is None:
+            log.error("Product node not found for %s", product)
+            continue
+
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
+        if docsetnode is None:
+            docsetnode = productnode.find(f"./docset[@path={docset!r}]")
+
+        if docsetnode is None:
+            log.error("Docset node not found for %s/%s", product, docset)
+            continue
 
         # 1. Capture and Clean Descriptions/Categories using helper
         descriptions = list(Description.from_xml_node(productnode))
@@ -435,7 +449,7 @@ async def process(
     configdir = Path(env.paths.config_dir).expanduser()
     main_portal_config = Path(env.paths.main_portal_config).expanduser()
     stdout.print(f"Config path: {configdir}")
-    stitchnode: etree._ElementTree = await parse_portal_config(main_portal_config)
+    portalnode: etree._ElementTree = await parse_portal_config(main_portal_config)
 
     tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
     # TODO: Is this necessary here?
@@ -444,7 +458,7 @@ async def process(
     stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
     stitchfilename.write_text(
         etree.tostring(
-            stitchnode,
+            portalnode,
             pretty_print=True,
             # xml_declaration=True,
             encoding="unicode",
@@ -453,15 +467,15 @@ async def process(
 
     log.info("Stitched metadata XML written to %s", str(stitchfilename))
 
-    # stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
-    # stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
+    # stdout.print(f'Stitch node: {portalnode.getroot().tag}')
+    # stdout.print(f'Deliverables: {len(portalnode.xpath(".//deliverable"))}')
 
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
     tasks = [
         process_doctype(
-            stitchnode,
+            portalnode,
             context,
             dt,
             exitfirst=exitfirst,
@@ -476,7 +490,7 @@ async def process(
     ]
 
     # Force the merge regardless of processing success
-    store_productdocset_json(context, doctypes, stitchnode)
+    store_productdocset_json(context, doctypes, portalnode)
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
