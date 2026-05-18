@@ -1,24 +1,34 @@
+from importlib import resources
 from pathlib import Path
 import shutil
 import subprocess
 
 import pytest
 
-# Configuration of paths
+# 1. Global executable check & Pytest-idiomatic module-level skip
+JING_BIN = shutil.which("jing")
+
+pytestmark = pytest.mark.skipif(
+    JING_BIN is None,
+    reason="jing executable not found in PATH",
+)
+
+# 2. Configuration of paths
 BASE_DIR = Path(__file__).parent
-DATA_DIR = BASE_DIR.parents[2] / "src/docbuild/config/xml/data"
-SCHEMA = DATA_DIR / "portal-config.rnc"
+
+# Robustly find package resources using importlib.resources
+SCHEMA = resources.files("docbuild.config.xml").joinpath("data", "portal-config.rnc")
 
 # Local test case directories
 CASES_DIR = BASE_DIR / "schema_cases"
 VALID_DIR = CASES_DIR / "valid"
 INVALID_DIR = CASES_DIR / "invalid"
 
+
 def run_jing(xml_path: Path) -> tuple[int, str]:
     """Execute jing with full XInclude support enabled."""
-    jing_bin = shutil.which("jing")
-    if not jing_bin:
-        pytest.skip("jing executable not found in PATH")
+    # JING_BIN is guaranteed to be a string path here due to pytestmark
+    assert JING_BIN is not None
 
     xinclude_prop = "-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=" \
                     "org.apache.xerces.parsers.XIncludeParserConfiguration"
@@ -29,13 +39,14 @@ def run_jing(xml_path: Path) -> tuple[int, str]:
         "ADDITIONAL_FLAGS": xinclude_prop
     }
 
-    cmd = [jing_bin]
-    if SCHEMA.suffix == ".rnc":
-        cmd.append("-c")
+    # Extract the Traversable resource safely to a local filesystem path
+    with resources.as_file(SCHEMA) as schema_path:
+        cmd = [JING_BIN]
+        if schema_path.suffix == ".rnc":
+            cmd.append("-c")
 
-    cmd.extend([str(SCHEMA), str(xml_path)])
-
-    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
+        cmd.extend([str(schema_path), str(xml_path)])
+        result = subprocess.run(cmd, capture_output=True, text=True, env=env)
 
     # Combine stdout and stderr for the error message
     output = (result.stdout + result.stderr).strip()
