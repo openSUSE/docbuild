@@ -21,6 +21,42 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.19.0
+==============
+
+Improved Documentation
+----------------------
+
+- Add a new topic into the Developer Guide about how to migrate the
+  old Docserv config (version 6) into new Portal config (version 7). (:gh:`250`)
+- Improve howto topic and make separate files. Add procedures for common tasks. (:gh:`283`)
+
+
+Features
+--------
+
+- Update models to align with Portal schema (:gh:`222`)
+- Added an in-tree PEP 517 build backend to automatically compile the Portal Schema from  RELAX NG Compact (``.rnc``) into XML (``.rng``) format during the build process, ensuring both formats are available in the distributed package. (:gh:`232`)
+- Add :command:`portal validate` subcommand. (:gh:`254`)
+- Add convenience wrapper scripts for Portal validation and migration from old Docserv config. (:gh:`256`)
+
+
+Infrastructure
+--------------
+
+- Add a data-driven test suite for the Portal XML Schema using Jing. 
+  Includes valid and invalid test cases to ensure schema integrity and XInclude support. (:gh:`258`)
+- Switch order in GH issue template (bug report) (:gh:`260`)
+- Portal Config: Correct ``<git>`` tag inside ``<dc>`` (:gh:`267`)
+- Portal Config: Correct content model of ``<dc>``.
+  The previous content model enforced a ``<git>`` element.
+  A "lonely" ``<subdir>`` wasn't possible. This is fixed now. (:gh:`269`)
+- GHA: Provide :command:`jing` custom wrapper for MacOS to resolve XInclude elements (:gh:`278`)
+- Implement multi-version doc switcher (:gh:`282`)
+- Introduce a dependency cooldown  to mitigate supply-chain attacks (:gh:`286`)
+
+
+
 Version 0.18.0
 ==============
 

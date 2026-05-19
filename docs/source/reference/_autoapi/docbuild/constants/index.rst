@@ -231,6 +231,7 @@ Module Contents
 
 
 .. py:data:: PORTALLOGGER_NAME
+   :type:  str
    :value: 'docbuild.portal'
 
 

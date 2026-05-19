@@ -1,3 +1,0 @@
-Portal Config: Correct content model of ``<dc>``.
-The previous content model enforced a ``<git>`` element.
-A "lonely" ``<subdir>`` wasn't possible. This is fixed now.
