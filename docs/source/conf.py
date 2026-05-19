@@ -101,6 +101,10 @@ extensions = [
     # Render type hints in signatures
     # https://github.com/tox-dev/sphinx-autodoc-typehints
     "sphinx_autodoc_typehints",
+    #
+    # Render mermaid graphs
+    # https://github.com/mgaitan/sphinxcontrib-mermaid
+    "sphinxcontrib.mermaid",
 ]
 
 templates_path = ["_templates"]
@@ -256,6 +260,34 @@ linkcheck_ignore = [
     # Just ignore useless example URLs
     r"https://github\.com/org/repo",
 ]
+
+
+# Mermaid configuration
+mermaid_params = [
+    "--theme",
+    "default",
+    "--backgroundColor",
+    "transparent",
+    "--sequence_mirrorActors", "false",
+    "--sequence_diagramMarginX", "5",
+    "--sequence_diagramMarginY", "5",
+]
+
+# Hier kannst du CSS direkt injizieren, um die Schriftgröße zu erzwingen
+mermaid_init_js = """
+mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    sequence: {
+        diagramMarginX: 5,     // Horizontaler Rand des gesamten Diagramms
+        diagramMarginY: 5,     // Vertikaler Rand des gesamten Diagramms
+        boxMargin: 5,          // Abstand um die Akteur-Boxen
+        messageMargin: 30,     // Platz zwischen den Pfeilen (verringern für Kompaktheit)
+        mirrorActors: false,   // Verhindert, dass die Akteure unten nochmals wiederholt werden (spart Platz)
+        bottomMarginRight: 5   // Rechter unterer Rand
+    }
+});
+"""
 
 
 # Configuration for TOML documentation generation
