@@ -72,7 +72,7 @@ jobs:
         run: echo $GITHUB_ENV
 
       - name: Debug ${{ env.TARGET_DIR }}
-        run: ls -R ${{ env.TARGET_DIR }} || exit 10
+        run: ls -R "deploy/${{ env.TARGET_DIR }}" || exit 10
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
