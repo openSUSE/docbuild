@@ -13,5 +13,10 @@
     "name": "v0.18.0",
     "version": "v0.18.0",
     "url": "https://opensuse.github.io/docbuild/v0.18.0/"
+  },
+  {
+    "name": "v0.19.5",
+    "version": "v0.19.5",
+    "url": "https://openSUSE.github.io/docbuild/v0.19.5/"
   }
 ]
