@@ -23,7 +23,7 @@ jobs:
         id: validate
         run: |
           BRANCH="${{ github.event.pull_request.head.ref }}"
-          if [[ "$BRANCH" =~ ^release/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+          if [[ "$BRANCH" =~ ^release/v?([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
             echo "valid_release=true" >> "$GITHUB_OUTPUT"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -47,7 +47,7 @@ jobs:
         with:
           # A Personal Access Token (PAT) is REQUIRED here to trigger gh-pages.yml
           # The default GITHUB_TOKEN intentionally prevents triggered events from starting new workflows.
-          token: ${{ secrets.PAT_TOKEN_FOR_TAGS }}
+          token: ${{ secrets.PAT_DOCBUILD_TOKEN_FOR_TAGS }}
 
       - name: Check Version Consistency
         id: version_check
