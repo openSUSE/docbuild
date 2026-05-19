@@ -36,9 +36,9 @@ jobs:
         id: setup-uv
         uses: astral-sh/setup-uv@v7
         with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "docbuild"
+          version: "latest"
+          enable-cache: true
+          cache-suffix: "docbuild"
 
       - name: Print uv debug information
         run: |
@@ -55,21 +55,30 @@ jobs:
       - name: Build documentation
         env:
           DOC_VERSION: ${{ env.DOC_VERSION }}
+          TARGET_DIR: ${{ env.TARGET_DIR }}
         run: |
           # The DOC_VERSION is handled inside conf.py using os.environ
           uv run make -C docs html
 
       - name: Prepare deployment
+        env:
+          TARGET_DIR: ${{ env.TARGET_DIR }}
         run: ${{ env.CI_BIN_DIR }}/prepare-deploy.sh
 
       - name: Generate versions.json
         run: ${{ env.CI_BIN_DIR }}/generate-versions.py --output versions.json
 
+      - name: Debug GITHUB_ENV
+        run: echo $GITHUB_ENV
+
+      - name: Debug ${{ env.TARGET_DIR }}
+        run: ls -R ${{ env.TARGET_DIR }} || exit 10
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/html
+          publish_dir: ./deploy
 
       - name: Print documentation URL
         run: |
