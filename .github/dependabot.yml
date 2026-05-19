@@ -15,7 +15,7 @@ updates:
       - "tomschr"
     cooldown:
       # https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference#cooldown-
-      default-days: 5
+      default-days: 7
     labels:
       - "area:dependencies"
 

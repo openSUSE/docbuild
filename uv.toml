@@ -3,3 +3,6 @@ upgrade = true
 
 # Allow upgrades for a specific package, ignoring pinned versions in any existing output file.
 upgrade-package = ["lxml"]
+
+# Security: Dependency cooldown
+exclude-newer = "10 days"
