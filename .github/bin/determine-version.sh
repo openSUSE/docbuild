@@ -6,10 +6,16 @@
 
 set -euo pipefail
 
+function log() {
+    echo "[VERSION] $1"
+}
+
+
 if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
     echo "DOC_VERSION=latest" >> "$GITHUB_ENV"
     echo "TARGET_DIR=latest" >> "$GITHUB_ENV"
 
+    log "Using 'latest' version"
 elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
     RAW_VERSION=${GITHUB_REF#refs/tags/}
 
@@ -19,6 +25,7 @@ elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
     echo "DOC_VERSION=${VERSION}" >> "$GITHUB_ENV"
     echo "TARGET_DIR=${VERSION}" >> "$GITHUB_ENV"
 
+    log "Using version $VERSION"
 else
     # Fallback for testing branches (e.g., refs/heads/test-feature)
     BRANCH_NAME=${GITHUB_REF#refs/heads/}
@@ -27,4 +34,6 @@ else
 
     echo "DOC_VERSION=${SAFE_BRANCH}" >> "$GITHUB_ENV"
     echo "TARGET_DIR=${SAFE_BRANCH}" >> "$GITHUB_ENV"
+
+    log "Using version $SAFE_BRANCH"
 fi

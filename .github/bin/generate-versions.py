@@ -125,11 +125,12 @@ def main() -> None:
     if args.dry_run:
         print("--- DRY RUN ---")
         print(f"Would write the following {len(versions)} entries to {output_path}:")
-        print(json.dumps(versions, indent=2))
     else:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(versions, indent=2))
         print(f"Generated {output_path} containing {len(versions)} version entries.")
+
+    print("VERSION JSON:", json.dumps(versions, indent=2))
 
 
 if __name__ == "__main__":
