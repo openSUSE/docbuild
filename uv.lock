@@ -368,7 +368,7 @@ changelog = [{ name = "towncrier", specifier = ">=25.8.0" }]
 devel = [
     { name = "docformatter", specifier = ">=1.7.8" },
     { name = "ipython", specifier = ">=9.13.0" },
-    { name = "myst-parser", specifier = ">=5.0.0" },
+    { name = "myst-parser", specifier = ">=5.1.0" },
     { name = "pydata-sphinx-theme", specifier = ">=0.17.1" },
     { name = "pyright", specifier = ">=1.1.409" },
     { name = "pytest", specifier = ">=9.0.3" },
@@ -385,7 +385,7 @@ devel = [
     { name = "towncrier", specifier = ">=25.8.0" },
 ]
 docs = [
-    { name = "myst-parser", specifier = ">=5.0.0" },
+    { name = "myst-parser", specifier = ">=5.1.0" },
     { name = "pydata-sphinx-theme", specifier = ">=0.17.1" },
     { name = "sphinx", specifier = ">=9.1.0" },
     { name = "sphinx-autoapi", specifier = ">=3.8.0" },
@@ -400,7 +400,7 @@ formatting = [
     { name = "ruff", specifier = ">=0.15.13" },
 ]
 github-action = [
-    { name = "myst-parser", specifier = ">=5.0.0" },
+    { name = "myst-parser", specifier = ">=5.1.0" },
     { name = "pydata-sphinx-theme", specifier = ">=0.17.1" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "pytest-asyncio", specifier = ">=1.3.0" },
