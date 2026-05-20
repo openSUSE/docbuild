@@ -15,7 +15,7 @@ To run the full test suite, use the following command:
    :caption: Running pytest directly with |uv|
    :name: running-pytest-with-uv
 
-   uv run --frozen pytest
+   uv run --frozen --no-sync pytest
 
 or use the alias (see :ref:`devel-helpers` for more information):
 

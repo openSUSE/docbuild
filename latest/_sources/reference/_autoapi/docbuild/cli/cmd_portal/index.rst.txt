@@ -15,6 +15,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /reference/_autoapi/docbuild/cli/cmd_portal/cmd_list/index
    /reference/_autoapi/docbuild/cli/cmd_portal/cmd_validate/index
    /reference/_autoapi/docbuild/cli/cmd_portal/process/index
 
