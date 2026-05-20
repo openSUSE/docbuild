@@ -29,12 +29,12 @@ def list_all_deliverables(
             # with both nested test fixtures and the absolute portal configuration schema.
             xpath = "//product"
             if dt.product and "*" not in dt.product:
-                xpath += f"[@id={dt.product.value!r} or @productid={dt.product.value!r}]"
+                xpath += f"[@id={dt.product.value!r}]"
 
             xpath += "/docset"
             # Protect against empty lists causing malformed [] XPath segments
             if dt.docset and "*" not in dt.docset:
-                xpath += "[" + " or ".join([f"@path={d!r} or @setid={d!r}" for d in dt.docset]) + "]"
+                xpath += "[" + " or ".join([f"@path={d!r}" for d in dt.docset]) + "]"
 
             if dt.lifecycle and LifecycleFlag.unknown != dt.lifecycle:  # type: ignore
                 xpath += (
@@ -43,8 +43,7 @@ def list_all_deliverables(
                     + "]"
                 )
 
-            # Support both structural tags across variants fluidly
-            xpath += "/*[self::resources or self::builddocs]/*[self::locale or self::language]"
+            xpath += "/resources/locale"
 
             if dt.langs and "*" not in dt.langs:
                 xpath += (
@@ -66,10 +65,10 @@ def list_all_deliverables(
 
     else:
         # Default fallback route with a flexible relative search path pattern
-        xpath = "//product/docset/*[self::resources or self::builddocs]/locale[@lang='en-us']/deliverable"
-        if not tree.xpath(xpath):
-            # Fallback alignment support variant for raw test fixtures
-            xpath = "//product/docset/*[self::resources or self::builddocs]/language[@lang='en-us']/deliverable"
+        xpath = "//product/docset/resources/locale[@lang='en-us']/deliverable"
+        # if not tree.xpath(xpath):
+        #    # Fallback alignment support variant for raw test fixtures
+        #    xpath = "//product/docset/resources/locale[@lang='en-us']/deliverable"
 
         xpathlog.debug("XPath: %r", xpath)
         yield from tree.xpath(xpath)

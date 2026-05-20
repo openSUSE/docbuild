@@ -8,11 +8,11 @@ from docbuild.models.doctype import Doctype
 @pytest.fixture
 def node() -> etree._ElementTree:
     """Fixture to create a mock XML node for testing."""
-    xml_data = """<docserv>
-    <product productid="sles" schemaversion="6.0">
-        <docset setid="15sp4" lifecycle="supported">
-            <builddocs>
-                <language lang="en-us">
+    xml_data = """<portal>
+    <product id="sles" schemaversion="7.0">
+        <docset path="15sp4" lifecycle="supported">
+            <resources>
+                <locale lang="en-us">
                     <deliverable>
                        <dc>DC-SLES-administration</dc>
                        <format epub="0" html="0" pdf="1" single-html="1"/>
@@ -21,26 +21,26 @@ def node() -> etree._ElementTree:
                        <dc>DC-SLES-deployment</dc>
                        <format epub="0" html="0" pdf="1" single-html="1"/>
                     </deliverable>
-                </language>
-                <language lang="de-de">
+                </locale>
+                <locale lang="de-de">
                     <deliverable>
                        <dc>DC-SLES-administration</dc>
                     </deliverable>
-                </language>
-            </builddocs>
+                </locale>
+            </resources>
         </docset>
-        <docset setid="15sp5" lifecycle="beta">
-            <builddocs>
-                <language lang="en-us">
+        <docset path="15sp5" lifecycle="beta">
+            <resources>
+                <locale lang="en-us">
                     <deliverable category="installation-upgrade">
                        <dc>DC-SLES-autoyast</dc>
                        <format epub="0" html="0" pdf="1" single-html="1"/>
                     </deliverable>
-                </language>
-            </builddocs>
+                </locale>
+            </resources>
         </docset>
     </product>
-    </docserv>
+    </portal>
     """
     return etree.fromstring(xml_data, parser=None).getroottree()
 

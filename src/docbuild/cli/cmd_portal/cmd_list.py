@@ -95,10 +95,9 @@ async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], consol
     parsed_doctypes = _parse_doctypes(doctypes, console)
 
     # 2. Get XML Tree
-    # Ensure envconfig is loaded to satisfy type checkers and prevent runtime crashes
-    if ctx.envconfig is None:
-        console.print("[red]Error: Environment configuration is missing.[/red]")
-        raise click.Abort()
+    # The application framework guarantees envconfig is loaded before command execution.
+    # We use assert to satisfy the type checker without redundant runtime error handling.
+    assert ctx.envconfig is not None
 
     # We rely on the Pydantic env model to handle existence and path validations natively
     portal_xml_path = ctx.envconfig.paths.main_portal_config.expanduser()
