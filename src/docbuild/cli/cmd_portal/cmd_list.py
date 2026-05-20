@@ -130,7 +130,7 @@ async def async_list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...], consol
 @click.argument("doctypes", nargs=-1)
 @click.pass_obj
 def list_cmd(ctx: DocBuildContext, doctypes: tuple[str, ...]) -> None:
-    r"""List products, docsets, and deliverables from the portal config.
+    """List products, docsets, and deliverables from the portal config.
 
     Accepts optional DOCTYPE arguments to filter the output.
     Format: [PRODUCT]/[DOCSETS]@[LIFECYCLES]/[LANGS]
