@@ -428,6 +428,7 @@ def store_productdocset_json(
         stdout.print(f" > Result: {jsonfile}")
         Category.reset_rank()
 
+
 async def process(
     context: DocBuildContext,
     doctypes: Sequence[Doctype] | None,
