@@ -101,11 +101,11 @@ If you don't have access to the Docserv server or prefer to create the stitchfil
 
       xmllint --xpath "/*" _categories.xml >> "$stitchfile"
 
-#. Append all config files to the result:
+#. Append all config files to the result and resolve any XInclude elements:
 
    .. code-block:: console
 
-      xmllint --xpath "/*" [a-z]*.xml >> "$stitchfile"
+      xmllint --xinclude --xpath "/*" [a-z]*.xml >> "$stitchfile"
 
 #. Close the root element:
 

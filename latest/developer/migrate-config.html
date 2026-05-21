@@ -547,8 +547,8 @@ more complex and takes care of validation and other checks, but the above steps 
 </pre></div>
 </div>
 </li>
-<li><p>Append all config files to the result:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xpath &quot;/*&quot; [a-z]*.xml &gt;&gt; &quot;$stitchfile&quot;</span>
+<li><p>Append all config files to the result and resolve any XInclude elements:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xinclude --xpath &quot;/*&quot; [a-z]*.xml &gt;&gt; &quot;$stitchfile&quot;</span>
 </pre></div>
 </div>
 </li>
