@@ -3,8 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-|project| Documentation |release|
+|project| Documentation |version|
 =================================
+
+:Release: |release|
+:Built:   |today|
 
 This is the documentation for the |project| project, hosted at |gh_repo|.
 
