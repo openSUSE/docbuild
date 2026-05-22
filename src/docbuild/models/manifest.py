@@ -3,7 +3,10 @@
 from collections.abc import Generator
 from datetime import date
 import logging
-from typing import ClassVar, Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self
+
+if TYPE_CHECKING:
+    from .deliverable import Deliverable
 
 from lxml import etree
 from pydantic import (
@@ -46,14 +49,14 @@ class Description(BaseModel):
 
     @classmethod
     def from_xml_node(
-        cls: type[Self], node: etree._Element
+        cls: type[Self], deliverable: "Deliverable"
     ) -> Generator[Self, None, None]:
-        """Extract descriptions from a parent XML node.
+        """Extract descriptions from a deliverable object.
 
-        :param node: a node pointing to ``<product>``
-        :yield:
+        :param deliverable: A deliverable object.
+        :yield: A :class:`Description` instance for each description found.
         """
-        for n in node.xpath("desc"):
+        for n in deliverable.xml.desc():
             text = "".join(
                 f"<{child.tag}>{
                     ' '.join(
@@ -130,14 +133,14 @@ class Category(BaseModel):
 
     @classmethod
     def from_xml_node(
-        cls: type[Self], node: etree._Element
+        cls: type[Self], deliverable: "Deliverable"
     ) -> Generator[Self, None, None]:
-        """Extract categories from a parent XML node.
+        """Extract categories from a deliverable object.
 
-        :param node: a node pointing to ``<product>``
+        :param deliverable: A deliverable object.
         :yield: A :class:`Category` instance for each category found.
         """
-        for cat in node.xpath("category|categories/category"):
+        for cat in deliverable.xml.categories():
             langs = cat.xpath("language")
             translations = [
                 CategoryTranslation(
