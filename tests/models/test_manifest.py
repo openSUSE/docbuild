@@ -140,6 +140,8 @@ def test_category_translation_serialize_lang() -> None:
     assert serialized["lang"] == "de-de"
 
 
+from unittest.mock import Mock
+
 def test_category_from_xml_node() -> None:
     """Test extraction of categories from an XML node."""
     doc = """<product>
@@ -159,9 +161,12 @@ def test_category_from_xml_node() -> None:
     </product>
     """
     node = etree.fromstring(doc, parser=None)
+    mock_deliverable = Mock()
+    mock_deliverable.xml.categories.return_value = list(node.xpath("category|categories/category"))
+
     # Reset class variable for predictable rank
     Category.reset_rank()
-    models = list(Category.from_xml_node(node))
+    models = list(Category.from_xml_node(mock_deliverable))
 
     assert len(models) == 4
 
@@ -207,8 +212,10 @@ def test_description_from_xml_node() -> None:
         </product>
     </docservconfig>
     """
-    node = etree.fromstring(doc, parser=None).getroottree()
-    model = next(iter(Description.from_xml_node(node)))
+    node = etree.fromstring(doc, parser=None)
+    mock_deliverable = Mock()
+    mock_deliverable.xml.desc.return_value = list(node.xpath("desc"))
+    model = next(iter(Description.from_xml_node(mock_deliverable)))
     serialized = model.model_dump(by_alias=True)
     assert serialized == {
         "lang": "en-us",

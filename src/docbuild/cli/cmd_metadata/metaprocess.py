@@ -2,10 +2,13 @@
 
 import asyncio
 from collections.abc import Generator, Sequence
+from contextlib import suppress
 import json
 import logging
+import os
 from pathlib import Path
 import shlex
+import tempfile
 from typing import Any
 
 from lxml import etree
@@ -61,17 +64,32 @@ def collect_files_flat(
     :yield: A tuple containing the Doctype, docset ID, and list of matching Paths.
     """
     basedir = Path(basedir)
+    if not basedir.is_dir():
+        return
+
+    langs = [lang.language.lower() for dt in doctypes for lang in dt.langs]
+    langs_all = "*" in langs
+
     task_stream = ((dt, ds) for dt in doctypes for ds in dt.docset)
-
     for dt, docset in task_stream:
-        all_files = list(basedir.rglob("DC-*"))
+        lang_dirs = [d for d in basedir.iterdir() if d.is_dir()]
+        if not langs_all:
+            lang_dirs = [d for d in lang_dirs if d.name.lower() in langs]
 
-        # Case-insensitive filtering
-        files = [
-            f for f in all_files
-            if dt.product.value.lower() in [p.lower() for p in f.parts]
-            and docset.lower() in [p.lower() for p in f.parts]
-        ]
+        files: list[Path] = []
+        for lang_dir in lang_dirs:
+            product_dir = lang_dir / dt.product.value
+            if not product_dir.is_dir():
+                continue
+
+            if docset == "*":
+                docset_dirs = [d for d in product_dir.iterdir() if d.is_dir()]
+            else:
+                candidate = product_dir / docset
+                docset_dirs = [candidate] if candidate.is_dir() else []
+
+            for docset_dir in docset_dirs:
+                files.extend(docset_dir.rglob("DC-*"))
 
         if files:
             yield dt, docset, files
@@ -210,8 +228,9 @@ async def update_repositories(
     return res
 
 
-async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
+async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> tuple[list[Deliverable], list[Deliverable]]:
     """Execute tasks and stop immediately on the first failure."""
+    succeeded: list[Deliverable] = []
     failed: list[Deliverable] = []
     for task in asyncio.as_completed(tasks):
         try:
@@ -222,19 +241,21 @@ async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
                     if not t.done():
                         t.cancel()
                 break
+            succeeded.append(deliverable)
         except Exception as e:
             log.error("Task failed unexpectedly: %s", e)
             for t in tasks:
                 if not t.done():
                     t.cancel()
             break
-    return failed
+    return succeeded, failed
 
 
 async def run_tasks_collect_all(
     tasks: list[asyncio.Task], deliverables: list[Deliverable]
-) -> list[Deliverable]:
+) -> tuple[list[Deliverable], list[Deliverable]]:
     """Execute all tasks and collect every failure encountered."""
+    succeeded: list[Deliverable] = []
     failed: list[Deliverable] = []
     results = await asyncio.gather(*tasks, return_exceptions=True)
     for deliverable, result in zip(deliverables, results, strict=False):
@@ -242,15 +263,17 @@ async def run_tasks_collect_all(
             success, res_deliverable = result
             if not success:
                 failed.append(res_deliverable)
+            else:
+                succeeded.append(res_deliverable)
         elif isinstance(result, Exception):
             log.error("Error in task for %s: %s", deliverable.full_id, result)
             failed.append(deliverable)
-    return failed
+    return succeeded, failed
 
 
 async def _run_metadata_tasks(
     tasks: list[asyncio.Task], deliverables: list[Deliverable], exitfirst: bool
-) -> list[Deliverable]:
+) -> tuple[list[Deliverable], list[Deliverable]]:
     """Execute metadata tasks using either fail-fast or collect-all strategy."""
     if exitfirst:
         return await run_tasks_fail_fast(tasks)
@@ -264,7 +287,7 @@ async def process_doctype(
     *,
     exitfirst: bool = False,
     skip_repo_update: bool = False,
-) -> list[Deliverable]:
+) -> tuple[list[Deliverable], list[Deliverable]]:
     """Process the doctypes and create metadata files.
 
     :param root: The stitched XML node containing configuration.
@@ -272,7 +295,7 @@ async def process_doctype(
     :param doctype: The Doctype object to process.
     :param exitfirst: If True, stop processing on the first failure.
     :param skip_repo_update: If True, do not fetch updates for the git repositories.
-    :return: A list of failed Deliverables.
+    :return: A tuple of (succeeded Deliverables, failed Deliverables).
     """
     env = context.envconfig
     repo_dir: Path = env.paths.repo_dir
@@ -319,7 +342,8 @@ def apply_parity_fixes(descriptions: list, categories: list) -> None:
 def load_and_validate_documents(
     files: list[Path],
     meta_cache_dir: Path,
-    manifest: Manifest
+    manifest: Manifest,
+    static_deliverables: dict[tuple[str, str, str, str], Deliverable] | None = None,
 ) -> None:
     """Load JSON metadata files and append validated Document models to the manifest."""
     for f in files:
@@ -339,6 +363,17 @@ def load_and_validate_documents(
                 log.error("Empty metadata file %s", f)
                 continue
 
+            file_identity = _extract_file_identity(actual_file, meta_cache_dir)
+            static_deliverable = None
+            if file_identity and static_deliverables:
+                static_deliverable = static_deliverables.get(file_identity)
+
+            loaded_doc_data = _merge_dynamic_document_data(
+                loaded_doc_data,
+                file_identity=file_identity,
+                static_deliverable=static_deliverable,
+            )
+
             try:
                 doc_model = Document.model_validate(loaded_doc_data)
             except ValidationError:
@@ -349,84 +384,308 @@ def load_and_validate_documents(
             log.error("Error processing metadata file %s: %s", actual_file, e)
 
 
-def store_productdocset_json(
-    context: DocBuildContext,
-    doctypes: Sequence[Doctype],
-    portalnode: etree._ElementTree,
+def _extract_file_identity(
+    actual_file: Path,
+    meta_cache_dir: Path,
+) -> tuple[str, str, str, str] | None:
+    """Extract language/product/docset/dcfile identity from a metadata file path."""
+    try:
+        rel = actual_file.relative_to(meta_cache_dir)
+    except ValueError:
+        return None
+
+    if len(rel.parts) < 4:
+        return None
+
+    language, product, docset = rel.parts[:3]
+    dcfile = actual_file.name
+    return language, product, docset, dcfile
+
+
+def _merge_dynamic_document_data(
+    loaded_doc_data: dict[str, Any],
+    *,
+    file_identity: tuple[str, str, str, str] | None,
+    static_deliverable: Deliverable | None,
+) -> dict[str, Any]:
+    """Merge dynamic JSON data with static XML-derived defaults."""
+    docs = loaded_doc_data.get("docs")
+    if not isinstance(docs, list):
+        return loaded_doc_data
+
+    for single_doc in docs:
+        if isinstance(single_doc, dict):
+            _merge_single_document_entry(
+                single_doc,
+                file_identity=file_identity,
+                static_deliverable=static_deliverable,
+            )
+
+    return loaded_doc_data
+
+
+def _merge_single_document_entry(
+    single_doc: dict[str, Any],
+    *,
+    file_identity: tuple[str, str, str, str] | None,
+    static_deliverable: Deliverable | None,
 ) -> None:
-    """Collect all JSON files for product/docset and create a single file.
+    """Merge identity and format defaults into a single doc dictionary."""
+    _apply_identity_defaults(single_doc, file_identity, static_deliverable)
+    _apply_static_format_defaults(single_doc, static_deliverable)
 
-    :param context: DocBuildContext object
-    :param doctypes: Sequence of Doctype objects
-    :param portalnode: The parsed portal XML tree
-    """
-    env = context.envconfig
-    meta_cache_dir = Path(env.paths.meta_cache_dir)
 
-    for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
-        product = doctype.product.value
+def _apply_identity_defaults(
+    single_doc: dict[str, Any],
+    file_identity: tuple[str, str, str, str] | None,
+    static_deliverable: Deliverable | None,
+) -> None:
+    """Apply identity defaults such as date, dcfile, and language."""
+    language = file_identity[0] if file_identity else ""
+    dcfile = file_identity[3] if file_identity else ""
 
-        # Use the docset directly as the version string
-        version_str = str(docset)
+    if "datemodified" not in single_doc and single_doc.get("dateModified"):
+        single_doc["datemodified"] = single_doc["dateModified"]
 
-        # Prefer legacy xpath helpers first, then fall back to current portal attrs.
-        productxpath = f"./{doctype.product_xpath_segment()}"
-        productnode = portalnode.find(productxpath)
-        if productnode is None:
-            productnode = portalnode.find(f"./product[@id={product!r}]")
+    if not single_doc.get("dcfile"):
+        single_doc["dcfile"] = dcfile or _static_dcfile(static_deliverable)
 
-        if productnode is None:
-            log.error("Product node not found for %s", product)
-            continue
+    if not single_doc.get("lang") and language:
+        single_doc["lang"] = language
 
-        docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
-        docsetnode = productnode.find(docsetxpath)
-        if docsetnode is None:
-            docsetnode = productnode.find(f"./docset[@path={docset!r}]")
 
-        if docsetnode is None:
-            log.error("Docset node not found for %s/%s", product, docset)
-            continue
+def _static_dcfile(static_deliverable: Deliverable | None) -> str:
+    """Return static dcfile or empty string."""
+    if static_deliverable is None or not static_deliverable.xml.dcfile:
+        return ""
+    return static_deliverable.xml.dcfile
 
-        # 1. Capture and Clean Descriptions/Categories using helper
-        descriptions = list(Description.from_xml_node(productnode))
-        categories = list(Category.from_xml_node(productnode))
+
+def _apply_static_format_defaults(
+    single_doc: dict[str, Any],
+    static_deliverable: Deliverable | None,
+) -> None:
+    """Apply static format defaults to a document entry when available."""
+    if static_deliverable is None:
+        return
+
+    fmt = single_doc.get("format")
+    if not isinstance(fmt, dict):
+        fmt = {}
+
+    fmt.setdefault("html", static_deliverable.paths.html_path)
+    if static_deliverable.format.get("pdf"):
+        fmt.setdefault("pdf", static_deliverable.paths.pdf_path)
+    if static_deliverable.format.get("single-html"):
+        fmt.setdefault("single-html", static_deliverable.paths.singlehtml_path)
+
+    single_doc["format"] = fmt
+
+
+def _build_static_deliverable_index(
+    portalnode: etree._ElementTree,
+    doctypes: Sequence[Doctype],
+) -> dict[tuple[str, str, str, str], Deliverable]:
+    """Build an index of static deliverables keyed by path-like identity."""
+    static_deliverables: dict[tuple[str, str, str, str], Deliverable] = {}
+
+    for doctype in doctypes:
+        for deliverable in get_deliverable_from_doctype(portalnode, doctype):
+            if not deliverable.xml.docsetid or not deliverable.xml.dcfile:
+                continue
+
+            key = (
+                str(deliverable.xml.lang),
+                deliverable.xml.productid,
+                deliverable.xml.docsetid,
+                deliverable.xml.dcfile,
+            )
+            static_deliverables[key] = deliverable
+
+    return static_deliverables
+
+
+def _collect_docset_file_groups(
+    doctypes: Sequence[Doctype],
+    meta_cache_dir: Path,
+) -> dict[tuple[str, str], list[Path]]:
+    """Group metadata files by language/product/docset under meta cache."""
+    grouped: dict[tuple[str, str], list[Path]] = {}
+
+    for doctype, _docset, files in collect_files_flat(doctypes, meta_cache_dir):
+        allowed_langs = {lang.language for lang in doctype.langs}
+        for file_path in files:
+            try:
+                rel = file_path.relative_to(meta_cache_dir)
+            except ValueError:
+                continue
+
+            if len(rel.parts) < 4:
+                continue
+
+            language, product, docset = rel.parts[:3]
+            if "*" not in allowed_langs and language not in allowed_langs:
+                continue
+
+            key = (product, docset)
+            grouped.setdefault(key, []).append(file_path)
+
+    for key, values in grouped.items():
+        grouped[key] = sorted(set(values))
+
+    return grouped
+
+
+def _write_manifest_json_file(jsonfile: Path, json_data: dict[str, Any]) -> None:
+    """Write a JSON file atomically to avoid partial writes."""
+    jsonfile.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path: Path | None = None
+
+    try:
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir=str(jsonfile.parent),
+            delete=False,
+            prefix=f".{jsonfile.stem}.",
+            suffix=".tmp",
+        ) as tmp_file:
+            tmp_path = Path(tmp_file.name)
+            json.dump(json_data, tmp_file, indent=2, ensure_ascii=False)
+            tmp_file.flush()
+            os.fsync(tmp_file.fileno())
+
+        with suppress(FileNotFoundError):
+            tmp_path.chmod(jsonfile.stat().st_mode)
+
+        tmp_path.replace(jsonfile)
+
+        with suppress(OSError):
+            dir_fd = os.open(str(jsonfile.parent), os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+
+        tmp_path = None
+    finally:
+        if tmp_path and tmp_path.exists():
+            with suppress(OSError):
+                tmp_path.unlink()
+
+
+def _resolve_product_docset_nodes(
+    portalnode: etree._ElementTree,
+    product: str,
+    docset: str,
+) -> tuple[etree._Element | None, etree._Element | None]:
+    """Resolve product and docset nodes from stitched portal XML."""
+    productnode = portalnode.find(f"./product[@productid={product!r}]")
+    if productnode is None:
+        productnode = portalnode.find(f"./product[@id={product!r}]")
+
+    if productnode is None:
+        return None, None
+
+    docsetnode = productnode.find(f"./docset[@setid={docset!r}]")
+    if docsetnode is None:
+        docsetnode = productnode.find(f"./docset[@path={docset!r}]")
+
+    return productnode, docsetnode
+
+
+async def _store_docset_json_file(
+    meta_cache_dir: Path,
+    json_cache_dir: Path,
+    category_lock: asyncio.Lock,
+    group_key: tuple[str, str],
+    deliverables: list[Deliverable],
+) -> None:
+    """Aggregate one product/docset group into a single JSON file."""
+    product, docset = group_key
+
+    rep = deliverables[0]
+
+    # Category rank is shared state; lock this section for deterministic output.
+    async with category_lock:
+        descriptions = list(Description.from_xml_node(rep))
+        categories = list(Category.from_xml_node(rep))
         apply_parity_fixes(descriptions, categories)
 
-        # 2. Initialize Manifest
+        name_node = rep.xml.product_node.find("name")
+        acronym_node = rep.xml.product_node.find("acronym")
+
         manifest = Manifest(
-            productname=productnode.find("name").text,
+            productname=name_node.text if name_node is not None and name_node.text else product,
             acronym=(
-                productnode.find("acronym").text
-                if productnode.find("acronym") is not None
+                acronym_node.text
+                if acronym_node is not None and acronym_node.text
                 else product
             ),
-            version=version_str,
-            lifecycle=docsetnode.attrib.get("lifecycle") or "",
+            version=str(docset),
+            lifecycle=rep.xml.docset_node.attrib.get("lifecycle") or "",
             hide_productname=False,
             descriptions=descriptions,
             categories=categories,
             documents=[],
-            archives=[]
+            archives=[],
         )
-
-        # 3. Load and validate documents using helper
-        load_and_validate_documents(files, meta_cache_dir, manifest)
-
-        # 4. Save and export
-        jsondir = meta_cache_dir / product
-        jsondir.mkdir(parents=True, exist_ok=True)
-        jsonfile = jsondir / f"{docset}.json"
-
-        # Exporting with aliases and INCLUDING defaults (dateModified, rank, isGate)
-        json_data = manifest.model_dump(by_alias=True)
-
-        with jsonfile.open("w", encoding="utf-8") as jf:
-            # ensure_ascii=False ensures raw UTF-8 (e.g., "á" instead of "\u00e1")
-            json.dump(json_data, jf, indent=2, ensure_ascii=False)
-
-        stdout.print(f" > Result: {jsonfile}")
         Category.reset_rank()
+
+    files = []
+    static_index = {}
+
+    for d in deliverables:
+        file_identity = (str(d.xml.lang), d.xml.productid, d.xml.docsetid, d.xml.dcfile)
+        static_index[file_identity] = d
+
+        actual_file = meta_cache_dir / d.paths.relpath / d.xml.dcfile
+        files.append(actual_file)
+
+    await asyncio.to_thread(
+        load_and_validate_documents,
+        files,
+        meta_cache_dir,
+        manifest,
+        static_index,
+    )
+
+    output_file = json_cache_dir / product / f"{docset}.json"
+    json_data = manifest.model_dump(by_alias=True)
+    await asyncio.to_thread(_write_manifest_json_file, output_file, json_data)
+
+    stdout.print(f" > Result: {output_file}")
+
+
+async def store_productdocset_json(
+    context: DocBuildContext,
+    deliverables: Sequence[Deliverable],
+) -> None:
+    """Collect JSON files for the provided deliverables and create aggregate files."""
+    if not deliverables:
+        return
+
+    env = context.envconfig
+    meta_cache_dir = env.paths.meta_cache_dir
+    json_cache_dir = env.paths.json_cache_dir
+
+    grouped_deliverables: dict[tuple[str, str], list[Deliverable]] = {}
+    for d in deliverables:
+        if d.xml.productid and d.xml.docsetid:
+            grouped_deliverables.setdefault((d.xml.productid, d.xml.docsetid), []).append(d)
+
+    category_lock = asyncio.Lock()
+    tasks = [
+        _store_docset_json_file(
+            meta_cache_dir,
+            json_cache_dir,
+            category_lock,
+            key,
+            group,
+        )
+        for key, group in sorted(grouped_deliverables.items())
+    ]
+    await asyncio.gather(*tasks)
 
 
 async def process(
@@ -456,8 +715,8 @@ async def process(
     # TODO: Is this necessary here?
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 
-    stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
-    stitchfilename.write_text(
+    portalxml = tmp_metadata_dir / "stitched-metadata.xml"
+    portalxml.write_text(
         etree.tostring(
             portalnode,
             pretty_print=True,
@@ -466,7 +725,7 @@ async def process(
         )  # .decode('utf-8')
     )
 
-    log.info("Stitched metadata XML written to %s", str(stitchfilename))
+    log.info("Stitched metadata XML written to %s", str(portalxml))
 
     # stdout.print(f'Stitch node: {portalnode.getroot().tag}')
     # stdout.print(f'Deliverables: {len(portalnode.xpath(".//deliverable"))}')
@@ -474,6 +733,7 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
+    # 1. Convert doctype -> deliverables
     tasks = [
         process_doctype(
             portalnode,
@@ -484,14 +744,17 @@ async def process(
         )
         for dt in doctypes
     ]
-    results_per_doctype = await asyncio.gather(*tasks)
+    deliverable_results = await asyncio.gather(*tasks)
 
+    all_succeeded_deliverables = [
+        d for succeeded, _ in deliverable_results for d in succeeded
+    ]
     all_failed_deliverables = [
-        d for failed_list in results_per_doctype for d in failed_list
+        d for _, failed in deliverable_results for d in failed
     ]
 
-    # Force the merge regardless of processing success
-    store_productdocset_json(context, doctypes, portalnode)
+    # 2. Force the merge regardless of processing success
+    await store_productdocset_json(context, all_succeeded_deliverables)
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")

@@ -35,6 +35,7 @@ def mock_envconfig(tmp_path: Path) -> Mock:
     mock_paths.repo_dir = tmp_path / "repos"
     mock_paths.base_cache_dir = tmp_path / "cache"
     mock_paths.meta_cache_dir = tmp_path / "cache" / "metadata"
+    mock_paths.json_cache_dir = tmp_path / "cache" / "json"
     mock_paths.tmp_repo_dir = tmp_path / "tmp_repos"
 
     mock_build = Mock()
@@ -286,6 +287,7 @@ class TestProcessDeliverable:
             "tmp_repo_dir": tmp_path / "tmp_repos",
             "base_cache_dir": tmp_path / "cache",
             "meta_cache_dir": tmp_path / "cache" / "metadata",
+            "json_cache_dir": tmp_path / "cache" / "json",
         }
         for path in paths.values():
             path.mkdir(parents=True, exist_ok=True)
@@ -383,6 +385,7 @@ class TestProcessDeliverable:
         mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
         mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
         mock_context.envconfig.paths.meta_cache_dir = setup_paths["meta_cache_dir"]
+        mock_context.envconfig.paths.json_cache_dir = setup_paths["json_cache_dir"]
         mock_context.envconfig.paths.base_cache_dir = setup_paths["base_cache_dir"]
 
         result = await process_deliverable(
@@ -435,13 +438,13 @@ class TestProcessDoctype:
         mock_deliverables = [mock_deliverable, mock_deliverable]
         mock_get_deliverables.return_value = mock_deliverables
         # Ensure the mock returns an awaitable result
-        mock_process_deliverable.return_value = True
+        mock_process_deliverable.return_value = (True, mock_deliverable)
 
         result = await process_doctype(
             mock_root, mock_context, doctype, exitfirst=False
         )
 
-        assert not result
+        assert result == ([mock_deliverable, mock_deliverable], [])
         mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         assert mock_process_deliverable.call_count == 2
 
@@ -460,7 +463,7 @@ class TestProcessDoctype:
 
         result = await process_doctype(mock_root, mock_context, doctype)
 
-        assert not result
+        assert result == ([], [])
         mock_get_deliverables.assert_called_once_with(mock_root, doctype)
         mock_process_deliverable.assert_not_called()
 
@@ -518,23 +521,21 @@ class TestProcessDoctype:
         failed = await process_doctype(mock_root, mock_context, doctype, exitfirst=True)
 
         # Expect the failing deliverable is reported
-        assert failed == [d1]
+        assert failed == ([], [d1])
 
 
 @pytest.mark.asyncio
 class TestProcessEmptyDoctypes:
     """Tests for the case when no doctypes are passed to process."""
 
-    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
-    @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
     async def test_process_empty_doctypes(
         self,
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
-        mock_collect_files_flat: Mock,
-        mock_store_json: Mock,
+        mock_store_json: AsyncMock,
         mock_context_with_config_dir: DocBuildContext,
     ):
         """Test process function with an empty tuple of doctypes.
@@ -558,11 +559,9 @@ class TestProcessEmptyDoctypes:
         mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
         mock_parse_portal_config.return_value = mock_stitch_node
 
-        mock_collect_files_flat.return_value = [
-            (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
-        ]
+        mock_process_doctype.return_value = ([], [])
 
-        await process(mock_context_with_config_dir, doctypes=())
+        result = await process(mock_context_with_config_dir, doctypes=())
 
         # Assert that parse_portal_config was called
         mock_parse_portal_config.assert_called_once()
@@ -571,7 +570,9 @@ class TestProcessEmptyDoctypes:
         # Assert that store_productdocset_json was called
         mock_store_json.assert_called()
 
-    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
+        assert result == 0
+
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
     @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
@@ -580,7 +581,7 @@ class TestProcessEmptyDoctypes:
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
         mock_collect_files_flat: Mock,
-        mock_store_json: Mock,
+        mock_store_json: AsyncMock,
         mock_context_with_config_dir: DocBuildContext,
     ):
         """Test process uses a default doctype when none are provided.
@@ -601,7 +602,7 @@ class TestProcessEmptyDoctypes:
         mock_stitch_node = etree.ElementTree(etree.fromstring(xml_string))
 
         mock_parse_portal_config.return_value = mock_stitch_node
-        mock_process_doctype.return_value = []
+        mock_process_doctype.return_value = ([], [])
         mock_collect_files_flat.return_value = [
             (Doctype.from_str(DEFAULT_DELIVERABLES), "*", [Path("dummy.xml")])
         ]
@@ -623,7 +624,7 @@ class TestProcessEmptyDoctypes:
             skip_repo_update=False,
         )
 
-    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=Mock)
+    @patch.object(metaprocess_pkg, "store_productdocset_json", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "collect_files_flat", new_callable=Mock)
     @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
     @patch.object(metaprocess_pkg, "process_doctype", new_callable=AsyncMock)
@@ -632,7 +633,7 @@ class TestProcessEmptyDoctypes:
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
         mock_collect_files_flat: Mock,
-        mock_store_json: Mock,
+        mock_store_json: AsyncMock,
         mock_context_with_config_dir: DocBuildContext,
         deliverable: Deliverable,
         stitchnode: etree._ElementTree,
@@ -650,7 +651,7 @@ class TestProcessEmptyDoctypes:
         mock_deliverable.full_id = (
             f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}:DC-FAIL"
         )
-        mock_process_doctype.return_value = [mock_deliverable]
+        mock_process_doctype.return_value = ([], [mock_deliverable])
 
         # collect_files_flat won't be reached when failures exist, but
         # provide an empty list
@@ -665,14 +666,23 @@ class TestProcessEmptyDoctypes:
         assert mock_console_err.print.called
 
 
-def test_store_productdocset_json_merges_and_writes(
+@pytest.mark.asyncio
+async def test_store_productdocset_json_merges_and_writes(
     mock_context_with_config_dir: DocBuildContext,
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
     """Merge docs from metadata files and write product/docset JSON."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    meta_file = Path(meta_cache_dir) / "meta1.json"
+    json_cache_dir = mock_context_with_config_dir.envconfig.paths.json_cache_dir
+    meta_file = (
+        Path(meta_cache_dir)
+        / str(deliverable.xml.lang)
+        / deliverable.xml.productid
+        / deliverable.xml.docsetid
+        / deliverable.xml.dcfile
+    )
+    meta_file.parent.mkdir(parents=True, exist_ok=True)
     # Provide a valid document structure that passes Pydantic validation
     doc_content = {
         "docs": [
@@ -692,18 +702,22 @@ def test_store_productdocset_json_merges_and_writes(
         f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
-    # Patch collect_files_flat to return our file (relative path)
+    # Patch collect_files_flat to return our metadata file
     with patch.object(
         metaprocess_pkg,
         "collect_files_flat",
-        return_value=[(doctype, deliverable.xml.docsetid, [Path("meta1.json")])],
+        return_value=[(doctype, deliverable.xml.docsetid, [meta_file])],
     ):
-        metaprocess_pkg.store_productdocset_json(
-            mock_context_with_config_dir, [doctype], stitchnode
+        await metaprocess_pkg.store_productdocset_json(
+            mock_context_with_config_dir, [deliverable]
         )
 
     # Assert written JSON exists and contains merged document
-    out_file = Path(meta_cache_dir) / deliverable.xml.productid / f"{deliverable.xml.docsetid}.json"
+    out_file = (
+        Path(json_cache_dir)
+        / deliverable.xml.productid
+        / f"{deliverable.xml.docsetid}.json"
+    )
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
     # Updated assertions to match your new model structure
@@ -713,14 +727,22 @@ def test_store_productdocset_json_merges_and_writes(
     assert "hide-productname" in merged
 
 
-def test_store_productdocset_json_warns_on_empty_metadata(
+@pytest.mark.asyncio
+async def test_store_productdocset_json_warns_on_empty_metadata(
     mock_context_with_config_dir: DocBuildContext,
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
     """If a metadata file is empty ({}), a warning is logged."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    meta_file = meta_cache_dir / "empty.json"
+    meta_file = (
+        Path(meta_cache_dir)
+        / str(deliverable.xml.lang)
+        / deliverable.xml.productid
+        / deliverable.xml.docsetid
+        / deliverable.xml.dcfile
+    )
+    meta_file.parent.mkdir(parents=True, exist_ok=True)
     meta_file.write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
@@ -731,26 +753,94 @@ def test_store_productdocset_json_warns_on_empty_metadata(
         patch.object(
             metaprocess_pkg,
             "collect_files_flat",
-            return_value=[(doctype, deliverable.xml.docsetid, [Path("empty.json")])],
+            return_value=[(doctype, deliverable.xml.docsetid, [meta_file])],
         ),
         patch.object(metaprocess_pkg, "log") as mock_log,
     ):
-        metaprocess_pkg.store_productdocset_json(
-            mock_context_with_config_dir, [doctype], stitchnode
+        await metaprocess_pkg.store_productdocset_json(
+            mock_context_with_config_dir, [deliverable]
         )
 
     # Expect an error to be logged
-    mock_log.error.assert_called_with("Empty metadata file %s", Path("empty.json"))
+    mock_log.error.assert_called_with("Empty metadata file %s", meta_file)
 
 
-def test_store_productdocset_json_handles_read_error(
+@pytest.mark.asyncio
+async def test_store_productdocset_json_merges_date_and_identity_fields(
+    mock_context_with_config_dir: DocBuildContext,
+    deliverable: Deliverable,
+    stitchnode: etree._ElementTree,
+):
+    """Map dynamic dateModified and fallback dcfile/lang from cache identity."""
+    meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
+    json_cache_dir = mock_context_with_config_dir.envconfig.paths.json_cache_dir
+
+    dcfile = deliverable.xml.dcfile
+    meta_file = (
+        Path(meta_cache_dir)
+        / str(deliverable.xml.lang)
+        / deliverable.xml.productid
+        / deliverable.xml.docsetid
+        / dcfile
+    )
+    meta_file.parent.mkdir(parents=True, exist_ok=True)
+    meta_file.write_text(
+        json.dumps(
+            {
+                "docs": [
+                    {
+                        "title": "Doc with merged fields",
+                        "description": "Merged from dynamic and static",
+                        "dateModified": "2024-02-03",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    doctype = Doctype.from_str(
+        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
+    )
+
+    with patch.object(
+        metaprocess_pkg,
+        "collect_files_flat",
+        return_value=[(doctype, deliverable.xml.docsetid, [meta_file])],
+    ):
+        await metaprocess_pkg.store_productdocset_json(
+            mock_context_with_config_dir, [deliverable]
+        )
+
+    out_file = (
+        Path(json_cache_dir)
+        / deliverable.xml.productid
+        / f"{deliverable.xml.docsetid}.json"
+    )
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+    merged_doc = merged["documents"][0]["docs"][0]
+
+    assert merged_doc["dcfile"] == dcfile
+    assert merged_doc["lang"] == str(deliverable.xml.lang)
+    assert merged_doc["dateModified"] == "2024-02-03"
+
+
+@pytest.mark.asyncio
+async def test_store_productdocset_json_handles_read_error(
     mock_context_with_config_dir: DocBuildContext,
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):  # sourcery skip: extract-duplicate-method
     """If reading a metadata file raises, it should be caught and an error logged."""
     meta_cache_dir = mock_context_with_config_dir.envconfig.paths.meta_cache_dir
-    bad_file = meta_cache_dir / "bad.json"
+    bad_file = (
+        Path(meta_cache_dir)
+        / str(deliverable.xml.lang)
+        / deliverable.xml.productid
+        / deliverable.xml.docsetid
+        / deliverable.xml.dcfile
+    )
+    bad_file.parent.mkdir(parents=True, exist_ok=True)
     # Write invalid JSON to cause json.load to raise
     bad_file.write_text("{ not json }", encoding="utf-8")
 
@@ -762,12 +852,12 @@ def test_store_productdocset_json_handles_read_error(
         patch.object(
             metaprocess_pkg,
             "collect_files_flat",
-            return_value=[(doctype, deliverable.xml.docsetid, [Path("bad.json")])],
+            return_value=[(doctype, deliverable.xml.docsetid, [bad_file])],
         ),
         patch.object(metaprocess_pkg, "log") as mock_log,
     ):
-        metaprocess_pkg.store_productdocset_json(
-            mock_context_with_config_dir, [doctype], stitchnode
+        await metaprocess_pkg.store_productdocset_json(
+            mock_context_with_config_dir, [deliverable]
         )
 
     # Expect an error to be logged
@@ -820,6 +910,23 @@ def test_collect_files_flat(
     if results:
         _, _, found_files = results[0]
         assert len(found_files) == expected_file_count
+
+
+def test_collect_files_flat_wildcard_docset_collects_all_docset_dirs(tmp_path: Path):
+    """Wildcard docset should collect DC-* files from all docset directories."""
+    cache_dir = tmp_path / "cache"
+    (cache_dir / "en-us" / "smart" / "deploy-upgrade").mkdir(parents=True, exist_ok=True)
+    (cache_dir / "en-us" / "smart" / "operations-guide").mkdir(parents=True, exist_ok=True)
+    (cache_dir / "en-us" / "smart" / "deploy-upgrade" / "DC-a").touch()
+    (cache_dir / "en-us" / "smart" / "operations-guide" / "DC-b").touch()
+
+    doctypes = [Doctype.from_str("smart/*/en-us")]
+    results = list(collect_files_flat(doctypes, cache_dir))
+
+    assert len(results) == 1
+    _, docset, found_files = results[0]
+    assert docset == "*"
+    assert len(found_files) == 2
 
 
 @pytest.mark.asyncio
