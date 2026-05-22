@@ -76,6 +76,7 @@ changelog = [
 docs = [
     "myst-parser>=5.1.0",
     "pydata-sphinx-theme>=0.17.1",
+    "setuptools-scm>=10.0.5",
     "sphinx>=9.1.0",
     "sphinx-autoapi>=3.8.0",
     "sphinx-autodoc-typehints>=3.10.2",
@@ -87,19 +88,19 @@ docs = [
 repl = [
     "ipython>=9.13.0",
 ]
-devel = [
-  {include-group = "typing"},
-  {include-group = "formatting"},
-  {include-group = "tests"},
-  {include-group = "changelog"},
-  {include-group = "docs"},
-  {include-group = "repl"},
-  # {include-group = "publish"},
-]
 github-action = [
   {include-group = "tests"},
   {include-group = "docs"},
 ]
+devel = [
+  {include-group = "typing"},
+  {include-group = "formatting"},
+  {include-group = "changelog"},
+  {include-group = "github-action"},
+  {include-group = "repl"},
+  # {include-group = "publish"},
+]
+
 
 [project.scripts]
 docbuild = "docbuild.__main__:cli"

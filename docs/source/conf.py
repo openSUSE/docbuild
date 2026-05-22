@@ -13,6 +13,7 @@ import sys
 from typing import Self
 
 from docutils import nodes
+from setuptools_scm import get_version
 from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 from sphinx.transforms import SphinxTransform
@@ -31,10 +32,11 @@ author = "Tom Schraitle, Sushant Gaurav"
 
 # Check, if we are using 'latest' (main) build
 if os.environ.get("DOC_VERSION") == "latest":
-    release = f"{__version__}-dev"
+    release: str = get_version(root="../..", relative_to=__file__)
 else:
     release = __version__
 
+version = __version__
 
 gh_user = "openSUSE"
 gh_repo_url = f"https://github.com/{gh_user}/{project}"
@@ -229,6 +231,8 @@ html_theme_options = {
 html_logo = "_static/logo.png"
 
 html_favicon = "_static/favicon.ico"
+
+html_title = f"{project.capitalize()} Documentation {release}"
 
 # -- Options for intersphinx extension ---------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
