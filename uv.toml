@@ -1,8 +1,10 @@
-# Allow package upgrades, ignoring pinned versions in any existing output file.
-upgrade = true
-
-# Allow upgrades for a specific package, ignoring pinned versions in any existing output file.
-upgrade-package = ["lxml"]
-
-# Security: Dependency cooldown
-exclude-newer = "10 days"
+# uv.toml — local/CI configuration for uv
+#
+# NOTE: `upgrade`, `upgrade-package`, and `exclude-newer` are intentionally
+# omitted here so that `uv sync --frozen` in CI uses the lockfile as-is.
+#
+# To update dependencies locally with a supply-chain cooldown window, run:
+#   UV_EXCLUDE_NEWER="10 days" uv lock --upgrade-package lxml
+#
+# The committed uv.lock (with SHA-256 hashes) is the primary supply-chain
+# protection. See: https://docs.astral.sh/uv/concepts/resolution/#exclude-newer
