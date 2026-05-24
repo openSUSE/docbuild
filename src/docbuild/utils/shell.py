@@ -47,6 +47,37 @@ async def run_command(
     )
 
 
+async def run_daps(
+    dcfile: str,
+    cmd: str,
+    *,
+    global_opts: Sequence[str] | None = None,
+    cmd_opts: Sequence[str] | None = None,
+    daps_cmd: str | None = None,
+    cwd: Path | None = None,
+    env: dict[str, str] | None = None,
+) -> CompletedProcess:
+    """Run a DAPS command with standard arguments.
+
+    :param dcfile: Path to the DC file.
+    :param cmd: DAPS subcommand to execute (for example, ``metadata``).
+    :param global_opts: Global DAPS options inserted before ``-d``.
+    :param cmd_opts: Command-specific options appended after ``cmd``.
+    :param daps_cmd: Override the DAPS executable when provided.
+    :param cwd: The working directory for the command.
+    :param env: A dictionary of environment variables for the new process.
+    :return: The completed process result.
+    """
+    args: list[str] = [daps_cmd or "daps"]
+    if global_opts:
+        args.extend(global_opts)
+    args.extend(["-d", dcfile, cmd])
+    if cmd_opts:
+        args.extend(cmd_opts)
+
+    return await run_command(args, cwd=cwd, env=env)
+
+
 async def execute_git_command(
     *args: str,
     cwd: Path | None = None,
