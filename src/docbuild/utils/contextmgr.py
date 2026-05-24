@@ -167,7 +167,7 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
 
 
 @contextmanager
-def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
+def edit_json(path: Path | str, sync_dir: bool = True) -> Iterator[dict[str, Any]]:
     """Context manager for safely and atomically editing a JSON file.
 
     This function implements a "read-modify-write" cycle with :term:`ACID`-like properties.
@@ -255,12 +255,13 @@ def edit_json(path: Path | str) -> Iterator[dict[str, Any]]:
         tmp_path.replace(path)
 
         # Directory Sync (Durability) on POSIX
-        with suppress(OSError):
-            dir_fd = os.open(str(parent), os.O_RDONLY)
-            try:
-                os.fsync(dir_fd)
-            finally:
-                os.close(dir_fd)
+        if sync_dir:
+            with suppress(OSError):
+                dir_fd = os.open(str(parent), os.O_RDONLY)
+                try:
+                    os.fsync(dir_fd)
+                finally:
+                    os.close(dir_fd)
 
         # Mark as successful to skip cleanup
         tmp_path = None

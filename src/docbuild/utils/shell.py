@@ -72,7 +72,7 @@ async def execute_git_command(
     gconfig = gitconfig if gitconfig else GIT_CONFIG_FILENAME
 
     # Default Git arguments for consistent behavior
-    git_config_args = ("-c", "color.ui=never")
+    git_config_args = ("-c", "color.ui=never", "-c", "gc.auto=0")
     command = ("git", *git_config_args, *args)
     log.debug("Executing Git command: %s in %s", " ".join(command), cwd)
 
