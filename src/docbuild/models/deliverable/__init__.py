@@ -76,8 +76,8 @@ class Deliverable:
     @cached_property
     def full_id(self) -> str:
         """Return the canonical unique identifier for this deliverable."""
-        branch = self.make_safe_name(self.branch)
-        identifier = f"{self.xml.product_docset}/{branch}/{self.xml.lang}"
+        # branch = self.make_safe_name(self.branch)
+        identifier = f"{self.xml.product_docset}/{self.xml.lang}"
         return self._append_dcfile(identifier)
 
     @cached_property

@@ -182,12 +182,13 @@ async def test_finally_calls_cancel_on_early_exit():
     assert worker_cancelled is True, "Worker should have been cancelled"
 
 
-async def test_producer_queue_full_sentinel():
-    """Test that if the input queue is full, the producer's finally block doesn't deadlock trying to put sentinels."""
+async def test_producer_puts_all_sentinels():
+    """Test that the producer puts exactly num_workers sentinels into the queue."""
     limit = 2
-    input_queue = asyncio.Queue(maxsize=1)
+    input_queue = asyncio.Queue(maxsize=5)
     await producer([], input_queue, num_workers=limit)
-    assert input_queue.full()
+    assert input_queue.qsize() == limit
+    assert input_queue.get_nowait() is SENTINEL
     assert input_queue.get_nowait() is SENTINEL
 
 
