@@ -59,9 +59,9 @@ class DeliverableXMLView:
         return self.docset_node.attrib.get("id", None)
 
     @cached_property
-    def docsetid(self) -> str | None:
+    def docsetid(self) -> str:
         """Return the docset path/name (``<docset path=…>``), NOT the real ID."""
-        return self.docset_node.attrib.get("path", None)
+        return self.docset_node.attrib.get("path", "")
 
     @cached_property
     def lang(self) -> LanguageCode:
@@ -203,7 +203,6 @@ class DeliverableXMLView:
 
     def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""
-        # TODO: Use Repo as return object?
         node = self.node.getparent().getparent().find("git")
         if node is not None:
             remote_str = node.attrib.get("remote")
