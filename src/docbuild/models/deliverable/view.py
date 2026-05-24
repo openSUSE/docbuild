@@ -69,6 +69,16 @@ class DeliverableXMLView:
         return LanguageCode(language=self.node.getparent().attrib.get("lang").strip())
 
     @cached_property
+    def id(self) -> str:
+        """Return the deliverable ID (``@id``) or an empty string if absent."""
+        return self.node.attrib.get("id", "")
+
+    @cached_property
+    def category(self) -> str | None:
+        """Return the deliverable category (``@category``) or None if absent."""
+        return self.node.attrib.get("category", None)
+
+    @cached_property
     def dcfile(self) -> str | None:
         """Return the DC filename, or ``None`` if absent."""
         if (dcnode := self.node.find("dc")) is not None:

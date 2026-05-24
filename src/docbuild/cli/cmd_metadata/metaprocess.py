@@ -19,6 +19,7 @@ from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.manifest import Category, Description, Document, Manifest
+from ...utils.concurrency import TaskFailedError, run_parallel
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ..cmd_portal.process import parse_portal_config
@@ -205,80 +206,39 @@ async def process_deliverable(
 
 
 async def update_repositories(
-    deliverables: list[Deliverable], bare_repo_dir: Path
+    deliverables: list[Deliverable],
+    bare_repo_dir: Path,
+    limit: int,
 ) -> bool:
     """Update all Git repositories associated with the deliverables.
 
     :param deliverables: A list of Deliverable objects.
     :param bare_repo_dir: The root directory for storing permanent bare clones.
+    :param limit: Maximum number of concurrent Git operations.
     """
     log.info("Updating Git repositories...")
     unique_urls = {d.git.url for d in deliverables}
     repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
 
-    tasks = [repo.clone_bare() for repo in repos]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
+    async def _clone(repo: ManagedGitRepo) -> tuple[ManagedGitRepo, bool]:
+        return repo, await repo.clone_bare()
 
     res = True
-    for repo, result in zip(repos, results, strict=False):
-        if isinstance(result, Exception) or not result:
-            log.error("Failed to update repository %s", repo.slug)
+    async for result in run_parallel(repos, _clone, limit=limit):
+        if isinstance(result, TaskFailedError):
+            log.error(
+                "Failed to update repository %s: %s",
+                result.item.slug,
+                result.original_exception,
+            )
             res = False
+        else:
+            repo, success = result
+            if not success:
+                log.error("Failed to update repository %s", repo.slug)
+                res = False
 
     return res
-
-
-async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> tuple[list[Deliverable], list[Deliverable]]:
-    """Execute tasks and stop immediately on the first failure."""
-    succeeded: list[Deliverable] = []
-    failed: list[Deliverable] = []
-    for task in asyncio.as_completed(tasks):
-        try:
-            success, deliverable = await task
-            if not success:
-                failed.append(deliverable)
-                for t in tasks:
-                    if not t.done():
-                        t.cancel()
-                break
-            succeeded.append(deliverable)
-        except Exception as e:
-            log.error("Task failed unexpectedly: %s", e)
-            for t in tasks:
-                if not t.done():
-                    t.cancel()
-            break
-    return succeeded, failed
-
-
-async def run_tasks_collect_all(
-    tasks: list[asyncio.Task], deliverables: list[Deliverable]
-) -> tuple[list[Deliverable], list[Deliverable]]:
-    """Execute all tasks and collect every failure encountered."""
-    succeeded: list[Deliverable] = []
-    failed: list[Deliverable] = []
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for deliverable, result in zip(deliverables, results, strict=False):
-        if isinstance(result, tuple):
-            success, res_deliverable = result
-            if not success:
-                failed.append(res_deliverable)
-            else:
-                succeeded.append(res_deliverable)
-        elif isinstance(result, Exception):
-            log.error("Error in task for %s: %s", deliverable.full_id, result)
-            failed.append(deliverable)
-    return succeeded, failed
-
-
-async def _run_metadata_tasks(
-    tasks: list[asyncio.Task], deliverables: list[Deliverable], exitfirst: bool
-) -> tuple[list[Deliverable], list[Deliverable]]:
-    """Execute metadata tasks using either fail-fast or collect-all strategy."""
-    if exitfirst:
-        return await run_tasks_fail_fast(tasks)
-    return await run_tasks_collect_all(tasks, deliverables)
-
 
 async def process_doctype(
     root: etree._ElementTree,
@@ -304,19 +264,45 @@ async def process_doctype(
         get_deliverable_from_doctype, root, doctype
     )
 
+    limit: int = context.appconfig.max_workers if context.appconfig.max_workers else 1
+
     if skip_repo_update:
         log.info("Skipping repository %s updates as requested.", repo_dir)
     else:
-        await update_repositories(deliverables, repo_dir)
+        await update_repositories(deliverables, repo_dir, limit=limit)
 
     dapsmetatmpl = env.build.daps.meta
-    tasks = [
-        asyncio.create_task(process_deliverable(context, d, dapstmpl=dapsmetatmpl))
-        for d in deliverables
-    ]
 
-    # Complexity reduced by delegating task execution to the helper
-    return await _run_metadata_tasks(tasks, deliverables, exitfirst)
+    async def _process_one(deliverable: Deliverable) -> tuple[bool, Deliverable]:
+        success = await process_deliverable(context, deliverable, dapstmpl=dapsmetatmpl)
+        return success, deliverable
+
+    succeeded: list[Deliverable] = []
+    failed: list[Deliverable] = []
+
+    async for result in run_parallel(deliverables, _process_one, limit=limit):
+        if isinstance(result, TaskFailedError):
+            log.error("Task failed unexpectedly for %s: %s (id=%s)", result.item.full_id, result.original_exception, result.item.xml.id)
+            failed.append(result.item)
+            if exitfirst:
+                break
+        else:
+            success, deliverable = result
+            if success:
+                succeeded.append(deliverable)
+            else:
+                failed.append(deliverable)
+                if exitfirst:
+                    break
+
+    # If exitfirst triggered and not all deliverables were processed,
+    # append remaining items to the failed list.
+    processed_ids = {d.full_id for d in succeeded + failed}
+    for deliverable in deliverables:
+        if deliverable.full_id not in processed_ids:
+            failed.append(deliverable)
+
+    return succeeded, failed
 
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:
@@ -675,17 +661,21 @@ async def store_productdocset_json(
             grouped_deliverables.setdefault((d.xml.productid, d.xml.docsetid), []).append(d)
 
     category_lock = asyncio.Lock()
-    tasks = [
-        _store_docset_json_file(
+    limit: int = context.appconfig.max_workers if context.appconfig.max_workers else 1
+
+    async def _run_store(group_items: tuple[tuple[str, str], list[Deliverable]]):
+        key, group = group_items
+        return await _store_docset_json_file(
             meta_cache_dir,
             json_cache_dir,
             category_lock,
             key,
             group,
         )
-        for key, group in sorted(grouped_deliverables.items())
-    ]
-    await asyncio.gather(*tasks)
+
+    async for result in run_parallel(list(sorted(grouped_deliverables.items())), _run_store, limit=limit):
+        if isinstance(result, TaskFailedError):
+            log.error("Failed to store Docset JSON: %s", result.original_exception)
 
 
 async def process(
@@ -733,25 +723,20 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    # 1. Convert doctype -> deliverables
-    tasks = [
-        process_doctype(
+    all_succeeded_deliverables: list[Deliverable] = []
+    all_failed_deliverables: list[Deliverable] = []
+    for dt in doctypes:
+        succeeded, failed = await process_doctype(
             portalnode,
             context,
             dt,
             exitfirst=exitfirst,
             skip_repo_update=skip_repo_update,
         )
-        for dt in doctypes
-    ]
-    deliverable_results = await asyncio.gather(*tasks)
-
-    all_succeeded_deliverables = [
-        d for succeeded, _ in deliverable_results for d in succeeded
-    ]
-    all_failed_deliverables = [
-        d for _, failed in deliverable_results for d in failed
-    ]
+        all_succeeded_deliverables.extend(succeeded)
+        all_failed_deliverables.extend(failed)
+        if exitfirst and failed:
+            break
 
     # 2. Force the merge regardless of processing success
     await store_productdocset_json(context, all_succeeded_deliverables)

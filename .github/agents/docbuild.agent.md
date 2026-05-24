@@ -35,6 +35,8 @@ Run tests:
 
 * Run the complete test suite with `uv run --frozen pytest`.
 * Single tests with `uv run --frozen pytest tests/path/to/test_file.py::test_function_name`.
+* When executing commands via `runInTerminal`, always chain operations on a single line (avoid multi-line commands or unclosed inputs).
+* Prefer running test/build processes by appending `&` to run them safely or ensure they self-terminate cleanly so the session doesn't hang.
 
 ## Constraints & Safety
 

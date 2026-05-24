@@ -63,13 +63,12 @@ async def producer[T](
             for item in items:
                 await input_queue.put(item)
     finally:
-        # Use put_nowait and we must not block here.
-        # If the queue is full, skip. Workers don't need more than one
-        # sentinel to know it's time to quit.
         for _ in range(num_workers):
             try:
-                input_queue.put_nowait(SENTINEL)
-            except (asyncio.QueueFull, Exception):
+                await input_queue.put(SENTINEL)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
                 break
 
 
