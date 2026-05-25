@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 from functools import cached_property
 
-from ..metadata import Metadata
 from .view import DeliverableXMLView
 
 
@@ -13,7 +12,7 @@ class DeliverablePaths:
 
     xml: DeliverableXMLView
     # git: Repo
-    meta: Metadata | None = None  # TODO: Remove it?
+    rootid: str | None = None
 
     @cached_property
     def product_docset(self) -> str:
@@ -41,12 +40,7 @@ class DeliverablePaths:
             raise ValueError("No DC filename found for path generation")
 
         fallback_rootid = dcfile.lstrip("DC-")
-        if self.meta is not None:
-            if (rootid := self.meta.rootid) is None:
-                # Derive rootid from the DC file
-                rootid = fallback_rootid
-        else:
-            rootid = fallback_rootid
+        rootid = self.rootid or fallback_rootid
 
         # Suppress English
         if self.xml.lang != "en-us":
@@ -83,4 +77,4 @@ class DeliverablePaths:
 
     def __repr__(self) -> str:
         """Return a string representation of the deliverable paths."""
-        return f"{self.__class__.__name__}(xml=({self.xml!s}), meta={self.meta!s})"
+        return f"{self.__class__.__name__}(xml=({self.xml!s}), rootid={self.rootid!s})"

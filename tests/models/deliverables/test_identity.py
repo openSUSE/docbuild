@@ -23,7 +23,7 @@ def test_pdlangdc(first_deliverable: Deliverable) -> None:
 def test_full_id(first_deliverable: Deliverable) -> None:
     assert (
         first_deliverable.full_id
-        == "sles/15-SP6/maintenance_SLE15SP6/en-us:DC-SLES-administration"
+        == "sles/15-SP6/en-us:DC-SLES-administration"
     )
 
 
