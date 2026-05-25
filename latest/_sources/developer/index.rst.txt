@@ -28,6 +28,7 @@ This guide provides all the necessary information for contributing to the projec
    build-changelog
    create-release
    trigger-actions
+   maintain-ghactions/index
 
    migrate-config
    build-docs
