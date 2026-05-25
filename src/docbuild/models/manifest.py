@@ -367,11 +367,12 @@ class SingleDocument(BaseModel):
             try:
                 return date.fromisoformat(value)
             except ValueError:
-                origin = info.data.get("dcfile", "Unknown Origin")
+                # origin = info.data.get("dcfile", "Unknown Origin")
                 lang = info.data.get("lang", "Unknown Lang")
+                rootid = info.data.get("rootid", "Unknown RootID")
                 log.warning(
-                    "Invalid dateModified for %s (Lang: %s): %s",
-                    origin,
+                    "Invalid dateModified for rootid=%s (Lang: %s): %s",
+                    rootid,
                     lang,
                     value,
                 )

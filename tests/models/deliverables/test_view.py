@@ -5,6 +5,7 @@ import pytest
 
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.deliverable.view import DeliverableXMLView
+from docbuild.models.language import LanguageCode
 
 
 def test_branch(first_deliverable: Deliverable) -> None:
@@ -93,6 +94,26 @@ def test_xml_subdir_method(first_de_deliverable: Deliverable) -> None:
 def test_xml_subdir_empty(first_deliverable: Deliverable) -> None:
     """Test subdir() returns empty string when <subdir> is absent."""
     assert first_deliverable.xml.subdir() == ""
+
+
+def test_xml_translations(ref_node, first_deliverable_from_lang) -> None:
+    """Return translation info for ref locales pointing to a deliverable."""
+    deliverable = first_deliverable_from_lang(ref_node, "en-us")
+    translations = deliverable.xml.translations()
+    de_lang = LanguageCode(language="de-de")
+
+    assert de_lang in translations
+    info = translations[de_lang]
+    assert info.lang == de_lang
+    assert info.branch is None
+    assert info.subdir is None
+
+
+def test_deliverable_has_translation(ref_node, first_deliverable_from_lang) -> None:
+    """Expose translations via the Deliverable facade."""
+    deliverable = first_deliverable_from_lang(ref_node, "en-us")
+    assert deliverable.has_translation("de-de") is True
+    assert deliverable.has_translation("fr-fr") is False
 
 
 def test_format_attrs_prebuilt_filters_unknown_url_formats() -> None:

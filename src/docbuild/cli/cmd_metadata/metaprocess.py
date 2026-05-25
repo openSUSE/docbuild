@@ -17,7 +17,9 @@ from rich.text import Text
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.deliverable.paths import DeliverablePaths
+from ...models.deliverable.translation import TranslationInfo
 from ...models.doctype import Doctype
+from ...models.language import LanguageCode
 from ...models.manifest import (
     Archive,
     Category,
@@ -119,18 +121,22 @@ def render_command_template(
 def build_metadata_output_path(
     deliverable: Deliverable,
     meta_cache_dir: Path,
+    *,
+    lang: str | LanguageCode | None = None,
 ) -> Path:
     """Build the metadata cache path for a deliverable.
 
     :param deliverable: Deliverable to process.
     :param meta_cache_dir: Base directory for metadata cache output.
+    :param lang: Optional language override for translated deliverables.
     :return: Path to the metadata cache file.
     :raises ValueError: When the deliverable is missing a DC file.
     """
     if deliverable.xml.dcfile is None:
         raise ValueError("Deliverable is missing a DC file.")
+    lang_value = lang if lang is not None else deliverable.xml.lang
     relpath = (
-        f"{deliverable.xml.lang}/{deliverable.xml.productid}/{deliverable.xml.docsetid}"
+        f"{lang_value}/{deliverable.xml.productid}/{deliverable.xml.docsetid}"
     )
     return meta_cache_dir / relpath / deliverable.xml.dcfile
 
@@ -242,28 +248,38 @@ async def parse_metadata_text(
 def build_document_for_deliverable(
     deliverable: Deliverable,
     metadata_payload: dict[str, object],
+    *,
+    lang: str | LanguageCode | None = None,
 ) -> Document:
     """Build a Document from a deliverable and metadata payload.
 
     :param deliverable: Deliverable to process.
     :param metadata_payload: Parsed metadata payload.
+    :param lang: Optional language override for translated deliverables.
     :return: Normalized Document instance.
     :raises ValueError: When no document payload is available.
     """
+    lang_value = lang if lang is not None else deliverable.xml.lang
+    lang_code = (
+        lang_value
+        if isinstance(lang_value, LanguageCode)
+        else LanguageCode(language=str(lang_value))
+    )
+    lang_text = str(lang_code)
     dcfile = deliverable.xml.dcfile or ""
     document = Document.from_metadata_payload(
         metadata_payload,
         dcfile=dcfile,
-        lang=str(deliverable.xml.lang),
+        lang=lang_text,
     )
     if not document.docs:
         raise ValueError("Metadata payload missing document data.")
 
     rootid = document.docs[0].rootid
     document.docs[0].dcfile = dcfile
-    document.docs[0].lang = str(deliverable.xml.lang)
+    document.docs[0].lang = lang_text
     document.docs[0].rootid = rootid
-    paths = DeliverablePaths(deliverable.xml, rootid=rootid)
+    paths = DeliverablePaths(deliverable.xml, rootid=rootid, lang=lang_code)
     fmt = deliverable.format
     doc_format = DocumentFormat(html=paths.html_path)
     if fmt.get("pdf"):
@@ -324,6 +340,17 @@ def build_document_from_deliverable(deliverable: Deliverable) -> Document | None
     return None
 
 
+def merge_document_docs(target: Document, source: Document) -> None:
+    """Merge docs from another document into the target document."""
+    existing_langs = {doc.lang for doc in target.docs if doc.lang}
+    for doc in source.docs:
+        if doc.lang and doc.lang in existing_langs:
+            continue
+        target.docs.append(doc)
+        if doc.lang:
+            existing_langs.add(doc.lang)
+
+
 def compile_manifest(
     product: str,
     docset: str,
@@ -358,14 +385,22 @@ def compile_manifest(
     )
     lifecycle = representative.xml.docset_node.attrib.get("lifecycle") or ""
 
-    documents: list[Document] = []
+    documents_by_key: dict[str, Document] = {}
     archives: list[Archive] = []
     for deliverable in deliverables:
         document = build_document_from_deliverable(deliverable)
         if document is None:
             continue
 
-        documents.append(document)
+        doc_key = ""
+        if document.docs:
+            doc_key = document.docs[0].dcfile or ""
+        if not doc_key:
+            doc_key = deliverable.xml.dcfile or deliverable.full_id
+        if doc_key in documents_by_key:
+            merge_document_docs(documents_by_key[doc_key], document)
+        else:
+            documents_by_key[doc_key] = document
         rootid = document.docs[0].rootid if document.docs else ""
         paths = DeliverablePaths(deliverable.xml, rootid=rootid)
         archives.append(
@@ -376,8 +411,10 @@ def compile_manifest(
             )
         )
 
-    if not documents:
+    if not documents_by_key:
         return None
+
+    documents = list(documents_by_key.values())
 
     payload = {
         "productname": productname,
@@ -595,14 +632,9 @@ async def collect_dynamic_metadata(
     repo_dir = Path(env.paths.repo_dir).expanduser()
     tmp_repo_dir = Path(env.paths.tmp_repo_dir).expanduser()
 
-    if deliverable.xml.dcfile is None:
+    dcfile = deliverable.xml.dcfile
+    if dcfile is None:
         log.error("Deliverable missing DC file: %s", deliverable.full_id)
-        return False, deliverable
-
-    try:
-        output_metadata = build_metadata_output_path(deliverable, meta_cache_dir)
-    except ValueError as exc:
-        log.error("Failed to build metadata path for %s: %s", deliverable.full_id, exc)
         return False, deliverable
 
     repo = ManagedGitRepo(deliverable.git.url, repo_dir)
@@ -610,65 +642,170 @@ async def collect_dynamic_metadata(
         log.error("Failed to update repository for %s", deliverable.full_id)
         return False, deliverable
 
-    try:
-        async with PersistentOnErrorTemporaryDirectory(
-            dir=str(tmp_repo_dir),
-            prefix=(
-                f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}-"
-                f"{deliverable.xml.lang}-{deliverable.xml.dcfile}_"
-            ),
-        ) as worktree_dir:
-            await repo.create_worktree(worktree_dir, deliverable.branch)
+    async def collect_for_language(
+        lang: LanguageCode,
+        branch: str,
+        subdir: str,
+    ) -> tuple[Document | None, Path | None, bool]:
+        lang_label = str(lang)
+        try:
+            output_metadata = build_metadata_output_path(
+                deliverable,
+                meta_cache_dir,
+                lang=lang,
+            )
+        except ValueError as exc:
+            log.error(
+                "Failed to build metadata path for %s (%s): %s",
+                deliverable.full_id,
+                lang_label,
+                exc,
+            )
+            return None, None, False
 
-            dcfile_path = (
-                Path(worktree_dir)
-                / deliverable.subdir
-                / deliverable.xml.dcfile
-            )
-            output_metadata.parent.mkdir(parents=True, exist_ok=True)
-            command = render_command_template(
-                env.build.daps.meta,
-                {
-                    "dcfile": str(dcfile_path),
-                    "output": str(output_metadata),
-                },
-            )
-            result = await run_command(command, cwd=worktree_dir)
-            if result.returncode != 0:
-                log.error(
-                    "DAPS metadata failed for %s: %s",
-                    deliverable.full_id,
-                    result.stderr,
+        try:
+            async with PersistentOnErrorTemporaryDirectory(
+                dir=str(tmp_repo_dir),
+                prefix=(
+                    f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}-"
+                    f"{lang_label}-{dcfile}_"
+                ),
+            ) as worktree_dir:
+                await repo.create_worktree(worktree_dir, branch)
+
+                dcfile_path = Path(worktree_dir) / subdir / dcfile
+                output_metadata.parent.mkdir(parents=True, exist_ok=True)
+                command = render_command_template(
+                    env.build.daps.meta,
+                    {
+                        "dcfile": str(dcfile_path),
+                        "output": str(output_metadata),
+                    },
                 )
-                return False, deliverable
+                result = await run_command(command, cwd=worktree_dir)
+                if result.returncode != 0:
+                    log.error(
+                        "DAPS metadata failed for %s (%s): %s",
+                        deliverable.full_id,
+                        lang_label,
+                        result.stderr,
+                    )
+                    return None, output_metadata, False
 
-    except Exception as exc:
-        log.error("Failed to collect metadata for %s: %s", deliverable.full_id, exc)
-        return False, deliverable
+        except Exception as exc:
+            log.error(
+                "Failed to collect metadata for %s (%s): %s",
+                deliverable.full_id,
+                lang_label,
+                exc,
+            )
+            return None, output_metadata, False
 
-    metadata_text = read_metadata_text(result.stdout, output_metadata, deliverable)
-    if metadata_text is None:
-        return False, deliverable
+        metadata_text = read_metadata_text(
+            result.stdout,
+            output_metadata,
+            deliverable,
+        )
+        if metadata_text is None:
+            return None, output_metadata, False
 
-    wrote_cache = ensure_metadata_cache(
-        metadata_text,
-        output_metadata,
-        deliverable,
+        wrote_cache = ensure_metadata_cache(
+            metadata_text,
+            output_metadata,
+            deliverable,
+        )
+
+        metadata_payload = await parse_metadata_text(metadata_text, deliverable)
+        if metadata_payload is None:
+            return None, output_metadata, wrote_cache
+
+        try:
+            document = build_document_for_deliverable(
+                deliverable,
+                metadata_payload,
+                lang=lang,
+            )
+        except ValueError as exc:
+            log.error(
+                "Failed to build document for %s (%s): %s",
+                deliverable.full_id,
+                lang_label,
+                exc,
+            )
+            return None, output_metadata, wrote_cache
+
+        return document, output_metadata, wrote_cache
+
+    base_lang = deliverable.xml.lang
+    document, output_metadata, wrote_cache = await collect_for_language(
+        base_lang,
+        deliverable.branch,
+        deliverable.subdir,
     )
-
-    metadata_payload = await parse_metadata_text(metadata_text, deliverable)
-    if metadata_payload is None:
-        return False, deliverable
-
-    try:
-        document = build_document_for_deliverable(deliverable, metadata_payload)
-    except ValueError as exc:
-        log.error("Failed to build document for %s: %s", deliverable.full_id, exc)
+    if document is None or output_metadata is None:
         return False, deliverable
 
     deliverable.document = document
     if wrote_cache:
         deliverable.metafile = str(output_metadata)
+
+    translations = sorted(
+        deliverable.translations.values(),
+        key=lambda info: str(info.lang),
+    )
+    translation_failed = False
+    if translations:
+        appconfig = context.appconfig
+        translation_limit = (
+            appconfig.max_workers
+            if appconfig and appconfig.max_workers
+            else 1
+        )
+        translation_limit = max(
+            1,
+            min(translation_limit, len(translations)),
+        )
+        translation_jobs: list[tuple[TranslationInfo, str, str]] = []
+        for info in translations:
+            branch = (
+                info.branch
+                if info.branch is not None
+                else deliverable.branch
+            )
+            subdir = (
+                info.subdir
+                if info.subdir is not None
+                else deliverable.subdir
+            )
+            translation_jobs.append((info, branch, subdir))
+
+        async def collect_translation(
+            job: tuple[TranslationInfo, str, str],
+        ) -> tuple[TranslationInfo, Document | None]:
+            info, branch, subdir = job
+            translated_doc, _, _ = await collect_for_language(
+                info.lang,
+                branch,
+                subdir,
+            )
+            return info, translated_doc
+
+        async for result in run_parallel(
+            translation_jobs,
+            collect_translation,
+            limit=translation_limit,
+        ):
+            if isinstance(result, TaskFailedError):
+                translation_failed = True
+                continue
+            info, translated_doc = result
+            if translated_doc is None:
+                translation_failed = True
+                continue
+            merge_document_docs(document, translated_doc)
+
+    if translation_failed:
+        return False, deliverable
     return True, deliverable
 
 
