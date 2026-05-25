@@ -519,7 +519,7 @@ async def run_metadata_progress(
         finalize_status_map(status_map)
         update_progress(progress, task_id)
         stop_event.set()
-        await refresher
+        await asyncio.gather(refresher)
 
     return status_map
 
