@@ -47,7 +47,7 @@ def _resolve_date_order(lang: str | None, a: int, b: int) -> str | None:
         return "DMY"
     if b > 12 and a <= 12:
         return "MDY"
-    if a > 12 and b > 12:
+    if a > 12:
         return None
 
     order = DATE_MODIFIED_LOCALE_ORDER.get(
