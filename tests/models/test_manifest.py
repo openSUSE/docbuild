@@ -100,6 +100,32 @@ def test_single_document_serialize_date_non_none() -> None:
 
 
 @pytest.mark.parametrize(
+    "value, lang, expected",
+    [
+        ("11/04/2025", "en-us", date(2025, 11, 4)),
+        ("11/04/2025", "de-de", date(2025, 4, 11)),
+        ("2025/04/11", "ja-jp", date(2025, 4, 11)),
+        ("2025.12.31", "fr-fr", date(2025, 12, 31)),
+        ("11.03.2023", "de-de", date(2023, 3, 11)),
+        ("11.3.2023",  "de-de", date(2023, 3, 11)),
+        ("11/4/2025", "pt-br", date(2025, 4, 11)),
+    ],
+)
+def test_single_document_parse_datemodified_locale(
+    value: str, lang: str, expected: date
+) -> None:
+    """Parse dateModified using locale-based heuristics."""
+    doc = SingleDocument.model_validate(
+        {
+            "dateModified": value,
+            "lang": lang,
+            "dcfile": "DC-TEST",
+        }
+    )
+    assert doc.datemodified == expected
+
+
+@pytest.mark.parametrize(
     "input_rank, expected_internal, expected_serialized",
     [
         ("", None, ""),  # empty string → None → ""
