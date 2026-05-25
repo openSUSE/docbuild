@@ -22,6 +22,21 @@ ALLOWED_LANGUAGES: frozenset[str] = frozenset(
 )
 """The languages supported by the documentation portal."""
 
+DATE_MODIFIED_LOCALE_ORDER: dict[str, str] = {
+    "en-us": "MDY",
+    "de-de": "DMY",
+    "es-es": "DMY",
+    "fr-fr": "DMY",
+    "pt-br": "DMY",
+    "ja-jp": "YMD",
+    "ko-kr": "YMD",
+    "zh-cn": "YMD",
+}
+"""Preferred date ordering for locale-specific dateModified parsing."""
+
+DATE_MODIFIED_FALLBACK_ORDER: str = "DMY"
+"""Fallback date ordering when the locale is missing or ambiguous."""
+
 DEFAULT_DELIVERABLES: str = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 

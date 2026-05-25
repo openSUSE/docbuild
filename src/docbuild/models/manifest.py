@@ -21,12 +21,70 @@ from pydantic import (
     model_validator,
 )
 
+from ..constants import DATE_MODIFIED_FALLBACK_ORDER, DATE_MODIFIED_LOCALE_ORDER
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 
 log = logging.getLogger(__name__)
 
 _PRODUCT_PATTERN = re.compile(r"\[(.*?)\](.*)")
+_DATE_NUMERIC_PATTERN = re.compile(
+    r"^(?P<a>\d{1,4})[./-](?P<b>\d{1,2})[./-](?P<c>\d{1,4})$"
+)
+
+
+def _safe_date(year: int, month: int, day: int) -> date | None:
+    """Return a date when values are valid; otherwise None."""
+    try:
+        return date(year, month, day)
+    except ValueError:
+        return None
+
+
+def _resolve_date_order(lang: str | None, a: int, b: int) -> str | None:
+    """Resolve day/month order using numeric hints and locale preference."""
+    if a > 12 and b <= 12:
+        return "DMY"
+    if b > 12 and a <= 12:
+        return "MDY"
+    if a > 12 and b > 12:
+        return None
+
+    order = DATE_MODIFIED_LOCALE_ORDER.get(
+        lang or "",
+        DATE_MODIFIED_FALLBACK_ORDER,
+    )
+    if order == "YMD":
+        return DATE_MODIFIED_FALLBACK_ORDER
+    return order
+
+
+def _parse_numeric_date(value: str, lang: str | None) -> date | None:
+    """Parse numeric dates using locale-specific heuristics."""
+    match = _DATE_NUMERIC_PATTERN.match(value)
+    if not match:
+        return None
+
+    a_str = match.group("a")
+    b_str = match.group("b")
+    c_str = match.group("c")
+    a = int(a_str)
+    b = int(b_str)
+    c = int(c_str)
+
+    if len(a_str) == 4:
+        return _safe_date(a, b, c)
+
+    if len(c_str) != 4:
+        return None
+
+    order = _resolve_date_order(lang, a, b)
+    if order is None:
+        return None
+
+    if order == "DMY":
+        return _safe_date(c, b, a)
+    return _safe_date(c, a, b)
 
 
 def _coerce_metadata_payload(payload: dict[str, object]) -> dict[str, object]:
@@ -364,16 +422,21 @@ class SingleDocument(BaseModel):
         if isinstance(value, date):
             return value
         if isinstance(value, str):
+            text = value.strip()
+            if not text:
+                return None
             try:
-                return date.fromisoformat(value)
+                return date.fromisoformat(text)
             except ValueError:
-                # origin = info.data.get("dcfile", "Unknown Origin")
-                lang = info.data.get("lang", "Unknown Lang")
+                lang = info.data.get("lang")
+                parsed = _parse_numeric_date(text, str(lang) if lang else None)
+                if parsed is not None:
+                    return parsed
                 rootid = info.data.get("rootid", "Unknown RootID")
                 log.warning(
                     "Invalid dateModified for rootid=%s (Lang: %s): %s",
                     rootid,
-                    lang,
+                    lang or "Unknown Lang",
                     value,
                 )
                 return None
