@@ -7,7 +7,7 @@ from lxml import etree
 import pytest
 
 from docbuild.models.deliverable import Deliverable
-from docbuild.models.metadata import Metadata
+from docbuild.models.manifest import Document
 
 #
 DATADIR = Path(__file__).resolve().parent / "data"
@@ -88,6 +88,6 @@ def first_deliverable_from_lang() -> Callable[[etree._ElementTree, str], Deliver
 
 
 @pytest.fixture
-def meta_without_rootid() -> Metadata:
-    """Return a predefined Metadata instance missing a rootid."""
-    return Metadata(rootid=None)
+def document_without_rootid() -> Document:
+    """Return a predefined Document instance missing a rootid."""
+    return Document(docs=[{"rootid": ""}])

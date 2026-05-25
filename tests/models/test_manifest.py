@@ -1,4 +1,5 @@
 from datetime import date
+from unittest.mock import Mock
 
 from lxml import etree
 import pytest
@@ -139,8 +140,6 @@ def test_category_translation_serialize_lang() -> None:
     serialized = cat_trans.model_dump()
     assert serialized["lang"] == "de-de"
 
-
-from unittest.mock import Mock
 
 def test_category_from_xml_node() -> None:
     """Test extraction of categories from an XML node."""
