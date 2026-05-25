@@ -17,7 +17,9 @@ from lxml import etree
 from ...utils.convert import convert2bool
 from ..manifest import Document
 from ..repo import Repo
+from ..language import LanguageCode
 from .paths import DeliverablePaths
+from .translation import TranslationInfo
 from .view import DeliverableXMLView
 
 
@@ -64,6 +66,16 @@ class Deliverable:
         if document and document.docs:
             rootid = document.docs[0].rootid
         return DeliverablePaths(self.xml, rootid=rootid)
+
+    @cached_property
+    def translations(self) -> dict[LanguageCode, TranslationInfo]:
+        """Return translation info keyed by language code."""
+        return self.xml.translations()
+
+    def has_translation(self, lang: str | LanguageCode) -> bool:
+        """Return True when a translation exists for the given language."""
+        key = lang if isinstance(lang, LanguageCode) else LanguageCode(language=lang)
+        return key in self.translations
 
     @cached_property
     def pdlang(self) -> str:
