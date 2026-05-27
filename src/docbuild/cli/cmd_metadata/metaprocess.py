@@ -1,13 +1,30 @@
 """Defines the handling of metadata extraction from deliverables."""
 
+# Based on timestamps, the bottleneck is DAPS itself, not asyncio.
+#
+#
+# Actionable ideas
+# 1. Global concurrency cap for DAPS jobs
+# Replace the nested parallelism with a single global semaphore or a flattened
+# queue of (deliverable, lang) jobs so max_workers truly limits total DAPS
+# processes. Right now, max_workers can be multiplied by translations per deliverable.
+#
+# 2. Log actual parallelism
+# Add a log line showing how many DAPS tasks are running concurrently (just
+# for one run). If you see 30–60 concurrent DAPS processes, that would explain
+# the slowdown.
+#
+
 import asyncio
 from collections.abc import Iterator, Mapping, Sequence
+from contextlib import AsyncExitStack
 import json
 import logging
 import os
 from pathlib import Path
 import shlex
 import tempfile
+import time
 
 from lxml import etree
 from rich.console import Console
@@ -141,7 +158,13 @@ def build_metadata_output_path(
     return meta_cache_dir / relpath / deliverable.xml.dcfile
 
 
-def write_metadata_cache(
+def _write_metadata_cache_file(output_metadata: Path, content: str) -> None:
+    """Write metadata cache file synchronously."""
+    output_metadata.parent.mkdir(parents=True, exist_ok=True)
+    output_metadata.write_text(content, encoding="utf-8")
+
+
+async def write_metadata_cache(
     output_metadata: Path,
     content: str,
     deliverable: Deliverable,
@@ -154,8 +177,7 @@ def write_metadata_cache(
     :return: True when the cache file was written.
     """
     try:
-        output_metadata.parent.mkdir(parents=True, exist_ok=True)
-        output_metadata.write_text(content, encoding="utf-8")
+        await asyncio.to_thread(_write_metadata_cache_file, output_metadata, content)
     except OSError as exc:
         log.warning(
             "Failed to write metadata cache for %s: %s",
@@ -179,7 +201,14 @@ def compile_metadata(text: str) -> dict[str, object]:
     return payload
 
 
-def read_metadata_text(
+def _read_metadata_cache_file(path: Path) -> str | None:
+    """Read metadata cache file synchronously."""
+    if path.exists():
+        return path.read_text(encoding="utf-8")
+    return None
+
+
+async def read_metadata_text(
     stdout: str,
     output_metadata: Path,
     deliverable: Deliverable,
@@ -191,18 +220,18 @@ def read_metadata_text(
     :param deliverable: Deliverable used for logging context.
     :return: Metadata text if available.
     """
-    if output_metadata.exists():
-        try:
-            file_text = output_metadata.read_text(encoding="utf-8")
-        except OSError as exc:
-            log.error(
-                "Failed to read metadata cache for %s: %s",
-                deliverable.full_id,
-                exc,
-            )
-            return None
-        if file_text.strip():
-            return file_text
+    try:
+        file_text = await asyncio.to_thread(_read_metadata_cache_file, output_metadata)
+    except OSError as exc:
+        log.error(
+            "Failed to read metadata cache for %s: %s",
+            deliverable.full_id,
+            exc,
+        )
+        return None
+
+    if file_text and file_text.strip():
+        return file_text
 
     if stdout.strip():
         return stdout
@@ -211,7 +240,7 @@ def read_metadata_text(
     return None
 
 
-def ensure_metadata_cache(
+async def ensure_metadata_cache(
     metadata_text: str,
     output_metadata: Path,
     deliverable: Deliverable,
@@ -223,9 +252,9 @@ def ensure_metadata_cache(
     :param deliverable: Deliverable used for logging context.
     :return: True when a cache file exists or was written.
     """
-    if output_metadata.exists():
+    if await asyncio.to_thread(output_metadata.exists):
         return True
-    return write_metadata_cache(output_metadata, metadata_text, deliverable)
+    return await write_metadata_cache(output_metadata, metadata_text, deliverable)
 
 
 async def parse_metadata_text(
@@ -437,6 +466,7 @@ async def run_metadata_progress(
     meta_cache_dir: Path,
     limit: int,
     description: str,
+    worktrees: dict[tuple[str, str], Path],
 ) -> dict[str, str]:
     """Run metadata collection with a live progress display.
 
@@ -445,6 +475,7 @@ async def run_metadata_progress(
     :param meta_cache_dir: Base directory for metadata cache output.
     :param limit: Maximum number of concurrent operations.
     :param description: Progress description label.
+    :param worktrees: Dictionary of shared worktrees keyed by (repo_url, branch).
     :return: Status map keyed by deliverable ID.
     """
     status_map: dict[str, str] = {
@@ -473,6 +504,7 @@ async def run_metadata_progress(
             context,
             deliverable,
             meta_cache_dir=meta_cache_dir,
+            worktrees=worktrees,
         )
 
     stop_event = asyncio.Event()
@@ -618,29 +650,27 @@ async def collect_dynamic_metadata(
     deliverable: Deliverable,
     *,
     meta_cache_dir: Path,
+    worktrees: dict[tuple[str, str], Path],
 ) -> tuple[bool, Deliverable]:
     """Run DAPS metadata for a deliverable and store the output.
 
     :param context: The DocBuild context with environment configuration.
     :param deliverable: Deliverable to process.
     :param meta_cache_dir: Base directory for metadata cache output.
+    :param worktrees: Dictionary of shared worktrees keyed by (repo_url, branch).
     :return: Tuple of success flag and deliverable.
     """
     env = context.envconfig
     assert env is not None
 
-    repo_dir = Path(env.paths.repo_dir).expanduser()
-    tmp_repo_dir = Path(env.paths.tmp_repo_dir).expanduser()
-
     dcfile = deliverable.xml.dcfile
-    if dcfile is None:
+    if dcfile is None and deliverable.xml.is_dc:
         log.error("Deliverable missing DC file: %s", deliverable.full_id)
         return False, deliverable
 
-    repo = ManagedGitRepo(deliverable.git.url, repo_dir)
-    if not await repo.clone_bare():
-        log.error("Failed to update repository for %s", deliverable.full_id)
-        return False, deliverable
+    #if not deliverable.git:
+    #    log.error("Deliverable missing git remote: %s", deliverable.full_id)
+    #    return False, deliverable
 
     async def collect_for_language(
         lang: LanguageCode,
@@ -664,33 +694,60 @@ async def collect_dynamic_metadata(
             return None, None, False
 
         try:
-            async with PersistentOnErrorTemporaryDirectory(
-                dir=str(tmp_repo_dir),
-                prefix=(
-                    f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}-"
-                    f"{lang_label}-{dcfile}_"
-                ),
-            ) as worktree_dir:
-                await repo.create_worktree(worktree_dir, branch)
+            worktree_dir = worktrees.get((deliverable.git.url, branch))
+            if not worktree_dir:
+                log.error("Worktree not found for %s branch %s", deliverable.git.url, branch)
+                return None, output_metadata, False
 
-                dcfile_path = Path(worktree_dir) / subdir / dcfile
-                output_metadata.parent.mkdir(parents=True, exist_ok=True)
+            dcfile_path = worktree_dir / subdir / dcfile
+            await asyncio.to_thread(output_metadata.parent.mkdir, parents=True, exist_ok=True)
+            builddir = worktree_dir.joinpath(
+                ".build",
+                f"{deliverable.xml.productid}-{deliverable.xml.docsetid}-{lang_label}",
+            )
+            await asyncio.to_thread(builddir.mkdir, parents=True, exist_ok=True)
+
+            async with PersistentOnErrorTemporaryDirectory(
+                dir=str(builddir),
+            ) as builddir:
+                await asyncio.to_thread(builddir.mkdir, parents=True, exist_ok=True)
+
                 command = render_command_template(
                     env.build.daps.meta,
                     {
                         "dcfile": str(dcfile_path),
                         "output": str(output_metadata),
+                        "builddir": str(
+                            builddir
+                        ),
                     },
                 )
+                log.info("Running DAPS command (%s)", command)
+
+                #if command and command[0] == "daps":
+                #    command.insert(1, "--builddir")
+                #    build_dir = Path(worktree_dir) / ".build" / f"{deliverable.xml.productid}-{deliverable.xml.docsetid}-{lang_label}"
+                #    command.insert(2, str(build_dir))
+
+                t0_daps = time.perf_counter()
                 result = await run_command(command, cwd=worktree_dir)
-                if result.returncode != 0:
-                    log.error(
-                        "DAPS metadata failed for %s (%s): %s",
-                        deliverable.full_id,
-                        lang_label,
-                        result.stderr,
-                    )
-                    return None, output_metadata, False
+                t_daps = time.perf_counter() - t0_daps
+                log.info(
+                    "DAPS metadata for %s (%s) took %.3fs => %d",
+                    deliverable.full_id,
+                    lang_label,
+                    t_daps,
+                    result.returncode,
+                )
+
+            if result.returncode != 0:
+                log.error(
+                    "DAPS metadata failed for %s (%s): %s",
+                    deliverable.full_id,
+                    lang_label,
+                    result.stderr,
+                )
+                return None, output_metadata, False
 
         except Exception as exc:
             log.error(
@@ -700,8 +757,7 @@ async def collect_dynamic_metadata(
                 exc,
             )
             return None, output_metadata, False
-
-        metadata_text = read_metadata_text(
+        metadata_text = await read_metadata_text(
             result.stdout,
             output_metadata,
             deliverable,
@@ -709,7 +765,7 @@ async def collect_dynamic_metadata(
         if metadata_text is None:
             return None, output_metadata, False
 
-        wrote_cache = ensure_metadata_cache(
+        wrote_cache = await ensure_metadata_cache(
             metadata_text,
             output_metadata,
             deliverable,
@@ -720,7 +776,8 @@ async def collect_dynamic_metadata(
             return None, output_metadata, wrote_cache
 
         try:
-            document = build_document_for_deliverable(
+            document = await asyncio.to_thread(
+                build_document_for_deliverable,
                 deliverable,
                 metadata_payload,
                 lang=lang,
@@ -849,23 +906,88 @@ async def process_doctype_group(
             limit=limit,
         )
 
-    description = f"{product}/{docset} ({len(deliverables)})"
-    status_map = await run_metadata_progress(
-        context,
-        deliverables,
-        meta_cache_dir=meta_cache_dir,
-        limit=limit,
-        description=description,
-    )
+    env = context.envconfig
+    assert env is not None
+    tmp_repo_dir = Path(env.paths.tmp_repo_dir).expanduser()
+    worktrees: dict[tuple[str, str], Path] = {}
+
+    async with AsyncExitStack() as stack:
+        repo_branches: set[tuple[str, str]] = set()
+        for deliverable in deliverables:
+            if not deliverable.git:
+                continue
+            repo_url = deliverable.git.url
+            repo_branches.add((repo_url, deliverable.branch))
+            for info in deliverable.translations.values():
+                branch = info.branch if info.branch is not None else deliverable.branch
+                repo_branches.add((repo_url, branch))
+
+        worktree_jobs: list[tuple[ManagedGitRepo, str, Path]] = []
+        for repo_url, branch in repo_branches:
+            repo = ManagedGitRepo(repo_url, repo_dir)
+            temp_dir_ctx = PersistentOnErrorTemporaryDirectory(
+                dir=str(tmp_repo_dir),
+                prefix=f"shared-wt-{repo.slug}",
+            )
+            worktree_dir = await stack.enter_async_context(temp_dir_ctx)
+            worktree_jobs.append((repo, branch, worktree_dir))
+
+        async def create_shared_worktree(
+            job: tuple[ManagedGitRepo, str, Path],
+        ) -> tuple[str, str, Path, float]:
+            repo, branch, worktree_dir = job
+            t0_wt = time.perf_counter()
+            await repo.create_worktree(worktree_dir, branch)
+            t_wt = time.perf_counter() - t0_wt
+            return repo.remote_url, branch, worktree_dir, t_wt
+
+        if worktree_jobs:
+            worktree_limit = max(1, min(limit, len(worktree_jobs)))
+            async for result in run_parallel(
+                worktree_jobs,
+                create_shared_worktree,
+                limit=worktree_limit,
+            ):
+                if isinstance(result, TaskFailedError):
+                    log.error(
+                        "Failed to create shared worktree for %s: %s",
+                        result.item[0].remote_url,
+                        result.original_exception,
+                    )
+                    continue
+                repo_url, branch, worktree_dir, t_wt = result
+                log.info(
+                    "Shared worktree creation for %s (branch %s) took %.3fs",
+                    repo_url,
+                    branch,
+                    t_wt,
+                )
+                worktrees[(repo_url, branch)] = worktree_dir
+
+        description = f"{product}/{docset} ({len(deliverables)})"
+        status_map = await run_metadata_progress(
+            context,
+            deliverables,
+            meta_cache_dir=meta_cache_dir,
+            limit=limit,
+            description=description,
+            worktrees=worktrees,
+        )
+
     successful = [
         deliverable
         for deliverable in deliverables
         if status_map.get(deliverable.full_id) == "OK"
     ]
-    manifest = compile_manifest(product, docset, successful)
+
+    t0_manifest = time.perf_counter()
+    manifest = await asyncio.to_thread(compile_manifest, product, docset, successful)
+    t_manifest = time.perf_counter() - t0_manifest
+    log.info("Compiling manifest for %s/%s took %.3fs", product, docset, t_manifest)
+
     if manifest is not None:
         output_path = json_cache_dir / product / f"{docset}.json"
-        write_manifest_json(output_path, manifest)
+        await asyncio.to_thread(write_manifest_json, output_path, manifest)
 
     report_failed_deliverables(deliverables, status_map)
 
@@ -895,6 +1017,7 @@ async def process(
 
     appconfig = context.appconfig
     limit = appconfig.max_workers if appconfig and appconfig.max_workers else 1
+    log.info("Using concurrency limit: %d", limit)
     repo_dir = Path(env.paths.repo_dir).expanduser()
     updated_repos: set[str] = set()
     meta_cache_dir = Path(env.paths.meta_cache_dir).expanduser()

@@ -15,9 +15,9 @@ from typing import ClassVar, Literal
 from lxml import etree
 
 from ...utils.convert import convert2bool
+from ..language import LanguageCode
 from ..manifest import Document
 from ..repo import Repo
-from ..language import LanguageCode
 from .paths import DeliverablePaths
 from .translation import TranslationInfo
 from .view import DeliverableXMLView
