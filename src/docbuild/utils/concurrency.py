@@ -99,10 +99,9 @@ async def worker[T, R](
             await result_queue.put(result)
         except Exception as exc:
             # If putting an error fails (queue full), don't deadlock.
-            try:
+            with suppress(asyncio.QueueFull, Exception):
                 result_queue.put_nowait(TaskFailedError(item, exc))
-            except (asyncio.QueueFull, Exception):
-                pass
+
         finally:
             input_queue.task_done()
 
@@ -131,10 +130,8 @@ async def run_all[T, R](
     finally:
         # We use put_nowait here. If the result_queue is full,
         # we do not want to deadlock the entire process.
-        try:
+        with suppress(asyncio.QueueFull, Exception):
             result_queue.put_nowait(SENTINEL)
-        except (asyncio.QueueFull, Exception):
-            pass
 
 
 async def run_parallel[T, R, **P](

@@ -1,6 +1,7 @@
 """Tests for the PidFileLock utility."""
 
 import builtins
+from contextlib import suppress
 import errno
 import multiprocessing as mp
 from multiprocessing import Event
@@ -42,13 +43,10 @@ def _mp_lock_holder(
     Waiting for an event to release.
     """
     lock = PidFileLock(resource_path, lock_dir)
-    try:
+    with suppress(Exception):
         with lock:
             lock_path.touch()
             done_event.wait()
-
-    except Exception:
-        pass
 
 
 # -----------------------------------------------------------------------------

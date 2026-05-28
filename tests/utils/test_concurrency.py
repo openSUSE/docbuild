@@ -164,11 +164,9 @@ async def test_finally_calls_cancel_on_early_exit():
     # but don't 'await' a result that will never come.
     # Create a task to drive the generator.
     async def drive_gen():
-        try:
+        with suppress(asyncio.CancelledError):
             async for _ in gen:
                 break
-        except asyncio.CancelledError:
-            pass
 
     driver = asyncio.create_task(drive_gen())
 
