@@ -125,9 +125,17 @@ class LanguageCode(BaseModel):
     @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
-        """Strip whitespaces and normalize separator from ``_`` to ``-``."""
+        """Strip whitespaces, normalize separator, and auto-complete partial languages."""
         if isinstance(value, str):
-            return value.strip().replace("_", "-")
+            val = value.strip().replace("_", "-")
+
+            # Auto-complete partial languages (e.g. "en" -> "en-us")
+            if val != "*" and "-" not in val:
+                for allowed_lang in cls.ALLOWED_LANGS:
+                    if allowed_lang != "*" and allowed_lang.startswith(f"{val}-"):
+                        return allowed_lang
+
+            return val
         return value
 
     @field_validator("language")
