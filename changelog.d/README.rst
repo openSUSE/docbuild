@@ -33,6 +33,7 @@ We recommend to follow the steps to make a smooth integration of your changes af
    * ``refactor``: refactors code without changing the user facing API.
    * ``removal``: removes obsolete or deprecated features.
    * ``infra``: improves the infrastructure, e.g. build or test system.
+   * ``security``: informs about security related issues.
 
    For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
 
