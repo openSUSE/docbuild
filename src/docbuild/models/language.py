@@ -61,9 +61,9 @@ class LanguageCode(BaseModel):
 
         The comparison does NOT break the principle of equality:
 
-        *  Reflexive: a == b
-        *  Symmetric: a == b <=> b == a
-        *  Transitive: if a == b and b == c, then a == c
+        * Reflexive: a == b
+        * Symmetric: a == b <=> b == a
+        * Transitive: if a == b and b == c, then a == c
 
         If you need to check for wildcard logic, use
         :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
@@ -79,9 +79,9 @@ class LanguageCode(BaseModel):
 
         Special properties:
 
-        *  "*" is always the "smallest" language
-        *  If self contains "*" and the other not, return True
-        *  If self and the other contains "*", return False
+        * "*" is always the "smallest" language
+        * If self contains "*" and the other not, return True
+        * If self and the other contains "*", return False
         """
         if isinstance(other, LanguageCode):
             other_value = other.language
@@ -116,7 +116,8 @@ class LanguageCode(BaseModel):
         >>> LanguageCode("de-de").matches("*")
         True
         """
-        other_value = str(other)
+        # Also defensively strip spaces when performing wildcard matches against strings
+        other_value = str(other).strip() if isinstance(other, str) else str(other)
         return (
             self.language == "*" or other_value == "*" or self.language == other_value
         )
@@ -124,9 +125,9 @@ class LanguageCode(BaseModel):
     @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
-        """Normalize separator from ``_`` to ``-``."""
+        """Strip whitespaces and normalize separator from ``_`` to ``-``."""
         if isinstance(value, str):
-            return value.replace("_", "-")
+            return value.strip().replace("_", "-")
         return value
 
     @field_validator("language")
