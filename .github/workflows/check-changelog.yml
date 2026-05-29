@@ -1,0 +1,44 @@
+name: Changelog Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  check-fragment:
+    name: Verify Newsfragment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for bypass label
+        id: bypass
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
+        run: |
+          if [[ "$LABELS" == *"skip-changelog"* ]]; then
+            echo "Bypass label found. Skipping check."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for new fragments in changelog.d
+        if: steps.bypass.outputs.skip == 'false'
+        run: |
+          # Fetch the target branch to compare against
+          git fetch origin ${{ github.base_ref }}
+          
+          # Find any .rst files added or modified in changelog.d/
+          CHANGELOG_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep "^changelog\.d/.*\.rst$" || true)
+
+          if [ -z "$CHANGELOG_FILES" ]; then
+            echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one (e.g., 'changelog.d/${{ github.event.pull_request.number }}.feature.rst') or add the 'skip-changelog' label to this PR."
+            exit 1
+          else
+            echo "✅ Found newsfragment(s):"
+            echo "$CHANGELOG_FILES"
+          fi

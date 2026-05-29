@@ -1,0 +1,1 @@
+Added a GitHub Actions CI workflow to automatically enforce the presence of changelog fragments in Pull Requests.
