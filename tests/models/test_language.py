@@ -163,3 +163,29 @@ def test_convert_str_to_dict_accepts_string() -> None:
     # ensure computed properties work as expected
     assert lc.lang == "en"
     assert lc.country == "us"
+
+
+def test_language_code_strips_whitespaces():
+    """Test that leading and trailing whitespaces are cleanly stripped."""
+    assert LanguageCode(language=" en-us").language == "en-us"
+    assert LanguageCode(language="en-us ").language == "en-us"
+    assert LanguageCode(language="  en-us  ").language == "en-us"
+
+
+def test_language_code_autocompletes_partial_language():
+    """Test that partial languages are expanded to their full valid codes."""
+    assert LanguageCode(language="en").language == "en-us"
+    assert LanguageCode(language=" de ").language == "de-de"
+
+
+def test_language_code_rejects_unknown_partial():
+    """Test that passing an invalid partial language still raises a ValidationError."""
+    with pytest.raises(ValidationError, match="Invalid language code"):
+        LanguageCode(language="zz")
+
+
+def test_language_matches_with_whitespaces():
+    """Test that the matches method handles dirty string comparisons safely."""
+    lang = LanguageCode(language="de-de")
+    assert lang.matches(" de-de ")
+    assert lang.matches(" * ")

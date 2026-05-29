@@ -1,0 +1,1 @@
+Refactored `LanguageCode` to automatically strip leading and trailing whitespaces and auto-complete partial language codes (for example, resolving `en` to `en-us`).
