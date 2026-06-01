@@ -167,3 +167,79 @@ def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
 
     assert result.exit_code == 0, result.output
     assert "No deliverables found matching the criteria." in result.output
+
+
+COMPREHENSIVE_MOCK_XML = (
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<portal schemaversion="7.0">\n'
+    '    <product id="sles">\n'
+    '        <docset path="16.0" lifecycle="supported">\n'
+    '            <resources>\n'
+    '                <git remote="https://github.com/SUSE/doc-modular.git" />\n'
+    '                <locale lang="en-us">\n'
+    '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
+    '                        <dc file="DC-admin-guide">\n'
+    '                            <format epub="0" html="1" pdf="1" single-html="0"/>\n'
+    '                        </dc>\n'
+    '                    </deliverable>\n'
+    '                    <deliverable id="prebuilt_docs" type="prebuilt">\n'
+    '                        <title>SUSE Docs</title>\n'
+    '                        <prebuilt>\n'
+    '                            <url href="https://documentation.suse.com/sles/" format="html"/>\n'
+    '                        </prebuilt>\n'
+    '                    </deliverable>\n'
+    '                </locale>\n'
+    '                <locale lang="de-de">\n'
+    '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
+    '                        <dc file="DC-admin-guide">\n'
+    '                            <format epub="0" html="1" pdf="1" single-html="0"/>\n'
+    '                        </dc>\n'
+    '                    </deliverable>\n'
+    '                </locale>\n'
+    '            </resources>\n'
+    '        </docset>\n'
+    '    </product>\n'
+    '</portal>\n'
+)
+
+@patch("docbuild.cli.cmd_portal.cmd_list.parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
+    """Test that all metadata flags successfully inject info into the tree."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
+
+    # 1. Test Translations
+    res_trans = runner.invoke(list_cmd, ["--trans"], obj=mock_ctx)
+    assert res_trans.exit_code == 0
+    assert "Translations: de-de" in res_trans.output
+
+    # 2. Test Formats
+    res_formats = runner.invoke(list_cmd, ["--formats"], obj=mock_ctx)
+    assert res_formats.exit_code == 0
+    assert "Formats: HTML, PDF" in res_formats.output
+
+    # 3. Test Categories
+    res_cats = runner.invoke(list_cmd, ["--categories"], obj=mock_ctx)
+    assert res_cats.exit_code == 0
+    assert "Category: Tuning and performance" in res_cats.output
+
+    # 4. Test Repo (Short & Long) - Using flexible assertions for the Repo format
+    res_repo_short = runner.invoke(list_cmd, ["--repo", "short"], obj=mock_ctx)
+    assert res_repo_short.exit_code == 0
+    assert "Repo: " in res_repo_short.output
+    assert "suse/doc-modular" in res_repo_short.output.lower()
+
+    res_repo_long = runner.invoke(list_cmd, ["--repo", "long"], obj=mock_ctx)
+    assert res_repo_long.exit_code == 0
+    assert "Repo: " in res_repo_long.output
+    assert "suse/doc-modular" in res_repo_long.output.lower()
+
+    # 5. Test Prebuilt Titles & URLs (Implicit behavior)
+    res_prebuilt = runner.invoke(list_cmd, [], obj=mock_ctx)
+    assert res_prebuilt.exit_code == 0
+    assert "SUSE Docs (Prebuilt)" in res_prebuilt.output
+    assert "URL: https://documentation.suse.com/sles/" in res_prebuilt.output
