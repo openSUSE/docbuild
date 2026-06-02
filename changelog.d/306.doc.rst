@@ -1,1 +1,0 @@
-The documentation index page now shows the current release (via ``setuptools-scm``) and build date on the title page.

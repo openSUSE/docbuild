@@ -3,7 +3,7 @@
 This module contains metadata about the package, including its version and authors.
 """
 
-__version__ = "0.19.5"
+__version__ = "0.20.0"
 __authors__ = [
     "Tom Schraitle <toms@suse.de>",
 ]

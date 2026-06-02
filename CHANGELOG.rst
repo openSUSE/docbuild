@@ -21,6 +21,52 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.20.0
+==============
+
+Bug Fixes
+---------
+
+- Fix a validation bug in ``LanguageCode`` by automatically stripping leading and trailing whitespaces from input strings. (:gh:`259`)
+
+
+Improved Documentation
+----------------------
+
+- Add new section about "Mainting GitHub Actions" (:gh:`300`)
+- The documentation index page now shows the current release (via ``setuptools-scm``) and build date on the title page. (:gh:`306`)
+
+
+Features
+--------
+
+- Add a new ``portal list`` subcommand to provide a compact tree overview of products, docsets, and deliverables from the Portal schema. (:gh:`252`)
+- Refactor ``LanguageCode`` to automatically strip leading and trailing whitespaces and auto-complete partial language codes (for example, resolving `en` to `en-us`). (:gh:`309`)
+- Add a GitHub Actions CI workflow to automatically enforce the presence of changelog fragments in Pull Requests. (:gh:`322`)
+
+
+Infrastructure
+--------------
+
+- Use ``--no-sync`` for custom alias. (:gh:`301`)
+- Add "security" as newsfragment option (:gh:`310`)
+- Several dependency updates:
+
+  * `Bump github/codeql-action from 4.35.4 to 4.35.5 <https://github.com/openSUSE/docbuild/pull/316>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.10.2 to >=3.10.3 <https://github.com/openSUSE/docbuild/pull/315>`_
+  * `Update click requirement from >=8.4.0 to >=8.4.1 <https://github.com/openSUSE/docbuild/pull/314>`_
+  * `Update ruff requirement from >=0.15.13 to >=0.15.14 <https://github.com/openSUSE/docbuild/pull/313>`_
+  * `Update pydata-sphinx-theme requirement from >=0.17.1 to >=0.18.0 <https://github.com/openSUSE/docbuild/pull/312>`_
+  * `Update pytest-asyncio requirement from >=1.3.0 to >=1.4.0 <https://github.com/openSUSE/docbuild/pull/311>`_
+
+
+Security
+--------
+
+- Remove the default dependency cooldown from ``uv.toml`` so CI and Dependabot now rely on the committed ``uv.lock`` file, while cooldown-based updates remain available via ``UV_EXCLUDE_NEWER``. (:gh:`305`)
+- Upgrade ``idna`` from 3.13 to 3.16 to fix a security vulnerability. (:gh:`308`)
+
+
 Version 0.19.0
 ==============
 

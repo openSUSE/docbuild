@@ -57,9 +57,9 @@ docbuild.models.language.LanguageCode
 
       The comparison does NOT break the principle of equality:
 
-      *  Reflexive: a == b
-      *  Symmetric: a == b <=> b == a
-      *  Transitive: if a == b and b == c, then a == c
+      * Reflexive: a == b
+      * Symmetric: a == b <=> b == a
+      * Transitive: if a == b and b == c, then a == c
 
       If you need to check for wildcard logic, use
       :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
@@ -72,9 +72,9 @@ docbuild.models.language.LanguageCode
 
       Special properties:
 
-      *  "*" is always the "smallest" language
-      *  If self contains "*" and the other not, return True
-      *  If self and the other contains "*", return False
+      * "*" is always the "smallest" language
+      * If self contains "*" and the other not, return True
+      * If self and the other contains "*", return False
 
 
 

@@ -1,1 +1,0 @@
-Removed the default dependency cooldown from ``uv.toml`` so CI and Dependabot now rely on the committed ``uv.lock`` file, while cooldown-based updates remain available via ``UV_EXCLUDE_NEWER``.

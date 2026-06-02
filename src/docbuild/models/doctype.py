@@ -19,7 +19,7 @@ class Doctype(BaseModel):
 
     .. code-block:: text
 
-       [/]?[PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+       [/]?PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
 
     The placeholders mean the following:
 

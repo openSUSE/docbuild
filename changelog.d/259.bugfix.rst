@@ -1,1 +1,0 @@
-Fixed a validation bug in `LanguageCode` by automatically stripping leading and trailing whitespaces from input strings.
