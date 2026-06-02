@@ -8,8 +8,11 @@
 
 :Release: |release|
 :Built:   |today|
+:Source:  |gh_repo|
 
-This is the documentation for the |project| project, hosted at |gh_repo|.
+|project| is a command-line utility written in :ref:`python <project-deps>`,
+:doc:`designed <developer/design>` to :term:`concurrently <Concurrency>` build
+SUSE documentation with the help of :ref:`portal configs <portal-config>`.
 
 .. grid:: 2
    :gutter: 3
