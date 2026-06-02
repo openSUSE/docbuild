@@ -1,1 +1,1 @@
-Enhanced the `portal list` command with new optional flags (`--trans`, `--formats`, `--categories`, and `--repo`) to display extended deliverable metadata directly in the output tree.
+Enhanced the ``portal list`` command with new optional flags (``--trans``, ``--formats``, ``--categories``, and ``--repo``) to display extended deliverable metadata directly in the output tree.

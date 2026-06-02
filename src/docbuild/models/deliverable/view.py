@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Literal, cast
 
-from lxml import etree
+from lxml import etree  # type: ignore
 
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
@@ -80,6 +80,19 @@ class DeliverableXMLView:
         """Return :attr:`dcfile` stripped of its ``DC-`` prefix."""
         return self.dcfile and self.dcfile.lstrip("DC-")
 
+    @cached_property
+    def translations(self) -> set[str]:
+        """Return a set of all language codes available for this deliverable."""
+        d_id = self.node.get("id")
+        if self.docset_node is None or not d_id:
+            return {str(self.lang)}
+
+        langs = set()
+        for loc in self.docset_node.xpath(f"resources/locale[deliverable[@id='{d_id}']]"):
+            if loc_lang := loc.get("lang"):
+                langs.add(loc_lang)
+        return langs
+
     # -- Deliverable kind (type)
     @cached_property
     def kind(self) -> str | None:
@@ -134,6 +147,21 @@ class DeliverableXMLView:
         yield from self.categories()
         yield from self.categories_from_root()
 
+    @cached_property
+    def category_title(self) -> str | None:
+        """Return the resolved category title, or the raw ID if not found."""
+        cat_id = self.node.get("category")
+        if not cat_id:
+            return None
+
+        for cat in self.all_categories:
+            if cat.get("id") == cat_id:
+                title = cat.findtext("title")
+                if title is None:
+                    title = cat.findtext("name")
+                return title.strip() if title else cat_id
+        return cat_id
+
     def desc(self) -> Generator[etree._Element, None, None]:
         """Yield product ``<desc>`` elements."""
         yield from self.product_node.xpath("descriptions/desc")
@@ -158,12 +186,16 @@ class DeliverableXMLView:
         node = self.node.getparent().findtext("subdir", default=None)
         return node.strip() if node is not None else ""
 
-    def git_remote(self) -> Repo | None:
+    def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""
         # TODO: Use Repo as return object?
         node = self.node.getparent().getparent().find("git")
         if node is not None:
-            return Repo(node.attrib.get("remote"))
+            remote_str = node.attrib.get("remote")
+            try:
+                return Repo(remote_str)
+            except ValueError:
+                return remote_str
         return None
 
     # -- Output formats

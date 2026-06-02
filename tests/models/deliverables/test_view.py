@@ -1,6 +1,6 @@
 """Branch, subdir, and repository tests for deliverables."""
 
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.models.deliverable import Deliverable
@@ -128,9 +128,97 @@ def test_format_attrs_dc_missing_format() -> None:
     xml_dc_no_format = """
     <deliverable type="dc">
         <dc file="DC-test">
-          <!-- no <format /> -->
-        </dc>
+          </dc>
     </deliverable>
     """
     view = DeliverableXMLView(etree.fromstring(xml_dc_no_format))
     assert view.format_attrs() is None
+
+
+def test_xml_git_remote_fallback_invalid_url() -> None:
+    """Test git_remote() gracefully falls back to string on invalid URLs."""
+    xml_content = """
+    <portal>
+        <product id="p1">
+            <docset path="d1">
+                <resources>
+                    <git remote="https://todo" />
+                    <locale lang="en-us">
+                        <deliverable id="test" />
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    node = etree.fromstring(xml_content).xpath("//deliverable")[0]
+    view = DeliverableXMLView(node)
+
+    # Should safely return the raw string instead of throwing a ValueError
+    assert view.git_remote() == "https://todo"
+
+
+def test_xml_translations() -> None:
+    """Test translations property dynamically finds other locales."""
+    xml_content = """
+    <portal>
+        <product id="p1">
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable id="test" />
+                    </locale>
+                    <locale lang="de-de">
+                        <deliverable id="test" />
+                    </locale>
+                    <locale lang="ja-jp">
+                        <deliverable id="other_doc" />
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    node = etree.fromstring(xml_content).xpath("//locale[@lang='en-us']/deliverable")[0]
+    view = DeliverableXMLView(node)
+
+    # Should find en-us and de-de, but ignore ja-jp since it's a different deliverable ID
+    assert view.translations == {"en-us", "de-de"}
+
+
+def test_xml_category_title() -> None:
+    """Test category_title safely resolves titles, names, and ID fallbacks."""
+    xml_content = """
+    <portal>
+        <product id="p1">
+            <categories>
+                <category id="cat-title">
+                    <title>Has Title Element</title>
+                </category>
+                <category id="cat-name">
+                    <name>Has Name Element</name>
+                </category>
+            </categories>
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable id="d1" category="cat-title" />
+                        <deliverable id="d2" category="cat-name" />
+                        <deliverable id="d3" category="cat-missing" />
+                        <deliverable id="d4" />
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    root = etree.fromstring(xml_content)
+    d1 = DeliverableXMLView(root.xpath("//deliverable[@id='d1']")[0])
+    d2 = DeliverableXMLView(root.xpath("//deliverable[@id='d2']")[0])
+    d3 = DeliverableXMLView(root.xpath("//deliverable[@id='d3']")[0])
+    d4 = DeliverableXMLView(root.xpath("//deliverable[@id='d4']")[0])
+
+    assert d1.category_title == "Has Title Element"
+    assert d2.category_title == "Has Name Element"
+    assert d3.category_title == "cat-missing"  # Falls back to raw ID if not defined in <categories>
+    assert d4.category_title is None           # No category assigned

@@ -172,10 +172,16 @@ def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
 COMPREHENSIVE_MOCK_XML = (
     '<?xml version="1.0" encoding="UTF-8"?>\n'
     '<portal schemaversion="7.0">\n'
+    '    <categories>\n'
+    '        <category id="tuning-and-performance">\n'
+    '            <title>Tuning and performance</title>\n'
+    '        </category>\n'
+    '    </categories>\n'
     '    <product id="sles">\n'
     '        <docset path="16.0" lifecycle="supported">\n'
     '            <resources>\n'
-    '                <git remote="https://github.com/SUSE/doc-modular.git" />\n'
+    '                <!-- Using Toms exact bug example to prove it does not crash! -->\n'
+    '                <git remote="https://todo" />\n'
     '                <locale lang="en-us">\n'
     '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
     '                        <dc file="DC-admin-guide">\n'
@@ -222,21 +228,19 @@ def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
     assert res_formats.exit_code == 0
     assert "Formats: HTML, PDF" in res_formats.output
 
-    # 3. Test Categories
+    # 3. Test Categories (Now properly resolves from the <categories> block)
     res_cats = runner.invoke(list_cmd, ["--categories"], obj=mock_ctx)
     assert res_cats.exit_code == 0
     assert "Category: Tuning and performance" in res_cats.output
 
-    # 4. Test Repo (Short & Long) - Using flexible assertions for the Repo format
+    # 4. Test Repo (Short & Long) - Explicitly testing the dummy URL fallback
     res_repo_short = runner.invoke(list_cmd, ["--repo", "short"], obj=mock_ctx)
     assert res_repo_short.exit_code == 0
-    assert "Repo: " in res_repo_short.output
-    assert "suse/doc-modular" in res_repo_short.output.lower()
+    assert "Repo: https://todo" in res_repo_short.output
 
     res_repo_long = runner.invoke(list_cmd, ["--repo", "long"], obj=mock_ctx)
     assert res_repo_long.exit_code == 0
-    assert "Repo: " in res_repo_long.output
-    assert "suse/doc-modular" in res_repo_long.output.lower()
+    assert "Repo: https://todo" in res_repo_long.output
 
     # 5. Test Prebuilt Titles & URLs (Implicit behavior)
     res_prebuilt = runner.invoke(list_cmd, [], obj=mock_ctx)
