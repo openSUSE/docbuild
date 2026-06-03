@@ -178,10 +178,10 @@ COMPREHENSIVE_MOCK_XML = (
     '        </category>\n'
     '    </categories>\n'
     '    <product id="sles">\n'
+    '        \n'
     '        <docset path="16.0" lifecycle="supported">\n'
     '            <resources>\n'
-    '                <!-- Using Toms exact bug example to prove it does not crash! -->\n'
-    '                <git remote="https://todo" />\n'
+    '                <git remote="https://github.com/SUSE/doc-modular.git" />\n'
     '                <locale lang="en-us">\n'
     '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
     '                        <dc file="DC-admin-guide">\n'
@@ -200,6 +200,17 @@ COMPREHENSIVE_MOCK_XML = (
     '                        <dc file="DC-admin-guide">\n'
     '                            <format epub="0" html="1" pdf="1" single-html="0"/>\n'
     '                        </dc>\n'
+    '                    </deliverable>\n'
+    '                </locale>\n'
+    '            </resources>\n'
+    '        </docset>\n'
+    '        \n'
+    '        <docset path="invalid-repo" lifecycle="supported">\n'
+    '            <resources>\n'
+    '                <git remote="https://todo" />\n'
+    '                <locale lang="en-us">\n'
+    '                    <deliverable id="bad_repo_doc">\n'
+    '                        <dc file="DC-bad-repo" />\n'
     '                    </deliverable>\n'
     '                </locale>\n'
     '            </resources>\n'
@@ -228,22 +239,37 @@ def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
     assert res_formats.exit_code == 0
     assert "Formats: HTML, PDF" in res_formats.output
 
-    # 3. Test Categories (Now properly resolves from the <categories> block)
+    # 3. Test Categories
     res_cats = runner.invoke(list_cmd, ["--categories"], obj=mock_ctx)
     assert res_cats.exit_code == 0
     assert "Category: Tuning and performance" in res_cats.output
 
-    # 4. Test Repo (Short & Long) - Explicitly testing the dummy URL fallback
+    # 4. Test Repo (Short & Long) - Explicitly testing valid surl AND dummy URL fallback
     res_repo_short = runner.invoke(list_cmd, ["--repo", "short"], obj=mock_ctx)
     assert res_repo_short.exit_code == 0
-    assert "Repo: https://todo" in res_repo_short.output
+    assert "gh://suse/doc-modular" in res_repo_short.output.lower()      # Valid short (no .git)
+    assert "Repo: https://todo" in res_repo_short.output                 # Fallback short
 
     res_repo_long = runner.invoke(list_cmd, ["--repo", "long"], obj=mock_ctx)
     assert res_repo_long.exit_code == 0
-    assert "Repo: https://todo" in res_repo_long.output
+    assert "https://github.com/suse/doc-modular.git" in res_repo_long.output.lower() # Valid long
+    assert "Repo: https://todo" in res_repo_long.output                              # Fallback long
 
     # 5. Test Prebuilt Titles & URLs (Implicit behavior)
     res_prebuilt = runner.invoke(list_cmd, [], obj=mock_ctx)
     assert res_prebuilt.exit_code == 0
     assert "SUSE Docs (Prebuilt)" in res_prebuilt.output
     assert "URL: https://documentation.suse.com/sles/" in res_prebuilt.output
+
+
+def test_portal_list_repo_requires_argument() -> None:
+    """Test that omitting 'short' or 'long' for the -R flag correctly throws a Click error."""
+    runner = CliRunner()
+    mock_ctx = DocBuildContext()
+    
+    # Passing a doctype argument immediately after -R.
+    result = runner.invoke(list_cmd, ["-R", "sles/16.0"], obj=mock_ctx)
+    
+    assert result.exit_code != 0
+    assert "Invalid value for '--repo' / '-R'" in result.output
+    assert "is not one of 'short', 'long'" in result.output

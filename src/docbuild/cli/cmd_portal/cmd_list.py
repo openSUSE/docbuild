@@ -100,7 +100,8 @@ def append_repo(deliv_branch: Tree, deliv: Deliverable, repo_format: str) -> Non
         if isinstance(repo, str):
             repo_val = repo
         else:
-            repo_val = getattr(repo, "url", getattr(repo, "clone_url", str(repo))) if repo_format == "long" else str(repo)
+            # Using surl for the short variant, url/clone_url for long
+            repo_val = getattr(repo, "url", getattr(repo, "clone_url", str(repo))) if repo_format == "long" else getattr(repo, "surl", str(repo))
         deliv_branch.add(f"Repo: {repo_val}")
 
 
@@ -228,10 +229,8 @@ async def async_list_cmd(
     "--repo",
     "-R",
     type=click.Choice(["short", "long"]),
-    is_flag=False,
-    flag_value="short",
     default=None,
-    help="List repository origin (defaults to short if no type provided)."
+    help="List repository origin (requires 'short' or 'long')."
 )
 @click.argument("doctypes", nargs=-1)
 @click.pass_obj
@@ -243,7 +242,7 @@ def list_cmd(
     categories: bool,
     repo: str | None,
 ) -> None:
-    r"""List products, docsets, and deliverables from the portal config.
+    """List products, docsets, and deliverables from the portal config.
 
     Accepts optional DOCTYPE arguments to filter the output.
     Format: [PRODUCT]/[DOCSETS]@[LIFECYCLES]/[LANGS]
@@ -260,6 +259,7 @@ def list_cmd(
     :param categories: Show categories metadata.
     :param repo: Show repository metadata (short or long).
 
-    """
+    """ # noqa: D301
     console = Console()
     asyncio.run(async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo))
+
