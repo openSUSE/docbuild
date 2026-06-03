@@ -266,10 +266,10 @@ def test_portal_list_repo_requires_argument() -> None:
     """Test that omitting 'short' or 'long' for the -R flag correctly throws a Click error."""
     runner = CliRunner()
     mock_ctx = DocBuildContext()
-    
+
     # Passing a doctype argument immediately after -R.
     result = runner.invoke(list_cmd, ["-R", "sles/16.0"], obj=mock_ctx)
-    
+
     assert result.exit_code != 0
     assert "Invalid value for '--repo' / '-R'" in result.output
     assert "is not one of 'short', 'long'" in result.output
