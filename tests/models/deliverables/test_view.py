@@ -169,7 +169,9 @@ def test_xml_translations() -> None:
                         <deliverable id="test" />
                     </locale>
                     <locale lang="de-de">
-                        <deliverable id="test" />
+                        <deliverable id="test_translation">
+                            <ref linkend="test" />
+                        </deliverable>
                     </locale>
                     <locale lang="ja-jp">
                         <deliverable id="other_doc" />
@@ -182,7 +184,7 @@ def test_xml_translations() -> None:
     node = etree.fromstring(xml_content).xpath("//locale[@lang='en-us']/deliverable")[0]
     view = DeliverableXMLView(node)
 
-    # Should find en-us and de-de, but ignore ja-jp since it's a different deliverable ID
+    # Should find en-us and de-de, but ignore ja-jp since it doesn't reference 'test'
     assert view.translations == {"en-us", "de-de"}
 
 
@@ -192,11 +194,9 @@ def test_xml_category_title() -> None:
     <portal>
         <product id="p1">
             <categories>
-                <category id="cat-title">
-                    <title>Has Title Element</title>
-                </category>
-                <category id="cat-name">
-                    <name>Has Name Element</name>
+                <category lang="en-us">
+                  <language id="cat-title" title="Has Title Element" />
+                  <language id="cat-name" title="Has Name Element" />
                 </category>
             </categories>
             <docset path="d1">

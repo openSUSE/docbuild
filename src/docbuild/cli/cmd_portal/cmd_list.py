@@ -245,7 +245,7 @@ def list_cmd(
     """List products, docsets, and deliverables from the portal config.
 
     Accepts optional DOCTYPE arguments to filter the output.
-    Format: [PRODUCT]/[DOCSETS]@[LIFECYCLES]/[LANGS]
+    Format: PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
 
     Example:
         docbuild portal list sles/15-SP6

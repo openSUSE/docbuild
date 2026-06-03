@@ -17,7 +17,7 @@ def test_portal_list_help() -> None:
     assert result.exit_code == 0
     assert "List products, docsets, and deliverables from the portal config." in result.output
     assert "Format:" in result.output
-    assert "[PRODUCT]" in result.output
+    assert "PRODUCT/DOCSETS" in result.output
 
 
 def test_portal_list_no_main_config(tmp_path) -> None:
@@ -169,55 +169,51 @@ def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
     assert "No deliverables found matching the criteria." in result.output
 
 
-COMPREHENSIVE_MOCK_XML = (
-    '<?xml version="1.0" encoding="UTF-8"?>\n'
-    '<portal schemaversion="7.0">\n'
-    '    <categories>\n'
-    '        <category id="tuning-and-performance">\n'
-    '            <title>Tuning and performance</title>\n'
-    '        </category>\n'
-    '    </categories>\n'
-    '    <product id="sles">\n'
-    '        \n'
-    '        <docset path="16.0" lifecycle="supported">\n'
-    '            <resources>\n'
-    '                <git remote="https://github.com/SUSE/doc-modular.git" />\n'
-    '                <locale lang="en-us">\n'
-    '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
-    '                        <dc file="DC-admin-guide">\n'
-    '                            <format epub="0" html="1" pdf="1" single-html="0"/>\n'
-    '                        </dc>\n'
-    '                    </deliverable>\n'
-    '                    <deliverable id="prebuilt_docs" type="prebuilt">\n'
-    '                        <title>SUSE Docs</title>\n'
-    '                        <prebuilt>\n'
-    '                            <url href="https://documentation.suse.com/sles/" format="html"/>\n'
-    '                        </prebuilt>\n'
-    '                    </deliverable>\n'
-    '                </locale>\n'
-    '                <locale lang="de-de">\n'
-    '                    <deliverable id="admin_guide" category="tuning-and-performance">\n'
-    '                        <dc file="DC-admin-guide">\n'
-    '                            <format epub="0" html="1" pdf="1" single-html="0"/>\n'
-    '                        </dc>\n'
-    '                    </deliverable>\n'
-    '                </locale>\n'
-    '            </resources>\n'
-    '        </docset>\n'
-    '        \n'
-    '        <docset path="invalid-repo" lifecycle="supported">\n'
-    '            <resources>\n'
-    '                <git remote="https://todo" />\n'
-    '                <locale lang="en-us">\n'
-    '                    <deliverable id="bad_repo_doc">\n'
-    '                        <dc file="DC-bad-repo" />\n'
-    '                    </deliverable>\n'
-    '                </locale>\n'
-    '            </resources>\n'
-    '        </docset>\n'
-    '    </product>\n'
-    '</portal>\n'
-)
+COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<portal schemaversion="7.0">
+    <categories>
+        <category lang="en-us">
+            <language id="tuning-and-performance" title="Tuning and performance" />
+        </category>
+    </categories>
+    <product id="sles">=
+        <docset path="16.0" lifecycle="supported">
+            <resources>
+                <git remote="https://github.com/SUSE/doc-modular.git" />
+                <locale lang="en-us">
+                    <deliverable id="admin_guide" category="tuning-and-performance">
+                        <dc file="DC-admin-guide">
+                            <format epub="0" html="1" pdf="1" single-html="0"/>
+                        </dc>
+                    </deliverable>
+                    <deliverable id="prebuilt_docs" type="prebuilt">
+                        <title>SUSE Docs</title>
+                        <prebuilt>
+                            <url href="https://documentation.suse.com/sles/" format="html"/>
+                        </prebuilt>
+                    </deliverable>
+                </locale>
+                <locale lang="de-de">
+                    <deliverable id="admin_guide" category="tuning-and-performance">
+                        <ref linkend="admin_guide"/>
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+
+        <docset path="invalid-repo" lifecycle="supported">
+            <resources>
+                <git remote="https://todo" />
+                <locale lang="en-us">
+                    <deliverable id="bad_repo_doc">
+                        <dc file="DC-bad-repo" />
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+    </product>
+</portal>
+"""
 
 @patch("docbuild.cli.cmd_portal.cmd_list.parse_portal_config", new_callable=AsyncMock)
 def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:

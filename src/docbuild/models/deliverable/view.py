@@ -87,9 +87,13 @@ class DeliverableXMLView:
         if self.docset_node is None or not d_id:
             return {str(self.lang)}
 
-        langs = set()
-        for loc in self.docset_node.xpath(f"resources/locale[deliverable[@id='{d_id}']]"):
-            if loc_lang := loc.get("lang"):
+        # Always include the base language
+        langs = {str(self.lang)}
+
+        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[ref[@linkend={d_id!r}]]"):
+            # We must look at the parent <locale> to get the 'lang' attribute
+            parent_loc = deliv_node.getparent()
+            if loc_lang := parent_loc.get("lang"):
                 langs.add(loc_lang)
         return langs
 
@@ -155,10 +159,11 @@ class DeliverableXMLView:
             return None
 
         for cat in self.all_categories:
-            if cat.get("id") == cat_id:
-                title = cat.findtext("title")
-                if title is None:
-                    title = cat.findtext("name")
+            lang_nodes = cat.xpath(f"language[@id='{cat_id}']")
+            if lang_nodes:
+                title = lang_nodes[0].get("title")
+                if not title:
+                    title = lang_nodes[0].get("name")
                 return title.strip() if title else cat_id
         return cat_id
 
