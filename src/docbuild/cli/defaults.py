@@ -22,8 +22,7 @@ STATE_HOME = platformdirs.user_state_dir(APP_NAME)
 CACHE_HOME = platformdirs.user_cache_dir(APP_NAME)
 
 # Dynamically resolve POSIX runtime dir (/run/user/1000/docbuild)
-_uid = os.getuid() if hasattr(os, "getuid") else 1000
-RUNTIME_DIR = f"/run/user/{_uid}/{APP_NAME}"
+RUNTIME_DIR = platformdirs.user_runtime_dir(APP_NAME)
 
 
 DEFAULT_APP_CONFIG = {
