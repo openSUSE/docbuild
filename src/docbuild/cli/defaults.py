@@ -7,7 +7,6 @@ files do not contain the necessary settings.
 They can be overridden by the user through configuration files or command-line options.
 """
 
-import os
 from pathlib import Path
 
 import platformdirs
