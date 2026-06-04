@@ -37,3 +37,27 @@ def calc_max_len(files: tuple[Path | str, ...], last_parts: int = -2) -> int:
         max_length += 1
 
     return max_length
+
+def mark_cache_dir(path: Path | str) -> None:
+    """Add a standard CACHEDIR.TAG file to a directory.
+
+    This tag informs backup tools that the directory contains cached data
+    that can be safely excluded from backups. The directory is created if
+    it does not exist.
+
+    For more information, see: https://bford.info/cachedir/
+    """
+    directory = Path(path).expanduser()
+    directory.mkdir(parents=True, exist_ok=True)
+    tag_file = directory / "CACHEDIR.TAG"
+
+    # Signature from https://bford.info/cachedir/spec.html
+    content = (
+        "Signature: 8a477f597d28d172789f06886806bc55\n"
+        "# This file is a cache directory tag created by docbuild.\n"
+        "# For information about cache directory tags, see:\n"
+        "#       https://bford.info/cachedir/\n"
+    )
+
+    if not tag_file.exists():
+        tag_file.write_text(content, encoding="utf-8")
