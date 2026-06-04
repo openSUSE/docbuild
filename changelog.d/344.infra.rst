@@ -1,0 +1,3 @@
+When Dependabot creates a PR, the ``check-changelog`` workflow checks for a newsfragment file.
+As Dependabot never creates one, we need to skip this check with adding the ``skip-changelog``.
+
