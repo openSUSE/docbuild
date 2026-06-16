@@ -172,6 +172,29 @@ def print_hierarchy(
         console.print()
 
 
+def validate_docsets_against_xml(
+    doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
+) -> None:
+    """Dynamically validate that provided docsets exist for their respective products."""
+    for dt in doctypes:
+        # We only validate if both product and docset are explicitly provided and are not wildcards
+        if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
+            prod_val = dt.product.value
+            # Fetch all valid 'path' attributes from docsets under this specific product
+            valid_docsets = tree.xpath(f"//product[@id='{prod_val}']/docset/@path")
+
+            # Format them for display, always prepending the wildcard allowed value
+            valid_docsets_str = ["*", *sorted(str(v) for v in valid_docsets)]
+
+            for ds in dt.docset:
+                if ds not in valid_docsets:
+                    allowed_str = ", ".join(f"'{v}'" for v in valid_docsets_str)
+                    console.print("[red]Error parsing doctype: 1 validation error for Doctype[/red]")
+                    console.print("docset")
+                    console.print(f"  Value error, '{ds}' is not a valid Docset. Allowed values are: {allowed_str}")
+                    raise click.Abort()
+
+
 async def async_list_cmd(
     ctx: DocBuildContext,
     doctypes: tuple[str, ...],
@@ -197,6 +220,9 @@ async def async_list_cmd(
     except (OSError, etree.XMLSyntaxError, etree.XIncludeError) as e:
         console.print(f"[red]Error loading XML schema:[/red] {e}")
         raise click.Abort() from e
+
+    if parsed_doctypes:
+        validate_docsets_against_xml(parsed_doctypes, tree, console)
 
     # 3. Fetch and wrap Deliverables into Domain Objects
     # Consuming the generator directly saves memory over converting to an intermediate list
