@@ -181,7 +181,7 @@ def validate_docsets_against_xml(
         if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
             prod_val = dt.product.value
             # Fetch all valid 'path' attributes from docsets under this specific product
-            valid_docsets = tree.xpath(f"//product[@id='{prod_val}']/docset/@path")
+            valid_docsets = tree.xpath(f"//product[@id={prod_val!r}]/docset/@path")
 
             # Format them for display, always prepending the wildcard allowed value
             valid_docsets_str = ["*", *sorted(str(v) for v in valid_docsets)]
@@ -189,7 +189,7 @@ def validate_docsets_against_xml(
             for ds in dt.docset:
                 if ds not in valid_docsets:
                     allowed_str = ", ".join(f"'{v}'" for v in valid_docsets_str)
-                    console.print("[red]Error parsing doctype: 1 validation error for Doctype[/red]")
+                    console.print("[red]Error parsing doctype:[/red] 1 validation error for Doctype")
                     console.print("docset")
                     console.print(f"  Value error, '{ds}' is not a valid Docset. Allowed values are: {allowed_str}")
                     raise click.Abort()
