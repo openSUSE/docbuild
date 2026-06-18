@@ -1,13 +1,13 @@
 Creating Metadata
 =================
 
-The :command:`docbuild metadata` subcommand is used to create metadata from a :command:`daps metadata` call. 
+The :command:`docbuild metadata` subcommand is used to create metadata from a :command:`daps metadata` call.
 
 
 .. code-block:: shell
    :caption: Synopsis of :command:`docbuild metadata`
 
-   docbuild metadata [OPTIONS] [DOCTYPES]...
+   $ docbuild metadata [OPTIONS] [DOCTYPES]...
 
 The process does this:
 

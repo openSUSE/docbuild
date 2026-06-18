@@ -8,19 +8,19 @@ a new product, proceed as follows:
 
 #. Determine the product ID.
 
-   This unique ID is used in several places in the configuration. 
+   This unique ID is used in several places in the configuration.
    The product ID should be short and descriptive.
    In this example, we assume we were asked to create a new product about
    NAS functionality.
-   A good product ID would be ``nas``. 
+   A good product ID would be ``nas``.
 
 #. In your configuration directory :file:`config.d/`, create a new
    directory and the configuration file for the product:
 
    .. code-block:: shell
 
-        mkdir -p config.d/nas
-        touch config.d/nas/nas.xml
+        $ mkdir -p config.d/nas
+        $ touch config.d/nas/nas.xml
 
 #. Edit the product configuration file and add the following content:
 
