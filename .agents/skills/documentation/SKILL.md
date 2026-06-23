@@ -1,4 +1,4 @@
-# Skill -  Creating and Building Documentation
+# Skill - Creating and Building Documentation
 
 ## Context
 
