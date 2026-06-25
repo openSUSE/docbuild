@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # A Personal Access Token (PAT) is REQUIRED here to trigger gh-pages.yml
           # The default GITHUB_TOKEN intentionally prevents triggered events from starting new workflows.
