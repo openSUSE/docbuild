@@ -12,14 +12,14 @@ To build the documentation for this project, use the following steps:
    .. code-block:: shell-session
       :name: makedocs
 
-      makedocs
+      $ makedocs
 
    If you want to have a bit more control, use this command:
 
    .. code-block:: shell-session
       :name: sphinx-build
 
-      uv run --frozen --no-sync make -C docs html
+      $ uv run --frozen --no-sync make -C docs html
 
 #. Watch for warnings and errors during the build process.
    If you encounter any issues, review the output and fix them accordingly.

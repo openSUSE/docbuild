@@ -6,7 +6,7 @@ The :command:`docbuild config validate` subcommand is used to verify that your T
 .. code-block:: shell
    :caption: Synopsis of :command:`docbuild config validate`
 
-   docbuild config validate [OPTIONS]
+   $ docbuild config validate [OPTIONS]
 
 The tool validates:
 

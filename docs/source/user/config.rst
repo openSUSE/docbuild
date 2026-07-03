@@ -62,14 +62,14 @@ The validation checks for different aspects of the configuration, such as:
 Detailed Validation Feedback
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the configuration is invalid, the application provides a structured, 
-color-coded error report to help you identify and fix the issues. Each error 
+If the configuration is invalid, the application provides a structured,
+color-coded error report to help you identify and fix the issues. Each error
 includes:
 
 * **Location**: The exact path in the TOML file (e.g., ``server.host``).
 * **Field Info**: A human-readable title and description of the field's purpose.
 * **Error Detail**: A specific message explaining why the value failed validation.
-* **Documentation Link**: A direct URL to a reference page with more details 
+* **Documentation Link**: A direct URL to a reference page with more details
   on how to resolve that specific error type.
 
 Example error output:
@@ -90,11 +90,11 @@ Fixing Common Issues
 If you encounter validation errors, check the following common causes:
 
 * **Missing Keys**: Ensure all mandatory fields (like ``paths.root_config_dir``) are defined.
-* **Typing Errors**: Ensure booleans (``true``/``false``) and integers are not enclosed 
+* **Typing Errors**: Ensure booleans (``true``/``false``) and integers are not enclosed
   in quotes.
-* **Permission Issues**: If a path error occurs, verify that the user running 
+* **Permission Issues**: If a path error occurs, verify that the user running
   ``docbuild`` has the necessary read/write permissions for the specified directory.
-* **Circular Placeholders**: Ensure that your static placeholders do not point 
+* **Circular Placeholders**: Ensure that your static placeholders do not point
   to each other in a loop (e.g., Key A referencing Key B, which references Key A).
 
 
@@ -172,7 +172,7 @@ static placeholders have been correctly resolved into absolute paths.
 .. code-block:: shell-session
    :caption: Displaying the resolved environment configuration
 
-   docbuild --env-config=YOUR_TOML_CONFIG config env
+   $ docbuild --env-config=YOUR_TOML_CONFIG config env
 
 If the configuration contains errors—such as missing mandatory keys or invalid data types—the command will output a validation error detailing what needs to be fixed.
 
@@ -190,6 +190,6 @@ between configurations without needing to remember the exact command syntax.
    :caption: Example aliases for different configuration files
    :name: docbuild-aliases
 
-   alias docbuild-prod='docbuild --env-config env.production.toml'
-   alias docbuild-test='docbuild --env-config env.testing.toml'
-   alias docbuild-dev='docbuild --env-config env.devel.toml'
+   $ alias docbuild-prod='docbuild --env-config env.production.toml'
+   $ alias docbuild-test='docbuild --env-config env.testing.toml'
+   $ alias docbuild-dev='docbuild --env-config env.devel.toml'

@@ -15,7 +15,7 @@ To run the full test suite, use the following command:
    :caption: Running pytest directly with |uv|
    :name: running-pytest-with-uv
 
-   uv run --frozen --no-sync pytest
+   $ uv run --frozen --no-sync pytest
 
 or use the alias (see :ref:`devel-helpers` for more information):
 
@@ -23,7 +23,7 @@ or use the alias (see :ref:`devel-helpers` for more information):
    :caption: Running pytest using |uv| with alias :ref:`upytest <devel-helpers>`
    :name: running-upytest
 
-   upytest
+   $ upytest
 
 This command will execute all the tests defined in the project. The test suite is designed to ensure that all components of the project are functioning correctly and to catch any regressions.
 
@@ -36,8 +36,8 @@ In case you want to run a specific test or a subset of tests, specify the path t
    :caption: Running specific tests
    :name: running-specific-tests
 
-   upytest tests/test_module.py
-   upytest tests/test_module.py::test_function_name
+   $ upytest tests/test_module.py
+   $ upytest tests/test_module.py::test_function_name
 
 In the first example, all tests in `test_module.py` will be executed, while in the second example, only the specific test function `test_function_name` will be run.
 
@@ -50,7 +50,7 @@ If one of the test fails and you want to repeat the test run after you have fixe
    :caption: Running only the last failed tests
    :name: running-last-failed-tests
 
-   upytest --lf
+   $ upytest --lf
 
 
 .. _interprete-coverage:
