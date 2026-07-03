@@ -12,6 +12,7 @@ on:
       - 'docs/**'
       - '.github/workflows/gh-pages.yml'
       - 'src/docbuild/__about__.py'
+      - 'changelog.d/**'
 
 permissions:
   contents: write
@@ -47,10 +48,19 @@ jobs:
           echo "Set Python version is ${{ steps.setup-uv.outputs.python-version }}"
 
       - name: Install dependencies
-        run: uv sync --frozen --group docs
+        run: uv sync --frozen --group docs --group changelog
 
       - name: Determine documentation version
         run: ${{ env.CI_BIN_DIR }}/determine-version.sh
+
+      - name: Build Changelog
+        if: github.ref_type != 'tag'
+        run: |
+          if find changelog.d -maxdepth 1 -type f -name '*.rst' ! -name 'README.rst' ! -name '_template.rst' -print -quit | grep -q .; then
+            uv run --frozen --no-sync towncrier build --yes --keep --version "${{ env.DOC_VERSION }}"
+          else
+            echo "No news fragments found; skipping Towncrier build."
+          fi
 
       - name: Build documentation
         env:
