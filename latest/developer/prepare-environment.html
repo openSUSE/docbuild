@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.20.1.dev7+g836a99a8b</title>
+    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.20.1.dev8+g5a73619a6</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../_static/documentation_options.js?v=51a5eed7"></script>
+    <script src="../_static/documentation_options.js?v=aa3f0833"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -591,7 +591,7 @@ for each file type.</p>
 <li><p>If you haven’t created a virtual environment, do so:</p>
 <div class="literal-block-wrapper docutils container" id="uv-venv">
 <div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv venv --prompt venv313 --python 3.13 .venv</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
 </pre></div>
 </div>
 </div>
@@ -602,7 +602,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
 <div class="literal-block-wrapper docutils container" id="uv-sync-devel">
 <div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv sync --frozen --group devel</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen<span class="w"> </span>--group<span class="w"> </span>devel
 </pre></div>
 </div>
 </div>
@@ -611,7 +611,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
 <div class="literal-block-wrapper docutils container" id="activate-aliases">
 <div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">source devel/activate-aliases.sh</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
 </div>
 </div>
@@ -626,7 +626,7 @@ build SUSE product documentation. These files, which define all products,
 docsets, and their deliverables, are managed in the <code class="docutils literal notranslate"><span class="pre">susedoc/docserv-config</span></code>
 repository.</p>
 <p>To get started, clone this repository to your local machine (you need VPN access):</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://gitlab.suse.de/susedoc/docserv-config.git</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
 </pre></div>
 </div>
 <p>You will later need to point <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> to the location of this cloned

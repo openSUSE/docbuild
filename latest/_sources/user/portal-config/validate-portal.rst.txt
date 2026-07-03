@@ -10,7 +10,7 @@ Portal schema.
 .. code-block:: shell
    :caption: Synopsis of :command:`docbuild portal validate`
 
-   docbuild portal validate [OPTIONS]
+   $ docbuild portal validate [OPTIONS]
 
 
 Calling it with just the ENV configuration will validate it according to the

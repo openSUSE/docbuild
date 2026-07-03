@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Running the Test Suite &#8212; Docbuild Documentation 0.20.1.dev7+g836a99a8b</title>
+    <title>Running the Test Suite &#8212; Docbuild Documentation 0.20.1.dev8+g5a73619a6</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../_static/documentation_options.js?v=51a5eed7"></script>
+    <script src="../_static/documentation_options.js?v=aa3f0833"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -491,14 +491,14 @@
 <p>To run the full test suite, use the following command:</p>
 <div class="literal-block-wrapper docutils container" id="running-pytest-with-uv">
 <div class="code-block-caption"><span class="caption-text">Running pytest directly with <strong class="command">uv</strong></span><a class="headerlink" href="#running-pytest-with-uv" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">uv run --frozen --no-sync pytest</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>run<span class="w"> </span>--frozen<span class="w"> </span>--no-sync<span class="w"> </span>pytest
 </pre></div>
 </div>
 </div>
 <p>or use the alias (see <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
 <div class="literal-block-wrapper docutils container" id="running-upytest">
 <div class="code-block-caption"><span class="caption-text">Running pytest using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">upytest</span></a></span><a class="headerlink" href="#running-upytest" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">upytest</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest
 </pre></div>
 </div>
 </div>
@@ -509,8 +509,8 @@
 <p>In case you want to run a specific test or a subset of tests, specify the path to the test file or the test function. For example:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Running specific tests</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">upytest tests/test_module.py</span>
-<span class="go">upytest tests/test_module.py::test_function_name</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest<span class="w"> </span>tests/test_module.py
+<span class="gp">$ </span>upytest<span class="w"> </span>tests/test_module.py::test_function_name
 </pre></div>
 </div>
 </div>
@@ -521,7 +521,7 @@
 <p>If one of the test fails and you want to repeat the test run after you have fixed the issue, use the <code class="docutils literal notranslate"><span class="pre">--lf</span></code>/<code class="docutils literal notranslate"><span class="pre">--last-failed</span></code> option. For example:</p>
 <div class="literal-block-wrapper docutils container" id="running-last-failed-tests">
 <div class="code-block-caption"><span class="caption-text">Running only the last failed tests</span><a class="headerlink" href="#running-last-failed-tests" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">upytest --lf</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>upytest<span class="w"> </span>--lf
 </pre></div>
 </div>
 </div>
