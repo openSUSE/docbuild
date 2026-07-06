@@ -1,0 +1,1 @@
+Enabled Git-style deep merging for App and Env configurations, allowing users to define partial config files that inherit gracefully from global defaults.

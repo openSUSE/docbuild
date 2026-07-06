@@ -1,14 +1,11 @@
 """Load and process configuration files."""
 
-from collections.abc import Iterable, Sequence
-from itertools import product
+from collections.abc import Iterable
 from pathlib import Path
 import tomllib as toml
 from typing import Any
 
 from .merge import deep_merge
-
-# --- REMOVED THE OBSOLETE `process_envconfig` FUNCTION ---
 
 
 def load_single_config(configfile: str | Path) -> dict[str, Any]:
@@ -24,44 +21,6 @@ def load_single_config(configfile: str | Path) -> dict[str, Any]:
         return toml.load(f)
 
 
-def load_and_merge_configs(
-    defaults: Sequence[str | Path],
-    *paths: str | Path,
-) -> tuple[tuple[str | Path, ...], dict[str, Any]]:
-    """Load config files and merge all content regardless of the nesting level.
-
-    The order of defaults and paths is important. The paths are in the order of
-    system path, user path, and current working directory.
-    The defaults are in the order of common config file names followed by more
-    specific ones. The later ones will override data from the earlier ones.
-
-    :param defaults: a sequence of base filenames (without path!) to look for
-                     in the paths
-    :param paths: the paths to look for config files (without the filename!)
-    :return: the found config files and the merged dictionary (raw dict)
-    """
-    configs: Sequence[dict[str, Any]] = []
-    configfiles: Sequence[Path] = []
-
-    # If no paths are provided, raise an error:
-    if not paths:
-        raise ValueError(
-            "No paths provided. "
-            "Please provide at least one path to load the config files.",
-        )
-
-    # Create a cartesian product of paths and default filenames:
-    for path, cfgfile in product(paths, defaults):
-        path = Path(path).expanduser().resolve() / cfgfile
-
-        if path.exists():
-            configfiles.append(path)
-            configs.append(load_single_config(path))
-        # Silently ignore files that do not exist:
-
-    return tuple(configfiles), deep_merge(*configs)
-
-
 def handle_config(
     user_path: Path | str | None,
     search_dirs: Iterable[str | Path],
@@ -73,6 +32,8 @@ def handle_config(
 
     Note: The returned configuration is the **raw loaded dictionary**. No
     placeholder replacement or validation has been performed on it.
+    Configurations are collected across all search directories and deeply merged
+    on top of the default configuration to allow partial user configs.
 
     :param user_path: Path to the user-defined config file, if any.
     :param search_dirs: Iterable of directories to search for config files.
@@ -83,22 +44,38 @@ def handle_config(
 
         * A tuple of found config file paths or None if no config file is found.
         * The loaded configuration as a dictionary or the default configuration.
-        * A boolean indicating if the default configuration was used.
-    :raises ValueError: If no config file is found and no default
-        configuration is provided.
+        * A boolean indicating if the default configuration was used exclusively.
     """
-    if user_path:
-        return (Path(user_path),), load_single_config(user_path), False
+    found_files: list[Path] = []
+    found_configs: list[dict[str, Any]] = []
 
-    for search_dir in search_dirs:
-        if basenames:
-            for basename in basenames:
+    # 1. Gather all existing config files
+    if user_path:
+        user_p = Path(user_path)
+        found_files.append(user_p)
+        # Preserve the original `user_path` type when loading to keep call-site behavior stable.
+        found_configs.append(load_single_config(user_path))
+    else:
+        # Avoid string iteration bugs by safely determining the fallback tuple
+        names_to_check = tuple(basenames) if basenames else ((default_filename,) if default_filename else ())
+
+        # Search directories are expected to be ordered lowest-priority first
+        for search_dir in search_dirs:
+            for basename in names_to_check:
                 candidate = Path(search_dir) / basename
                 if candidate.exists():
-                    return (candidate,), load_single_config(candidate), False
-        elif default_filename:
-            candidate = Path(search_dir) / default_filename
-            if candidate.exists():
-                return (candidate,), load_single_config(candidate), False
-    # Not found, use defaults
-    return None, default_config, True
+                    found_files.append(candidate)
+                    found_configs.append(load_single_config(candidate))
+                    break  # Only take the highest priority basename per directory
+
+    # 2. Check if we found anything at all
+    if not found_files:
+        return None, default_config, True
+
+    # 3. Deep merge everything, starting with the defaults as the base!
+    base = [default_config] if isinstance(default_config, dict) else []
+    merged_config = deep_merge(*base, *found_configs)
+
+    # 4. Return the merged config, but reverse the file list so the
+    # highest-priority file is at index 0 for error reporting.
+    return tuple(reversed(found_files)), merged_config, False
