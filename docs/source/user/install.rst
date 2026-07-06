@@ -14,67 +14,61 @@ To install the docbuild tool, follow these steps:
 
 .. _prepare-installation:
 
-Preparing for Installation
+Preparing environment
 --------------------------
 
-It is highly recommended to use the `package and project manager uv <https://docs.astral.sh/uv>`_ to install the docbuild tool. This ensures that all dependencies are managed correctly and that the installation is reproducible across different environments.
-
-There are different methods to install the :command:`uv` package manager
-(see `Installing uv <https://docs.astral.sh/uv/getting-started/installation/>`_). In this case, use the standalone installer:
-
+It is highly recommended to use the `package and project manager uv <https://docs.astral.sh/uv>`_
+to install the docbuild tool. This ensures that all dependencies are managed correctly and that
+the installation is reproducible across different environments.
 
 1. **Install uv**
 
-   Run the following command in your terminal:
+   There are different methods to install :command:`uv`. Preferably use your systems package manager,
+   otherwise follow the `uv documentation <https://docs.astral.sh/uv/getting-started/installation/>`_.
+
+   For (open)SUSE Linux run the following command in your terminal:
 
    .. code-block:: shell-session
 
-      $ curl -sSfL https://astral.sh/uv/install.sh | sh
-
-
-   This will install two commands :command:`uv` and :command:`uvx` in :file:`~/.local/bin/`. Make sure this directory is in your :envvar:`PATH` environment variable.
+      $ sudo zypper install python313-uv
 
 2. **Check the installation**
 
-   After the installation, verify that :command:`uv` is installed correctly by running:
+   After the installation, verify that :command:`uv` is installed and in your PATH by running:
 
    .. code-block:: shell-session
 
       $ type uv
-      uv is hashed (/home/tux/.local/bin/uv)
+      uv is hashed (/path/to/uv)
       $ uv --version
       ...
 
    You should see the version of :command:`uv` printed in the terminal.
 
-3. **Install Python 3.12 or higher**
+3. **Check the available Python versions**
 
-   As of the time of writing, the docbuild tool requires Python 3.12 or higher. Install the Python version using :command:`uv`:
+   As of the time of writing, the docbuild tool requires Python 3.12 or higher.
+   To list your currently installed Python versions run:
+
+   .. code-block:: shell-session
+
+      $ uv python list --only-installed
+      cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14
+      cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3.13
+      cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3 -> python3.13
+      ...
+
+   If you don't have version 3.12 or higher, install one using uv:
 
    .. code-block:: shell-session
 
       $ uv python install 3.13
 
-   The previous command downloads Python 3.13 and install it in the directory :file:`~/.local/share/uv/python/<VERSION>`.
-
-4. **Check the available Python versions**
-
-   To see the installed Python versions, run:
-
-   .. code-block:: shell-session
-
-      $ uv python list
-      cpython-3.14.0b1-linux-x86_64-gnu                 <download available>
-      cpython-3.14.0b1+freethreaded-linux-x86_64-gnu    <download available>
-      cpython-3.13.4-linux-x86_64-gnu                   /home/tux/.local/share/uv/python/cpython-3.13.4-linux-x86_64-gnu/bin/python3.13
-      [...]
-
-   You should see Python 3.13 listed among the available versions.
-
+      This downloads and installs Python 3.13 in the directory :file:`~/.local/share/uv/python/<VERSION>`.
 
 .. _installing-docbuild:
 
-Installing the tool
+Installing docbuild
 -------------------
 
 1. **Clone the repository**
@@ -88,18 +82,19 @@ Installing the tool
 
 2. **Create a virtual environment**
 
-   It is recommended to create a virtual environment to isolate the docbuild tool and its dependencies from your system Python environment.
+   It is recommended to create a virtual environment to isolate the docbuild
+   tool and its dependencies from your system Python environment.
    Run the following command:
 
    .. code-block:: shell-session
 
       $ uv venv --prompt "venv313" .venv
 
-   This will create a virtual environment in the directory `.venv`.
+   This will create a virtual environment in the directory :file:`.venv`.
 
 4. **Install dependencies**
 
-   Ensure you have Python 3.12 or higher installed, then install the required dependencies using pip:
+   Ensure you have Python 3.12 or higher installed, then install the required dependencies:
 
    .. code-block:: shell-session
 
@@ -108,7 +103,11 @@ Installing the tool
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s
 
-   The `--frozen` flag is used here to ensure that `uv` installs dependencies exactly as specified in the `uv.lock` file. This is crucial for **reproducible builds** and maintaining a **consistent environment** across different machines or deployments, as it prevents `uv` from attempting to resolve and potentially update dependency versions.
+   The ``--frozen`` flag is used here to ensure that :command:`uv` installs dependencies
+   exactly as specified in the :file:`uv.lock` file. This is crucial for
+   **reproducible builds** and maintaining a **consistent environment** across
+   different machines or deployments, as it prevents :command:`uv` from attempting to
+   resolve and potentially update dependency versions.
 
 .. _get-xml-config:
 
