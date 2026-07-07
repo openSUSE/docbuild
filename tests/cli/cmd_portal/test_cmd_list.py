@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from click.testing import CliRunner
 from lxml import etree  # type: ignore
 
+from docbuild.cli.cmd_portal import cmd_list
 from docbuild.cli.cmd_portal.cmd_list import list_cmd
 from docbuild.cli.context import DocBuildContext
 
@@ -46,7 +47,7 @@ def test_portal_list_invalid_doctype() -> None:
     assert "Error parsing doctype:" in result.output
 
 
-@patch("docbuild.cli.cmd_portal.cmd_list.parse_portal_config", new_callable=AsyncMock)
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
 def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
     """Test that the command dynamically validates docsets and aborts with available options."""
     runner = CliRunner()
@@ -63,6 +64,11 @@ def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
         '            </resources>\n'
         '        </docset>\n'
         '        <docset path="15sp5" lifecycle="supported">\n'
+        '            <resources>\n'
+        '                <locale lang="en-us">\n'
+        '                    <deliverable id="dummy_guide"/>\n'
+        '                </locale>\n'
+        '            </resources>\n'
         '        </docset>\n'
         '    </product>\n'
         '</portal>\n'
@@ -77,8 +83,7 @@ def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
 
     assert result.exit_code != 0
     assert "1 validation error for Doctype" in result.output
-    assert "docset" in result.output
-    assert "Value error, 'invalid_docset' is not a valid Docset" in result.output
+    assert "* sles/invalid_docset is not a valid Docset." in result.output
 
     # Rich console automatically wraps long text in test environments.
     # Strip newlines to safely assert the exact string match.

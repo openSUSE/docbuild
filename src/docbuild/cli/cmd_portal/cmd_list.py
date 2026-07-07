@@ -176,23 +176,36 @@ def validate_docsets_against_xml(
     doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
 ) -> None:
     """Dynamically validate that provided docsets exist for their respective products."""
+    errors = []
+
     for dt in doctypes:
-        # We only validate if both product and docset are explicitly provided and are not wildcards
         if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
             prod_val = dt.product.value
-            # Fetch all valid 'path' attributes from docsets under this specific product
-            valid_docsets = tree.xpath(f"//product[@id={prod_val!r}]/docset/@path")
+            
+            # Use the class's own string parser to bypass strict __init__ type-checking issues
+            broad_dt = Doctype.from_str(f"{prod_val}/*/*")
+            
+            # Harvest all valid docset IDs using the Deliverable abstraction
+            valid_docsets = set()
+            for node in list_all_deliverables(tree, [broad_dt]):
+                deli = Deliverable(_node=node)
+                if deli.xml.docsetid:
+                    valid_docsets.add(deli.xml.docsetid)
 
-            # Format them for display, always prepending the wildcard allowed value
-            valid_docsets_str = ["*", *sorted(str(v) for v in valid_docsets)]
+            valid_docsets_str = ["*", *sorted(valid_docsets)]
 
             for ds in dt.docset:
                 if ds not in valid_docsets:
                     allowed_str = ", ".join(f"'{v}'" for v in valid_docsets_str)
-                    console.print("[red]Error parsing doctype:[/red] 1 validation error for Doctype")
-                    console.print("docset")
-                    console.print(f"  Value error, '{ds}' is not a valid Docset. Allowed values are: {allowed_str}")
-                    raise click.Abort()
+                    errors.append(f"* {prod_val}/{ds} is not a valid Docset.\n  Allowed values are: {allowed_str}")
+
+    if errors:
+        err_count = len(errors)
+        noun = "error" if err_count == 1 else "errors"
+        console.print(f"[red]Error parsing doctype:[/red] {err_count} validation {noun} for Doctype:\n")
+        for err in errors:
+            console.print(err)
+        raise click.Abort()
 
 
 async def async_list_cmd(
