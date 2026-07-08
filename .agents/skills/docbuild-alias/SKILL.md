@@ -9,8 +9,8 @@ This repository provides custom shell aliases to make running tasks easier witho
 1. Before attempting to run custom repository commands, you must source the alias script.
 2. Run: `source devel/activate-aliases.sh`
 3. Once sourced, you can use the custom aliases available in the environment (for example, `docbuild`, `upytest`, `makedocs`).
-4. **CRITICAL**: To run the main CLI tool, you must *always* use a dedicated development environment configuration to avoid conflicting with or polluting the developer's local host state. 
-5. Always run commands using the `--env-config` flag pointing to the development config (for example, `docbuild --env-config env.development.toml portal list`). Do not run `docbuild` without an isolated environment configuration.
+4. **CRITICAL**: To run the main CLI tool, you must *always* use the dedicated agent environment configuration to avoid conflicting with or polluting the human developer's local host state.
+5. Always run commands using the `--env-config` flag pointing to the agent config: `docbuild --env-config env.agent.toml <command>`. Do not run `docbuild` without this isolated environment configuration.
 
 ## Checklist
 

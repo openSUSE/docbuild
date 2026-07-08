@@ -20,7 +20,7 @@ This project uses Sphinx for documentation. The source files are written in reSt
 - [ ] Are changes placed inside `docs/source/`?
 - [ ] Did you use standard Sphinx-style reStructuredText?
 - [ ] Did you build the docs using the `makedocs` alias?
-- [ ] Did the build complete without Sphinx warnings?
+- [ ] Did the build complete without Sphinx errors? (**Note**: It is safe to ignore pre-existing warnings).
 
 ## Validation
 
