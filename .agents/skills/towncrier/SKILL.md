@@ -7,7 +7,7 @@ This repository uses `towncrier` to generate the changelog. Every pull request t
 ## Procedure
 
 1. Identify the issue number associated with your current task.
-2. Determine the correct fragment type. Allowed types are: `breaking`, `bugfix`, `deprecation`, `doc`, `feature`, `refactor`, `removal`, `infra`, `security`.
+2. Determine the correct fragment type. **To find the current list of allowed types, you must read the `towncrier.toml` file** in the repository root, which is the ultimate source of truth.
 3. Create a new file in the `changelog.d/` directory.
 4. The file name must follow the format: `<issue>.<type>.rst` where `<issue>` is the GitHub pull request or issue number (for example, `303.bugfix.rst`). If there is no issue/PR number, start the file name with `+` and a short slug (for example, `+add-json.feature.rst`).
 5. Write a concise, user-facing sentence inside the file explaining the change. Use reStructuredText format.

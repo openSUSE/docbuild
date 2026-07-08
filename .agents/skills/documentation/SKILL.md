@@ -2,7 +2,9 @@
 
 ## Context
 
-This project uses Sphinx for documentation. The source files are written in reStructuredText (.rst) and the configuration is handled via `conf.py`.
+This project uses Sphinx for documentation. The source files are written in reStructuredText (.rst) and the configuration is handled via `conf.py`. 
+
+**Note on Structure**: The documentation is separated into different guides (for example, user, developer, etc.). When reading or updating documentation, always ensure you are navigating and modifying the correct guide for the target audience.
 
 ## Procedure
 
