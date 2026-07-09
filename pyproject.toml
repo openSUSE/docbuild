@@ -60,7 +60,7 @@ classifiers = [
 
 [dependency-groups]
 typing = [
-    "pyright>=1.1.410",
+    "pyright>=1.1.411",
 ]
 formatting = [
     "docformatter>=1.7.8",
