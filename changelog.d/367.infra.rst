@@ -1,0 +1,1 @@
+Fixed failures of the Towncrier step in the GitHub Pages CI.
