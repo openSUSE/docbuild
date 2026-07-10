@@ -1,0 +1,1 @@
+Added foundational AI agent skill files under ``.agents/skills/`` (with a symlink at ``.github/skills/``) and updated the primary agent instructions to standardize AI interactions with repository workflows.
