@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installing docbuild &#8212; Docbuild Documentation 0.20.1.dev9+g87065b443</title>
+    <title>Installing docbuild &#8212; Docbuild Documentation 0.20.1.dev27+gab18ee3be.d20260710</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../_static/documentation_options.js?v=6e1f2e42"></script>
+    <script src="../_static/documentation_options.js?v=e2eeb0eb"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -477,56 +477,56 @@
 <h1>Installing docbuild<a class="headerlink" href="#installing-docbuild" title="Link to this heading">#</a></h1>
 <p>To install the docbuild tool, follow these steps:</p>
 <ol class="arabic simple">
-<li><p><a class="reference internal" href="#prepare-installation"><span class="std std-ref">Preparing for Installation</span></a> - Prepare your environment for installation.</p></li>
-<li><p><a class="reference internal" href="#id1"><span class="std std-ref">Installing the tool</span></a> - Install the docbuild tool itself.</p></li>
+<li><p><a class="reference internal" href="#prepare-installation"><span class="std std-ref">Preparing environment</span></a> - Prepare your environment for installation.</p></li>
+<li><p><a class="reference internal" href="#id1"><span class="std std-ref">Installing docbuild</span></a> - Install the docbuild tool itself.</p></li>
 <li><p><a class="reference internal" href="#get-xml-config"><span class="std std-ref">Getting the XML configuration</span></a> - Get the XML configuration files required for building documentation.</p></li>
 <li><p><a class="reference internal" href="config.html#config-docbuild"><span class="std std-ref">Configuring the Tool</span></a> - Configure the docbuild tool to suit your needs.</p></li>
 </ol>
-<section id="preparing-for-installation">
-<span id="prepare-installation"></span><h2>Preparing for Installation<a class="headerlink" href="#preparing-for-installation" title="Link to this heading">#</a></h2>
-<p>It is highly recommended to use the <a class="reference external" href="https://docs.astral.sh/uv">package and project manager uv</a> to install the docbuild tool. This ensures that all dependencies are managed correctly and that the installation is reproducible across different environments.</p>
-<p>There are different methods to install the <strong class="command">uv</strong> package manager
-(see <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">Installing uv</a>). In this case, use the standalone installer:</p>
+<section id="preparing-environment">
+<span id="prepare-installation"></span><h2>Preparing environment<a class="headerlink" href="#preparing-environment" title="Link to this heading">#</a></h2>
+<p>It is highly recommended to use the <a class="reference external" href="https://docs.astral.sh/uv">package and project manager uv</a>
+to install the docbuild tool. This ensures that all dependencies are managed correctly and that
+the installation is reproducible across different environments.</p>
 <ol class="arabic">
 <li><p><strong>Install uv</strong></p>
-<p>Run the following command in your terminal:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-sSfL<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+<p>There are different methods to install <strong class="command">uv</strong>. Preferably use your systems package manager,
+otherwise follow the <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">uv documentation</a>.</p>
+<p>For (open)SUSE Linux run the following command in your terminal:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>python313-uv
 </pre></div>
 </div>
-<p>This will install two commands <strong class="command">uv</strong> and <strong class="command">uvx</strong> in <code class="file docutils literal notranslate"><span class="pre">~/.local/bin/</span></code>. Make sure this directory is in your <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PATH</span></code> environment variable.</p>
 </li>
 <li><p><strong>Check the installation</strong></p>
-<p>After the installation, verify that <strong class="command">uv</strong> is installed correctly by running:</p>
+<p>After the installation, verify that <strong class="command">uv</strong> is installed and in your PATH by running:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">type</span><span class="w"> </span>uv
-<span class="go">uv is hashed (/home/tux/.local/bin/uv)</span>
+<span class="go">uv is hashed (/path/to/uv)</span>
 <span class="gp">$ </span>uv<span class="w"> </span>--version
 <span class="go">...</span>
 </pre></div>
 </div>
 <p>You should see the version of <strong class="command">uv</strong> printed in the terminal.</p>
 </li>
-<li><p><strong>Install Python 3.12 or higher</strong></p>
-<p>As of the time of writing, the docbuild tool requires Python 3.12 or higher. Install the Python version using <strong class="command">uv</strong>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
-</pre></div>
-</div>
-<p>The previous command downloads Python 3.13 and install it in the directory <code class="file docutils literal notranslate"><span class="pre">~/.local/share/uv/python/&lt;VERSION&gt;</span></code>.</p>
-</li>
 <li><p><strong>Check the available Python versions</strong></p>
-<p>To see the installed Python versions, run:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>list
-<span class="go">cpython-3.14.0b1-linux-x86_64-gnu                 &lt;download available&gt;</span>
-<span class="go">cpython-3.14.0b1+freethreaded-linux-x86_64-gnu    &lt;download available&gt;</span>
-<span class="go">cpython-3.13.4-linux-x86_64-gnu                   /home/tux/.local/share/uv/python/cpython-3.13.4-linux-x86_64-gnu/bin/python3.13</span>
-<span class="go">[...]</span>
+<p>As of the time of writing, the docbuild tool requires Python 3.12 or higher.
+To list your currently installed Python versions run:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>list<span class="w"> </span>--only-installed
+<span class="go">cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14</span>
+<span class="go">cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3.13</span>
+<span class="go">cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3 -&gt; python3.13</span>
+<span class="go">...</span>
 </pre></div>
 </div>
-<p>You should see Python 3.13 listed among the available versions.</p>
+<p>If you don’t have version 3.12 or higher, install one using uv:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
+
+<span class="go">This downloads and installs Python 3.13 in the directory :file:`~/.local/share/uv/python/&lt;VERSION&gt;`.</span>
+</pre></div>
+</div>
 </li>
 </ol>
 </section>
-<section id="installing-the-tool">
-<span id="id1"></span><h2>Installing the tool<a class="headerlink" href="#installing-the-tool" title="Link to this heading">#</a></h2>
+<section id="id1">
+<span id="id2"></span><h2>Installing docbuild<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <ol class="arabic">
 <li><p><strong>Clone the repository</strong></p>
 <p>Open your terminal and run the following command to clone the docbuild repository from GitHub:</p>
@@ -536,24 +536,29 @@
 </div>
 </li>
 <li><p><strong>Create a virtual environment</strong></p>
-<p>It is recommended to create a virtual environment to isolate the docbuild tool and its dependencies from your system Python environment.
+<p>It is recommended to create a virtual environment to isolate the docbuild
+tool and its dependencies from your system Python environment.
 Run the following command:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;venv313&quot;</span><span class="w"> </span>.venv
 </pre></div>
 </div>
-<p>This will create a virtual environment in the directory <cite>.venv</cite>.</p>
+<p>This will create a virtual environment in the directory <code class="file docutils literal notranslate"><span class="pre">.venv</span></code>.</p>
 </li>
 </ol>
 <ol class="arabic" start="4">
 <li><p><strong>Install dependencies</strong></p>
-<p>Ensure you have Python 3.12 or higher installed, then install the required dependencies using pip:</p>
+<p>Ensure you have Python 3.12 or higher installed, then install the required dependencies:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
 <span class="go">Resolved 29 packages in 586ms</span>
 <span class="go">Built docbuild @ file:///.../docbuild</span>
 <span class="go">Installed 15 packages in 2.11s</span>
 </pre></div>
 </div>
-<p>The <cite>–frozen</cite> flag is used here to ensure that <cite>uv</cite> installs dependencies exactly as specified in the <cite>uv.lock</cite> file. This is crucial for <strong>reproducible builds</strong> and maintaining a <strong>consistent environment</strong> across different machines or deployments, as it prevents <cite>uv</cite> from attempting to resolve and potentially update dependency versions.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> flag is used here to ensure that <strong class="command">uv</strong> installs dependencies
+exactly as specified in the <code class="file docutils literal notranslate"><span class="pre">uv.lock</span></code> file. This is crucial for
+<strong>reproducible builds</strong> and maintaining a <strong>consistent environment</strong> across
+different machines or deployments, as it prevents <strong class="command">uv</strong> from attempting to
+resolve and potentially update dependency versions.</p>
 </li>
 </ol>
 </section>
@@ -613,8 +618,8 @@ As an alternative, use the <cite>RNC schema &lt;https://www.oasis-open.org/commi
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-for-installation">Preparing for Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-the-tool">Installing the tool</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-environment">Preparing environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Installing docbuild</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-the-xml-configuration">Getting the XML configuration</a></li>
 </ul>
   </nav></div>
