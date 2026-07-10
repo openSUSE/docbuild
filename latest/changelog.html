@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.20.1.dev27+gab18ee3be.d20260710</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.20.1.dev28+g3c89f7029.d20260710</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=e2eeb0eb"></script>
+    <script src="_static/documentation_options.js?v=a2798f86"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -460,6 +460,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Updated default environment and cache paths to conform to the XDG Base Directory Specification using the <code class="docutils literal notranslate"><span class="pre">platformdirs</span></code> library. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/248">GH #248</a>)</p></li>
+<li><p>Added foundational AI agent skill files under <code class="docutils literal notranslate"><span class="pre">.agents/skills/</span></code> (with a symlink at <code class="docutils literal notranslate"><span class="pre">.github/skills/</span></code>) and updated the primary agent instructions to standardize AI interactions with repository workflows. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/266">GH #266</a>)</p></li>
 <li><p>Enhanced the <code class="docutils literal notranslate"><span class="pre">portal</span> <span class="pre">list</span></code> command with new optional flags (<code class="docutils literal notranslate"><span class="pre">--trans</span></code>, <code class="docutils literal notranslate"><span class="pre">--formats</span></code>, <code class="docutils literal notranslate"><span class="pre">--categories</span></code>, and <code class="docutils literal notranslate"><span class="pre">--repo</span></code>) to display extended deliverable metadata directly in the output tree. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/302">GH #302</a>)</p></li>
 <li><p>Enabled Git-style deep merging for App and Env configurations, allowing users to define partial config files that inherit gracefully from global defaults. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/321">GH #321</a>)</p></li>
 </ul>
