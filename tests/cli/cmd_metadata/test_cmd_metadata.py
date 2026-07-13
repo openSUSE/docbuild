@@ -290,17 +290,15 @@ class TestCollectDynamicMetadata:
         "scenario, expected_result, expected_log",
         [
             ("success", True, None),
-            ("clone_fails", False, "Failed to update repository"),
+            ("worktree_missing", False, "Worktree not found"),
             ("daps_fails", False, "DAPS metadata failed"),
             ("invalid_json", False, "Failed to parse metadata"),
         ],
-        ids=["success", "clone_fails", "daps_fails", "invalid_json"],
+        ids=["success", "worktree_missing", "daps_fails", "invalid_json"],
     )
     @patch.object(metaprocess_pkg, "run_command", new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, "ManagedGitRepo")
     async def test_collect_dynamic_metadata_scenarios(
         self,
-        mock_managed_git_repo: Mock,
         mock_run_command: AsyncMock,
         deliverable: Deliverable,
         setup_paths: dict[str, Path],
@@ -311,10 +309,9 @@ class TestCollectDynamicMetadata:
     ):
         """Test various scenarios for collect_dynamic_metadata."""
         caplog.set_level(logging.ERROR)
-        mock_repo_instance = AsyncMock()
-        mock_repo_instance.clone_bare.return_value = True
-        mock_repo_instance.create_worktree.return_value = None
-        mock_managed_git_repo.return_value = mock_repo_instance
+
+        repo_url = deliverable.git.url
+        worktrees = {(repo_url, deliverable.branch): setup_paths["tmp_repo_dir"] / "shared"}
 
         metadata_payload = {"docs": [{"rootid": "doc-root", "title": "Doc"}]}
         mock_run_command.return_value = Mock(
@@ -323,8 +320,8 @@ class TestCollectDynamicMetadata:
             stderr="",
         )
 
-        if scenario == "clone_fails":
-            mock_repo_instance.clone_bare.return_value = False
+        if scenario == "worktree_missing":
+            worktrees = {}
         elif scenario == "daps_fails":
             mock_run_command.return_value = Mock(
                 returncode=1,
@@ -357,6 +354,7 @@ class TestCollectDynamicMetadata:
             context=mock_context,
             deliverable=deliverable,
             meta_cache_dir=setup_paths["meta_cache_dir"],
+            worktrees=worktrees,
         )
 
         assert success is expected_result
@@ -375,7 +373,7 @@ class TestCollectDynamicMetadata:
         if expected_log:
             assert expected_log in caplog.text
 
-        if scenario == "clone_fails":
+        if scenario == "worktree_missing":
             mock_run_command.assert_not_called()
 
 
@@ -482,6 +480,10 @@ class TestProcessDoctypeGroup:
         mock_compile_manifest.return_value = None
 
         context = Mock(spec=DocBuildContext)
+        context.envconfig = Mock()
+        context.envconfig.paths = Mock()
+        context.envconfig.paths.tmp_repo_dir = tmp_path / "tmp_repos"
+        context.envconfig.paths.tmp_repo_dir.mkdir(parents=True, exist_ok=True)
         repo_dir = tmp_path / "repos"
         meta_cache_dir = tmp_path / "cache" / "metadata"
         json_cache_dir = tmp_path / "cache" / "json"
@@ -528,6 +530,10 @@ class TestProcessDoctypeGroup:
         mock_compile_manifest.return_value = None
 
         context = Mock(spec=DocBuildContext)
+        context.envconfig = Mock()
+        context.envconfig.paths = Mock()
+        context.envconfig.paths.tmp_repo_dir = tmp_path / "tmp_repos"
+        context.envconfig.paths.tmp_repo_dir.mkdir(parents=True, exist_ok=True)
         repo_dir = tmp_path / "repos"
         meta_cache_dir = tmp_path / "cache" / "metadata"
         json_cache_dir = tmp_path / "cache" / "json"

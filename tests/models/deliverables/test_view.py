@@ -99,7 +99,7 @@ def test_xml_subdir_empty(first_deliverable: Deliverable) -> None:
 def test_xml_translations(ref_node, first_deliverable_from_lang) -> None:
     """Return translation info for ref locales pointing to a deliverable."""
     deliverable = first_deliverable_from_lang(ref_node, "en-us")
-    translations = deliverable.xml.translations()
+    translations = deliverable.xml.translation_infos()
     de_lang = LanguageCode(language="de-de")
 
     assert de_lang in translations
