@@ -213,7 +213,7 @@ class DeliverableXMLView:
                 return remote_str
         return None
 
-    def translations(self) -> dict[LanguageCode, TranslationInfo]:
+    def translation_infos(self) -> dict[LanguageCode, TranslationInfo]:
         """Return translation info for ref locales pointing to this deliverable.
 
         Translations are detected by matching ``<ref linkend=...>`` nodes in

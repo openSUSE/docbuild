@@ -158,7 +158,7 @@ def build_metadata_output_path(
     return meta_cache_dir / relpath / deliverable.xml.dcfile
 
 
-def _write_metadata_cache_file(output_metadata: Path, content: str) -> None:
+def write_metadata_cache_file(output_metadata: Path, content: str) -> None:
     """Write metadata cache file synchronously."""
     output_metadata.parent.mkdir(parents=True, exist_ok=True)
     output_metadata.write_text(content, encoding="utf-8")
@@ -177,7 +177,7 @@ async def write_metadata_cache(
     :return: True when the cache file was written.
     """
     try:
-        await asyncio.to_thread(_write_metadata_cache_file, output_metadata, content)
+        await asyncio.to_thread(write_metadata_cache_file, output_metadata, content)
     except OSError as exc:
         log.warning(
             "Failed to write metadata cache for %s: %s",
@@ -201,7 +201,7 @@ def compile_metadata(text: str) -> dict[str, object]:
     return payload
 
 
-def _read_metadata_cache_file(path: Path) -> str | None:
+def read_metadata_cache_file(path: Path) -> str | None:
     """Read metadata cache file synchronously."""
     if path.exists():
         return path.read_text(encoding="utf-8")
@@ -221,7 +221,7 @@ async def read_metadata_text(
     :return: Metadata text if available.
     """
     try:
-        file_text = await asyncio.to_thread(_read_metadata_cache_file, output_metadata)
+        file_text = await asyncio.to_thread(read_metadata_cache_file, output_metadata)
     except OSError as exc:
         log.error(
             "Failed to read metadata cache for %s: %s",

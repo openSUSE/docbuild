@@ -70,7 +70,7 @@ class Deliverable:
     @cached_property
     def translations(self) -> dict[LanguageCode, TranslationInfo]:
         """Return translation info keyed by language code."""
-        return self.xml.translations()
+        return self.xml.translation_infos()
 
     def has_translation(self, lang: str | LanguageCode) -> bool:
         """Return True when a translation exists for the given language."""
