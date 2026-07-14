@@ -240,16 +240,21 @@ def cli(
         current_files = (app_config,) if app_config else None
         load_app_config(ctx, app_config, max_workers)
 
-        # Setup logging
-        logging_config = context.appconfig.logging.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
-
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig
         current_files = (env_config,) if env_config else None
         load_env_config(ctx, env_config)
+
+        # Setup logging
+        logging_config = context.appconfig.logging.model_dump(
+            by_alias=True, exclude_none=True
+        )
+        setup_logging(cliverbosity=verbose,
+                      log_dir=context.envconfig.paths.tmp.log_dir,
+                      user_config={"logging": logging_config}
+        )
+        # log.debug("Logging initialized with config: %s", logging_config)
+
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
         handle_validation_error(e, current_model, current_files, verbose, ctx)

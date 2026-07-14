@@ -11,7 +11,6 @@ from pathlib import Path
 
 from ..constants import (
     APP_NAME,
-    BASE_LOG_DIR,
     CACHE_HOME,
     CONFIG_HOME,
     DATA_HOME,
@@ -80,7 +79,7 @@ DEFAULT_ENV_CONFIG = {
             "tmp_metadata_dir": "{tmp_dir}/metadata",
             "tmp_build_base_dir": "{tmp_dir}/build",
             "tmp_out_dir": "{tmp_dir}/out",
-            "log_dir": BASE_LOG_DIR,
+            "log_dir": f"{STATE_HOME}/{{server.name}}/log",
             "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
         },
         "target": {

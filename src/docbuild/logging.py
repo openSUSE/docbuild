@@ -7,14 +7,13 @@ import copy
 import importlib
 import logging
 import logging.handlers
-import os
 from pathlib import Path
 import queue
 import threading
 import time
 from typing import Any, Self
 
-from .constants import APP_NAME, BASE_LOG_DIR, GITLOGGER_NAME
+from .constants import APP_NAME, GITLOGGER_NAME
 
 # --- Defensive macOS-safe patch ---
 logging.raiseExceptions = False  # Suppress internal logging exception tracebacks
@@ -52,7 +51,7 @@ DEFAULT_LOGGING_CONFIG = {
         "file": {
             "class": "logging.FileHandler",
             "formatter": "standard",
-            "filename": "",
+            "filename": "",  # will be set later
             "level": "DEBUG",
         },
     },
@@ -89,7 +88,7 @@ _LOGGING_STATE: dict[str, contextvars.ContextVar] = {
 def _shutdown_logging() -> None:
     """Ensure all logging threads and handlers shut down cleanly."""
     listener = _LOGGING_STATE["listener"].get()
-    handlers: list[logging.Handler] = _LOGGING_STATE["handlers"].get()
+    handlers: list[logging.Handler] | None = _LOGGING_STATE["handlers"].get()
     bg_threads: list[threading.Thread] | None = _LOGGING_STATE[
         "background_threads"
     ].get()
@@ -99,6 +98,9 @@ def _shutdown_logging() -> None:
     # list to avoid TypeErrors during shutdown.
     if not isinstance(bg_threads, list):
         bg_threads = []
+
+    if not isinstance(handlers, list):
+        handlers = []
 
     if listener:
         with suppress(Exception):
@@ -129,11 +131,11 @@ def register_background_thread(thread: threading.Thread) -> None:
     _LOGGING_STATE["background_threads"].set(threads)
 
 
-def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
-    """Create the base log directory if it doesn't exist."""
-    log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
-    log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
-    return log_dir
+# def create_base_log_dir(base_log_dir: str | Path = BASE_LOG_DIR) -> Path:
+#     """Create the base log directory if it doesn't exist."""
+#     log_dir = Path(os.getenv("XDG_STATE_HOME", base_log_dir))
+#     log_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+#     return log_dir
 
 
 def _resolve_class(path: str) -> type:
@@ -183,7 +185,9 @@ def build_handlers_from_config(config: dict[str, Any]) -> list[logging.Handler]:
     return built_handlers
 
 
-def setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) -> None:
+def setup_logging(
+    cliverbosity: int, log_dir: Path, user_config: dict[str, Any] | None = None
+) -> None:
     """Set up a non-blocking, configurable logging system."""
     config = copy.deepcopy(DEFAULT_LOGGING_CONFIG)
 
@@ -202,11 +206,9 @@ def setup_logging(cliverbosity: int, user_config: dict[str, Any] | None = None) 
     verbosity_level = LOGLEVELS.get(min(cliverbosity, 2), logging.WARNING)
     config["handlers"]["console"]["level"] = logging.getLevelName(verbosity_level)
 
-    log_dir = create_base_log_dir()
     timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
     log_filename = f"{APP_NAME}_{timestamp}.log"
-    log_path = log_dir / log_filename
-    config["handlers"]["file"]["filename"] = str(log_path)
+    config["handlers"]["file"]["filename"] = str(log_dir / log_filename)
 
     # Build handlers (use helper to keep logic in one place)
     handlers = build_handlers_from_config(config)

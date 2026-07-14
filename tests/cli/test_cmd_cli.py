@@ -61,8 +61,9 @@ def mock_config_models(monkeypatch):
     mock_app_instance.logging = mock_logging_attribute
 
     mock_env_dump = Mock(return_value={"env_data": "from_mock_dump"})
-    mock_env_instance = Mock(spec=EnvConfig)
+    mock_env_instance = Mock()
     mock_env_instance.model_dump.return_value = mock_env_dump
+    mock_env_instance.paths.tmp.log_dir = Path("/tmp")
 
     # Mock the static methods that perform validation
     mock_app_from_dict = Mock(return_value=mock_app_instance)
