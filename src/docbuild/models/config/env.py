@@ -353,7 +353,7 @@ class EnvPathsConfig(BaseModel):
     base_cache_dir: EnsureWritableDirectory = Field(
         title="Base Cache Directory",
         description="The root directory for all application-level caches.",
-        examples=["/var/cache/docserv"],
+        examples=["/var/cache/docserv", "~/.cache/docbuild"],
     )
     "Base path for all caches."
 
@@ -367,16 +367,43 @@ class EnvPathsConfig(BaseModel):
     meta_cache_dir: EnsureWritableDirectory = Field(
         title="Metadata Cache Directory",
         description="Cache specifically for repository and deliverable metadata.",
-        examples=["/var/cache/docbuild/doc-example-com/meta"],
+        examples=[
+            "/var/cache/docbuild/doc-example-com/meta",
+            "~/.local/state/docbuild/devel/meta/",
+        ],
     )
     "Metadata cache path."
 
-    base_tmp_dir: EnsureWritableDirectory = Field(
-        title="Base Temporary Directory (System Wide)",
-        description="The root directory for all temporary artifacts (used for placeholder resolution).",
-        examples=["/var/tmp/docbuild"],
+    json_cache_dir: EnsureWritableDirectory = Field(
+        title="JSON Cache Directory",
+        description="Cache specifically for JSON data used in the portal.",
+        examples=[
+            "/var/cache/docbuild/doc-example-com/json",
+            "~/.local/state/docbuild/devel/json/",
+        ],
     )
-    "Base system temporary path."
+    "JSON cache path."
+
+    runtime_base_dir: EnsureWritableDirectory = Field(
+        title="Base Runtime Directory (Per-Run)",
+        description=(
+            "The base directory for lightweight runtime artifacts such as "
+            "lock files, PID files, and sockets (not for general build "
+            "temporary data)."
+        ),
+        examples=["/run/user/1000/docbuild"],
+    )
+    "Base runtime path."
+
+    lock_dir: EnsureWritableDirectory = Field(
+        title="Lock Directory",
+        description=(
+            "Directory for lock files used to prevent concurrent builds or "
+            "operations on the same deliverable or repository."
+        ),
+        examples=["/run/user/1000/docbuild/locks"],
+    )
+    "Directory for lock files."
 
     tmp: EnvTmpPaths
     "Temporary build paths."

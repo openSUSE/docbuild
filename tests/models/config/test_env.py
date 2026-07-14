@@ -40,7 +40,10 @@ def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any
     resolved_data["paths"]["meta_cache_dir"] = (
         "/var/cache/docbuild/doc-example-com/meta"
     )
-    resolved_data["paths"]["base_tmp_dir"] = "/var/tmp/docbuild"
+    resolved_data["paths"]["json_cache_dir"] = (
+        "/var/cache/docbuild/doc-example-com/json"
+    )
+    # runtime_base_dir and lock_dir are already concrete paths in the raw test data used by this test.
     resolved_data["paths"]["tmp"]["tmp_base_dir"] = "/var/tmp/docbuild"
     resolved_data["paths"]["tmp"]["tmp_dir"] = tmp_general
     resolved_data["paths"]["tmp"]["tmp_deliverable_dir"] = tmp_general + "/deliverable"
@@ -124,10 +127,12 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             # These use EnsureWritableDirectory - MUST be in tmp_path
             "base_cache_dir": str(base / "cache"),
             "base_server_cache_dir": str(base / "cache/server"),
-            "base_tmp_dir": str(base / "var/tmp"),
+            "runtime_base_dir": str(base / "runtime"),
+            "lock_dir": str(base / "runtime/locks"),
             "repo_dir": str(base / "repos/perm"),
             "tmp_repo_dir": str(base / "repos/temp"),
             "meta_cache_dir": str(base / "cache/meta"),
+            "json_cache_dir": str(base / "cache/json"),
 
             "tmp": {
                 "tmp_base_dir": str(base / "var/tmp"),
@@ -243,7 +248,9 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
             "base_cache_dir": str(tmp_path),
             "base_server_cache_dir": str(tmp_path),
             "meta_cache_dir": str(tmp_path),
-            "base_tmp_dir": str(tmp_path),
+            "json_cache_dir": str(tmp_path),
+            "runtime_base_dir": str(tmp_path),
+            "lock_dir": str(tmp_path),
             "tmp": {
                 "tmp_base_dir": str(tmp_path),
                 "tmp_dir": str(tmp_path),

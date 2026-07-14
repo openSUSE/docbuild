@@ -105,14 +105,6 @@ Key naming convention:
 
     The root directory where all configuration files are stored.
 
-.. _envtoml-paths-jinja-dir:
-
-``jinja_dir``
-    :Type: :code:`str`
-    :Default: ``{root_config_dir}/jinja-doc-suse-com``
-
-    Path to the directory containing Jinja templates.
-
 .. _envtoml-paths-config-dir:
 
 ``config_dir``
@@ -137,6 +129,14 @@ Key naming convention:
 
     Absolute path to the Portal RELAX NG (RNC) schema file used for validation.
 
+.. _envtoml-paths-jinja-dir:
+
+``jinja_dir``
+    :Type: :code:`str`
+    :Default: ``{root_config_dir}/jinja-doc-suse-com``
+
+    Path to the directory containing Jinja templates.
+
 .. _envtoml-paths-server-rootfiles-dir:
 
 ``server_rootfiles_dir``
@@ -145,13 +145,28 @@ Key naming convention:
 
     Path to the directory containing server root files like robots.txt.
 
+.. _envtoml-paths-tmp-repo-dir:
+
+``tmp_repo_dir``
+    :Type: :code:`str`
+    :Default: ``/data/docserv/repos/temporary-branches/``
+
+    The directory for storing temporary repositories from branches.
+
+.. _envtoml-paths-repo-dir:
+
+``repo_dir``
+    :Type: :code:`str`
+    :Default: ``/data/docserv/repos/permanent-full/``
+
+    The directory where permanent full repositories are stored.
+
 .. _envtoml-paths-base-cache-dir:
 
 ``base_cache_dir``
     :Type: :code:`str`
-    :Default: ``/var/cache/docserv``
+    :Default: ``~/.cache/docbuild``
 
-    
     The base directory for storing cached data.
 
 .. _envtoml-paths-base-server-cache-dir:
@@ -162,30 +177,6 @@ Key naming convention:
 
     The server-specific cache directory, derived from base_cache_dir and server name.
 
-.. _envtoml-paths-base-tmp-dir:
-
-``base_tmp_dir``
-    :Type: :code:`str`
-    :Default: ``/var/tmp/docbuild``
-
-    The base directory for temporary files.
-
-.. _envtoml-paths-repo-dir:
-
-``repo_dir``
-    :Type: :code:`str`
-    :Default: ``/data/docserv/repos/permanent-full/``
-
-    The directory where permanent full repositories are stored.
-
-.. _envtoml-paths-tmp-repo-dir:
-
-``tmp_repo_dir``
-    :Type: :code:`str`
-    :Default: ``/data/docserv/repos/temporary-branches/``
-
-    The directory for storing temporary repositories from branches.
-
 .. _envtoml-paths-meta-cache-dir:
 
 ``meta_cache_dir``
@@ -193,6 +184,30 @@ Key naming convention:
     :Default: ``{base_cache_dir}/{server.name}/meta``
 
     The directory for caching metadata.
+
+.. _envtoml-paths-runtime-base-dir:
+
+``runtime_base_dir``
+    :Type: :code:`str`
+    :Default: ````
+
+    The base directory for lightweight runtime artifacts
+
+.. _envtoml-paths-lock-dir:
+
+``lock_dir``
+    :Type: :code:`str`
+    :Default: ``{runtime_base_dir}/locks``
+
+    Directory for lock files used to prevent concurrent builds
+
+.. _envtoml-paths-json-cache-dir:
+
+``json_cache_dir``
+    :Type: :code:`str`
+    :Default: ``{base_server_cache_dir}/json``
+
+    JSON cache path
 
 .. _envtoml-section-paths-tmp:
 
