@@ -172,6 +172,42 @@ def print_hierarchy(
         console.print()
 
 
+def validate_docsets_against_xml(
+    doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
+) -> None:
+    """Dynamically validate that provided docsets exist for their respective products."""
+    errors = []
+
+    for dt in doctypes:
+        if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
+            prod_val = dt.product.value
+
+            # Use the class's own string parser to bypass strict __init__ type-checking issues
+            broad_dt = Doctype.from_str(f"{prod_val}/*/*")
+
+            # Harvest all valid docset IDs using the Deliverable abstraction
+            valid_docsets = set()
+            for node in list_all_deliverables(tree, [broad_dt]):
+                deli = Deliverable(_node=node)
+                if deli.xml.docsetid:
+                    valid_docsets.add(deli.xml.docsetid)
+
+            valid_docsets_str = ["*", *sorted(valid_docsets)]
+
+            for ds in dt.docset:
+                if ds not in valid_docsets:
+                    allowed_str = ", ".join(f"'{v}'" for v in valid_docsets_str)
+                    errors.append(f"* {prod_val}/{ds} is not a valid Docset.\n  Allowed values are: {allowed_str}")
+
+    if errors:
+        err_count = len(errors)
+        noun = "error" if err_count == 1 else "errors"
+        console.print(f"[red]Error parsing doctype:[/red] {err_count} validation {noun} for Doctype:\n")
+        for err in errors:
+            console.print(err)
+        raise click.Abort()
+
+
 async def async_list_cmd(
     ctx: DocBuildContext,
     doctypes: tuple[str, ...],
@@ -197,6 +233,9 @@ async def async_list_cmd(
     except (OSError, etree.XMLSyntaxError, etree.XIncludeError) as e:
         console.print(f"[red]Error loading XML schema:[/red] {e}")
         raise click.Abort() from e
+
+    if parsed_doctypes:
+        validate_docsets_against_xml(parsed_doctypes, tree, console)
 
     # 3. Fetch and wrap Deliverables into Domain Objects
     # Consuming the generator directly saves memory over converting to an intermediate list

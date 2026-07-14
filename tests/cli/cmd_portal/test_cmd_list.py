@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from click.testing import CliRunner
 from lxml import etree  # type: ignore
 
+from docbuild.cli.cmd_portal import cmd_list
 from docbuild.cli.cmd_portal.cmd_list import list_cmd
 from docbuild.cli.context import DocBuildContext
 
@@ -45,6 +46,49 @@ def test_portal_list_invalid_doctype() -> None:
     assert result.exit_code != 0
     assert "Error parsing doctype:" in result.output
 
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
+    """Test that the command dynamically validates docsets and aborts with available options."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product id="sles">\n'
+        '        <docset path="15sp4" lifecycle="supported">\n'
+        '            <resources>\n'
+        '                <locale lang="en-us">\n'
+        '                    <deliverable id="admin_guide"/>\n'
+        '                </locale>\n'
+        '            </resources>\n'
+        '        </docset>\n'
+        '        <docset path="15sp5" lifecycle="supported">\n'
+        '            <resources>\n'
+        '                <locale lang="en-us">\n'
+        '                    <deliverable id="dummy_guide"/>\n'
+        '                </locale>\n'
+        '            </resources>\n'
+        '        </docset>\n'
+        '    </product>\n'
+        '</portal>\n'
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
+
+    result = runner.invoke(list_cmd, ["sles/invalid_docset"], obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "1 validation error for Doctype" in result.output
+    assert "* sles/invalid_docset is not a valid Docset." in result.output
+
+    # Rich console automatically wraps long text in test environments.
+    # Strip newlines to safely assert the exact string match.
+    clean_output = result.output.replace("\n", "")
+    assert "Allowed values are: '*', '15sp4', '15sp5'" in clean_output
 
 @patch("docbuild.cli.cmd_portal.cmd_list.parse_portal_config", new_callable=AsyncMock)
 def test_portal_list_malformed_xml(mock_parse, tmp_path) -> None:
