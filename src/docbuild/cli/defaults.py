@@ -81,11 +81,11 @@ DEFAULT_ENV_CONFIG = {
             "tmp_build_base_dir": "{tmp_dir}/build",
             "tmp_out_dir": "{tmp_dir}/out",
             "log_dir": BASE_LOG_DIR,
-            "tmp_deliverable_name_dyn": "{{{product}}}_{{{docset}}}_{{{lang}}}_XXXXXX",
+            "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
         },
         "target": {
             "target_base_dir": f"{Path.home()}/Documents/{APP_NAME}/target",
-            "target_dir_dyn": "{{{product}}}",
+            "target_dir_dyn": "{{product}}",
             "backup_dir": f"{STATE_HOME}/{{server.name}}/backup",
         },
     },
