@@ -1,0 +1,1 @@
+Fixed an issue where overriding list values (such as ``languages``) in the environment configuration appended to the default list instead of cleanly replacing it.

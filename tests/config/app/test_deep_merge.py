@@ -25,14 +25,14 @@ from docbuild.config.merge import deep_merge
         #
         pytest.param(
             [{"a": [1, 2]}, {"a": [3, 4]}],
-            {"a": [1, 2, 3, 4]},
-            id="list_concatenation",
+            {"a": [3, 4]},
+            id="list_replacement",
         ),
         #
         pytest.param(
             [{"t": (1, 2)}, {"t": (3, 4)}],
-            {"t": (1, 2, 3, 4)},
-            id="tuple_concatenation",
+            {"t": (3, 4)},
+            id="tuple_replacement",
         ),
         #
         pytest.param(
@@ -49,14 +49,14 @@ from docbuild.config.merge import deep_merge
         #
         pytest.param(
             [{"x": {"l": ["a"]}}, {"x": {"l": ["b"]}}],
-            {"x": {"l": ["a", "b"]}},
-            id="nested_list_concatenation",
+            {"x": {"l": ["b"]}},
+            id="nested_list_replacement",
         ),
         #
         pytest.param(
             [{"a": [{"x": 1}]}, {"a": [{"y": 2}]}],
-            {"a": [{"x": 1}, {"y": 2}]},
-            id="list_of_dicts_concatenation",
+            {"a": [{"y": 2}]},
+            id="list_of_dicts_replacement",
         ),
         #
         pytest.param(
