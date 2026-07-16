@@ -13,9 +13,8 @@ def deep_merge(*dcts: Mapping[str, Any]) -> dict[str, Any]:
 
     * If a key exists in both dictionaries and both values are Mappings,
       they will be merged iteratively.
-    * If both values are lists or tuples, they will be concatenated.
     * If both values are sets, they will be unioned.
-    * Otherwise (different types or primitive values), the value from the
+    * Otherwise (different types, lists, tuples, or primitive values), the value from the
       subsequent dictionary will overwrite the previous one.
 
     This means that the order of dictionaries matters. The first dictionary
@@ -52,17 +51,11 @@ def deep_merge(*dcts: Mapping[str, Any]) -> dict[str, Any]:
                         dest[key] = existing
                     stack.append((existing, value))
 
-                # Lists / tuples → concatenate
-                elif (isinstance(existing, list) and isinstance(value, list)) or (
-                    isinstance(existing, tuple) and isinstance(value, tuple)
-                ):
-                    dest[key] = existing + deepcopy(value)  # type: ignore[operator]
-
                 # Sets → union
                 elif isinstance(existing, set) and isinstance(value, set):
                     dest[key] = existing | deepcopy(value)
 
-                # Fallback → overwrite
+                # Fallback → overwrite (including lists and tuples)
                 else:
                     dest[key] = deepcopy(value)
 
