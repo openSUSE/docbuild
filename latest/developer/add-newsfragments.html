@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding News Fragments &#8212; Docbuild Documentation 0.20.1.dev31+g3e129b660.d20260716</title>
+    <title>Adding News Fragments &#8212; Docbuild Documentation 0.20.1.dev32+gf0e126d57</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../_static/documentation_options.js?v=c1d05ed5"></script>
+    <script src="../_static/documentation_options.js?v=d6615432"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@
     <link rel="prev" title="Updating the Project" href="update-project.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.20.0" />
+  <meta name="docsearch:version" content="0.21.0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -521,20 +521,20 @@ The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</s
 </ul>
 <p>For example, these are valid filenames: <code class="docutils literal notranslate"><span class="pre">123.feature.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">456.bugfix.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">+add-json.feature.rst</span></code> etc.</p>
 </li>
-<li><p>Create the new file with the command, for example for a feature in issue 123:</p>
+<li><p>Create the new file with the following command, for example for a feature in issue 123:</p>
 <div class="literal-block-wrapper docutils container" id="towncrier-create">
 <div class="code-block-caption"><span class="caption-text">Create a new newsfragment file</span><a class="headerlink" href="#towncrier-create" title="Link to this code">#</a></div>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="w"> </span><span class="m">123</span>.feature.rst
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span><span class="m">123</span>.feature.rst
 </pre></div>
 </div>
 </div>
 <p>The file is created in the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory.</p>
 </li>
-<li><p>If neccessary, open the file and describe your changes in RST format.</p>
+<li><p>Open the file and describe your changes in RST format.</p>
 <ul class="simple">
+<li><p>Prefer simple past tense or constructions with “now”.</p></li>
 <li><p>Wrap symbols like modules, functions, or classes into double backticks
 to render them in a <code class="docutils literal notranslate"><span class="pre">monospace</span> <span class="pre">font</span></code>.</p></li>
-<li><p>Prefer simple past tense or constructions with “now”.</p></li>
 </ul>
 <p>Try to keep the description short.</p>
 </li>
