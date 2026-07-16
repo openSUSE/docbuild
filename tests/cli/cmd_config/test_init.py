@@ -28,7 +28,8 @@ def test_config_list_flat(mock_logging, mock_env, mock_app, runner):
     """Test that 'config list --flat' shows dotted notation."""
     mock_ctx = MagicMock()
     mock_ctx.appconfig.model_dump.return_value = {"logging": {"level": "INFO"}}
-    mock_ctx.envconfig = None
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.tmp.log_dir = Path("/tmp")
     mock_ctx.envconfigfiles = []
 
     result = runner.invoke(cli, ["config", "list", "--app", "--flat"], obj=mock_ctx)

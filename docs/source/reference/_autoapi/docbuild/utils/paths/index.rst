@@ -15,6 +15,7 @@ Functions
 .. autoapisummary::
 
    docbuild.utils.paths.calc_max_len
+   docbuild.utils.paths.mark_cache_dir
 
 
 Module Contents
@@ -38,5 +39,16 @@ Module Contents
        >>> files = (Path('/path/to/file1.xml'), Path('/another/path/to/file2.xml'))
        >>> calc_max_len(files)
        30
+
+
+.. py:function:: mark_cache_dir(path: pathlib.Path | str) -> None
+
+   Add a standard CACHEDIR.TAG file to a directory.
+
+   This tag informs backup tools that the directory contains cached data
+   that can be safely excluded from backups. The directory is created if
+   it does not exist.
+
+   For more information, see: https://bford.info/cachedir/
 
 

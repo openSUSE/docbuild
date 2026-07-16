@@ -3,11 +3,16 @@
 from pathlib import Path
 import re
 
+import platformdirs
+
 from .models.lifecycle import LifecycleFlag
 from .models.serverroles import ServerRole
 
 APP_NAME: str = "docbuild"
 """The name of the application, used in paths and config files."""
+
+DEFAULT_SERVER_NAME = "default-env"
+"""The default server name used in the application configuration."""
 
 DEFAULT_LANGS: tuple[str, ...]= ("en-us",)
 """The default languages used by the application."""
@@ -21,20 +26,20 @@ DEFAULT_DELIVERABLES: str = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 
 # The primary, unique values of the Enum ('production', 'staging', 'testing')
-SERVER_ROLES: tuple[str]= tuple(
+SERVER_ROLES: tuple[str, ...]= tuple(
     [role.value for role in ServerRole]
 )
 """The unique primary server role values."""
 
 # Every single valid name and alias defined in the Enum
 # ('PRODUCTION', 'PROD', 'P', 'production', 'prod', 'p', 'devel', etc.)
-SERVER_ROLES_ALIASES: tuple[str] = tuple(ServerRole.__members__.keys())
+SERVER_ROLES_ALIASES: tuple[str, ...] = tuple(ServerRole.__members__.keys())
 """All valid server role names and aliases for validation and testing."""
 
 DEFAULT_LIFECYCLE: str = "supported"
 """The default lifecycle state for a docset."""
 
-ALLOWED_LIFECYCLES: tuple[str] = tuple(lc.name for lc in LifecycleFlag)
+ALLOWED_LIFECYCLES: tuple[str, ...] = tuple(lc.name for lc in LifecycleFlag)
 # ('supported', 'beta', 'hidden', 'unsupported')
 """The available lifecycle states for a docset (without 'unknown')."""
 
@@ -56,10 +61,11 @@ cloudnative Cloud Native
 compliance Compliance Documentation
 container Container Documentation
 liberty SUSE Multi-Linux Support
+releasenotes SUSE Release Notes
 sbp SUSE Best Practices
 ses SUSE Enterprise Storage
 sled SUSE Linux Enterprise Desktop
-sle-ha SUSE Linux Enterprise High Availability (incl. SLE HA GEO)
+sle-ha SUSE Linux Enterprise High Availability
 sle-hpc SUSE Linux Enterprise High-Performance Computing
 sle-micro SUSE Linux Micro
 sle-public-cloud SUSE Linux Enterprise in Public Clouds
@@ -74,17 +80,19 @@ style SUSE Documentation Style Guide
 subscription Subscription Management
 suma-retail SUSE Multi-Linux Manager for Retail
 suma SUSE Multi-Linux Manager
+suse-ai-factory SUSE AI Factory
 suse-ai SUSE AI
 suse-caasp SUSE CaaS Platform
 suse-cap SUSE Cloud Application Platform
 suse-distribution-migration-system SUSE Distribution Migration System
 suse-edge SUSE Edge
+suse-telco SUSE Telco Cloud
 trd Technical Reference Documentation""".strip().splitlines()
     )
 }
 """A dictionary of valid products acronyms and their full names."""
 
-ALLOWED_PRODUCTS: tuple[str]= tuple([item for item in VALID_PRODUCTS])
+ALLOWED_PRODUCTS: tuple[str, ...]= tuple([item for item in VALID_PRODUCTS])
 """A tuple of valid product acronyms."""
 
 SINGLE_LANG_REGEX: re.Pattern = re.compile(r"[a-z]{2}-[a-z]{2}")
@@ -122,6 +130,24 @@ CONFIG_PATHS: tuple[Path, ...] = (
 )
 """The paths where the application will look for configuration files."""
 
+# --- XDG Base Directory Setup ---
+STATE_HOME: Path = platformdirs.user_state_path(APP_NAME)
+"""The base directory for application state, logs, and locks, per XDG Base Directory Specification."""
+
+CONFIG_HOME: Path = platformdirs.user_config_path(APP_NAME)
+"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
+
+DATA_HOME: Path = platformdirs.user_data_path(APP_NAME)
+"""The user-specific data directory, typically located at ~/.local/share/docbuild."""
+
+CACHE_HOME: Path = platformdirs.user_cache_path(APP_NAME)
+"""The user-specific cache directory, typically located at ~/.cache/docbuild."""
+
+RUNTIME_DIR: Path = platformdirs.user_runtime_path(APP_NAME)
+"""The user-specific runtime directory, typically located at /run/user/1000/docbuild."""
+
+
+# --- Config files ---
 APP_CONFIG_BASENAMES: tuple[str|Path, ...] = (".config.toml", "config.toml")
 """The base filenames for the application configuration files, in
 order of priority."""
@@ -147,8 +173,10 @@ GIT_CONFIG_FILENAME: Path = Path(__file__).parent / "etc/git/gitconfig"
 """The project-specific Git configuration file (relative to this project)"""
 
 # --- State and Logging Constants ---
+BASE_LOG_DIR: Path = Path(f"{STATE_HOME}/{DEFAULT_SERVER_NAME}/log")
+"""The directory where log files will be stored."""
 
-BASE_STATE_DIR: Path = Path.home() / ".local" / "state" / APP_NAME
+BASE_STATE_DIR: Path = STATE_HOME / DEFAULT_SERVER_NAME
 """The directory where application state, logs, and locks are stored,
 per XDG Base Directory Specification."""
 
@@ -158,12 +186,8 @@ GITLOGGER_NAME: str = f"{APP_NAME}.git"
 PORTALLOGGER_NAME: str = f"{APP_NAME}.portal"
 """The standardized name for the Portal-related logger."""
 
-# --- State constants ---
-BASE_LOG_DIR: Path = BASE_STATE_DIR / "logs"
-"""The directory where log files will be stored."""
-
 # --- Locking constants ---
-BASE_LOCK_DIR: Path = BASE_STATE_DIR / "locks"
+BASE_LOCK_DIR: Path = RUNTIME_DIR / "locks"
 """The directory where PID lock files will be stored."""
 
 XMLDATADIR: Path = Path(__file__).parent / "config" / "xml" / "data"

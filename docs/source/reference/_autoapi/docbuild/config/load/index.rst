@@ -15,7 +15,6 @@ Functions
 .. autoapisummary::
 
    docbuild.config.load.load_single_config
-   docbuild.config.load.load_and_merge_configs
    docbuild.config.load.handle_config
 
 
@@ -33,27 +32,14 @@ Module Contents
        or cannot be decoded.
 
 
-.. py:function:: load_and_merge_configs(defaults: collections.abc.Sequence[str | pathlib.Path], *paths: str | pathlib.Path) -> tuple[tuple[str | pathlib.Path, Ellipsis], dict[str, Any]]
-
-   Load config files and merge all content regardless of the nesting level.
-
-   The order of defaults and paths is important. The paths are in the order of
-   system path, user path, and current working directory.
-   The defaults are in the order of common config file names followed by more
-   specific ones. The later ones will override data from the earlier ones.
-
-   :param defaults: a sequence of base filenames (without path!) to look for
-                    in the paths
-   :param paths: the paths to look for config files (without the filename!)
-   :return: the found config files and the merged dictionary (raw dict)
-
-
 .. py:function:: handle_config(user_path: pathlib.Path | str | None, search_dirs: collections.abc.Iterable[str | pathlib.Path], basenames: collections.abc.Iterable[str] | None, default_filename: str | None = None, default_config: object | None = None) -> tuple[tuple[pathlib.Path, Ellipsis] | None, object | dict, bool]
 
    Return (config_files, config, from_defaults) for config file handling.
 
    Note: The returned configuration is the **raw loaded dictionary**. No
    placeholder replacement or validation has been performed on it.
+   Configurations are collected across all search directories and deeply merged
+   on top of the default configuration to allow partial user configs.
 
    :param user_path: Path to the user-defined config file, if any.
    :param search_dirs: Iterable of directories to search for config files.
@@ -64,8 +50,6 @@ Module Contents
 
        * A tuple of found config file paths or None if no config file is found.
        * The loaded configuration as a dictionary or the default configuration.
-       * A boolean indicating if the default configuration was used.
-   :raises ValueError: If no config file is found and no default
-       configuration is provided.
+       * A boolean indicating if the default configuration was used exclusively.
 
 

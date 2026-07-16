@@ -15,6 +15,7 @@ Attributes
 .. autoapisummary::
 
    docbuild.constants.APP_NAME
+   docbuild.constants.DEFAULT_SERVER_NAME
    docbuild.constants.DEFAULT_LANGS
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
@@ -31,16 +32,21 @@ Attributes
    docbuild.constants.USER_CONFIG_DIR
    docbuild.constants.SYSTEM_CONFIG_DIR
    docbuild.constants.CONFIG_PATHS
+   docbuild.constants.STATE_HOME
+   docbuild.constants.CONFIG_HOME
+   docbuild.constants.DATA_HOME
+   docbuild.constants.CACHE_HOME
+   docbuild.constants.RUNTIME_DIR
    docbuild.constants.APP_CONFIG_BASENAMES
    docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES
    docbuild.constants.APP_CONFIG_FILENAME
    docbuild.constants.ENV_CONFIG_FILENAME
    docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME
    docbuild.constants.GIT_CONFIG_FILENAME
+   docbuild.constants.BASE_LOG_DIR
    docbuild.constants.BASE_STATE_DIR
    docbuild.constants.GITLOGGER_NAME
    docbuild.constants.PORTALLOGGER_NAME
-   docbuild.constants.BASE_LOG_DIR
    docbuild.constants.BASE_LOCK_DIR
    docbuild.constants.XMLDATADIR
    docbuild.constants.DEFAULT_ERROR_LIMIT
@@ -59,6 +65,13 @@ Module Contents
 
 
    The name of the application, used in paths and config files.
+
+
+.. py:data:: DEFAULT_SERVER_NAME
+   :value: 'default-env'
+
+
+   The default server name used in the application configuration.
 
 
 .. py:data:: DEFAULT_LANGS
@@ -84,13 +97,13 @@ Module Contents
 
 
 .. py:data:: SERVER_ROLES
-   :type:  tuple[str]
+   :type:  tuple[str, Ellipsis]
 
    The unique primary server role values.
 
 
 .. py:data:: SERVER_ROLES_ALIASES
-   :type:  tuple[str]
+   :type:  tuple[str, Ellipsis]
    :value: ('PRODUCTION', 'STAGING', 'TESTING', 'PROD', 'P', 'prod', 'p', 'STAGE', 'S', 'stage', 's',...
 
 
@@ -106,7 +119,7 @@ Module Contents
 
 
 .. py:data:: ALLOWED_LIFECYCLES
-   :type:  tuple[str]
+   :type:  tuple[str, Ellipsis]
 
    The available lifecycle states for a docset (without 'unknown').
 
@@ -118,7 +131,7 @@ Module Contents
 
 
 .. py:data:: ALLOWED_PRODUCTS
-   :type:  tuple[str]
+   :type:  tuple[str, Ellipsis]
 
    A tuple of valid product acronyms.
 
@@ -169,6 +182,36 @@ Module Contents
    The paths where the application will look for configuration files.
 
 
+.. py:data:: STATE_HOME
+   :type:  pathlib.Path
+
+   The base directory for application state, logs, and locks, per XDG Base Directory Specification.
+
+
+.. py:data:: CONFIG_HOME
+   :type:  pathlib.Path
+
+   The user-specific configuration directory, typically located at ~/.config/docbuild.
+
+
+.. py:data:: DATA_HOME
+   :type:  pathlib.Path
+
+   The user-specific data directory, typically located at ~/.local/share/docbuild.
+
+
+.. py:data:: CACHE_HOME
+   :type:  pathlib.Path
+
+   The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+
+.. py:data:: RUNTIME_DIR
+   :type:  pathlib.Path
+
+   The user-specific runtime directory, typically located at /run/user/1000/docbuild.
+
+
 .. py:data:: APP_CONFIG_BASENAMES
    :type:  tuple[str | pathlib.Path, Ellipsis]
    :value: ('.config.toml', 'config.toml')
@@ -215,6 +258,12 @@ Module Contents
    The project-specific Git configuration file (relative to this project)
 
 
+.. py:data:: BASE_LOG_DIR
+   :type:  pathlib.Path
+
+   The directory where log files will be stored.
+
+
 .. py:data:: BASE_STATE_DIR
    :type:  pathlib.Path
 
@@ -236,12 +285,6 @@ Module Contents
 
 
    The standardized name for the Portal-related logger.
-
-
-.. py:data:: BASE_LOG_DIR
-   :type:  pathlib.Path
-
-   The directory where log files will be stored.
 
 
 .. py:data:: BASE_LOCK_DIR

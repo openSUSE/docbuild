@@ -1,0 +1,1 @@
+The project's directory structure was refactored to align with XDG standards using ``platformdirs``, centralizing path definitions and introducing new, more flexible configuration options for cache, runtime, and lock directories.

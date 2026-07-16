@@ -94,6 +94,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: translations
+      :type: set[str]
+
+
+      Return a set of all language codes available for this deliverable.
+
+
+
    .. py:property:: kind
       :type: str | None
 
@@ -146,6 +154,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: category_title
+      :type: str | None
+
+
+      Return the resolved category title, or the raw ID if not found.
+
+
+
    .. py:method:: desc() -> collections.abc.Generator[lxml.etree._Element, None, None]
 
       Yield product ``<desc>`` elements.
@@ -170,7 +186,7 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
-   .. py:method:: git_remote() -> docbuild.models.repo.Repo | None
+   .. py:method:: git_remote() -> docbuild.models.repo.Repo | str | None
 
       Return git remote URL from sibling ``<git>`` node.
 

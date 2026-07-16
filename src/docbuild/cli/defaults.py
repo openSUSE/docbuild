@@ -9,20 +9,16 @@ They can be overridden by the user through configuration files or command-line o
 
 from pathlib import Path
 
-import platformdirs
-
-from ..constants import APP_NAME
+from ..constants import (
+    APP_NAME,
+    CACHE_HOME,
+    CONFIG_HOME,
+    DATA_HOME,
+    DEFAULT_SERVER_NAME,
+    RUNTIME_DIR,
+    STATE_HOME,
+)
 from ..utils.paths import mark_cache_dir
-
-# --- XDG Base Directory Setup ---
-CONFIG_HOME = platformdirs.user_config_dir(APP_NAME)
-DATA_HOME = platformdirs.user_data_dir(APP_NAME)
-STATE_HOME = platformdirs.user_state_dir(APP_NAME)
-CACHE_HOME = platformdirs.user_cache_dir(APP_NAME)
-
-# Dynamically resolve POSIX runtime dir (/run/user/1000/docbuild)
-RUNTIME_DIR = platformdirs.user_runtime_dir(APP_NAME)
-
 
 DEFAULT_APP_CONFIG = {
     "debug": False,
@@ -41,11 +37,16 @@ DEFAULT_APP_CONFIG = {
 }
 """Default configuration for the application."""
 
+
 # --- FIXED DEFAULT_ENV_CONFIG ---
 DEFAULT_ENV_CONFIG = {
-    # 1. ROOT SECTIONS MUST BE PRESENT AND VALIDATED AGAINST EnvConfig
+    # ROOT SECTIONS MUST BE PRESENT AND VALIDATED AGAINST EnvConfig
+    # Rule of thumb:
+    # * Put it in cache if deleting it is safe and the app can rebuild it automatically.
+    # * Put it in state if it is authoritative local state that should survive cache cleanup.
+    # * Put it in tmp/runtime if it is per-run scratch space.
     "server": {
-        "name": "default-local-env",
+        "name": DEFAULT_SERVER_NAME,
         "role": "production",
         "host": "127.0.0.1",
         "enable_mail": False,
@@ -56,31 +57,35 @@ DEFAULT_ENV_CONFIG = {
         "canonical_url_domain": "http://localhost/",
     },
     "paths": {
-        "config_dir": f"{CONFIG_HOME}/config.d",
-        "main_portal_config": f"{CONFIG_HOME}/config.d/portal.xml",
         "root_config_dir": f"{CONFIG_HOME}",
+        "config_dir": "{root_config_dir}/config.d",
+        "main_portal_config": "{config_dir}/portal.xml",
+        "portal_rncschema": "{root_config_dir}/portal-config.rnc",
         "jinja_dir": f"{DATA_HOME}/jinja",
-        "server_rootfiles_dir": f"{CONFIG_HOME}/server-root-files",
+        "server_rootfiles_dir": "{root_config_dir}/server-root-files",
         "tmp_repo_dir": f"{STATE_HOME}/repos/branches",
         "repo_dir": f"{STATE_HOME}/repos/permanent",
         "base_cache_dir": f"{CACHE_HOME}",
-        "base_server_cache_dir": f"{CACHE_HOME}/default",
-        "meta_cache_dir": f"{CACHE_HOME}/default/meta",
-        "base_tmp_dir": RUNTIME_DIR,
+        "base_server_cache_dir": "{base_cache_dir}/{server.name}",
+        "meta_cache_dir": "{base_server_cache_dir}/meta",
+        # "base_tmp_dir": "",
+        "runtime_base_dir": f"{RUNTIME_DIR}",
+        "lock_dir": "{runtime_base_dir}/locks",
+        "json_cache_dir": "{base_server_cache_dir}/json",
         "tmp": {
             "tmp_base_dir": f"/tmp/{APP_NAME}",
-            "tmp_dir": "{tmp_base_dir}/default-local",
+            "tmp_dir": "{tmp_base_dir}/{server.name}",
             "tmp_deliverable_dir": "{tmp_dir}/deliverable",
-            "tmp_metadata_dir": f"{STATE_HOME}/metadata",
-            "tmp_build_base_dir": f"{CACHE_HOME}/build",
+            "tmp_metadata_dir": "{tmp_dir}/metadata",
+            "tmp_build_base_dir": "{tmp_dir}/build",
             "tmp_out_dir": "{tmp_dir}/out",
-            "log_dir": f"{STATE_HOME}/log",
+            "log_dir": f"{STATE_HOME}/{{server.name}}/log",
             "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
         },
         "target": {
             "target_base_dir": f"{Path.home()}/Documents/{APP_NAME}/target",
             "target_dir_dyn": "{{product}}",
-            "backup_dir": f"{STATE_HOME}/backup",
+            "backup_dir": f"{STATE_HOME}/{{server.name}}/backup",
         },
     },
     "build": {
@@ -95,6 +100,8 @@ DEFAULT_ENV_CONFIG = {
     "xslt-params": {},
 }
 """Default configuration for the environment."""
+
+
 
 # --- Apply CACHEDIR.TAG to required directories ---
 for _cache_dir in [
