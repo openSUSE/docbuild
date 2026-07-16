@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.20.1.dev29+gbf5d35043.d20260714</title>
+    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.20.1.dev30+g3166b525b.d20260716</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../_static/documentation_options.js?v=45b45020"></script>
+    <script src="../../_static/documentation_options.js?v=269c9a47"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -616,7 +616,7 @@ paths, and other environment-specific parameters.</p>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">doc-example-com</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">default-env</span></code></p>
 </dd>
 </dl>
 <p>Name of the server, used for logging and cache paths</p>
@@ -734,18 +734,6 @@ Key naming convention:</p>
 <p>The root directory where all configuration files are stored.</p>
 </dd>
 </dl>
-<dl id="envtoml-paths-jinja-dir">
-<dt><code class="docutils literal notranslate"><span class="pre">jinja_dir</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/jinja-doc-suse-com</span></code></p>
-</dd>
-</dl>
-<p>Path to the directory containing Jinja templates.</p>
-</dd>
-</dl>
 <dl id="envtoml-paths-config-dir">
 <dt><code class="docutils literal notranslate"><span class="pre">config_dir</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -770,16 +758,28 @@ Key naming convention:</p>
 <p>Absolute path to the main Portal XML configuration file.</p>
 </dd>
 </dl>
-<dl id="envtoml-paths-portal-schema">
-<dt><code class="docutils literal notranslate"><span class="pre">portal_schema</span></code></dt><dd><dl class="field-list simple">
+<dl id="envtoml-paths-portal-rncschema">
+<dt><code class="docutils literal notranslate"><span class="pre">portal_rncschema</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/portal-schema.rnc</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/portal-config.rnc</span></code></p>
 </dd>
 </dl>
 <p>Absolute path to the Portal RELAX NG (RNC) schema file used for validation.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-jinja-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">jinja_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{root_config_dir}/jinja-doc-suse-com</span></code></p>
+</dd>
+</dl>
+<p>Path to the directory containing Jinja templates.</p>
 </dd>
 </dl>
 <dl id="envtoml-paths-server-rootfiles-dir">
@@ -794,13 +794,37 @@ Key naming convention:</p>
 <p>Path to the directory containing server root files like robots.txt.</p>
 </dd>
 </dl>
+<dl id="envtoml-paths-tmp-repo-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">tmp_repo_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">~/.local/state/docbuild/repos/branches</span></code></p>
+</dd>
+</dl>
+<p>The directory for storing temporary repositories from branches.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-repo-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">repo_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">~/.local/state/docbuild/repos/permanent</span></code></p>
+</dd>
+</dl>
+<p>The directory where permanent full repositories are stored.</p>
+</dd>
+</dl>
 <dl id="envtoml-paths-base-cache-dir">
 <dt><code class="docutils literal notranslate"><span class="pre">base_cache_dir</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/var/cache/docserv</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">~/.cache/docbuild</span></code></p>
 </dd>
 </dl>
 <p>The base directory for storing cached data.</p>
@@ -818,52 +842,52 @@ Key naming convention:</p>
 <p>The server-specific cache directory, derived from base_cache_dir and server name.</p>
 </dd>
 </dl>
-<dl id="envtoml-paths-base-tmp-dir">
-<dt><code class="docutils literal notranslate"><span class="pre">base_tmp_dir</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/var/tmp/docbuild</span></code></p>
-</dd>
-</dl>
-<p>The base directory for temporary files.</p>
-</dd>
-</dl>
-<dl id="envtoml-paths-repo-dir">
-<dt><code class="docutils literal notranslate"><span class="pre">repo_dir</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docserv/repos/permanent-full/</span></code></p>
-</dd>
-</dl>
-<p>The directory where permanent full repositories are stored.</p>
-</dd>
-</dl>
-<dl id="envtoml-paths-tmp-repo-dir">
-<dt><code class="docutils literal notranslate"><span class="pre">tmp_repo_dir</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docserv/repos/temporary-branches/</span></code></p>
-</dd>
-</dl>
-<p>The directory for storing temporary repositories from branches.</p>
-</dd>
-</dl>
 <dl id="envtoml-paths-meta-cache-dir">
 <dt><code class="docutils literal notranslate"><span class="pre">meta_cache_dir</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/{server.name}/meta</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_server_cache_dir}/meta</span></code></p>
 </dd>
 </dl>
 <p>The directory for caching metadata.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-runtime-base-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">runtime_base_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/runtime</span></code></p>
+</dd>
+</dl>
+<p>The base directory for lightweight runtime artifacts.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-lock-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">lock_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{runtime_base_dir}/locks</span></code></p>
+</dd>
+</dl>
+<p>Directory for lock files used to prevent concurrent builds.</p>
+</dd>
+</dl>
+<dl id="envtoml-paths-json-cache-dir">
+<dt><code class="docutils literal notranslate"><span class="pre">json_cache_dir</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_server_cache_dir}/json</span></code></p>
+</dd>
+</dl>
+<p>JSON cache path</p>
 </dd>
 </dl>
 </section>
@@ -877,10 +901,10 @@ Paths can hold placeholders in brackets.</p>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{paths.base_tmp_dir}</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/tmp/docbuild</span></code></p>
 </dd>
 </dl>
-<p>The base directory for temporary files, referencing paths.base_tmp_dir.</p>
+<p>The base directory for temporary files.</p>
 </dd>
 </dl>
 <dl id="envtoml-paths-tmp-tmp-dir">
@@ -1013,7 +1037,7 @@ Paths can hold placeholders in brackets.</p>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">/data/docbuild/external-builds/</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">~/.local/state/docbuild/default-env/backup</span></code></p>
 </dd>
 </dl>
 <p>The directory where backups of external builds are stored.</p>

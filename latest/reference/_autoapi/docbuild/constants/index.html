@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.20.1.dev29+gbf5d35043.d20260714</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.20.1.dev30+g3166b525b.d20260716</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=45b45020"></script>
+    <script src="../../../../_static/documentation_options.js?v=269c9a47"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -615,53 +615,71 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.APP_NAME" title="docbuild.constants.APP_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">APP_NAME</span></code></a></p></td>
 <td><p>The name of the application, used in paths and config files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_LANGS" title="docbuild.constants.DEFAULT_LANGS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_LANGS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_SERVER_NAME" title="docbuild.constants.DEFAULT_SERVER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_SERVER_NAME</span></code></a></p></td>
+<td><p>The default server name used in the application configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_LANGS" title="docbuild.constants.DEFAULT_LANGS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_LANGS</span></code></a></p></td>
 <td><p>The default languages used by the application.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_LANGUAGES" title="docbuild.constants.ALLOWED_LANGUAGES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_LANGUAGES</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_LANGUAGES" title="docbuild.constants.ALLOWED_LANGUAGES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_LANGUAGES</span></code></a></p></td>
 <td><p>The languages supported by the documentation portal.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_DELIVERABLES" title="docbuild.constants.DEFAULT_DELIVERABLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DELIVERABLES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_DELIVERABLES" title="docbuild.constants.DEFAULT_DELIVERABLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DELIVERABLES</span></code></a></p></td>
 <td><p>The default deliverables when no specific doctype is provided.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES" title="docbuild.constants.SERVER_ROLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES" title="docbuild.constants.SERVER_ROLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES</span></code></a></p></td>
 <td><p>The unique primary server role values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="docbuild.constants.SERVER_ROLES_ALIASES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES_ALIASES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="docbuild.constants.SERVER_ROLES_ALIASES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES_ALIASES</span></code></a></p></td>
 <td><p>All valid server role names and aliases for validation and testing.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_LIFECYCLE" title="docbuild.constants.DEFAULT_LIFECYCLE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_LIFECYCLE</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_LIFECYCLE" title="docbuild.constants.DEFAULT_LIFECYCLE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_LIFECYCLE</span></code></a></p></td>
 <td><p>The default lifecycle state for a docset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="docbuild.constants.ALLOWED_LIFECYCLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_LIFECYCLES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="docbuild.constants.ALLOWED_LIFECYCLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_LIFECYCLES</span></code></a></p></td>
 <td><p>The available lifecycle states for a docset (without 'unknown').</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.VALID_PRODUCTS" title="docbuild.constants.VALID_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VALID_PRODUCTS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.VALID_PRODUCTS" title="docbuild.constants.VALID_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VALID_PRODUCTS</span></code></a></p></td>
 <td><p>A dictionary of valid products acronyms and their full names.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_PRODUCTS" title="docbuild.constants.ALLOWED_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_PRODUCTS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_PRODUCTS" title="docbuild.constants.ALLOWED_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_PRODUCTS</span></code></a></p></td>
 <td><p>A tuple of valid product acronyms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.SINGLE_LANG_REGEX" title="docbuild.constants.SINGLE_LANG_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SINGLE_LANG_REGEX" title="docbuild.constants.SINGLE_LANG_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></p></td>
 <td><p>Regex for a single language code in the format 'xx-XX' (e.g., 'en-us').</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.MULTIPLE_LANG_REGEX" title="docbuild.constants.MULTIPLE_LANG_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MULTIPLE_LANG_REGEX</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.MULTIPLE_LANG_REGEX" title="docbuild.constants.MULTIPLE_LANG_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MULTIPLE_LANG_REGEX</span></code></a></p></td>
 <td><p>Regex for multiple languages, separated by commas.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.LIFECYCLES_STR" title="docbuild.constants.LIFECYCLES_STR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIFECYCLES_STR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.LIFECYCLES_STR" title="docbuild.constants.LIFECYCLES_STR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIFECYCLES_STR</span></code></a></p></td>
 <td><p>Regex for lifecycle states, separated by pipe (|).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.PROJECT_DIR" title="docbuild.constants.PROJECT_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.PROJECT_DIR" title="docbuild.constants.PROJECT_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code></a></p></td>
 <td><p>The current working directory, used as the project directory.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.USER_CONFIG_DIR" title="docbuild.constants.USER_CONFIG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USER_CONFIG_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.USER_CONFIG_DIR" title="docbuild.constants.USER_CONFIG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">USER_CONFIG_DIR</span></code></a></p></td>
 <td><p>The user-specific configuration directory, typically located</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SYSTEM_CONFIG_DIR" title="docbuild.constants.SYSTEM_CONFIG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_DIR</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.SYSTEM_CONFIG_DIR" title="docbuild.constants.SYSTEM_CONFIG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_DIR</span></code></a></p></td>
 <td><p>The system-wide configuration directory, typically located</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.CONFIG_PATHS" title="docbuild.constants.CONFIG_PATHS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONFIG_PATHS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.CONFIG_PATHS" title="docbuild.constants.CONFIG_PATHS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONFIG_PATHS</span></code></a></p></td>
 <td><p>The paths where the application will look for configuration files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.STATE_HOME" title="docbuild.constants.STATE_HOME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STATE_HOME</span></code></a></p></td>
+<td><p>The base directory for application state, logs, and locks, per XDG Base Directory Specification.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.CONFIG_HOME" title="docbuild.constants.CONFIG_HOME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONFIG_HOME</span></code></a></p></td>
+<td><p>The user-specific configuration directory, typically located at ~/.config/docbuild.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DATA_HOME" title="docbuild.constants.DATA_HOME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATA_HOME</span></code></a></p></td>
+<td><p>The user-specific data directory, typically located at ~/.local/share/docbuild.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.CACHE_HOME" title="docbuild.constants.CACHE_HOME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CACHE_HOME</span></code></a></p></td>
+<td><p>The user-specific cache directory, typically located at ~/.cache/docbuild.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.RUNTIME_DIR" title="docbuild.constants.RUNTIME_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RUNTIME_DIR</span></code></a></p></td>
+<td><p>The user-specific runtime directory, typically located at /run/user/1000/docbuild.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.APP_CONFIG_BASENAMES" title="docbuild.constants.APP_CONFIG_BASENAMES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">APP_CONFIG_BASENAMES</span></code></a></p></td>
 <td><p>The base filenames for the application configuration files, in</p></td>
@@ -681,17 +699,17 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.GIT_CONFIG_FILENAME" title="docbuild.constants.GIT_CONFIG_FILENAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GIT_CONFIG_FILENAME</span></code></a></p></td>
 <td><p>The project-specific Git configuration file (relative to this project)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_STATE_DIR" title="docbuild.constants.BASE_STATE_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
+<td><p>The directory where log files will be stored.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_STATE_DIR" title="docbuild.constants.BASE_STATE_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></p></td>
 <td><p>The directory where application state, logs, and locks are stored,</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.GITLOGGER_NAME" title="docbuild.constants.GITLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></p></td>
 <td><p>The standardized name for the Git-related logger.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.PORTALLOGGER_NAME" title="docbuild.constants.PORTALLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PORTALLOGGER_NAME</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.PORTALLOGGER_NAME" title="docbuild.constants.PORTALLOGGER_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PORTALLOGGER_NAME</span></code></a></p></td>
 <td><p>The standardized name for the Portal-related logger.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOG_DIR" title="docbuild.constants.BASE_LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></p></td>
-<td><p>The directory where log files will be stored.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.BASE_LOCK_DIR" title="docbuild.constants.BASE_LOCK_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></p></td>
 <td><p>The directory where PID lock files will be stored.</p></td>
@@ -727,6 +745,12 @@
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.DEFAULT_SERVER_NAME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_SERVER_NAME</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'default-env'</span></span><a class="headerlink" href="#docbuild.constants.DEFAULT_SERVER_NAME" title="Link to this definition">#</a></dt>
+<dd><p>The default server name used in the application configuration.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.DEFAULT_LANGS">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_LANGS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('en-us',)</span></span><a class="headerlink" href="#docbuild.constants.DEFAULT_LANGS" title="Link to this definition">#</a></dt>
 <dd><p>The default languages used by the application.</p>
@@ -746,13 +770,13 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.SERVER_ROLES">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES" title="Link to this definition">#</a></dt>
 <dd><p>The unique primary server role values.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.SERVER_ROLES_ALIASES">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES_ALIASES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('PRODUCTION',</span> <span class="pre">'STAGING',</span> <span class="pre">'TESTING',</span> <span class="pre">'PROD',</span> <span class="pre">'P',</span> <span class="pre">'prod',</span> <span class="pre">'p',</span> <span class="pre">'STAGE',</span> <span class="pre">'S',</span> <span class="pre">'stage',</span> <span class="pre">'s',...</span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES_ALIASES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('PRODUCTION',</span> <span class="pre">'STAGING',</span> <span class="pre">'TESTING',</span> <span class="pre">'PROD',</span> <span class="pre">'P',</span> <span class="pre">'prod',</span> <span class="pre">'p',</span> <span class="pre">'STAGE',</span> <span class="pre">'S',</span> <span class="pre">'stage',</span> <span class="pre">'s',...</span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="Link to this definition">#</a></dt>
 <dd><p>All valid server role names and aliases for validation and testing.</p>
 </dd></dl>
 
@@ -764,7 +788,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.ALLOWED_LIFECYCLES">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_LIFECYCLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_LIFECYCLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="Link to this definition">#</a></dt>
 <dd><p>The available lifecycle states for a docset (without ‘unknown’).</p>
 </dd></dl>
 
@@ -776,7 +800,7 @@
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.ALLOWED_PRODUCTS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_PRODUCTS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_PRODUCTS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_PRODUCTS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_PRODUCTS" title="Link to this definition">#</a></dt>
 <dd><p>A tuple of valid product acronyms.</p>
 </dd></dl>
 
@@ -825,6 +849,36 @@ at /etc/docbuild.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.STATE_HOME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">STATE_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.STATE_HOME" title="Link to this definition">#</a></dt>
+<dd><p>The base directory for application state, logs, and locks, per XDG Base Directory Specification.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.CONFIG_HOME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">CONFIG_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.CONFIG_HOME" title="Link to this definition">#</a></dt>
+<dd><p>The user-specific configuration directory, typically located at ~/.config/docbuild.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.DATA_HOME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DATA_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.DATA_HOME" title="Link to this definition">#</a></dt>
+<dd><p>The user-specific data directory, typically located at ~/.local/share/docbuild.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.CACHE_HOME">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">CACHE_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.CACHE_HOME" title="Link to this definition">#</a></dt>
+<dd><p>The user-specific cache directory, typically located at ~/.cache/docbuild.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.RUNTIME_DIR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">RUNTIME_DIR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.RUNTIME_DIR" title="Link to this definition">#</a></dt>
+<dd><p>The user-specific runtime directory, typically located at /run/user/1000/docbuild.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.APP_CONFIG_BASENAMES">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">APP_CONFIG_BASENAMES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('.config.toml',</span> <span class="pre">'config.toml')</span></span><a class="headerlink" href="#docbuild.constants.APP_CONFIG_BASENAMES" title="Link to this definition">#</a></dt>
 <dd><p>The base filenames for the application configuration files, in
@@ -863,6 +917,12 @@ used in production.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.BASE_LOG_DIR">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_LOG_DIR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.BASE_LOG_DIR" title="Link to this definition">#</a></dt>
+<dd><p>The directory where log files will be stored.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.BASE_STATE_DIR">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_STATE_DIR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.BASE_STATE_DIR" title="Link to this definition">#</a></dt>
 <dd><p>The directory where application state, logs, and locks are stored,
@@ -879,12 +939,6 @@ per XDG Base Directory Specification.</p>
 <dt class="sig sig-object py" id="docbuild.constants.PORTALLOGGER_NAME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">PORTALLOGGER_NAME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'docbuild.portal'</span></span><a class="headerlink" href="#docbuild.constants.PORTALLOGGER_NAME" title="Link to this definition">#</a></dt>
 <dd><p>The standardized name for the Portal-related logger.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.constants.BASE_LOG_DIR">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">BASE_LOG_DIR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.BASE_LOG_DIR" title="Link to this definition">#</a></dt>
-<dd><p>The directory where log files will be stored.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -982,6 +1036,7 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.APP_NAME"><code class="docutils literal notranslate"><span class="pre">APP_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_SERVER_NAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_SERVER_NAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_LANGS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LANGS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ALLOWED_LANGUAGES"><code class="docutils literal notranslate"><span class="pre">ALLOWED_LANGUAGES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_DELIVERABLES"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DELIVERABLES</span></code></a></li>
@@ -998,16 +1053,21 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.USER_CONFIG_DIR"><code class="docutils literal notranslate"><span class="pre">USER_CONFIG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SYSTEM_CONFIG_DIR"><code class="docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.CONFIG_PATHS"><code class="docutils literal notranslate"><span class="pre">CONFIG_PATHS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.STATE_HOME"><code class="docutils literal notranslate"><span class="pre">STATE_HOME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.CONFIG_HOME"><code class="docutils literal notranslate"><span class="pre">CONFIG_HOME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DATA_HOME"><code class="docutils literal notranslate"><span class="pre">DATA_HOME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.CACHE_HOME"><code class="docutils literal notranslate"><span class="pre">CACHE_HOME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.RUNTIME_DIR"><code class="docutils literal notranslate"><span class="pre">RUNTIME_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.APP_CONFIG_BASENAMES"><code class="docutils literal notranslate"><span class="pre">APP_CONFIG_BASENAMES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES"><code class="docutils literal notranslate"><span class="pre">PROJECT_LEVEL_APP_CONFIG_FILENAMES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.APP_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">APP_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ENV_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG_FILENAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GIT_CONFIG_FILENAME"><code class="docutils literal notranslate"><span class="pre">GIT_CONFIG_FILENAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_STATE_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_STATE_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.GITLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">GITLOGGER_NAME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.PORTALLOGGER_NAME"><code class="docutils literal notranslate"><span class="pre">PORTALLOGGER_NAME</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOG_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOG_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.BASE_LOCK_DIR"><code class="docutils literal notranslate"><span class="pre">BASE_LOCK_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ERROR_LIMIT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ERROR_LIMIT</span></code></a></li>

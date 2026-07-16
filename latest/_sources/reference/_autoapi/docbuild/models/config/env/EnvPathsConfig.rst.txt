@@ -117,12 +117,30 @@ docbuild.models.config.env.EnvPathsConfig
 
 
 
-   .. py:attribute:: base_tmp_dir
+   .. py:attribute:: json_cache_dir
       :type:  docbuild.models.path.EnsureWritableDirectory
       :value: None
 
 
-      Base system temporary path.
+      JSON cache path.
+
+
+
+   .. py:attribute:: runtime_base_dir
+      :type:  docbuild.models.path.EnsureWritableDirectory
+      :value: None
+
+
+      Base runtime path.
+
+
+
+   .. py:attribute:: lock_dir
+      :type:  docbuild.models.path.EnsureWritableDirectory
+      :value: None
+
+
+      Directory for lock files.
 
 
 
