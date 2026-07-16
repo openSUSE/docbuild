@@ -21,35 +21,96 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.21.0
+==============
+
+Bug Fixes
+---------
+
+- Added dynamic validation to the :command:`portal list` command to provide helpful error messages with available allowed values when an invalid docset is provided. (:gh:`303`)
+- Fixed an issue where overriding list values (such as ``languages``) in the environment configuration appended to the default list instead of cleanly replacing it. (:gh:`368`)
+
+
+Improved Documentation
+----------------------
+
+- Added a short project description to the landing page. (:gh:`320`)
+- Differentiated shell commands from their output across all shell code-blocks. (:gh:`349`)
+- Described uv installation for (open)SUSE distros and link to uv docs for other operating systems. (:gh:`354`)
+
+
+Features
+--------
+
+- Updated default environment and cache paths to conform to the XDG Base Directory Specification using the ``platformdirs`` library. (:gh:`248`)
+- Added foundational AI agent skill files under ``.agents/skills/`` (with a symlink at ``.github/skills/``) and updated the primary agent instructions to standardize AI interactions with repository workflows. (:gh:`266`)
+- Enhanced the ``portal list`` command with new optional flags (``--trans``, ``--formats``, ``--categories``, and ``--repo``) to display extended deliverable metadata directly in the output tree. (:gh:`302`)
+- Enabled Git-style deep merging for App and Env configurations, allowing users to define partial config files that inherit gracefully from global defaults. (:gh:`321`)
+
+
+Infrastructure
+--------------
+
+- Added a step in the GitHub Pages CI workflow to dynamically build the changelog using Towncrier, ensuring the ``latest`` documentation page reflects the most recent unreleased entries. (:gh:`323`)
+- When Dependabot creates a PR, the ``check-changelog`` workflow checks for a newsfragment file.
+  As Dependabot never creates one, we need to skip this check with adding the ``skip-changelog``. (:gh:`344`)
+- Fixed failures of the Towncrier step in the GitHub Pages CI. (:gh:`367`)
+- Several dependency updates:
+
+  * `Bump actions/checkout from 6 to 7 <https://github.com/openSUSE/docbuild/pull/351>`_
+  * `Bump astral-sh/setup-uv from 7 to 8.1.0 <https://github.com/openSUSE/docbuild/pull/341>`_
+  * `Bump peaceiris/actions-gh-pages from 4 to 4.1.0 <https://github.com/openSUSE/docbuild/pull/333>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.10.3 to >=3.10.5 <https://github.com/openSUSE/docbuild/pull/338>`_
+  * `Update ipython requirement from >=9.13.0 to >=9.14.0 <https://github.com/openSUSE/docbuild/pull/337>`_
+  * `Update ruff requirement from >=0.15.14 to >=0.15.15 <https://github.com/openSUSE/docbuild/pull/336>`_
+  * `Update pyright requirement from >=1.1.409 to >=1.1.410 <https://github.com/openSUSE/docbuild/pull/335>`_
+  * `Update platformdirs requirement from >=4.0.0 to >=4.10.0 <https://github.com/openSUSE/docbuild/pull/334>`_
+  * `Bump github/codeql-action from 4.35.5 to 4.36.2 <https://github.com/openSUSE/docbuild/pull/347>`_
+  * `Update setuptools requirement from >=82.0.1 to >=83.0.0 <https://github.com/openSUSE/docbuild/pull/362>`_
+  * `Update click requirement from >=8.4.1 to >=8.4.2 <https://github.com/openSUSE/docbuild/pull/358>`_
+  * `Bump astral-sh/setup-uv from 8.1.0 to 8.2.0 <https://github.com/openSUSE/docbuild/pull/357>`_
+  * `Update setuptools-scm requirement from >=10.0.5 to >=10.2.0 <https://github.com/openSUSE/docbuild/pull/363>`_
+  * `Update ruff requirement from >=0.15.15 to >=0.15.20 <https://github.com/openSUSE/docbuild/pull/361>`_
+  * `Bump astral-sh/ruff-action from 3 to 4.0.0 <https://github.com/openSUSE/docbuild/pull/356>`_
+  * `Bump soupsieve from 2.8.3 to 2.8.4 <https://github.com/openSUSE/docbuild/pull/366>`_
+  * `Update pyright requirement from >=1.1.410 to >=1.1.411 <https://github.com/openSUSE/docbuild/pull/360>`_
+
+
+Code Refactoring
+----------------
+
+- The project's directory structure was refactored to align with XDG standards using ``platformdirs``, centralizing path definitions and introducing new, more flexible configuration options for cache, runtime, and lock directories. (:gh:`369`)
+
+
 Version 0.20.0
 ==============
 
 Bug Fixes
 ---------
 
-- Fix a validation bug in ``LanguageCode`` by automatically stripping leading and trailing whitespaces from input strings. (:gh:`259`)
+- Fixed a validation bug in ``LanguageCode`` by automatically stripping leading and trailing whitespaces from input strings. (:gh:`259`)
 
 
 Improved Documentation
 ----------------------
 
-- Add new section about "Mainting GitHub Actions" (:gh:`300`)
+- Added new section about "Mainting GitHub Actions" (:gh:`300`)
 - The documentation index page now shows the current release (via ``setuptools-scm``) and build date on the title page. (:gh:`306`)
 
 
 Features
 --------
 
-- Add a new ``portal list`` subcommand to provide a compact tree overview of products, docsets, and deliverables from the Portal schema. (:gh:`252`)
-- Refactor ``LanguageCode`` to automatically strip leading and trailing whitespaces and auto-complete partial language codes (for example, resolving `en` to `en-us`). (:gh:`309`)
-- Add a GitHub Actions CI workflow to automatically enforce the presence of changelog fragments in Pull Requests. (:gh:`322`)
+- Added a new ``portal list`` subcommand to provide a compact tree overview of products, docsets, and deliverables from the Portal schema. (:gh:`252`)
+- Refactored ``LanguageCode`` to automatically strip leading and trailing whitespaces and auto-complete partial language codes (for example, resolving `en` to `en-us`). (:gh:`309`)
+- Added a GitHub Actions CI workflow to automatically enforce the presence of changelog fragments in Pull Requests. (:gh:`322`)
 
 
 Infrastructure
 --------------
 
-- Use ``--no-sync`` for custom alias. (:gh:`301`)
-- Add "security" as newsfragment option (:gh:`310`)
+- Used ``--no-sync`` for custom alias. (:gh:`301`)
+- Added "security" as newsfragment option (:gh:`310`)
 - Several dependency updates:
 
   * `Bump github/codeql-action from 4.35.4 to 4.35.5 <https://github.com/openSUSE/docbuild/pull/316>`_
@@ -63,8 +124,8 @@ Infrastructure
 Security
 --------
 
-- Remove the default dependency cooldown from ``uv.toml`` so CI and Dependabot now rely on the committed ``uv.lock`` file, while cooldown-based updates remain available via ``UV_EXCLUDE_NEWER``. (:gh:`305`)
-- Upgrade ``idna`` from 3.13 to 3.16 to fix a security vulnerability. (:gh:`308`)
+- Removed the default dependency cooldown from ``uv.toml`` so CI and Dependabot now rely on the committed ``uv.lock`` file, while cooldown-based updates remain available via ``UV_EXCLUDE_NEWER``. (:gh:`305`)
+- Upgraded ``idna`` from 3.13 to 3.16 to fix a security vulnerability. (:gh:`308`)
 
 
 Version 0.19.0
@@ -73,33 +134,33 @@ Version 0.19.0
 Improved Documentation
 ----------------------
 
-- Add a new topic into the Developer Guide about how to migrate the
+- Added a new topic into the Developer Guide about how to migrate the
   old Docserv config (version 6) into new Portal config (version 7). (:gh:`250`)
-- Improve howto topic and make separate files. Add procedures for common tasks. (:gh:`283`)
+- Improved howto topic and make separate files. Add procedures for common tasks. (:gh:`283`)
 
 
 Features
 --------
 
-- Update models to align with Portal schema (:gh:`222`)
+- Updated models to align with Portal schema (:gh:`222`)
 - Added an in-tree PEP 517 build backend to automatically compile the Portal Schema from  RELAX NG Compact (``.rnc``) into XML (``.rng``) format during the build process, ensuring both formats are available in the distributed package. (:gh:`232`)
-- Add :command:`portal validate` subcommand. (:gh:`254`)
-- Add convenience wrapper scripts for Portal validation and migration from old Docserv config. (:gh:`256`)
+- Added :command:`portal validate` subcommand. (:gh:`254`)
+- Added convenience wrapper scripts for Portal validation and migration from old Docserv config. (:gh:`256`)
 
 
 Infrastructure
 --------------
 
-- Add a data-driven test suite for the Portal XML Schema using Jing. 
+- Added a data-driven test suite for the Portal XML Schema using Jing. 
   Includes valid and invalid test cases to ensure schema integrity and XInclude support. (:gh:`258`)
-- Switch order in GH issue template (bug report) (:gh:`260`)
+- Switched order in GH issue template (bug report) (:gh:`260`)
 - Portal Config: Correct ``<git>`` tag inside ``<dc>`` (:gh:`267`)
 - Portal Config: Correct content model of ``<dc>``.
   The previous content model enforced a ``<git>`` element.
   A "lonely" ``<subdir>`` wasn't possible. This is fixed now. (:gh:`269`)
 - GHA: Provide :command:`jing` custom wrapper for MacOS to resolve XInclude elements (:gh:`278`)
-- Implement multi-version doc switcher (:gh:`282`)
-- Introduce a dependency cooldown  to mitigate supply-chain attacks (:gh:`286`)
+- Implemented multi-version doc switcher (:gh:`282`)
+- Introduced a dependency cooldown  to mitigate supply-chain attacks (:gh:`286`)
 
 
 
@@ -117,10 +178,10 @@ Bug Fixes
 Improved Documentation
 ----------------------
 
-- Describe the new portal schema from the perspective of a user trying to add
+- Described the new portal schema from the perspective of a user trying to add
   or change the config.
   Additionally, rework on the glossary page to improve the layout and readability of terms and definitions. (:gh:`238`)
-- Improve usability and readability of docs by adding
+- Improved usability and readability of docs by adding
   homepage navigation cards using Sphinx Design extension. (:gh:`247`)
 
 
@@ -150,7 +211,7 @@ Infrastructure
 Code Refactoring
 ----------------
 
-- Refactor product schema (:pr:`197`)
+- Refactored product schema (:pr:`197`)
 
   These changes reflect broad architectural shifts and naming conventions
   throughout the entire configuration system.
@@ -186,7 +247,7 @@ Version 0.17.0
 Improved Documentation
 ----------------------
 
-- Describe some missing features:
+- Described some missing features:
 
   * Document the command :command:`docbuild check files` in the new seciton
     "Checking your Environment"
@@ -202,13 +263,13 @@ Improved Documentation
 Features
 --------
 
-- Add serialization of missing :class:`~docserv.models.deliverable.Description`. (:gh:`155`)
+- Added serialization of missing :class:`~docserv.models.deliverable.Description`. (:gh:`155`)
 - Added a rich-formatted Pydantic validation error reporter for the CLI, providing field descriptions, expected values, and documentation links. (:gh:`158`)
-- Implement manifest parity with legacy JSON portal configuration, including support for nested product metadata collection, full locale (BCP 47) support, and a new manifest audit utility for structural verification. (:gh:`183`)
-- Introduce the ``max_workers`` configuration key in the application config. This allows users to define concurrency limits using integers or hardware-aware keywords such as ``all``, ``half``, or ``all2``. (:gh:`189`)
-- Add a global CLI option ``-j``/``--workers`` to manage concurrency. This option overrides the configuration file and supports both explicit integer values and dynamic keywords (``all``, ``half``, ``all2``). (:gh:`190`)
-- Add a producer/consumer model implementation. (:gh:`191`)
-- Enhance metadata pipeline resilience by implementing default values for missing legacy fields and added a comprehensive suite of catalog-wide audit tools. (:gh:`192`)
+- Implemented manifest parity with legacy JSON portal configuration, including support for nested product metadata collection, full locale (BCP 47) support, and a new manifest audit utility for structural verification. (:gh:`183`)
+- Introduced the ``max_workers`` configuration key in the application config. This allows users to define concurrency limits using integers or hardware-aware keywords such as ``all``, ``half``, or ``all2``. (:gh:`189`)
+- Added a global CLI option ``-j``/``--workers`` to manage concurrency. This option overrides the configuration file and supports both explicit integer values and dynamic keywords (``all``, ``half``, ``all2``). (:gh:`190`)
+- Added a producer/consumer model implementation. (:gh:`191`)
+- Enhanced metadata pipeline resilience by implementing default values for missing legacy fields and added a comprehensive suite of catalog-wide audit tools. (:gh:`192`)
 
 
 Infrastructure
@@ -220,8 +281,8 @@ Infrastructure
 - Added a project security policy (SECURITY.md) to define a coordinated disclosure process for reporting vulnerabilities. (:gh:`179`)
 - Print more information from the setup-uv step. (:gh:`186`)
 - In the bug reporting template, remove "Windows" and add "Generic". (:gh:`196`)
-- Add :file:`AGENTS.md` for guiding coding agents. (:gh:`203`)
-- Switch the Ubuntu CI toolchain to use the modernized ``doc-container`` hosted on GitHub Container Registry (GHCR), providing Python 3.12 support and improved build reliability. (:gh:`205`)
+- Added :file:`AGENTS.md` for guiding coding agents. (:gh:`203`)
+- Switched the Ubuntu CI toolchain to use the modernized ``doc-container`` hosted on GitHub Container Registry (GHCR), providing Python 3.12 support and improved build reliability. (:gh:`205`)
 
 
 Code Refactoring

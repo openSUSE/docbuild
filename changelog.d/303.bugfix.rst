@@ -1,1 +1,0 @@
-Added dynamic validation to the :command:`portal list` command to provide helpful error messages with available allowed values when an invalid docset is provided.

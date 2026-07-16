@@ -378,11 +378,11 @@ devel = [
     { name = "ipython", specifier = ">=9.14.0" },
     { name = "myst-parser", specifier = ">=5.1.0" },
     { name = "pydata-sphinx-theme", specifier = ">=0.18.0" },
-    { name = "pyright", specifier = ">=1.1.410" },
+    { name = "pyright", specifier = ">=1.1.411" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
-    { name = "ruff", specifier = ">=0.15.15" },
+    { name = "ruff", specifier = ">=0.15.20" },
     { name = "setuptools-scm", specifier = ">=10.2.0" },
     { name = "sphinx", specifier = ">=9.1.0" },
     { name = "sphinx-autoapi", specifier = ">=3.8.0" },
@@ -409,7 +409,7 @@ docs = [
 ]
 formatting = [
     { name = "docformatter", specifier = ">=1.7.8" },
-    { name = "ruff", specifier = ">=0.15.15" },
+    { name = "ruff", specifier = ">=0.15.20" },
 ]
 github-action = [
     { name = "myst-parser", specifier = ">=5.1.0" },
@@ -433,7 +433,7 @@ tests = [
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
 ]
-typing = [{ name = "pyright", specifier = ">=1.1.410" }]
+typing = [{ name = "pyright", specifier = ">=1.1.411" }]
 
 [[package]]
 name = "docformatter"

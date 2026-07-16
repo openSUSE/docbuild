@@ -1,1 +1,0 @@
-Added a step in the GitHub Pages CI workflow to dynamically build the changelog using Towncrier, ensuring the ``latest`` documentation page reflects the most recent unreleased entries.

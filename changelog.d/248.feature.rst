@@ -1,1 +1,0 @@
-Updated default environment and cache paths to conform to the XDG Base Directory Specification using the ``platformdirs`` library.

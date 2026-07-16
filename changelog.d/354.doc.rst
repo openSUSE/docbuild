@@ -1,1 +1,0 @@
-Describe uv installation for (open)SUSE distros and link to uv docs for other operating systems.
