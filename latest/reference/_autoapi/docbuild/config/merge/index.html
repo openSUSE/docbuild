@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.merge &#8212; Docbuild Documentation 0.20.1.dev30+g3166b525b.d20260716</title>
+    <title>docbuild.config.merge &#8212; Docbuild Documentation 0.20.1.dev31+g3e129b660.d20260716</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../../_static/documentation_options.js?v=269c9a47"></script>
+    <script src="../../../../../_static/documentation_options.js?v=c1d05ed5"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -633,9 +633,8 @@ subsequent dictionaries:</p>
 <ul class="simple">
 <li><p>If a key exists in both dictionaries and both values are Mappings,
 they will be merged iteratively.</p></li>
-<li><p>If both values are lists or tuples, they will be concatenated.</p></li>
 <li><p>If both values are sets, they will be unioned.</p></li>
-<li><p>Otherwise (different types or primitive values), the value from the
+<li><p>Otherwise (different types, lists, tuples, or primitive values), the value from the
 subsequent dictionary will overwrite the previous one.</p></li>
 </ul>
 <p>This means that the order of dictionaries matters. The first dictionary

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.20.1.dev30+g3166b525b.d20260716</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.20.1.dev31+g3e129b660.d20260716</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=269c9a47"></script>
+    <script src="_static/documentation_options.js?v=c1d05ed5"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -452,6 +452,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added dynamic validation to the <strong class="command">portal list</strong> command to provide helpful error messages with available allowed values when an invalid docset is provided. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/303">GH #303</a>)</p></li>
+<li><p>Fixed an issue where overriding list values (such as <code class="docutils literal notranslate"><span class="pre">languages</span></code>) in the environment configuration appended to the default list instead of cleanly replacing it. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/368">GH #368</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">
