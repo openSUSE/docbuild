@@ -23,6 +23,7 @@ Functions
    docbuild.cli.cmd_portal.cmd_list.append_repo
    docbuild.cli.cmd_portal.cmd_list.build_deliverable_branch
    docbuild.cli.cmd_portal.cmd_list.print_hierarchy
+   docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml
    docbuild.cli.cmd_portal.cmd_list.async_list_cmd
    docbuild.cli.cmd_portal.cmd_list.list_cmd
 
@@ -76,6 +77,11 @@ Module Contents
 .. py:function:: print_hierarchy(hierarchy: dict[str, dict[str, dict[str, list[docbuild.models.deliverable.Deliverable]]]], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
 
    Render and print the nested hierarchy as a Rich Tree.
+
+
+.. py:function:: validate_docsets_against_xml(doctypes: list[docbuild.models.doctype.Doctype], tree: lxml.etree._ElementTree | lxml.etree._Element, console: rich.console.Console) -> None
+
+   Dynamically validate that provided docsets exist for their respective products.
 
 
 .. py:function:: async_list_cmd(ctx: docbuild.cli.context.DocBuildContext, doctypes: tuple[str, Ellipsis], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
