@@ -11,7 +11,7 @@
 #
 # 2. Log actual parallelism
 # Add a log line showing how many DAPS tasks are running concurrently (just
-# for one run). If you see 30–60 concurrent DAPS processes, that would explain
+# for one run). If you see 30-60 concurrent DAPS processes, that would explain
 # the slowdown.
 #
 
