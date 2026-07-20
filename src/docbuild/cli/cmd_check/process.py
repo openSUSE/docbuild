@@ -4,12 +4,12 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 
-from docbuild.cli.cmd_metadata.metaprocess import get_deliverables_for_doctype
 from docbuild.cli.cmd_portal.process import parse_portal_config
 from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.tasks.metadata.discovery import get_deliverables_for_doctype
 from docbuild.utils.git import ManagedGitRepo
 
 log = logging.getLogger(__name__)
