@@ -1,5 +1,6 @@
 """Unit tests for metadata command helper functions."""
 
+from contextlib import asynccontextmanager
 import json
 import logging
 from pathlib import Path
@@ -8,22 +9,32 @@ from unittest.mock import AsyncMock, Mock, patch
 from lxml import etree
 import pytest
 
-from docbuild.cli.cmd_metadata import metaprocess as metaprocess_pkg
-from docbuild.cli.cmd_metadata.metaprocess import (
-    build_document_for_deliverable,
-    collect_dynamic_metadata,
-    compile_manifest,
-    get_deliverables_for_doctype,
-    iter_doctype_groups,
-    process,
-    process_doctype_group,
-    update_repositories_for_deliverables,
-    write_manifest_json,
-)
 from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+import docbuild.tasks.metadata.collect as collect_mod
+from docbuild.tasks.metadata.collect import collect_dynamic_metadata
+from docbuild.tasks.metadata.discovery import (
+    get_deliverables_for_doctype,
+    iter_doctype_groups,
+)
+from docbuild.tasks.metadata.manifest import (
+    build_document_for_deliverable,
+    compile_manifest,
+    write_manifest_json,
+)
+import docbuild.tasks.metadata.service as service_mod
+from docbuild.tasks.metadata.service import process, process_doctype_group
+import docbuild.tasks.repository.sync as repo_sync_mod
+from docbuild.tasks.repository.sync import update_managed_repositories
+
+
+@asynccontextmanager
+async def dummy_shared_worktrees(*args, **kwargs):
+    """Provide an empty shared-worktree mapping for service tests."""
+    del args, kwargs
+    yield {}
 
 
 @pytest.fixture
@@ -296,7 +307,7 @@ class TestCollectDynamicMetadata:
         ],
         ids=["success", "worktree_missing", "daps_fails", "invalid_json"],
     )
-    @patch.object(metaprocess_pkg, "run_command", new_callable=AsyncMock)
+    @patch.object(collect_mod, "run_command", new_callable=AsyncMock)
     async def test_collect_dynamic_metadata_scenarios(
         self,
         mock_run_command: AsyncMock,
@@ -458,12 +469,13 @@ class TestIterDoctypeGroups:
 class TestProcessDoctypeGroup:
     """Tests for the process_doctype_group function."""
 
-    @patch.object(metaprocess_pkg, "report_failed_deliverables")
-    @patch.object(metaprocess_pkg, "compile_manifest")
-    @patch.object(metaprocess_pkg, "run_metadata_progress", new_callable=AsyncMock)
+    @patch.object(service_mod, "shared_worktrees", new=dummy_shared_worktrees)
+    @patch.object(service_mod, "report_failed_deliverables")
+    @patch.object(service_mod, "compile_manifest")
+    @patch.object(service_mod, "run_metadata_progress", new_callable=AsyncMock)
     @patch.object(
-        metaprocess_pkg,
-        "update_repositories_for_deliverables",
+        service_mod,
+        "update_managed_repositories",
         new_callable=AsyncMock,
     )
     async def test_process_doctype_group_updates_repos(
@@ -508,12 +520,13 @@ class TestProcessDoctypeGroup:
             {deliverable.full_id: "OK"},
         )
 
-    @patch.object(metaprocess_pkg, "report_failed_deliverables")
-    @patch.object(metaprocess_pkg, "compile_manifest")
-    @patch.object(metaprocess_pkg, "run_metadata_progress", new_callable=AsyncMock)
+    @patch.object(service_mod, "shared_worktrees", new=dummy_shared_worktrees)
+    @patch.object(service_mod, "report_failed_deliverables")
+    @patch.object(service_mod, "compile_manifest")
+    @patch.object(service_mod, "run_metadata_progress", new_callable=AsyncMock)
     @patch.object(
-        metaprocess_pkg,
-        "update_repositories_for_deliverables",
+        service_mod,
+        "update_managed_repositories",
         new_callable=AsyncMock,
     )
     async def test_process_doctype_group_skips_repo_update(
@@ -563,9 +576,9 @@ class TestProcessDoctypeGroup:
 class TestProcessEmptyDoctypes:
     """Tests for the case when no doctypes are passed to process."""
 
-    @patch.object(metaprocess_pkg, "process_doctype_group", new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, "iter_doctype_groups")
-    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
+    @patch.object(service_mod, "process_doctype_group", new_callable=AsyncMock)
+    @patch.object(service_mod, "iter_doctype_groups")
+    @patch.object(service_mod, "parse_portal_config", new_callable=AsyncMock)
     async def test_process_empty_doctypes(
         self,
         mock_parse_portal_config: AsyncMock,
@@ -599,11 +612,11 @@ class TestProcessEmptyDoctypes:
 
         with (
             patch.object(
-                metaprocess_pkg.Doctype,
+                service_mod.Doctype,
                 "from_str",
                 return_value=sentinel_doctype,
             ) as mock_from_str,
-            patch.object(metaprocess_pkg, "stdout"),
+            patch.object(service_mod, "stdout"),
         ):
             result = await process(mock_context_with_config_dir, doctypes=())
 
@@ -616,9 +629,9 @@ class TestProcessEmptyDoctypes:
         assert mock_process_doctype_group.await_count == 1
         assert result == 0
 
-    @patch.object(metaprocess_pkg, "process_doctype_group", new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, "iter_doctype_groups")
-    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
+    @patch.object(service_mod, "process_doctype_group", new_callable=AsyncMock)
+    @patch.object(service_mod, "iter_doctype_groups")
+    @patch.object(service_mod, "parse_portal_config", new_callable=AsyncMock)
     async def test_process_uses_provided_doctypes(
         self,
         mock_parse_portal_config: AsyncMock,
@@ -657,9 +670,9 @@ class TestProcessEmptyDoctypes:
         )
         assert mock_process_doctype_group.await_count == 1
 
-    @patch.object(metaprocess_pkg, "process_doctype_group", new_callable=AsyncMock)
-    @patch.object(metaprocess_pkg, "iter_doctype_groups")
-    @patch.object(metaprocess_pkg, "parse_portal_config", new_callable=AsyncMock)
+    @patch.object(service_mod, "process_doctype_group", new_callable=AsyncMock)
+    @patch.object(service_mod, "iter_doctype_groups")
+    @patch.object(service_mod, "parse_portal_config", new_callable=AsyncMock)
     async def test_process_iterates_all_groups(
         self,
         mock_parse_portal_config: AsyncMock,
@@ -728,11 +741,11 @@ def test_compile_manifest_empty_deliverables_returns_none() -> None:
 
 
 @pytest.mark.asyncio
-class TestUpdateRepositoriesForDeliverables:
-    """Tests for the update_repositories_for_deliverables function."""
+class TestUpdateManagedRepositories:
+    """Tests for the update_managed_repositories function."""
 
-    @patch.object(metaprocess_pkg, "ManagedGitRepo")
-    async def test_update_repositories_for_deliverables_success(
+    @patch.object(repo_sync_mod, "ManagedGitRepo")
+    async def test_update_managed_repositories_success(
         self, mock_repo_class: Mock, tmp_path: Path
     ) -> None:
         """Verify repositories are updated successfully."""
@@ -742,7 +755,7 @@ class TestUpdateRepositoriesForDeliverables:
         mock_repo_class.return_value = mock_repo
 
         updated_repos: set[str] = set()
-        updated = await update_repositories_for_deliverables(
+        updated = await update_managed_repositories(
             tmp_path / "repos",
             {"gh://SUSE/doc-test"},
             updated_repos,
@@ -753,8 +766,8 @@ class TestUpdateRepositoriesForDeliverables:
         assert "gh://SUSE/doc-test" in updated_repos
         mock_repo.clone_bare.assert_awaited_once()
 
-    @patch.object(metaprocess_pkg, "ManagedGitRepo")
-    async def test_update_repositories_for_deliverables_failed(
+    @patch.object(repo_sync_mod, "ManagedGitRepo")
+    async def test_update_managed_repositories_failed(
         self, mock_repo_class: Mock, tmp_path: Path, caplog
     ) -> None:
         """Verify failures are reported when repo updates fail."""
@@ -765,7 +778,7 @@ class TestUpdateRepositoriesForDeliverables:
         mock_repo_class.return_value = mock_repo
 
         updated_repos: set[str] = set()
-        updated = await update_repositories_for_deliverables(
+        updated = await update_managed_repositories(
             tmp_path / "repos",
             {"gh://SUSE/fail"},
             updated_repos,
