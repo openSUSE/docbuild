@@ -1,0 +1,1 @@
+Added a ``docbuild doctor`` command to check for system-level dependencies (like ``daps``, ``jing``, ``xmllint``) and a fail-fast decorator to prevent execution of commands when required tools are missing.
