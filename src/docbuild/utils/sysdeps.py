@@ -47,12 +47,18 @@ def get_binary_version(name: str) -> str | None:
 
 
 def _coerce_semver(version_str: str) -> semver.Version:
-    """Convert loose version strings (like '4' or '2.9') to strict SemVer objects."""
+    """Convert loose version strings to strict SemVer objects."""
+    # Handle pure integers (e.g., "4") via the native class constructor
+    if version_str.isdigit():
+        return semver.Version(int(version_str))
+
+    # Pad incomplete versions (like "3.4") with zeros so they parse strictly
     parts = version_str.split(".")
-    major = int(parts[0]) if len(parts) > 0 else 0
-    minor = int(parts[1]) if len(parts) > 1 else 0
-    patch = int(parts[2]) if len(parts) > 2 else 0
-    return semver.Version(major, minor, patch)
+    while len(parts) < 3:
+        parts.append("0")
+
+    # Strictly take the first 3 parts (in case of weird 4-part OS versions)
+    return semver.Version.parse(".".join(parts[:3]))
 
 
 def check_dependencies() -> list[DependencyStatus]:
@@ -113,18 +119,15 @@ def check_dependencies() -> list[DependencyStatus]:
             })
              continue
 
-        # Compare semantic versions using semver
+        # Compare semantic versions using semver's match expression
         try:
             v_found = _coerce_semver(found_version)
-            v_min = _coerce_semver(min_v)
-            is_valid = False
 
-            if op == ">=":
-                is_valid = v_found >= v_min
-            elif op == "==":
-                is_valid = v_found == v_min
-            elif op == ">":
-                is_valid = v_found > v_min
+            # The right side of the expression also needs to be strictly formatted
+            v_min_strict = str(_coerce_semver(min_v))
+
+            # Evaluate using semver's match engine (e.g., v_found.match(">=4.0.0"))
+            is_valid = v_found.match(f"{op}{v_min_strict}")
 
             results.append({
                 "name": name,
