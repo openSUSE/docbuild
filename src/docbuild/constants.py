@@ -212,3 +212,13 @@ DOCBOOK_NS = "http://docbook.org/ns/docbook"
 
 XLINK_NS = "http://www.w3.org/1999/xlink"
 """The XML namespace URI for XLink attributes."""
+
+
+# First-order dependencies required by docbuild
+SYSTEM_DEPENDENCIES = {
+    "jing": ">=20220510",
+    "trang": None,  # Any version
+    "daps": ">=4",
+    "xmllint": None,
+    "xsltproc": None,
+}

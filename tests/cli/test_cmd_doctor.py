@@ -4,15 +4,15 @@ from unittest.mock import patch
 
 from click.testing import CliRunner
 
-from docbuild.cli.cmd_doctor import doctor
+from docbuild.cli import cmd_doctor
 
 
 def test_doctor_command_success_no_errors():
     """Test that doctor exits with 0 when all dependencies are met."""
     runner = CliRunner()
 
-    # Mock the checker engine so we control the output
-    with patch("docbuild.cli.cmd_doctor.check_dependencies") as mock_check:
+    # Mock the checker engine using patch.object for better IDE refactoring support
+    with patch.object(cmd_doctor, "check_dependencies") as mock_check:
         mock_check.return_value = [
             {
                 "name": "mock-tool",
@@ -23,7 +23,7 @@ def test_doctor_command_success_no_errors():
                 "message": "OK",
             }
         ]
-        result = runner.invoke(doctor)
+        result = runner.invoke(cmd_doctor.doctor)
 
         assert result.exit_code == 0
         assert "mock-tool" in result.output
@@ -34,7 +34,7 @@ def test_doctor_command_fails_on_missing_tool():
     """Test that doctor exits with 1 when a dependency is missing."""
     runner = CliRunner()
 
-    with patch("docbuild.cli.cmd_doctor.check_dependencies") as mock_check:
+    with patch.object(cmd_doctor, "check_dependencies") as mock_check:
         mock_check.return_value = [
             {
                 "name": "missing-tool",
@@ -45,7 +45,7 @@ def test_doctor_command_fails_on_missing_tool():
                 "message": "Not found in PATH",
             }
         ]
-        result = runner.invoke(doctor)
+        result = runner.invoke(cmd_doctor.doctor)
 
         assert result.exit_code == 1
         assert "missing-tool" in result.output

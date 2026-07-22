@@ -51,7 +51,7 @@ from ..context import DocBuildContext
     callback=validate_doctypes,
 )
 @click.pass_context
-@requires_system_tools(["daps", "xmllint"])
+@requires_system_tools()
 def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
     """Subcommand build.
 

@@ -8,19 +8,12 @@ import subprocess
 from typing import ParamSpec, TypedDict, TypeVar
 
 import click
-from packaging.version import parse as parse_version
+import semver
+
+from ..constants import SYSTEM_DEPENDENCIES
 
 P = ParamSpec("P")
 T = TypeVar("T")
-
-# First-order dependencies required by docbuild
-SYSTEM_DEPENDENCIES = {
-    "jing": ">=20220510",
-    "trang": None,  # Any version
-    "daps": ">=4",
-    "xmllint": None,
-    "xsltproc": None,
-}
 
 
 class DependencyStatus(TypedDict):
@@ -51,6 +44,15 @@ def get_binary_version(name: str) -> str | None:
         pass
 
     return None
+
+
+def _coerce_semver(version_str: str) -> semver.Version:
+    """Convert loose version strings (like '4' or '2.9') to strict SemVer objects."""
+    parts = version_str.split(".")
+    major = int(parts[0]) if len(parts) > 0 else 0
+    minor = int(parts[1]) if len(parts) > 1 else 0
+    patch = int(parts[2]) if len(parts) > 2 else 0
+    return semver.Version(major, minor, patch)
 
 
 def check_dependencies() -> list[DependencyStatus]:
@@ -111,10 +113,10 @@ def check_dependencies() -> list[DependencyStatus]:
             })
              continue
 
-        # Compare semantic versions
+        # Compare semantic versions using semver
         try:
-            v_found = parse_version(found_version)
-            v_min = parse_version(min_v)
+            v_found = _coerce_semver(found_version)
+            v_min = _coerce_semver(min_v)
             is_valid = False
 
             if op == ">=":
@@ -145,39 +147,30 @@ def check_dependencies() -> list[DependencyStatus]:
     return results
 
 
-def requires_system_tools(tools: list[str]) -> Callable[[Callable[P, T]], Callable[P, T]]:
+def requires_system_tools(tools: list[str] | None = None) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Enforce system dependencies on specific CLI commands.
 
-    :param tools: A list of tool names (e.g., ["daps", "xmllint"]) that must be present.
+    :param tools: A list of tool names. Defaults to all SYSTEM_DEPENDENCIES.
     """
+    if tools is None:
+        tools = list(SYSTEM_DEPENDENCIES.keys())
+
     def decorator(f: Callable[P, T]) -> Callable[P, T]:
         @wraps(f)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             missing_tools = []
 
-            # Check the requested tools against our SYSTEM_DEPENDENCIES definition
-            for tool_name in tools:
-                req = SYSTEM_DEPENDENCIES.get(tool_name)
+            # Use our central checking engine instead of duplicating complex logic
+            statuses = check_dependencies()
 
-                # 1. Check if it's installed at all
-                if shutil.which(tool_name) is None:
-                    missing_tools.append(f"'{tool_name}' (missing)")
-                    continue
-
-                # 2. Check version if a requirement exists
-                if req:
-                    found_v = get_binary_version(tool_name)
-                    req_match = re.match(r"^\s*(>=|==|>)\s*([\d\.]+)", req)
-
-                    if found_v and req_match:
-                        op, min_v = req_match.groups()
-                        try:
-                            v_found = parse_version(found_v)
-                            v_min = parse_version(min_v)
-                            if op == ">=" and not (v_found >= v_min):
-                                missing_tools.append(f"'{tool_name}' (needs {req}, found {found_v})")
-                        except Exception:
-                            pass # If we can't parse it, we give it a pass rather than crashing
+            for status in statuses:
+                if status["name"] in tools:
+                    if not status["is_installed"]:
+                        missing_tools.append(f"'{status['name']}' (missing)")
+                    elif not status["is_valid"]:
+                        missing_tools.append(
+                            f"'{status['name']}' (needs {status['required']}, found {status['found']})"
+                        )
 
             if missing_tools:
                 click.secho(
