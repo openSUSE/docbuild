@@ -18,6 +18,7 @@ updates:
       default-days: 7
     labels:
       - "area:dependencies"
+      - "skip-changelog"
 
   - package-ecosystem: "pip"
     directory: "/"
