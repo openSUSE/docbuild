@@ -50,7 +50,7 @@ def _coerce_semver(version_str: str) -> semver.Version:
     """Convert loose version strings to strict SemVer objects."""
     # Handle pure integers (e.g., "4") via the native class constructor
     if version_str.isdigit():
-        return semver.Version(int(version_str))
+        return semver.Version(version_str) # type: ignore
 
     # Pad incomplete versions (like "3.4") with zeros so they parse strictly
     parts = version_str.split(".")
@@ -64,6 +64,9 @@ def _coerce_semver(version_str: str) -> semver.Version:
 def check_dependencies() -> list[DependencyStatus]:
     """Check all defined system dependencies and return their status."""
     results: list[DependencyStatus] = []
+
+    # Pre-compile regex for performance outside the loop
+    req_pattern = re.compile(r"^\s*(>=|<=|==|>|<)\s*(.*)$")
 
     for name, requirement in SYSTEM_DEPENDENCIES.items():
         is_installed = shutil.which(name) is not None
@@ -93,8 +96,8 @@ def check_dependencies() -> list[DependencyStatus]:
             })
             continue
 
-        # Parse requirement (e.g. ">=20220510")
-        req_match = re.match(r"^\s*(>=|==|>)\s*([\d\.]+)", requirement)
+        # Parse requirement using the pre-compiled regex
+        req_match = req_pattern.match(requirement)
         if not req_match:
             results.append({
                 "name": name,
