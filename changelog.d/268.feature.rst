@@ -1,0 +1,2 @@
+
+Implement :command:`docbuild metadata`.
