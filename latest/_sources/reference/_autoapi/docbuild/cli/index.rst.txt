@@ -32,6 +32,7 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_c14n/index
    /reference/_autoapi/docbuild/cli/cmd_cli/index
    /reference/_autoapi/docbuild/cli/cmd_config/index
+   /reference/_autoapi/docbuild/cli/cmd_doctor/index
    /reference/_autoapi/docbuild/cli/cmd_metadata/index
    /reference/_autoapi/docbuild/cli/cmd_portal/index
    /reference/_autoapi/docbuild/cli/cmd_repo/index

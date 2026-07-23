@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Docbuild Documentation 0.21.1.dev9+g7e9c6c13c.d20260716</title>
+    <title>Index &#8212; Docbuild Documentation 0.21.1.dev12+gd252bd86e.d20260723</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -36,12 +36,12 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=0a0e13a7" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=90fefc3c"></script>
+    <script src="_static/documentation_options.js?v=2682b37a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -267,6 +267,25 @@ let darkTheme = isDarkTheme();
 let modal = null;
 let modalContent = null;
 let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
 
 const runMermaid = async (rerun) => {
     console.log("Running mermaid diagrams, rerun =", rerun);
@@ -274,7 +293,15 @@ const runMermaid = async (rerun) => {
     let all_mermaids = document.querySelectorAll(".mermaid");
 
     if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
         all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
             if(!el.hasAttribute("data-original-code")) {
                 // store original code
                 // console.log(`Storing original code for first run: `, el.innerHTML);
@@ -291,35 +318,89 @@ const runMermaid = async (rerun) => {
                 el.setAttribute('data-original-code', el.innerHTML);
             }
         });
-        await mermaid.run();
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if ("False" === "True") {
+                                        addZoomToSvgs(d3.selectAll(""));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
     }
 
     all_mermaids = document.querySelectorAll(".mermaid");
-    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
 
     if ("False" === "True") {
-        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        const mermaids_to_add_zoom = -1 === -1 ? mermaids_active.length : -1;
         if(mermaids_to_add_zoom > 0) {
             var svgs = d3.selectAll("");
-            if(all_mermaids.length !== mermaids_processed.length) {
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
                 setTimeout(() => runMermaid(false), 200);
                 return;
-            } else if(svgs.size() !== mermaids_to_add_zoom) {
-                setTimeout(() => runMermaid(false), 200);
-                return;
-            } else {
-                svgs.each(function() {
-                    var svg = d3.select(this);
-                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
-                    var inner = svg.select("g");
-                    var zoom = d3.zoom().on("zoom", function(event) {
-                        inner.attr("transform", event.transform);
-                    });
-                    svg.call(zoom);
-                });
             }
+            addZoomToSvgs(svgs);
         }
-    } else if(all_mermaids.length !== mermaids_processed.length) {
+    } else if(mermaids_active.length !== mermaids_processed.length) {
         // Wait for mermaid to process all diagrams
         setTimeout(() => runMermaid(false), 200);
         return;
@@ -485,7 +566,7 @@ window.addEventListener("load", load);
 window.runMermaid = runMermaid;</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -1293,6 +1374,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_dc_in_language">check_dc_in_language() (in module docbuild.config.xml.checks)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#docbuild.utils.sysdeps.check_dependencies">check_dependencies() (in module docbuild.utils.sysdeps)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_duplicated_format_in_extralinks">check_duplicated_format_in_extralinks() (in module docbuild.config.xml.checks)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_duplicated_url_in_extralinks">check_duplicated_url_in_extralinks() (in module docbuild.config.xml.checks)</a>
@@ -1321,10 +1404,10 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_subdeliverable_in_deliverable">check_subdeliverable_in_deliverable() (in module docbuild.config.xml.checks)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_unsupported_language_code">check_unsupported_language_code() (in module docbuild.config.xml.checks)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_unsupported_language_code">check_unsupported_language_code() (in module docbuild.config.xml.checks)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/utils/decorators/index.html#docbuild.utils.decorators.CheckFunc">CheckFunc (in module docbuild.utils.decorators)</a>
 </li>
       <li><a href="glossary.html#term-CI-CD"><strong>CI/CD</strong></a>
@@ -1613,6 +1696,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    docbuild.cli.cmd_doctor
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_doctor/index.html#module-docbuild.cli.cmd_doctor">module</a>
+</li>
+      </ul></li>
+      <li>
     docbuild.cli.cmd_metadata
 
       <ul>
@@ -1759,8 +1849,6 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/CheckResult.html#docbuild.config.xml.checks.CheckResult">docbuild.config.xml.checks.CheckResult (built-in class)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.config.xml.list
 
@@ -1768,6 +1856,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/config/xml/list/index.html#module-docbuild.config.xml.list">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.config.xml.references
 
@@ -2094,6 +2184,15 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#module-docbuild.utils.shell">module</a>
 </li>
       </ul></li>
+      <li>
+    docbuild.utils.sysdeps
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#module-docbuild.utils.sysdeps">module</a>
+</li>
+      </ul></li>
+      <li><a href="reference/_autoapi/docbuild/utils/sysdeps/DependencyStatus.html#docbuild.utils.sysdeps.DependencyStatus">docbuild.utils.sysdeps.DependencyStatus (built-in class)</a>
+</li>
       <li><a href="glossary.html#term-Docserv-Config"><strong>Docserv Config</strong></a>
 </li>
       <li><a href="glossary.html#term-Docset"><strong>Docset</strong></a>
@@ -2113,6 +2212,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="reference/_autoapi/docbuild/utils/doc/index.html#docbuild.utils.doc.docstring">docstring() (in module docbuild.utils.doc)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.docsuite">docsuite (docbuild.models.deliverable.Deliverable property)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_doctor/index.html#docbuild.cli.cmd_doctor.doctor">doctor() (in module docbuild.cli.cmd_doctor)</a>
 </li>
       <li><a href="glossary.html#term-Doctype"><strong>Doctype</strong></a>
 </li>
@@ -2207,6 +2308,8 @@ window.runMermaid = runMermaid;</script>
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#docbuild.utils.sysdeps.get_binary_version">get_binary_version() (in module docbuild.utils.sysdeps)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderResolver.html#docbuild.config.app.PlaceholderResolver.get_container_name">get_container_name() (docbuild.config.app.PlaceholderResolver method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html#docbuild.cli.cmd_metadata.metaprocess.get_daps_command">get_daps_command() (in module docbuild.cli.cmd_metadata.metaprocess)</a>
@@ -2433,6 +2536,8 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_config/validate/index.html#module-docbuild.cli.cmd_config.validate">docbuild.cli.cmd_config.validate</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_doctor/index.html#module-docbuild.cli.cmd_doctor">docbuild.cli.cmd_doctor</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/index.html#module-docbuild.cli.cmd_metadata">docbuild.cli.cmd_metadata</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/metaprocess/index.html#module-docbuild.cli.cmd_metadata.metaprocess">docbuild.cli.cmd_metadata.metaprocess</a>
@@ -2540,6 +2645,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/utils/pidlock/index.html#module-docbuild.utils.pidlock">docbuild.utils.pidlock</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#module-docbuild.utils.shell">docbuild.utils.shell</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#module-docbuild.utils.sysdeps">docbuild.utils.sysdeps</a>
 </li>
       </ul></li>
   </ul></td>
@@ -2720,12 +2827,14 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="glossary.html#term-Repository"><strong>Repository</strong></a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category.reset_rank">reset_rank() (docbuild.models.manifest.Category class method)</a>
+      <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#docbuild.utils.sysdeps.requires_system_tools">requires_system_tools() (in module docbuild.utils.sysdeps)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/config/xml/xinclude/index.html#docbuild.config.xml.xinclude.resolve_includes">resolve_includes() (in module docbuild.config.xml.xinclude)</a>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category.reset_rank">reset_rank() (docbuild.models.manifest.Category class method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/config/xml/xinclude/index.html#docbuild.config.xml.xinclude.resolve_includes">resolve_includes() (in module docbuild.config.xml.xinclude)</a>
+</li>
       <li><a href="glossary.html#term-RNC"><strong>RNC</strong></a>
 </li>
       <li><a href="glossary.html#term-RNG"><strong>RNG</strong></a>
@@ -3032,8 +3141,8 @@ window.runMermaid = runMermaid;</script>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -3067,7 +3176,7 @@ window.runMermaid = runMermaid;</script>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
 </p></div>
       
     </div>
