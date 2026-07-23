@@ -30,6 +30,7 @@ dependencies = [
     "platformdirs>=4.10.0",
     "pydantic>=2.13.4",
     "rich>=15.0.0",
+    "semver>=3.0.0",
     "tomlkit>=0.15.0",
 ]
 authors = [

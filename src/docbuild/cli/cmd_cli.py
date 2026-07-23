@@ -31,6 +31,7 @@ from .cmd_build import build
 from .cmd_c14n import c14n
 from .cmd_check import cmd_check
 from .cmd_config import config
+from .cmd_doctor import doctor
 from .cmd_metadata import metadata
 from .cmd_portal import portal
 from .cmd_repo import repo
@@ -285,3 +286,4 @@ cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
 cli.add_command(cmd_check)
+cli.add_command(doctor)

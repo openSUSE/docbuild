@@ -37,6 +37,7 @@ Examples of the doctypes syntax:
 import click
 
 from ...models.doctype import Doctype
+from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
 from ..context import DocBuildContext
 
@@ -50,6 +51,7 @@ from ..context import DocBuildContext
     callback=validate_doctypes,
 )
 @click.pass_context
+@requires_system_tools()
 def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
     """Subcommand build.
 
