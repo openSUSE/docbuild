@@ -3,7 +3,7 @@
 import pytest
 
 from docbuild.models.deliverable import Deliverable
-from docbuild.models.metadata import Metadata
+from docbuild.models.manifest import Document, SingleDocument
 
 
 def test_metafile_setter(first_deliverable: Deliverable) -> None:
@@ -12,19 +12,19 @@ def test_metafile_setter(first_deliverable: Deliverable) -> None:
     assert first_deliverable.metafile == "meta.xml"
 
 
-def test_meta_default(first_deliverable: Deliverable) -> None:
-    assert first_deliverable.meta is None
+def test_document_default(first_deliverable: Deliverable) -> None:
+    assert first_deliverable.document is None
 
 
-def test_meta_setter_type_check(first_deliverable: Deliverable) -> None:
-    with pytest.raises(TypeError, match="Expected Metadata"):
-        first_deliverable.meta = "wrong-type"
+def test_document_setter_type_check(first_deliverable: Deliverable) -> None:
+    with pytest.raises(TypeError, match="Expected Document"):
+        first_deliverable.document = "wrong-type"
 
 
-def test_meta_setter(first_deliverable: Deliverable) -> None:
-    metadata = Metadata(rootid="foo")
-    first_deliverable.meta = metadata
-    assert first_deliverable.meta is metadata
+def test_document_setter(first_deliverable: Deliverable) -> None:
+    document = Document(docs=[SingleDocument(rootid="foo")])
+    first_deliverable.document = document
+    assert first_deliverable.document is document
 
 
 def test_hash_uses_full_id(first_deliverable: Deliverable) -> None:

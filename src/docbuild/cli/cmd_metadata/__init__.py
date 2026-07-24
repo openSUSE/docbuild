@@ -7,10 +7,10 @@ import click
 from rich.console import Console
 
 from ...models.doctype import Doctype
+from ...tasks.metadata import process
 from ...utils.contextmgr import make_timer
 from ..callback import validate_doctypes
 from ..context import DocBuildContext
-from .metaprocess import process
 
 # Set up rich consoles for output
 stdout = Console()

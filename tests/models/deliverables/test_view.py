@@ -95,6 +95,13 @@ def test_xml_subdir_empty(first_deliverable: Deliverable) -> None:
     assert first_deliverable.xml.subdir() == ""
 
 
+def test_deliverable_has_translation(ref_node, first_deliverable_from_lang) -> None:
+    """Expose translations via the Deliverable facade."""
+    deliverable = first_deliverable_from_lang(ref_node, "en-us")
+    assert deliverable.has_translation("de-de") is True
+    assert deliverable.has_translation("fr-fr") is False
+
+
 def test_format_attrs_prebuilt_filters_unknown_url_formats() -> None:
     """Test unknown prebuilt URL format values are ignored."""
     xml_prebuilt = """

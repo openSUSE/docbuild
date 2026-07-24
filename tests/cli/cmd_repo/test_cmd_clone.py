@@ -99,7 +99,12 @@ def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
     assert mock_subprocess.call_count == 2
 
     calls = mock_subprocess.call_args_list
-    cloned_repos = {call[0][6] for call in calls}  # The 7th arg is the repo URL
+    cloned_repos = {
+        arg
+        for call in calls
+        for arg in call[0]
+        if isinstance(arg, str) and arg.startswith("https://")
+    }
     assert "https://github.com/test/one.git" in cloned_repos
     assert "https://github.com/test/two.git" in cloned_repos
 

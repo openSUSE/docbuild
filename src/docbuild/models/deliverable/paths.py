@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from functools import cached_property
 
-from ..metadata import Metadata
+from ..language import LanguageCode
 from .view import DeliverableXMLView
 
 
@@ -13,7 +13,12 @@ class DeliverablePaths:
 
     xml: DeliverableXMLView
     # git: Repo
-    meta: Metadata | None = None  # TODO: Remove it?
+    rootid: str | None = None
+    lang: LanguageCode | None = None
+
+    def _lang(self) -> LanguageCode:
+        """Return the language override or XML-derived language."""
+        return self.lang if self.lang is not None else self.xml.lang
 
     @cached_property
     def product_docset(self) -> str:
@@ -23,34 +28,31 @@ class DeliverablePaths:
     @cached_property
     def relpath(self) -> str:
         """Return the relative path of the deliverable."""
-        return f"{self.xml.lang}/{self.product_docset}"
+        lang = self._lang()
+        return f"{lang}/{self.product_docset}"
 
     @cached_property
     def zip_path(self) -> str:
         """Return the path to the ZIP file."""
+        lang = self._lang()
         productid = self.xml.productid
         docsetid = self.xml.docsetid
-        lang = self.xml.lang
         return f"{lang}/{productid}/{docsetid}/{productid}-{docsetid}-{lang}.zip"
 
     def base_format_path(self, fmt: str) -> str:
         """Return the base path for a given format."""
         path = "/"
+        lang = self._lang()
         dcfile = self.xml.dcfile
         if dcfile is None:
             raise ValueError("No DC filename found for path generation")
 
         fallback_rootid = dcfile.lstrip("DC-")
-        if self.meta is not None:
-            if (rootid := self.meta.rootid) is None:
-                # Derive rootid from the DC file
-                rootid = fallback_rootid
-        else:
-            rootid = fallback_rootid
+        rootid = self.rootid or fallback_rootid
 
         # Suppress English
-        if self.xml.lang != "en-us":
-            path += f"{self.xml.lang}/"
+        if lang != "en-us":
+            path += f"{lang}/"
 
         path += f"{self.xml.productid}/{self.xml.docsetid}/{fmt}/{rootid}/"
         return path
@@ -70,17 +72,18 @@ class DeliverablePaths:
         """Return the path to the PDF file."""
         path = "/"
         draft = ""  # TODO
+        lang = self._lang()
         dcfile = self.xml.dcfile
         if dcfile is None:
             raise ValueError("No DC filename found for PDF path generation")
         name = dcfile.lstrip("DC-")
-        if self.xml.lang != "en-us":
-            path += f"{self.xml.lang}/"
+        if lang != "en-us":
+            path += f"{lang}/"
 
         # We are only interested in the language, not the country code.
-        path += f"{self.product_docset}/pdf/{name}{draft}_{self.xml.lang.lang}.pdf"
+        path += f"{self.product_docset}/pdf/{name}{draft}_{lang.lang}.pdf"
         return path
 
     def __repr__(self) -> str:
         """Return a string representation of the deliverable paths."""
-        return f"{self.__class__.__name__}(xml=({self.xml!s}), meta={self.meta!s})"
+        return f"{self.__class__.__name__}(xml=({self.xml!s}), rootid={self.rootid!s})"

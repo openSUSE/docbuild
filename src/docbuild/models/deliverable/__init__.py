@@ -15,9 +15,11 @@ from typing import ClassVar, Literal
 from lxml import etree
 
 from ...utils.convert import convert2bool
-from ..metadata import Metadata
+from ..language import LanguageCode
+from ..manifest import Document
 from ..repo import Repo
 from .paths import DeliverablePaths
+from .translation import TranslationInfo
 from .view import DeliverableXMLView
 
 
@@ -36,8 +38,7 @@ class Deliverable:
     # -- Instance variables
     _node: etree._Element = field(repr=False)
     _metafile: str | None = field(repr=False, default=None)
-    # TODO: Is that still needed?
-    _meta: Metadata | None = None
+    _document: Document | None = field(repr=False, default=None)
 
     # -- "Private" methods for internal use in properties
     #def _base_format_path(self, fmt: str) -> str:
@@ -60,7 +61,21 @@ class Deliverable:
     @cached_property
     def paths(self) -> DeliverablePaths:
         """Return the path helper for this deliverable."""
-        return DeliverablePaths(self.xml, self.meta)
+        rootid = None
+        document = self.document
+        if document and document.docs:
+            rootid = document.docs[0].rootid
+        return DeliverablePaths(self.xml, rootid=rootid)
+
+    @cached_property
+    def translations(self) -> dict[LanguageCode, TranslationInfo]:
+        """Return translation info keyed by language code."""
+        return self.xml.translation_infos()
+
+    def has_translation(self, lang: str | LanguageCode) -> bool:
+        """Return True when a translation exists for the given language."""
+        key = lang if isinstance(lang, LanguageCode) else LanguageCode(language=lang)
+        return key in self.translations
 
     @cached_property
     def pdlang(self) -> str:
@@ -76,8 +91,8 @@ class Deliverable:
     @cached_property
     def full_id(self) -> str:
         """Return the canonical unique identifier for this deliverable."""
-        branch = self.make_safe_name(self.branch)
-        identifier = f"{self.xml.product_docset}/{branch}/{self.xml.lang}"
+        # branch = self.make_safe_name(self.branch)
+        identifier = f"{self.xml.product_docset}/{self.xml.lang}"
         return self._append_dcfile(identifier)
 
     @cached_property
@@ -149,18 +164,16 @@ class Deliverable:
         self._metafile = value
 
     @property
-    def meta(self) -> Metadata | None:
-        """Return parsed metadata for this deliverable."""
-        # TODO: Is that still needed?
-        return self._meta
+    def document(self) -> Document | None:
+        """Return the normalized document for this deliverable."""
+        return self._document
 
-    @meta.setter
-    def meta(self, value: Metadata) -> None:
-        """Set parsed metadata for this deliverable."""
-        # TODO: Is that still needed?
-        if not isinstance(value, Metadata):
-            raise TypeError(f"Expected Metadata, got {type(value)}")
-        self._meta = value
+    @document.setter
+    def document(self, value: Document) -> None:
+        """Set the normalized document for this deliverable."""
+        if not isinstance(value, Document):
+            raise TypeError(f"Expected Document, got {type(value)}")
+        self._document = value
 
     def __hash__(self) -> int:
         """Return a hash based on the stable full identifier."""

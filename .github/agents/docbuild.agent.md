@@ -1,7 +1,7 @@
 ---
 name: docbuild
 description: 'Help me with design, tests, documentation, and improving code.'
-tools: [execute/killTerminal, execute/runInTerminal, read/terminalSelection, read/terminalLastCommand, read/getTaskOutput, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, edit/editFiles, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/usages, web/githubRepo, todo, ms-python.python/getPythonEnvironmentInfo, ms-python.python/getPythonExecutableCommand]
+tools: [vscode/askQuestions, execute/getTerminalOutput, execute/killTerminal, execute/sendToTerminal, execute/runTask, execute/createAndRunTask, execute/runInTerminal, execute/runTests, execute/testFailure, read/getNotebookSummary, read/problems, read/readFile, read/viewImage, read/terminalSelection, read/terminalLastCommand, read/getTaskOutput, agent/runSubagent, edit/editFiles, edit/rename, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/usages, web/githubRepo, ms-python.python/getPythonEnvironmentInfo, ms-python.python/getPythonExecutableCommand, todo]
 ---
 
 You are a professional senior Python developer and technical writer focused on this repository.
@@ -35,6 +35,8 @@ Run tests:
 
 * Run the complete test suite with `uv run --frozen pytest`.
 * Single tests with `uv run --frozen pytest tests/path/to/test_file.py::test_function_name`.
+* When executing commands via `runInTerminal`, always chain operations on a single line (avoid multi-line commands or unclosed inputs).
+* Prefer running test/build processes by appending `&` to run them safely or ensure they self-terminate cleanly so the session doesn't hang.
 
 ## Constraints & Safety
 

@@ -3,24 +3,209 @@
 from collections.abc import Generator
 from datetime import date
 import logging
-from typing import ClassVar, Self
+import re
+from typing import TYPE_CHECKING, ClassVar, Self
 
-from lxml import etree
+if TYPE_CHECKING:
+    from .deliverable import Deliverable
+
 from pydantic import (
+    AliasChoices,
     BaseModel,
     ConfigDict,
-    # model_validator,
     Field,
     SerializationInfo,
     ValidationInfo,
     field_serializer,
     field_validator,
+    model_validator,
 )
 
+from ..constants import DATE_MODIFIED_FALLBACK_ORDER, DATE_MODIFIED_LOCALE_ORDER
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 
 log = logging.getLogger(__name__)
+
+_PRODUCT_PATTERN = re.compile(r"\[(.*?)\](.*)")
+_DATE_NUMERIC_PATTERN = re.compile(
+    r"^(?P<a>\d{1,4})[./-](?P<b>\d{1,2})[./-](?P<c>\d{1,4})$"
+)
+
+
+def _safe_date(year: int, month: int, day: int) -> date | None:
+    """Return a date when values are valid; otherwise None."""
+    try:
+        return date(year, month, day)
+    except ValueError:
+        return None
+
+
+def _resolve_date_order(lang: str | None, a: int, b: int) -> str | None:
+    """Resolve day/month order using numeric hints and locale preference."""
+    if a > 12 and b <= 12:
+        return "DMY"
+    if b > 12 and a <= 12:
+        return "MDY"
+    if a > 12:
+        return None
+
+    order = DATE_MODIFIED_LOCALE_ORDER.get(
+        lang or "",
+        DATE_MODIFIED_FALLBACK_ORDER,
+    )
+    if order == "YMD":
+        return DATE_MODIFIED_FALLBACK_ORDER
+    return order
+
+
+def _parse_numeric_date(value: str, lang: str | None) -> date | None:
+    """Parse numeric dates using locale-specific heuristics."""
+    match = _DATE_NUMERIC_PATTERN.match(value)
+    if not match:
+        return None
+
+    a_str = match.group("a")
+    b_str = match.group("b")
+    c_str = match.group("c")
+    a = int(a_str)
+    b = int(b_str)
+    c = int(c_str)
+
+    if len(a_str) == 4:
+        return _safe_date(a, b, c)
+
+    if len(c_str) != 4:
+        return None
+
+    order = _resolve_date_order(lang, a, b)
+    if order is None:
+        return None
+
+    if order == "DMY":
+        return _safe_date(c, b, a)
+    return _safe_date(c, a, b)
+
+
+def _coerce_metadata_payload(payload: dict[str, object]) -> dict[str, object]:
+    """Return a merged metadata payload for model validation."""
+    metadata = payload.get("metadata")
+    if isinstance(metadata, dict):
+        merged = dict(metadata)
+        for key, value in payload.items():
+            if key != "metadata" and key not in merged:
+                merged[key] = value
+        return merged
+    return payload
+
+
+def _first_value(payload: dict[str, object], *keys: str) -> object | None:
+    """Return the first non-null payload value for the provided keys."""
+    for key in keys:
+        value = payload.get(key)
+        if value is not None:
+            return value
+    return None
+
+
+def _split_text_list(value: object) -> list[str]:
+    """Split a metadata value into a list of non-empty strings."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str):
+        if ";" in value:
+            parts = value.split(";")
+        elif "," in value:
+            parts = value.split(",")
+        else:
+            parts = [value]
+        return [part.strip() for part in parts if part.strip()]
+    text = str(value).strip()
+    return [text] if text else []
+
+
+def _normalize_products(value: object) -> list[dict[str, object]]:
+    """Normalize product entries from metadata payloads."""
+    products: list[dict[str, object]] = []
+    items = value if isinstance(value, list) else [value]
+
+    for item in items:
+        if isinstance(item, dict):
+            name = (
+                item.get("name")
+                or item.get("product")
+                or item.get("productname")
+                or ""
+            )
+            versions_value = item.get("versions") or item.get("version") or []
+            versions = _split_text_list(versions_value)
+            products.append({"name": str(name), "versions": versions})
+            continue
+
+        if isinstance(item, str):
+            if match := _PRODUCT_PATTERN.match(item):
+                versions = _split_text_list(match.group(1))
+                name = match.group(2).strip()
+            else:
+                name = item.strip()
+                versions = []
+            if name:
+                products.append({"name": name, "versions": versions})
+            continue
+
+        name = str(item).strip()
+        if name:
+            products.append({"name": name, "versions": []})
+
+    return products
+
+
+def _normalize_docs(payload: dict[str, object]) -> list[dict[str, object]]:
+    """Normalize document payloads into a list of doc dicts."""
+    docs_value = payload.get("docs")
+    if isinstance(docs_value, list) and docs_value:
+        raw_docs = docs_value
+    elif isinstance(docs_value, dict):
+        raw_docs = [docs_value]
+    else:
+        doc_value = payload.get("document") or payload.get("doc")
+        raw_docs = [doc_value] if isinstance(doc_value, dict) else [payload]
+
+    description = _first_value(
+        payload,
+        "description",
+        "seo-description",
+        "seo_description",
+        "seoDescription",
+    )
+    normalized: list[dict[str, object]] = []
+    for doc in raw_docs:
+        if not isinstance(doc, dict):
+            continue
+        doc_data = dict(doc)
+        if description and not doc_data.get("description"):
+            doc_data["description"] = str(description)
+        if "rootId" in doc_data and "rootid" not in doc_data:
+            doc_data["rootid"] = doc_data["rootId"]
+        normalized.append(doc_data)
+
+    return normalized
+
+
+def _normalize_document_payload(payload: dict[str, object]) -> dict[str, object]:
+    """Normalize a metadata payload into Document-compatible data."""
+    payload = _coerce_metadata_payload(payload)
+    normalized = dict(payload)
+    normalized["docs"] = _normalize_docs(payload)
+
+    tasks_value = _first_value(payload, "tasks", "task")
+    normalized["tasks"] = _split_text_list(tasks_value)
+
+    products_value = _first_value(payload, "products", "productname")
+    normalized["products"] = _normalize_products(products_value)
+    return normalized
 
 
 class Description(BaseModel):
@@ -46,14 +231,14 @@ class Description(BaseModel):
 
     @classmethod
     def from_xml_node(
-        cls: type[Self], node: etree._Element
+        cls: type[Self], deliverable: "Deliverable"
     ) -> Generator[Self, None, None]:
-        """Extract descriptions from a parent XML node.
+        """Extract descriptions from a deliverable object.
 
-        :param node: a node pointing to ``<product>``
-        :yield:
+        :param deliverable: A deliverable object.
+        :yield: A :class:`Description` instance for each description found.
         """
-        for n in node.xpath("desc"):
+        for n in deliverable.xml.desc():
             text = "".join(
                 f"<{child.tag}>{
                     ' '.join(
@@ -130,14 +315,14 @@ class Category(BaseModel):
 
     @classmethod
     def from_xml_node(
-        cls: type[Self], node: etree._Element
+        cls: type[Self], deliverable: "Deliverable"
     ) -> Generator[Self, None, None]:
-        """Extract categories from a parent XML node.
+        """Extract categories from a deliverable object.
 
-        :param node: a node pointing to ``<product>``
+        :param deliverable: A deliverable object.
         :yield: A :class:`Category` instance for each category found.
         """
-        for cat in node.xpath("category|categories/category"):
+        for cat in deliverable.xml.categories():
             langs = cat.xpath("language")
             translations = [
                 CategoryTranslation(
@@ -219,7 +404,43 @@ class SingleDocument(BaseModel):
     description: str = Field(default="")
     rootid: str = Field(default="")
     format: DocumentFormat = Field(default_factory=DocumentFormat)
-    datemodified: date | None = Field(default=None, serialization_alias="dateModified")
+    datemodified: date | None = Field(
+        default=None,
+        alias="dateModified",
+        serialization_alias="dateModified",
+        validation_alias=AliasChoices("dateModified", "date_modified", "date"),
+    )
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    @field_validator("datemodified", mode="before")
+    @classmethod
+    def parse_datemodified(cls, value: object, info: ValidationInfo) -> date | None:
+        """Parse dateModified values and warn on invalid values."""
+        if value is None or value == "":
+            return None
+        if isinstance(value, date):
+            return value
+        if isinstance(value, str):
+            text = value.strip()
+            if not text:
+                return None
+            try:
+                return date.fromisoformat(text)
+            except ValueError:
+                lang = info.data.get("lang")
+                parsed = _parse_numeric_date(text, str(lang) if lang else None)
+                if parsed is not None:
+                    return parsed
+                rootid = info.data.get("rootid", "Unknown RootID")
+                log.warning(
+                    "Invalid dateModified for rootid=%s (Lang: %s): %s",
+                    rootid,
+                    lang or "Unknown Lang",
+                    value,
+                )
+                return None
+        return None
 
     @field_validator("title")
     @classmethod
@@ -241,7 +462,7 @@ class SingleDocument(BaseModel):
     def serialize_date(self: Self, value: date | None, _info: SerializationInfo) -> str:
         """Serialize date to 'YYYY-MM-DD' or an empty string if None."""
         if value is None:
-            return ""
+            return ""  # TODO: Consider a fallback?
         return value.isoformat() if hasattr(value, "isoformat") else str(value)
 
 
@@ -296,6 +517,40 @@ class Document(BaseModel):
     doctypes: list[str] = Field(default_factory=list, alias="docTypes")
     isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGate")
     rank: int | str | None = Field(default=None)
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    @model_validator(mode="before")
+    @classmethod
+    def normalize_payload(cls: type[Self], data: object) -> object:
+        """Normalize raw metadata payloads into a document structure."""
+        if not isinstance(data, dict):
+            return data
+        return _normalize_document_payload(data)
+
+    @classmethod
+    def from_metadata_payload(
+        cls: type[Self],
+        payload: dict[str, object],
+        *,
+        dcfile: str,
+        lang: str,
+    ) -> Self:
+        """Create a Document from raw metadata payloads.
+
+        :param payload: Raw metadata payload.
+        :param dcfile: DC file name for the deliverable.
+        :param lang: Deliverable language.
+        :return: Normalized Document instance.
+        """
+        normalized = _normalize_document_payload(payload)
+        docs = normalized.get("docs")
+        if isinstance(docs, list) and docs:
+            doc = docs[0]
+            if isinstance(doc, dict):
+                doc.setdefault("dcfile", dcfile)
+                doc.setdefault("lang", lang)
+        return cls.model_validate(normalized)
 
     @field_validator("rank", mode="before")
     @classmethod

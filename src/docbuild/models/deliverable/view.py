@@ -10,6 +10,7 @@ from lxml import etree  # type: ignore
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
 from ..repo import Repo
+from .translation import TranslationInfo
 
 
 @dataclass
@@ -59,14 +60,24 @@ class DeliverableXMLView:
         return self.docset_node.attrib.get("id", None)
 
     @cached_property
-    def docsetid(self) -> str | None:
+    def docsetid(self) -> str:
         """Return the docset path/name (``<docset path=…>``), NOT the real ID."""
-        return self.docset_node.attrib.get("path", None)
+        return self.docset_node.attrib.get("path", "")
 
     @cached_property
     def lang(self) -> LanguageCode:
         """Return the language and country code (e.g. ``'en-us'``)."""
         return LanguageCode(language=self.node.getparent().attrib.get("lang").strip())
+
+    @cached_property
+    def id(self) -> str:
+        """Return the deliverable ID (``@id``) or an empty string if absent."""
+        return self.node.attrib.get("id", "")
+
+    @cached_property
+    def category(self) -> str | None:
+        """Return the deliverable category (``@category``) or None if absent."""
+        return self.node.attrib.get("category", None)
 
     @cached_property
     def dcfile(self) -> str | None:
@@ -193,7 +204,6 @@ class DeliverableXMLView:
 
     def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""
-        # TODO: Use Repo as return object?
         node = self.node.getparent().getparent().find("git")
         if node is not None:
             remote_str = node.attrib.get("remote")
@@ -202,6 +212,49 @@ class DeliverableXMLView:
             except ValueError:
                 return remote_str
         return None
+
+    def translation_infos(self) -> dict[LanguageCode, TranslationInfo]:
+        """Return translation info for ref locales pointing to this deliverable.
+
+        Translations are detected by matching ``<ref linkend=...>`` nodes in
+        sibling locales to this deliverable's ``@id``.
+        """
+        deliverable_id = self.id
+        if not deliverable_id:
+            return {}
+
+        translations: dict[LanguageCode, TranslationInfo] = {}
+        current_lang = str(self.lang)
+
+        for locale in self.docset_node.xpath("resources/locale"):
+            locale_lang = (locale.attrib.get("lang") or "").strip()
+            if not locale_lang or locale_lang == current_lang:
+                continue
+
+            for node in locale.findall("deliverable"):
+                ref_node = node.find("ref")
+                if ref_node is None:
+                    continue
+                if ref_node.attrib.get("linkend") != deliverable_id:
+                    continue
+
+                branch = locale.findtext("branch", default=None)
+                if branch is not None:
+                    branch = branch.strip() or None
+
+                subdir = locale.findtext("subdir", default=None)
+                if subdir is not None:
+                    subdir = subdir.strip() or None
+
+                lang_code = LanguageCode(language=locale_lang)
+                translations[lang_code] = TranslationInfo(
+                    lang=lang_code,
+                    branch=branch,
+                    subdir=subdir,
+                )
+                break
+
+        return translations
 
     # -- Output formats
     def _ref_format_attrs(self) -> dict[str, str] | None:

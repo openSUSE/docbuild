@@ -1,4 +1,5 @@
 from datetime import date
+from unittest.mock import Mock
 
 from lxml import etree
 import pytest
@@ -99,6 +100,32 @@ def test_single_document_serialize_date_non_none() -> None:
 
 
 @pytest.mark.parametrize(
+    "value, lang, expected",
+    [
+        ("11/04/2025", "en-us", date(2025, 11, 4)),
+        ("11/04/2025", "de-de", date(2025, 4, 11)),
+        ("2025/04/11", "ja-jp", date(2025, 4, 11)),
+        ("2025.12.31", "fr-fr", date(2025, 12, 31)),
+        ("11.03.2023", "de-de", date(2023, 3, 11)),
+        ("11.3.2023",  "de-de", date(2023, 3, 11)),
+        ("11/4/2025", "pt-br", date(2025, 4, 11)),
+    ],
+)
+def test_single_document_parse_datemodified_locale(
+    value: str, lang: str, expected: date
+) -> None:
+    """Parse dateModified using locale-based heuristics."""
+    doc = SingleDocument.model_validate(
+        {
+            "dateModified": value,
+            "lang": lang,
+            "dcfile": "DC-TEST",
+        }
+    )
+    assert doc.datemodified == expected
+
+
+@pytest.mark.parametrize(
     "input_rank, expected_internal, expected_serialized",
     [
         ("", None, ""),  # empty string → None → ""
@@ -159,9 +186,12 @@ def test_category_from_xml_node() -> None:
     </product>
     """
     node = etree.fromstring(doc, parser=None)
+    mock_deliverable = Mock()
+    mock_deliverable.xml.categories.return_value = list(node.xpath("category|categories/category"))
+
     # Reset class variable for predictable rank
     Category.reset_rank()
-    models = list(Category.from_xml_node(node))
+    models = list(Category.from_xml_node(mock_deliverable))
 
     assert len(models) == 4
 
@@ -207,8 +237,10 @@ def test_description_from_xml_node() -> None:
         </product>
     </docservconfig>
     """
-    node = etree.fromstring(doc, parser=None).getroottree()
-    model = next(iter(Description.from_xml_node(node)))
+    node = etree.fromstring(doc, parser=None)
+    mock_deliverable = Mock()
+    mock_deliverable.xml.desc.return_value = list(node.xpath("desc"))
+    model = next(iter(Description.from_xml_node(mock_deliverable)))
     serialized = model.model_dump(by_alias=True)
     assert serialized == {
         "lang": "en-us",

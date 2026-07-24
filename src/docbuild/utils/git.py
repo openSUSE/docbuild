@@ -123,10 +123,10 @@ class ManagedGitRepo:
         repo_model = self._repo_model
 
         # Ensure a lock exists for this specific repository
-        if repo_model not in self._locks:
-            self._locks[repo_model] = asyncio.Lock()
+        if repo_model not in type(self)._locks:
+            type(self)._locks[repo_model] = asyncio.Lock()
 
-        async with self._locks[repo_model]:
+        async with type(self)._locks[repo_model]:
             # Re-check the update status after acquiring the lock
             if self._is_updated.get(repo_model, False):
                 log.info("Repository %r already processed this run.", repo_model.name)
