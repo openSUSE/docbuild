@@ -6,7 +6,6 @@ from pathlib import Path
 
 from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
 from docbuild.cli.cmd_portal.process import parse_portal_config
-from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
@@ -33,13 +32,13 @@ async def _verify_repository_files(
         log.error(f"Repository inaccessible: {repo_surl}")
         for d in deliverables:
             # Format: [repo] product/version/lang:file
-            missing.append(f"[{repo_surl}] {d.productid}/{d.docsetid}/{d.lang}:{d.dcfile}")
+            missing.append(f"[{repo_surl}] {d.xml.productid}/{d.xml.docsetid}/{d.xml.lang}:{d.xml.dcfile}")
         return missing
 
     available_files = await repo_handler.ls_tree(branch)
     for d in deliverables:
-        display_name = f"[{repo_surl}] {d.productid}/{d.docsetid}/{d.lang}:{d.dcfile}"
-        if d.dcfile in available_files:
+        display_name = f"[{repo_surl}] {d.xml.productid}/{d.xml.docsetid}/{d.xml.lang}:{d.xml.dcfile}"
+        if d.xml.dcfile in available_files:
             log.info(f"Found: {display_name}")
         else:
             log.error(f"Missing: {display_name}")
@@ -47,16 +46,13 @@ async def _verify_repository_files(
     return missing
 
 
-async def process_check_files(
-    ctx: DocBuildContext,
+async def check_repository_files(
+    main_portal_config: Path,
+    repo_root: Path,
     doctypes: Sequence[Doctype] | None
 ) -> list[str]:
     """Verify DC file existence using official Deliverable models."""
     log.info("Starting DC file availability check...")
-
-    env_config = ctx.envconfig
-    main_portal_config = env_config.paths.main_portal_config.expanduser()
-    repo_root = env_config.paths.repo_dir.expanduser()
 
     # 1. Parse the main portal config (including XIncludes)
     if not main_portal_config.exists():
