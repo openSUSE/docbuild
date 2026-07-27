@@ -50,3 +50,10 @@ def test_dcfile_on_prebuilt(first_prebuilt_deliverable: Deliverable) -> None:
 
 def test_basefile(first_deliverable: Deliverable) -> None:
     assert first_deliverable.xml.basefile == "SLES-administration"
+
+
+def test_locale_en_on_translated_deliverable(first_ref_deliverable: Deliverable) -> None:
+    """Test that translated deliverables can resolve the English locale node."""
+    locale_en = first_ref_deliverable.xml.locale_en
+    assert locale_en is not None
+    assert locale_en.get("lang") == "en-us"

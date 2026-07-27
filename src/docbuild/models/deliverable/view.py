@@ -64,6 +64,11 @@ class DeliverableXMLView:
         return self.docset_node.attrib.get("path", None)
 
     @cached_property
+    def locale_en(self) -> etree._Element | None:
+        """Return the English locale node (``<locale lang="en-us">``) or None if absent."""
+        return self.docset_node.find("resources/locale[@lang='en-us']")
+
+    @cached_property
     def lang(self) -> LanguageCode:
         """Return the language and country code (e.g. ``'en-us'``)."""
         return LanguageCode(language=self.node.getparent().attrib.get("lang").strip())
@@ -73,7 +78,37 @@ class DeliverableXMLView:
         """Return the DC filename, or ``None`` if absent."""
         if (dcnode := self.node.find("dc")) is not None:
             return dcnode.attrib.get("file")
+
+        elif self.is_ref:
+            # If validation is correct, we don't explicitly need to check for a
+            # ref/@linkend attribute.
+            refid = self.node.find("ref").get("linkend")
+            dcnode = cast(etree._Element, self.locale_en).find(
+                f"deliverable[@id={refid!r}]/dc"
+            )
+            if dcnode is not None:
+                return dcnode.attrib.get("file")  # is already the @file attribute
+
         return None
+
+    @cached_property
+    def deliverableid(self) -> str | None:
+        """Return the deliverable ID (``<deliverable id=…>``) or None if absent."""
+        # d_id = self.node.attrib.get("id")
+        if (d_id := self.node.get("id")) is not None:
+            return d_id  # is already the @id attribute
+
+        elif self.is_ref:
+            # If this is a reference deliverable, we can try to get the ID from the
+            # linked English deliverable.
+            refid = self.node.find("ref").get("linkend")
+            dcnode = cast(etree._Element, self.locale_en).find(
+                f"deliverable[@id={refid!r}]"
+            )
+            if dcnode is not None:
+                return dcnode.attrib.get("id")  # is already the @id attribute
+        return d_id
+
 
     @cached_property
     def basefile(self) -> str | None:
@@ -117,9 +152,10 @@ class DeliverableXMLView:
         """Return True if the deliverable is marked as DC."""
         if self.kind is not None:
             return self._is_kind("dc")
-        # Fallback: if no type is specified, we can infer DC from the
-        # presence of a DC file
-        return self.dcfile is not None
+        # Fallback: infer DC from a local <dc> child only.
+        # A translated <ref> may resolve dcfile from English, but should
+        # still be classified as ref when @type is missing.
+        return self.node.find("dc") is not None
 
     @cached_property
     def is_ref(self) -> bool:

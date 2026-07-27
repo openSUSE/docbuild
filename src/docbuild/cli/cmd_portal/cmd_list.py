@@ -115,13 +115,13 @@ def build_deliverable_branch(
     repo_format: str | None,
 ) -> None:
     """Format and append a single deliverable node to the Rich Tree."""
-    d_id = deliv.xml.node.get("id", "unnamed-deliverable")
+    d_id = deliv.xml.deliverableid or "unnamed-deliverable"
 
     # 1. Format the main display name
     display_name = get_display_name(deliv, d_id)
     deliv_branch = docset_branch.add(display_name)
 
-    # 2. Automatically show URLs for prebuilt deliverables
+    # 2a. Automatically show URLs for prebuilt deliverables
     if deliv.xml.is_prebuilt:
         for url_node in deliv.xml.node.xpath("prebuilt/url"):
             if href := url_node.get("href"):
