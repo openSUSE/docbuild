@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.21.1.dev17+ga80de51d3.d20260723</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.21.1.dev20+g3cd557374.d20260727</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=31ed1773"></script>
+    <script src="_static/documentation_options.js?v=29ccdc0e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -453,6 +453,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added a <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">doctor</span></code> command to check for system-level dependencies (like <code class="docutils literal notranslate"><span class="pre">daps</span></code>, <code class="docutils literal notranslate"><span class="pre">jing</span></code>, <code class="docutils literal notranslate"><span class="pre">xmllint</span></code>) and a fail-fast decorator to prevent execution of commands when required tools are missing. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/234">GH #234</a>)</p></li>
+<li><p>Refactored the <code class="docutils literal notranslate"><span class="pre">check</span> <span class="pre">files</span></code> command to separate CLI argument parsing from core business logic, introducing a new <code class="docutils literal notranslate"><span class="pre">docbuild.tasks</span></code> module as a Proof of Concept for CLI layer decoupling. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/307">GH #307</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
