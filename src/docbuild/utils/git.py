@@ -54,7 +54,7 @@ class ManagedGitRepo:
         # The Repo model handles the "sluggification" of the URL
         self.bare_repo_path = self._permanent_root / self._repo_model.slug
         # Initialize attribute for last subprocess result:
-        self.result: None | CompletedProcess[str] = None
+        self.result: CompletedProcess[str] | None = None
         self._gitconfig = gitconfig
         # Add repo into class variable
         type(self)._is_updated.setdefault(self._repo_model, False)
