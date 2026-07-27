@@ -1,34 +1,30 @@
-"""Clone Git repositories from a stitchfile or a list of repository URLs."""
+"""Logic for repository management tasks."""
 
 import asyncio
 import logging
 from pathlib import Path
 
-from ...cli.cmd_portal.process import parse_portal_config
-from ...cli.context import DocBuildContext
-from ...constants import GITLOGGER_NAME
-from ...models.repo import Repo
-from ...utils.contextmgr import make_timer
-from ...utils.git import ManagedGitRepo
+from docbuild.cli.cmd_portal.process import parse_portal_config
+from docbuild.constants import GITLOGGER_NAME
+from docbuild.models.repo import Repo
+from docbuild.utils.contextmgr import make_timer
+from docbuild.utils.git import ManagedGitRepo
 
 log = logging.getLogger(GITLOGGER_NAME)
 
 
-async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
+async def clone_repositories(
+    main_portal_config: Path,
+    repo_dir: Path,
+    repos: tuple[str, ...]
+) -> int:
     """Process the cloning of repositories.
 
-    :param context: The DocBuildContext object containing configuration.
+    :param main_portal_config: Path to the main portal config XML.
+    :param repo_dir: Path to the directory where bare repos should be stored.
     :param repos: A tuple of repository selectors. If empty, all repos are used.
-    :return: An integer exit code.
-    :raises ValueError: If configuration paths are missing.
+    :return: An integer exit code (0 for success, 1 for failure).
     """
-    # The calling command function is expected to have checked context.envconfig.
-    envcfg = context.envconfig
-    repo_dir_str = envcfg.paths.repo_dir
-    main_portal_config = Path(envcfg.paths.main_portal_config).expanduser()
-
-    repo_dir = Path(repo_dir_str).expanduser()
-
     stitchnode = await parse_portal_config(main_portal_config)
 
     if not repos:
@@ -48,9 +44,6 @@ async def process(context: DocBuildContext, repos: tuple[str, ...]) -> int:
     if not unique_git_repos:
         log.info("No repositories found to clone.")
         return 0
-
-    # print(f'Found {len(unique_git_repos)} unique git repositories to process.')
-    # print(f'Cloning repositories into {repo_dir}')
 
     timer = make_timer("git-clone-repos")
     with timer() as t:

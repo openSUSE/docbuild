@@ -10,12 +10,13 @@ Pass any of the following URLs to clone:
 
 import asyncio
 import logging
+from pathlib import Path
 
 import click
 
 from ...cli.context import DocBuildContext
 from ...constants import GITLOGGER_NAME
-from .process import process
+from ...tasks.repo import clone_repositories
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +36,14 @@ def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    result = asyncio.run(process(context, repos))
+
+    # Type guard: Ensure envconfig is loaded before accessing its attributes
+    if context.envconfig is None:
+        raise click.ClickException("Environment configuration is missing.")
+
+    main_portal_config = Path(context.envconfig.paths.main_portal_config).expanduser()
+    repo_dir = Path(context.envconfig.paths.repo_dir).expanduser()
+
+    result = asyncio.run(clone_repositories(main_portal_config, repo_dir, repos))
     log.info(f"Clone process completed with exit code: {result}")
     ctx.exit(result)
