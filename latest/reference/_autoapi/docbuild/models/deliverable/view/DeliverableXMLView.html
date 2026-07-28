@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.21.1.dev20+g3cd557374.d20260727</title>
+    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.21.1.dev22+gcca796251.d20260728</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=29ccdc0e"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=ff673230"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -675,6 +675,12 @@
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.locale_en">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">locale_en</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.locale_en" title="Link to this definition">#</a></dt>
+<dd><p>Return the English locale node (<code class="docutils literal notranslate"><span class="pre">&lt;locale</span> <span class="pre">lang=&quot;en-us&quot;&gt;</span></code>) or None if absent.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.lang">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lang</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.lang" title="Link to this definition">#</a></dt>
 <dd><p>Return the language and country code (e.g. <code class="docutils literal notranslate"><span class="pre">'en-us'</span></code>).</p>
@@ -684,6 +690,12 @@
 <dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.dcfile">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dcfile</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.dcfile" title="Link to this definition">#</a></dt>
 <dd><p>Return the DC filename, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if absent.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.deliverableid">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">deliverableid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.deliverableid" title="Link to this definition">#</a></dt>
+<dd><p>Return the deliverable ID (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">id=…&gt;</span></code>) or None if absent.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -858,8 +870,10 @@ format element is found.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.acronym"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.acronym</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.docsetrealid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.docsetrealid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.docsetid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.docsetid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.locale_en"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.locale_en</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.lang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.lang</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.dcfile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.dcfile</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.deliverableid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.deliverableid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.basefile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.basefile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.translations"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.translations</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.kind"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.kind</span></code></a></li>
