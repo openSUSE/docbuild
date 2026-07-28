@@ -9,7 +9,7 @@ from rich.console import Console
 
 from ...cli.context import DocBuildContext
 from ...constants import PORTALLOGGER_NAME
-from . import process as process_mod
+from ...tasks.portal import validate_portal_config
 
 # ---- Logger setup
 log = logging.getLogger(__name__)
@@ -34,8 +34,8 @@ console_err = Console(stderr=True)
 @click.pass_context
 def validate(
     ctx: click.Context,
-    main_portal_config: Path,
-    portal_schema: Path,
+    main_portal_config: Path | None,
+    portal_schema: Path | None,
 ) -> None:
     """Subcommand to validate XML configuration files.
 
@@ -44,26 +44,26 @@ def validate(
     :param portal_schema: Portal schema file to use for validation.
     """
     context: DocBuildContext = ctx.obj
-    env = context.envconfig
+    
+    # Type guard: Ensure envconfig is loaded before accessing its attributes
+    if context.envconfig is None:
+        raise click.ClickException("Environment configuration is missing.")
 
-    configdir = env.paths.config_dir
-    configdir_path = Path(configdir).expanduser()
     if not main_portal_config:
-        main_portal_config = env.paths.main_portal_config.expanduser()
+        main_portal_config = Path(context.envconfig.paths.main_portal_config).expanduser()
     else:
         main_portal_config = Path(main_portal_config).expanduser()
 
     if not portal_schema:
-        portal_schema = env.paths.portal_rncschema.expanduser()
+        portal_schema = Path(context.envconfig.paths.portal_rncschema).expanduser()
     else:
         portal_schema = Path(portal_schema).expanduser()
 
-    log.debug("Config directory: %s", configdir_path)
     log.debug("Main Portal XML config file: %s", main_portal_config)
     log.debug("Portal schema file: %s", portal_schema)
 
     result = asyncio.run(
-        process_mod.process(context, main_portal_config, portal_schema)
+        validate_portal_config(main_portal_config, portal_schema, verbose=context.verbose)
     )
 
-    ctx.exit(result)  # Use the result as the exit code for the CLI
+    ctx.exit(result)

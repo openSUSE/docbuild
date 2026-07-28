@@ -4,7 +4,7 @@ import asyncio
 import logging
 from pathlib import Path
 
-from docbuild.cli.cmd_portal.process import parse_portal_config
+from docbuild.tasks.portal import parse_portal_config
 from docbuild.constants import GITLOGGER_NAME
 from docbuild.models.repo import Repo
 from docbuild.utils.contextmgr import make_timer

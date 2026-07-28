@@ -8,7 +8,7 @@ from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.tree import Tree
 
-from docbuild.cli.cmd_portal.process import parse_portal_config
+from docbuild.tasks.portal import parse_portal_config
 from docbuild.cli.context import DocBuildContext
 from docbuild.config.xml.list import list_all_deliverables
 from docbuild.models.deliverable import Deliverable

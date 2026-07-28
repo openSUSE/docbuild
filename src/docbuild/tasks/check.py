@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 
 from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
-from docbuild.cli.cmd_portal.process import parse_portal_config
+from docbuild.tasks.portal import parse_portal_config
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype

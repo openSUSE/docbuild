@@ -1,4 +1,4 @@
-"""Module for processing XML validation in DocBuild."""
+"""Tasks for portal XML processing and validation."""
 
 import asyncio
 from dataclasses import dataclass
@@ -6,15 +6,14 @@ import logging
 from pathlib import Path
 from subprocess import CompletedProcess
 
-from lxml import etree
+from lxml import etree # type: ignore
 from rich.console import Console
 from rich.markup import escape
 
-from ...config.xml.checks import CheckResult, register_check
-from ...config.xml.xinclude import parse_xml_with_xinclude_base
-from ...utils.decorators import RegistryDecorator
-from ...utils.shell import run_command
-from ..context import DocBuildContext
+from docbuild.config.xml.checks import CheckResult, register_check
+from docbuild.config.xml.xinclude import parse_xml_with_xinclude_base
+from docbuild.utils.decorators import RegistryDecorator
+from docbuild.utils.shell import run_command
 
 # Cast to help with type checking
 registry: RegistryDecorator = register_check  # type: ignore[assignment]
@@ -29,7 +28,6 @@ console_err = Console(stderr=True)
 
 XINCLUDE_PROP = (
     "-D"
-    #
     "org.apache.xerces.xni.parser.XMLParserConfiguration="
     "org.apache.xerces.parsers.XIncludeParserConfiguration"
 )
@@ -219,12 +217,12 @@ async def parse_portal_config(filepath: Path | str) -> etree._ElementTree:
 
 async def run_checks_and_display(
     tree: etree._ElementTree,
-    context: DocBuildContext,
+    verbose: int = 0,
 ) -> bool:
     """Execute registered Python checks and print formatted results.
 
     :param tree: Parsed XML tree to check.
-    :param context: :class:`DocBuildContext` used to read verbosity.
+    :param verbose: Verbosity level (0=normal, 1=verbose, 2=debug).
     :returns: True when all checks succeeded (or when no checks are registered).
     """
     check_results = await run_python_checks(tree)
@@ -237,10 +235,10 @@ async def run_checks_and_display(
             f"[bold]Stage 2 (Python checks, {check_count} {check_label} found):[/]"
         )
         status = "[red]failed[/]"
-        if context.verbose > 1:
+        if verbose > 1:
             dots = "[red]F[/red]" * check_count
             summary_line = f"{stage2_prefix} {dots} => {status}"
-        elif context.verbose >= 1 or check_results:
+        elif verbose >= 1 or check_results:
             # Always show Stage 2 status when checks fail, even in quiet mode.
             summary_line = f"{stage2_prefix} {status}"
 
@@ -250,20 +248,17 @@ async def run_checks_and_display(
 
 
 async def cache_resolved_portal_config(
-    context: DocBuildContext,
     tree: etree._ElementTree,
     main_portal_config: Path,
+    base_server_cache_dir: Path | None = None,
 ) -> Path | None:
     """Write the resolved portal XML to cache when a cache directory is configured.
 
-    :param context: The active DocBuild context.
     :param tree: Parsed portal XML tree, potentially with resolved XIncludes.
     :param main_portal_config: Path of the main portal XML configuration file.
+    :param base_server_cache_dir: Directory where the resolved XML should be cached.
     :returns: The cached XML path when written, otherwise ``None``.
     """
-    envconfig = getattr(context, "envconfig", None)
-    paths = getattr(envconfig, "paths", None)
-    base_server_cache_dir = getattr(paths, "base_server_cache_dir", None)
     if not base_server_cache_dir:
         return None
 
@@ -279,17 +274,16 @@ async def cache_resolved_portal_config(
     return cached_xml_path
 
 
-async def process(
-    context: DocBuildContext,
+async def validate_portal_config(
     main_portal_config: Path,
     portal_schema: Path,
+    verbose: int = 0,
 ) -> int:
     """Asynchronous function to process validation.
 
-    :param context: The DocBuildContext containing environment configuration.
     :param main_portal_config: Path to the main Portal XML configuration file.
     :param portal_schema: Path to the Portal RELAX NG schema file.
-    :raises ValueError: If no envconfig is found.
+    :param verbose: Output verbosity level.
     :return: 0 if validation passed, 1 if any failures occurred.
     """
     log.debug("Starting validation process for Portal XML config %s", main_portal_config)
@@ -323,15 +317,10 @@ async def process(
         console_err.print(f"  [bold red]Error:[/] {err}")
         return 200
 
-    #except Exception as err:
-    #    console_err.print("[bold]Stage 2 (Python checks):[/] [yellow]skipped[/yellow]")
-    #    console_err.print(f"  [bold red]Error:[/] {err}")
-    #    return 200
-
     # Run custom Python checks only after RNG validation and XML parsing succeeded.
-    checks_passed = await run_checks_and_display(tree, context)
+    checks_passed = await run_checks_and_display(tree, verbose)
 
-    if context.verbose > 0:  # pragma: no cover
+    if verbose > 0:  # pragma: no cover
         status = "successfully validated" if checks_passed else "failed validation"
         color = "green" if checks_passed else "red"
         console_out.print(f"Result: [{color}]Portal XML {status}[/{color}]")

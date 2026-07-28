@@ -18,7 +18,7 @@ from ...models.doctype import Doctype
 from ...models.manifest import Category, Description, Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
-from ..cmd_portal.process import parse_portal_config
+from docbuild.tasks.portal import parse_portal_config
 from ..context import DocBuildContext
 
 # Set up rich consoles for output
