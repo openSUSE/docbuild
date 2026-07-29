@@ -12,13 +12,14 @@ from lxml import etree
 from pydantic import ValidationError
 from rich.console import Console
 
+from docbuild.tasks.portal import parse_portal_config
+
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.manifest import Category, Description, Document, Manifest
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
-from docbuild.tasks.portal import parse_portal_config
 from ..context import DocBuildContext
 
 # Set up rich consoles for output

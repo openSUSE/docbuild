@@ -6,7 +6,7 @@ import logging
 from pathlib import Path
 from subprocess import CompletedProcess
 
-from lxml import etree # type: ignore
+from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.markup import escape
 

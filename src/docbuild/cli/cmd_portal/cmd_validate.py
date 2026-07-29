@@ -44,7 +44,7 @@ def validate(
     :param portal_schema: Portal schema file to use for validation.
     """
     context: DocBuildContext = ctx.obj
-    
+
     # Type guard: Ensure envconfig is loaded before accessing its attributes
     if context.envconfig is None:
         raise click.ClickException("Environment configuration is missing.")

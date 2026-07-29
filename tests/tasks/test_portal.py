@@ -1,17 +1,18 @@
 """Tests for the XML validation tasks."""
 
-import shutil
-import sys
 from pathlib import Path
+import shutil
 from subprocess import CompletedProcess
+import sys
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
+from lxml import etree  # type: ignore
 import pytest
-from lxml import etree # type: ignore
 
+from docbuild.config.xml.checks import CheckResult
 from docbuild.tasks import portal as portal_task
 from docbuild.tasks.portal import ValidationResult, validate_portal_config, validate_rng
-from docbuild.config.xml.checks import CheckResult
+
 
 def is_jing_installed():
     return sys.platform != "darwin" and shutil.which("jing") is not None
@@ -61,7 +62,7 @@ async def test_cache_resolved_portal_config_writes_xml(tmp_path):
     cached_path = await portal_task.cache_resolved_portal_config(
         tree, main_portal_config, base_server_cache_dir=cache_dir
     )
-    
+
     assert cached_path is not None
     assert cached_path == Path(cache_dir) / "portal.resolved.xml"
     assert cached_path.exists()
@@ -182,8 +183,8 @@ async def test_validate_rng_jing_failure():
         proc = await portal_task.validate_rng(xmlfile, rnc_schema, xinclude=False, idcheck=False)
         assert proc.returncode != 0
         assert proc.stdout == "Error in jing"
-        
-        # Add the '-c' flag here! 
+
+        # Add the '-c' flag here!
         mock_run_command.assert_called_once_with(["jing", "-i", "-c", str(rnc_schema), str(xmlfile)])
 
 
@@ -275,7 +276,7 @@ class TestDisplayResults:
 
         portal_task.display_results(check_results, summary_line="Stage 2: failed", tree=tree)
         captured = capsys.readouterr()
-        
+
         assert "check1" in captured.err
         assert "Detailed error message" in captured.err
         assert "XPath: /portal/docset[1]" in captured.err
@@ -317,7 +318,7 @@ class TestProcessValidation:
         mock_run_validation.return_value = ValidationResult(True, 0, "")
         mock_check = Mock(__name__="failing_check", side_effect=Exception("Check failed"))
         mock_registry.registry = [mock_check]
-        
+
         xml_file = tmp_path / "valid.xml"
         xml_file.write_text('<?xml version="1.0"?><root></root>')
 
@@ -341,11 +342,11 @@ class TestProcessValidation:
         check_success, verbose_level, expected_code, expect_stage2_summary
     ):
         mock_run_validation.return_value = ValidationResult(True, 0, "")
-        
+
         def generator_func(tree):
             if not check_success:
                 yield CheckResult(message="Check failed")
-                
+
         mock_check = Mock(__name__="check_case", side_effect=generator_func)
         mock_registry.registry = [mock_check]
 

@@ -5,10 +5,10 @@ import logging
 from pathlib import Path
 
 from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
-from docbuild.tasks.portal import parse_portal_config
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.tasks.portal import parse_portal_config
 from docbuild.utils.git import ManagedGitRepo
 
 log = logging.getLogger(__name__)

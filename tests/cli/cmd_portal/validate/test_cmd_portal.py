@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from docbuild.cli.cmd_portal.cmd_validate import validate
 from docbuild.cli.cmd_portal import cmd_validate as cmd_validate_module
+from docbuild.cli.cmd_portal.cmd_validate import validate
 from docbuild.cli.context import DocBuildContext
 
 
@@ -22,7 +22,7 @@ def test_validate_command_delegates_to_task(runner, tmp_path, mock_validate_port
     """Test that the validate CLI command correctly calls the task module."""
     config_dir = tmp_path / "config"
     config_dir.mkdir()
-    
+
     mock_env = MagicMock()
     mock_env.paths.main_portal_config = str(config_dir / "portal.xml")
     mock_env.paths.portal_rncschema = str(config_dir / "schema.rnc")
@@ -56,8 +56,8 @@ def test_validate_command_with_overrides(runner, tmp_path, mock_validate_portal_
     custom_schema.touch()
 
     result = runner.invoke(
-        validate, 
-        ["-M", str(custom_portal), "-S", str(custom_schema)], 
+        validate,
+        ["-M", str(custom_portal), "-S", str(custom_schema)],
         obj=context
     )
 
@@ -73,8 +73,8 @@ def test_validate_command_fails_missing_envconfig(runner):
     """Test that the validate command aborts cleanly if envconfig is None."""
     context = DocBuildContext()
     context.envconfig = None
-    
+
     result = runner.invoke(validate, [], obj=context)
-    
+
     assert result.exit_code != 0
     assert "Environment configuration is missing" in result.output
