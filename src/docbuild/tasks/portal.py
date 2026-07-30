@@ -222,7 +222,7 @@ async def run_checks_and_display(
     """Execute registered Python checks and print formatted results.
 
     :param tree: Parsed XML tree to check.
-    :param verbose: Verbosity level (0=normal, 1=verbose, 2=debug).
+    :param verbose: Verbosity level (0=disabled, 1=verbose, 2=debug).
     :returns: True when all checks succeeded (or when no checks are registered).
     """
     check_results = await run_python_checks(tree)

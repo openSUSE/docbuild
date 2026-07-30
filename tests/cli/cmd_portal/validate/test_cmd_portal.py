@@ -24,8 +24,8 @@ def test_validate_command_delegates_to_task(runner, tmp_path, mock_validate_port
     config_dir.mkdir()
 
     mock_env = MagicMock()
-    mock_env.paths.main_portal_config = str(config_dir / "portal.xml")
-    mock_env.paths.portal_rncschema = str(config_dir / "schema.rnc")
+    mock_env.paths.main_portal_config = config_dir / "portal.xml"
+    mock_env.paths.portal_rncschema = config_dir / "schema.rnc"
 
     context = DocBuildContext()
     context.envconfig = mock_env

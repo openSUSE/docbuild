@@ -30,7 +30,7 @@ async def test_validate_portal_config_generic_parsing_error(
     xml_file.touch()
     schema = tmp_path / "schema.rnc"
 
-    with pytest.raises(ValueError, match="Generic test error"):
+    with pytest.raises(ValueError, match=str(mock_etree_parse.side_effect)):
         await validate_portal_config(xml_file, schema, verbose=3)
 
     mock_run_validation.assert_awaited_once()

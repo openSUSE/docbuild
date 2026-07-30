@@ -50,14 +50,10 @@ def validate(
         raise click.ClickException("Environment configuration is missing.")
 
     if not main_portal_config:
-        main_portal_config = Path(context.envconfig.paths.main_portal_config).expanduser()
-    else:
-        main_portal_config = Path(main_portal_config).expanduser()
+        main_portal_config = context.envconfig.paths.main_portal_config
 
     if not portal_schema:
-        portal_schema = Path(context.envconfig.paths.portal_rncschema).expanduser()
-    else:
-        portal_schema = Path(portal_schema).expanduser()
+        portal_schema = context.envconfig.paths.portal_rncschema
 
     log.debug("Main Portal XML config file: %s", main_portal_config)
     log.debug("Portal schema file: %s", portal_schema)
