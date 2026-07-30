@@ -29,6 +29,12 @@ docbuild.models.manifest.SingleDocument
        }
 
 
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+
    .. py:method:: warn_missing_title(v: str | None, info: pydantic.ValidationInfo) -> str | None
       :classmethod:
 

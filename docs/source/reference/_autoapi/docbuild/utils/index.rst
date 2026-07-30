@@ -27,5 +27,6 @@ Submodules
    /reference/_autoapi/docbuild/utils/paths/index
    /reference/_autoapi/docbuild/utils/pidlock/index
    /reference/_autoapi/docbuild/utils/shell/index
+   /reference/_autoapi/docbuild/utils/sysdeps/index
 
 

@@ -19,14 +19,18 @@ class Doctype(BaseModel):
 
     .. code-block:: text
 
-       [/]?PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
+       [/]?PRODUCT/DOCSETS[@LIFECYCLES]/[LANGS]
 
     The placeholders mean the following:
 
     * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
     * ``DOCSETS``: one or more docsets of the mentioned product, separated by comma
-    * ``LIFECYCLES``: one or more lifecycles, separated by comma or pipe
-    * ``LANGS``: one or more languages, separated by comma
+    * ``LIFECYCLES``: zero or more lifecycles, separated by comma or pipe.
+      Default to ``unknown`` if omitted.
+    * ``LANGS``: zero or more languages, separated by comma.
+      Default to English (``en-us``) if omitted.
+
+    :raises pydantic_core.ValidationError: if the input values are invalid.
 
     >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
     >>> doctype.product
@@ -38,16 +42,6 @@ class Doctype(BaseModel):
     >>> doctype.langs
     [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
     """
-
-    # __init__.__doc__ = """Create a new Doctype instance.
-
-    # :param product: A SUSE product, e.g. 'sles', 'smart'.
-    # :param docset: A specific release or version of a product.
-    # :param lifecycle: The state of the Doctype, e.g. 'supported', 'beta'.
-    # :param langs: A natural language, e.g. 'en-us', 'de-de'.
-
-    # :raises pydantic_core.ValidationError: if the input values are invalid.
-    # """   # type: ignore
 
     product: Product = Field(
         title="A SUSE product",
@@ -69,6 +63,7 @@ class Doctype(BaseModel):
 
     lifecycle: LifecycleFlag = Field(
         title="The state of the Doctype",
+        default=LifecycleFlag.unknown,
         description=(
             "One or more lifecycle states that indicate the "
             "support or development. "
@@ -80,6 +75,7 @@ class Doctype(BaseModel):
 
     langs: list[LanguageCode] = Field(
         title="A natural language",
+        default=[LanguageCode(language="en-us")],
         description=(
             "The natural language containing language and country. "
             "After validation, langs are sorted"
@@ -92,11 +88,11 @@ class Doctype(BaseModel):
     # The regex contains non-capturing groups on purpose
     # This leads to None in the result if that group isn't matched
     _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
-        r"^"  # start
-        r"(?:/?([^/@]+|\*))?"  # optional product (group 1)
-        r"/(?:([^/@]+|\*))?"  # optional docset (group 2)
-        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"  # optional lifecycle (group 3)
-        r"/(\*|[\w-]+(?:,[\w-]+)*)$",  # required langs (group 4)
+        r"^"                                 # start
+        r"(?:/?([^/@]+|\*))?"                # optional product (group 1)
+        r"/(?:([^/@]+|\*))?"                 # optional docset (group 2)
+        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"     # optional lifecycle (group 3)
+        r"(?:/(\*|[\w-]+(?:,[\w-]+)*)?)?$",  # optional langs (group 4)
     )
 
     # dunder methods
@@ -198,8 +194,21 @@ class Doctype(BaseModel):
         )
 
     @classmethod
-    def from_str(cls: type["Doctype"], doctype_str: str) -> Self:
-        """Parse a string that adheres to the doctype format."""
+    def from_str(cls: type["Doctype"],
+                 doctype_str: str,
+                 *,
+                 default_lang: str="en-us") -> "Doctype":
+        """Parse a string that adheres to the doctype format.
+
+        :param doctype_str: A string that adheres to the doctype format.
+        :param default_lang: The default language to use if none is specified (by default, "en-us").
+        :return: A Doctype object.
+        :raise ValueError: If the input string is invalid.
+
+        The language segment is optional: ``sles/16`` and ``sles/16/`` all select
+        English (``en-us``) by default, while ``sles/16/*`` and ``sles/16@supported/*``
+        are all equivalent and select *all* languages.
+        """
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
         if not match:
@@ -209,7 +218,7 @@ class Doctype(BaseModel):
         product = "*" if not product else product
         docset = "*" if not docset else docset
         lifecycle = "unknown" if lifecycle is None else lifecycle
-        langs = "en-us" if langs is None else langs
+        langs = default_lang if langs is None else langs
         return cls(
             product=product,
             docset=docset,
@@ -266,17 +275,17 @@ class Doctype(BaseModel):
     def product_xpath_segment(self: Self) -> str:
         """Return the XPath segment for the product node.
 
-        Example: "product[@productid='sles']" or "product"
+        Example: "product[@id='sles']" or "product"
         """
         if self.product != Product["ALL"]:
-            return f"product[@productid={self.product.value!r}]"
+            return f"product[@id={self.product.value!r}]"
         return "product"
 
     def docset_xpath_segment(self: Self, docset: str) -> str:
         """Return the XPath segment for the docset node.
 
-        Example: "docset[@setid='15-SP6']" or "docset"
+        Example: "docset[@path='15-SP6']" or "docset"
         """
         if docset != "*":
-            return f"docset[@setid={docset!r}]"
+            return f"docset[@path={docset!r}]"
         return "docset"

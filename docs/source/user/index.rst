@@ -10,6 +10,7 @@
    portal-config/index
    run-docbuild
    config/index
+   create-metadata
    build
    validate
    clone

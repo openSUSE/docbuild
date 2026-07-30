@@ -39,14 +39,21 @@ def test_repr_in_doctype():
     )
 
 
-def test_string_langs_in_doctype():
+@pytest.mark.parametrize("langs,expected",
+    [
+        ({}, [LanguageCode(language="en-us")]),
+        ({"langs": "de-de"}, [LanguageCode(language="de-de")]),
+        ({"langs": "en-us,de-de"}, [LanguageCode(language="de-de"), LanguageCode(language="en-us")]),
+    ]
+)
+def test_string_langs_in_doctype(langs, expected):
     doctype = Doctype(
         product="sles",
         docset="15-SP6",
         lifecycle="supported",
-        langs="en-us",
+        **langs,
     )
-    assert doctype.langs == [LanguageCode(language="en-us")]
+    assert doctype.langs == expected
 
 
 def test_multiplestrings_langs_in_doctype():
@@ -60,6 +67,22 @@ def test_multiplestrings_langs_in_doctype():
         LanguageCode(language="de-de"),
         LanguageCode(language="en-us"),
     ]
+
+
+@pytest.mark.parametrize("lifecycle,expected", [
+    # 1 optional lifecycle, default to unknown
+    ({}, LifecycleFlag.unknown),
+    # 2
+    ({"lifecycle": "supported"}, LifecycleFlag.supported),
+])
+def test_lifecycle_in_doctype(lifecycle, expected):
+    doctype = Doctype(
+        product="sles",
+        docset="15-SP6",
+        **lifecycle,
+        langs="en-us",
+    )
+    assert doctype.lifecycle == expected
 
 
 @pytest.mark.parametrize(
@@ -103,15 +126,6 @@ def test_multiplestrings_langs_in_doctype():
         ),
         (
             "*//en-us",
-            (
-                Product.ALL,
-                ["*"],
-                LifecycleFlag.unknown,
-                [LanguageCode(language="en-us")],
-            ),
-        ),
-        (
-            "/*/en-us",
             (
                 Product.ALL,
                 ["*"],
@@ -166,6 +180,21 @@ def test_valid_string_from_string(string, expected):
 def test_invalid_string_from_string():
     with pytest.raises(ValueError):
         Doctype.from_str("nonsense")
+
+
+@pytest.mark.parametrize(
+    "string, expected_langs",
+    [
+        ("sles/16.0", [LanguageCode(language="en-us")]),
+        ("sles/16.0@supported", [LanguageCode(language="en-us")]),
+        ("*/15-SP6", [LanguageCode(language="en-us")]),
+    ],
+    ids=["product_docset", "product_docset_lifecycle", "wildcard_product_docset"],
+)
+def test_missing_lang_defaults_to_en_us(string, expected_langs):
+    """Omitting the language segment should default to 'en-us'."""
+    doctype = Doctype.from_str(string)
+    assert doctype.langs == expected_langs
 
 
 def test_contains_with_doctypes():

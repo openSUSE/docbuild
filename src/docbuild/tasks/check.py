@@ -4,10 +4,10 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 
-from docbuild.cli.cmd_metadata.metaprocess import get_deliverable_from_doctype
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.tasks.metadata.deliverables import get_deliverable_from_doctype
 from docbuild.tasks.portal import parse_portal_config
 from docbuild.utils.git import ManagedGitRepo
 

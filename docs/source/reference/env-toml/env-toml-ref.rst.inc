@@ -16,7 +16,7 @@ Deals with all config about server settings
 
 ``name``
     :Type: :code:`str`
-    :Default: ``doc-example-com``
+    :Default: ``default-env``
 
     Name of the server, used for logging and cache paths
 
@@ -121,11 +121,11 @@ Key naming convention:
 
     Absolute path to the main Portal XML configuration file.
 
-.. _envtoml-paths-portal-schema:
+.. _envtoml-paths-portal-rncschema:
 
-``portal_schema``
+``portal_rncschema``
     :Type: :code:`str`
-    :Default: ``{root_config_dir}/portal-schema.rnc``
+    :Default: ``{root_config_dir}/portal-config.rnc``
 
     Absolute path to the Portal RELAX NG (RNC) schema file used for validation.
 
@@ -149,7 +149,7 @@ Key naming convention:
 
 ``tmp_repo_dir``
     :Type: :code:`str`
-    :Default: ``/data/docserv/repos/temporary-branches/``
+    :Default: ``~/.local/state/docbuild/repos/branches``
 
     The directory for storing temporary repositories from branches.
 
@@ -157,7 +157,7 @@ Key naming convention:
 
 ``repo_dir``
     :Type: :code:`str`
-    :Default: ``/data/docserv/repos/permanent-full/``
+    :Default: ``~/.local/state/docbuild/repos/permanent``
 
     The directory where permanent full repositories are stored.
 
@@ -181,7 +181,7 @@ Key naming convention:
 
 ``meta_cache_dir``
     :Type: :code:`str`
-    :Default: ``{base_cache_dir}/{server.name}/meta``
+    :Default: ``{base_server_cache_dir}/meta``
 
     The directory for caching metadata.
 
@@ -189,9 +189,9 @@ Key naming convention:
 
 ``runtime_base_dir``
     :Type: :code:`str`
-    :Default: ````
+    :Default: ``{base_cache_dir}/runtime``
 
-    The base directory for lightweight runtime artifacts
+    The base directory for lightweight runtime artifacts.
 
 .. _envtoml-paths-lock-dir:
 
@@ -199,7 +199,7 @@ Key naming convention:
     :Type: :code:`str`
     :Default: ``{runtime_base_dir}/locks``
 
-    Directory for lock files used to prevent concurrent builds
+    Directory for lock files used to prevent concurrent builds.
 
 .. _envtoml-paths-json-cache-dir:
 
@@ -221,9 +221,9 @@ Paths can hold placeholders in brackets.
 
 ``tmp_base_dir``
     :Type: :code:`str`
-    :Default: ``{paths.base_tmp_dir}``
+    :Default: ``/tmp/docbuild``
 
-    The base directory for temporary files, referencing paths.base_tmp_dir.
+    The base directory for temporary files.
 
 .. _envtoml-paths-tmp-tmp-dir:
 
@@ -316,7 +316,7 @@ Defines target paths
 
 ``backup_dir``
     :Type: :code:`str`
-    :Default: ``/data/docbuild/external-builds/``
+    :Default: ``~/.local/state/docbuild/default-env/backup``
 
     The directory where backups of external builds are stored.
 
@@ -344,9 +344,10 @@ Configuration for daps
 
 ``meta``
     :Type: :code:`str`
-    :Default: ``daps -vv metadata --output {{output}}``
+    :Default: ``daps -vv --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}``
 
-    The DAPS command to extract metadata, with a placeholder for the output file.
+    The DAPS command to extract metadata. Placeholders {{builddir}}, {{dcfile}},
+    and {{output}} are filled at runtime by the metadata task.
 
 .. _envtoml-section-build-container:
 

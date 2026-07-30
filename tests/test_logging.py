@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from logging.handlers import MemoryHandler
 import threading
@@ -251,6 +252,26 @@ def test_register_background_thread_initializes_none():
     threads = _LOGGING_STATE["background_threads"].get()
     assert isinstance(threads, list)
     assert threads and threads[-1] is t
+
+
+async def test_log_record_includes_asyncio_task_name(memory_handler):
+    """Log records emitted in an asyncio task expose the task name."""
+    logger = logging.getLogger("docbuild.test.logging")
+    logger.handlers.clear()
+    logger.propagate = False
+    logger.setLevel(logging.INFO)
+    logger.addHandler(memory_handler)
+
+    async def emit_log() -> None:
+        logger.info("inside task")
+
+    task = asyncio.create_task(emit_log(), name="metadata-worker-1")
+    await task
+
+    assert memory_handler.buffer
+    assert memory_handler.buffer[-1].taskName == "metadata-worker-1"
+
+    logger.removeHandler(memory_handler)
 
 
 def test_formatter_kwargs_applied():
