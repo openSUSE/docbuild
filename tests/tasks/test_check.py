@@ -21,7 +21,7 @@ def mock_deliverable():
     return deli
 
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
-@patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "get_deliverables_for_doctype")
 @patch.object(check, "ManagedGitRepo")
 async def test_check_repository_files_all_found(
     mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
@@ -47,7 +47,7 @@ async def test_check_repository_files_all_found(
 
 
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
-@patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "get_deliverables_for_doctype")
 @patch.object(check, "ManagedGitRepo")
 async def test_check_repository_files_missing(
     mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
@@ -72,7 +72,7 @@ async def test_check_repository_files_missing(
 
 
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
-@patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "get_deliverables_for_doctype")
 @patch.object(check, "ManagedGitRepo")
 async def test_process_git_failure(
     mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
@@ -96,7 +96,7 @@ async def test_process_git_failure(
 
 
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
-@patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "get_deliverables_for_doctype")
 async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_config, tmp_path):
     """Test path where stitch tree returns no deliverables."""
     mock_parse_portal_config.return_value = MagicMock()
