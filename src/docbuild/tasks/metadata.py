@@ -1,4 +1,4 @@
-"""Defines the handling of metadata extraction from deliverables."""
+"""Tasks for extracting and processing deliverable metadata."""
 
 import asyncio
 from collections.abc import Generator, Sequence
@@ -8,19 +8,17 @@ from pathlib import Path
 import shlex
 from typing import Any
 
-from lxml import etree
+from lxml import etree  # type: ignore
 from pydantic import ValidationError
 from rich.console import Console
 
+from docbuild.constants import DEFAULT_DELIVERABLES
+from docbuild.models.deliverable import Deliverable
+from docbuild.models.doctype import Doctype
+from docbuild.models.manifest import Category, Description, Document, Manifest
 from docbuild.tasks.portal import parse_portal_config
-
-from ...constants import DEFAULT_DELIVERABLES
-from ...models.deliverable import Deliverable
-from ...models.doctype import Doctype
-from ...models.manifest import Category, Description, Document, Manifest
-from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
-from ...utils.git import ManagedGitRepo
-from ..context import DocBuildContext
+from docbuild.utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
+from docbuild.utils.git import ManagedGitRepo
 
 # Set up rich consoles for output
 stdout = Console()
@@ -34,14 +32,7 @@ def get_deliverable_from_doctype(
     root: etree._ElementTree,
     doctype: Doctype,
 ) -> list[Deliverable]:
-    """Get deliverable from doctype.
-
-    :param root: The stitched XML node containing configuration.
-    :param doctype: The Doctype object to process.
-    :return: A list of deliverables for the given doctype.
-    """
-    # stdout.print(f'Getting deliverable for doctype: {doctype}')
-    # stdout.print(f'XPath for {doctype}: {doctype.xpath()}')
+    """Get deliverable from doctype."""
     languages = root.getroot().xpath(f"./{doctype.xpath()}")
 
     return [
@@ -53,15 +44,9 @@ def get_deliverable_from_doctype(
 
 def collect_files_flat(
     doctypes: Sequence[Doctype],
-    basedir: Path | str,
+    basedir: Path,
 ) -> Generator[tuple[Doctype, str, list[Path]], Any, None]:
-    """Recursively collect all DC-metadata files from the cache directory.
-
-    :param doctypes: Sequence of Doctype objects to filter by.
-    :param basedir: The base directory to start the recursive search.
-    :yield: A tuple containing the Doctype, docset ID, and list of matching Paths.
-    """
-    basedir = Path(basedir)
+    """Recursively collect all DC-metadata files from the cache directory."""
     task_stream = ((dt, ds) for dt in doctypes for ds in dt.docset)
 
     for dt, docset in task_stream:
@@ -76,6 +61,7 @@ def collect_files_flat(
 
         if files:
             yield dt, docset, files
+
 
 def get_daps_command(
     worktree_dir: Path,
@@ -108,39 +94,23 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
 
 
 async def process_deliverable(
-    context: DocBuildContext,
     deliverable: Deliverable,
-    *,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
     dapstmpl: str,
 ) -> tuple[bool, Deliverable]:
-    """Process a single deliverable asynchronously.
-
-    This function creates a temporary clone of the deliverable's repository,
-    checks out the correct branch, and then executes the DAPS command to
-    generate metadata.
-
-    :param context: The DocBuildContext containing environment configuration.
-    :param deliverable: The Deliverable object to process.
-    :param dapstmpl: A template string with the daps command and potential
-     placeholders.
-    :return: True if successful, False otherwise.
-    """
+    """Process a single deliverable asynchronously."""
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
-    # Simplified initialization
-    env = context.envconfig
-    repo_dir = env.paths.repo_dir
-    tmp_repo_dir = env.paths.tmp_repo_dir
-    meta_cache_dir = env.paths.meta_cache_dir
-
-    bare_repo_path = repo_dir / deliverable.git.slug
+    bare_repo_path = repo_dir / str(deliverable.git.slug)
     if not bare_repo_path.is_dir():
         log.error("Bare repository not found for %s at %s", deliverable.git.name, bare_repo_path)
         return False, deliverable
 
-    outputdir = meta_cache_dir / deliverable.paths.relpath
+    outputdir = meta_cache_dir / str(deliverable.paths.relpath or "")
     outputdir.mkdir(parents=True, exist_ok=True)
-    outputjson = outputdir / deliverable.xml.dcfile
+    outputjson = outputdir / str(deliverable.xml.dcfile or "")
 
     try:
         async with PersistentOnErrorTemporaryDirectory(
@@ -156,15 +126,9 @@ async def process_deliverable(
             except Exception as e:
                 raise RuntimeError(f"Failed to create worktree for {deliverable.full_id}: {e}") from e
 
-            # Use absolute path within worktree to avoid DAPS "Missing DC-file" error
-            full_dcfile_path = Path(worktree_dir) / deliverable.subdir / deliverable.xml.dcfile
+            full_dcfile_path = Path(worktree_dir) / str(deliverable.subdir or "") / str(deliverable.xml.dcfile or "")
 
-            cmd = get_daps_command(
-                Path(worktree_dir),
-                full_dcfile_path,
-                outputjson,
-                dapstmpl
-            )
+            cmd = get_daps_command(Path(worktree_dir), full_dcfile_path, outputjson, dapstmpl)
 
             daps_proc = await asyncio.create_subprocess_exec(
                 *cmd,
@@ -190,11 +154,7 @@ async def process_deliverable(
 async def update_repositories(
     deliverables: list[Deliverable], bare_repo_dir: Path
 ) -> bool:
-    """Update all Git repositories associated with the deliverables.
-
-    :param deliverables: A list of Deliverable objects.
-    :param bare_repo_dir: The root directory for storing permanent bare clones.
-    """
+    """Update all Git repositories associated with the deliverables."""
     log.info("Updating Git repositories...")
     unique_urls = {d.git.url for d in deliverables}
     repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
@@ -260,24 +220,16 @@ async def _run_metadata_tasks(
 
 async def process_doctype(
     root: etree._ElementTree,
-    context: DocBuildContext,
     doctype: Doctype,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
+    dapsmetatmpl: str,
     *,
     exitfirst: bool = False,
     skip_repo_update: bool = False,
 ) -> list[Deliverable]:
-    """Process the doctypes and create metadata files.
-
-    :param root: The stitched XML node containing configuration.
-    :param context: The DocBuildContext containing environment configuration.
-    :param doctype: The Doctype object to process.
-    :param exitfirst: If True, stop processing on the first failure.
-    :param skip_repo_update: If True, do not fetch updates for the git repositories.
-    :return: A list of failed Deliverables.
-    """
-    env = context.envconfig
-    repo_dir: Path = env.paths.repo_dir
-
+    """Process the doctypes and create metadata files."""
     deliverables: list[Deliverable] = await asyncio.to_thread(
         get_deliverable_from_doctype, root, doctype
     )
@@ -287,20 +239,18 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    dapsmetatmpl = env.build.daps.meta
     tasks = [
-        asyncio.create_task(process_deliverable(context, d, dapstmpl=dapsmetatmpl))
+        asyncio.create_task(
+            process_deliverable(d, repo_dir, tmp_repo_dir, meta_cache_dir, dapsmetatmpl)
+        )
         for d in deliverables
     ]
 
-    # Complexity reduced by delegating task execution to the helper
     return await _run_metadata_tasks(tasks, deliverables, exitfirst)
 
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency."""
-    # TODO: These strings are hard-coded for legacy parity but should be moved to
-    # Docserv config files to allow for proper translation and localization.
     legacy_tail = (
         "<p>The default view of this page is the ```Table of Contents``` sorting order. "
         "To search for a particular document, you can narrow down the results using the "
@@ -324,10 +274,8 @@ def load_and_validate_documents(
 ) -> None:
     """Load JSON metadata files and append validated Document models to the manifest."""
     for f in files:
-        # Path resolution for nested folders
         actual_file = f if f.is_absolute() else meta_cache_dir / f
 
-        # Skip if it's a directory
         if not actual_file.is_file():
             continue
 
@@ -351,23 +299,13 @@ def load_and_validate_documents(
 
 
 def store_productdocset_json(
-    context: DocBuildContext,
     doctypes: Sequence[Doctype],
     stitchnode: etree._ElementTree,
+    meta_cache_dir: Path,
 ) -> None:
-    """Collect all JSON files for product/docset and create a single file.
-
-    :param context: DocBuildContext object
-    :param doctypes: Sequence of Doctype objects
-    :param stitchnode: The stitched XML tree
-    """
-    env = context.envconfig
-    meta_cache_dir = Path(env.paths.meta_cache_dir)
-
+    """Collect all JSON files for product/docset and create a single file."""
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         product = doctype.product.value
-
-        # Use the docset directly as the version string
         version_str = str(docset)
 
         productxpath = f"./{doctype.product_xpath_segment()}"
@@ -375,12 +313,10 @@ def store_productdocset_json(
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode = productnode.find(docsetxpath)
 
-        # 1. Capture and Clean Descriptions/Categories using helper
         descriptions = list(Description.from_xml_node(productnode))
         categories = list(Category.from_xml_node(productnode))
         apply_parity_fixes(descriptions, categories)
 
-        # 2. Initialize Manifest
         manifest = Manifest(
             productname=productnode.find("name").text,
             acronym=(
@@ -390,72 +326,50 @@ def store_productdocset_json(
             ),
             version=version_str,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
-            hide_productname=False,
+            hide_productname=False,  # type: ignore[call-arg]
             descriptions=descriptions,
             categories=categories,
             documents=[],
             archives=[]
         )
 
-        # 3. Load and validate documents using helper
         load_and_validate_documents(files, meta_cache_dir, manifest)
 
-        # 4. Save and export
         jsondir = meta_cache_dir / product
         jsondir.mkdir(parents=True, exist_ok=True)
         jsonfile = jsondir / f"{docset}.json"
 
-        # Exporting with aliases and INCLUDING defaults (dateModified, rank, isGate)
         json_data = manifest.model_dump(by_alias=True)
 
         with jsonfile.open("w", encoding="utf-8") as jf:
-            # ensure_ascii=False ensures raw UTF-8 (e.g., "á" instead of "\u00e1")
             json.dump(json_data, jf, indent=2, ensure_ascii=False)
 
         stdout.print(f" > Result: {jsonfile}")
         Category.reset_rank()
 
-async def process(
-    context: DocBuildContext,
-    doctypes: Sequence[Doctype] | None,
+
+async def generate_metadata(
+    main_portal_config: Path,
+    tmp_metadata_dir: Path,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
+    dapsmetatmpl: str,
+    doctypes: Sequence[Doctype] | None = None,
     *,
     exitfirst: bool = False,
     skip_repo_update: bool = False,
 ) -> int:
-    """Asynchronous function to process metadata retrieval.
-
-    :param context: The DocBuildContext containing environment configuration.
-    :param doctypes: A sequence of Doctype objects to process.
-    :param exitfirst: If True, stop processing on the first failure.
-    :param skip_repo_update: If True, skip updating Git repositories before processing.
-    :raises ValueError: If no envconfig is found or if paths are not
-        configured correctly.
-    :return: 0 if all files passed validation, 1 if any failures occurred.
-    """
-    env = context.envconfig
-    configdir = Path(env.paths.config_dir).expanduser()
-    main_portal_config = Path(env.paths.main_portal_config).expanduser()
-    stdout.print(f"Config path: {configdir}")
+    """Asynchronous task to process metadata retrieval."""
     stitchnode: etree._ElementTree = await parse_portal_config(main_portal_config)
 
-    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
-    # TODO: Is this necessary here?
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
-
     stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
     stitchfilename.write_text(
-        etree.tostring(
-            stitchnode,
-            pretty_print=True,
-            # xml_declaration=True,
-            encoding="unicode",
-        )  # .decode('utf-8')
+        etree.tostring(stitchnode, pretty_print=True, encoding="unicode")
     )
 
     log.info("Stitched metadata XML written to %s", str(stitchfilename))
-
-    # stdout.print(f'Stitch node: {stitchnode.getroot().tag}')
-    # stdout.print(f'Deliverables: {len(stitchnode.xpath(".//deliverable"))}')
 
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
@@ -463,8 +377,11 @@ async def process(
     tasks = [
         process_doctype(
             stitchnode,
-            context,
             dt,
+            repo_dir,
+            tmp_repo_dir,
+            meta_cache_dir,
+            dapsmetatmpl,
             exitfirst=exitfirst,
             skip_repo_update=skip_repo_update,
         )
@@ -477,7 +394,7 @@ async def process(
     ]
 
     # Force the merge regardless of processing success
-    store_productdocset_json(context, doctypes, stitchnode)
+    store_productdocset_json(doctypes, stitchnode, meta_cache_dir)
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
