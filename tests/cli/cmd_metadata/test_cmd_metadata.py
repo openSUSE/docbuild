@@ -1,6 +1,5 @@
 """Tests for the 'docbuild metadata' command."""
 
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -57,13 +56,13 @@ def test_metadata_command_with_flags(runner, tmp_path, mock_generate_metadata):
     """Test that CLI flags are properly passed to the task."""
     mock_env = MagicMock()
     mock_env.paths.main_portal_config = tmp_path / "portal.xml"
-    
+
     context = DocBuildContext()
     context.envconfig = mock_env
 
     result = runner.invoke(
-        metadata, 
-        ["--exitfirst", "--skip-repo-update"], 
+        metadata,
+        ["--exitfirst", "--skip-repo-update"],
         obj=context
     )
 

@@ -52,11 +52,11 @@ def metadata(
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-    
+
     if not context.envconfig:
         console_err.print("Environment configuration is missing.")
         ctx.exit(1)
-        
+
     timer = make_timer("metadata")
     result = 1  # Default exit code for interruption or error
 
@@ -68,7 +68,7 @@ def metadata(
     tmp_repo_dir = Path(env.paths.tmp_repo_dir)
     meta_cache_dir = Path(env.paths.meta_cache_dir)
     dapsmetatmpl = str(env.build.daps.meta)
-    
+
     # Unpack max_workers for the new concurrency semaphore
     max_workers = context.appconfig.max_workers if context.appconfig else 1
 
