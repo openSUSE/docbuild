@@ -20,8 +20,10 @@ body:
   - type: textarea
     id: use_case
     attributes:
-      label: Use Case
-      description: Why is this feature useful? What problem does it solve?
+      label: Use Case / User Story
+      description: >
+         Why is this feature useful? What problem does it solve?
+         As a [persona], I [want to], [so that].
     validations:
       required: true
 
