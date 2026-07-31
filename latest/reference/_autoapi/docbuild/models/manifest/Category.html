@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.manifest.Category &#8212; Docbuild Documentation 0.21.1.dev22+gcca796251.d20260728</title>
+    <title>docbuild.models.manifest.Category &#8212; Docbuild Documentation 0.21.1.dev33+g4335c80bb.d20260731</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ff673230"></script>
+    <script src="../../../../../_static/documentation_options.js?v=0cad2ef6"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -401,21 +401,16 @@
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_doctor/index.html">docbuild.cli.cmd_doctor</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
-</ul>
-</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_list/index.html">docbuild.cli.cmd_portal.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -649,13 +644,27 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.manifest.Category.from_xml_node">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_xml_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Self</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.manifest.Category.from_xml_node" title="Link to this definition">#</a></dt>
-<dd><p>Extract categories from a parent XML node.</p>
+<dd><p>Extract categories from a parent XML node (portal schema v7).</p>
+<p>In schema v7 the structure is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">categories</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">category</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;en-us&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">language</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;cat.about&quot;</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;About&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">category</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">category</span> <span class="n">lang</span><span class="o">=</span><span class="s2">&quot;de-de&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">language</span> <span class="n">linkend</span><span class="o">=</span><span class="s2">&quot;cat.about&quot;</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Über&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">category</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">categories</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute lives on <code class="docutils literal notranslate"><span class="pre">&lt;category&gt;</span></code>; each <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code>
+carries either <code class="docutils literal notranslate"><span class="pre">id</span></code> (canonical entry) or <code class="docutils literal notranslate"><span class="pre">linkend</span></code> (translation)
+as the category identifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>node</strong> – a node pointing to <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code></p>
 </dd>
 <dt class="field-even">Yield<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Category</span></code> instance for each category found.</p>
+<dd class="field-even"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Category</span></code> instance for each unique category ID.</p>
 </dd>
 </dl>
 </dd></dl>

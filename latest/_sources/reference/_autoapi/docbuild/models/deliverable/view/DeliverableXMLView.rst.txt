@@ -150,6 +150,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: categoryid
+      :type: str | None
+
+
+      Return the raw category ID from ``@category``, or ``None`` if absent.
+
+
+
    .. py:method:: categories() -> collections.abc.Generator[lxml.etree._Element, None, None]
 
       Yield all ``<category>`` elements under the product node.

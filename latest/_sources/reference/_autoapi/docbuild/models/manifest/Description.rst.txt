@@ -32,7 +32,9 @@ docbuild.models.manifest.Description
 
       Extract descriptions from a parent XML node.
 
-      :param node: a node pointing to ``<product>``
-      :yield:
+      Handles the schema v7 wrapper ``<descriptions><desc .../></descriptions>``.
+
+      :param node: a node pointing to ``<product>`` (or root)
+      :yield: A :class:`Description` instance per ``<desc>`` element found.
 
 

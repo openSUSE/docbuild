@@ -15,14 +15,18 @@ docbuild.models.doctype.Doctype
 
    .. code-block:: text
 
-      [/]?PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
+      [/]?PRODUCT/DOCSETS[@LIFECYCLES]/[LANGS]
 
    The placeholders mean the following:
 
    * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
    * ``DOCSETS``: one or more docsets of the mentioned product, separated by comma
-   * ``LIFECYCLES``: one or more lifecycles, separated by comma or pipe
-   * ``LANGS``: one or more languages, separated by comma
+   * ``LIFECYCLES``: zero or more lifecycles, separated by comma or pipe.
+     Default to ``unknown`` if omitted.
+   * ``LANGS``: zero or more languages, separated by comma.
+     Default to English (``en-us``) if omitted.
+
+   :raises pydantic_core.ValidationError: if the input values are invalid.
 
    >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
    >>> doctype.product
@@ -133,11 +137,20 @@ docbuild.models.doctype.Doctype
 
 
 
-   .. py:method:: from_str(doctype_str: str) -> Self
+   .. py:method:: from_str(doctype_str: str, *, default_lang: str = 'en-us') -> Doctype
       :classmethod:
 
 
       Parse a string that adheres to the doctype format.
+
+      :param doctype_str: A string that adheres to the doctype format.
+      :param default_lang: The default language to use if none is specified (by default, "en-us").
+      :return: A Doctype object.
+      :raise ValueError: If the input string is invalid.
+
+      The language segment is optional: ``sles/16`` and ``sles/16/`` all select
+      English (``en-us``) by default, while ``sles/16/*`` and ``sles/16@supported/*``
+      are all equivalent and select *all* languages.
 
 
 
@@ -163,7 +176,7 @@ docbuild.models.doctype.Doctype
 
       Return the XPath segment for the product node.
 
-      Example: "product[@productid='sles']" or "product"
+      Example: "product[@id='sles']" or "product"
 
 
 
@@ -171,6 +184,6 @@ docbuild.models.doctype.Doctype
 
       Return the XPath segment for the docset node.
 
-      Example: "docset[@setid='15-SP6']" or "docset"
+      Example: "docset[@path='15-SP6']" or "docset"
 
 

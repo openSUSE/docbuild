@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.21.1.dev22+gcca796251.d20260728</title>
+    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.21.1.dev33+g4335c80bb.d20260731</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=ff673230"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=0cad2ef6"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -401,21 +401,16 @@
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_doctor/index.html">docbuild.cli.cmd_doctor</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
-</ul>
-</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_list/index.html">docbuild.cli.cmd_portal.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -734,6 +729,12 @@
 <dd><p>Return True if the deliverable is marked as a reference.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.categoryid">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">categoryid</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.categoryid" title="Link to this definition">#</a></dt>
+<dd><p>Return the raw category ID from <code class="docutils literal notranslate"><span class="pre">&#64;category</span></code>, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if absent.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.categories">
 <span class="sig-name descname"><span class="pre">categories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.categories" title="Link to this definition">#</a></dt>
@@ -880,6 +881,7 @@ format element is found.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.is_prebuilt"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.is_prebuilt</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.is_dc"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.is_dc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.is_ref"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.is_ref</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.categoryid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.categoryid</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.categories()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.categories_from_root"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.categories_from_root()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.all_categories"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.all_categories</span></code></a></li>

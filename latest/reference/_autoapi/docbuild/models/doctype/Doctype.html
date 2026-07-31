@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.21.1.dev22+gcca796251.d20260728</title>
+    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.21.1.dev33+g4335c80bb.d20260731</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ff673230"></script>
+    <script src="../../../../../_static/documentation_options.js?v=0cad2ef6"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -401,21 +401,16 @@
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_doctor/index.html">docbuild.cli.cmd_doctor</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_metadata/metaprocess/index.html">docbuild.cli.cmd_metadata.metaprocess</a></li>
-</ul>
-</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_list/index.html">docbuild.cli.cmd_portal.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/process/index.html">docbuild.cli.cmd_portal.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_repo/index.html">docbuild.cli.cmd_repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_clone/index.html">docbuild.cli.cmd_repo.cmd_clone</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_dir/index.html">docbuild.cli.cmd_repo.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/process/index.html">docbuild.cli.cmd_repo.process</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -628,16 +623,23 @@
 <area shape="rect" id="node2" href="#docbuild.models.doctype.Doctype" target="_top" title="A &quot;doctype&quot; that comprises of a product, docset, lifecycle, and language." alt="" coords="148,5,224,31"/>
 </map><p>A “doctype” that comprises of a product, docset, lifecycle, and language.</p>
 <p>The format has the following syntax:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[/]?PRODUCT/DOCSETS[@LIFECYCLES]/LANGS
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[/]?PRODUCT/DOCSETS[@LIFECYCLES]/[LANGS]
 </pre></div>
 </div>
 <p>The placeholders mean the following:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">PRODUCT</span></code>: a lowercase acronym of a SUSE product, e.g. <code class="docutils literal notranslate"><span class="pre">sles</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DOCSETS</span></code>: one or more docsets of the mentioned product, separated by comma</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code>: one or more lifecycles, separated by comma or pipe</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code>: one or more languages, separated by comma</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code>: zero or more lifecycles, separated by comma or pipe.
+Default to <code class="docutils literal notranslate"><span class="pre">unknown</span></code> if omitted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code>: zero or more languages, separated by comma.
+Default to English (<code class="docutils literal notranslate"><span class="pre">en-us</span></code>) if omitted.</p></li>
 </ul>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic-core/pydantic_core/#pydantic_core.ValidationError" title="(in Pydantic v0.0.0)"><strong>pydantic_core.ValidationError</strong></a> – if the input values are invalid.</p>
+</dd>
+</dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">product</span>
 <span class="go">&lt;Product.sles: &#39;sles&#39;&gt;</span>
@@ -730,8 +732,25 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.from_str">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctype_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.from_str" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctype_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_lang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'en-us'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">Doctype</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.from_str" title="Link to this definition">#</a></dt>
 <dd><p>Parse a string that adheres to the doctype format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doctype_str</strong> – A string that adheres to the doctype format.</p></li>
+<li><p><strong>default_lang</strong> – The default language to use if none is specified (by default, “en-us”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Doctype object.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the input string is invalid.</p>
+</dd>
+</dl>
+<p>The language segment is optional: <code class="docutils literal notranslate"><span class="pre">sles/16</span></code> and <code class="docutils literal notranslate"><span class="pre">sles/16/</span></code> all select
+English (<code class="docutils literal notranslate"><span class="pre">en-us</span></code>) by default, while <code class="docutils literal notranslate"><span class="pre">sles/16/*</span></code> and <code class="docutils literal notranslate"><span class="pre">sles/16&#64;supported/*</span></code>
+are all equivalent and select <em>all</em> languages.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -760,14 +779,14 @@ deliverables that match this Doctype.</p>
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.product_xpath_segment">
 <span class="sig-name descname"><span class="pre">product_xpath_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.product_xpath_segment" title="Link to this definition">#</a></dt>
 <dd><p>Return the XPath segment for the product node.</p>
-<p>Example: “product[&#64;productid=’sles’]” or “product”</p>
+<p>Example: “product[&#64;id=’sles’]” or “product”</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.docset_xpath_segment">
 <span class="sig-name descname"><span class="pre">docset_xpath_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.docset_xpath_segment" title="Link to this definition">#</a></dt>
 <dd><p>Return the XPath segment for the docset node.</p>
-<p>Example: “docset[&#64;setid=’15-SP6’]” or “docset”</p>
+<p>Example: “docset[&#64;path=’15-SP6’]” or “docset”</p>
 </dd></dl>
 
 </dd></dl>
