@@ -18,7 +18,6 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_repo/cmd_clone/index
    /reference/_autoapi/docbuild/cli/cmd_repo/cmd_dir/index
    /reference/_autoapi/docbuild/cli/cmd_repo/cmd_list/index
-   /reference/_autoapi/docbuild/cli/cmd_repo/process/index
 
 
 Functions

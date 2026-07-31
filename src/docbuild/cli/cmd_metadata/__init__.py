@@ -10,7 +10,7 @@ from rich.console import Console
 from docbuild.cli.callback import validate_doctypes
 from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
-from docbuild.tasks.metadata import generate_metadata
+from docbuild.tasks.metadata.runner import process
 from docbuild.utils.contextmgr import make_timer
 
 # Set up rich consoles for output
@@ -52,16 +52,15 @@ def metadata(
     :param ctx: The Click context object.
     """
     context: DocBuildContext = ctx.obj
-
-    # 1. Protect against Pylance's Optional[EnvConfig] warning
+    
     if not context.envconfig:
         console_err.print("Environment configuration is missing.")
         ctx.exit(1)
-
+        
     timer = make_timer("metadata")
     result = 1  # Default exit code for interruption or error
 
-    # 2. Unpack and cast all custom Pydantic directory types to standard Paths
+    # Unpack paths for the decoupled task
     env = context.envconfig
     main_portal_config = Path(env.paths.main_portal_config)
     tmp_metadata_dir = Path(env.paths.tmp.tmp_metadata_dir)
@@ -69,6 +68,9 @@ def metadata(
     tmp_repo_dir = Path(env.paths.tmp_repo_dir)
     meta_cache_dir = Path(env.paths.meta_cache_dir)
     dapsmetatmpl = str(env.build.daps.meta)
+    
+    # Unpack max_workers for the new concurrency semaphore
+    max_workers = context.appconfig.max_workers if context.appconfig else 1
 
     stdout.print(f"Config path: {env.paths.config_dir}")
 
@@ -76,14 +78,15 @@ def metadata(
     try:
         with timer() as t:
             result = asyncio.run(
-                generate_metadata(
+                process(
                     main_portal_config=main_portal_config,
                     tmp_metadata_dir=tmp_metadata_dir,
                     repo_dir=repo_dir,
                     tmp_repo_dir=tmp_repo_dir,
                     meta_cache_dir=meta_cache_dir,
                     dapsmetatmpl=dapsmetatmpl,
-                    doctypes=doctypes,
+                    max_workers=max_workers,
+                    doctypes=list(doctypes),
                     exitfirst=exitfirst,
                     skip_repo_update=skip_repo_update,
                 )

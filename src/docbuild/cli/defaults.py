@@ -91,7 +91,7 @@ DEFAULT_ENV_CONFIG = {
     "build": {
         "daps": {
             "command": "daps",
-            "meta": "daps metadata",
+            "meta": "daps --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
         },
         "container": {
             "container": "none",

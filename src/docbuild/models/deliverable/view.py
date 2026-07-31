@@ -171,6 +171,11 @@ class DeliverableXMLView:
         return self.kind == expected
 
     # -- Content and categories
+    @cached_property
+    def categoryid(self) -> str | None:
+        """Return the raw category ID from ``@category``, or ``None`` if absent."""
+        return self.node.get("category")
+
     # Categories can be defined per product and at the document root.
     def categories(self) -> Generator[etree._Element, None, None]:
         """Yield all ``<category>`` elements under the product node."""

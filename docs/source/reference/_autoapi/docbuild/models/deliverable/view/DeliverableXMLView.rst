@@ -70,6 +70,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: locale_en
+      :type: lxml.etree._Element | None
+
+
+      Return the English locale node (``<locale lang="en-us">``) or None if absent.
+
+
+
    .. py:property:: lang
       :type: docbuild.models.language.LanguageCode
 
@@ -83,6 +91,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
       Return the DC filename, or ``None`` if absent.
+
+
+
+   .. py:property:: deliverableid
+      :type: str | None
+
+
+      Return the deliverable ID (``<deliverable id=…>``) or None if absent.
 
 
 
@@ -131,6 +147,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
       Return True if the deliverable is marked as a reference.
+
+
+
+   .. py:property:: categoryid
+      :type: str | None
+
+
+      Return the raw category ID from ``@category``, or ``None`` if absent.
 
 
 

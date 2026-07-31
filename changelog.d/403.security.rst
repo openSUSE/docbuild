@@ -1,0 +1,2 @@
+Updated setuptools to >=83 to resolve security vulnerability in :file:`pyproject.toml` and :file:`uv.lock`.
+

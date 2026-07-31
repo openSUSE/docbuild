@@ -50,10 +50,12 @@ class Description(BaseModel):
     ) -> Generator[Self, None, None]:
         """Extract descriptions from a parent XML node.
 
-        :param node: a node pointing to ``<product>``
-        :yield:
+        Handles the schema v7 wrapper ``<descriptions><desc .../></descriptions>``.
+
+        :param node: a node pointing to ``<product>`` (or root)
+        :yield: A :class:`Description` instance per ``<desc>`` element found.
         """
-        for n in node.xpath("desc"):
+        for n in node.xpath("descriptions/desc"):
             text = "".join(
                 f"<{child.tag}>{
                     ' '.join(
@@ -132,22 +134,44 @@ class Category(BaseModel):
     def from_xml_node(
         cls: type[Self], node: etree._Element
     ) -> Generator[Self, None, None]:
-        """Extract categories from a parent XML node.
+        """Extract categories from a parent XML node (portal schema v7).
+
+        In schema v7 the structure is::
+
+            <categories>
+              <category lang="en-us">
+                <language id="cat.about" title="About"/>
+              </category>
+              <category lang="de-de">
+                <language linkend="cat.about" title="Über"/>
+              </category>
+            </categories>
+
+        The ``lang`` attribute lives on ``<category>``; each ``<language>``
+        carries either ``id`` (canonical entry) or ``linkend`` (translation)
+        as the category identifier.
 
         :param node: a node pointing to ``<product>``
-        :yield: A :class:`Category` instance for each category found.
+        :yield: A :class:`Category` instance for each unique category ID.
         """
-        for cat in node.xpath("category|categories/category"):
-            langs = cat.xpath("language")
-            translations = [
-                CategoryTranslation(
-                    lang=lng.attrib.get("lang", "en-us"),
-                    default=lng.attrib.get("default", False),
-                    title=lng.attrib.get("title", ""),
+        by_id: dict[str, list[CategoryTranslation]] = {}
+
+        for cat in node.xpath("categories/category"):
+            cat_lang = cat.attrib.get("lang", "en-us")
+            for lng in cat.xpath("language"):
+                cat_id = lng.attrib.get("id") or lng.attrib.get("linkend", "")
+                if not cat_id:
+                    continue
+                by_id.setdefault(cat_id, []).append(
+                    CategoryTranslation(
+                        lang=cat_lang,
+                        default=bool(lng.attrib.get("default", False)),
+                        title=lng.attrib.get("title", ""),
+                    )
                 )
-                for lng in langs
-            ]
-            yield cls(id=cat.attrib.get("categoryid", ""), translations=translations)
+
+        for cat_id, translations in by_id.items():
+            yield cls(id=cat_id, translations=translations)
 
 
 class Archive(BaseModel):
@@ -214,12 +238,15 @@ class SingleDocument(BaseModel):
     # Define dcfile first so it is available to other validators in 'info.data'
     dcfile: str = Field(default="")
     lang: str | None = None
+    default: bool = Field(default=False)
     title: str | None = Field(default=None)
     subtitle: str = Field(default="")
     description: str = Field(default="")
     rootid: str = Field(default="")
     format: DocumentFormat = Field(default_factory=DocumentFormat)
-    datemodified: date | None = Field(default=None, serialization_alias="dateModified")
+    datemodified: date | None = Field(default=None, alias="dateModified")
+
+    model_config = ConfigDict(populate_by_name=True)
 
     @field_validator("title")
     @classmethod
@@ -293,6 +320,10 @@ class Document(BaseModel):
     docs: list[SingleDocument] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
     products: list[Product] = Field(default_factory=list)
+    category: str | None = Field(
+        default=None,
+        exclude_if=lambda v: v is None or v == "",
+    )
     doctypes: list[str] = Field(default_factory=list, alias="docTypes")
     isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGate")
     rank: int | str | None = Field(default=None)

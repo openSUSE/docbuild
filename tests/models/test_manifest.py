@@ -3,6 +3,7 @@ from datetime import date
 from lxml import etree
 import pytest
 
+from docbuild.models.language import LanguageCode
 from docbuild.models.manifest import (
     Archive,
     Category,
@@ -141,42 +142,51 @@ def test_category_translation_serialize_lang() -> None:
 
 
 def test_category_from_xml_node() -> None:
-    """Test extraction of categories from an XML node."""
+    """Test extraction of categories from an XML node (portal schema v7)."""
     doc = """<product>
-        <category categoryid="cat1">
-            <language lang="en-us" default="1" title="Category 1 EN"/>
-            <language lang="de-de" title="Kategorie 1 DE"/>
-        </category>
         <categories>
-            <category categoryid="cat2">
-                <language lang="fr-fr" title="Catégorie 2 FR"/>
+            <category lang="en-us">
+                <language id="cat.about" title="About" default="1"/>
+                <language id="cat.deployment" title="Deployment"/>
+            </category>
+            <category lang="de-de">
+                <language linkend="cat.about" title="Über"/>
+                <language linkend="cat.deployment" title="Bereitstellung"/>
             </category>
         </categories>
-        <category categoryid="cat3_no_lang"/>
-        <category> <!-- missing categoryid -->
-            <language lang="en-us" title="No ID"/>
-        </category>
     </product>
     """
     node = etree.fromstring(doc, parser=None)
-    # Reset class variable for predictable rank
     Category.reset_rank()
     models = list(Category.from_xml_node(node))
 
-    assert len(models) == 4
+    assert len(models) == 2
 
-    # Test first category
-    assert models[0].id == "cat1"
+    # cat.about has three translations
+    assert models[0].id == "cat.about"
     assert models[0].rank == 1
     assert len(models[0].translations) == 2
     assert models[0].translations[0].lang == "en-us"
     assert models[0].translations[0].default is True
-    assert models[0].translations[0].title == "Category 1 EN"
+    assert models[0].translations[0].title == "About"
+    assert models[0].translations[1].lang == "de-de"
+    assert models[0].translations[1].title == "Über"
 
-    # Test category with missing categoryid attribute
-    assert models[3].id == ""
-    assert models[3].rank == 4
-    assert models[3].translations[0].title == "No ID"
+    # cat.deployment has two translations
+    assert models[1].id == "cat.deployment"
+    assert models[1].rank == 2
+    assert len(models[1].translations) == 2
+
+    # languages with neither id nor linkend are skipped (line 164 coverage)
+    doc_no_id = """<product>
+        <categories>
+            <category lang="en-us">
+                <language title="No ID"/>
+            </category>
+        </categories>
+    </product>"""
+    Category.reset_rank()
+    assert list(Category.from_xml_node(etree.fromstring(doc_no_id))) == []
 
 
 def test_category_rank() -> None:
@@ -196,22 +206,50 @@ def test_archive_serialize_lang() -> None:
 
 
 def test_description_from_xml_node() -> None:
-    """Test extraction of descriptions from XML node"""
-    doc = """<docservconfig>
-        <desc default="1" lang="en-us">
-            <title>Hello Title</title>
-            <p>Hello Description</p>
-        </desc>
-        <product productid="sles" schemaversion="6.0">
-          <!-- content doesn't matter here -->
-        </product>
-    </docservconfig>
+    """Test extraction of descriptions from XML node (direct and wrapped)."""
+    # Schema v7: desc nested inside <descriptions>
+    doc = """<product>
+        <descriptions>
+            <desc default="1" lang="en-us">
+                <title>Hello Title</title>
+                <p>Hello Description</p>
+            </desc>
+            <desc lang="de-de">
+                <title>Hallo Titel</title>
+                <p>Hallo Beschreibung</p>
+            </desc>
+        </descriptions>
+    </product>
     """
-    node = etree.fromstring(doc, parser=None).getroottree()
-    model = next(iter(Description.from_xml_node(node)))
-    serialized = model.model_dump(by_alias=True)
+    node = etree.fromstring(doc, parser=None)
+    models = list(Description.from_xml_node(node))
+    assert len(models) == 2
+    serialized = models[0].model_dump(by_alias=True)
     assert serialized == {
         "lang": "en-us",
         "default": True,
         "description": "<p>Hello Description</p>",
     }
+    assert models[1].lang == LanguageCode(language="de-de")
+
+
+def test_single_document_warn_missing_title(caplog: pytest.LogCaptureFixture) -> None:
+    """warn_missing_title logs a warning when title is None or empty (line 261 coverage)."""
+    import logging
+
+    with caplog.at_level(logging.WARNING):
+        SingleDocument(dcfile="DC-FOO", lang="en-us", title="")
+
+    assert any("DC-FOO" in r.message for r in caplog.records)
+    assert any("missing title" in r.message.lower() for r in caplog.records)
+
+
+def test_single_document_serialize_date_none() -> None:
+    """serialize_date returns an empty string when datemodified is None (line 271 coverage)."""
+    serialized = SingleDocument(
+        lang="en",
+        title="A title",
+        dcfile="DC-BAR",
+        format=DocumentFormat(html="/html"),
+    ).model_dump(by_alias=True)
+    assert serialized["dateModified"] == ""

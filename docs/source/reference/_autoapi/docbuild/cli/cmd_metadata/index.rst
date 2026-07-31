@@ -9,15 +9,6 @@ docbuild.cli.cmd_metadata
 
 
 
-Submodules
-----------
-
-.. toctree::
-   :maxdepth: 1
-
-   /reference/_autoapi/docbuild/cli/cmd_metadata/metaprocess/index
-
-
 Functions
 ---------
 

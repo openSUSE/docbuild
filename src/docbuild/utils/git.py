@@ -200,6 +200,7 @@ class ManagedGitRepo:
                 "-v",
                 "--prune",
                 cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig,
             )
             log.info("Successfully fetched updates for '%s'", self.slug)
             return True

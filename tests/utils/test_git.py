@@ -249,7 +249,15 @@ async def test_fetch_updates_success(
     result = await repo.fetch_updates()
 
     assert result is True
-    mock_execute_git.assert_awaited_once()
+    mock_execute_git.assert_awaited_once_with(
+        "fetch",
+        "origin",
+        "+refs/heads/*:refs/heads/*",
+        "-v",
+        "--prune",
+        cwd=repo.bare_repo_path,
+        gitconfig=None,
+    )
 
 
 async def test_fetch_updates_no_repo(

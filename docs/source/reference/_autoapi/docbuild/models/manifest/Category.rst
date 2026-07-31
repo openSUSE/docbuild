@@ -38,9 +38,24 @@ docbuild.models.manifest.Category
       :classmethod:
 
 
-      Extract categories from a parent XML node.
+      Extract categories from a parent XML node (portal schema v7).
+
+      In schema v7 the structure is::
+
+          <categories>
+            <category lang="en-us">
+              <language id="cat.about" title="About"/>
+            </category>
+            <category lang="de-de">
+              <language linkend="cat.about" title="Über"/>
+            </category>
+          </categories>
+
+      The ``lang`` attribute lives on ``<category>``; each ``<language>``
+      carries either ``id`` (canonical entry) or ``linkend`` (translation)
+      as the category identifier.
 
       :param node: a node pointing to ``<product>``
-      :yield: A :class:`Category` instance for each category found.
+      :yield: A :class:`Category` instance for each unique category ID.
 
 

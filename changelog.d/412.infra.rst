@@ -1,0 +1,1 @@
+Minor fix in the GitHub issue template and mentions user stories 
