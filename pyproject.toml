@@ -95,7 +95,7 @@ github-action = [
   {include-group = "tests"},
   {include-group = "docs"},
 ]
-devel = [
+dev = [
   {include-group = "typing"},
   {include-group = "formatting"},
   {include-group = "changelog"},
@@ -103,6 +103,8 @@ devel = [
   {include-group = "repl"},
   # {include-group = "publish"},
 ]
+# Introduce compatibility layer
+devel = [{include-group = "dev"}]
 
 
 [project.scripts]

@@ -295,6 +295,27 @@ dependencies = [
 changelog = [
     { name = "towncrier" },
 ]
+dev = [
+    { name = "docformatter" },
+    { name = "ipython" },
+    { name = "myst-parser" },
+    { name = "pydata-sphinx-theme" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+    { name = "setuptools-scm" },
+    { name = "sphinx" },
+    { name = "sphinx-autoapi" },
+    { name = "sphinx-autodoc-typehints" },
+    { name = "sphinx-click" },
+    { name = "sphinx-copybutton" },
+    { name = "sphinx-design" },
+    { name = "sphinxcontrib-mermaid" },
+    { name = "sphobjinv" },
+    { name = "towncrier" },
+]
 devel = [
     { name = "docformatter" },
     { name = "ipython" },
@@ -375,6 +396,27 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 changelog = [{ name = "towncrier", specifier = ">=25.8.0" }]
+dev = [
+    { name = "docformatter", specifier = ">=1.7.8" },
+    { name = "ipython", specifier = ">=9.15.0" },
+    { name = "myst-parser", specifier = ">=5.1.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.20.0" },
+    { name = "pyright", specifier = ">=1.1.411" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-asyncio", specifier = ">=1.4.0" },
+    { name = "pytest-cov", specifier = ">=7.1.0" },
+    { name = "ruff", specifier = ">=0.15.22" },
+    { name = "setuptools-scm", specifier = ">=10.2.1" },
+    { name = "sphinx", specifier = ">=9.1.0" },
+    { name = "sphinx-autoapi", specifier = ">=3.8.0" },
+    { name = "sphinx-autodoc-typehints", specifier = ">=3.13.0" },
+    { name = "sphinx-click", specifier = ">=6.2.0" },
+    { name = "sphinx-copybutton", specifier = ">=0.5.2" },
+    { name = "sphinx-design", specifier = ">=0.7.0" },
+    { name = "sphinxcontrib-mermaid", specifier = ">=2.1.0" },
+    { name = "sphobjinv", specifier = ">=2.4" },
+    { name = "towncrier", specifier = ">=25.8.0" },
+]
 devel = [
     { name = "docformatter", specifier = ">=1.7.8" },
     { name = "ipython", specifier = ">=9.15.0" },
