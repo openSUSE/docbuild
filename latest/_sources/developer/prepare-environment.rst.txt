@@ -85,7 +85,7 @@ The following steps are recommended to set up your development environment:
       :caption: Synchronizing the virtual environment with the development dependencies
       :name: uv-sync-devel
 
-      $ uv sync --frozen --group devel
+      $ uv sync --frozen
 
    The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
 
