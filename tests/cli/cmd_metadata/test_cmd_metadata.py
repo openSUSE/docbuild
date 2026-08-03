@@ -27,6 +27,7 @@ def test_metadata_command_delegates_to_task(runner, tmp_path, mock_generate_meta
     mock_env.paths.repo_dir = tmp_path / "repos"
     mock_env.paths.tmp_repo_dir = tmp_path / "tmp_repos"
     mock_env.paths.meta_cache_dir = tmp_path / "cache_meta"
+    mock_env.paths.json_cache_dir = tmp_path / "cache_json"
     mock_env.build.daps.meta = "daps --meta"
 
     context = DocBuildContext()
@@ -44,6 +45,7 @@ def test_metadata_command_delegates_to_task(runner, tmp_path, mock_generate_meta
         repo_dir=tmp_path / "repos",
         tmp_repo_dir=tmp_path / "tmp_repos",
         meta_cache_dir=tmp_path / "cache_meta",
+        json_cache_dir=tmp_path / "cache_json",
         dapsmetatmpl="daps --meta",
         max_workers=4,
         doctypes=[],

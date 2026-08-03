@@ -5,11 +5,10 @@ import json
 import logging
 from pathlib import Path
 
-from lxml import etree
+from lxml import etree  # type: ignore
 from pydantic import ValidationError
 from rich.console import Console
 
-from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
 from docbuild.models.manifest import Category, Description, Document, Manifest
 
@@ -125,23 +124,18 @@ def load_and_validate_documents(
 
 
 def store_productdocset_json(
-    context: DocBuildContext,
     doctypes: Sequence[Doctype],
     stitchnode: etree._ElementTree,
+    meta_cache_dir: Path,
+    json_cache_dir: Path,
 ) -> None:
     """Collect all JSON files for product/docset and create a single file.
 
-    :param context: DocBuildContext object.
     :param doctypes: Sequence of Doctype objects.
     :param stitchnode: The stitched XML tree.
+    :param meta_cache_dir: Path to the metadata cache directory.
+    :param json_cache_dir: Path to the JSON cache directory.
     """
-    env = context.envconfig
-    assert env is not None
-    # The JSON files from "daps metadata" go here:
-    meta_cache_dir = Path(env.paths.meta_cache_dir)
-    # The single result JSON file for each product/docset goes here:
-    json_cache_dir = Path(env.paths.json_cache_dir)
-
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
         product = doctype.product.value
         version_str = str(docset)

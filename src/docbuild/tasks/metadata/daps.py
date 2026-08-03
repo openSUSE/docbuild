@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 import shlex
 
-from docbuild.cli.context import DocBuildContext
 from docbuild.models.deliverable import Deliverable
 from docbuild.utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from docbuild.utils.git import ManagedGitRepo
@@ -59,8 +58,10 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
 
 
 async def process_deliverable(
-    context: DocBuildContext,
     deliverable: Deliverable,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
     *,
     dapstmpl: str,
 ) -> tuple[bool, Deliverable]:
@@ -69,19 +70,14 @@ async def process_deliverable(
     Creates a temporary clone of the deliverable's repository, checks out the
     correct branch, and executes DAPS to generate metadata.
 
-    :param context: The DocBuildContext containing environment configuration.
     :param deliverable: The Deliverable object to process.
-    :param dapstmpl: A template string with the daps command and potential
-        placeholders.
+    :param repo_dir: Path to the base repositories directory.
+    :param tmp_repo_dir: Path to the temporary worktree directory.
+    :param meta_cache_dir: Path to the metadata cache output directory.
+    :param dapstmpl: A template string with the daps command and potential placeholders.
     :return: A tuple of ``(success, deliverable)``.
     """
     log.info("> Processing deliverable: %s", deliverable.full_id)
-
-    env = context.envconfig
-    assert env is not None
-    repo_dir = env.paths.repo_dir
-    tmp_repo_dir = env.paths.tmp_repo_dir
-    meta_cache_dir = env.paths.meta_cache_dir
 
     if not deliverable.xml.dcfile:
         log.debug("Deliverable %s has no DC file (prebuilt), skipping.", deliverable.full_id)

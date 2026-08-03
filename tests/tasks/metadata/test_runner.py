@@ -4,17 +4,15 @@ import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
-from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.repo import Repo
 import docbuild.tasks.metadata.runner as runner_pkg
 from docbuild.tasks.metadata.runner import (
-    get_deliverable_worker_limit,
     process,
     process_doctype,
     run_tasks_collect_all,
@@ -26,53 +24,18 @@ from docbuild.tasks.metadata.runner import (
 # ---------------------------------------------------------------------------
 
 @pytest.fixture
-def mock_envconfig(tmp_path: Path) -> Mock:
-    """Provide a mock EnvConfig with the paths and build config needed by runner."""
-    mock_paths = Mock()
-    mock_paths.repo_dir = tmp_path / "repos"
-    mock_paths.meta_cache_dir = tmp_path / "cache" / "metadata"
-    mock_paths.tmp_repo_dir = tmp_path / "tmp_repos"
-
-    mock_build = Mock()
-    mock_build.daps.meta = "daps-command-template"
-
-    env = Mock()
-    env.paths = mock_paths
-    env.build = mock_build
-    return env
-
-
-@pytest.fixture
-def mock_context(mock_envconfig: Mock) -> DocBuildContext:
-    """DocBuildContext backed by mock_envconfig."""
-    ctx = Mock(spec=DocBuildContext)
-    ctx.envconfig = mock_envconfig
-    ctx.appconfig = Mock(max_workers=8)
-    return ctx
-
-
-@pytest.fixture
-def mock_context_with_config_dir(tmp_path: Path, mock_envconfig: Mock) -> DocBuildContext:
-    """DocBuildContext with a real config_dir and tmp_metadata_dir on disk."""
-    config_dir = tmp_path / "config"
-    tmp_metadata_dir = tmp_path / "tmp" / "metadata"
-
-    config_dir.mkdir()
-    tmp_metadata_dir.mkdir(parents=True)
-    (config_dir / "dummy.xml").write_text("<docservconfig/>")
-
-    mock_envconfig.paths.config_dir = config_dir
-    mock_envconfig.paths.main_portal_config = config_dir / "dummy.xml"
-    mock_envconfig.paths.meta_cache_dir.mkdir(parents=True, exist_ok=True)
-
-    mock_tmp = Mock()
-    mock_tmp.tmp_metadata_dir = tmp_metadata_dir
-    mock_envconfig.paths.tmp = mock_tmp
-
-    ctx = Mock(spec=DocBuildContext)
-    ctx.envconfig = mock_envconfig
-    ctx.appconfig = Mock(max_workers=8)
-    return ctx
+def runner_kwargs(tmp_path: Path) -> dict:
+    """Provide explicit arguments required by process()."""
+    return {
+        "main_portal_config": tmp_path / "config" / "portal.xml",
+        "tmp_metadata_dir": tmp_path / "tmp" / "metadata",
+        "repo_dir": tmp_path / "repos",
+        "tmp_repo_dir": tmp_path / "tmp_repos",
+        "meta_cache_dir": tmp_path / "cache" / "metadata",
+        "json_cache_dir": tmp_path / "cache" / "json",
+        "dapsmetatmpl": "daps-command-template",
+        "max_workers": 8,
+    }
 
 
 @pytest.fixture
@@ -96,7 +59,7 @@ class TestProcessDoctype:
         mock_get_deliverables: Mock,
         mock_process_deliverable: AsyncMock,
         empty_xml_root: etree._ElementTree,
-        mock_context: DocBuildContext,
+        tmp_path: Path,
     ):
         """No failures are returned when all deliverables succeed."""
         doctype = Doctype.from_str("sles/15/en-us")
@@ -104,7 +67,16 @@ class TestProcessDoctype:
         mock_get_deliverables.return_value = [mock_d, mock_d]
         mock_process_deliverable.return_value = (True, mock_d)
 
-        result = await process_doctype(empty_xml_root, mock_context, doctype, exitfirst=False)
+        result = await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            meta_cache_dir=tmp_path / "cache" / "metadata",
+            dapsmetatmpl="daps-template",
+            max_workers=8,
+            exitfirst=False,
+        )
 
         assert result == []
         mock_get_deliverables.assert_called_once_with(empty_xml_root, doctype)
@@ -117,34 +89,25 @@ class TestProcessDoctype:
         mock_get_deliverables: Mock,
         mock_process_deliverable: AsyncMock,
         empty_xml_root: etree._ElementTree,
-        mock_context: DocBuildContext,
+        tmp_path: Path,
     ):
         """When no deliverables are found, process_deliverable is never called."""
         doctype = Doctype.from_str("sles/15/en-us")
         mock_get_deliverables.return_value = []
 
-        result = await process_doctype(empty_xml_root, mock_context, doctype)
+        result = await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            meta_cache_dir=tmp_path / "cache" / "metadata",
+            dapsmetatmpl="daps-template",
+            max_workers=8,
+            exitfirst=False,
+        )
 
         assert result == []
         mock_process_deliverable.assert_not_called()
-
-    @patch.object(runner_pkg, "get_deliverable_from_doctype")
-    async def test_missing_repo_dir_raises(
-        self,
-        mock_get_deliverables: Mock,
-        empty_xml_root: etree._ElementTree,
-        mock_envconfig: Mock,
-    ):
-        """AttributeError is raised when repo_dir is missing from config."""
-        doctype = Doctype.from_str("sles/15/en-us")
-        mock_get_deliverables.return_value = [Mock(spec=Deliverable)]
-
-        ctx = Mock(spec=DocBuildContext)
-        del mock_envconfig.paths.repo_dir
-        ctx.envconfig = mock_envconfig
-
-        with pytest.raises(AttributeError):
-            await process_doctype(empty_xml_root, ctx, doctype)
 
     @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     @patch.object(runner_pkg, "get_deliverable_from_doctype")
@@ -155,7 +118,7 @@ class TestProcessDoctype:
         mock_get_deliverables: Mock,
         mock_process_deliverable: AsyncMock,
         empty_xml_root: etree._ElementTree,
-        mock_context: DocBuildContext,
+        tmp_path: Path,
     ):
         """With exitfirst=True, only the first failing deliverable is reported."""
         doctype = Doctype.from_str("sles/15/en-us")
@@ -164,7 +127,16 @@ class TestProcessDoctype:
         mock_get_deliverables.return_value = [d1, d2]
         mock_process_deliverable.side_effect = [(False, d1), (True, d2)]
 
-        failed = await process_doctype(empty_xml_root, mock_context, doctype, exitfirst=True)
+        failed = await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            meta_cache_dir=tmp_path / "cache" / "metadata",
+            dapsmetatmpl="daps-template",
+            max_workers=8,
+            exitfirst=True,
+        )
 
         assert failed == [d1]
 
@@ -173,7 +145,7 @@ class TestProcessDoctype:
         self,
         mock_get_deliverables: Mock,
         empty_xml_root: etree._ElementTree,
-        mock_context: DocBuildContext,
+        tmp_path: Path,
     ):
         """Deliverable processing respects the configured max_workers limit."""
         doctype = Doctype.from_str("sles/15/en-us")
@@ -182,7 +154,6 @@ class TestProcessDoctype:
             for index in range(3)
         ]
         mock_get_deliverables.return_value = deliverables
-        mock_context.appconfig.max_workers = 1
 
         active = 0
         max_active = 0
@@ -190,7 +161,7 @@ class TestProcessDoctype:
 
         async def fake_process_deliverable(*args, **kwargs):
             nonlocal active, max_active
-            deliverable = kwargs["deliverable"] if "deliverable" in kwargs else args[1]
+            deliverable = kwargs["deliverable"] if "deliverable" in kwargs else args[0]
             async with lock:
                 active += 1
                 max_active = max(max_active, active)
@@ -201,9 +172,13 @@ class TestProcessDoctype:
 
         with patch.object(runner_pkg, "process_deliverable", side_effect=fake_process_deliverable):
             result = await process_doctype(
-                empty_xml_root,
-                mock_context,
-                doctype,
+                root=empty_xml_root,
+                doctype=doctype,
+                repo_dir=tmp_path / "repos",
+                tmp_repo_dir=tmp_path / "tmp_repos",
+                meta_cache_dir=tmp_path / "cache" / "metadata",
+                dapsmetatmpl="daps-template",
+                max_workers=1,
                 skip_repo_update=True,
             )
 
@@ -227,7 +202,7 @@ class TestProcess:
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
         mock_store_json: Mock,
-        mock_context_with_config_dir: DocBuildContext,
+        runner_kwargs: dict,
     ):
         """When no doctypes are given, the DEFAULT_DELIVERABLES doctype is used."""
         xml_string = """
@@ -245,16 +220,21 @@ class TestProcess:
         mock_process_doctype.return_value = []
 
         with patch.object(runner_pkg, "stdout"):
-            result = await process(mock_context_with_config_dir, doctypes=tuple())
+            result = await process(**runner_kwargs, doctypes=tuple())
 
         assert result == 0
         mock_parse_portal_config.assert_awaited_once()
         mock_store_json.assert_called_once()
         default_doctype = Doctype.from_str(DEFAULT_DELIVERABLES)
+
         mock_process_doctype.assert_awaited_once_with(
             mock_parse_portal_config.return_value,
-            mock_context_with_config_dir,
             default_doctype,
+            runner_kwargs["repo_dir"],
+            runner_kwargs["tmp_repo_dir"],
+            runner_kwargs["meta_cache_dir"],
+            runner_kwargs["dapsmetatmpl"],
+            runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
         )
@@ -267,7 +247,7 @@ class TestProcess:
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
         mock_store_json: Mock,
-        mock_context_with_config_dir: DocBuildContext,
+        runner_kwargs: dict,
     ):
         """process() returns 1 and prints to console_err when deliverables fail."""
         xml_string = """
@@ -286,7 +266,7 @@ class TestProcess:
         mock_process_doctype.return_value = [failed_d]
 
         with patch.object(runner_pkg, "console_err") as mock_console_err:
-            result = await process(mock_context_with_config_dir, doctypes=tuple())
+            result = await process(**runner_kwargs, doctypes=tuple())
 
         assert result == 1
         assert mock_console_err.print.called
@@ -299,9 +279,9 @@ class TestProcess:
         mock_process_doctype: AsyncMock,
         mock_parse_portal_config: AsyncMock,
         mock_store_json: Mock,
-        mock_context_with_config_dir: DocBuildContext,
+        runner_kwargs: dict,
     ):
-        """process() with provided doctypes skips the default fallback (line 201->204 branch)."""
+        """process() with provided doctypes skips the default fallback."""
         mock_parse_portal_config.return_value = etree.ElementTree(
             etree.fromstring("<docservconfig/>")
         )
@@ -309,37 +289,20 @@ class TestProcess:
         provided_doctype = Doctype.from_str("sles/15/en-us")
 
         with patch.object(runner_pkg, "stdout"):
-            result = await process(
-                mock_context_with_config_dir,
-                doctypes=[provided_doctype],
-            )
+            result = await process(**runner_kwargs, doctypes=[provided_doctype])
 
         assert result == 0
         mock_process_doctype.assert_awaited_once_with(
             mock_parse_portal_config.return_value,
-            mock_context_with_config_dir,
             provided_doctype,
+            runner_kwargs["repo_dir"],
+            runner_kwargs["tmp_repo_dir"],
+            runner_kwargs["meta_cache_dir"],
+            runner_kwargs["dapsmetatmpl"],
+            runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
         )
-
-
-# ---------------------------------------------------------------------------
-# get_deliverable_worker_limit tests
-# ---------------------------------------------------------------------------
-
-def test_get_deliverable_worker_limit_zero_returns_one():
-    """deliverable_count <= 0 always returns 1 (line 37 branch)."""
-    ctx = Mock(spec=DocBuildContext)
-    assert get_deliverable_worker_limit(ctx, 0) == 1
-    assert get_deliverable_worker_limit(ctx, -5) == 1
-
-
-def test_get_deliverable_worker_limit_no_appconfig_returns_count():
-    """When appconfig is None, deliverable_count is returned unchanged (line 41 branch)."""
-    ctx = Mock(spec=DocBuildContext)
-    ctx.appconfig = None
-    assert get_deliverable_worker_limit(ctx, 7) == 7
 
 
 # ---------------------------------------------------------------------------

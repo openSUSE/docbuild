@@ -4,10 +4,9 @@ from collections.abc import Iterator
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
-from docbuild.cli.context import DocBuildContext
 from docbuild.models.deliverable import Deliverable
 import docbuild.tasks.metadata.daps as daps_pkg
 from docbuild.tasks.metadata.daps import (
@@ -217,14 +216,11 @@ class TestProcessDeliverable:
         if make_bare_repo:
             (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
-        mock_context = MagicMock(spec=DocBuildContext)
-        mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
-        mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
-        mock_context.envconfig.paths.meta_cache_dir = setup_paths["meta_cache_dir"]
-
         success, res_deliverable = await process_deliverable(
-            context=mock_context,
             deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
             dapstmpl="daps --dc-file={dcfile} --output={output}",
         )
 
@@ -240,14 +236,11 @@ class TestProcessDeliverable:
         """A deliverable with no DC file (prebuilt) is skipped with success=True."""
         deliverable.xml.dcfile = None  # type: ignore[assignment]
 
-        mock_context = MagicMock(spec=DocBuildContext)
-        mock_context.envconfig.paths.repo_dir = tmp_path / "repos"
-        mock_context.envconfig.paths.tmp_repo_dir = tmp_path / "tmp_repos"
-        mock_context.envconfig.paths.meta_cache_dir = tmp_path / "cache"
-
         success, res_deliverable = await process_deliverable(
-            context=mock_context,
             deliverable=deliverable,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            meta_cache_dir=tmp_path / "cache",
             dapstmpl="daps -d {dcfile} metadata",
         )
 
@@ -271,14 +264,11 @@ class TestProcessDeliverable:
 
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
-        mock_context = MagicMock(spec=DocBuildContext)
-        mock_context.envconfig.paths.repo_dir = setup_paths["repo_dir"]
-        mock_context.envconfig.paths.tmp_repo_dir = setup_paths["tmp_repo_dir"]
-        mock_context.envconfig.paths.meta_cache_dir = setup_paths["meta_cache_dir"]
-
         success, res_deliverable = await process_deliverable(
-            context=mock_context,
             deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
             dapstmpl="daps --dc-file={dcfile} --output={output}",
         )
 

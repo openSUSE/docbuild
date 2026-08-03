@@ -2,12 +2,11 @@
 
 import json
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
-from docbuild.cli.context import DocBuildContext
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.metadata.manifest as manifest_pkg
@@ -69,20 +68,16 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
 
 
 @pytest.fixture
-def mock_context(tmp_path: Path) -> DocBuildContext:
-    """DocBuildContext mock with a real meta_cache_dir on disk."""
+def test_dirs(tmp_path: Path) -> dict[str, Path]:
+    """Provide mock directories needed for manifest creation."""
     meta_cache_dir = tmp_path / "cache" / "metadata"
     meta_cache_dir.mkdir(parents=True)
     json_cache_dir = tmp_path / "cache" / "json"
     json_cache_dir.mkdir(parents=True)
-
-    mock_env = Mock()
-    mock_env.paths.meta_cache_dir = meta_cache_dir
-    mock_env.paths.json_cache_dir = json_cache_dir
-
-    ctx = Mock(spec=DocBuildContext)
-    ctx.envconfig = mock_env
-    return ctx
+    return {
+        "meta_cache_dir": meta_cache_dir,
+        "json_cache_dir": json_cache_dir,
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -90,12 +85,14 @@ def mock_context(tmp_path: Path) -> DocBuildContext:
 # ---------------------------------------------------------------------------
 
 def test_store_productdocset_json_merges_and_writes(
-    mock_context: DocBuildContext,
+    test_dirs: dict[str, Path],
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
     """Merge docs from metadata files and write a product/docset JSON file."""
-    meta_cache_dir = mock_context.envconfig.paths.meta_cache_dir
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
     meta_file = meta_cache_dir / "meta1.json"
     doc_content = {
         "docs": [
@@ -121,10 +118,15 @@ def test_store_productdocset_json_merges_and_writes(
         "collect_files_flat",
         return_value=[(doctype, deliverable.xml.docsetid, [Path("meta1.json")])],
     ):
-        store_productdocset_json(mock_context, [doctype], stitchnode)
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
 
     out_file = (
-        mock_context.envconfig.paths.json_cache_dir
+        json_cache_dir
         / deliverable.xml.productid
         / f"{deliverable.xml.docsetid}.json"
     )
@@ -138,12 +140,14 @@ def test_store_productdocset_json_merges_and_writes(
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(
-    mock_context: DocBuildContext,
+    test_dirs: dict[str, Path],
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
     """If a metadata file contains an empty object, an error is logged."""
-    meta_cache_dir = mock_context.envconfig.paths.meta_cache_dir
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
     (meta_cache_dir / "empty.json").write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
@@ -158,18 +162,25 @@ def test_store_productdocset_json_warns_on_empty_metadata(
         ),
         patch.object(manifest_pkg, "log") as mock_log,
     ):
-        store_productdocset_json(mock_context, [doctype], stitchnode)
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
 
     mock_log.error.assert_called_with("Empty metadata file %s", Path("empty.json"))
 
 
 def test_store_productdocset_json_handles_read_error(
-    mock_context: DocBuildContext,
+    test_dirs: dict[str, Path],
     deliverable: Deliverable,
     stitchnode: etree._ElementTree,
 ):
     """If a metadata file contains invalid JSON, the error is caught and logged."""
-    meta_cache_dir = mock_context.envconfig.paths.meta_cache_dir
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
     (meta_cache_dir / "bad.json").write_text("{ not json }", encoding="utf-8")
 
     doctype = Doctype.from_str(
@@ -184,6 +195,11 @@ def test_store_productdocset_json_handles_read_error(
         ),
         patch.object(manifest_pkg, "log") as mock_log,
     ):
-        store_productdocset_json(mock_context, [doctype], stitchnode)
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
 
     mock_log.error.assert_called()
