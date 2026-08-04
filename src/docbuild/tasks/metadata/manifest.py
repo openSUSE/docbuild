@@ -9,9 +9,9 @@ from lxml import etree  # type: ignore
 from pydantic import ValidationError
 from rich.console import Console
 
-from docbuild.models.doctype import Doctype
-from docbuild.models.manifest import Category, Description, Document, Manifest
-
+from ...models.doctype import Doctype
+from ...models.language import LanguageCode
+from ...models.manifest import Archive, Category, Description, Document, Manifest
 from .deliverables import collect_files_flat
 
 log = logging.getLogger(__name__)
@@ -123,6 +123,29 @@ def load_and_validate_documents(
             log.error("Error processing metadata file %s: %s", actual_file, e)
 
 
+def configured_languages_from_docset(docsetnode: etree._Element) -> list[LanguageCode]:
+    """Return configured locale languages from a docset node.
+
+    :param docsetnode: A ``<docset>`` XML node from the stitched portal config.
+    :return: Ordered unique list of configured LanguageCode values.
+    """
+    resources = docsetnode.find("resources")
+    if resources is None:
+        return []
+
+    languages: list[LanguageCode] = []
+    seen: set[str] = set()
+
+    for locale_node in resources.findall("locale"):
+        lang = (locale_node.attrib.get("lang") or "").strip()
+        if not lang or lang in seen:
+            continue
+        languages.append(LanguageCode(language=lang))
+        seen.add(lang)
+
+    return languages
+
+
 def store_productdocset_json(
     doctypes: Sequence[Doctype],
     stitchnode: etree._ElementTree,
@@ -141,9 +164,9 @@ def store_productdocset_json(
         version_str = str(docset)
 
         productxpath = f"./{doctype.product_xpath_segment()}"
-        productnode = stitchnode.find(productxpath)
+        productnode: etree.Element = stitchnode.find(productxpath)
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
-        docsetnode = productnode.find(docsetxpath)
+        docsetnode: etree.Element = productnode.find(docsetxpath)
 
         descriptions = list(Description.from_xml_node(productnode))
 
@@ -153,6 +176,15 @@ def store_productdocset_json(
         categories += [
             c for c in Category.from_xml_node(productnode)
             if c.id not in global_ids
+        ]
+        configured_languages = configured_languages_from_docset(docsetnode)
+        archives = [
+            Archive(
+                lang=lang,
+                product=product,
+                docset=docset,
+            )
+            for lang in configured_languages
         ]
 
         apply_parity_fixes(descriptions, categories)
@@ -170,7 +202,7 @@ def store_productdocset_json(
             descriptions=descriptions,
             categories=categories,
             documents=[],
-            archives=[],
+            archives=archives,
         )
 
         load_and_validate_documents(files, meta_cache_dir, manifest)

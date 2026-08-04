@@ -10,7 +10,10 @@ import pytest
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.metadata.manifest as manifest_pkg
-from docbuild.tasks.metadata.manifest import store_productdocset_json
+from docbuild.tasks.metadata.manifest import (
+    configured_languages_from_docset,
+    store_productdocset_json,
+)
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -203,3 +206,25 @@ def test_store_productdocset_json_handles_read_error(
         )
 
     mock_log.error.assert_called()
+
+
+def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> None:
+    """Extract configured locale languages in order while removing duplicates."""
+    docset_node = etree.fromstring(
+        """
+        <docset>
+          <resources>
+            <locale lang="en-us"/>
+            <locale lang="de-de"/>
+            <locale lang="en-us"/>
+            <locale lang=""/>
+            <locale/>
+            <locale lang="fr-fr"/>
+          </resources>
+        </docset>
+        """
+    )
+
+    languages = configured_languages_from_docset(docset_node)
+
+    assert [str(lang) for lang in languages] == ["en-us", "de-de", "fr-fr"]

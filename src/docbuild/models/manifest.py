@@ -3,22 +3,24 @@
 from collections.abc import Generator
 from datetime import date
 import logging
-from typing import ClassVar, Self
+from typing import Any, ClassVar, Self
 
 from lxml import etree
 from pydantic import (
     BaseModel,
     ConfigDict,
-    # model_validator,
     Field,
     SerializationInfo,
     ValidationInfo,
     field_serializer,
     field_validator,
+    model_validator,
 )
 
+from ..constants import DEFAULT_LANGS
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
+from ..utils.convert import convert2bool
 
 log = logging.getLogger(__name__)
 
@@ -56,6 +58,8 @@ class Description(BaseModel):
         :yield: A :class:`Description` instance per ``<desc>`` element found.
         """
         for n in node.xpath("descriptions/desc"):
+            attrs: dict[str, Any] = dict(n.attrib)
+            attrs.setdefault("default", False)
             text = "".join(
                 f"<{child.tag}>{
                     ' '.join(
@@ -69,7 +73,7 @@ class Description(BaseModel):
                 if child.tag != "title"
             )
 
-            yield cls(**{"default": False, **n.attrib}, description=text)
+            yield cls(**attrs, description=text)
 
 
 class CategoryTranslation(BaseModel):
@@ -87,6 +91,14 @@ class CategoryTranslation(BaseModel):
     lang: LanguageCode
     default: bool = Field(default=False)
     title: str
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English translations as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -162,12 +174,16 @@ class Category(BaseModel):
                 cat_id = lng.attrib.get("id") or lng.attrib.get("linkend", "")
                 if not cat_id:
                     continue
-                by_id.setdefault(cat_id, []).append(
-                    CategoryTranslation(
-                        lang=cat_lang,
-                        default=bool(lng.attrib.get("default", False)),
-                        title=lng.attrib.get("title", ""),
+                translation_data: dict[str, str | bool] = {
+                    "lang": cat_lang,
+                    "title": lng.attrib.get("title", ""),
+                }
+                if "default" in lng.attrib:
+                    translation_data["default"] = convert2bool(
+                        lng.attrib.get("default", "")
                     )
+                by_id.setdefault(cat_id, []).append(
+                    CategoryTranslation(**translation_data)
                 )
 
         for cat_id, translations in by_id.items():
@@ -187,13 +203,44 @@ class Archive(BaseModel):
     """
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     zip: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def fill_zip_from_context(cls, data: object) -> object:
+        """Build ``zip`` when omitted using lang/product/docset inputs."""
+        if not isinstance(data, dict):
+            return data
+
+        if data.get("zip"):
+            return data
+
+        product = str(data.get("product") or "").strip()
+        docset = str(data.get("docset") or "").strip()
+        lang_value = data.get("lang")
+        lang = str(lang_value).strip() if lang_value is not None else ""
+
+        if not product or not docset or not lang:
+            raise ValueError(
+                "Argument 'zip' is required unless lang, product, and docset are provided"
+            )
+
+        data["zip"] = f"/{lang}/{product}/{docset}/{product}-{docset}-{lang}.zip"
+        return data
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
         """Serialize LanguageCode to a string like 'en-us'."""
         return str(value)
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English translations as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
 
 class DocumentFormat(BaseModel):
