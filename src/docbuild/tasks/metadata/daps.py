@@ -64,6 +64,7 @@ async def process_deliverable(
     meta_cache_dir: Path,
     *,
     dapstmpl: str,
+    skip_repo_update: bool = False,
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable asynchronously.
 
@@ -75,6 +76,7 @@ async def process_deliverable(
     :param tmp_repo_dir: Path to the temporary worktree directory.
     :param meta_cache_dir: Path to the metadata cache output directory.
     :param dapstmpl: A template string with the daps command and potential placeholders.
+    :param skip_repo_update: If True, do not update/fetch the bare repository.
     :return: A tuple of ``(success, deliverable)``.
     """
     log.info("> Processing deliverable: %s", deliverable.full_id)
@@ -105,10 +107,11 @@ async def process_deliverable(
             ),
         ) as worktree_dir:
             mg = ManagedGitRepo(deliverable.git.url, repo_dir)
-            if not await mg.clone_bare():
-                raise RuntimeError(
-                    f"Failed to ensure bare repository for {deliverable.full_id}"
-                )
+            if not skip_repo_update:
+                if not await mg.clone_bare():
+                    raise RuntimeError(
+                        f"Failed to ensure bare repository for {deliverable.full_id}"
+                    )
 
             try:
                 await mg.create_worktree(worktree_dir, deliverable.branch)

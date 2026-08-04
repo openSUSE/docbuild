@@ -23,6 +23,21 @@ stdout = Console()
 console_err = Console(stderr=True, style="red")
 
 
+def get_deliverable_worker_limit(
+    max_workers: int, deliverable_count: int
+) -> int:
+    """Resolve the concurrency limit for deliverable processing.
+
+    :param max_workers: The maximum number of concurrent workers allowed.
+    :param deliverable_count: Number of deliverables to process.
+    :return: A worker limit between 1 and ``deliverable_count``.
+    """
+    if deliverable_count <= 0:
+        return 1
+
+    return max(1, min(max_workers, deliverable_count))
+
+
 async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
     """Execute tasks and stop immediately on the first failure.
 
@@ -101,7 +116,7 @@ async def process_doctype(
 
     :param root: The stitched XML node containing configuration.
     :param doctype: The Doctype object to process.
-    :param repo_dir: Path to the repositories directory.
+    :param repo_dir: Path to the repository directory.
     :param tmp_repo_dir: Path to the temporary repositories directory.
     :param meta_cache_dir: Path to the metadata cache output directory.
     :param dapsmetatmpl: Template string for the DAPS command.
@@ -119,7 +134,7 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    worker_limit = max(1, min(max_workers, len(deliverables)))
+    worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
     semaphore = asyncio.Semaphore(worker_limit)
 
     async def process_deliverable_limited(
@@ -132,6 +147,7 @@ async def process_doctype(
                 tmp_repo_dir,
                 meta_cache_dir,
                 dapstmpl=dapsmetatmpl,
+                skip_repo_update=skip_repo_update,
             )
 
     tasks = [
@@ -161,20 +177,22 @@ async def process(
 ) -> int:
     """Asynchronous entry point for metadata retrieval.
 
-    :param main_portal_config: Path to the main portal XML configuration.
+    :param main_portal_config: Path to the main portal XML configuration file.
     :param tmp_metadata_dir: Path to the temporary metadata directory.
-    :param repo_dir: Path to the repositories directory.
-    :param tmp_repo_dir: Path to the temporary repositories directory.
-    :param meta_cache_dir: Path to the metadata cache output directory.
-    :param json_cache_dir: Path to the JSON cache output directory.
-    :param dapsmetatmpl: Template string for the DAPS command.
-    :param max_workers: Maximum number of concurrent workers allowed.
+    :param repo_dir: Path to the local repository directory.
+    :param tmp_repo_dir: Path to the temporary worktree repository directory.
+    :param meta_cache_dir: Path to metadata output cache.
+    :param json_cache_dir: Path to JSON output cache.
+    :param dapsmetatmpl: Template string for the DAPS metadata command.
+    :param max_workers: Maximum number of concurrent deliverable workers.
     :param doctypes: A sequence of Doctype objects to process.
     :param exitfirst: If True, stop processing on the first failure.
     :param skip_repo_update: If True, skip updating Git repositories before processing.
     :return: 0 if all files passed validation, 1 if any failures occurred.
     """
-    stitchnode: etree._ElementTree = await parse_portal_config(main_portal_config)
+    stitchnode: etree._ElementTree = await parse_portal_config(
+        Path(main_portal_config).expanduser()
+    )
 
     tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 

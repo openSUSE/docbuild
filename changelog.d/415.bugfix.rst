@@ -1,0 +1,2 @@
+Fix handling of option ``--skip-repo-update``.
+Previously, this flag was ignored and repos were always updated.

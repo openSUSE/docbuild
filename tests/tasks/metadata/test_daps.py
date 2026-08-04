@@ -275,3 +275,42 @@ class TestProcessDeliverable:
         assert success is False
         assert res_deliverable is deliverable
         assert any("Error processing" in r.message for r in caplog.records)
+
+    @patch.object(daps_pkg, "update_metadata_json")
+    @patch.object(daps_pkg.asyncio, "create_subprocess_exec", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_skip_repo_update_bypasses_clone_bare(
+        self,
+        mock_managed_git_repo: Mock,
+        mock_subprocess_exec: AsyncMock,
+        mock_update_metadata_json: Mock,
+        deliverable: Deliverable,
+        setup_paths: dict,
+    ):
+        """When skip_repo_update=True, clone_bare is not called."""
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.create_worktree.return_value = None
+
+        mock_daps_proc = AsyncMock()
+        mock_daps_proc.communicate.return_value = (b"", b"")
+        mock_daps_proc.returncode = 0
+        mock_subprocess_exec.return_value = mock_daps_proc
+
+        (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        # Using explicit paths instead of mock_context!
+        success, res_deliverable = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            skip_repo_update=True,
+        )
+
+        assert success is True
+        assert res_deliverable is deliverable
+        mock_repo_instance.clone_bare.assert_not_awaited()
+        mock_repo_instance.create_worktree.assert_awaited_once()
+        mock_update_metadata_json.assert_called_once()
