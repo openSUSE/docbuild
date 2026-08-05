@@ -20,6 +20,12 @@ docbuild.models.manifest.CategoryTranslation
        }
 
 
+   .. py:method:: set_default_for_english() -> Self
+
+      Auto-mark English translations as default when not explicitly set.
+
+
+
    .. py:method:: serialize_lang(value: docbuild.models.language.LanguageCode, info: pydantic.SerializationInfo) -> str
 
       Serialize LanguageCode to a string like 'en-us'.

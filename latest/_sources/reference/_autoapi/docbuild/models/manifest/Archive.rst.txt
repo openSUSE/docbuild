@@ -20,8 +20,22 @@ docbuild.models.manifest.Archive
        }
 
 
+   .. py:method:: fill_zip_from_context(data: object) -> object
+      :classmethod:
+
+
+      Build ``zip`` when omitted using lang/product/docset inputs.
+
+
+
    .. py:method:: serialize_lang(value: docbuild.models.language.LanguageCode, info: pydantic.SerializationInfo) -> str
 
       Serialize LanguageCode to a string like 'en-us'.
+
+
+
+   .. py:method:: set_default_for_english() -> Self
+
+      Auto-mark English translations as default when not explicitly set.
 
 
