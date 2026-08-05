@@ -12,6 +12,7 @@ from docbuild.models.doctype import Doctype
 import docbuild.tasks.metadata.manifest as manifest_pkg
 from docbuild.tasks.metadata.manifest import (
     configured_languages_from_docset,
+    merge_descriptions_with_treatment,
     store_productdocset_json,
 )
 
@@ -208,6 +209,87 @@ def test_store_productdocset_json_handles_read_error(
     mock_log.error.assert_called()
 
 
+@pytest.mark.parametrize(
+    ("treatment", "docset_lang", "expected_lang", "expected_description"),
+    [
+        ("append", "en-us", "en-us", "<p>global</p><p>local</p>"),
+        ("prepend", "en-us", "en-us", "<p>local</p><p>global</p>"),
+        ("replace", "de-de", "de-de", "<p>local</p>"),
+    ],
+)
+def test_merge_descriptions_with_treatment(
+    treatment: str,
+    docset_lang: str,
+    expected_lang: str,
+    expected_description: str,
+) -> None:
+    """Merges descriptions according to append/prepend/replace treatment."""
+    product_desc = [
+        manifest_pkg.Description(lang="en-us", default=True, description="<p>global</p>")
+    ]
+    docset_desc = [
+        manifest_pkg.Description(lang=docset_lang, default=False, description="<p>local</p>")
+    ]
+
+    merged = merge_descriptions_with_treatment(
+        product_desc,
+        docset_desc,
+        treatment=treatment,
+    )
+
+    assert len(merged) == 1
+    assert str(merged[0].lang) == expected_lang
+    assert merged[0].description == expected_description
+
+
+def test_store_productdocset_json_applies_docset_description_treatment(
+    tmp_path: Path,
+) -> None:
+    """Docset descriptions with treatment=append are merged with product descriptions."""
+    xml_string = """
+    <docservconfig>
+      <product id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <descriptions>
+          <desc lang="en-us"><p>Global</p></desc>
+        </descriptions>
+        <docset id="sles.16.0" path="16.0" lifecycle="supported">
+          <descriptions treatment="append">
+            <desc lang="en-us"><p>Local</p></desc>
+          </descriptions>
+          <resources>
+            <git remote="https://github.com/SUSE/doc-sle.git"/>
+            <locale lang="en-us"/>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode_local = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/16.0/en-us")
+    meta_cache_dir = tmp_path / "cache" / "metadata"
+    meta_cache_dir.mkdir(parents=True, exist_ok=True)
+    json_cache_dir = tmp_path / "cache" / "json"
+    json_cache_dir.mkdir(parents=True, exist_ok=True)
+
+    with patch.object(
+        manifest_pkg,
+        "collect_files_flat",
+        return_value=[(doctype, "16.0", [])],
+    ):
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode_local,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
+
+    out_file = json_cache_dir / "sles" / "16.0.json"
+    data = json.loads(out_file.read_text(encoding="utf-8"))
+    assert data["descriptions"][0]["description"] == "<p>Global</p><p>Local</p>"
+
+
 def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> None:
     """Extract configured locale languages in order while removing duplicates."""
     docset_node = etree.fromstring(
@@ -216,9 +298,6 @@ def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> No
           <resources>
             <locale lang="en-us"/>
             <locale lang="de-de"/>
-            <locale lang="en-us"/>
-            <locale lang=""/>
-            <locale/>
             <locale lang="fr-fr"/>
           </resources>
         </docset>

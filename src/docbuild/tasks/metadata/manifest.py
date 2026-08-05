@@ -4,6 +4,7 @@ from collections.abc import Sequence
 import json
 import logging
 from pathlib import Path
+from typing import Literal
 
 from lxml import etree  # type: ignore
 from pydantic import ValidationError
@@ -24,17 +25,7 @@ def apply_parity_fixes(descriptions: list, categories: list) -> None:
     :param descriptions: List of Description objects to patch.
     :param categories: List of Category objects to patch.
     """
-    # TODO: These strings are hard-coded for legacy parity but should be moved to
-    # Docserv config files to allow for proper translation and localization.
-    legacy_tail = (
-        "<p>The default view of this page is the ```Table of Contents``` sorting order. "
-        "To search for a particular document, you can narrow down the results using the "
-        "```Filter as you type``` option. It dynamically filters the document titles and "
-        "descriptions for what you enter.</p>"
-    )
     for desc in descriptions:
-        if legacy_tail not in desc.description:
-            desc.description += legacy_tail
         desc.description = desc.description.replace("& ", "&amp; ")
 
     for cat in categories:
@@ -123,6 +114,57 @@ def load_and_validate_documents(
             log.error("Error processing metadata file %s: %s", actual_file, e)
 
 
+def merge_descriptions_with_treatment(
+    product_descriptions: list[Description],
+    docset_descriptions: list[Description],
+    treatment: Literal["append", "prepend", "replace"] = "replace",
+) -> list[Description]:
+    """Merge product and docset descriptions according to treatment policy.
+
+    :param product_descriptions: Descriptions from the product scope.
+    :param docset_descriptions: Descriptions from the docset scope.
+    :param treatment: How docset descriptions interact with product descriptions.
+    :return: Merged descriptions list.
+    """
+    if not docset_descriptions:
+        return [d.model_copy(deep=True) for d in product_descriptions]
+
+    if treatment == "replace":
+        return [d.model_copy(deep=True) for d in docset_descriptions]
+
+    product_by_lang = {str(d.lang): d for d in product_descriptions}
+    docset_by_lang = {str(d.lang): d for d in docset_descriptions}
+
+    ordered_langs = [str(d.lang) for d in product_descriptions]
+    ordered_langs.extend(
+        str(d.lang) for d in docset_descriptions if str(d.lang) not in product_by_lang
+    )
+
+    merged: list[Description] = []
+    for lang in ordered_langs:
+        p_desc = product_by_lang.get(lang)
+        d_desc = docset_by_lang.get(lang)
+
+        if p_desc and d_desc:
+            if treatment == "prepend":
+                text = f"{d_desc.description}{p_desc.description}"
+            else:
+                text = f"{p_desc.description}{d_desc.description}"
+            merged.append(
+                Description(
+                    lang=lang,
+                    default=p_desc.default or d_desc.default,
+                    description=text,
+                )
+            )
+        elif d_desc:
+            merged.append(d_desc.model_copy(deep=True))
+        elif p_desc:
+            merged.append(p_desc.model_copy(deep=True))
+
+    return merged
+
+
 def configured_languages_from_docset(docsetnode: etree._Element) -> list[LanguageCode]:
     """Return configured locale languages from a docset node.
 
@@ -168,7 +210,17 @@ def store_productdocset_json(
         docsetxpath = f"./{doctype.docset_xpath_segment(docset)}"
         docsetnode: etree.Element = productnode.find(docsetxpath)
 
-        descriptions = list(Description.from_xml_node(productnode))
+        product_descriptions = list(Description.from_xml_node(productnode))
+        docset_descriptions = list(Description.from_xml_node(docsetnode))
+        descriptions_node = docsetnode.find("descriptions")
+        treatment = "replace"
+        if descriptions_node is not None:
+            treatment = descriptions_node.attrib.get("treatment", treatment)
+        descriptions = merge_descriptions_with_treatment(
+            product_descriptions,
+            docset_descriptions,
+            treatment=treatment if treatment in {"append", "prepend", "replace"} else "replace",
+        )
 
         # Global (portal-level) categories first, then local (product-level) ones
         categories = list(Category.from_xml_node(stitchnode.getroot()))
