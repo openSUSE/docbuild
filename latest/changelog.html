@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.21.1.dev34+g611fc4f1a.d20260803</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.21.1.dev36+gfaca1dca2.d20260805</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=e781d060"></script>
+    <script src="_static/documentation_options.js?v=9c55b5eb"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -453,6 +453,8 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Correct <strong class="command">docbuild portal list</strong> to fix “unnamed-deliverable” output for translated deliverables. The deliverable ID is now correctly retrieved from the English locale node when the current node is a reference deliverable. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/400">GH #400</a>)</p></li>
+<li><p>Fix handling of option <code class="docutils literal notranslate"><span class="pre">--skip-repo-update</span></code>.
+Previously, this flag was ignored and repos were always updated. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/415">GH #415</a>)</p></li>
 </ul>
 </section>
 <section id="features">
