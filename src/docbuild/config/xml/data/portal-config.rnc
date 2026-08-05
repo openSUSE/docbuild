@@ -22,6 +22,8 @@ start = (ds.portal
   | ds.category.default
   | ds.category.translation
   | ds.descriptions
+  | ds.desc_default
+  | ds.desc_translation
 )
 
 

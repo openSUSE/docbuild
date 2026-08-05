@@ -107,10 +107,12 @@
       <product id="suma" series="s.pas" family="f.linux" rank="0"/>
       <product id="suma-retail" series="s.pas" family="f.linux" rank="0"/>
       <product id="suse-ai" series="s.pas" family="f.suse-ai" rank="00010" />
+      <product id="suse-ai-factory" series="s.pas" family="f.suse-ai" rank="00010" />
       <product id="suse-caasp" series="s.pas" family="f.linux" rank="04310" />
       <product id="suse-cap" series="s.pas" family="f.linux" rank="04320"/>
       <product id="suse-distribution-migration-system" series="s.pas" family="f.linux" idabbrev="suma-dms" rank="0"/>
       <product id="suse-edge" series="s.pas" family="f.suse-edge" rank="00040" />
+      <product id="suse-telco" series="s.pas" family="f.suse-edge" rank="000410" />
       <product id="trd" series="s.trd" family="f.linux" rank="0"/>
     </config>
   </xsl:variable>
