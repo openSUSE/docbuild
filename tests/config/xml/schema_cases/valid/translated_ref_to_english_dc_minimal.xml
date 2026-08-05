@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+  <categories>
+    <category lang="en-us">
+      <language id="cat.general" title="General"/>
+    </category>
+  </categories>
+  <productfamilies>
+    <item id="f.linux">Linux</item>
+  </productfamilies>
+  <series>
+    <item id="s.pas">Products and Solutions</item>
+  </series>
+  <product id="sles" series="s.pas" family="f.linux">
+    <name>SLES</name>
+    <maintainers>
+      <contact>doc-team@example.com</contact>
+    </maintainers>
+    <docset id="v16_0" lifecycle="supported">
+      <version>16.0</version>
+      <resources>
+        <git remote="https://example.com/repo.git"/>
+        <locale lang="en-us">
+          <branch>main</branch>
+          <deliverable id="sles.16.0.guide" type="dc">
+            <dc file="DC-Guide">
+              <format html="true"/>
+            </dc>
+          </deliverable>
+        </locale>
+        <locale lang="de-de">
+          <branch>main</branch>
+          <deliverable type="ref">
+            <ref linkend="sles.16.0.guide"/>
+          </deliverable>
+        </locale>
+      </resources>
+    </docset>
+  </product>
+</portal>

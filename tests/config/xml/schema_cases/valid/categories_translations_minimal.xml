@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories>
+  <category lang="en-us">
+    <language id="cat.install" title="Installation"/>
+  </category>
+  <category lang="de-de">
+    <language linkend="cat.install" title="Installation"/>
+  </category>
+</categories>

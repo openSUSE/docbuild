@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset id="v1" lifecycle="supported">
+  <version>1</version>
+  <resources>
+    <git remote="ssh://example.com/test/repo.git"/><!-- Wrong URL -->
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="test.1.guide" type="dc">
+        <dc file="DC-Guide">
+          <format html="true"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>
