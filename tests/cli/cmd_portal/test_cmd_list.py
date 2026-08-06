@@ -301,7 +301,7 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
             <language id="tuning-and-performance" title="Tuning and performance" />
         </category>
     </categories>
-    <product id="sles">=
+    <product id="sles">
         <docset path="16.0" lifecycle="supported">
             <resources>
                 <git remote="https://github.com/SUSE/doc-modular.git" />
@@ -395,3 +395,29 @@ def test_portal_list_repo_requires_argument() -> None:
     assert result.exit_code != 0
     assert "Invalid value for '--repo' / '-R'" in result.output
     assert "is not one of 'short', 'long'" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode(mock_parse, tmp_path) -> None:
+    """Test that the --flat flag formats the output as a flat list."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
+
+    # 1. Basic flat output
+    res_flat = runner.invoke(list_cmd, ["--flat", "sles/16.0/*"], obj=mock_ctx)
+    assert res_flat.exit_code == 0
+    assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
+    assert "en-us/sles/16.0:SUSE Docs (Prebuilt)" in res_flat.output
+    assert "de-de/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
+
+    # 2. Flat output with metadata branches appended
+    res_flat_meta = runner.invoke(list_cmd, ["--flat", "--trans", "--formats", "--repo", "short", "sles/16.0/*"], obj=mock_ctx)
+    assert res_flat_meta.exit_code == 0
+    assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat_meta.output
+    assert "Translations: de-de" in res_flat_meta.output
+    assert "Formats: HTML, PDF" in res_flat_meta.output
+    assert "gh://suse/doc-modular" in res_flat_meta.output.lower()

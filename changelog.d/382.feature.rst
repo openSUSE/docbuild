@@ -1,0 +1,1 @@
+Add a ``--flat`` option to ``docbuild portal list`` to display the output as a flat, non-hierarchical list.

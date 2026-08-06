@@ -172,6 +172,60 @@ def print_hierarchy(
         console.print()
 
 
+def print_flat(
+    deliverables: list[Deliverable],
+    console: Console,
+    show_trans: bool,
+    show_formats: bool,
+    show_categories: bool,
+    repo_format: str | None,
+) -> None:
+    """Render and print the deliverables as a flat list."""
+    # Sort logically: lang -> product -> docset -> id
+    sorted_deliverables = sorted(
+        deliverables,
+        key=lambda d: (
+            str(d.xml.lang),
+            d.xml.productid or "",
+            d.xml.docsetid or "",
+            d.xml.node.get("id", ""),
+        )
+    )
+
+    for deliv in sorted_deliverables:
+        lang = str(deliv.xml.lang)
+        product = deliv.xml.productid or "unknown-product"
+        docset = deliv.xml.docsetid or "unknown-docset"
+        d_id = deliv.xml.deliverableid or "unnamed-deliverable"
+
+        display_name = get_display_name(deliv, d_id)
+
+        # Build the flat root string
+        flat_title = f"{lang}/{product}/{docset}:{display_name}"
+        deliv_tree = Tree(flat_title)
+
+        # Attach metadata if requested
+        if deliv.xml.is_prebuilt:
+            for url_node in deliv.xml.node.xpath("prebuilt/url"):
+                if href := url_node.get("href"):
+                    deliv_tree.add(f"URL: [link={href}]{href}[/link]")
+
+        if show_trans:
+            append_translations(deliv_tree, deliv, lang)
+        if show_formats:
+            append_formats(deliv_tree, deliv)
+        if show_categories:
+            append_categories(deliv_tree, deliv)
+        if repo_format:
+            append_repo(deliv_tree, deliv, repo_format)
+
+        # Print cleanly if there's no metadata branches, otherwise print the tree block
+        if deliv_tree.children:
+            console.print(deliv_tree)
+        else:
+            console.print(flat_title)
+
+
 def validate_docsets_against_xml(
     doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
 ) -> None:
@@ -216,6 +270,7 @@ async def async_list_cmd(
     show_formats: bool,
     show_categories: bool,
     repo_format: str | None,
+    flat: bool,
 ) -> None:
     """Async worker to fetch the XML, parse Doctypes, and build the tree."""
     parsed_doctypes = parse_doctypes(doctypes, console)
@@ -248,16 +303,25 @@ async def async_list_cmd(
         console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
         return
 
-    hierarchy = build_hierarchy(deliverables)
-
-    print_hierarchy(
-        hierarchy,
-        console,
-        show_trans,
-        show_formats,
-        show_categories,
-        repo_format
-    )
+    if flat:
+        print_flat(
+            deliverables,
+            console,
+            show_trans,
+            show_formats,
+            show_categories,
+            repo_format
+        )
+    else:
+        hierarchy = build_hierarchy(deliverables)
+        print_hierarchy(
+            hierarchy,
+            console,
+            show_trans,
+            show_formats,
+            show_categories,
+            repo_format
+        )
 
 
 @click.command(name="list")
@@ -271,6 +335,7 @@ async def async_list_cmd(
     default=None,
     help="List repository origin (requires 'short' or 'long')."
 )
+@click.option("--flat", is_flag=True, help="Display the output as a flat list.")
 @click.argument("doctypes", nargs=-1)
 @click.pass_obj
 def list_cmd(
@@ -280,6 +345,7 @@ def list_cmd(
     formats: bool,
     categories: bool,
     repo: str | None,
+    flat: bool,
 ) -> None:
     """List products, docsets, and deliverables from the portal config.
 
@@ -297,8 +363,8 @@ def list_cmd(
     :param formats: Show output formats metadata.
     :param categories: Show categories metadata.
     :param repo: Show repository metadata (short or long).
+    :param flat: Display a flat list instead of a hierarchy tree.
 
     """ # noqa: D301
     console = Console()
-    asyncio.run(async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo))
-
+    asyncio.run(async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo, flat))
