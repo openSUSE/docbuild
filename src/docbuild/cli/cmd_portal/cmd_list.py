@@ -200,8 +200,8 @@ def print_flat(
 
         display_name = get_display_name(deliv, d_id)
 
-        # Build the flat root string
-        flat_title = f"{lang}/{product}/{docset}:{display_name}"
+        # Build the flat root string with colors matching the hierarchy
+        flat_title = f"[bold blue]{lang}[/bold blue]/[bold]{product}[/bold]/[cyan]{docset}[/cyan]:{display_name}"
         deliv_tree = Tree(flat_title)
 
         # Attach metadata if requested

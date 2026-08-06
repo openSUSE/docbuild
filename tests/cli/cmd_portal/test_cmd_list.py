@@ -398,7 +398,7 @@ def test_portal_list_repo_requires_argument() -> None:
 
 
 @patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
-def test_portal_list_flat_mode(mock_parse, tmp_path) -> None:
+def test_portal_list_flat_mode_basic(mock_parse, tmp_path) -> None:
     """Test that the --flat flag formats the output as a flat list."""
     runner = CliRunner()
     mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
@@ -407,14 +407,23 @@ def test_portal_list_flat_mode(mock_parse, tmp_path) -> None:
     mock_ctx.envconfig = MagicMock()
     mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
 
-    # 1. Basic flat output
     res_flat = runner.invoke(list_cmd, ["--flat", "sles/16.0/*"], obj=mock_ctx)
     assert res_flat.exit_code == 0
     assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
     assert "en-us/sles/16.0:SUSE Docs (Prebuilt)" in res_flat.output
     assert "de-de/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
 
-    # 2. Flat output with metadata branches appended
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode_metadata(mock_parse, tmp_path) -> None:
+    """Test that the --flat flag properly appends metadata branches."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = tmp_path / "portal.xml"
+
     res_flat_meta = runner.invoke(list_cmd, ["--flat", "--trans", "--formats", "--repo", "short", "sles/16.0/*"], obj=mock_ctx)
     assert res_flat_meta.exit_code == 0
     assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat_meta.output
