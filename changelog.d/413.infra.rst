@@ -1,1 +1,0 @@
-Change dependency group ``devel`` to ``dev`` to simplify calling :command:`uv`.

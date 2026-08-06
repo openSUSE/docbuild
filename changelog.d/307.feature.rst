@@ -1,1 +1,0 @@
-Refactored the ``check files`` command to separate CLI argument parsing from core business logic, introducing a new ``docbuild.tasks`` module as a Proof of Concept for CLI layer decoupling.

@@ -1,1 +1,0 @@
-Fix description logic in output JSON and how global and local descriptions are merged.

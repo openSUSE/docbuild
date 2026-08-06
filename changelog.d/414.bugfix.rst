@@ -1,1 +1,0 @@
-Implement formerly empty ``archives`` key in :class:`~docbuild.models.manifest.Manifest`.

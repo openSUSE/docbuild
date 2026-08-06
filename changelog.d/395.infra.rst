@@ -1,1 +1,0 @@
-Added ``skip-chanagelog`` label for Dependabot pull requests.

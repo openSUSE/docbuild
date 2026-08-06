@@ -1,2 +1,0 @@
-Added ``suse-telco`` and ``suse-ai-factory`` for converting old Docserv config into new Portal config.
-Amended start rule with ``<desc>`` element in RNC Portal schema.

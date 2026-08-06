@@ -1,1 +1,0 @@
-Correct :command:`docbuild portal list` to fix "unnamed-deliverable" output for translated deliverables. The deliverable ID is now correctly retrieved from the English locale node when the current node is a reference deliverable.

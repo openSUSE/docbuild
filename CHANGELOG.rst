@@ -21,6 +21,68 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.22.0
+==============
+
+Bug Fixes
+---------
+
+- Correct :command:`docbuild portal list` to fix "unnamed-deliverable" output for translated deliverables. The deliverable ID is now correctly retrieved from the English locale node when the current node is a reference deliverable. (:gh:`400`)
+- Implement formerly empty ``archives`` key in :class:`~docbuild.models.manifest.Manifest`. (:gh:`414`)
+- Fix handling of option ``--skip-repo-update``.
+  Previously, this flag was ignored and repos were always updated. (:gh:`415`)
+- Fix description logic in output JSON and how global and local descriptions are merged. (:gh:`416`)
+
+
+Features
+--------
+
+- Added a ``docbuild doctor`` command to check for system-level dependencies (like ``daps``, ``jing``, ``xmllint``) and a fail-fast decorator to prevent execution of commands when required tools are missing. (:gh:`234`)
+- Implement :command:`docbuild metadata`. (:gh:`268`)
+- Refactored the ``check files`` command to separate CLI argument parsing from core business logic, introducing a new ``docbuild.tasks`` module as a Proof of Concept for CLI layer decoupling. (:gh:`307`)
+- Add a ``--flat`` option to ``docbuild portal list`` to display the output as a flat, non-hierarchical list. (:gh:`382`)
+- Added ``suse-telco`` and ``suse-ai-factory`` for converting old Docserv config into new Portal config.
+  Amended start rule with ``<desc>`` element in RNC Portal schema. (:gh:`416`)
+
+
+Infrastructure
+--------------
+
+- Bumped GitHub Action ``astral-sh/setup-uv`` from 8.2.0 to 8.3.2. (:gh:`376`)
+- Added ``skip-chanagelog`` label for Dependabot pull requests. (:gh:`395`)
+- Minor fix in the GitHub issue template and mentions user stories (:gh:`412`)
+- Change dependency group ``devel`` to ``dev`` to simplify calling :command:`uv`. (:gh:`413`)
+- Several dependency updates:
+
+  * `Update pydata-sphinx-theme requirement <https://github.com/openSUSE/docbuild/pull/373>`_
+  * `Update ipython requirement from >=9.14.0 to >=9.15.0 <https://github.com/openSUSE/docbuild/pull/374>`_
+  * `Update ruff requirement from >=0.15.20 to >=0.15.21 <https://github.com/openSUSE/docbuild/pull/375>`_
+  * `Update pytest requirement from >=9.0.3 to >=9.1.1 <https://github.com/openSUSE/docbuild/pull/377>`_
+  * `Update sphinxcontrib-mermaid requirement <https://github.com/openSUSE/docbuild/pull/379>`_
+  * `Bump astral-sh/ruff-action from 4.0.0 to 4.1.0 <https://github.com/openSUSE/docbuild/pull/380>`_
+  * `Bump github/codeql-action from 4.36.2 to 4.37.0 <https://github.com/openSUSE/docbuild/pull/381>`_
+  * `Update tomlkit requirement from >=0.15.0 to >=0.15.1 <https://github.com/openSUSE/docbuild/pull/387>`_
+  * `Bump actions/setup-python from 6 to 6.3.0 <https://github.com/openSUSE/docbuild/pull/388>`_
+  * `Update sphinxcontrib-mermaid requirement <https://github.com/openSUSE/docbuild/pull/389>`_
+  * `Update ruff requirement from >=0.15.21 to >=0.15.22 <https://github.com/openSUSE/docbuild/pull/390>`_
+  * `Update platformdirs requirement from >=4.10.0 to >=4.11.0 <https://github.com/openSUSE/docbuild/pull/391>`_
+  * `Update setuptools-scm requirement <https://github.com/openSUSE/docbuild/pull/392>`_
+  * `Bump github/codeql-action from 4.37.0 to 4.37.1 <https://github.com/openSUSE/docbuild/pull/393>`_
+  * `Bump softprops/action-gh-release from 3.0.1 to 3.0.2 <https://github.com/openSUSE/docbuild/pull/394>`_
+  * `Update sphinx-autodoc-typehints requirement <https://github.com/openSUSE/docbuild/pull/396>`_
+  * `Update semver requirement from >=3.0.0 to >=3.0.4 <https://github.com/openSUSE/docbuild/pull/397>`_
+  * `Update ruff requirement from >=0.15.22 to >=0.16.0 <https://github.com/openSUSE/docbuild/pull/404>`_
+  * `Bump astral-sh/setup-uv from 8.3.2 to 9.0.0 <https://github.com/openSUSE/docbuild/pull/405>`_
+  * `Bump actions/setup-python from 6.3.0 to 7.0.0 <https://github.com/openSUSE/docbuild/pull/406>`_
+  * `Bump github/codeql-action from 4.37.1 to 4.37.3 <https://github.com/openSUSE/docbuild/pull/407>`_
+
+
+Security
+--------
+
+- Updated setuptools to >=83 to resolve security vulnerability in :file:`pyproject.toml` and :file:`uv.lock`. (:gh:`403`)
+
+
 Version 0.21.0
 ==============
 
@@ -37,6 +99,7 @@ Improved Documentation
 - Added a short project description to the landing page. (:gh:`320`)
 - Differentiated shell commands from their output across all shell code-blocks. (:gh:`349`)
 - Described uv installation for (open)SUSE distros and link to uv docs for other operating systems. (:gh:`354`)
+* 
 
 
 Features
