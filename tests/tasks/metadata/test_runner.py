@@ -38,6 +38,7 @@ def runner_kwargs(tmp_path: Path) -> dict[str, Any]:
         "tmp_metadata_dir": tmp_path / "tmp" / "metadata",
         "repo_dir": tmp_path / "repos",
         "tmp_repo_dir": tmp_path / "tmp_repos",
+        "tmp_dir": tmp_path / "tmp",
         "meta_cache_dir": tmp_path / "cache" / "metadata",
         "json_cache_dir": tmp_path / "cache" / "json",
         "dapsmetatmpl": "daps-command-template",
@@ -60,12 +61,12 @@ def empty_xml_root() -> etree._ElementTree:
 class TestProcessDoctype:
     """Tests for process_doctype."""
 
-    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
     @patch.object(runner_pkg, "get_deliverable_from_doctype")
     async def test_success_with_deliverables(
         self,
         mock_get_deliverables: Mock,
-        mock_process_deliverable: AsyncMock,
+        mock_process_group: AsyncMock,
         empty_xml_root: etree._ElementTree,
         tmp_path: Path,
     ) -> None:
@@ -76,23 +77,26 @@ class TestProcessDoctype:
         d1 = SortableMock(
             spec=Deliverable,
             full_id="sles/15/en-us:DC-A",
-            git=Mock(spec=Repo, url="gh://SUSE/doc-test")
+            git=Mock(spec=Repo, url="gh://SUSE/doc-test"),
+            branch="main",
         )
         d2 = SortableMock(
             spec=Deliverable,
             full_id="sles/15/en-us:DC-B",
-            git=Mock(spec=Repo, url="gh://SUSE/doc-test")
+            git=Mock(spec=Repo, url="gh://SUSE/doc-test"),
+            branch="main",
         )
 
         # Feed them in reverse order to ensure sorting works without crashing
         mock_get_deliverables.return_value = [d2, d1]
-        mock_process_deliverable.return_value = (True, d1)
+        mock_process_group.return_value = []  # no failures
 
         result = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
             meta_cache_dir=tmp_path / "cache" / "metadata",
             dapsmetatmpl="daps-template",
             max_workers=8,
@@ -102,18 +106,19 @@ class TestProcessDoctype:
 
         assert result == []
         mock_get_deliverables.assert_called_once_with(empty_xml_root, doctype)
-        assert mock_process_deliverable.call_count == 2
+        # Both deliverables share the same (url, branch) → exactly one group call
+        assert mock_process_group.call_count == 1
 
-    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
     @patch.object(runner_pkg, "get_deliverable_from_doctype")
     async def test_no_deliverables_found(
         self,
         mock_get_deliverables: Mock,
-        mock_process_deliverable: AsyncMock,
+        mock_process_group: AsyncMock,
         empty_xml_root: etree._ElementTree,
         tmp_path: Path,
     ) -> None:
-        """When no deliverables are found, process_deliverable is never called."""
+        """When no deliverables are found, process_deliverable_group is never called."""
         doctype = Doctype.from_str("sles/15/en-us")
         mock_get_deliverables.return_value = []
 
@@ -122,6 +127,7 @@ class TestProcessDoctype:
             doctype=doctype,
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
             meta_cache_dir=tmp_path / "cache" / "metadata",
             dapsmetatmpl="daps-template",
             max_workers=8,
@@ -130,34 +136,84 @@ class TestProcessDoctype:
         )
 
         assert result == []
-        mock_process_deliverable.assert_not_called()
+        mock_process_group.assert_not_called()
 
-    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
     @patch.object(runner_pkg, "get_deliverable_from_doctype")
     @patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock)
-    async def test_exitfirst_stops_on_first_failure(
+    async def test_failures_are_collected_across_groups(
         self,
         mock_update_repositories: AsyncMock,
         mock_get_deliverables: Mock,
-        mock_process_deliverable: AsyncMock,
+        mock_process_group: AsyncMock,
         empty_xml_root: etree._ElementTree,
         tmp_path: Path,
     ) -> None:
-        """With exitfirst=True, only the first failing deliverable is reported."""
+        """Failures from all groups are collected and returned."""
         doctype = Doctype.from_str("sles/15/en-us")
-        d1 = SortableMock(spec=Deliverable, full_id="sles/15/en-us:DC-ONE")
-        d2 = SortableMock(spec=Deliverable, full_id="sles/15/en-us:DC-TWO")
+        d1 = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-ONE",
+            git=Mock(spec=Repo, url="u1"),
+            branch="b1",
+        )
+        d2 = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-TWO",
+            git=Mock(spec=Repo, url="u2"),
+            branch="b2",
+        )
         mock_get_deliverables.return_value = [d1, d2]
-
-        # In a real aiostream pipeline, breaking the loop cancels the rest.
-        # We test that `exitfirst=True` correctly breaks the stream and only returns `d1`.
-        mock_process_deliverable.side_effect = [(False, d1), (True, d2)]
+        # group for d1 fails, group for d2 succeeds
+        mock_process_group.side_effect = [[d1], []]
 
         failed = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
+            meta_cache_dir=tmp_path / "cache" / "metadata",
+            dapsmetatmpl="daps-template",
+            max_workers=8,
+        )
+
+        assert failed == [d1]
+
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "get_deliverable_from_doctype")
+    async def test_exitfirst_stops_after_first_failing_group(
+        self,
+        mock_get_deliverables: Mock,
+        mock_process_group: AsyncMock,
+        empty_xml_root: etree._ElementTree,
+        tmp_path: Path,
+    ) -> None:
+        """With exitfirst=True, only the first failing group is reported."""
+        doctype = Doctype.from_str("sles/15/en-us")
+        d1 = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-ONE",
+            git=Mock(spec=Repo, url="u1"),
+            branch="b1",
+        )
+        d2 = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-TWO",
+            git=Mock(spec=Repo, url="u2"),
+            branch="b2",
+        )
+        mock_get_deliverables.return_value = [d1, d2]
+
+        # In a real aiostream pipeline, breaking the loop cancels the rest.
+        mock_process_group.side_effect = [[d1], [d2]]
+
+        failed = await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
             meta_cache_dir=tmp_path / "cache" / "metadata",
             dapsmetatmpl="daps-template",
             max_workers=1,  # Force sequential to guarantee order in test
@@ -167,26 +223,32 @@ class TestProcessDoctype:
 
         assert failed == [d1]
 
-    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
     @patch.object(runner_pkg, "get_deliverable_from_doctype")
-    async def test_exception_in_process_deliverable_caught(
+    async def test_exception_in_group_caught(
         self,
         mock_get_deliverables: Mock,
-        mock_process_deliverable: AsyncMock,
+        mock_process_group: AsyncMock,
         empty_xml_root: etree._ElementTree,
         tmp_path: Path,
     ) -> None:
         """Exceptions in the pipeline wrapper are caught and treated as failures."""
         doctype = Doctype.from_str("sles/15/en-us")
-        mock_d = SortableMock(spec=Deliverable, full_id="test:DC-ERROR")
+        mock_d = SortableMock(
+            spec=Deliverable,
+            full_id="test:DC-ERROR",
+            git=Mock(spec=Repo, url="u1"),
+            branch="b1",
+        )
         mock_get_deliverables.return_value = [mock_d]
-        mock_process_deliverable.side_effect = RuntimeError("Simulated failure")
+        mock_process_group.side_effect = RuntimeError("Simulated failure")
 
         failed = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
             meta_cache_dir=tmp_path / "cache" / "metadata",
             dapsmetatmpl="daps-template",
             max_workers=8,
@@ -195,6 +257,48 @@ class TestProcessDoctype:
         )
 
         assert failed == [mock_d]
+
+    @patch.object(runner_pkg, "process_deliverable_group", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "get_deliverable_from_doctype")
+    async def test_deliverables_grouped_by_repo_and_branch(
+        self,
+        mock_get_deliverables: Mock,
+        mock_process_group: AsyncMock,
+        empty_xml_root: etree._ElementTree,
+        tmp_path: Path,
+    ) -> None:
+        """Deliverables sharing (repo, branch) are batched into a single group call."""
+        doctype = Doctype.from_str("sles/15/en-us")
+        shared_branch = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-A",
+            git=Mock(spec=Repo, url="u1"),
+            branch="b1",
+        )
+        other_branch = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-B",
+            git=Mock(spec=Repo, url="u1"),
+            branch="b2",
+        )
+        mock_get_deliverables.return_value = [shared_branch, shared_branch, other_branch]
+        mock_process_group.return_value = []
+
+        result = await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            tmp_dir=tmp_path / "tmp",
+            meta_cache_dir=tmp_path / "cache" / "metadata",
+            dapsmetatmpl="daps-template",
+            max_workers=4,
+            skip_repo_update=True,
+        )
+
+        assert result == []
+        # Two unique (url, branch) pairs → two group tasks
+        assert mock_process_group.call_count == 2
 
 
 # ---------------------------------------------------------------------------
@@ -244,6 +348,7 @@ class TestProcess:
             default_doctype,
             runner_kwargs["repo_dir"],
             runner_kwargs["tmp_repo_dir"],
+            runner_kwargs["tmp_dir"],
             runner_kwargs["meta_cache_dir"],
             runner_kwargs["dapsmetatmpl"],
             runner_kwargs["max_workers"],
@@ -309,6 +414,7 @@ class TestProcess:
             provided_doctype,
             runner_kwargs["repo_dir"],
             runner_kwargs["tmp_repo_dir"],
+            runner_kwargs["tmp_dir"],
             runner_kwargs["meta_cache_dir"],
             runner_kwargs["dapsmetatmpl"],
             runner_kwargs["max_workers"],

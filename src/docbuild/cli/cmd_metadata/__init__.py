@@ -66,6 +66,7 @@ def metadata(
     tmp_metadata_dir = Path(env.paths.tmp.tmp_metadata_dir)
     repo_dir = Path(env.paths.repo_dir)
     tmp_repo_dir = Path(env.paths.tmp_repo_dir)
+    tmp_dir = Path(env.paths.tmp.tmp_dir)
     meta_cache_dir = Path(env.paths.meta_cache_dir)
     json_cache_dir = Path(env.paths.json_cache_dir)
     dapsmetatmpl = str(env.build.daps.meta)
@@ -84,6 +85,7 @@ def metadata(
                     tmp_metadata_dir=tmp_metadata_dir,
                     repo_dir=repo_dir,
                     tmp_repo_dir=tmp_repo_dir,
+                    tmp_dir=tmp_dir,
                     meta_cache_dir=meta_cache_dir,
                     json_cache_dir=json_cache_dir,
                     dapsmetatmpl=dapsmetatmpl,

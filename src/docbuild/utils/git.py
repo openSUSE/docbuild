@@ -153,7 +153,6 @@ class ManagedGitRepo:
         target_dir: Path,
         branch: str,
         *,
-        is_local: bool = True,
         options: list[str] | None = None,
     ) -> None:
         """Create a temporary worktree from the bare repository."""
@@ -163,19 +162,44 @@ class ManagedGitRepo:
                 f"{self.bare_repo_path}"
             )
 
-        clone_args = ["clone"]
-        if is_local:
-            pass
-        clone_args.extend(["--branch", branch])
+        worktree_args = ["worktree", "add", "--detach", str(target_dir), branch]
         if options:
-            clone_args.extend(options)
-        clone_args.extend([str(self.bare_repo_path), str(target_dir)])
+            worktree_args.extend(options)
 
         self.result = await execute_git_command(
-            *clone_args,
-            cwd=target_dir.parent,
+            *worktree_args,
+            cwd=self.bare_repo_path,
             gitconfig=self._gitconfig,
         )
+
+    async def prune_worktrees(self: Self) -> None:
+        """Remove stale worktree metadata from the bare repository."""
+        if not self.bare_repo_path.exists():
+            return
+        try:
+            self.result = await execute_git_command(
+                "worktree", "prune",
+                cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig,
+            )
+        except RuntimeError as e:
+            log.warning("Failed to prune worktrees for '%s': %s", self.slug, e)
+
+    async def remove_worktree(self: Self, path: Path) -> None:
+        """Unregister and delete a worktree from the bare repository.
+
+        :param path: Path to the worktree directory to remove.
+        """
+        if not self.bare_repo_path.exists():
+            return
+        try:
+            self.result = await execute_git_command(
+                "worktree", "remove", "--force", str(path),
+                cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig,
+            )
+        except RuntimeError as e:
+            log.warning("Failed to remove worktree '%s': %s", path, e)
 
     async def fetch_updates(self: Self) -> bool:
         """Fetch updates for all branches from the remote.
