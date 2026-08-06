@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset id="v1" lifecycle="supported">
+  <version>1</version>
+  <resources>
+    <git remote="https://example.com/test/repo.git"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="test.1.prebuilt" type="prebuilt">
+        <prebuilt>
+          <title>Release Notes</title>
+          <url href="https://example.com/docs/release-notes.html" format="html"/>
+          <descriptions>
+            <desc lang="en-us">
+              <p>Prebuilt release notes.</p>
+            </desc>
+          </descriptions>
+        </prebuilt>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>
