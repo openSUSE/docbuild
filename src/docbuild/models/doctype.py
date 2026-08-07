@@ -125,14 +125,14 @@ class Doctype(BaseModel):
         """Implement str(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
-        return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
+        return f"{self.product.acronym}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self: Self) -> str:
         """Implement repr(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return (
-            f"{self.__class__.__name__}(product={self.product.value!r}, "
+            f"{self.__class__.__name__}(product={self.product.acronym!r}, "
             f"docset=[{docset_str}], "
             f"lifecycle={self.lifecycle.name!r}, "
             f"langs=[{langs_str}]"
@@ -244,7 +244,7 @@ class Doctype(BaseModel):
         # Example: /sles/15-SP6@supported/en-us,de-de
         product = "product"
         if self.product != Product.ALL:
-            product += f"[@id={self.product.value!r}]"
+            product += f"[@id={self.product.acronym!r}]"
 
         setids = [f"@path={d!r}" for d in self.docset if d != "*"]
 
@@ -277,8 +277,8 @@ class Doctype(BaseModel):
 
         Example: "product[@id='sles']" or "product"
         """
-        if self.product != Product["ALL"]:
-            return f"product[@id={self.product.value!r}]"
+        if self.product != Product.ALL:
+            return f"product[@id={self.product.acronym!r}]"
         return "product"
 
     def docset_xpath_segment(self: Self, docset: str) -> str:

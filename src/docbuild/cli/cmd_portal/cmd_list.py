@@ -8,11 +8,12 @@ from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.tree import Tree
 
-from docbuild.cli.context import DocBuildContext
-from docbuild.config.xml.list import list_all_deliverables
-from docbuild.models.deliverable import Deliverable
-from docbuild.models.doctype import Doctype
-from docbuild.tasks.portal import parse_portal_config
+from ...cli.context import DocBuildContext
+from ...config.xml.list import list_all_deliverables
+from ...models.deliverable import Deliverable
+from ...models.doctype import Doctype
+from ...models.product import Product
+from ...tasks.portal import parse_portal_config
 
 
 def build_hierarchy(
@@ -233,8 +234,8 @@ def validate_docsets_against_xml(
     errors = []
 
     for dt in doctypes:
-        if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
-            prod_val = dt.product.value
+        if dt.product and dt.product != Product.ALL and dt.docset and "*" not in dt.docset:
+            prod_val = dt.product.acronym
 
             # Use the class's own string parser to bypass strict __init__ type-checking issues
             broad_dt = Doctype.from_str(f"{prod_val}/*/*")
