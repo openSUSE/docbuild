@@ -1,0 +1,1 @@
+Added ``--validate`` flag to ``config list`` and disabled validation by default for easier debugging.

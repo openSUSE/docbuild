@@ -25,19 +25,32 @@ def print_section(title: str, data: dict[str, Any], prefix: str, flat: bool, col
 @click.option("--app", is_flag=True, help="Show only application configuration")
 @click.option("--env", is_flag=True, help="Show only environment configuration")
 @click.option("--flat", is_flag=True, help="Output in flat dotted format (git-style)")
+@click.option("--validate", is_flag=True, help="Validate configuration before listing")
 @click.pass_context
-def list_config(ctx: click.Context, app: bool, env: bool, flat: bool) -> None:
+def list_config(ctx: click.Context, app: bool, env: bool, flat: bool, validate: bool) -> None:
     """List the configuration as JSON or flat text."""
     context = ctx.obj
     # If no specific flags are provided, show everything
     show_all = not (app or env)
 
-    if (app or show_all) and context.appconfig:
-        # mode="json" handles IPv4Address, Path, and Enums automatically
-        app_data = context.appconfig.model_dump(mode="json")
-        print_section("Application Configuration", app_data, "app", flat, "cyan")
+    if app or show_all:
+        if context.appconfig:
+            app_data = context.appconfig.model_dump(mode="json")
+        elif context.raw_appconfig:
+            app_data = context.raw_appconfig
+        else:
+            app_data = {}
 
-    if (env or show_all) and context.envconfig:
-        # Handles serialization for environment settings
-        env_data = context.envconfig.model_dump(mode="json")
-        print_section("Environment Configuration", env_data, "env", flat, "yellow")
+        if app_data:
+            print_section("Application Configuration", app_data, "app", flat, "cyan")
+
+    if env or show_all:
+        if context.envconfig:
+            env_data = context.envconfig.model_dump(mode="json")
+        elif context.raw_envconfig:
+            env_data = context.raw_envconfig
+        else:
+            env_data = {}
+
+        if env_data:
+            print_section("Environment Configuration", env_data, "env", flat, "yellow")

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
@@ -27,6 +28,9 @@ class DocBuildContext:
     appconfig: AppConfig | None = None
     """The accumulated content of all app config files"""
 
+    raw_appconfig: dict[str, Any] | None = None
+    """The raw unvalidated application configuration dictionary"""
+
     envconfigfiles: tuple[str | Path, ...] | None = None
     """The env's config files to load, if any"""
 
@@ -35,6 +39,9 @@ class DocBuildContext:
 
     envconfig: EnvConfig | None = None
     """The accumulated content of all env config files"""
+
+    raw_envconfig: dict[str, Any] | None = None
+    """The raw unvalidated environment configuration dictionary"""
 
     doctypes: list[Doctype] | None = None
     """The doctypes to process, if any"""
