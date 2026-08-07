@@ -233,8 +233,8 @@ def validate_docsets_against_xml(
     errors = []
 
     for dt in doctypes:
-        if dt.product and "*" not in dt.product and dt.docset and "*" not in dt.docset:
-            prod_val = dt.product.value
+        if dt.product and dt.product != dt.product.ALL and dt.docset and "*" not in dt.docset:
+            prod_val = dt.product.acronym
 
             # Use the class's own string parser to bypass strict __init__ type-checking issues
             broad_dt = Doctype.from_str(f"{prod_val}/*/*")

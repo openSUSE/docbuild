@@ -202,7 +202,7 @@ def store_productdocset_json(
     :param json_cache_dir: Path to the JSON cache directory.
     """
     for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
-        product = doctype.product.value
+        product = doctype.product.acronym
         version_str = str(docset)
 
         productxpath = f"./{doctype.product_xpath_segment()}"
