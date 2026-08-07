@@ -35,7 +35,7 @@ Module Contents
       (AppConfig or EnvConfig).
    :param config_files: The list of config files that were attempted to be
       loaded, used for error context.
-   :param verbose: The verbosity level from the CLI options, which can be
+    :param verbose: The verbosity level from the CLI options, which can be
       used to control the level of detail in the error output.
    :param ctx: The Click context, used to exit the CLI with an appropriate
       status code after handling the error.

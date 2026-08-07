@@ -14,12 +14,26 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.config.load.build_config_candidates
    docbuild.config.load.load_single_config
    docbuild.config.load.handle_config
 
 
 Module Contents
 ---------------
+
+.. py:function:: build_config_candidates(user_path: pathlib.Path | str | None, search_dirs: collections.abc.Iterable[str | pathlib.Path], basenames: collections.abc.Iterable[str | pathlib.Path] | None, default_filename: str | pathlib.Path | None = None) -> tuple[pathlib.Path, Ellipsis]
+
+   Build an ordered list of candidate config files.
+
+   The list reflects the lookup order used by :func:`handle_config`.
+
+   :param user_path: Path to the user-defined config file, if any.
+   :param search_dirs: Iterable of directories to search for config files.
+   :param basenames: Iterable of base filenames to search for.
+   :param default_filename: Fallback filename if ``basenames`` is empty.
+   :return: Ordered tuple of candidate config paths.
+
 
 .. py:function:: load_single_config(configfile: str | pathlib.Path) -> dict[str, Any]
 
@@ -32,7 +46,7 @@ Module Contents
        or cannot be decoded.
 
 
-.. py:function:: handle_config(user_path: pathlib.Path | str | None, search_dirs: collections.abc.Iterable[str | pathlib.Path], basenames: collections.abc.Iterable[str] | None, default_filename: str | None = None, default_config: object | None = None) -> tuple[tuple[pathlib.Path, Ellipsis] | None, object | dict, bool]
+.. py:function:: handle_config(user_path: pathlib.Path | str | None, search_dirs: collections.abc.Iterable[str | pathlib.Path], basenames: collections.abc.Iterable[str | pathlib.Path] | None, default_filename: str | pathlib.Path | None = None, default_config: object | None = None) -> tuple[tuple[pathlib.Path, Ellipsis] | None, object | dict, bool]
 
    Return (config_files, config, from_defaults) for config file handling.
 

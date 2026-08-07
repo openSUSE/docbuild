@@ -1,3 +1,4 @@
+from lxml import etree  # type: ignore
 import pytest
 
 # from docbuild.constants import ALLOWED_LIFECYCLES
@@ -239,6 +240,123 @@ def test_hash_with_doctype():
     assert hash(dt1) == hash(dt2)
 
 
+def test_iter_returns_doctype_items():
+    doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+
+    items = list(doctype.iter_doctypes())
+
+    assert items
+    assert all(isinstance(item, Doctype) for item in items)
+    assert all(item.product == doctype.product for item in items)
+    assert all(item.lifecycle == doctype.lifecycle for item in items)
+    assert all(len(item.docset) == 1 for item in items)
+    assert all(len(item.langs) == 1 for item in items)
+
+
+def test_iter_is_docset_major_order():
+    doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+
+    result = [
+        f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes()
+    ]
+
+    assert result == [
+        "sles/15-SP6/de-de",
+        "sles/15-SP6/en-us",
+        "sles/15-SP7/de-de",
+        "sles/15-SP7/en-us",
+    ]
+
+
+def test_iter_wildcard_docset_expands_with_portal_root():
+        root = etree.fromstring(
+                """
+                <portal>
+                    <product id="sles">
+                        <docset path="15-SP6"><resources><locale lang="en-us"/></resources></docset>
+                        <docset path="16.0"><resources><locale lang="en-us"/></resources></docset>
+                    </product>
+                </portal>
+                """,
+        )
+
+        doctype = Doctype.from_str("sles/*/en-us")
+        result = [
+                f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+                for item in doctype.iter_doctypes(portal_root=root)
+        ]
+
+        assert result == [
+                "sles/15-SP6/en-us",
+                "sles/16.0/en-us",
+        ]
+
+
+def test_iter_wildcard_lang_expands_with_portal_root():
+        root = etree.fromstring(
+                """
+                <portal>
+                    <product id="sles">
+                        <docset path="15-SP6">
+                            <resources>
+                                <locale lang="de-de"/>
+                                <locale lang="en-us"/>
+                            </resources>
+                        </docset>
+                    </product>
+                </portal>
+                """,
+        )
+
+        doctype = Doctype.from_str("sles/15-SP6/*")
+        result = [
+                f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+                for item in doctype.iter_doctypes(portal_root=root)
+        ]
+
+        assert result == [
+                "sles/15-SP6/de-de",
+                "sles/15-SP6/en-us",
+        ]
+
+
+def test_iter_wildcard_remains_symbolic_without_portal_root():
+        doctype = Doctype.from_str("sles/*/en-us")
+        result = [
+                f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+                for item in doctype.iter_doctypes()
+        ]
+
+        assert result == ["sles/*/en-us"]
+
+
+def test_iter_wildcard_product_expands_with_portal_root():
+    root = etree.fromstring(
+        """
+        <portal>
+            <product id="sles">
+            <docset path="15-SP6"><resources><locale lang="en-us"/></resources></docset>
+            </product>
+            <product id="smart">
+            <docset path="2.0"><resources><locale lang="en-us"/></resources></docset>
+            </product>
+        </portal>
+        """,
+    )
+
+    doctype = Doctype.from_str("*/*/en-us")
+    result = [
+        f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes(portal_root=root)
+    ]
+
+    assert result == [
+        "sles/15-SP6/en-us",
+        "smart/2.0/en-us",
+    ]
+
+
 def test_coerce_lifecycle_to_doctype():
     dt1 = Doctype(
         product="sles",
@@ -347,8 +465,20 @@ def test_product_xpath_segment():
     assert dt_all.product_xpath_segment() == "product"
 
 
+def test_product_xpath_segment_specific_product():
+    """Test product_xpath_segment for a concrete product."""
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    assert dt.product_xpath_segment() == "product[@id='sles']"
+
+
 def test_docset_xpath_segment():
     """Test the docset_xpath_segment method."""
     # Test with all docsets (*)
     dt_all = Doctype.from_str("sles/*/en-us")
     assert dt_all.docset_xpath_segment("*") == "docset"
+
+
+def test_docset_xpath_segment_specific_docset():
+    """Test docset_xpath_segment for a concrete docset."""
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    assert dt.docset_xpath_segment("15-SP6") == "docset[@path='15-SP6']"
