@@ -1,9 +1,12 @@
 """Module for defining the Doctype model."""
 
+from collections.abc import Iterator
+from itertools import product
 import re
 from re import Pattern
-from typing import ClassVar, Self
+from typing import ClassVar, Self, cast
 
+from lxml import etree  # type: ignore
 from pydantic import BaseModel, Field, field_validator
 
 from .language import LanguageCode
@@ -151,7 +154,7 @@ class Doctype(BaseModel):
 
         return all(
             [
-                self.product == other.product or self.product == Product.ALL,
+                self.product == other.product or self.product is Product.ALL,
                 set(other.docset).issubset(self.docset) or "*" in self.docset,
                 other.lifecycle in self.lifecycle,
                 set(other.langs).issubset(self.langs) or "*" in self.langs,
@@ -167,6 +170,95 @@ class Doctype(BaseModel):
                 tuple(self.langs),
             ),
         )
+
+    def iter_doctypes(self: Self,
+                      portal_root: etree._Element | None = None) -> Iterator["Doctype"]:
+        """Iterate over all docset and language combinations.
+
+        The iteration order is docset-major: for each docset, iterate all
+        languages. This is the Cartesian product of ``docset`` and ``langs``.
+
+        If ``portal_root`` is given, wildcard values (``*``) are expanded from
+        the parsed portal XML tree. Without ``portal_root``, wildcards remain
+        symbolic.
+
+        >>> doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+        >>> [
+        ...     f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+        ...     for item in doctype.iter_doctypes()
+        ... ]
+        ['sles/15-SP6/de-de', 'sles/15-SP6/en-us', 'sles/15-SP7/de-de', 'sles/15-SP7/en-us']
+        """
+        has_product_wildcard = self.product is Product.ALL
+        has_docset_wildcard = "*" in self.docset
+        has_lang_wildcard = any(lang.language == "*" for lang in self.langs)
+
+        product_values = [self.product]
+        if portal_root is not None and has_product_wildcard:
+            product_values = [
+                self.coerce_product(product_id)
+                for product_id in sorted(
+                    {
+                        product_id
+                        for product_id in portal_root.xpath("product/@id")
+                        if product_id
+                    },
+                )
+            ]
+
+        combinations: set[tuple[Product, str, LanguageCode]] = set()
+
+        for product_value in product_values:
+            docsets = self.docset
+            if portal_root is not None and has_docset_wildcard:
+                docsets = sorted(
+                    {
+                        cast(str, docset)
+                        for docset in portal_root.xpath(
+                            f"product[@id={product_value.acronym!r}]/docset/@path",
+                        )
+                        if docset
+                    },
+                )
+
+            docset_lang_pairs = {
+                (docset, lang) for docset, lang in product(docsets, self.langs)
+            }
+            if portal_root is not None and has_lang_wildcard:
+                docset_lang_pairs: set[tuple[str, LanguageCode]] = {
+                    (docset, LanguageCode(language=lang))
+                    for docset in docsets
+                    for lang in sorted(
+                        {
+                            cast(str, lang)
+                            for lang in portal_root.xpath(
+                                (
+                                    f"product[@id={product_value.acronym!r}]"
+                                    f"/docset[@path={docset!r}]"
+                                    "/resources/locale/@lang"
+                                ),
+                            )
+                            if lang
+                        },
+                    )
+                }
+
+            combinations.update(
+                (product_value, docset, lang)
+                for docset, lang in docset_lang_pairs
+            )
+
+        for product_value, docset, lang in sorted(
+            combinations,
+            key=lambda item: (item[0].acronym, item[1], item[2].language),
+        ):
+            yield self.model_copy(
+                update={
+                    "product": product_value,
+                    "docset": [docset],
+                    "langs": [lang],
+                },
+            )
 
     # Validators
     @field_validator("product", mode="before")
@@ -222,7 +314,7 @@ class Doctype(BaseModel):
         lifecycle = "unknown" if lifecycle is None else lifecycle
         langs = default_lang if langs is None else langs
         return cls(
-            product=product,
+            product=cls.coerce_product(product),
             docset=docset,
             lifecycle=lifecycle,
             langs=langs,
@@ -245,7 +337,9 @@ class Doctype(BaseModel):
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
-        product = f"//{self.product_xpath_segment()}" if absolute else self.product_xpath_segment()
+        product = "product"
+        if self.product is not Product.ALL:
+            product += f"[@id={self.product.acronym!r}]"
 
         docset = self.docset_xpath_segment()
         docset += self.lifecycle_xpath_segment()
@@ -257,7 +351,7 @@ class Doctype(BaseModel):
 
         Example: "product[@id='sles']" or "product"
         """
-        if self.product != Product.ALL:
+        if self.product is not Product.ALL:
             return f"product[@id={self.product.acronym!r}]"
         return "product"
 

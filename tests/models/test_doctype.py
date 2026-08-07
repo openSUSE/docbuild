@@ -1,3 +1,4 @@
+from lxml import etree  # type: ignore
 import pytest
 
 # from docbuild.constants import ALLOWED_LIFECYCLES
@@ -239,12 +240,66 @@ def test_hash_with_doctype():
     assert hash(dt1) == hash(dt2)
 
 
+def test_iter_returns_doctype_items():
+    doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+
+    items = list(doctype.iter_doctypes())
+
+    assert items
+    assert all(isinstance(item, Doctype) for item in items)
+    assert all(item.product == doctype.product for item in items)
+    assert all(item.lifecycle == doctype.lifecycle for item in items)
+    assert all(len(item.docset) == 1 for item in items)
+    assert all(len(item.langs) == 1 for item in items)
+
+
+def test_iter_is_docset_major_order():
+    doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+
+    result = [
+        f"{item.product.acronym}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes()
+    ]
+
+    assert result == [
+        "sles/15-SP6/de-de",
+        "sles/15-SP6/en-us",
+        "sles/15-SP7/de-de",
+        "sles/15-SP7/en-us",
+    ]
+
+
+def test_iter_wildcard_docset_expands_with_portal_root():
+    root = etree.fromstring(
+        """
+        <portal>
+           <product id="sles">
+              <docset path="15-SP6"><resources><locale lang="en-us"/><locale lang="de-de"/></resources></docset>
+              <docset path="16.0"><resources><locale lang="en-us"/></resources></docset>
+           </product>
+        </portal>
+        """,
+    )
+
+    doctype = Doctype.from_str("sles/*/*")
+    result = [
+        f"{item.product.acronym}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes(portal_root=root)
+    ]
+
+    assert result == [
+        "sles/15-SP6/de-de",
+        "sles/15-SP6/en-us",
+        "sles/16.0/en-us",
+    ]
+
+
 def test_coerce_lifecycle_to_doctype():
     dt1 = Doctype(
         product="sles",
-        docset="15-SP5",
+        docset=["15-SP5"],
         lifecycle=LifecycleFlag.supported,
-        langs="en-us",
+        langs=["en-us"],
     )
     assert dt1.lifecycle == LifecycleFlag.supported
 
@@ -263,12 +318,48 @@ def test_sorted_langs_in_doctype():
     ]
 
 
+def test_iter_wildcard_remains_symbolic_without_portal_root():
+    doctype = Doctype.from_str("sles/*/en-us")
+    result = [
+        f"{item.product.acronym}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes()
+    ]
+
+    assert result == ["sles/*/en-us"]
+
+
+def test_iter_wildcard_product_expands_with_portal_root():
+    root = etree.fromstring(
+        """
+        <portal>
+            <product id="sles">
+            <docset path="15-SP6"><resources><locale lang="en-us"/></resources></docset>
+            </product>
+            <product id="smart">
+            <docset path="2.0"><resources><locale lang="en-us"/></resources></docset>
+            </product>
+        </portal>
+        """,
+    )
+
+    doctype = Doctype.from_str("*/*/en-us")
+    result = [
+        f"{item.product.acronym}/{item.docset[0]}/{item.langs[0].language}"
+        for item in doctype.iter_doctypes(portal_root=root)
+    ]
+
+    assert result == [
+        "sles/15-SP6/en-us",
+        "smart/2.0/en-us",
+    ]
+
+
 def test_sorted_docsets_in_doctype_instantiation():
     dt1 = Doctype(
         product="sles",
         docset=["16-SP0", "15-SP7"],
         lifecycle=LifecycleFlag.supported,
-        langs="en-us",
+        langs=["en-us"],
     )
     assert dt1.docset == ["15-SP7", "16-SP0"]
 
@@ -358,6 +449,10 @@ def test_product_xpath_segment():
     # Test with all products (*)
     dt_all = Doctype.from_str("*/15-SP6/en-us")
     assert dt_all.product_xpath_segment() == "product"
+
+    # Test with a specific product
+    dt_specific = Doctype.from_str("sles/15-SP6/en-us")
+    assert dt_specific.product_xpath_segment() == "product[@id='sles']"
 
 
 @pytest.mark.parametrize(
