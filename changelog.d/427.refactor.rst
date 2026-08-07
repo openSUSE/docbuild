@@ -1,0 +1,1 @@
+Refactor :class:`~docbuild.models.product.Product` to use `acronym` as the primary identifier instead of `value`. Switch from a dynamic class to a static enum class due to problems with dynamic class generation and type-checking. This change improves type safety and simplifies the codebase.

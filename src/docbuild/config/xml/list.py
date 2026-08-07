@@ -28,8 +28,8 @@ def list_all_deliverables(
             # Using flexible relative descendant selectors ensures compatibility
             # with both nested test fixtures and the absolute portal configuration schema.
             xpath = "//product"
-            if dt.product and "*" not in dt.product:
-                xpath += f"[@id={dt.product.value!r}]"
+            if dt.product and dt.product != dt.product.ALL:
+                xpath += f"[@id={dt.product.acronym!r}]"
 
             xpath += "/docset"
             # Protect against empty lists causing malformed [] XPath segments

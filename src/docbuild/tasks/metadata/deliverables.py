@@ -51,7 +51,7 @@ def collect_files_flat(
         # Case-insensitive filtering
         files = [
             f for f in all_files
-            if dt.product.value.lower() in [p.lower() for p in f.parts]
+            if dt.product.acronym.lower() in [p.lower() for p in f.parts]
             and docset.lower() in [p.lower() for p in f.parts]
         ]
 

@@ -44,57 +44,6 @@ ALLOWED_LIFECYCLES: tuple[str, ...] = tuple(lc.name for lc in LifecycleFlag)
 """The available lifecycle states for a docset (without 'unknown')."""
 
 
-# All product acronyms and their names
-# - key: /product/@productid
-# - value: /product/name
-#
-# Use the following command to create the output below:
-# xmlstarlet sel -t -v '/product/@productid' -o ' '\
-#   -v '/product/name' -nl config.d/[a-z]*.xml
-VALID_PRODUCTS: dict[str, str] = {
-    key.strip(): value.strip()
-    for key, value in (
-        line.split(" ", 1)
-        # Syntax: acronym <SPACE> full name:
-        for line in """appliance Appliance building
-cloudnative Cloud Native
-compliance Compliance Documentation
-container Container Documentation
-liberty SUSE Multi-Linux Support
-releasenotes SUSE Release Notes
-sbp SUSE Best Practices
-ses SUSE Enterprise Storage
-sled SUSE Linux Enterprise Desktop
-sle-ha SUSE Linux Enterprise High Availability
-sle-hpc SUSE Linux Enterprise High-Performance Computing
-sle-micro SUSE Linux Micro
-sle-public-cloud SUSE Linux Enterprise in Public Clouds
-sle-rt SUSE Linux Enterprise Real Time
-sles-sap SUSE Linux Enterprise Server for SAP applications
-sles SUSE Linux Enterprise Server
-sle-vmdp SUSE Linux Enterprise Virtual Machine Driver Pack
-smart SUSE Smart Docs
-smt SUSE Linux Enterprise Subscription Management Tool
-soc SUSE OpenStack Cloud
-style SUSE Documentation Style Guide
-subscription Subscription Management
-suma-retail SUSE Multi-Linux Manager for Retail
-suma SUSE Multi-Linux Manager
-suse-ai-factory SUSE AI Factory
-suse-ai SUSE AI
-suse-caasp SUSE CaaS Platform
-suse-cap SUSE Cloud Application Platform
-suse-distribution-migration-system SUSE Distribution Migration System
-suse-edge SUSE Edge
-suse-telco SUSE Telco Cloud
-trd Technical Reference Documentation""".strip().splitlines()
-    )
-}
-"""A dictionary of valid products acronyms and their full names."""
-
-ALLOWED_PRODUCTS: tuple[str, ...]= tuple([item for item in VALID_PRODUCTS])
-"""A tuple of valid product acronyms."""
-
 SINGLE_LANG_REGEX: re.Pattern = re.compile(r"[a-z]{2}-[a-z]{2}")
 """Regex for a single language code in the format 'xx-XX' (e.g., 'en-us')."""
 
