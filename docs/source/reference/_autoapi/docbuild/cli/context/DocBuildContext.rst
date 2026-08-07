@@ -33,6 +33,15 @@ docbuild.cli.context.DocBuildContext
 
 
 
+   .. py:attribute:: appconfig_candidates
+      :type:  tuple[str | pathlib.Path, Ellipsis]
+      :value: ()
+
+
+      Candidate app config files considered during discovery.
+
+
+
    .. py:attribute:: appconfig_from_defaults
       :type:  bool
       :value: False
@@ -57,6 +66,15 @@ docbuild.cli.context.DocBuildContext
 
 
       The env's config files to load, if any
+
+
+
+   .. py:attribute:: envconfig_candidates
+      :type:  tuple[str | pathlib.Path, Ellipsis]
+      :value: ()
+
+
+      Candidate env config files considered during discovery.
 
 
 

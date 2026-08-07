@@ -1,0 +1,1 @@
+Add :meth:`~docbuild.models.doctype.Doctype.iter_doctypes` to iterate over all docset and language combinations. This is the Cartesian product of ``docset`` and ``langs``.
