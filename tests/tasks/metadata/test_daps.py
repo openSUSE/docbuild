@@ -1,5 +1,6 @@
 """Unit tests for docbuild.tasks.metadata.daps."""
 
+import asyncio
 from collections.abc import Iterator
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
@@ -204,6 +205,7 @@ class TestProcessDeliverable:
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.clone_bare.return_value = clone_returns
         mock_repo_instance.create_worktree.return_value = None
+        mock_repo_instance.prune_worktrees.return_value = None
 
         mock_daps_proc = AsyncMock()
         mock_daps_proc.communicate.return_value = (b"", b"")
@@ -291,6 +293,7 @@ class TestProcessDeliverable:
         mock_repo_instance = AsyncMock()
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.create_worktree.return_value = None
+        mock_repo_instance.prune_worktrees.return_value = None
 
         mock_daps_proc = AsyncMock()
         mock_daps_proc.communicate.return_value = (b"", b"")
@@ -299,7 +302,6 @@ class TestProcessDeliverable:
 
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
-        # Using explicit paths instead of mock_context!
         success, res_deliverable = await process_deliverable(
             deliverable=deliverable,
             repo_dir=setup_paths["repo_dir"],
@@ -313,4 +315,117 @@ class TestProcessDeliverable:
         assert res_deliverable is deliverable
         mock_repo_instance.clone_bare.assert_not_awaited()
         mock_repo_instance.create_worktree.assert_awaited_once()
+        mock_repo_instance.prune_worktrees.assert_awaited_once()
         mock_update_metadata_json.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# process_deliverable_group tests
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+class TestProcessDeliverableGroup:
+    """Tests for process_deliverable_group."""
+
+    @pytest.fixture
+    def paths(self, tmp_path: Path) -> dict:
+        """Create directories needed by process_deliverable_group."""
+        p = {
+            "repo_dir": tmp_path / "repos",
+            "tmp_repo_dir": tmp_path / "tmp_repos",
+            "meta_cache_dir": tmp_path / "cache" / "metadata",
+        }
+        for d in p.values():
+            d.mkdir(parents=True, exist_ok=True)
+        return p
+
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_group_creates_one_worktree_for_all_members(
+        self,
+        mock_managed_git_repo: Mock,
+        deliverable: Deliverable,
+        paths: dict,
+    ):
+        """All deliverables in a group share a single worktree."""
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.clone_bare.return_value = True
+        mock_repo_instance.create_worktree.return_value = None
+        mock_repo_instance.prune_worktrees.return_value = None
+
+        (paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        semaphore = asyncio.Semaphore(4)
+
+        with patch.object(daps_pkg, "_run_daps_for_deliverable", new_callable=AsyncMock) as mock_run:
+            mock_run.return_value = (True, deliverable)
+            from docbuild.tasks.metadata.daps import process_deliverable_group
+            failed = await process_deliverable_group(
+                deliverables=[deliverable, deliverable],
+                repo_dir=paths["repo_dir"],
+                tmp_repo_dir=paths["tmp_repo_dir"],
+                meta_cache_dir=paths["meta_cache_dir"],
+                dapstmpl="daps --dc-file={dcfile} --output={output}",
+                semaphore=semaphore,
+                skip_repo_update=False,
+            )
+
+        assert failed == []
+        mock_repo_instance.create_worktree.assert_awaited_once()
+        assert mock_run.call_count == 2
+
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_group_returns_failed_deliverables(
+        self,
+        mock_managed_git_repo: Mock,
+        deliverable: Deliverable,
+        paths: dict,
+    ):
+        """Deliverables whose daps run fails are included in the returned list."""
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.clone_bare.return_value = True
+        mock_repo_instance.create_worktree.return_value = None
+        mock_repo_instance.prune_worktrees.return_value = None
+
+        (paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        semaphore = asyncio.Semaphore(4)
+
+        with patch.object(daps_pkg, "_run_daps_for_deliverable", new_callable=AsyncMock) as mock_run:
+            mock_run.return_value = (False, deliverable)
+            from docbuild.tasks.metadata.daps import process_deliverable_group
+            failed = await process_deliverable_group(
+                deliverables=[deliverable],
+                repo_dir=paths["repo_dir"],
+                tmp_repo_dir=paths["tmp_repo_dir"],
+                meta_cache_dir=paths["meta_cache_dir"],
+                dapstmpl="daps --dc-file={dcfile} --output={output}",
+                semaphore=semaphore,
+            )
+
+        assert failed == [deliverable]
+
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_group_missing_bare_repo_fails_all(
+        self,
+        mock_managed_git_repo: Mock,
+        deliverable: Deliverable,
+        paths: dict,
+    ):
+        """All deliverables are returned as failed when the bare repo is absent."""
+        mock_managed_git_repo.return_value = AsyncMock()
+        semaphore = asyncio.Semaphore(4)
+        # bare repo directory is NOT created
+
+        from docbuild.tasks.metadata.daps import process_deliverable_group
+        failed = await process_deliverable_group(
+            deliverables=[deliverable, deliverable],
+            repo_dir=paths["repo_dir"],
+            tmp_repo_dir=paths["tmp_repo_dir"],
+            meta_cache_dir=paths["meta_cache_dir"],
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            semaphore=semaphore,
+        )
+
+        assert len(failed) == 2

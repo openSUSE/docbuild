@@ -13,7 +13,7 @@ from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.tasks.portal import parse_portal_config
 
-from .daps import process_deliverable
+from .daps import process_deliverable_group
 from .deliverables import get_deliverable_from_doctype
 from .manifest import store_productdocset_json
 from .repos import update_repositories
@@ -137,28 +137,32 @@ async def process_doctype(
     worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
     semaphore = asyncio.Semaphore(worker_limit)
 
-    async def process_deliverable_limited(
-        deliverable: Deliverable,
-    ) -> tuple[bool, Deliverable]:
-        async with semaphore:
-            return await process_deliverable(
-                deliverable,
-                repo_dir,
-                tmp_repo_dir,
-                meta_cache_dir,
-                dapstmpl=dapsmetatmpl,
+    # Group by (repo URL, branch) so each unique checkout is shared
+    groups: dict[tuple[str, str], list[Deliverable]] = {}
+    for d in deliverables:
+        groups.setdefault((d.git.url, d.branch), []).append(d)
+
+    log.info("Processing %d deliverables across %d worktree group(s).", len(deliverables), len(groups))
+
+    group_tasks = [
+        asyncio.create_task(
+            process_deliverable_group(
+                group, repo_dir, tmp_repo_dir, meta_cache_dir,
+                dapsmetatmpl, semaphore,
                 skip_repo_update=skip_repo_update,
             )
-
-    tasks = [
-        asyncio.create_task(
-            process_deliverable_limited(d),
-            name=f"process_deliverable_{d.full_id}",
         )
-        for d in deliverables
+        for group in groups.values()
     ]
+    results = await asyncio.gather(*group_tasks, return_exceptions=True)
 
-    return await run_metadata_tasks(tasks, deliverables, exitfirst)
+    failed: list[Deliverable] = []
+    for result in results:
+        if isinstance(result, list):
+            failed.extend(result)
+        elif isinstance(result, Exception):
+            log.error("Group task failed unexpectedly: %s", result)
+    return failed
 
 
 async def process(

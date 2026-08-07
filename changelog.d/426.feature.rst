@@ -1,0 +1,5 @@
+Optimise :command:`docbuild metadata` by grouping deliverables that share
+the same repository and branch into a single shared ``git worktree``.
+This reduces the number of worktree checkout operations from one per
+deliverable to one per unique ``(repository, branch)`` pair, significantly
+reducing overhead when many DC files live on the same branch.
