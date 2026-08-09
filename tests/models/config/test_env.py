@@ -7,84 +7,11 @@ from typing import Any
 from pydantic import ValidationError
 import pytest
 
-import docbuild.config.app as config_app_mod
+import docbuild.models.config.env as env_mod
 from docbuild.models.config.env import EnvConfig
 from docbuild.models.path import EnsureWritableDirectory
 
 # --- Fixture Setup ---
-
-
-def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any]:
-    """Mock the placeholder resolver to return a clean, resolved dictionary."""
-    resolved_data = data.copy()
-
-    # Define resolved paths based on the EnvConfig structure
-    tmp_general = "/var/tmp/docbuild/doc-example-com"
-
-    resolved_data["paths"]["config_dir"] = "/etc/docbuild/config.d"
-    resolved_data["paths"]["root_config_dir"] = "/etc/docbuild"
-    resolved_data["paths"]["main_portal_config"] = "/etc/docbuild/config.d/portal.xml"
-    resolved_data["paths"]["portal_rncschema"] = "/etc/docbuild/portal-config.rnc"
-    resolved_data["paths"]["jinja_dir"] = "/etc/docbuild/jinja-doc-suse-com"
-    resolved_data["paths"]["server_rootfiles_dir"] = (
-        "/etc/docbuild/server-root-files-doc-suse-com"
-    )
-    resolved_data["paths"]["repo_dir"] = "/var/cache/docbuild/repos/permanent-full/"
-    resolved_data["paths"]["tmp_repo_dir"] = (
-        "/var/cache/docbuild/repos/temporary-branches/"
-    )
-    resolved_data["paths"]["base_cache_dir"] = "/var/cache/docserv"
-    resolved_data["paths"]["base_server_cache_dir"] = (
-        "/var/cache/docserv/doc-example-com"
-    )
-    resolved_data["paths"]["meta_cache_dir"] = (
-        "/var/cache/docbuild/doc-example-com/meta"
-    )
-    resolved_data["paths"]["json_cache_dir"] = (
-        "/var/cache/docbuild/doc-example-com/json"
-    )
-    # runtime_base_dir and lock_dir are already concrete paths in the raw test data used by this test.
-    resolved_data["paths"]["tmp"]["tmp_base_dir"] = "/var/tmp/docbuild"
-    resolved_data["paths"]["tmp"]["tmp_dir"] = tmp_general
-    resolved_data["paths"]["tmp"]["tmp_deliverable_dir"] = tmp_general + "/deliverable"
-    resolved_data["paths"]["tmp"]["tmp_metadata_dir"] = tmp_general + "/metadata"
-
-    # Split build_dir: base is provided, dyn is optional (tested via default)
-    resolved_data["paths"]["tmp"]["tmp_build_base_dir"] = tmp_general + "/build"
-
-    resolved_data["paths"]["tmp"]["tmp_out_dir"] = tmp_general + "/out"
-    resolved_data["paths"]["tmp"]["log_dir"] = tmp_general + "/log"
-
-    # Renamed to match the updated model and use standard placeholder
-    resolved_data["paths"]["tmp"]["tmp_deliverable_name_dyn"] = (
-        "{{product}}_{{docset}}_{{lang}}_XXXXXX"
-    )
-
-    # Split target_dir and use placeholder requested by reviewer
-    resolved_data["paths"]["target"]["target_base_dir"] = "doc@10.100.100.100:/srv/docs"
-    resolved_data["paths"]["target"]["target_dir_dyn"] = "{{product}}"
-    resolved_data["paths"]["target"]["backup_dir"] = Path(
-        "/data/docbuild/external-builds/"
-    )
-
-    # Ensure mandatory top-level fields (like 'build') are present
-    resolved_data.setdefault(
-        "build",
-        {
-            "daps": {"command": "daps", "meta": "daps meta"},
-            "container": {"container": "none"},
-        },
-    )
-
-    return resolved_data
-
-
-@pytest.fixture(autouse=True)
-def mock_placeholder_resolution(monkeypatch):
-    """Mock the replace_placeholders utility used inside EnvConfig."""
-    monkeypatch.setattr(
-        config_app_mod, "replace_placeholders", _mock_successful_placeholder_resolver
-    )
 
 
 @pytest.fixture
@@ -205,7 +132,7 @@ def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
-    monkeypatch.setattr(config_app_mod, "replace_placeholders", lambda data: data)
+    monkeypatch.setattr(env_mod, "replace_placeholders", lambda data: data)
 
     paths_to_create = [
         tmp_path,
@@ -300,7 +227,7 @@ def test_envconfig_unresolved_placeholder_fails(
     def mock_raise(*args, **kwargs):
         raise PlaceholderResolutionError("Unresolved placeholder")
 
-    monkeypatch.setattr(config_app_mod, "replace_placeholders", mock_raise)
+    monkeypatch.setattr(env_mod, "replace_placeholders", mock_raise)
 
     data = mock_valid_raw_env_data.copy()
     # Introduce an unresolvable placeholder
@@ -325,7 +252,7 @@ def test_env_config_invalid_placeholder_syntax(monkeypatch):
     def mock_raise(*args, **kwargs):
         raise PlaceholderSyntaxError("Malformed placeholder syntax")
 
-    monkeypatch.setattr(config_app_mod, "replace_placeholders", mock_raise)
+    monkeypatch.setattr(env_mod, "replace_placeholders", mock_raise)
 
     invalid_data = {
         "server": {"name": "test", "role": "production", "host": "127.0.0.1", "enable_mail": False},

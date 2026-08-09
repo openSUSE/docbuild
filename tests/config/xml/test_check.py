@@ -636,104 +636,84 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
     assert docset_id(locale) == expected_docset_id
 
 
-def test_check_dc_in_language_multiple_failures():
-    node = etree.fromstring(
-        """
-        <root>
-            <docset id="1">
-                <resources>
-                    <locale lang="en-us"><deliverable><dc file="A"/></deliverable><deliverable><dc file="A"/></deliverable></locale>
-                    <locale lang="de-de"><deliverable><dc file="B"/></deliverable><deliverable><dc file="B"/></deliverable></locale>
-                </resources>
-            </docset>
-        </root>
-        """
-    )
-    results = collect_check_results(check_dc_in_language(node))
-    assert len(results) > 0
-
-
-def test_check_duplicated_format_in_extralinks_multiple_failures():
-    node = etree.fromstring(
-        """
-        <portal>
-            <docset id="ds1">
-                <external>
-                    <link>
-                        <url lang="en" format="html"/>
-                        <url lang="en" format="html"/>
-                        <url lang="de" format="pdf"/>
-                        <url lang="de" format="pdf"/>
-                    </link>
-                </external>
-            </docset>
-        </portal>
-        """
-    )
-    results = collect_check_results(check_duplicated_format_in_extralinks(node))
-    assert len(results) > 0
-
-
-def test_check_duplicated_url_in_extralinks_multiple_failures():
-    node = etree.fromstring(
-        """
-        <portal>
-           <docset id="ds1">
-               <external>
-                <link>
-                    <url lang="en" href="url1"/>
-                    <url lang="en" href="url1"/>
-                    <url lang="de" href="url2"/>
-                    <url lang="de" href="url2"/>
-                </link>
-               </external>
-           </docset>
-        </portal>
-        """
-    )
-    results = collect_check_results(check_duplicated_url_in_extralinks(node))
-    assert len(results) > 0
-
-
-def test_check_enabled_format_multiple_failures():
-    node = etree.fromstring(
-        """
-        <docset id="ds1">
-            <deliverable id="d1">
-              <format html="0" pdf="0" single-html="0" epub="0"/>
-            </deliverable>
-            <deliverable id="d2">
-              <format html="0" pdf="0" single-html="0" epub="0"/>
-            </deliverable>
-        </docset>
-        """
-    )
-    results = collect_check_results(check_enabled_format(node))
-    assert len(results) > 0
-
-
-def test_check_format_subdeliverable_multiple_failures():
-    node = etree.fromstring(
-        """
-        <docset id="ds1">
-            <deliverable id="d1">
-                <format pdf="1"/>
-                <subdeliverable>s1</subdeliverable>
-            </deliverable>
-            <deliverable id="d2">
-                <format epub="1"/>
-                <subdeliverable>s2</subdeliverable>
-            </deliverable>
-        </docset>
-        """
-    )
-    results = collect_check_results(check_format_subdeliverable(node))
-    assert len(results) > 0
-
-
 @pytest.mark.parametrize(
     "check_func,node_xml",
     [
+        (
+            check_dc_in_language,
+            """
+            <root>
+                <docset id="1">
+                    <resources>
+                        <locale lang="en-us"><deliverable><dc file="A"/></deliverable><deliverable><dc file="A"/></deliverable></locale>
+                        <locale lang="de-de"><deliverable><dc file="B"/></deliverable><deliverable><dc file="B"/></deliverable></locale>
+                    </resources>
+                </docset>
+            </root>
+            """,
+        ),
+        (
+            check_duplicated_format_in_extralinks,
+            """
+            <portal>
+                <docset id="ds1">
+                    <external>
+                        <link>
+                            <url lang="en" format="html"/>
+                            <url lang="en" format="html"/>
+                            <url lang="de" format="pdf"/>
+                            <url lang="de" format="pdf"/>
+                        </link>
+                    </external>
+                </docset>
+            </portal>
+            """,
+        ),
+        (
+            check_duplicated_url_in_extralinks,
+            """
+            <portal>
+               <docset id="ds1">
+                   <external>
+                    <link>
+                        <url lang="en" href="url1"/>
+                        <url lang="en" href="url1"/>
+                        <url lang="de" href="url2"/>
+                        <url lang="de" href="url2"/>
+                    </link>
+                   </external>
+               </docset>
+            </portal>
+            """,
+        ),
+        (
+            check_enabled_format,
+            """
+            <docset id="ds1">
+                <deliverable id="d1">
+                  <format html="0" pdf="0" single-html="0" epub="0"/>
+                </deliverable>
+                <deliverable id="d2">
+                  <format html="0" pdf="0" single-html="0" epub="0"/>
+                </deliverable>
+            </docset>
+            """,
+        ),
+        (
+            check_format_subdeliverable,
+            """
+            <docset id="ds1">
+                <deliverable id="d1">
+                    <format pdf="1"/>
+                    <subdeliverable>s1</subdeliverable>
+                </deliverable>
+                <deliverable id="d2">
+                    <format epub="1"/>
+                    <subdeliverable>s2</subdeliverable>
+                </deliverable>
+            </docset>
+            """,
+        ),
         (
             check_lang_code_in_desc,
             """
@@ -787,9 +767,24 @@ def test_check_format_subdeliverable_multiple_failures():
             </docset>
             """,
         ),
+        (
+            check_subdeliverable_in_deliverable,
+            """
+            <docset id="d1">
+                <deliverable>
+                <subdeliverable>a</subdeliverable>
+                <subdeliverable>a</subdeliverable>
+                </deliverable>
+                <deliverable>
+                <subdeliverable>b</subdeliverable>
+                <subdeliverable>b</subdeliverable>
+                </deliverable>
+            </docset>
+            """,
+        ),
     ],
 )
-def test_language_code_checks_multiple_failures(
+def test_check_multiple_failures(
     check_func: Callable[[etree._Element], object],
     node_xml: str,
 ):
@@ -798,25 +793,6 @@ def test_language_code_checks_multiple_failures(
     assert len(results) > 0
     messages = [r.message for r in results]
     assert len(messages) == 2
-
-
-def test_check_subdeliverable_in_deliverable_multiple_failures():
-    node = etree.fromstring(
-        """
-        <docset id="d1">
-            <deliverable>
-            <subdeliverable>a</subdeliverable>
-            <subdeliverable>a</subdeliverable>
-            </deliverable>
-            <deliverable>
-            <subdeliverable>b</subdeliverable>
-            <subdeliverable>b</subdeliverable>
-            </deliverable>
-        </docset>
-        """
-    )
-    results = collect_check_results(check_subdeliverable_in_deliverable(node))
-    assert len(results) > 0
 
 
 def test_check_lang_code_in_desc_no_parent():
