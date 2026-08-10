@@ -4,6 +4,7 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
+import tempfile
 import tomllib
 from typing import Any, cast
 
@@ -207,7 +208,7 @@ def load_env_config(
     ),
 )
 @click.pass_context
-def cli( # noqa: C901
+def cli(
     ctx: click.Context,
     verbose: int,
     dry_run: bool,
@@ -267,18 +268,30 @@ def cli( # noqa: C901
         load_env_config(ctx, env_config, skip_validation)
 
         # Setup logging safely
-        logging_config = context.appconfig.logging.model_dump(
-            by_alias=True, exclude_none=True
-        ) if context.appconfig else (context.raw_appconfig.get("logging", {}) if context.raw_appconfig else {})
-
-        if context.envconfig:
+        if context.appconfig and context.envconfig:
+            logging_config = context.appconfig.logging.model_dump(
+                by_alias=True, exclude_none=True
+            )
             log_dir = context.envconfig.paths.tmp.log_dir
         else:
-            try:
-                # Fallback if validation failed but raw data exists
-                log_dir = Path(context.raw_envconfig["paths"]["tmp"]["log_dir"])
-            except (KeyError, TypeError):
-                log_dir = Path("/tmp/docbuild/logs")
+            # We bypassed validation (e.g., to list a broken config).
+            # Fall back to a safe, console-only configuration to avoid filesystem errors
+            # from unresolved placeholders or missing directory permissions.
+            logging_config = {
+                "version": 1,
+                "disable_existing_loggers": False,
+                "handlers": {
+                    "console": {
+                        "class_name": "logging.StreamHandler",
+                        "level": "INFO",
+                    }
+                },
+                "root": {
+                    "level": "INFO",
+                    "handlers": ["console"]
+                }
+            }
+            log_dir = Path(tempfile.gettempdir())
 
         setup_logging(
             cliverbosity=verbose,
