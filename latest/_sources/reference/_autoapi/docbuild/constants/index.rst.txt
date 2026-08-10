@@ -23,8 +23,6 @@ Attributes
    docbuild.constants.SERVER_ROLES_ALIASES
    docbuild.constants.DEFAULT_LIFECYCLE
    docbuild.constants.ALLOWED_LIFECYCLES
-   docbuild.constants.VALID_PRODUCTS
-   docbuild.constants.ALLOWED_PRODUCTS
    docbuild.constants.SINGLE_LANG_REGEX
    docbuild.constants.MULTIPLE_LANG_REGEX
    docbuild.constants.LIFECYCLES_STR
@@ -122,18 +120,6 @@ Module Contents
    :type:  tuple[str, Ellipsis]
 
    The available lifecycle states for a docset (without 'unknown').
-
-
-.. py:data:: VALID_PRODUCTS
-   :type:  dict[str, str]
-
-   A dictionary of valid products acronyms and their full names.
-
-
-.. py:data:: ALLOWED_PRODUCTS
-   :type:  tuple[str, Ellipsis]
-
-   A tuple of valid product acronyms.
 
 
 .. py:data:: SINGLE_LANG_REGEX

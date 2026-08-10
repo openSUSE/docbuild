@@ -9,14 +9,6 @@ docbuild.models.product
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   docbuild.models.product.Product
-
-
 Classes
 -------
 
@@ -25,18 +17,12 @@ Classes
 
    /reference/_autoapi/docbuild/models/product/StrEnumMeta
    /reference/_autoapi/docbuild/models/product/BaseProductEnum
+   /reference/_autoapi/docbuild/models/product/Product
 
 .. autoapisummary::
 
    docbuild.models.product.StrEnumMeta
    docbuild.models.product.BaseProductEnum
-
-
-Module Contents
----------------
-
-.. py:data:: Product
-
-   A :py:class:`~enum.StrEnum` for the products of the docbuild application.
+   docbuild.models.product.Product
 
 

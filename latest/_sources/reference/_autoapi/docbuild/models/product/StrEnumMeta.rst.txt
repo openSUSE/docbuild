@@ -12,7 +12,7 @@ docbuild.models.product.StrEnumMeta
    Custom metaclass for StrEnum to allow attribute-style access.
 
 
-   .. py:method:: __getitem__(key: str) -> StrEnumMeta
+   .. py:method:: __getitem__(name: str) -> object
 
       Access enum members using attribute-style names with underscores.
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.21.1.dev44+g4e0a980c3</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.22.1.dev4+g4cb9565bc.d20260810</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../_static/documentation_options.js?v=8e216ae6"></script>
+    <script src="../../../../_static/documentation_options.js?v=ad66b9f1"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -489,6 +489,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../models/product/index.html">docbuild.models.product</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../models/product/StrEnumMeta.html">docbuild.models.product.StrEnumMeta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../models/product/BaseProductEnum.html">docbuild.models.product.BaseProductEnum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../models/product/Product.html">docbuild.models.product.Product</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -640,12 +641,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="docbuild.constants.ALLOWED_LIFECYCLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_LIFECYCLES</span></code></a></p></td>
 <td><p>The available lifecycle states for a docset (without 'unknown').</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.VALID_PRODUCTS" title="docbuild.constants.VALID_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VALID_PRODUCTS</span></code></a></p></td>
-<td><p>A dictionary of valid products acronyms and their full names.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ALLOWED_PRODUCTS" title="docbuild.constants.ALLOWED_PRODUCTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ALLOWED_PRODUCTS</span></code></a></p></td>
-<td><p>A tuple of valid product acronyms.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SINGLE_LANG_REGEX" title="docbuild.constants.SINGLE_LANG_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></p></td>
 <td><p>Regex for a single language code in the format 'xx-XX' (e.g., 'en-us').</p></td>
 </tr>
@@ -791,18 +786,6 @@
 <dt class="sig sig-object py" id="docbuild.constants.ALLOWED_LIFECYCLES">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_LIFECYCLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_LIFECYCLES" title="Link to this definition">#</a></dt>
 <dd><p>The available lifecycle states for a docset (without ‘unknown’).</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.constants.VALID_PRODUCTS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">VALID_PRODUCTS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.VALID_PRODUCTS" title="Link to this definition">#</a></dt>
-<dd><p>A dictionary of valid products acronyms and their full names.</p>
-</dd></dl>
-
-<dl class="py data">
-<dt class="sig sig-object py" id="docbuild.constants.ALLOWED_PRODUCTS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ALLOWED_PRODUCTS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Ellipsis</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ALLOWED_PRODUCTS" title="Link to this definition">#</a></dt>
-<dd><p>A tuple of valid product acronyms.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -1045,8 +1028,6 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SERVER_ROLES_ALIASES"><code class="docutils literal notranslate"><span class="pre">SERVER_ROLES_ALIASES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_LIFECYCLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LIFECYCLE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ALLOWED_LIFECYCLES"><code class="docutils literal notranslate"><span class="pre">ALLOWED_LIFECYCLES</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.VALID_PRODUCTS"><code class="docutils literal notranslate"><span class="pre">VALID_PRODUCTS</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ALLOWED_PRODUCTS"><code class="docutils literal notranslate"><span class="pre">ALLOWED_PRODUCTS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SINGLE_LANG_REGEX"><code class="docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.MULTIPLE_LANG_REGEX"><code class="docutils literal notranslate"><span class="pre">MULTIPLE_LANG_REGEX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.LIFECYCLES_STR"><code class="docutils literal notranslate"><span class="pre">LIFECYCLES_STR</span></code></a></li>
