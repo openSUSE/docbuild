@@ -253,7 +253,7 @@ def cli(
     current_files: Sequence[Path] | None = None
 
     # Determine if we should skip validation
-    is_config_list = ctx.invoked_subcommand == "config" and "list" in sys.argv
+    is_config_list = (ctx.invoked_subcommand == "config") and ("list" in sys.argv)
     skip_validation = is_config_list and "--validate" not in sys.argv
 
     try:

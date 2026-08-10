@@ -33,24 +33,32 @@ def list_config(ctx: click.Context, app: bool, env: bool, flat: bool, validate: 
     # If no specific flags are provided, show everything
     show_all = not (app or env)
 
-    if app or show_all:
-        if context.appconfig:
-            app_data = context.appconfig.model_dump(mode="json")
-        elif context.raw_appconfig:
-            app_data = context.raw_appconfig
-        else:
-            app_data = {}
+    # We group the varying parameters into a list of configurations to process
+    sections_to_check = [
+        (
+            app or show_all,
+            context.appconfig,
+            context.raw_appconfig,
+            "Application Configuration",
+            "app",
+            "cyan",
+        ),
+        (
+            env or show_all,
+            context.envconfig,
+            context.raw_envconfig,
+            "Environment Configuration",
+            "env",
+            "yellow",
+        ),
+    ]
 
-        if app_data:
-            print_section("Application Configuration", app_data, "app", flat, "cyan")
+    for should_show, config, raw_config, title, key, color in sections_to_check:
+        if not should_show:
+            continue
 
-    if env or show_all:
-        if context.envconfig:
-            env_data = context.envconfig.model_dump(mode="json")
-        elif context.raw_envconfig:
-            env_data = context.raw_envconfig
-        else:
-            env_data = {}
+        # Extract data if config exists, fallback to raw_config, or use empty dict
+        data = config.model_dump(mode="json") if config else (raw_config or {})
 
-        if env_data:
-            print_section("Environment Configuration", env_data, "env", flat, "yellow")
+        if data:
+            print_section(title, data, key, flat, color)
