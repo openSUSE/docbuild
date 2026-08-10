@@ -1,0 +1,22 @@
+{
+  // Pyright configuration for docbuild
+  // See https://microsoft.github.io/pyright/#/configuration
+  //
+  // Mirrors pyrefly.toml so both type checkers see the same project scope.
+
+  // Files to type check. Tests are intentionally excluded; they are exempt
+  // from annotation rules (see the per-file-ignores in .ruff.toml).
+  "include": ["src"],
+
+  // Align with .ruff.toml, which already excludes "contrib".
+  "exclude": ["contrib"],
+
+  // Keep this in sync with "requires-python" in pyproject.toml: type check
+  // against the oldest supported Python so newer-only stdlib APIs are flagged.
+  "pythonVersion": "3.12",
+
+  // Point pyright at the uv-managed virtual environment so third-party
+  // imports (pydantic, semver, ...) resolve from the installed packages.
+  "venvPath": ".",
+  "venv": ".venv"
+}
