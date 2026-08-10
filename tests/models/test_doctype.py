@@ -285,7 +285,7 @@ def test_sorted_langs_in_doctype_instantiation():
 
 
 @pytest.mark.parametrize(
-    "string,xpath",
+    "string_or_doctype,xpath",
     [
         # 1: product + one docset + a single language
         (
@@ -332,11 +332,24 @@ def test_sorted_langs_in_doctype_instantiation():
         ("//en-us", "product/docset/resources/locale[@lang='en-us']"),
         # 7: all products, docsets, lifecycles, and languages
         ("//*", "product/docset/resources/locale"),
+        # 8: fallback to English for empty language lists
+        (
+            Doctype(product="sles", docset=["15-SP6"], langs=[]),
+            "product[@id='sles']/docset[@path='15-SP6']/resources/locale[@lang='en-us']",
+        ),
+        # 9: explicit language plus wildcard means all languages
+        (
+            Doctype(product="sles", docset=["15-SP6"], langs=["en-us", "*"]),
+            "product[@id='sles']/docset[@path='15-SP6']/resources/locale",
+        ),
     ],
 )
-def test_xpath_in_doctype(string, xpath):
+def test_xpath_in_doctype(string_or_doctype, xpath):
     """Test the XPath extraction from a Doctype."""
-    doctype = Doctype.from_str(string)
+    if isinstance(string_or_doctype, str):
+        doctype = Doctype.from_str(string_or_doctype)
+    else:
+        doctype = string_or_doctype
     assert xpath == doctype.xpath()
 
 
@@ -347,8 +360,26 @@ def test_product_xpath_segment():
     assert dt_all.product_xpath_segment() == "product"
 
 
-def test_docset_xpath_segment():
+@pytest.mark.parametrize(
+    "string,xpath",
+    [
+        # 1
+        ("sles/*/en-us", "docset"),
+        # 2
+        ("sles/15-SP6/en-us", "docset[@path='15-SP6']"),
+        # 3
+        ("sles/15-SP6,15-SP7/en-us", "docset[@path='15-SP6' or @path='15-SP7']"),
+    ],
+)
+def test_docset_xpath_segment(string, xpath):
     """Test the docset_xpath_segment method."""
     # Test with all docsets (*)
-    dt_all = Doctype.from_str("sles/*/en-us")
-    assert dt_all.docset_xpath_segment("*") == "docset"
+    dt_all = Doctype.from_str(string)
+    assert dt_all.docset_xpath_segment() == xpath
+
+
+def test_docset_xpath_segment_with_argument():
+    """Test the docset_xpath_segment method with a specific argument."""
+    dt = Doctype.from_str("sles/15-SP6/en-us")
+    assert dt.docset_xpath_segment("16.0") == "docset[@path='16.0']"
+    assert dt.docset_xpath_segment("*") == "docset"

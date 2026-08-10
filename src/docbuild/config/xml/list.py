@@ -6,8 +6,6 @@ import logging
 from lxml import etree  # type: ignore
 
 from ...models.doctype import Doctype
-from ...models.lifecycle import LifecycleFlag
-from ...models.product import Product
 
 xpathlog = logging.getLogger(__name__)
 log = logging.getLogger(__package__)
@@ -26,38 +24,7 @@ def list_all_deliverables(
     if doctypes is not None:
         log.debug("Filtering for docset %r", doctypes)
         for dt in doctypes:
-            # Using flexible relative descendant selectors ensures compatibility
-            # with both nested test fixtures and the absolute portal configuration schema.
-            xpath = "//product"
-            if dt.product and dt.product != Product.ALL:
-                xpath += f"[@id={dt.product.acronym!r}]"
-
-            xpath += "/docset"
-            # Protect against empty lists causing malformed [] XPath segments
-            if dt.docset and "*" not in dt.docset:
-                xpath += "[" + " or ".join([f"@path={d!r}" for d in dt.docset]) + "]"
-
-            if dt.lifecycle and LifecycleFlag.unknown != dt.lifecycle:  # type: ignore
-                xpath += (
-                    "["
-                    + " or ".join([f"@lifecycle={lc.name!r}" for lc in dt.lifecycle])
-                    + "]"
-                )
-
-            xpath += "/resources/locale"
-
-            if dt.langs and "*" not in dt.langs:
-                xpath += (
-                    "["
-                    + " or ".join([f"@lang={lng.language!r}" for lng in dt.langs])
-                    + "]"
-                )
-            elif not dt.langs:
-                # Toms' Suggestion: Fallback to English if no language is specified
-                xpath += "[@lang='en-us']"
-
-            xpath += "/deliverable"
-
+            xpath = f"{dt.xpath(absolute=True)}/deliverable"
             nodes = tree.xpath(xpath)
             if nodes:
                 yield from nodes
@@ -66,10 +33,8 @@ def list_all_deliverables(
 
     else:
         # Default fallback route with a flexible relative search path pattern
-        xpath = "//product/docset/resources/locale[@lang='en-us']/deliverable"
-        # if not tree.xpath(xpath):
-        #    # Fallback alignment support variant for raw test fixtures
-        #    xpath = "//product/docset/resources/locale[@lang='en-us']/deliverable"
+        dt = Doctype.from_str("//en-us")
+        xpath = f"{dt.xpath(absolute=True)}/deliverable"
 
         xpathlog.debug("XPath: %r", xpath)
         yield from tree.xpath(xpath)

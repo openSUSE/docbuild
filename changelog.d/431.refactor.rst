@@ -1,0 +1,3 @@
+Consolidate XPath logic in :class:`~docbuild.models.doctype.Doctype` by introducing :meth:`~docbuild.models.doctype.Doctype.lifecycle_xpath_segment` and :meth:`~docbuild.models.doctype.Doctype.locale_xpath_segment` helper methods, refactoring :meth:`~docbuild.models.doctype.Doctype.xpath` to use them, and adding an optional ``absolute`` argument.
+
+Refactor :meth:`~docbuild.config.xml.list.list_all_deliverables` to delegate XPath construction to :meth:`~docbuild.models.doctype.Doctype.xpath` instead of building expressions manually.

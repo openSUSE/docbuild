@@ -35,6 +35,7 @@ class Doctype(BaseModel):
     >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
     >>> doctype.product
     <Product.sles: 'sles'>
+    <Product.sles: 'SUSE Linux Enterprise Server'>
     >>> doctype.docset
     ['15-SP6']
     >>> doctype.lifecycle.name
@@ -78,6 +79,7 @@ class Doctype(BaseModel):
         default=[LanguageCode(language="en-us")],
         description=(
             "The natural language containing language and country. "
+            "Values can be combined using commas. "
             "After validation, langs are sorted"
         ),
         examples=["en-us", "de-de"],
@@ -226,51 +228,29 @@ class Doctype(BaseModel):
             langs=langs,
         )
 
-    def xpath(self: Self) -> str:
+    def xpath(self: Self, absolute:bool=False) -> str:
         """Return an XPath expression for this Doctype to find all deliverables.
 
-        >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
+        >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath(absolute=True)
         >>> expected = (
-        ...     "product[@id='sles']/docset[@path='15-SP6']"
+        ...     "//product[@id='sles']/docset[@path='15-SP6']"
         ...     "[@lifecycle='supported']"
         ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
+        ...     "/deliverable"
         ... )
         >>> result == expected
         True
 
-        :return: A relative XPath expression that can be used to find all
+        :return: An XPath expression that can be used to find all
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
-        product = "product"
-        if self.product != Product.ALL:
-            product += f"[@id={self.product.acronym!r}]"
+        product = f"//{self.product_xpath_segment()}" if absolute else self.product_xpath_segment()
 
-        setids = [f"@path={d!r}" for d in self.docset if d != "*"]
-
-        setids_str = " or ".join(setids)
-        if setids_str:
-            docset = f"docset[{setids_str}]"
-        else:
-            docset = "docset"
-
-        lifecycle = " or ".join(
-            [
-                f"@lifecycle={lc.name!r}"
-                for lc in self.lifecycle
-                if lc != LifecycleFlag.unknown
-            ]
-        )
-        if lifecycle:
-            docset += f"[{lifecycle}]"
-
-        if "*" in self.langs:
-            language = "locale"
-        else:
-            language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
-            language = f"locale[{language}]"
-
-        return f"{product}/{docset}/resources/{language}"
+        docset = self.docset_xpath_segment()
+        docset += self.lifecycle_xpath_segment()
+        locale = self.locale_xpath_segment()
+        return f"{product}/{docset}/resources/{locale}"
 
     def product_xpath_segment(self: Self) -> str:
         """Return the XPath segment for the product node.
@@ -281,11 +261,48 @@ class Doctype(BaseModel):
             return f"product[@id={self.product.acronym!r}]"
         return "product"
 
-    def docset_xpath_segment(self: Self, docset: str) -> str:
+    def docset_xpath_segment(self: Self, docset: str | None = None) -> str:
         """Return the XPath segment for the docset node.
 
         Example: "docset[@path='15-SP6']" or "docset"
         """
-        if docset != "*":
-            return f"docset[@path={docset!r}]"
+        if docset is not None:
+            if docset != "*":
+                return f"docset[@path={docset!r}]"
+            return "docset"
+
+        if self.docset and "*" not in self.docset:
+            setids = [f"@path={d!r}" for d in self.docset if d != "*"]
+            setids_str = " or ".join(setids)
+            return f"docset[{setids_str}]"
         return "docset"
+
+    def lifecycle_xpath_segment(self: Self) -> str:
+        """Return the XPath segment for the lifecycle node.
+
+        Example: "docset[@lifecycle='supported']" or "docset"
+        """
+        if self.lifecycle and self.lifecycle != LifecycleFlag.unknown:
+            lifecycle = " or ".join(
+                [
+                    f"@lifecycle={lc.name!r}"
+                    for lc in self.lifecycle
+                ]
+            )
+            return f"[{lifecycle}]"
+        return ""
+
+    def locale_xpath_segment(self: Self) -> str:
+        """Return the XPath segment for the language node.
+
+        Example: "resources/locale[@lang='en-us']" or "resources/locale"
+        """
+        language = "locale"
+        has_wildcard = any(lang.language == "*" for lang in self.langs)
+        if self.langs and not has_wildcard:
+            language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
+            language = f"locale[{language}]"
+        elif not self.langs:
+            # Toms' Suggestion: Fallback to English if no language is specified
+            language += "[@lang='en-us']"
+        return language

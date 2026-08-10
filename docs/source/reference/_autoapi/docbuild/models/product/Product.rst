@@ -20,3 +20,5 @@ docbuild.models.product.Product
 
 
       Return the canonical product acronym used in doctypes and XML IDs.
+
+
