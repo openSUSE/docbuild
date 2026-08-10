@@ -51,6 +51,15 @@ docbuild.cli.context.DocBuildContext
 
 
 
+   .. py:attribute:: raw_appconfig
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+      The raw unvalidated application configuration dictionary
+
+
+
    .. py:attribute:: envconfigfiles
       :type:  tuple[str | pathlib.Path, Ellipsis] | None
       :value: None
@@ -75,6 +84,15 @@ docbuild.cli.context.DocBuildContext
 
 
       The accumulated content of all env config files
+
+
+
+   .. py:attribute:: raw_envconfig
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+      The raw unvalidated environment configuration dictionary
 
 
 
