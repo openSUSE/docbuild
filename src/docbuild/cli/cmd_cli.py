@@ -125,6 +125,7 @@ def load_app_config(
 def load_env_config(
     ctx: click.Context,
     env_config: Path,
+    env_overrides: tuple[str, ...],
     skip_validation: bool = False
 ) -> None:
     """Load and validate Environment configuration."""
@@ -140,6 +141,21 @@ def load_env_config(
         tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
     )
 
+    # --- Merge CLI overrides ---
+    # Overwrites any values from config files with highest priority.
+    for override in env_overrides:
+        if "=" not in override:
+            raise click.BadParameter(
+                f"Invalid format for override: {override!r}. Use 'KEY=VALUE'.",
+                param_hint="-C / --set-env",
+            )
+        key, value = override.split("=", 1)
+        keys = key.split('.')
+        d = raw_envconfig
+        for k in keys[:-1]:
+            d = d.setdefault(k, {})
+        d[keys[-1]] = value
+
     # Always store the raw dict so `config list` has access to it
     context.raw_envconfig = raw_envconfig
 
@@ -150,7 +166,6 @@ def load_env_config(
             log.warning("Environment config validation failed. Proceeding with raw data.")
         else:
             raise e
-
 
 
 @click.group(
@@ -207,6 +222,14 @@ def load_env_config(
         "in the current working directory."
     ),
 )
+@click.option(
+    "-C",
+    "--set-env",
+    "env_overrides",
+    metavar="KEY=VALUE",
+    multiple=True,
+    help="Override an environment config value (e.g., 'paths.tmp_dir=/new/path').",
+)
 @click.pass_context
 def cli(
     ctx: click.Context,
@@ -216,6 +239,7 @@ def cli(
     app_config: Path,
     env_config: Path,
     max_workers: str | None,
+    env_overrides: tuple[str, ...],
     **kwargs: dict,
 ) -> None:
     """Acts as a main entry point for CLI tool.
@@ -226,6 +250,7 @@ def cli(
     :param debug: If set, enable debug mode.
     :param app_config: Filename to the application TOML config file.
     :param env_config: Filename to a environment's TOML config file.
+    :param env_overrides: A tuple of key-value strings to override env config.
     :param kwargs: Additional keyword arguments.
     """
     # 1. Click's internal guard for completion/resilient parsing
@@ -265,7 +290,7 @@ def cli(
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig
         current_files = (env_config,) if env_config else None
-        load_env_config(ctx, env_config, skip_validation)
+        load_env_config(ctx, env_config, env_overrides, skip_validation)
 
         # Setup logging safely
         if context.appconfig and context.envconfig:

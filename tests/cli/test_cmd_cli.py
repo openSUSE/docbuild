@@ -313,5 +313,28 @@ def test_load_config_helpers_populate_context(fake_handle_config, mock_config_mo
     assert mock_ctx.obj.appconfig is not None
 
     # Test Env Loader
-    load_env_config(mock_ctx, Path("env.toml"))
+    load_env_config(mock_ctx, Path("env.toml"), env_overrides=())
     assert mock_ctx.obj.envconfig is not None
+
+
+def test_load_env_config_applies_cli_overrides(fake_handle_config, mock_config_models):
+    """Verify that --set-env / -C overrides are properly parsed into raw_envconfig."""
+    from docbuild.cli.cmd_cli import load_env_config
+
+    # Setup mock resolver to return a basic dictionary
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"server": {"host": "localhost"}}, False))
+
+    mock_ctx = Mock()
+    mock_ctx.obj = DocBuildContext()
+
+    # 1. Test successful override
+    overrides = ("server.host=192.168.1.1", "paths.tmp.log_dir=/custom/log")
+    load_env_config(mock_ctx, Path("env.toml"), env_overrides=overrides)
+
+    raw = mock_ctx.obj.raw_envconfig
+    assert raw["server"]["host"] == "192.168.1.1"
+    assert raw["paths"]["tmp"]["log_dir"] == "/custom/log"
+
+    # 2. Test invalid syntax raises BadParameter
+    with pytest.raises(click.BadParameter, match="Invalid format for override"):
+        load_env_config(mock_ctx, Path("env.toml"), env_overrides=("invalid_override_without_equals",))

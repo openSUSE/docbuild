@@ -1,0 +1,1 @@
+Add a global command-line option ``-C`` / ``--set-env`` to override specific environment configuration values using key=value syntax with dot notation (e.g., ``-C server.host=127.0.0.1``).
