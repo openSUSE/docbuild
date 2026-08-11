@@ -338,3 +338,13 @@ def test_load_env_config_applies_cli_overrides(fake_handle_config, mock_config_m
     # 2. Test invalid syntax raises BadParameter
     with pytest.raises(click.BadParameter, match="Invalid format for override"):
         load_env_config(mock_ctx, Path("env.toml"), env_overrides=("invalid_override_without_equals",))
+
+
+def test_load_env_config_missing_equals_sign_fails(runner, context, fake_handle_config, mock_config_models):
+    """Verify that providing an override without an '=' sign raises an error on the CLI."""
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"server": {"host": "localhost"}}, False))
+
+    result = runner.invoke(cli, ["-C", "server.host", "config", "list"], obj=context)
+
+    assert result.exit_code != 0
+    assert "Invalid format for override" in result.output or "server.host" in result.output
