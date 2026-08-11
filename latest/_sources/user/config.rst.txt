@@ -193,3 +193,19 @@ between configurations without needing to remember the exact command syntax.
    $ alias docbuild-prod='docbuild --env-config env.production.toml'
    $ alias docbuild-test='docbuild --env-config env.testing.toml'
    $ alias docbuild-dev='docbuild --env-config env.devel.toml'
+
+
+.. _config-overwriting-cli:
+
+Overwriting Config Options on the Command Line
+----------------------------------------------
+
+You can temporarily override environment configuration options directly from the command line using the ``-C`` or ``--set-env`` option. This avoids having to create or modify TOML files for quick adjustments.
+
+Use ``key=value`` syntax, and use dot notation for nested options:
+
+.. code-block:: shell-session
+
+    $ docbuild -C "config.canonical_url_domain=https://doc.example.net"  -C paths.root_config_dir=/etc/docbuild config list --env
+
+Options passed via ``-C`` or ``--set-env`` have the highest priority and will strictly overwrite the corresponding settings loaded from your default, system, or local configuration files.
