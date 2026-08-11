@@ -206,6 +206,6 @@ Use ``key=value`` syntax, and use dot notation for nested options:
 
 .. code-block:: shell-session
 
-    $ docbuild -C server.host=127.0.0.1 -C server.enable_mail=true config list --env
+    $ docbuild -C "config.canonical_url_domain=https://doc.example.net"  -C paths.root_config_dir=/etc/docbuild config list --env
 
 Options passed via ``-C`` or ``--set-env`` have the highest priority and will strictly overwrite the corresponding settings loaded from your default, system, or local configuration files.
