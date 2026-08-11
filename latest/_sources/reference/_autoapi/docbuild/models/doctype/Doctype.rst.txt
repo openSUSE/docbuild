@@ -31,6 +31,7 @@ docbuild.models.doctype.Doctype
    >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
    >>> doctype.product
    <Product.sles: 'sles'>
+   <Product.sles: 'SUSE Linux Enterprise Server'>
    >>> doctype.docset
    ['15-SP6']
    >>> doctype.lifecycle.name
@@ -154,20 +155,21 @@ docbuild.models.doctype.Doctype
 
 
 
-   .. py:method:: xpath() -> str
+   .. py:method:: xpath(absolute: bool = False) -> str
 
       Return an XPath expression for this Doctype to find all deliverables.
 
-      >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
+      >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath(absolute=True)
       >>> expected = (
-      ...     "product[@id='sles']/docset[@path='15-SP6']"
+      ...     "//product[@id='sles']/docset[@path='15-SP6']"
       ...     "[@lifecycle='supported']"
       ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
+      ...     "/deliverable"
       ... )
       >>> result == expected
       True
 
-      :return: A relative XPath expression that can be used to find all
+      :return: An XPath expression that can be used to find all
           deliverables that match this Doctype.
 
 
@@ -180,10 +182,26 @@ docbuild.models.doctype.Doctype
 
 
 
-   .. py:method:: docset_xpath_segment(docset: str) -> str
+   .. py:method:: docset_xpath_segment(docset: str | None = None) -> str
 
       Return the XPath segment for the docset node.
 
       Example: "docset[@path='15-SP6']" or "docset"
+
+
+
+   .. py:method:: lifecycle_xpath_segment() -> str
+
+      Return the XPath segment for the lifecycle node.
+
+      Example: "docset[@lifecycle='supported']" or "docset"
+
+
+
+   .. py:method:: locale_xpath_segment() -> str
+
+      Return the XPath segment for the language node.
+
+      Example: "resources/locale[@lang='en-us']" or "resources/locale"
 
 

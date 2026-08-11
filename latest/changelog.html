@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev6+g5e97bbe7a.d20260810</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev7+gc1d418a1d.d20260811</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=3743be7e"></script>
+    <script src="_static/documentation_options.js?v=33bdff92"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -463,8 +463,11 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 </section>
 <section id="code-refactoring">
 <h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
-<ul class="simple">
+<ul>
 <li><p>Refactor <a class="reference internal" href="reference/_autoapi/docbuild/models/product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a> to use <cite>acronym</cite> as the primary identifier instead of <cite>value</cite>. Switch from a dynamic class to a static enum class due to problems with dynamic class generation and type-checking. This change improves type safety and simplifies the codebase. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/427">GH #427</a>)</p></li>
+<li><p>Consolidate XPath logic in <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Doctype</span></code></a> by introducing <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.lifecycle_xpath_segment" title="docbuild.models.doctype.Doctype.lifecycle_xpath_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lifecycle_xpath_segment()</span></code></a> and <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.locale_xpath_segment" title="docbuild.models.doctype.Doctype.locale_xpath_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">locale_xpath_segment()</span></code></a> helper methods, refactoring <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.xpath" title="docbuild.models.doctype.Doctype.xpath"><code class="xref py py-meth docutils literal notranslate"><span class="pre">xpath()</span></code></a> to use them, and adding an optional <code class="docutils literal notranslate"><span class="pre">absolute</span></code> argument.</p>
+<p>Refactor <a class="reference internal" href="reference/_autoapi/docbuild/config/xml/list/index.html#docbuild.config.xml.list.list_all_deliverables" title="docbuild.config.xml.list.list_all_deliverables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list_all_deliverables()</span></code></a> to delegate XPath construction to <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.xpath" title="docbuild.models.doctype.Doctype.xpath"><code class="xref py py-meth docutils literal notranslate"><span class="pre">xpath()</span></code></a> instead of building expressions manually. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/431">GH #431</a>)</p>
+</li>
 </ul>
 </section>
 </section>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.22.1.dev6+g5e97bbe7a.d20260810</title>
+    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.22.1.dev7+gc1d418a1d.d20260811</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../_static/documentation_options.js?v=3743be7e"></script>
+    <script src="../../../../../_static/documentation_options.js?v=33bdff92"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -644,6 +644,7 @@ Default to English (<code class="docutils literal notranslate"><span class="pre"
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">product</span>
 <span class="go">&lt;Product.sles: &#39;sles&#39;&gt;</span>
+<span class="go">&lt;Product.sles: &#39;SUSE Linux Enterprise Server&#39;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">docset</span>
 <span class="go">[&#39;15-SP6&#39;]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span><span class="o">.</span><span class="n">lifecycle</span><span class="o">.</span><span class="n">name</span>
@@ -756,13 +757,14 @@ are all equivalent and select <em>all</em> languages.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.xpath">
-<span class="sig-name descname"><span class="pre">xpath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.xpath" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">xpath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.xpath" title="Link to this definition">#</a></dt>
 <dd><p>Return an XPath expression for this Doctype to find all deliverables.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">absolute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="s2">&quot;product[@id=&#39;sles&#39;]/docset[@path=&#39;15-SP6&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;//product[@id=&#39;sles&#39;]/docset[@path=&#39;15-SP6&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;[@lifecycle=&#39;supported&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;/resources/locale[@lang=&#39;de-de&#39; or @lang=&#39;en-us&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;/deliverable&quot;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">==</span> <span class="n">expected</span>
 <span class="go">True</span>
@@ -770,7 +772,7 @@ are all equivalent and select <em>all</em> languages.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A relative XPath expression that can be used to find all
+<dd class="field-odd"><p>An XPath expression that can be used to find all
 deliverables that match this Doctype.</p>
 </dd>
 </dl>
@@ -785,9 +787,23 @@ deliverables that match this Doctype.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.docset_xpath_segment">
-<span class="sig-name descname"><span class="pre">docset_xpath_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.docset_xpath_segment" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">docset_xpath_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.docset_xpath_segment" title="Link to this definition">#</a></dt>
 <dd><p>Return the XPath segment for the docset node.</p>
 <p>Example: “docset[&#64;path=’15-SP6’]” or “docset”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.lifecycle_xpath_segment">
+<span class="sig-name descname"><span class="pre">lifecycle_xpath_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.lifecycle_xpath_segment" title="Link to this definition">#</a></dt>
+<dd><p>Return the XPath segment for the lifecycle node.</p>
+<p>Example: “docset[&#64;lifecycle=’supported’]” or “docset”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.locale_xpath_segment">
+<span class="sig-name descname"><span class="pre">locale_xpath_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.locale_xpath_segment" title="Link to this definition">#</a></dt>
+<dd><p>Return the XPath segment for the language node.</p>
+<p>Example: “resources/locale[&#64;lang=’en-us’]” or “resources/locale”</p>
 </dd></dl>
 
 </dd></dl>
@@ -859,6 +875,8 @@ deliverables that match this Doctype.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.xpath"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.xpath()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.product_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.product_xpath_segment()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.docset_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.docset_xpath_segment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.lifecycle_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.lifecycle_xpath_segment()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.locale_xpath_segment"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.locale_xpath_segment()</span></code></a></li>
 </ul>
 </li>
 </ul>
