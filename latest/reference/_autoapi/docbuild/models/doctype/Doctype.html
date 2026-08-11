@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.22.1.dev7+gc1d418a1d.d20260811</title>
+    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.22.1.dev8+gf334628e6.d20260811</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../_static/documentation_options.js?v=33bdff92"></script>
+    <script src="../../../../../_static/documentation_options.js?v=f4455f5c"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -715,6 +715,25 @@ Default to English (<code class="docutils literal notranslate"><span class="pre"
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.iter_doctypes">
+<span class="sig-name descname"><span class="pre">iter_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">portal_root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">Doctype</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.iter_doctypes" title="Link to this definition">#</a></dt>
+<dd><p>Iterate over all docset and language combinations.</p>
+<p>The iteration order is docset-major: for each docset, iterate all
+languages. This is the Cartesian product of <code class="docutils literal notranslate"><span class="pre">docset</span></code> and <code class="docutils literal notranslate"><span class="pre">langs</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">portal_root</span></code> is given, wildcard values (<code class="docutils literal notranslate"><span class="pre">*</span></code>) are expanded from
+the parsed portal XML tree. Without <code class="docutils literal notranslate"><span class="pre">portal_root</span></code>, wildcards remain
+symbolic.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6,15-SP7/en-us,de-de&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span>
+<span class="gp">... </span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">docset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">langs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">doctype</span><span class="o">.</span><span class="n">iter_doctypes</span><span class="p">()</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="go">[&#39;sles/15-SP6/de-de&#39;, &#39;sles/15-SP6/en-us&#39;, &#39;sles/15-SP7/de-de&#39;, &#39;sles/15-SP7/en-us&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.coerce_product">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">coerce_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><span class="pre">docbuild.models.product.Product</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><span class="pre">docbuild.models.product.Product</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.coerce_product" title="Link to this definition">#</a></dt>
 <dd><p>Convert a string into a valid Product.</p>
@@ -868,6 +887,7 @@ deliverables that match this Doctype.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__repr__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__repr__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__contains__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__contains__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.__hash__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.__hash__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.iter_doctypes"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.iter_doctypes()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_product"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_product()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_docset"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_docset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.doctype.Doctype.coerce_langs"><code class="docutils literal notranslate"><span class="pre">docbuild.models.doctype.Doctype.coerce_langs()</span></code></a></li>

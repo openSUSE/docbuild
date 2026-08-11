@@ -114,6 +114,26 @@ docbuild.models.doctype.Doctype
 
 
 
+   .. py:method:: iter_doctypes(portal_root: lxml.etree._Element | None = None) -> collections.abc.Iterator[Doctype]
+
+      Iterate over all docset and language combinations.
+
+      The iteration order is docset-major: for each docset, iterate all
+      languages. This is the Cartesian product of ``docset`` and ``langs``.
+
+      If ``portal_root`` is given, wildcard values (``*``) are expanded from
+      the parsed portal XML tree. Without ``portal_root``, wildcards remain
+      symbolic.
+
+      >>> doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+      >>> [
+      ...     f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+      ...     for item in doctype.iter_doctypes()
+      ... ]
+      ['sles/15-SP6/de-de', 'sles/15-SP6/en-us', 'sles/15-SP7/de-de', 'sles/15-SP7/en-us']
+
+
+
    .. py:method:: coerce_product(value: str | docbuild.models.product.Product) -> docbuild.models.product.Product
       :classmethod:
 
