@@ -1,0 +1,1 @@
+Switched from weekly to monthly Dependabot version updates 
