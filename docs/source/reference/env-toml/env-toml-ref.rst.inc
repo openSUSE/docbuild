@@ -5,62 +5,38 @@
 
 .. -text-begin-
 
-.. _envtoml-section-server:
+.. _envtoml-section-general:
 
-[server]
---------
+[general]
+---------
 
-Deals with all config about server settings
+General configuration
 
-.. _envtoml-server-name:
+.. _envtoml-general-name:
 
 ``name``
     :Type: :code:`str`
     :Default: ``default-env``
 
-    Name of the server, used for logging and cache paths
+    Name of the environment, used for logging and cache paths
 
-.. _envtoml-server-role:
+.. _envtoml-general-role:
 
 ``role``
     :Type: :code:`str`
     :Default: ``production``
 
-    Role of the server, used for logging and other purposes. Possible values: "production", "staging", "development"
+    Role of the environment. Possible values: "production", "staging", "development"
 
-.. _envtoml-server-host:
-
-``host``
-    :Type: :code:`str`
-    :Default: ``127.0.0.1``
-
-    Hostname or IP address to bind the server to.
-
-.. _envtoml-server-port:
-
-``port``
-    :Type: :code:`int`
-    :Default: ``80``
-
-    Port number to listen on. Uncomment and set to enable.
-
-.. _envtoml-server-enable-mail:
+.. _envtoml-general-enable-mail:
 
 ``enable_mail``
     :Type: :code:`bool`
     :Default: ``true``
 
     Whether to enable email notifications.
-    Set to true to enable.
 
-.. _envtoml-section-config:
-
-[config]
---------
-
-General configuration
-
-.. _envtoml-config-default-lang:
+.. _envtoml-general-default-lang:
 
 ``default_lang``
     :Type: :code:`str`
@@ -68,7 +44,7 @@ General configuration
 
     Default language for the documentation.
 
-.. _envtoml-config-languages:
+.. _envtoml-general-languages:
 
 ``languages``
     :Type: :code:`list[str]`
@@ -76,7 +52,7 @@ General configuration
 
     A list of all supported languages.
 
-.. _envtoml-config-canonical-url-domain:
+.. _envtoml-general-canonical-url-domain:
 
 ``canonical_url_domain``
     :Type: :code:`str`
@@ -173,9 +149,9 @@ Key naming convention:
 
 ``base_server_cache_dir``
     :Type: :code:`str`
-    :Default: ``{base_cache_dir}/{server.name}``
+    :Default: ``{base_cache_dir}/{general.name}``
 
-    The server-specific cache directory, derived from base_cache_dir and server name.
+    The server-specific cache directory, derived from base_cache_dir and environment name.
 
 .. _envtoml-paths-meta-cache-dir:
 
@@ -364,83 +340,23 @@ Configuration for container
 
     The full name of the container image to be used for the build environment.
 
-.. _envtoml-section-xslt-params:
+.. _envtoml-section-xslt-common:
 
-[xslt-params]
+[xslt.common]
 -------------
 
-Replaces :file:`/etc/docserv/xslt-params-doc-suse-com.txt` file
-These keys are considered as XSLT parameters and passed
-to the transformation process
+Common XSLT parameters passed to the transformation process for ALL formats.
 
-.. _envtoml-xslt-params-homepage:
+.. _envtoml-section-xslt-html:
 
-``homepage``
-    :Type: :code:`str`
-    :Default: ``https://documentation.suse.com/``
+[xslt.html]
+-----------
 
-    The URL for the main homepage link in the documentation.
+HTML-specific XSLT parameters.
 
-.. _envtoml-xslt-params-overview-page:
+.. _envtoml-section-xslt-pdf:
 
-``overview-page``
-    :Type: :code:`str`
-    :Default: ``https://documentation.suse.com/``
+[xslt.pdf]
+----------
 
-    The URL for the documentation overview page.
-
-.. _envtoml-xslt-params-overview-page-title:
-
-``overview-page-title``
-    :Type: :code:`str`
-    :Default: ``documentation.suse.com``
-
-    The title displayed for the overview page link.
-
-.. _envtoml-xslt-params-external-js-onlineonly:
-
-``external.js.onlineonly``
-    :Type: :code:`str`
-    :Default: ``n/a``
-
-    Path to an external JavaScript file that is only included in the online version.
-
-.. _envtoml-xslt-params-show-edit-link:
-
-``show.edit.link``
-    :Type: :code:`int`
-    :Default: ``n/a``
-
-    A flag to control the visibility of the "Edit on GitHub" link (1 for true).
-
-.. _envtoml-xslt-params-twittercards-twitter-account:
-
-``twittercards.twitter.account``
-    :Type: :code:`str`
-    :Default: ``n/a``
-
-    The Twitter username to associate with Twitter Cards.
-
-.. _envtoml-xslt-params-generate-json-ld:
-
-``generate.json-ld``
-    :Type: :code:`int`
-    :Default: ``n/a``
-
-    A flag to enable or disable the generation of JSON-LD structured data (1 for true).
-
-.. _envtoml-xslt-params-search-description-length:
-
-``search.description.length``
-    :Type: :code:`int`
-    :Default: ``n/a``
-
-    The maximum character length for search result descriptions.
-
-.. _envtoml-xslt-params-socialmedia-description-length:
-
-``socialmedia.description.length``
-    :Type: :code:`int`
-    :Default: ``n/a``
-
-    The maximum character length for descriptions used in social media sharing.
+PDF-specific XSLT parameters.

@@ -45,13 +45,10 @@ DEFAULT_ENV_CONFIG = {
     # * Put it in cache if deleting it is safe and the app can rebuild it automatically.
     # * Put it in state if it is authoritative local state that should survive cache cleanup.
     # * Put it in tmp/runtime if it is per-run scratch space.
-    "server": {
+    "general": {
         "name": DEFAULT_SERVER_NAME,
         "role": "production",
-        "host": "127.0.0.1",
         "enable_mail": False,
-    },
-    "config": {
         "default_lang": "en-us",
         "languages": ["en-us"],
         "canonical_url_domain": "http://localhost/",
@@ -66,7 +63,7 @@ DEFAULT_ENV_CONFIG = {
         "tmp_repo_dir": f"{STATE_HOME}/repos/branches",
         "repo_dir": f"{STATE_HOME}/repos/permanent",
         "base_cache_dir": f"{CACHE_HOME}",
-        "base_server_cache_dir": "{base_cache_dir}/{server.name}",
+        "base_server_cache_dir": "{base_cache_dir}/{general.name}",
         "meta_cache_dir": "{base_server_cache_dir}/meta",
         # "base_tmp_dir": "",
         "runtime_base_dir": f"{RUNTIME_DIR}",
@@ -74,18 +71,18 @@ DEFAULT_ENV_CONFIG = {
         "json_cache_dir": "{base_server_cache_dir}/json",
         "tmp": {
             "tmp_base_dir": f"/tmp/{APP_NAME}",
-            "tmp_dir": "{tmp_base_dir}/{server.name}",
+            "tmp_dir": "{tmp_base_dir}/{general.name}",
             "tmp_deliverable_dir": "{tmp_dir}/deliverable",
             "tmp_metadata_dir": "{tmp_dir}/metadata",
             "tmp_build_base_dir": "{tmp_dir}/build",
             "tmp_out_dir": "{tmp_dir}/out",
-            "log_dir": f"{STATE_HOME}/{{server.name}}/log",
+            "log_dir": f"{STATE_HOME}/{{general.name}}/log",
             "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
         },
         "target": {
             "target_base_dir": f"{Path.home()}/Documents/{APP_NAME}/target",
             "target_dir_dyn": "{{product}}",
-            "backup_dir": f"{STATE_HOME}/{{server.name}}/backup",
+            "backup_dir": f"{STATE_HOME}/{{general.name}}/backup",
         },
     },
     "build": {
@@ -97,7 +94,11 @@ DEFAULT_ENV_CONFIG = {
             "container": "none",
         },
     },
-    "xslt-params": {},
+    "xslt": {
+        "common": {},
+        "html": {},
+        "pdf": {},
+    },
 }
 """Default configuration for the environment."""
 

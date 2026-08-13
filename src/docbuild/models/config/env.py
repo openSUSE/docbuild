@@ -9,7 +9,6 @@ from pydantic import (
     ConfigDict,
     Field,
     HttpUrl,
-    IPvAnyAddress,
     field_serializer,
     model_validator,
 )
@@ -89,70 +88,49 @@ class EnvBuild(BaseModel):
 # --- Configuration Models ---
 
 
-class EnvServer(BaseModel):
-    """Defines server settings."""
+class EnvGeneral(BaseModel):
+    """Defines general configuration."""
 
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(
-        title="Server Name",
-        description="A human-readable identifier for the environment/server.",
+        title="Environment Name",
+        description="A human-readable identifier for the environment.",
         examples=["documentation-suse-com", "docserv-suse-de"],
     )
-    "The descriptive name of the server."
+    "The descriptive name of the environment."
 
     role: ServerRole = Field(
-        title="Server Role",
+        title="Environment Role",
         description="The operational role of the environment.",
         examples=["production"],
     )
     "The environment type, used for build behavior differences."
 
-    host: IPvAnyAddress | DomainName = Field(
-        title="Server Host",
-        description="The hostname or IP address the documentation is served from.",
-        examples=["127.0.0.1", "docserver.example.com"],
-    )
-    "The host address for the server."
-
     enable_mail: bool = Field(
         title="Enable Email",
-        description=(
-            "Flag to enable email sending features (e.g., build notifications)."
-        ),
+        description="Flag to enable email sending features (e.g., build notifications).",
         examples=[True],
     )
     "Whether email functionality should be active."
 
-
-class EnvGeneralConfig(BaseModel):
-    """Defines general configuration."""
-
-    model_config = ConfigDict(extra="forbid")
-
     default_lang: LanguageCode = Field(
         title="Default Language",
-        description=(
-            "The primary language code (e.g., 'en') used for non-localized content."
-        ),
+        description="The primary language code (e.g., 'en') used for non-localized content.",
         examples=["en-us", "de-de", "ja-jp"],
     )
     "The default language code."
 
     languages: list[LanguageCode] = Field(
         title="Supported Languages",
-        description=(
-            "A list of all language codes supported by this documentation instance."
-        ),
+        description="A list of all language codes supported by this documentation instance.",
         examples=[["en-us", "de-de", "fr-fr"]],
     )
     "A list of supported language codes."
 
     canonical_url_domain: HttpUrl = Field(
         title="Canonical URL Domain",
-        description=(
-            "The base domain used to construct canonical URLs for SEO purposes."
-        ),
+        description="The base domain used to construct canonical URLs for SEO purposes.",
         examples=["https://docs.example.com"],
     )
     "The canonical domain for URLs."
@@ -160,13 +138,12 @@ class EnvGeneralConfig(BaseModel):
     # --- Custom Serialization for LanguageCode Models ---
     @field_serializer("default_lang")
     def serialize_default_lang(self, lang_obj: LanguageCode) -> str:
-        """Serialize the LanguageCode model back to a simple string (e.g., 'en-us')."""
-        # Assumes LanguageCode has a 'language' attribute containing the full code.
+        """Serialize the default LanguageCode model to a string."""
         return lang_obj.language
 
     @field_serializer("languages")
     def serialize_languages(self, lang_list: list[LanguageCode]) -> list[str]:
-        """Serialize the list of LanguageCode models back to a list of strings."""
+        """Serialize the list of LanguageCode models to strings."""
         return [lang_obj.language for lang_obj in lang_list]
 
 
@@ -412,20 +389,24 @@ class EnvPathsConfig(BaseModel):
     "Target deployment and backup paths."
 
 
+class EnvXslt(BaseModel):
+    """Defines XSLT parameters separated by target format."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    common: dict[str, Any] = Field(default_factory=dict, title="Common XSLT Parameters")
+    html: dict[str, Any] = Field(default_factory=dict, title="HTML-specific XSLT Parameters")
+    pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
     model_config = ConfigDict(extra="forbid")
 
-    server: EnvServer = Field(
-        title="Server Configuration",
-        description="Configuration related to the server/deployment environment.",
-    )
-    "Server-related settings."
-
-    config: EnvGeneralConfig = Field(
+    general: EnvGeneral = Field(
         title="General Configuration",
-        description="General settings like default language and canonical domain.",
+        description="General settings like environment name, role, and languages.",
     )
     "General application settings."
 
@@ -442,9 +423,8 @@ class EnvConfig(BaseModel):
     )
     "Build process settings."
 
-    xslt_params: dict[str, Any] = Field(
-        default_factory=dict,
-        alias="xslt-params",
+    xslt: EnvXslt = Field(
+        default_factory=EnvXslt,
         title="XSLT Parameters",
         description="Custom XSLT parameters passed directly to DAPS.",
     )

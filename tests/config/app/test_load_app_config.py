@@ -4,7 +4,7 @@ from docbuild.constants import APP_CONFIG_FILENAME
 
 def test_load_single_config_file(tmp_path):
     config_toml = """
-    [server]
+    [general]
     name = "demo"
     """
 
@@ -15,4 +15,4 @@ def test_load_single_config_file(tmp_path):
 
     config = load_single_config(config_file)
 
-    assert config == {"server": {"name": "demo"}}
+    assert config == {"general": {"name": "demo"}}

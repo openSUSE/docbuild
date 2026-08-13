@@ -1,6 +1,5 @@
 """Unit tests for the EnvConfig Pydantic models."""
 
-from ipaddress import IPv4Address
 from pathlib import Path
 from typing import Any
 
@@ -22,23 +21,11 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
     base = tmp_path / "docbuild_test"
     base.mkdir()
 
-    nested_xslt_params = {
-        "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
-        "show": {"edit": {"link": 1}},
-        "twittercards": {"twitter": {"account": "@SUSE"}},
-        "generate": {"json-ld": 1},
-        "search": {"description": {"length": 118}},
-        "socialmedia": {"description": {"length": 65}},
-    }
-
     return {
-        "server": {
+        "general": {
             "name": "doc-example-com",
             "role": "production",
-            "host": "127.0.0.1",
             "enable_mail": True,
-        },
-        "config": {
             "default_lang": "en-us",
             "languages": ["en-us", "de-de"],
             "canonical_url_domain": "https://docs.example.com",
@@ -81,7 +68,19 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "daps": {"command": "daps", "meta": "daps meta"},
             "container": {"container": "none"},
         },
-        "xslt-params": nested_xslt_params,
+        "xslt": {
+            "common": {
+                "show": {"edit": {"link": 1}},
+                "twittercards": {"twitter": {"account": "@SUSE"}},
+                "generate": {"json-ld": 1},
+                "search": {"description": {"length": 118}},
+                "socialmedia": {"description": {"length": 65}},
+            },
+            "html": {
+                "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
+            },
+            "pdf": {}
+        }
     }
 
 
@@ -97,37 +96,26 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     # Check type coercion for core types
     assert isinstance(config.paths.base_cache_dir, EnsureWritableDirectory)
 
-    # Check tmp_dir instead of tmp_path
-    assert config.paths.tmp.tmp_dir.is_absolute()
-    assert config.paths.tmp.tmp_dir.name == "doc-example-com"
+    # Check tmp_dir instead of tmp_path (wrapped in Path for Pylance)
+    assert Path(config.paths.tmp.tmp_dir).is_absolute()
+    assert Path(config.paths.tmp.tmp_dir).name == "doc-example-com"
 
     # Verify that the default value for tmp_build_dir_dyn is correctly picked up
     assert config.paths.tmp.tmp_build_dir_dyn == "{{product}}-{{docset}}-{{lang}}"
     assert "build" in str(config.paths.tmp.tmp_build_base_dir)
 
     # Check XSLT params
-    assert "external" in config.xslt_params
-    assert isinstance(config.xslt_params["external"], dict)
-    assert config.xslt_params["show"]["edit"]["link"] == 1
+    assert "external" in config.xslt.html
+    assert isinstance(config.xslt.html["external"], dict)
+    assert config.xslt.common["show"]["edit"]["link"] == 1
 
     # Test serialization of LanguageCode fields back to strings
     dumped_config = config.model_dump()
-    assert isinstance(dumped_config["config"]["default_lang"], str)
-    assert dumped_config["config"]["default_lang"] == "en-us"
-    assert isinstance(dumped_config["config"]["languages"], list)
-    assert all(isinstance(lang, str) for lang in dumped_config["config"]["languages"])
-    assert set(dumped_config["config"]["languages"]) == {"en-us", "de-de"}
-
-
-def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]):
-    """Test that the host field handles IPvAnyAddress correctly."""
-    data = mock_valid_raw_env_data.copy()
-    data["server"]["host"] = "192.168.1.1"
-
-    config = EnvConfig.from_dict(data)
-
-    assert isinstance(config.server.host, IPv4Address)
-    assert str(config.server.host) == "192.168.1.1"
+    assert isinstance(dumped_config["general"]["default_lang"], str)
+    assert dumped_config["general"]["default_lang"] == "en-us"
+    assert isinstance(dumped_config["general"]["languages"], list)
+    assert all(isinstance(lang, str) for lang in dumped_config["general"]["languages"])
+    assert set(dumped_config["general"]["languages"]) == {"en-us", "de-de"}
 
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
@@ -152,13 +140,10 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
             "daps": {"command": "daps", "meta": "daps meta"},
             "container": {"container": "none"},
         },
-        "server": {
+        "general": {
             "name": "D",
             "role": "production",
-            "host": "1.1.1.1",
             "enable_mail": True,
-        },
-        "config": {
             "default_lang": "en-us",
             "languages": ["en-us"],
             "canonical_url_domain": "https://a.b",
@@ -194,7 +179,11 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
                 "backup_dir": str(tmp_path / "backup"),
             },
         },
-        "xslt-params": {"test": 1},
+        "xslt": {
+            "common": {"test": 1},
+            "html": {},
+            "pdf": {}
+        },
         "typo_section": {"key": "value"},
     }
 
@@ -208,13 +197,13 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
 def test_envconfig_invalid_role_fails(mock_valid_raw_env_data: dict[str, Any]):
     """Test that an invalid role string is rejected by ServerRole enum."""
     data = mock_valid_raw_env_data.copy()
-    data["server"]["role"] = "testing_invalid"
+    data["general"]["role"] = "testing_invalid"
 
     with pytest.raises(ValidationError) as excinfo:
         EnvConfig.from_dict(data)
 
     locs = excinfo.value.errors()[0]["loc"]
-    assert ("server", "role") == tuple(locs)
+    assert ("general", "role") == tuple(locs)
 
 
 def test_envconfig_unresolved_placeholder_fails(
@@ -255,11 +244,10 @@ def test_env_config_invalid_placeholder_syntax(monkeypatch):
     monkeypatch.setattr(env_mod, "replace_placeholders", mock_raise)
 
     invalid_data = {
-        "server": {"name": "test", "role": "production", "host": "127.0.0.1", "enable_mail": False},
-        "config": {"default_lang": "en-us", "languages": ["en-us"], "canonical_url_domain": "https://example.com"},
+        "general": {"name": "test", "role": "production", "enable_mail": False, "default_lang": "en", "languages": ["en"], "canonical_url_domain": "https://example.com"},
         "paths": {
             # ... other required paths ...
-            "base_server_cache_dir": "{base_cache_dir}/{server.name" # THE BUG
+            "base_server_cache_dir": "{base_cache_dir}/{general.name" # THE BUG
         },
         "build": {
             "daps": {"command": "daps", "meta": "daps metadata"},

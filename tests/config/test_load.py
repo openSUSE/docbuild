@@ -210,12 +210,12 @@ def test_handle_config_deep_merge_precedence(tmp_path):
         d.mkdir()
 
     # 2. Write TOML files with overlapping keys to test precedence
-    (sys_dir / "config.toml").write_text('[server]\nhost = "system"\nport = 80\n')
-    (user_dir / "config.toml").write_text('[server]\nhost = "user"\ndebug = true\n')
-    (local_dir / "config.toml").write_text('[server]\nhost = "local"\n')
+    (sys_dir / "config.toml").write_text('[general]\nname = "system"\nrole = "production"\n')
+    (user_dir / "config.toml").write_text('[general]\nname = "user"\nenable_mail = true\n')
+    (local_dir / "config.toml").write_text('[general]\nname = "local"\n')
 
     search_dirs = [sys_dir, user_dir, local_dir]
-    default_config = {"server": {"base": "default", "port": 8080}}
+    default_config = {"general": {"base": "default", "role": "staging"}}
 
     found_files, merged, from_defaults = handle_config(
         user_path=None,
@@ -238,11 +238,11 @@ def test_handle_config_deep_merge_precedence(tmp_path):
 
     # The merged dictionary should correctly overlay Local > User > System > Default
     expected_merged = {
-        "server": {
-            "base": "default",    # Kept from default
-            "port": 80,           # Overwritten by System
-            "debug": True,        # Added by User
-            "host": "local",      # Overwritten by Local (The ultimate winner!)
+        "general": {
+            "base": "default",      # Kept from default
+            "role": "production",   # Overwritten by System
+            "enable_mail": True,    # Added by User
+            "name": "local",        # Overwritten by Local (The ultimate winner!)
         }
     }
     assert merged == expected_merged
@@ -252,11 +252,11 @@ def test_handle_config_user_path_deep_merge(tmp_path):
     """Test that a specific user_path config is deeply merged on top of defaults."""
     # 1. Create a partial user config file
     user_file = tmp_path / "custom_config.toml"
-    user_file.write_text('[server]\nhost = "custom-host"\ndebug = true\n')
+    user_file.write_text('[general]\nname = "custom-env"\nenable_mail = true\n')
 
     # 2. Define our base defaults
     default_config = {
-        "server": {"host": "default-host", "port": 8080},
+        "general": {"name": "default-env", "role": "production"},
         "max_workers": 4,
     }
 
@@ -274,10 +274,10 @@ def test_handle_config_user_path_deep_merge(tmp_path):
 
     # The final dictionary should be defaults + user_file
     expected_merged = {
-        "server": {
-            "host": "custom-host",  # Overwritten by user_path
-            "port": 8080,           # Kept from defaults
-            "debug": True,          # Added by user_path
+        "general": {
+            "name": "custom-env",   # Overwritten by user_path
+            "role": "production",   # Kept from defaults
+            "enable_mail": True,    # Added by user_path
         },
         "max_workers": 4            # Kept from defaults
     }
