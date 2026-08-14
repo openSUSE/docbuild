@@ -99,4 +99,7 @@ class Product(BaseProductEnum):
             if member := cls.__members__.get(candidate):
                 return cast(Self, member)
 
-        return super()._missing_(value)
+        allowed = ", ".join(repr(member.acronym) for member in cls)
+        raise ValueError(
+            f"{value!r} is not a valid {cls.__name__}. Allowed values are: {allowed}",
+        )

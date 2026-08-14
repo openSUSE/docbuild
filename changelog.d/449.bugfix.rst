@@ -1,0 +1,1 @@
+Adjusted invalid :class:`~docbuild.models.product.Product` error messages during doctype parsing to list allowed product acronyms (for example ``sle-ha`` and ``sles``) instead of full product names.

@@ -2,7 +2,13 @@ from typing import cast
 
 import pytest
 
-from docbuild.models.product import Product
+from docbuild.models.product import BaseProductEnum, Product
+
+
+class DummyProduct(BaseProductEnum):
+    """Minimal enum used to test BaseProductEnum fallback error handling."""
+
+    foo = "foo"
 
 
 @pytest.mark.parametrize(
@@ -58,6 +64,15 @@ def test_missing_non_string_input_raises_value_error():
     assert "42" in str(excinfo.value)
 
 
+def test_base_product_enum_missing_lists_values():
+    with pytest.raises(ValueError) as excinfo:
+        DummyProduct("bar")
+
+    message = str(excinfo.value)
+    assert "'bar' is not a valid DummyProduct" in message
+    assert "'foo'" in message
+
+
 def test_invalid_key_raises_keyerror_with_hint():
     with pytest.raises(KeyError) as excinfo:
         Product["not-a-product"]
@@ -68,4 +83,7 @@ def test_invalid_values_raise_value_error():
     with pytest.raises(ValueError) as excinfo:
         Product("unknown")
 
-    assert "unknown" in str(excinfo.value)
+    message = str(excinfo.value)
+    assert "unknown" in message
+    assert "'sles'" in message
+    assert "SUSE Linux Enterprise Server" not in message
