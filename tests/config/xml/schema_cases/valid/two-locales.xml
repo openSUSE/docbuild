@@ -1,0 +1,21 @@
+<docset id="v1" lifecycle="supported">
+  <version>1</version>
+  <resources>
+    <git remote="https://example.com/test/repo.git"/>
+    <locale lang="en-us">
+      <branch>main</branch>
+      <deliverable id="test.1.guide" type="dc">
+        <dc file="DC-Guide">
+          <format html="true"/>
+        </dc>
+      </deliverable>
+    </locale>
+    <locale lang="de-de">
+      <branch>main</branch>
+      <subdir>l10n/de-de</subdir>
+      <deliverable type="ref">
+        <ref linkend="test.1.guide"/>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>
