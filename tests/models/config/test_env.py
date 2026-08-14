@@ -70,14 +70,14 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
         },
         "xslt": {
             "common": {
-                "show": {"edit": {"link": 1}},
-                "twittercards": {"twitter": {"account": "@SUSE"}},
-                "generate": {"json-ld": 1},
-                "search": {"description": {"length": 118}},
-                "socialmedia": {"description": {"length": 65}},
+                "show.edit.link": 1,
+                "twittercards.twitter.account": "@SUSE",
+                "generate.json-ld": 1,
+                "search.description.length": 118,
+                "socialmedia.description.length": 65,
             },
             "html": {
-                "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
+                "external.js.onlineonly": "/docserv/res/extra.js",
             },
             "pdf": {}
         }
@@ -107,7 +107,7 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     # Check XSLT params
     assert "external" in config.xslt.html
     assert isinstance(config.xslt.html["external"], dict)
-    assert config.xslt.common["show"]["edit"]["link"] == 1
+    assert config.xslt.common["show.edit.link"] == 1
 
     # Test serialization of LanguageCode fields back to strings
     dumped_config = config.model_dump()
