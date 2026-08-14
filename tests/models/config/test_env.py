@@ -105,8 +105,8 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert "build" in str(config.paths.tmp.tmp_build_base_dir)
 
     # Check XSLT params
-    assert "external" in config.xslt.html
-    assert isinstance(config.xslt.html["external"], dict)
+    assert "external.js.onlineonly" in config.xslt.html
+    assert config.xslt.html["external.js.onlineonly"] == "/docserv/res/extra.js"
     assert config.xslt.common["show.edit.link"] == 1
 
     # Test serialization of LanguageCode fields back to strings
