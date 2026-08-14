@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev16+g9b75fd6de.d20260814</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev17+gbb6d5c6c3.d20260814</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=6783b7da"></script>
+    <script src="_static/documentation_options.js?v=35c9ed70"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -459,6 +459,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed the placeholder-resolution tests for the environment configuration, which previously mocked the wrong module and did not exercise the mocked code path. The mock now targets the <code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env</span></code> module so the tests fail when placeholder resolution breaks. Additionally, removed obsolete and duplicate test files and dead fixtures, and parametrized repeated check validation tests to reduce maintenance overhead. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/430">GH #430</a>)</p></li>
+<li><p>Adjusted invalid <a class="reference internal" href="reference/_autoapi/docbuild/models/product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a> error messages during doctype parsing to list allowed product acronyms (for example <code class="docutils literal notranslate"><span class="pre">sle-ha</span></code> and <code class="docutils literal notranslate"><span class="pre">sles</span></code>) instead of full product names. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/449">GH #449</a>)</p></li>
 </ul>
 </section>
 <section id="features">
