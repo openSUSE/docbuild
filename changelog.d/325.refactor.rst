@@ -1,0 +1,1 @@
+Refactored the internal async task orchestration in the metadata extraction pipeline to use ``aiostream``. This replaces manual task tracking and semaphore logic with a clean, Unix-pipe-style concurrency model, laying the groundwork for robust build pipelines and dependency caching.

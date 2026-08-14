@@ -5,7 +5,8 @@ from collections.abc import Sequence
 import logging
 from pathlib import Path
 
-from lxml import etree
+from aiostream import pipe, stream
+from lxml import etree  # type: ignore
 from rich.console import Console
 
 from docbuild.constants import DEFAULT_DELIVERABLES
@@ -38,68 +39,6 @@ def get_deliverable_worker_limit(
     return max(1, min(max_workers, deliverable_count))
 
 
-async def run_tasks_fail_fast(tasks: list[asyncio.Task]) -> list[Deliverable]:
-    """Execute tasks and stop immediately on the first failure.
-
-    :param tasks: List of asyncio Tasks wrapping ``process_deliverable`` coroutines.
-    :return: A list containing the first failed Deliverable, or an empty list.
-    """
-    failed: list[Deliverable] = []
-    for task in asyncio.as_completed(tasks):
-        try:
-            success, deliverable = await task
-            if not success:
-                failed.append(deliverable)
-                for t in tasks:
-                    if not t.done():
-                        t.cancel()
-                break
-        except Exception as e:
-            log.error("Task failed unexpectedly: %s", e)
-            for t in tasks:
-                if not t.done():
-                    t.cancel()
-            break
-    return failed
-
-
-async def run_tasks_collect_all(
-    tasks: list[asyncio.Task], deliverables: list[Deliverable]
-) -> list[Deliverable]:
-    """Execute all tasks and collect every failure encountered.
-
-    :param tasks: List of asyncio Tasks wrapping ``process_deliverable`` coroutines.
-    :param deliverables: The matching list of Deliverables (same order as tasks).
-    :return: A list of all Deliverables that failed.
-    """
-    failed: list[Deliverable] = []
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for deliverable, result in zip(deliverables, results, strict=False):
-        if isinstance(result, tuple):
-            success, res_deliverable = result
-            if not success:
-                failed.append(res_deliverable)
-        elif isinstance(result, Exception):
-            log.error("Error in task for %s: %s", deliverable.full_id, result)
-            failed.append(deliverable)
-    return failed
-
-
-async def run_metadata_tasks(
-    tasks: list[asyncio.Task], deliverables: list[Deliverable], exitfirst: bool
-) -> list[Deliverable]:
-    """Execute metadata tasks using either fail-fast or collect-all strategy.
-
-    :param tasks: List of asyncio Tasks to execute.
-    :param deliverables: The matching Deliverables list.
-    :param exitfirst: When ``True``, stop on the first failure.
-    :return: A list of failed Deliverables.
-    """
-    if exitfirst:
-        return await run_tasks_fail_fast(tasks)
-    return await run_tasks_collect_all(tasks, deliverables)
-
-
 async def process_doctype(
     root: etree._ElementTree,
     doctype: Doctype,
@@ -112,7 +51,7 @@ async def process_doctype(
     exitfirst: bool = False,
     skip_repo_update: bool = False,
 ) -> list[Deliverable]:
-    """Process the doctypes and create metadata files.
+    """Process the doctypes and create metadata files using an aiostream pipeline.
 
     :param root: The stitched XML node containing configuration.
     :param doctype: The Doctype object to process.
@@ -135,12 +74,12 @@ async def process_doctype(
         await update_repositories(deliverables, repo_dir)
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
-    semaphore = asyncio.Semaphore(worker_limit)
 
-    async def process_deliverable_limited(
-        deliverable: Deliverable,
+    # Wrapper to catch exceptions safely and match the MapCallable signature
+    async def process_deliverable_wrapper(
+        deliverable: Deliverable, *args: object
     ) -> tuple[bool, Deliverable]:
-        async with semaphore:
+        try:
             return await process_deliverable(
                 deliverable,
                 repo_dir,
@@ -149,16 +88,29 @@ async def process_doctype(
                 dapstmpl=dapsmetatmpl,
                 skip_repo_update=skip_repo_update,
             )
+        except Exception as e:
+            log.error("Error in task for %s: %s", deliverable.full_id, e)
+            return False, deliverable
 
-    tasks = [
-        asyncio.create_task(
-            process_deliverable_limited(d),
-            name=f"process_deliverable_{d.full_id}",
-        )
-        for d in deliverables
-    ]
+    # The elegant aiostream pipeline!
+    pipeline = stream.iterate(deliverables) | pipe.map(
+        process_deliverable_wrapper, task_limit=worker_limit
+    )
 
-    return await run_metadata_tasks(tasks, deliverables, exitfirst)
+    failed: list[Deliverable] = []
+
+    try:
+        # Evaluate the pipeline and collect results
+        async with pipeline.stream() as streamer:
+            async for success, deliverable in streamer:
+                if not success:
+                    failed.append(deliverable)
+                    if exitfirst:
+                        break  # Breaking automatically safely cancels pending tasks!
+    except Exception as e:
+        log.error("Task failed unexpectedly: %s", e)
+
+    return failed
 
 
 async def process(

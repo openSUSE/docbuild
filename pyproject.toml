@@ -24,6 +24,7 @@ requires-python = ">=3.12"
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 dependencies = [
+    "aiostream>=0.7.1",
     "click>=8.4.2",
     "jinja2>=3.1.6,<4.0.0",
     "lxml>=6.1.1",
