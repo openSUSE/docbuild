@@ -21,7 +21,7 @@ To add a new configuration key ``config.new_xyz_feature``, follow these steps:
       .. code-block:: toml
          :caption: Example of adding a new config key to the environment configuration
 
-         [config]
+         [general]
          # ...
          # new_xyz_feature(bool): Enable the new XYZ feature for enhanced functionality.
          new_xyz_feature = true
@@ -74,7 +74,7 @@ To add a new configuration key ``config.new_xyz_feature``, follow these steps:
 #. Integrate the key ``config.new_xyz_feature`` into
    :data:`~docbuild.cli.defaults.DEFAULT_ENV_CONFIG`.
 
-   As the key was in the ``config`` section, add it under the ``config``
+   As the key was in the ``general`` section, add it under the ``general``
    key in the nested dictionary structure.
 
 #. Access the value of the new configuration key through the environment
@@ -88,7 +88,7 @@ To add a new configuration key ``config.new_xyz_feature``, follow these steps:
 
       def cmd_mycommand(ctx: click.Context):
          env: EnvConfig = ctx.obj.envconfig
-         if env.config.new_xyz_feature:
+         if env.general.new_xyz_feature:
             # Implement the functionality that should be enabled
             # when the feature is turned on
 

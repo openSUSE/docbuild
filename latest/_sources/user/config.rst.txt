@@ -66,7 +66,7 @@ If the configuration is invalid, the application provides a structured,
 color-coded error report to help you identify and fix the issues. Each error
 includes:
 
-* **Location**: The exact path in the TOML file (e.g., ``server.host``).
+* **Location**: The exact path in the TOML file (e.g., ``general.enable_mail``).
 * **Field Info**: A human-readable title and description of the field's purpose.
 * **Error Detail**: A specific message explaining why the value failed validation.
 * **Documentation Link**: A direct URL to a reference page with more details
@@ -78,7 +78,7 @@ Example error output:
 
     1 Validation error in config file 'env.devel.toml':
 
-    (1) In 'server.enable_mail':
+    (1) In 'general.enable_mail':
         Input should be a valid boolean, unable to interpret input
         Expected: Enable Email
         Description: Flag to enable email sending features.
@@ -146,16 +146,16 @@ Static placeholders follow a specific syntax:
   .. code-block:: toml
      :emphasize-lines: 5
 
-     [server]
+     [general]
      name = "doc-example-com"
 
      [paths]
      base_cache_dir = "/tmp/cache"
-     base_server_cache_dir = "{base_cache_dir}/{server.name}"
+     base_server_cache_dir = "{base_cache_dir}/{general.name}"
 
   In this example, the key ``base_server_cache_dir`` uses the
-  static placeholder ``{server.name}`` to reference the value of the
-  key ``name`` in the ``server`` section.
+  static placeholder ``{general.name}`` to reference the value of the
+  key ``name`` in the ``general`` section.
 
   If you have nested sections, use dot notation to reference the keys (for example, ``section.subsection.key``).
 

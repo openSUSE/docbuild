@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Tool &#8212; Docbuild Documentation 0.22.1.dev11+g5cbdbc002.d20260814</title>
+    <title>Configuring the Tool &#8212; Docbuild Documentation 0.22.1.dev16+g9b75fd6de.d20260814</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=a895dddb"></script>
+    <script src="../_static/documentation_options.js?v=6783b7da"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -527,7 +527,7 @@ required.</p></li>
 color-coded error report to help you identify and fix the issues. Each error
 includes:</p>
 <ul class="simple">
-<li><p><strong>Location</strong>: The exact path in the TOML file (e.g., <code class="docutils literal notranslate"><span class="pre">server.host</span></code>).</p></li>
+<li><p><strong>Location</strong>: The exact path in the TOML file (e.g., <code class="docutils literal notranslate"><span class="pre">general.enable_mail</span></code>).</p></li>
 <li><p><strong>Field Info</strong>: A human-readable title and description of the field’s purpose.</p></li>
 <li><p><strong>Error Detail</strong>: A specific message explaining why the value failed validation.</p></li>
 <li><p><strong>Documentation Link</strong>: A direct URL to a reference page with more details
@@ -536,7 +536,7 @@ on how to resolve that specific error type.</p></li>
 <p>Example error output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1 Validation error in config file &#39;env.devel.toml&#39;:
 
-(1) In &#39;server.enable_mail&#39;:
+(1) In &#39;general.enable_mail&#39;:
     Input should be a valid boolean, unable to interpret input
     Expected: Enable Email
     Description: Flag to enable email sending features.
@@ -589,17 +589,17 @@ For example, assume you have a configuration key <code class="docutils literal n
 </li>
 <li><p><strong>Section name</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">{section.key}</span></code>)</p>
 <p>A section name refers to a key in another section:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[server]</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[general]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;doc-example-com&quot;</span>
 
 <span class="k">[paths]</span>
 <span class="hll"><span class="n">base_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/tmp/cache&quot;</span>
-</span><span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{server.name}&quot;</span>
+</span><span class="n">base_server_cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{general.name}&quot;</span>
 </pre></div>
 </div>
 <p>In this example, the key <code class="docutils literal notranslate"><span class="pre">base_server_cache_dir</span></code> uses the
-static placeholder <code class="docutils literal notranslate"><span class="pre">{server.name}</span></code> to reference the value of the
-key <code class="docutils literal notranslate"><span class="pre">name</span></code> in the <code class="docutils literal notranslate"><span class="pre">server</span></code> section.</p>
+static placeholder <code class="docutils literal notranslate"><span class="pre">{general.name}</span></code> to reference the value of the
+key <code class="docutils literal notranslate"><span class="pre">name</span></code> in the <code class="docutils literal notranslate"><span class="pre">general</span></code> section.</p>
 <p>If you have nested sections, use dot notation to reference the keys (for example, <code class="docutils literal notranslate"><span class="pre">section.subsection.key</span></code>).</p>
 </li>
 </ul>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Environment Config Changes &#8212; Docbuild Documentation 0.22.1.dev11+g5cbdbc002.d20260814</title>
+    <title>Environment Config Changes &#8212; Docbuild Documentation 0.22.1.dev16+g9b75fd6de.d20260814</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=a895dddb"></script>
+    <script src="../../_static/documentation_options.js?v=6783b7da"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -501,7 +501,7 @@
 <li><p>Add a comment <em>above</em> the new key to explain its purpose and usage:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example of adding a new config key to the environment configuration</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[config]</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[general]</span>
 <span class="c1"># ...</span>
 <span class="c1"># new_xyz_feature(bool): Enable the new XYZ feature for enhanced functionality.</span>
 <span class="n">new_xyz_feature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
@@ -554,7 +554,7 @@ configuration is invalid.</p>
 </li>
 <li><p>Integrate the key <code class="docutils literal notranslate"><span class="pre">config.new_xyz_feature</span></code> into
 <a class="reference internal" href="../../reference/_autoapi/docbuild/cli/defaults/index.html#docbuild.cli.defaults.DEFAULT_ENV_CONFIG" title="docbuild.cli.defaults.DEFAULT_ENV_CONFIG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG</span></code></a>.</p>
-<p>As the key was in the <code class="docutils literal notranslate"><span class="pre">config</span></code> section, add it under the <code class="docutils literal notranslate"><span class="pre">config</span></code>
+<p>As the key was in the <code class="docutils literal notranslate"><span class="pre">general</span></code> section, add it under the <code class="docutils literal notranslate"><span class="pre">general</span></code>
 key in the nested dictionary structure.</p>
 </li>
 <li><p>Access the value of the new configuration key through the environment
@@ -565,7 +565,7 @@ of a Click command, retrieve it from the <a class="reference external" href="htt
 <div class="code-block-caption"><span class="caption-text">Example of accessing the new config key in code</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cmd_mycommand</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="n">click</span><span class="o">.</span><span class="n">Context</span><span class="p">):</span>
    <span class="n">env</span><span class="p">:</span> <span class="n">EnvConfig</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">envconfig</span>
-   <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">new_xyz_feature</span><span class="p">:</span>
+   <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">general</span><span class="o">.</span><span class="n">new_xyz_feature</span><span class="p">:</span>
       <span class="c1"># Implement the functionality that should be enabled</span>
       <span class="c1"># when the feature is turned on</span>
 </pre></div>

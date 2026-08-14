@@ -18,17 +18,8 @@ docbuild.models.config.env.EnvConfig
 
 
 
-   .. py:attribute:: server
-      :type:  EnvServer
-      :value: None
-
-
-      Server-related settings.
-
-
-
-   .. py:attribute:: config
-      :type:  EnvGeneralConfig
+   .. py:attribute:: general
+      :type:  EnvGeneral
       :value: None
 
 
@@ -54,8 +45,8 @@ docbuild.models.config.env.EnvConfig
 
 
 
-   .. py:attribute:: xslt_params
-      :type:  dict[str, Any]
+   .. py:attribute:: xslt
+      :type:  EnvXslt
       :value: None
 
 

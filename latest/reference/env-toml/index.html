@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.22.1.dev11+g5cbdbc002.d20260814</title>
+    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.22.1.dev16+g9b75fd6de.d20260814</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=a895dddb"></script>
+    <script src="../../_static/documentation_options.js?v=6783b7da"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -609,10 +609,10 @@
 <p>The Env TOML file is used to configure the environment for docbuild.
 It allows you to specify various settings such as server configuration,
 paths, and other environment-specific parameters.</p>
-<section id="server">
-<span id="envtoml-section-server"></span><h2>[server]<a class="headerlink" href="#server" title="Link to this heading">#</a></h2>
-<p>Deals with all config about server settings</p>
-<dl id="envtoml-server-name">
+<section id="general">
+<span id="envtoml-section-general"></span><h2>[general]<a class="headerlink" href="#general" title="Link to this heading">#</a></h2>
+<p>General configuration</p>
+<dl id="envtoml-general-name">
 <dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -621,10 +621,10 @@ paths, and other environment-specific parameters.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">default-env</span></code></p>
 </dd>
 </dl>
-<p>Name of the server, used for logging and cache paths</p>
+<p>Name of the environment, used for logging and cache paths</p>
 </dd>
 </dl>
-<dl id="envtoml-server-role">
+<dl id="envtoml-general-role">
 <dt><code class="docutils literal notranslate"><span class="pre">role</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -633,34 +633,10 @@ paths, and other environment-specific parameters.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">production</span></code></p>
 </dd>
 </dl>
-<p>Role of the server, used for logging and other purposes. Possible values: “production”, “staging”, “development”</p>
+<p>Role of the environment. Possible values: “production”, “staging”, “development”</p>
 </dd>
 </dl>
-<dl id="envtoml-server-host">
-<dt><code class="docutils literal notranslate"><span class="pre">host</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
-</dd>
-</dl>
-<p>Hostname or IP address to bind the server to.</p>
-</dd>
-</dl>
-<dl id="envtoml-server-port">
-<dt><code class="docutils literal notranslate"><span class="pre">port</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">80</span></code></p>
-</dd>
-</dl>
-<p>Port number to listen on. Uncomment and set to enable.</p>
-</dd>
-</dl>
-<dl id="envtoml-server-enable-mail">
+<dl id="envtoml-general-enable-mail">
 <dt><code class="docutils literal notranslate"><span class="pre">enable_mail</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">bool</span></code></p>
@@ -669,15 +645,10 @@ paths, and other environment-specific parameters.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
 </dd>
 </dl>
-<p>Whether to enable email notifications.
-Set to true to enable.</p>
+<p>Whether to enable email notifications.</p>
 </dd>
 </dl>
-</section>
-<section id="config">
-<span id="envtoml-section-config"></span><h2>[config]<a class="headerlink" href="#config" title="Link to this heading">#</a></h2>
-<p>General configuration</p>
-<dl id="envtoml-config-default-lang">
+<dl id="envtoml-general-default-lang">
 <dt><code class="docutils literal notranslate"><span class="pre">default_lang</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -689,7 +660,7 @@ Set to true to enable.</p>
 <p>Default language for the documentation.</p>
 </dd>
 </dl>
-<dl id="envtoml-config-languages">
+<dl id="envtoml-general-languages">
 <dt><code class="docutils literal notranslate"><span class="pre">languages</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">list[str]</span></code></p>
@@ -701,7 +672,7 @@ Set to true to enable.</p>
 <p>A list of all supported languages.</p>
 </dd>
 </dl>
-<dl id="envtoml-config-canonical-url-domain">
+<dl id="envtoml-general-canonical-url-domain">
 <dt><code class="docutils literal notranslate"><span class="pre">canonical_url_domain</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -838,7 +809,7 @@ Key naming convention:</p>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/{server.name}</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{base_cache_dir}/{general.name}</span></code></p>
 </dd>
 </dl>
 <p>The server-specific cache directory, derived from base_cache_dir and server name.</p>
@@ -1094,24 +1065,22 @@ and {{output}} are filled at runtime by the metadata task.</p>
 </dd>
 </dl>
 </section>
-<section id="xslt-params">
-<span id="envtoml-section-xslt-params"></span><h2>[xslt-params]<a class="headerlink" href="#xslt-params" title="Link to this heading">#</a></h2>
-<p>Replaces <code class="file docutils literal notranslate"><span class="pre">/etc/docserv/xslt-params-doc-suse-com.txt</span></code> file
-These keys are considered as XSLT parameters and passed
-to the transformation process</p>
-<dl id="envtoml-xslt-params-homepage">
+<section id="xslt-common">
+<span id="envtoml-section-xslt-common"></span><h2>[xslt.common]<a class="headerlink" href="#xslt-common" title="Link to this heading">#</a></h2>
+<p>These keys are considered as XSLT parameters and passed
+to the transformation process for ALL output formats</p>
+<dl class="simple" id="envtoml-xslt-common-homepage">
 <dt><code class="docutils literal notranslate"><span class="pre">homepage</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">unknown</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">https://documentation.suse.com/</span></code></p>
 </dd>
 </dl>
-<p>The URL for the main homepage link in the documentation.</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-overview-page">
+<dl id="envtoml-xslt-common-overview-page">
 <dt><code class="docutils literal notranslate"><span class="pre">overview-page</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -1123,7 +1092,7 @@ to the transformation process</p>
 <p>The URL for the documentation overview page.</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-overview-page-title">
+<dl id="envtoml-xslt-common-overview-page-title">
 <dt><code class="docutils literal notranslate"><span class="pre">overview-page-title</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -1135,19 +1104,7 @@ to the transformation process</p>
 <p>The title displayed for the overview page link.</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-external-js-onlineonly">
-<dt><code class="docutils literal notranslate"><span class="pre">external.js.onlineonly</span></code></dt><dd><dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-<dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
-</dd>
-</dl>
-<p>Path to an external JavaScript file that is only included in the online version.</p>
-</dd>
-</dl>
-<dl id="envtoml-xslt-params-show-edit-link">
+<dl id="envtoml-xslt-common-show-edit-link">
 <dt><code class="docutils literal notranslate"><span class="pre">show.edit.link</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -1159,7 +1116,7 @@ to the transformation process</p>
 <p>A flag to control the visibility of the “Edit on GitHub” link (1 for true).</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-twittercards-twitter-account">
+<dl id="envtoml-xslt-common-twittercards-twitter-account">
 <dt><code class="docutils literal notranslate"><span class="pre">twittercards.twitter.account</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -1171,7 +1128,7 @@ to the transformation process</p>
 <p>The Twitter username to associate with Twitter Cards.</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-generate-json-ld">
+<dl id="envtoml-xslt-common-generate-json-ld">
 <dt><code class="docutils literal notranslate"><span class="pre">generate.json-ld</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -1183,7 +1140,7 @@ to the transformation process</p>
 <p>A flag to enable or disable the generation of JSON-LD structured data (1 for true).</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-search-description-length">
+<dl id="envtoml-xslt-common-search-description-length">
 <dt><code class="docutils literal notranslate"><span class="pre">search.description.length</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -1195,7 +1152,7 @@ to the transformation process</p>
 <p>The maximum character length for search result descriptions.</p>
 </dd>
 </dl>
-<dl id="envtoml-xslt-params-socialmedia-description-length">
+<dl id="envtoml-xslt-common-socialmedia-description-length">
 <dt><code class="docutils literal notranslate"><span class="pre">socialmedia.description.length</span></code></dt><dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">int</span></code></p>
@@ -1207,6 +1164,24 @@ to the transformation process</p>
 <p>The maximum character length for descriptions used in social media sharing.</p>
 </dd>
 </dl>
+</section>
+<section id="xslt-html">
+<span id="envtoml-section-xslt-html"></span><h2>[xslt.html]<a class="headerlink" href="#xslt-html" title="Link to this heading">#</a></h2>
+<p>Parameters specifically for HTML output</p>
+<dl class="simple" id="envtoml-xslt-html-external-js-onlineonly">
+<dt><code class="docutils literal notranslate"><span class="pre">&quot;external.js.onlineonly&quot;</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">unknown</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="xslt-pdf">
+<span id="envtoml-section-xslt-pdf"></span><h2>[xslt.pdf]<a class="headerlink" href="#xslt-pdf" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -1257,15 +1232,16 @@ to the transformation process</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#server">[server]</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config">[config]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general">[general]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths">[paths]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-tmp">[paths.tmp]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-target">[paths.target]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build">[build]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-daps">[build.daps]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-container">[build.container]</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-params">[xslt-params]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-common">[xslt.common]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-html">[xslt.html]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#xslt-pdf">[xslt.pdf]</a></li>
 </ul>
   </nav></div>
 
