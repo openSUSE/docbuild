@@ -22,7 +22,7 @@ class Doctype(BaseModel):
 
     .. code-block:: text
 
-       [/]?PRODUCT/DOCSETS[@LIFECYCLES]/[LANGS]
+       [/]?[PRODUCT]/[DOCSET...][@LIFECYCLES...]/[LANGS...]
 
     The placeholders mean the following:
 
@@ -45,6 +45,8 @@ class Doctype(BaseModel):
     'supported'
     >>> doctype.langs
     [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
+
+    See also: :ref:`build-deliverables`
     """
 
     product: Product = Field(

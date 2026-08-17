@@ -1,0 +1,3 @@
+Amended the documentation about doctype syntax and the class
+:class:`~docbuild.models.doctype.Doctype` to stay consistent. Also
+added some more examples and the fallback default value to English.
