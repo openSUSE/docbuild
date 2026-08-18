@@ -25,9 +25,44 @@ The following flowchart illustrates how deliverables stream through the metadata
        %% Define the output
        P2 -->|success, deliverable| Output[/Failure Collection & Early Exit/]
 
-       %% Styling
-       style Async Pipeline fill:#f9f9f9,stroke:#333,stroke-width:2px
-       style Iter fill:#e1f5fe,stroke:#0288d1
-       style P1 fill:#fff3e0,stroke:#f57c00
-       style P2 fill:#e8f5e9,stroke:#388e3c
-       style Output fill:#fce4ec,stroke:#c2185b
+
+Implementation & Exception Handling
+-----------------------------------
+
+Because ``aiostream`` expects a mapping function to process items cleanly, we wrap our core execution functions to catch exceptions and return structured status tuples (e.g., ``(success_boolean, deliverable)``). This prevents a single failed deliverable from ungracefully crashing the entire pipeline.
+
+Here is a simplified example of how we interact with ``aiostream`` and handle errors:
+
+.. code-block:: python
+
+    from aiostream import stream, pipe
+
+    async def my_task_wrapper(deliverable, *args: object) -> tuple[bool, object]:
+        """Wrapper to catch exceptions safely so the pipeline continues."""
+        try:
+            # Attempt the actual heavy-lifting task
+            await process_deliverable(deliverable)
+            return True, deliverable
+        except Exception as e:
+            # Log the error and return a failure state
+            log.error(f"Task failed: {e}")
+            return False, deliverable
+
+    async def run_pipeline(deliverables):
+        # 1. Create the stream
+        pipeline = stream.iterate(deliverables) | pipe.map(
+            my_task_wrapper, task_limit=8
+        )
+
+        failed_items = []
+
+        # 2. Consume the pipeline
+        async with pipeline.stream() as streamer:
+            async for success, deliverable in streamer:
+                if not success:
+                    failed_items.append(deliverable)
+                    # To "fail fast", we can simply break the loop. 
+                    # aiostream automatically safely cancels all pending tasks!
+                    # break 
+
+        return failed_items
