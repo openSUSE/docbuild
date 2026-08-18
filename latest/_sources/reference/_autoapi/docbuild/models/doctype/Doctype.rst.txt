@@ -15,7 +15,7 @@ docbuild.models.doctype.Doctype
 
    .. code-block:: text
 
-      [/]?PRODUCT/DOCSETS[@LIFECYCLES]/[LANGS]
+      [/]?[PRODUCT]/[DOCSET...][@LIFECYCLES...]/[LANGS...]
 
    The placeholders mean the following:
 
@@ -38,6 +38,8 @@ docbuild.models.doctype.Doctype
    'supported'
    >>> doctype.langs
    [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
+
+   See also: :ref:`build-deliverables`
 
 
    .. py:attribute:: product
