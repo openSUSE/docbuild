@@ -1,10 +1,11 @@
 """Metadata and dunder behavior tests for deliverables."""
 
+from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.metadata import Metadata
-from lxml import etree # type: ignore
+
 
 def test_metafile_setter(first_deliverable: Deliverable) -> None:
     assert first_deliverable.metafile is None
