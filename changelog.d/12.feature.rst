@@ -1,0 +1,1 @@
+Implemented the core ``docbuild build`` CLI command with an asynchronous pipeline to concurrently execute ``daps html`` and ``daps pdf`` builds. Added the ``--skip-repo-update`` CLI flag to bypass repository fetching during local testing.

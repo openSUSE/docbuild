@@ -34,9 +34,13 @@ Examples of the doctypes syntax:
   the lifecycle states.
 """  # noqa: D301
 
+import asyncio
+from pathlib import Path
+
 import click
 
 from ...models.doctype import Doctype
+from ...tasks.build.runner import process
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
 from ..context import DocBuildContext
@@ -50,18 +54,49 @@ from ..context import DocBuildContext
     nargs=-1,
     callback=validate_doctypes,
 )
+@click.option(
+    "-S",
+    "--skip-repo-update",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Skip updating git repositories before processing.",
+)
 @click.pass_context
 @requires_system_tools()
-def build(ctx: click.Context, doctypes: tuple[Doctype]) -> None:
+def build(
+    ctx: click.Context, doctypes: tuple[Doctype, ...], skip_repo_update: bool
+) -> None:
     """Subcommand build.
 
     :param ctx: The Click context object.
     :param doctypes: A tuple of doctype objects to build.
+    :param skip_repo_update: If True, do not fetch updates for the git repositories.
     """
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
-    # env = context.envconfig
 
-    click.echo(f"[BUILD] Verbosity: {context.verbose}")
-    click.echo(f"{context=}")
-    click.echo(f"{context.appconfigfiles=}")
+    if not context.envconfig:
+        click.echo("Environment configuration is missing.", err=True)
+        ctx.exit(1)
+
+    assert context.envconfig is not None
+
+    env = context.envconfig
+    main_portal_config = Path(env.paths.main_portal_config)
+    repo_dir = Path(env.paths.repo_dir)
+
+    max_workers = context.appconfig.max_workers if context.appconfig else 1
+
+    click.echo(f"[BUILD] Starting async build pipeline with {max_workers} workers...")
+
+    result = asyncio.run(
+        process(
+            main_portal_config=main_portal_config,
+            repo_dir=repo_dir,
+            max_workers=max_workers,
+            doctypes=doctypes,
+            skip_repo_update=skip_repo_update,
+        )
+    )
+    ctx.exit(result)
