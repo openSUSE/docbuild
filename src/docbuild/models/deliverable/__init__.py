@@ -9,10 +9,10 @@
 """
 
 from dataclasses import dataclass, field
-from functools import cached_property
+from functools import cached_property, total_ordering
 from typing import ClassVar, Literal
 
-from lxml import etree
+from lxml import etree  # type: ignore[import]
 
 from ...utils.convert import convert2bool
 from ..metadata import Metadata
@@ -21,6 +21,7 @@ from .paths import DeliverablePaths
 from .view import DeliverableXMLView
 
 
+@total_ordering
 @dataclass
 class Deliverable:
     """Deliverable model class operated on a validated config.
@@ -161,6 +162,18 @@ class Deliverable:
         if not isinstance(value, Metadata):
             raise TypeError(f"Expected Metadata, got {type(value)}")
         self._meta = value
+
+    def __eq__(self, other: object) -> bool:
+        """Return True if the other deliverable has the same full ID."""
+        if not isinstance(other, Deliverable):
+            return NotImplemented
+        return self.full_id == other.full_id
+
+    def __lt__(self, other: object) -> bool:
+        """Compare two Deliverable objects for sorting."""
+        if not isinstance(other, Deliverable):
+            return NotImplemented
+        return self.full_id < other.full_id
 
     def __hash__(self) -> int:
         """Return a hash based on the stable full identifier."""

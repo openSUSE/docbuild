@@ -17,6 +17,14 @@ from docbuild.tasks.metadata.runner import (
     process_doctype,
 )
 
+
+class SortableMock(Mock):
+    """A Mock that supports sorting by the full_id attribute."""
+
+    def __lt__(self, other: object) -> bool:
+        return str(getattr(self, "full_id", "")) < str(getattr(other, "full_id", ""))
+
+
 # ---------------------------------------------------------------------------
 # Shared fixtures
 # ---------------------------------------------------------------------------
@@ -63,13 +71,22 @@ class TestProcessDoctype:
     ) -> None:
         """No failures are returned when all deliverables succeed."""
         doctype = Doctype.from_str("sles/15/en-us")
-        mock_d = Mock(
+
+        # Use SortableMock with distinct IDs so they can be sorted safely
+        d1 = SortableMock(
             spec=Deliverable,
-            full_id="sles/15/en-us:DC-TEST",
+            full_id="sles/15/en-us:DC-A",
             git=Mock(spec=Repo, url="gh://SUSE/doc-test")
         )
-        mock_get_deliverables.return_value = [mock_d, mock_d]
-        mock_process_deliverable.return_value = (True, mock_d)
+        d2 = SortableMock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-B",
+            git=Mock(spec=Repo, url="gh://SUSE/doc-test")
+        )
+
+        # Feed them in reverse order to ensure sorting works without crashing
+        mock_get_deliverables.return_value = [d2, d1]
+        mock_process_deliverable.return_value = (True, d1)
 
         result = await process_doctype(
             root=empty_xml_root,
@@ -128,8 +145,8 @@ class TestProcessDoctype:
     ) -> None:
         """With exitfirst=True, only the first failing deliverable is reported."""
         doctype = Doctype.from_str("sles/15/en-us")
-        d1 = Mock(spec=Deliverable, full_id="sles/15/en-us:DC-ONE")
-        d2 = Mock(spec=Deliverable, full_id="sles/15/en-us:DC-TWO")
+        d1 = SortableMock(spec=Deliverable, full_id="sles/15/en-us:DC-ONE")
+        d2 = SortableMock(spec=Deliverable, full_id="sles/15/en-us:DC-TWO")
         mock_get_deliverables.return_value = [d1, d2]
 
         # In a real aiostream pipeline, breaking the loop cancels the rest.
@@ -161,7 +178,7 @@ class TestProcessDoctype:
     ) -> None:
         """Exceptions in the pipeline wrapper are caught and treated as failures."""
         doctype = Doctype.from_str("sles/15/en-us")
-        mock_d = Mock(spec=Deliverable, full_id="test:DC-ERROR")
+        mock_d = SortableMock(spec=Deliverable, full_id="test:DC-ERROR")
         mock_get_deliverables.return_value = [mock_d]
         mock_process_deliverable.side_effect = RuntimeError("Simulated failure")
 

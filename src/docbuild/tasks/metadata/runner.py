@@ -69,7 +69,7 @@ async def process_doctype(
     )
 
     # Sort deliverables alphabetically for predictable processing order
-    deliverables.sort(key=lambda d: d.full_id)
+    deliverables.sort()
 
     if skip_repo_update:
         log.info("Skipping repository %s updates as requested.", repo_dir)
