@@ -63,7 +63,11 @@ class TestProcessDoctype:
     ) -> None:
         """No failures are returned when all deliverables succeed."""
         doctype = Doctype.from_str("sles/15/en-us")
-        mock_d = Mock(spec=Deliverable, git=Mock(spec=Repo, url="gh://SUSE/doc-test"))
+        mock_d = Mock(
+            spec=Deliverable,
+            full_id="sles/15/en-us:DC-TEST",
+            git=Mock(spec=Repo, url="gh://SUSE/doc-test")
+        )
         mock_get_deliverables.return_value = [mock_d, mock_d]
         mock_process_deliverable.return_value = (True, mock_d)
 

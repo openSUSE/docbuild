@@ -68,6 +68,9 @@ async def process_doctype(
         get_deliverable_from_doctype, root, doctype
     )
 
+    # Sort deliverables alphabetically for predictable processing order
+    deliverables.sort(key=lambda d: d.full_id)
+
     if skip_repo_update:
         log.info("Skipping repository %s updates as requested.", repo_dir)
     else:
@@ -94,7 +97,7 @@ async def process_doctype(
 
     # The elegant aiostream pipeline!
     pipeline = stream.iterate(deliverables) | pipe.map(
-        process_deliverable_wrapper, task_limit=worker_limit
+        process_deliverable_wrapper, task_limit=worker_limit, ordered=True
     )
 
     failed: list[Deliverable] = []
