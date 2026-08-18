@@ -196,12 +196,24 @@ def store_productdocset_json(
 ) -> None:
     """Collect all JSON files for product/docset and create a single file.
 
+    Wildcards in ``doctypes`` are resolved against the stitched config, as
+    :func:`collect_files_flat` matches docsets against literal path components.
+
     :param doctypes: Sequence of Doctype objects.
     :param stitchnode: The stitched XML tree.
     :param meta_cache_dir: Path to the metadata cache directory.
     :param json_cache_dir: Path to the JSON cache directory.
     """
-    for doctype, docset, files in collect_files_flat(doctypes, meta_cache_dir):
+    # iter_doctypes() yields one entry per docset/language, but JSON is per docset.
+    resolved = {
+        (dt.product.acronym, dt.docset[0]): dt
+        for doctype in doctypes
+        for dt in doctype.iter_doctypes(stitchnode.getroot())
+    }
+
+    for doctype, docset, files in collect_files_flat(
+        list(resolved.values()), meta_cache_dir
+    ):
         product = doctype.product.acronym
         version_str = str(docset)
 

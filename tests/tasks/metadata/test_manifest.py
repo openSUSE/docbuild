@@ -290,6 +290,77 @@ def test_store_productdocset_json_applies_docset_description_treatment(
     assert data["descriptions"][0]["description"] == "<p>Global</p><p>Local</p>"
 
 
+def test_store_productdocset_json_expands_docset_wildcard(tmp_path: Path) -> None:
+    """A wildcard doctype writes one JSON file per configured docset."""
+    xml_string = """
+    <docservconfig>
+      <product id="appliance">
+        <name>Appliance building</name>
+        <acronym>appliance</acronym>
+        <docset id="appliance.keg-2" path="keg-2" lifecycle="supported">
+          <resources>
+            <git remote="https://github.com/SUSE-Enceladus/keg.git"/>
+            <locale lang="en-us"/>
+          </resources>
+        </docset>
+        <docset id="appliance.kiwi-9" path="kiwi-9" lifecycle="supported">
+          <resources>
+            <git remote="https://github.com/OSInside/kiwi-suse-doc.git"/>
+            <locale lang="en-us"/>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode_local = etree.ElementTree(etree.fromstring(xml_string))
+
+    meta_cache_dir = tmp_path / "cache" / "metadata"
+    json_cache_dir = tmp_path / "cache" / "json"
+    json_cache_dir.mkdir(parents=True, exist_ok=True)
+
+    for docset, dcfile, title in (
+        ("keg-2", "DC-keg", "Keg"),
+        ("kiwi-9", "DC-kiwi", "KIWI"),
+    ):
+        outdir = meta_cache_dir / "en-us" / "appliance" / docset
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / dcfile).write_text(
+            json.dumps(
+                {
+                    "docs": [
+                        {
+                            "title": title,
+                            "dcfile": f"{dcfile}.xml",
+                            "lang": "en-us",
+                            "description": f"The {title} guide.",
+                            "dateModified": "2024-01-01",
+                            "format": {"html": "path/to/html"},
+                        }
+                    ],
+                    "category": "cat.administration",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    store_productdocset_json(
+        doctypes=[Doctype.from_str("appliance/*/*")],
+        stitchnode=stitchnode_local,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    jsondir = json_cache_dir / "appliance"
+    assert sorted(p.name for p in jsondir.glob("*.json")) == [
+        "keg-2.json",
+        "kiwi-9.json",
+    ]
+
+    keg = json.loads((jsondir / "keg-2.json").read_text(encoding="utf-8"))
+    assert keg["productname"] == "Appliance building"
+    assert [doc["docs"][0]["title"] for doc in keg["documents"]] == ["Keg"]
+
+
 def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> None:
     """Extract configured locale languages in order while removing duplicates."""
     docset_node = etree.fromstring(

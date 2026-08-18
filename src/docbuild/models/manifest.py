@@ -38,8 +38,16 @@ class Description(BaseModel):
     """
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     description: str = Field(default="")
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English descriptions as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -59,7 +67,6 @@ class Description(BaseModel):
         """
         for n in node.xpath("descriptions/desc"):
             attrs: dict[str, Any] = dict(n.attrib)
-            attrs.setdefault("default", False)
             text = "".join(
                 f"<{child.tag}>{
                     ' '.join(

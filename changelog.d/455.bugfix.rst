@@ -1,0 +1,1 @@
+Fixed :func:`~docbuild.tasks.metadata.manifest.store_productdocset_json` not writing any product/docset JSON file when the doctype contained a docset wildcard (for example ``appliance/*/*``). Doctypes are now resolved with :meth:`~docbuild.models.doctype.Doctype.iter_doctypes` before the cached metadata files are collected.

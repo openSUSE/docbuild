@@ -134,6 +134,18 @@ def test_description_serialize_lang() -> None:
     assert serialized["lang"] == "en-us"
 
 
+def test_description_default_for_english_when_missing() -> None:
+    """Auto-set default=True when lang is en-us and default is omitted."""
+    desc = Description(lang="en-us", description="Test description")
+    assert desc.default is True
+
+
+def test_description_explicit_default_is_preserved() -> None:
+    """Do not override an explicitly provided default value."""
+    desc = Description(lang="en-us", default=False, description="Test description")
+    assert desc.default is False
+
+
 def test_category_translation_serialize_lang() -> None:
     """Test serialization of LanguageCode in CategoryTranslation."""
     cat_trans = CategoryTranslation(lang="de-de", default=False, title="Test Titel")
@@ -258,6 +270,21 @@ def test_description_from_xml_node() -> None:
         "description": "<p>Hello Description</p>",
     }
     assert models[1].lang == LanguageCode(language="de-de")
+
+
+def test_description_from_xml_node_marks_english_default() -> None:
+    """Descriptions without a default attribute mark en-us as the default."""
+    doc = """<product>
+        <descriptions>
+            <desc lang="en-us"><p>English</p></desc>
+            <desc lang="de-de"><p>German</p></desc>
+            <desc default="0" lang="en-us"><p>Not default</p></desc>
+        </descriptions>
+    </product>
+    """
+    models = list(Description.from_xml_node(etree.fromstring(doc, parser=None)))
+
+    assert [m.default for m in models] == [True, False, False]
 
 
 def test_single_document_warn_missing_title(caplog: pytest.LogCaptureFixture) -> None:
