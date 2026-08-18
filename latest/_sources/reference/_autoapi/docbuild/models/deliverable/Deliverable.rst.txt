@@ -114,6 +114,18 @@ docbuild.models.deliverable.Deliverable
 
 
 
+   .. py:method:: __eq__(other: object) -> bool
+
+      Return True if the other deliverable has the same full ID.
+
+
+
+   .. py:method:: __lt__(other: object) -> bool
+
+      Compare two Deliverable objects for sorting.
+
+
+
    .. py:method:: __hash__() -> int
 
       Return a hash based on the stable full identifier.

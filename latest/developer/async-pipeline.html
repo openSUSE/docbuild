@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Design &#8212; Docbuild Documentation 0.22.1.dev19+g3eae364ef.d20260818</title>
+    <title>Async Pipeline Architecture &#8212; Docbuild Documentation 0.22.1.dev19+g3eae364ef.d20260818</title>
   
   
   
@@ -48,7 +48,363 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/design';</script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (false) {
+                                        addZoomToSvgs(d3.selectAll("").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (false) {
+        const mermaids_to_add_zoom = 0 === -1 ? mermaids_active.length : 0;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll("").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (false) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+
+const load = async () => {
+    initStyles();
+
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/async-pipeline';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -60,8 +416,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Async Pipeline Architecture" href="async-pipeline.html" />
-    <link rel="prev" title="Overview" href="overview.html" />
+    <link rel="next" title="Project Overview" href="directory-overview.html" />
+    <link rel="prev" title="Design" href="design.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.22.0" />
@@ -387,8 +743,8 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="async-pipeline.html">Async Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Async Pipeline Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="directory-overview.html">Project Overview</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
@@ -468,7 +824,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code-review" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1ZM1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0Zm2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06Z"></path></svg> Developer Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Design</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Async Pipeline Architecture</span></li>
   </ul>
 </nav>
 </div>
@@ -485,140 +841,64 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="design">
-<h1>Design<a class="headerlink" href="#design" title="Link to this heading">#</a></h1>
-<p>This document outlines the design philosophy and structure of the project.
-It covers the core principles that guide development, the overall project layout,
-and the specific design patterns used for the command-line interface,
-configuration, and documentation. Understanding these concepts is key for
-making effective contributions.</p>
-<section id="high-level-build-workflow">
-<h2>High-level build workflow<a class="headerlink" href="#high-level-build-workflow" title="Link to this heading">#</a></h2>
-<p>The following diagram illustrates the high-level workflow of the <code class="docutils literal notranslate"><span class="pre">docbuild</span></code>
-tool, from parsing command-line arguments to generating the final documentation
-output. The core of the process involves concurrent tasks that are executed for
-each deliverable.</p>
-<figure class="align-center" id="fig-high-level-build-workflow">
-<div class="graphviz"><img src="../_images/graphviz-45d49fb9958019dddd8426e54d1e53509373150a.png" alt="digraph &quot;docbuild High-Level Workflow&quot; {
-   graph [rankdir=&quot;TB&quot;, splines=true, nodesep=0.6, ranksep=0.8];
-   node [shape=box, style=&quot;rounded,filled&quot;, fillcolor=&quot;#E6F2FF&quot;];
-   edge [fontname=&quot;Helvetica&quot;, fontsize=10];
+  <section id="async-pipeline-architecture">
+<h1>Async Pipeline Architecture<a class="headerlink" href="#async-pipeline-architecture" title="Link to this heading">#</a></h1>
+<p>DocBuild uses a pipeline architecture for orchestrating complex, concurrent tasks (like fetching repositories, extracting metadata, and building deliverables).</p>
+<p>To achieve this, we use the <code class="docutils literal notranslate"><span class="pre">aiostream</span></code> library. It allows us to chain asynchronous generators using a Unix-pipe-like syntax (<code class="docutils literal notranslate"><span class="pre">|</span></code>), automatically handling worker limits, graceful cancellation, and task fan-out.</p>
+<section id="pipeline-flow">
+<h2>Pipeline Flow<a class="headerlink" href="#pipeline-flow" title="Link to this heading">#</a></h2>
+<p>The following flowchart illustrates how deliverables stream through the metadata extraction pipeline concurrently:</p>
+<pre  class="mermaid">
+        graph TD
+    %% Define the input stream
+    Input[/List of Deliverables/] --&gt; Iter[stream.iterate]
 
-   // Inputs
-   CLI [label=&quot;Command-line Input&quot;, fillcolor=&quot;#DAE8FC&quot;];
-   XML_Configs [label=&quot;XML Configs&quot;, shape=cylinder, style=filled, fillcolor=&quot;#F5F5F5&quot;];
-   Jinja_Templates [label=&quot;Jinja Templates&quot;, shape=cylinder, style=filled, fillcolor=&quot;#F5F5F5&quot;];
+    %% Define the pipeline steps
+    subgraph Async Pipeline [aiostream Unix-like Pipeline]
+        Iter --&gt;|deliverable| P1(pipe.map: update_repositories)
+        P1 --&gt;|repo_dir| P2(pipe.map: process_deliverable_wrapper)
+    end
 
-   // Processing Steps
-   Parse_CLI [label=&quot;Parse CLI &amp; Configs&quot;];
-   Read_XML [label=&quot;Read XML &amp; Get Deliverables&quot;];
+    %% Define the output
+    P2 --&gt;|success, deliverable| Output[/Failure Collection &amp; Early Exit/]
+    </pre></section>
+<section id="implementation-exception-handling">
+<h2>Implementation &amp; Exception Handling<a class="headerlink" href="#implementation-exception-handling" title="Link to this heading">#</a></h2>
+<p>Because <code class="docutils literal notranslate"><span class="pre">aiostream</span></code> expects a mapping function to process items cleanly, we wrap our core execution functions to catch exceptions and return structured status tuples (e.g., <code class="docutils literal notranslate"><span class="pre">(success_boolean,</span> <span class="pre">deliverable)</span></code>). This prevents a single failed deliverable from ungracefully crashing the entire pipeline.</p>
+<p>Here is a simplified example of how we interact with <code class="docutils literal notranslate"><span class="pre">aiostream</span></code> and handle errors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aiostream</span><span class="w"> </span><span class="kn">import</span> <span class="n">stream</span><span class="p">,</span> <span class="n">pipe</span>
 
-   subgraph cluster_async {
-       label=&quot;Concurrent Processing (per deliverable)&quot;;
-       style=&quot;dashed&quot;;
-       bgcolor=&quot;#FFFFE0&quot;;
-       node [fillcolor=&quot;#FFF2CC&quot;];
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_task_wrapper</span><span class="p">(</span><span class="n">deliverable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">object</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper to catch exceptions safely so the pipeline continues.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Attempt the actual heavy-lifting task</span>
+        <span class="k">await</span> <span class="n">process_deliverable</span><span class="p">(</span><span class="n">deliverable</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">deliverable</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log the error and return a failure state</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">deliverable</span>
 
-       Extract_Metadata [label=&quot;Extract Metadata&quot;];
-       Build_Targets [label=&quot;Build Target Formats&quot;];
-       Combine_Info [label=&quot;Combine Info&quot;];
-       Render_Pages [label=&quot;Render Index Pages&quot;];
-       Fix_Canonicals [label=&quot;Fix Canonicals&quot;];
-   }
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">(</span><span class="n">deliverables</span><span class="p">):</span>
+    <span class="c1"># 1. Create the stream</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">deliverables</span><span class="p">)</span> <span class="o">|</span> <span class="n">pipe</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">my_task_wrapper</span><span class="p">,</span> <span class="n">task_limit</span><span class="o">=</span><span class="mi">8</span>
+    <span class="p">)</span>
 
-   // Finalization Steps
-   Sync_Files [label=&quot;Sync Built Files&quot;];
-   Build_Sitemap [label=&quot;Build Sitemap&quot;];
+    <span class="n">failed_items</span> <span class="o">=</span> <span class="p">[]</span>
 
-   // Output
-   Final_Docs [label=&quot;Final Documentation&quot;, shape=folder, fillcolor=&quot;#D5E8D4&quot;, style=filled];
+    <span class="c1"># 2. Consume the pipeline</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">stream</span><span class="p">()</span> <span class="k">as</span> <span class="n">streamer</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">success</span><span class="p">,</span> <span class="n">deliverable</span> <span class="ow">in</span> <span class="n">streamer</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="n">failed_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deliverable</span><span class="p">)</span>
+                <span class="c1"># To &quot;fail fast&quot;, we can simply break the loop.</span>
+                <span class="c1"># aiostream automatically safely cancels all pending tasks!</span>
+                <span class="c1"># break</span>
 
-   // Edges
-   CLI -&gt; Parse_CLI;
-   XML_Configs -&gt; Read_XML;
-   Parse_CLI -&gt; Read_XML;
-
-   Read_XML -&gt; Extract_Metadata;
-   Read_XML -&gt; Build_Targets;
-
-   Extract_Metadata -&gt; Combine_Info;
-   Read_XML -&gt; Combine_Info [label=&quot;Config Info&quot;, style=dashed, constraint=false];
-
-   Combine_Info -&gt; Render_Pages;
-   Jinja_Templates -&gt; Render_Pages [style=dashed];
-
-   // Build_Targets -&gt; Sync_Files;
-   Build_Targets -&gt; Fix_Canonicals;
-   Render_Pages -&gt; Sync_Files;
-
-   Fix_Canonicals -&gt; Sync_Files;
-   // Fix_Canonicals -&gt; Build_Sitemap;
-   Build_Sitemap -&gt; Final_Docs;
-   Sync_Files -&gt; Final_Docs;
-}" class="graphviz" /></div>
-<figcaption>
-<p><span class="caption-text">High-level build workflow</span><a class="headerlink" href="#fig-high-level-build-workflow" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="principles">
-<h2>Principles<a class="headerlink" href="#principles" title="Link to this heading">#</a></h2>
-<p>The code is based on the following principles:</p>
-<ul class="simple">
-<li><p><strong>Simplicity</strong>: The code should be easy to understand using clean code practices and pythonic idioms.</p></li>
-<li><p><strong>Modularity</strong>: The code should be organized into modules that can be easily reused and extended.</p></li>
-<li><p><strong>Testability</strong>: The code should be easy to test, with a focus on unit tests and integration tests.</p></li>
-<li><p><strong>Performance</strong>: The code should be efficient, with a focus on minimizing resource usage and maximizing speed.</p></li>
-<li><p><strong>Maintainability</strong>: The code should be easy to modify and extend, with a focus on keeping the codebase clean and organized for future development.</p></li>
-</ul>
-</section>
-<section id="project-design-structure">
-<h2>Project design structure<a class="headerlink" href="#project-design-structure" title="Link to this heading">#</a></h2>
-<p>The project follows a modular design structure, with the following main components:</p>
-<ul class="simple">
-<li><p><strong>Package Manager:</strong> The project uses <strong class="command">uv</strong> as a package manager to manage dependencies and virtual environments. This allows for easy installation and management of project dependencies.</p></li>
-<li><p><strong>Modern project configuration</strong>: The main configuration file <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> is used to define the project metadata and its dependencies.</p></li>
-<li><p><strong>Source directory</strong>: This project follows a source layout, where the source code is stored in the <code class="file docutils literal notranslate"><span class="pre">src</span></code> directory. This helps to avoid issues with namespace collisions and makes it easier to manage dependencies.</p></li>
-<li><p><strong>Tests directory</strong>: The tests are stored in the <code class="file docutils literal notranslate"><span class="pre">tests</span></code> directory, which contains unit tests and integration tests for the project.</p></li>
-<li><p><strong>Documentation directory</strong>: The documentation is stored in the <code class="file docutils literal notranslate"><span class="pre">docs</span></code> directory, which contains the Sphinx documentation source files.</p></li>
-<li><p><strong>Changelog</strong>: The project maintains a <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file, which documents the changes made in each version of the project. The changelog is automatically generated using the <a class="reference external" href="https://towncrier.readthedocs.io/en/stable/">towncrier</a> tool. It uses the <code class="file docutils literal notranslate"><span class="pre">changelog.d</span></code> directory to store individual change files.</p></li>
-</ul>
-</section>
-<section id="commandline-design-patterns">
-<h2>Commandline design patterns<a class="headerlink" href="#commandline-design-patterns" title="Link to this heading">#</a></h2>
-<p>The commandline interface is designed to be intuitive and user-friendly, following these patterns:</p>
-<ul class="simple">
-<li><p><strong>Dependency</strong>: The CLI is built using the <code class="xref py py-mod docutils literal notranslate"><span class="pre">click</span></code> library, which provides a simple and powerful way to create command-line interfaces in Python.</p></li>
-<li><p><strong>Subcommands</strong>: The CLI uses subcommands to organize functionality.</p></li>
-<li><p><strong>Options and Arguments</strong>: Options are used to modify the behavior of commands, while arguments are used to specify input data.</p></li>
-<li><p><strong>Help and Documentation</strong>: Each command and option has a help message that can be accessed using the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag. This provides users with information on how to use the command and its options.</p></li>
-<li><p><strong>Error Handling</strong>: The CLI provides clear error messages when commands fail, helping users understand what went wrong and how to fix it. The tool should never expose a traceback to the user, as this is considered a bug in the tool itself.</p></li>
-<li><p><strong>Code conventions</strong>: All CLI commands are stored in the <a class="reference internal" href="../reference/_autoapi/docbuild/cli/index.html#module-docbuild.cli" title="docbuild.cli"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.cli</span></code></a> module and follow the filename pattern <code class="file docutils literal notranslate"><span class="pre">cmd_*.py</span></code>.</p></li>
-</ul>
-</section>
-<section id="configuration-design-patterns">
-<h2>Configuration design patterns<a class="headerlink" href="#configuration-design-patterns" title="Link to this heading">#</a></h2>
-<p>The configuration system is designed to be flexible and easy to use, following these patterns:</p>
-<ul class="simple">
-<li><p><strong>Configuration types</strong>: The tool differentiates between two types:</p>
-<ul>
-<li><p><strong>Tool Configuration</strong>: This configuration applies to the tool as a whole and contains settings that affect the behavior of the tool. The tool configuration is stored under the <code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.cli.config.application</span></code> module.</p></li>
-<li><p><strong>Environment Configuration</strong>: This configuration applies to a specific environment and contains settings that affect the behavior of the tool in that environment. The environment configuration is stored under the <code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.cli.config.environment</span></code> module.</p></li>
-</ul>
-</li>
-<li><p><strong>File Format</strong>: Both configuration files uses the TOML format.</p></li>
-</ul>
-</section>
-<section id="documentation-design-patterns">
-<h2>Documentation design patterns<a class="headerlink" href="#documentation-design-patterns" title="Link to this heading">#</a></h2>
-<p>The documentation focuses on two target groups: users and developers. It follows these patterns:</p>
-<ul class="simple">
-<li><p><strong>RST Format</strong>: The documentation is written in reStructuredText (RST) format.</p></li>
-<li><p><strong>Sphinx</strong>: The documentation is built using Sphinx using extensions to create automatically API documentation from docstrings and CLI documentation from the <a class="reference internal" href="../reference/_autoapi/docbuild/cli/index.html#module-docbuild.cli" title="docbuild.cli"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.cli</span></code></a> module.</p></li>
-<li><p><strong>User Documentation</strong>: The user documentation is stored in the <code class="file docutils literal notranslate"><span class="pre">docs/source/user</span></code> directory and provides information on how to use the tool, including installation, configuration, and usage examples.</p></li>
-<li><p><strong>Developer Documentation</strong>: The developer documentation is stored in the <code class="file docutils literal notranslate"><span class="pre">docs/source/developer</span></code> directory and provides information on how to contribute to the project, including design principles, code structure, and development practices.</p></li>
-<li><p><strong>API Documentation</strong>: The API documentation is generated from the docstrings in the source code and is stored in the <code class="file docutils literal notranslate"><span class="pre">docs/source/reference/_autoapi</span></code> directory. This provides a reference for developers on how to use the project’s classes and functions.</p></li>
-</ul>
+    <span class="k">return</span> <span class="n">failed_items</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -633,20 +913,20 @@ each deliverable.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="overview.html"
+       href="design.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Overview</p>
+        <p class="prev-next-title">Design</p>
       </div>
     </a>
     <a class="right-next"
-       href="async-pipeline.html"
+       href="directory-overview.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Async Pipeline Architecture</p>
+        <p class="prev-next-title">Project Overview</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -669,12 +949,8 @@ each deliverable.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#high-level-build-workflow">High-level build workflow</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#principles">Principles</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-design-structure">Project design structure</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#commandline-design-patterns">Commandline design patterns</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-design-patterns">Configuration design patterns</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-design-patterns">Documentation design patterns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pipeline-flow">Pipeline Flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-exception-handling">Implementation &amp; Exception Handling</a></li>
 </ul>
   </nav></div>
 
@@ -682,7 +958,7 @@ each deliverable.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/design.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/async-pipeline.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -697,7 +973,7 @@ each deliverable.</p>
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/developer/design.rst.txt">
+    <a href="../_sources/developer/async-pipeline.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

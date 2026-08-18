@@ -9,6 +9,7 @@ This guide provides all the necessary information for contributing to the projec
 
    overview
    design
+   async-pipeline
    directory-overview
 
 .. toctree::
