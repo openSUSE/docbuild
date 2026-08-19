@@ -1,16 +1,23 @@
 """CLI interface to build a document."""
 
 import asyncio
+import math
 from pathlib import Path
 
 import click
+from rich.console import Console
 
 from ...models.doctype import Doctype
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
+from ...utils.contextmgr import make_timer
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
 from ..context import DocBuildContext
+
+# Set up rich consoles for output
+stdout = Console()
+console_err = Console(stderr=True, style="red")
 
 
 @click.command(help="Subcommand to build a document.")
@@ -36,11 +43,14 @@ def build(
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:
-        click.echo("Environment configuration is missing.", err=True)
+        console_err.print("Environment configuration is missing.")
         ctx.exit(1)
 
     assert context.envconfig is not None
     env = context.envconfig
+
+    timer = make_timer("build")
+    result = 1  # Default exit code for interruption or error
 
     # Paths for Metadata & Build
     main_portal_config = Path(env.paths.main_portal_config)
@@ -52,9 +62,6 @@ def build(
     tmp_build_base_dir = Path(env.paths.tmp.tmp_build_base_dir)
 
     dapsmetatmpl = str(env.build.daps.meta)
-
-    # Dynamic templates for the build runner
-    # We use getattr safely until we formally add these to the EnvBuildDaps model
     daps_tmpls = {
         "html": getattr(env.build.daps, "html", "daps -d {{dcfile}} --builddir {{builddir}} html"),
         "pdf": getattr(env.build.daps, "pdf", "daps -d {{dcfile}} --builddir {{builddir}} pdf"),
@@ -63,13 +70,13 @@ def build(
     }
 
     max_workers = context.appconfig.max_workers if context.appconfig else 1
+    stdout.print(f"Config path: {env.paths.config_dir}")
 
     async def run_pipeline() -> int:
         build_skip_repo = skip_repo_update
 
-        # 1. Run Metadata (Fail-Fast Validation)
         if not skip_metadata:
-            click.echo("[BUILD] Running metadata generation (fail-fast validation)...")
+            stdout.print("[bold blue]Running metadata generation (fail-fast validation)...[/bold blue]")
             meta_result = await metadata_process(
                 main_portal_config=main_portal_config,
                 tmp_metadata_dir=tmp_metadata_dir,
@@ -84,15 +91,13 @@ def build(
             )
 
             if meta_result != 0:
-                click.echo("[BUILD] Metadata generation failed. Aborting build.", err=True)
+                console_err.print("Metadata generation failed. Aborting build.")
                 return meta_result
 
-            # Since repos were updated during metadata, skip updating them again during build
             build_skip_repo = True
 
-        # 2. Run Build
-        click.echo(f"[BUILD] Starting async build pipeline with {max_workers} workers...")
-        build_result = await build_process(
+        stdout.print(f"[bold blue]Starting async build pipeline with {max_workers} workers...[/bold blue]")
+        return await build_process(
             main_portal_config=main_portal_config,
             repo_dir=repo_dir,
             tmp_repo_dir=tmp_repo_dir,
@@ -103,7 +108,12 @@ def build(
             skip_repo_update=build_skip_repo,
         )
 
-        return build_result
+    t = None
+    try:
+        with timer() as t:
+            result = asyncio.run(run_pipeline())
+    finally:
+        if t and not math.isnan(t.elapsed):
+            stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
 
-    result = asyncio.run(run_pipeline())
     ctx.exit(result)

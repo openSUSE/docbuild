@@ -4,6 +4,7 @@ import asyncio
 import logging
 from pathlib import Path
 import shlex
+import tempfile
 from typing import Any, Literal
 
 from aiostream import pipe, stream
@@ -45,6 +46,7 @@ async def build_format(
         process = await run_command(args, cwd=cwd)
         if process.returncode == 0:
             log.info("Successfully built %s for %s", fmt, deliverable.full_id)
+            log.info(" -> Artifacts stored in: %s", build_dir)
             return True, process.stdout
 
         log.error("Failed to build %s for %s:\n%s", fmt, deliverable.full_id, process.stderr)
@@ -65,7 +67,7 @@ async def process_deliverable_build(
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
 
-    # 1. Create temporary worktree
+    # 1. Create temporary worktree (cleaned up automatically)
     async with PersistentOnErrorTemporaryDirectory(
         dir=tmp_repo_dir,
         prefix=f"wt_{safe_id}_",
@@ -79,21 +81,23 @@ async def process_deliverable_build(
 
         cwd = Path(worktree_dir) / deliverable.subdir if deliverable.subdir else Path(worktree_dir)
 
-        # 2. Build all enabled formats
+        # 2. Build all enabled formats (output persists in tmp_build_base_dir)
         for fmt, is_enabled in deliverable.format.items():
             if is_enabled:
                 tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
 
-                with PersistentOnErrorTemporaryDirectory(
+                # Persist the output directory instead of auto-deleting it
+                deliverable_build_dir = Path(tempfile.mkdtemp(
                     dir=tmp_build_base_dir,
                     prefix=f"build_{safe_id}_",
                     suffix=f"_{fmt}",
-                ) as deliverable_build_dir:
-                    fmt_success, _ = await build_format(
-                        deliverable, fmt, cwd, Path(deliverable_build_dir), tmpl
-                    )
-                    if not fmt_success:
-                        success = False
+                ))
+
+                fmt_success, _ = await build_format(
+                    deliverable, fmt, cwd, deliverable_build_dir, tmpl
+                )
+                if not fmt_success:
+                    success = False
 
     return success, deliverable
 
