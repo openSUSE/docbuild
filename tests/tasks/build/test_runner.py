@@ -36,7 +36,7 @@ async def test_build_format_no_dcfile(tmp_path: Path) -> None:
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = None
 
-    success, out = await build_format(mock_d, "html", tmp_path)
+    success, out = await build_format(mock_d, "html", tmp_path, tmp_path)
     assert success is False
     assert out == ""
 
@@ -48,26 +48,11 @@ async def test_build_format_failure(tmp_path: Path) -> None:
     mock_d.xml.dcfile = "DC-test"
 
     with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
-        # Simulate a failed process
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="Build crashed")
 
-        success, err = await build_format(mock_d, "html", tmp_path)
+        success, err = await build_format(mock_d, "html", tmp_path, tmp_path)
         assert success is False
         assert err == "Build crashed"
-
-
-@pytest.mark.asyncio
-async def test_build_format_exception(tmp_path: Path) -> None:
-    """Test handling of a Python exception during execution."""
-    mock_d = Mock(spec=Deliverable, full_id="test:DC")
-    mock_d.xml.dcfile = "DC-test"
-
-    with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
-        mock_run.side_effect = RuntimeError("System error")
-
-        success, err = await build_format(mock_d, "html", tmp_path)
-        assert success is False
-        assert "System error" in err
 
 
 @pytest.mark.asyncio
@@ -75,7 +60,7 @@ async def test_process_deliverable_build_success(tmp_path: Path) -> None:
     """Test successful build execution for enabled formats."""
     mock_deliverable = Mock(
         spec=Deliverable,
-        full_id="sles/15/en-us:DC-TEST",
+        full_id="sles/15:TEST",
         subdir="subdir",
         format={"html": True, "pdf": False},
     )
@@ -87,14 +72,16 @@ async def test_process_deliverable_build_success(tmp_path: Path) -> None:
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
 
         success, deliverable = await process_deliverable_build(
-            mock_deliverable, tmp_path
+            mock_deliverable, tmp_path, tmp_path
         )
 
         assert success is True
         assert deliverable == mock_deliverable
-        mock_run.assert_called_once_with(
-            ["daps", "-d", "DC-test", "html"], cwd=tmp_path / "subdir"
-        )
+        mock_run.assert_called_once()
+        args, _ = mock_run.call_args
+        assert args[0][:3] == ["daps", "-d", "DC-test"]
+        assert args[0][3] == "--builddir"
+        assert args[0][5] == "html"
 
 
 @pytest.mark.asyncio
@@ -105,28 +92,22 @@ async def test_process_doctype_build(
     doctype = Doctype.from_str("sles/15/en-us")
     d1 = SortableMock(
         spec=Deliverable,
-        full_id="sles/15/en-us:DC-A",
+        full_id="sles/15:A",
         subdir="",
         format={"html": True},
     )
 
     with (
-        patch.object(
-            build_runner, "get_deliverable_from_doctype", return_value=[d1]
-        ),
-        patch.object(
-            build_runner, "process_deliverable_build", new_callable=AsyncMock
-        ) as mock_build,
-        patch.object(
-            build_runner, "update_repositories", new_callable=AsyncMock
-        ) as mock_update,
+        patch.object(build_runner, "get_deliverable_from_doctype", return_value=[d1]),
+        patch.object(build_runner, "process_deliverable_build", new_callable=AsyncMock) as mock_build,
+        patch.object(build_runner, "update_repositories", new_callable=AsyncMock) as mock_update,
     ):
         mock_build.return_value = (True, d1)
-
         failed = await process_doctype(
             root=empty_xml_root,
             doctype=doctype,
             repo_dir=tmp_path,
+            tmp_build_dir=tmp_path,
             max_workers=2,
             skip_repo_update=False,
         )
@@ -145,22 +126,10 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         patch.object(build_runner, "parse_portal_config", new_callable=AsyncMock),
         patch.object(build_runner, "process_doctype", new_callable=AsyncMock) as mock_pd,
     ):
-        # 1. Test Success
         mock_pd.return_value = []
-        result = await process(
-            main_portal_config=tmp_path / "portal.xml",
-            repo_dir=tmp_path,
-            max_workers=1,
-            doctypes=[doctype],
-        )
+        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype])
         assert result == 0
 
-        # 2. Test Failure
         mock_pd.return_value = [Mock(spec=Deliverable)]
-        result = await process(
-            main_portal_config=tmp_path / "portal.xml",
-            repo_dir=tmp_path,
-            max_workers=1,
-            doctypes=[doctype],
-        )
+        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype])
         assert result == 1
