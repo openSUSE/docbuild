@@ -95,6 +95,7 @@ def build(
         build_result = await build_process(
             main_portal_config=main_portal_config,
             repo_dir=repo_dir,
+            tmp_repo_dir=tmp_repo_dir,
             tmp_build_base_dir=tmp_build_base_dir,
             max_workers=max_workers,
             doctypes=doctypes,
