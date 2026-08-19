@@ -32,13 +32,12 @@ def empty_xml_root() -> etree._ElementTree:
 
 @pytest.mark.asyncio
 async def test_build_format_no_dcfile(tmp_path: Path) -> None:
-    """Test that missing DC file safely skips build."""
+    """Test that missing DC file safely raises error."""
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = None
 
-    success, out = await build_format(mock_d, "html", tmp_path, tmp_path)
-    assert success is False
-    assert out == ""
+    with pytest.raises(AssertionError, match=r"Deliverable must have a DC file\."):
+        await build_format(mock_d, "html", tmp_path, tmp_path, "daps -d {{dcfile}} html")
 
 
 @pytest.mark.asyncio
@@ -50,7 +49,9 @@ async def test_build_format_failure(tmp_path: Path) -> None:
     with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="Build crashed")
 
-        success, err = await build_format(mock_d, "html", tmp_path, tmp_path)
+        success, err = await build_format(
+            mock_d, "html", tmp_path, tmp_path, "daps -d {{dcfile}} --builddir {{builddir}} html"
+        )
         assert success is False
         assert err == "Build crashed"
 
@@ -65,6 +66,9 @@ async def test_process_deliverable_build_success(tmp_path: Path) -> None:
         format={"html": True, "pdf": False},
     )
     mock_deliverable.xml.dcfile = "DC-test"
+    mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"
+
+    daps_tmpls = {"html": "daps -d {{dcfile}} --builddir {{builddir}} html"}
 
     with patch.object(
         build_runner, "run_command", new_callable=AsyncMock
@@ -72,7 +76,7 @@ async def test_process_deliverable_build_success(tmp_path: Path) -> None:
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
 
         success, deliverable = await process_deliverable_build(
-            mock_deliverable, tmp_path, tmp_path
+            mock_deliverable, tmp_path, tmp_path, daps_tmpls
         )
 
         assert success is True
@@ -96,6 +100,10 @@ async def test_process_doctype_build(
         subdir="",
         format={"html": True},
     )
+    # Ensure it passes the is_dc filter
+    d1.xml.is_dc = True
+
+    daps_tmpls = {"html": "daps html"}
 
     with (
         patch.object(build_runner, "get_deliverable_from_doctype", return_value=[d1]),
@@ -107,8 +115,9 @@ async def test_process_doctype_build(
             root=empty_xml_root,
             doctype=doctype,
             repo_dir=tmp_path,
-            tmp_build_dir=tmp_path,
+            tmp_build_base_dir=tmp_path,
             max_workers=2,
+            daps_tmpls=daps_tmpls,
             skip_repo_update=False,
         )
 
@@ -121,15 +130,16 @@ async def test_process_doctype_build(
 async def test_process_entry_point(tmp_path: Path) -> None:
     """Test the main process() orchestration function."""
     doctype = Doctype.from_str("sles/15/en-us")
+    daps_tmpls = {"html": "daps html"}
 
     with (
         patch.object(build_runner, "parse_portal_config", new_callable=AsyncMock),
         patch.object(build_runner, "process_doctype", new_callable=AsyncMock) as mock_pd,
     ):
         mock_pd.return_value = []
-        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype])
+        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype], daps_tmpls)
         assert result == 0
 
         mock_pd.return_value = [Mock(spec=Deliverable)]
-        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype])
+        result = await process(tmp_path, tmp_path, tmp_path, 1, [doctype], daps_tmpls)
         assert result == 1

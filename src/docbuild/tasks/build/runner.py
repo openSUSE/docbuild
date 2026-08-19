@@ -3,6 +3,7 @@
 import asyncio
 import logging
 from pathlib import Path
+import shlex
 from typing import Any, Literal
 
 from aiostream import pipe, stream
@@ -10,6 +11,7 @@ from lxml import etree  # type: ignore
 
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
+from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.shell import run_command
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
@@ -23,17 +25,20 @@ async def build_format(
     fmt: Literal["html", "pdf", "single-html", "epub"],
     cwd: Path,
     build_dir: Path,
+    daps_tmpl: str,
 ) -> tuple[bool, str]:
-    """Execute the DAPS build command for a specific format."""
+    """Execute the DAPS build command dynamically from a config template."""
     dcfile = deliverable.xml.dcfile
-    if not dcfile:
-        log.warning("No DC file found for %s, skipping %s build.", deliverable.full_id, fmt)
-        return False, ""
+    assert dcfile is not None, "Deliverable must have a DC file."
 
-    # Ensure unique output directory exists before calling daps
-    build_dir.mkdir(parents=True, exist_ok=True)
+    # Replace placeholders in the dynamic template
+    cmd_str = (
+        daps_tmpl.replace("{{dcfile}}", dcfile)
+        .replace("{{builddir}}", str(build_dir))
+        .replace("{{format}}", fmt)
+    )
+    args = shlex.split(cmd_str)
 
-    args = ["daps", "-d", dcfile, "--builddir", str(build_dir), fmt]
     log.info("Building %s for %s...", fmt, deliverable.full_id)
 
     try:
@@ -50,21 +55,31 @@ async def build_format(
 
 
 async def process_deliverable_build(
-    deliverable: Deliverable, repo_dir: Path, tmp_build_dir: Path
+    deliverable: Deliverable,
+    repo_dir: Path,
+    tmp_build_base_dir: Path,
+    daps_tmpls: dict[str, str],
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable: build all its configured formats."""
     cwd = repo_dir / deliverable.subdir if deliverable.subdir else repo_dir
-
-    # Create a completely unique output path to prevent concurrent build collisions
-    safe_id = deliverable.full_id.replace("/", "_").replace(":", "_")
-    deliverable_build_dir = tmp_build_dir / safe_id
+    safe_id = deliverable.make_safe_name(deliverable.full_id)
 
     success = True
     for fmt, is_enabled in deliverable.format.items():
         if is_enabled:
-            fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir)
-            if not fmt_success:
-                success = False
+            # Get template for this format, fallback to default if missing
+            tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
+
+            with PersistentOnErrorTemporaryDirectory(
+                dir=tmp_build_base_dir,
+                prefix=f"{safe_id}_",
+                suffix=f"_{fmt}",
+            ) as deliverable_build_dir:
+                fmt_success, _ = await build_format(
+                    deliverable, fmt, cwd, Path(deliverable_build_dir), tmpl
+                )
+                if not fmt_success:
+                    success = False
 
     return success, deliverable
 
@@ -73,8 +88,9 @@ async def process_doctype(
     root: etree._ElementTree,
     doctype: Doctype,
     repo_dir: Path,
-    tmp_build_dir: Path,
+    tmp_build_base_dir: Path,
     max_workers: int,
+    daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
 ) -> list[Deliverable]:
@@ -82,6 +98,9 @@ async def process_doctype(
     deliverables: list[Deliverable] = await asyncio.to_thread(
         get_deliverable_from_doctype, root, doctype
     )
+
+    # Filter only deliverables that are DC files (exclude prebuilt)
+    deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
 
     if skip_repo_update:
@@ -93,7 +112,7 @@ async def process_doctype(
 
     async def build_wrapper(d: Deliverable, *args: object) -> tuple[bool, Deliverable]:
         try:
-            return await process_deliverable_build(d, repo_dir, tmp_build_dir)
+            return await process_deliverable_build(d, repo_dir, tmp_build_base_dir, daps_tmpls)
         except Exception as e:
             log.error("Build task error for %s: %s", d.full_id, e)
             return False, d
@@ -117,9 +136,10 @@ async def process_doctype(
 async def process(
     main_portal_config: Path,
     repo_dir: Path,
-    tmp_build_dir: Path,
+    tmp_build_base_dir: Path,
     max_workers: int,
     doctypes: tuple[Doctype, ...] | list[Doctype],
+    daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
 ) -> int:
@@ -128,7 +148,7 @@ async def process(
 
     tasks = [
         process_doctype(
-            root, dt, repo_dir, tmp_build_dir, max_workers, skip_repo_update=skip_repo_update
+            root, dt, repo_dir, tmp_build_base_dir, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
         )
         for dt in doctypes
     ]
