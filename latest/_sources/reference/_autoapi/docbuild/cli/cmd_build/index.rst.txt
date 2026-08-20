@@ -53,11 +53,8 @@ Functions
 Package Contents
 ----------------
 
-.. py:function:: build(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype]) -> None
+.. py:function:: build(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, Ellipsis], skip_repo_update: bool, skip_metadata: bool) -> None
 
    Subcommand build.
-
-   :param ctx: The Click context object.
-   :param doctypes: A tuple of doctype objects to build.
 
 

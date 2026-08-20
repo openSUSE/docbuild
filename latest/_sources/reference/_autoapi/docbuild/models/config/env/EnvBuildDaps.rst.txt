@@ -35,3 +35,39 @@ docbuild.models.config.env.EnvBuildDaps
       The command used to extract DAPS metadata.
 
 
+
+   .. py:attribute:: html
+      :type:  str
+      :value: None
+
+
+      The command template used to build HTML.
+
+
+
+   .. py:attribute:: pdf
+      :type:  str
+      :value: None
+
+
+      The command template used to build PDF.
+
+
+
+   .. py:attribute:: single_html
+      :type:  str
+      :value: None
+
+
+      The command template used to build Single HTML.
+
+
+
+   .. py:attribute:: epub
+      :type:  str
+      :value: None
+
+
+      The command template used to build EPUB.
+
+
