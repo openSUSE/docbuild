@@ -106,12 +106,12 @@ async def test_managed_repo_create_worktree_success(
     await repo.create_worktree(target_dir, "main")
 
     mock_execute_git.assert_awaited_once_with(
-        "clone",
-        "--branch",
-        "main",
-        str(repo.bare_repo_path),
+        "worktree",
+        "add",
+        "--detach",
         str(target_dir),
-        cwd=target_dir.parent,
+        "main",
+        cwd=repo.bare_repo_path,
         gitconfig=None,
     )
 
@@ -119,7 +119,7 @@ async def test_managed_repo_create_worktree_success(
 async def test_managed_repo_create_worktree_with_options(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
-    """Test create_worktree with additional clone options."""
+    """Test create_worktree with additional options."""
     mock_execute_git.return_value = CompletedProcess(
         args=[], returncode=0, stdout="", stderr=""
     )
@@ -131,14 +131,14 @@ async def test_managed_repo_create_worktree_with_options(
     await repo.create_worktree(target_dir, "develop", options=["--depth", "1"])
 
     mock_execute_git.assert_awaited_once_with(
-        "clone",
-        "--branch",
+        "worktree",
+        "add",
+        "--detach",
+        str(target_dir),
         "develop",
         "--depth",
         "1",
-        str(repo.bare_repo_path),
-        str(target_dir),
-        cwd=target_dir.parent,
+        cwd=repo.bare_repo_path,
         gitconfig=None,
     )
 
@@ -158,30 +158,67 @@ async def test_managed_repo_create_worktree_no_bare_repo(
     mock_execute_git.assert_not_awaited()
 
 
-async def test_managed_repo_create_worktree_not_local(
+async def test_managed_repo_prune_worktrees_success(
     tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
 ):
-    """Test create_worktree without the --local flag."""
+    """Test prune_worktrees calls git worktree prune on the bare repo."""
     mock_execute_git.return_value = CompletedProcess(
         args=[], returncode=0, stdout="", stderr=""
     )
     repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
-    # Simulate bare repo exists
+    monkeypatch.setattr(Path, "exists", lambda self: True)
+
+    await repo.prune_worktrees()
+
+    mock_execute_git.assert_awaited_once_with(
+        "worktree", "prune",
+        cwd=repo.bare_repo_path,
+        gitconfig=None,
+    )
+
+
+async def test_managed_repo_prune_worktrees_no_bare_repo(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test prune_worktrees is a no-op when the bare repo does not exist."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: False)
+
+    await repo.prune_worktrees()
+
+    mock_execute_git.assert_not_awaited()
+
+
+async def test_managed_repo_remove_worktree_success(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test remove_worktree calls git worktree remove --force."""
+    mock_execute_git.return_value = CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
     monkeypatch.setattr(Path, "exists", lambda self: True)
     target_dir = tmp_path / "worktree"
 
-    # Explicitly call with is_local=False
-    await repo.create_worktree(target_dir, "main", is_local=False)
+    await repo.remove_worktree(target_dir)
 
     mock_execute_git.assert_awaited_once_with(
-        "clone",
-        "--branch",
-        "main",
-        str(repo.bare_repo_path),
-        str(target_dir),
-        cwd=target_dir.parent,
+        "worktree", "remove", "--force", str(target_dir),
+        cwd=repo.bare_repo_path,
         gitconfig=None,
     )
+
+
+async def test_managed_repo_remove_worktree_no_bare_repo(
+    tmp_path: Path, mock_execute_git: AsyncMock, monkeypatch
+):
+    """Test remove_worktree is a no-op when the bare repo does not exist."""
+    repo = ManagedGitRepo("http://a.b/org/c.git", tmp_path)
+    monkeypatch.setattr(Path, "exists", lambda self: False)
+
+    await repo.remove_worktree(tmp_path / "worktree")
+
+    mock_execute_git.assert_not_awaited()
 
 
 def test_managed_git_repo_repr(tmp_path: Path):
