@@ -33,10 +33,10 @@ async def build_format(
     dcfile = deliverable.xml.dcfile
     assert dcfile is not None, "Deliverable must have a DC file."
 
-    cmd_str = (
-        daps_tmpl.replace("{{dcfile}}", dcfile)
-        .replace("{{builddir}}", str(build_dir))
-        .replace("{{format}}", fmt)
+    cmd_str = daps_tmpl.format(
+        dcfile=dcfile,
+        builddir=str(build_dir),
+        format=fmt,
     )
     args = shlex.split(cmd_str)
 

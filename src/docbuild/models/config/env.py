@@ -62,28 +62,28 @@ class EnvBuildDaps(BaseModel):
     "The command used to extract DAPS metadata."
 
     html: str = Field(
-        default="{build.daps.command} -d {{dcfile}} --builddir {{builddir}} html",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} html",
         title="DAPS HTML Command Template",
         description="The template string to build HTML.",
     )
     "The command template used to build HTML."
 
     pdf: str = Field(
-        default="{build.daps.command} -d {{dcfile}} --builddir {{builddir}} pdf",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} pdf",
         title="DAPS PDF Command Template",
         description="The template string to build PDF.",
     )
     "The command template used to build PDF."
 
     single_html: str = Field(
-        default="{build.daps.command} -d {{dcfile}} --builddir {{builddir}} single-html",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} single-html",
         title="DAPS Single HTML Command Template",
         description="The template string to build Single HTML.",
     )
     "The command template used to build Single HTML."
 
     epub: str = Field(
-        default="{build.daps.command} -d {{dcfile}} --builddir {{builddir}} epub",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}}  epub",
         title="DAPS EPUB Command Template",
         description="The template string to build EPUB.",
     )
