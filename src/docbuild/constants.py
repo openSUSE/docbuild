@@ -39,7 +39,7 @@ SERVER_ROLES_ALIASES: tuple[str, ...] = tuple(ServerRole.__members__.keys())
 DEFAULT_LIFECYCLE: str = "supported"
 """The default lifecycle state for a docset."""
 
-ALLOWED_LIFECYCLES: tuple[str, ...] = tuple(lc.name for lc in LifecycleFlag)
+ALLOWED_LIFECYCLES: tuple[str, ...] = tuple(str(lc.name) for lc in LifecycleFlag if lc.name)
 # ('supported', 'beta', 'hidden', 'unsupported')
 """The available lifecycle states for a docset (without 'unknown')."""
 
@@ -170,4 +170,5 @@ SYSTEM_DEPENDENCIES = {
     "daps": ">=4",
     "xmllint": None,
     "xsltproc": None,
+    "rsync": None,
 }
