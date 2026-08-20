@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev21+g06c6d85f5.d20260820</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev24+g52b3bd194.d20260820</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=c4d0c7e5"></script>
+    <script src="_static/documentation_options.js?v=d858c48d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -478,6 +478,7 @@ added some more examples and the fallback default value to English. (<a class="e
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">--validate</span></code> flag to <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">list</span></code> and disabled validation by default for easier debugging. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/384">GH #384</a>)</p></li>
 <li><p>Add a global command-line option <code class="docutils literal notranslate"><span class="pre">-C</span></code> / <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> to override specific environment configuration values using key=value syntax with dot notation (e.g., <code class="docutils literal notranslate"><span class="pre">-C</span> <span class="pre">server.host=127.0.0.1</span></code>). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/410">GH #410</a>)</p></li>
 <li><p>Add <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.iter_doctypes" title="docbuild.models.doctype.Doctype.iter_doctypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_doctypes()</span></code></a> to iterate over all docset and language combinations. This is the Cartesian product of <code class="docutils literal notranslate"><span class="pre">docset</span></code> and <code class="docutils literal notranslate"><span class="pre">langs</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/428">GH #428</a>)</p></li>
+<li><p>Added an async <strong class="command">rsync</strong> utility function and <code class="docutils literal notranslate"><span class="pre">RsyncOptions</span></code> dataclass for flexible directory synchronization, and registered <strong class="command">rsync</strong> as a validated system dependency. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/452">GH #452</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
