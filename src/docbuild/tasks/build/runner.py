@@ -98,6 +98,9 @@ async def process_deliverable_build(
                 )
                 if not fmt_success:
                     success = False
+                else:
+                    # Call rsync to target directory
+                    log.debug("Syncing result to ...")
 
     return success, deliverable
 

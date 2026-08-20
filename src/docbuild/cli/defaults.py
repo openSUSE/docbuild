@@ -89,6 +89,10 @@ DEFAULT_ENV_CONFIG = {
         "daps": {
             "command": "daps",
             "meta": "daps --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
+            "html": "{build.daps.command} -d {{dcfile}} --builddir {{builddir}} html",
+            "pdf": "{build.daps.command} -d {{dcfile}} --builddir {{builddir}} pdf",
+            "single_html": "{build.daps.command} -d {{dcfile}} --builddir {{builddir}} single-html",
+            "epub": "{build.daps.command} -d {{dcfile}} --builddir {{builddir}} epub",
         },
         "container": {
             "container": "none",
