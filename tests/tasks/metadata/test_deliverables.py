@@ -1,15 +1,11 @@
 """Unit tests for docbuild.tasks.metadata.deliverables."""
 
-from pathlib import Path
 
 from lxml import etree
 import pytest
 
 from docbuild.models.doctype import Doctype
-from docbuild.tasks.metadata.deliverables import (
-    collect_files_flat,
-    get_deliverable_from_doctype,
-)
+from docbuild.tasks.metadata.deliverables import get_deliverable_from_doctype
 
 
 @pytest.fixture
@@ -134,39 +130,3 @@ def test_get_deliverable_from_doctype(xmlconfig, doctype_str, expected_count, ex
         assert {d.docsuite for d in deliverables} == expected_ids
 
 
-@pytest.mark.parametrize(
-    "setup_files, doctype_str, expected_file_count",
-    [
-        (
-            {"en-us/sles/15-SP4": ["DC-file1", "DC-file2", "ignored.xml"]},
-            "sles/15-SP4/en-us",
-            2,
-        ),
-        (
-            {
-                "en-us/sles/15-SP4": ["DC-file-foo", "DC-file-bar"],
-                "de-de/sles/15-SP4": ["DC-file-foo", "DC-file-bar"],
-            },
-            "sles/15-SP4/en-us,de-de",
-            4,
-        ),
-        ({}, "sles/15-SP4/en-us", 0),
-    ],
-    ids=["single_lang", "multi_lang", "no_files"],
-)
-def test_collect_files_flat(tmp_path: Path, setup_files, doctype_str, expected_file_count):
-    """Verify that collect_files_flat finds DC-* files correctly."""
-    cache_dir = tmp_path / "cache"
-    for path_str, files in setup_files.items():
-        dir_path = cache_dir / path_str
-        dir_path.mkdir(parents=True, exist_ok=True)
-        for f in files:
-            (dir_path / f).touch()
-
-    doctypes = [Doctype.from_str(doctype_str)]
-    results = list(collect_files_flat(doctypes, cache_dir))
-
-    assert len(results) == (1 if expected_file_count > 0 else 0)
-    if results:
-        _, _, found_files = results[0]
-        assert len(found_files) == expected_file_count
