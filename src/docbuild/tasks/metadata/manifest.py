@@ -255,11 +255,7 @@ def store_productdocset_json(
 
         manifest = Manifest(
             productname=productnode.find("name").text,
-            acronym=(
-                productnode.find("acronym").text
-                if productnode.find("acronym") is not None
-                else product
-            ),
+            acronym=productnode.get("id"),
             version=version_str,
             lifecycle=docsetnode.attrib.get("lifecycle") or "",
             hide_productname=False,
