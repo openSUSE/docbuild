@@ -379,7 +379,7 @@ class Document(BaseModel):
         exclude_if=lambda v: v is None or v == "",
     )
     doctypes: list[str] = Field(default_factory=list, alias="docTypes")
-    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGate")
+    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGated")
     rank: int | str | None = Field(default=None)
 
     @field_validator("rank", mode="before")

@@ -141,6 +141,7 @@ def test_store_productdocset_json_merges_and_writes(
     assert merged["documents"][0]["category"] == "cat.administration"
     assert "category" not in merged["documents"][0]["docs"][0]
     assert "hide-productname" in merged
+    assert merged["acronym"] == "sles"
 
 
 def test_store_productdocset_json_warns_on_empty_metadata(

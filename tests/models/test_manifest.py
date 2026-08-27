@@ -307,3 +307,13 @@ def test_single_document_serialize_date_none() -> None:
         format=DocumentFormat(html="/html"),
     ).model_dump(by_alias=True)
     assert serialized["dateModified"] == ""
+
+
+def test_document_isgated_serialization() -> None:
+    """Test that the isgated field is serialized to isGated."""
+    doc = Document(isGated=True)
+    serialized = doc.model_dump(by_alias=True)
+    assert "isGated" in serialized
+    assert serialized["isGated"] is True
+    assert "isgated" not in serialized
+
