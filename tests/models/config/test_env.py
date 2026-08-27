@@ -8,7 +8,6 @@ import pytest
 
 import docbuild.models.config.env as env_mod
 from docbuild.models.config.env import EnvConfig
-from docbuild.models.path import EnsureWritableDirectory
 
 # --- Fixture Setup ---
 
@@ -38,7 +37,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "jinja_dir": str(base / "etc/docbuild/jinja"),
             "server_rootfiles_dir": str(base / "etc/docbuild/rootfiles"),
 
-            # These use EnsureWritableDirectory - MUST be in tmp_path
+            # These use WritablePath - MUST be in tmp_path
             "base_cache_dir": str(base / "cache"),
             "base_server_cache_dir": str(base / "cache/server"),
             "runtime_base_dir": str(base / "runtime"),
@@ -94,11 +93,11 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert isinstance(config, EnvConfig)
 
     # Check type coercion for core types
-    assert isinstance(config.paths.base_cache_dir, EnsureWritableDirectory)
+    assert isinstance(config.paths.base_cache_dir, Path)
 
-    # Check tmp_dir instead of tmp_path (wrapped in Path for Pylance)
-    assert Path(config.paths.tmp.tmp_dir).is_absolute()
-    assert Path(config.paths.tmp.tmp_dir).name == "doc-example-com"
+    # Check tmp_dir instead of tmp_path
+    assert config.paths.tmp.tmp_dir.is_absolute()
+    assert config.paths.tmp.tmp_dir.name == "doc-example-com"
 
     # Verify that the default value for tmp_build_dir_dyn is correctly picked up
     assert config.paths.tmp.tmp_build_dir_dyn == "{{product}}-{{docset}}-{{lang}}"

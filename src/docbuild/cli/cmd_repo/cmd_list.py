@@ -1,6 +1,5 @@
 """List the available permanent repositories."""
 
-from pathlib import Path
 
 import click
 from rich.console import Console
@@ -27,7 +26,7 @@ def cmd_list(ctx: click.Context) -> None:
     env = context.envconfig
 
     repo_dir = env.paths.repo_dir
-    repo_dir = Path(repo_dir).resolve()
+    repo_dir = env.paths.repo_dir.resolve()
     if not repo_dir.exists():
         console_err.print(
             f"[red]ERROR:[/] No permanent repositories found in {repo_dir}.",
@@ -35,7 +34,7 @@ def cmd_list(ctx: click.Context) -> None:
         ctx.exit(1)
 
     console.print(f"Available permanent repositories in {repo_dir}:")
-    for path in Path(repo_dir).iterdir():
+    for path in repo_dir.iterdir():
         if path.is_dir() and not path.name.startswith("."):
             console.print(f"  - {path}")
 

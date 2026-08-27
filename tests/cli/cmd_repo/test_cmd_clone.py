@@ -1,6 +1,5 @@
 """Tests for the 'docbuild repo clone' command."""
 
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -28,8 +27,8 @@ def test_clone_command_delegates_to_task(runner, tmp_path, mock_clone_repositori
 
     # Use MagicMock to satisfy strict type checkers without defining dummy classes
     mock_env = MagicMock()
-    mock_env.paths.main_portal_config = str(config_dir / "portal.xml")
-    mock_env.paths.repo_dir = str(repo_dir)
+    mock_env.paths.main_portal_config = config_dir / "portal.xml"
+    mock_env.paths.repo_dir = repo_dir
 
     # Initialize context and assign the mock directly to bypass __init__ type checking
     context = DocBuildContext()
@@ -43,8 +42,8 @@ def test_clone_command_delegates_to_task(runner, tmp_path, mock_clone_repositori
 
     # Verify our business logic was called with the correct extracted arguments
     mock_clone_repositories.assert_awaited_once_with(
-        Path(config_dir / "portal.xml"),
-        Path(repo_dir),
+        config_dir / "portal.xml",
+        repo_dir,
         ("org/repo1", "org/repo2")
     )
 

@@ -30,8 +30,8 @@ def check_files(ctx: DocBuildContext, doctypes: tuple[Doctype, ...]) -> None:
         raise click.ClickException("Environment configuration is missing. Please initialize or check your config.")
 
     # Wrap the custom config types in pathlib.Path so Pylance knows expanduser() is valid
-    main_portal_config = Path(ctx.envconfig.paths.main_portal_config).expanduser()
-    repo_root = Path(ctx.envconfig.paths.repo_dir).expanduser()
+    main_portal_config = ctx.envconfig.paths.main_portal_config
+    repo_root = ctx.envconfig.paths.repo_dir
 
     # Pass pure Python types to our isolated task logic
     missing: list[str] = asyncio.run(
