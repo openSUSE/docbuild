@@ -54,7 +54,7 @@ Module Contents
    :returns: ``True`` if no sibling with same tag shares ``attr=value``.
 
 
-.. py:function:: preferred_predicate_attributes(node_name: str) -> tuple[str, Ellipsis]
+.. py:function:: preferred_predicate_attributes(node_name: str) -> tuple[str, ...]
 
    Return preferred attribute keys for semantic predicates.
 

@@ -40,7 +40,7 @@ Module Contents
    :return: A hierarchy_dict mapping lang -> product -> docset -> deliverables.
 
 
-.. py:function:: parse_doctypes(doctypes: tuple[str, Ellipsis], console: rich.console.Console) -> list[docbuild.models.doctype.Doctype] | None
+.. py:function:: parse_doctypes(doctypes: tuple[str, ...], console: rich.console.Console) -> list[docbuild.models.doctype.Doctype] | None
 
    Parse raw CLI arguments into Doctype objects with default fallbacks.
 
@@ -90,14 +90,14 @@ Module Contents
    Dynamically validate that provided docsets exist for their respective products.
 
 
-.. py:function:: async_list_cmd(ctx: docbuild.cli.context.DocBuildContext, doctypes: tuple[str, Ellipsis], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None, flat: bool) -> None
+.. py:function:: async_list_cmd(ctx: docbuild.cli.context.DocBuildContext, doctypes: tuple[str, ...], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None, flat: bool) -> None
    :async:
 
 
    Async worker to fetch the XML, parse Doctypes, and build the tree.
 
 
-.. py:function:: list_cmd(ctx: docbuild.cli.context.DocBuildContext, doctypes: tuple[str, Ellipsis], trans: bool, formats: bool, categories: bool, repo: str | None, flat: bool) -> None
+.. py:function:: list_cmd(ctx: docbuild.cli.context.DocBuildContext, doctypes: tuple[str, ...], trans: bool, formats: bool, categories: bool, repo: str | None, flat: bool) -> None
 
    List products, docsets, and deliverables from the portal config.
 

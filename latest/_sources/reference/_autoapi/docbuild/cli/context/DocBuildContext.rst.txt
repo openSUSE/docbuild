@@ -25,7 +25,7 @@ docbuild.cli.context.DocBuildContext
 
 
    .. py:attribute:: appconfigfiles
-      :type:  tuple[str | pathlib.Path, Ellipsis] | None
+      :type:  tuple[str | pathlib.Path, ...] | None
       :value: None
 
 
@@ -61,7 +61,7 @@ docbuild.cli.context.DocBuildContext
 
 
    .. py:attribute:: envconfigfiles
-      :type:  tuple[str | pathlib.Path, Ellipsis] | None
+      :type:  tuple[str | pathlib.Path, ...] | None
       :value: None
 
 

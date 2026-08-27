@@ -73,7 +73,7 @@ Module Contents
 
 
 .. py:data:: DEFAULT_LANGS
-   :type:  tuple[str, Ellipsis]
+   :type:  tuple[str, ...]
    :value: ('en-us',)
 
 
@@ -95,13 +95,13 @@ Module Contents
 
 
 .. py:data:: SERVER_ROLES
-   :type:  tuple[str, Ellipsis]
+   :type:  tuple[str, ...]
 
    The unique primary server role values.
 
 
 .. py:data:: SERVER_ROLES_ALIASES
-   :type:  tuple[str, Ellipsis]
+   :type:  tuple[str, ...]
    :value: ('PRODUCTION', 'STAGING', 'TESTING', 'PROD', 'P', 'prod', 'p', 'STAGE', 'S', 'stage', 's',...
 
 
@@ -117,7 +117,7 @@ Module Contents
 
 
 .. py:data:: ALLOWED_LIFECYCLES
-   :type:  tuple[str, Ellipsis]
+   :type:  tuple[str, ...]
 
    The available lifecycle states for a docset (without 'unknown').
 
@@ -163,7 +163,7 @@ Module Contents
 
 
 .. py:data:: CONFIG_PATHS
-   :type:  tuple[pathlib.Path, Ellipsis]
+   :type:  tuple[pathlib.Path, ...]
 
    The paths where the application will look for configuration files.
 
@@ -199,7 +199,7 @@ Module Contents
 
 
 .. py:data:: APP_CONFIG_BASENAMES
-   :type:  tuple[str | pathlib.Path, Ellipsis]
+   :type:  tuple[str | pathlib.Path, ...]
    :value: ('.config.toml', 'config.toml')
 
 
@@ -208,7 +208,7 @@ Module Contents
 
 
 .. py:data:: PROJECT_LEVEL_APP_CONFIG_FILENAMES
-   :type:  tuple[str | pathlib.Path, Ellipsis]
+   :type:  tuple[str | pathlib.Path, ...]
 
    Additional configuration filenames at the project level.
 

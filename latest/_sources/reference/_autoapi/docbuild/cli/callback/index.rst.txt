@@ -20,7 +20,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: validate_doctypes(ctx: click.Context, param: click.Parameter | None, doctypes: tuple[str, Ellipsis]) -> list[docbuild.models.doctype.Doctype]
+.. py:function:: validate_doctypes(ctx: click.Context, param: click.Parameter | None, doctypes: tuple[str, ...]) -> list[docbuild.models.doctype.Doctype]
 
    Click callback function to validate a list of doctype strings.
 

@@ -53,7 +53,7 @@ Functions
 Package Contents
 ----------------
 
-.. py:function:: build(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, Ellipsis], skip_repo_update: bool, skip_metadata: bool) -> None
+.. py:function:: build(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, ...], skip_repo_update: bool, skip_metadata: bool) -> None
 
    Subcommand build.
 

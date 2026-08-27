@@ -27,7 +27,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: clone(ctx: click.Context, repos: tuple[str, Ellipsis]) -> None
+.. py:function:: clone(ctx: click.Context, repos: tuple[str, ...]) -> None
 
    Clone repositories into permanent directory.
 

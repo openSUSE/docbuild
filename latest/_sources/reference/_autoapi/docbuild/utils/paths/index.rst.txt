@@ -21,7 +21,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: calc_max_len(files: tuple[pathlib.Path | str, Ellipsis], last_parts: int = -2) -> int
+.. py:function:: calc_max_len(files: tuple[pathlib.Path | str, ...], last_parts: int = -2) -> int
 
    Calculate the maximum length of file names.
 
