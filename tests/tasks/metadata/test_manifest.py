@@ -58,7 +58,7 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
     )
     etree.SubElement(prod_node, "name").text = "SUSE Linux Enterprise Server"
     etree.SubElement(prod_node, "acronym").text = "SLES"
-    etree.SubElement(
+    docset_node = etree.SubElement(
         prod_node,
         "docset",
         id=deliverable.xml.docsetid,
@@ -66,6 +66,11 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
         setid=deliverable.xml.docsetid,
         productid=deliverable.xml.productid,
     )
+    resources_node = etree.SubElement(docset_node, "resources")
+    locale_node = etree.SubElement(resources_node, "locale", lang="en-us")
+    deliverable_node = etree.SubElement(locale_node, "deliverable")
+    etree.SubElement(deliverable_node, "dc", file="DC-SLES-deployment")
+
     root = etree.Element("docservconfig")
     root.append(prod_node)
     return etree.ElementTree(root)
@@ -97,12 +102,15 @@ def test_store_productdocset_json_merges_and_writes(
     meta_cache_dir = test_dirs["meta_cache_dir"]
     json_cache_dir = test_dirs["json_cache_dir"]
 
-    meta_file = meta_cache_dir / "meta1.json"
+    # Create a dummy metadata file
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / deliverable.xml.dcfile
     doc_content = {
         "docs": [
             {
                 "title": "Doc1",
-                "dcfile": "DC-Doc1.xml",
+                "dcfile": deliverable.xml.dcfile,
                 "lang": "en-us",
                 "description": "A test document.",
                 "dateModified": "2024-01-01",
@@ -117,17 +125,12 @@ def test_store_productdocset_json_merges_and_writes(
         f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
-    with patch.object(
-        manifest_pkg,
-        "collect_files_flat",
-        return_value=[(doctype, deliverable.xml.docsetid, [Path("meta1.json")])],
-    ):
-        store_productdocset_json(
-            doctypes=[doctype],
-            stitchnode=stitchnode,
-            meta_cache_dir=meta_cache_dir,
-            json_cache_dir=json_cache_dir,
-        )
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
 
     out_file = (
         json_cache_dir
@@ -153,20 +156,15 @@ def test_store_productdocset_json_warns_on_empty_metadata(
     meta_cache_dir = test_dirs["meta_cache_dir"]
     json_cache_dir = test_dirs["json_cache_dir"]
 
-    (meta_cache_dir / "empty.json").write_text("{}", encoding="utf-8")
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    (deliverable_path / deliverable.xml.dcfile).write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
-    with (
-        patch.object(
-            manifest_pkg,
-            "collect_files_flat",
-            return_value=[(doctype, deliverable.xml.docsetid, [Path("empty.json")])],
-        ),
-        patch.object(manifest_pkg, "log") as mock_log,
-    ):
+    with patch.object(manifest_pkg, "log") as mock_log:
         store_productdocset_json(
             doctypes=[doctype],
             stitchnode=stitchnode,
@@ -174,7 +172,7 @@ def test_store_productdocset_json_warns_on_empty_metadata(
             json_cache_dir=json_cache_dir,
         )
 
-    mock_log.error.assert_called_with("Empty metadata file %s", Path("empty.json"))
+    mock_log.error.assert_called_with("Empty metadata file %s", deliverable_path / deliverable.xml.dcfile)
 
 
 def test_store_productdocset_json_handles_read_error(
@@ -186,20 +184,15 @@ def test_store_productdocset_json_handles_read_error(
     meta_cache_dir = test_dirs["meta_cache_dir"]
     json_cache_dir = test_dirs["json_cache_dir"]
 
-    (meta_cache_dir / "bad.json").write_text("{ not json }", encoding="utf-8")
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    (deliverable_path / deliverable.xml.dcfile).write_text("{ not json }", encoding="utf-8")
 
     doctype = Doctype.from_str(
         f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
     )
 
-    with (
-        patch.object(
-            manifest_pkg,
-            "collect_files_flat",
-            return_value=[(doctype, deliverable.xml.docsetid, [Path("bad.json")])],
-        ),
-        patch.object(manifest_pkg, "log") as mock_log,
-    ):
+    with patch.object(manifest_pkg, "log") as mock_log:
         store_productdocset_json(
             doctypes=[doctype],
             stitchnode=stitchnode,
@@ -208,6 +201,7 @@ def test_store_productdocset_json_handles_read_error(
         )
 
     mock_log.error.assert_called()
+
 
 
 @pytest.mark.parametrize(
@@ -261,7 +255,9 @@ def test_store_productdocset_json_applies_docset_description_treatment(
           </descriptions>
           <resources>
             <git remote="https://github.com/SUSE/doc-sle.git"/>
-            <locale lang="en-us"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-dummy"/></deliverable>
+            </locale>
           </resources>
         </docset>
       </product>
@@ -274,17 +270,30 @@ def test_store_productdocset_json_applies_docset_description_treatment(
     json_cache_dir = tmp_path / "cache" / "json"
     json_cache_dir.mkdir(parents=True, exist_ok=True)
 
-    with patch.object(
-        manifest_pkg,
-        "collect_files_flat",
-        return_value=[(doctype, "16.0", [])],
-    ):
-        store_productdocset_json(
-            doctypes=[doctype],
-            stitchnode=stitchnode_local,
-            meta_cache_dir=meta_cache_dir,
-            json_cache_dir=json_cache_dir,
-        )
+    # Create a dummy metadata file
+    deliverable_path = meta_cache_dir / "en-us" / "sles" / "16.0"
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / "DC-dummy"
+    doc_content = {
+        "docs": [
+            {
+                "title": "dummy",
+                "dcfile": "DC-dummy",
+                "lang": "en-us",
+                "description": "A test document.",
+                "dateModified": "2024-01-01",
+                "format": {"html": "path/to/html"},
+            }
+        ]
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode_local,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
 
     out_file = json_cache_dir / "sles" / "16.0.json"
     data = json.loads(out_file.read_text(encoding="utf-8"))
@@ -301,13 +310,17 @@ def test_store_productdocset_json_expands_docset_wildcard(tmp_path: Path) -> Non
         <docset id="appliance.keg-2" path="keg-2" lifecycle="supported">
           <resources>
             <git remote="https://github.com/SUSE-Enceladus/keg.git"/>
-            <locale lang="en-us"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-keg"/></deliverable>
+            </locale>
           </resources>
         </docset>
         <docset id="appliance.kiwi-9" path="kiwi-9" lifecycle="supported">
           <resources>
             <git remote="https://github.com/OSInside/kiwi-suse-doc.git"/>
-            <locale lang="en-us"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-kiwi"/></deliverable>
+            </locale>
           </resources>
         </docset>
       </product>
@@ -379,3 +392,69 @@ def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> No
     languages = configured_languages_from_docset(docset_node)
 
     assert [str(lang) for lang in languages] == ["en-us", "de-de", "fr-fr"]
+
+def test_store_productdocset_json_preserves_order(
+    test_dirs: dict[str, Path],
+) -> None:
+    """Documents in the manifest should be in the same order as in the XML."""
+    xml_string = """
+    <docservconfig>
+      <product id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <docset id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-first"/>
+                </deliverable>
+                <deliverable>
+                    <dc file="DC-second"/>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/15-SP7/en-us")
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    # Create dummy metadata files
+    for dcfile in ["DC-first", "DC-second"]:
+        deliverable_path = meta_cache_dir / "en-us" / "sles" / "15-SP7"
+        deliverable_path.mkdir(parents=True, exist_ok=True)
+        meta_file = deliverable_path / dcfile
+        doc_content = {
+            "docs": [
+                {
+                    "title": dcfile,
+                    "dcfile": dcfile,
+                    "lang": "en-us",
+                    "description": "A test document.",
+                    "dateModified": "2024-01-01",
+                    "format": {"html": "path/to/html"},
+                }
+            ]
+        }
+        meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    out_file = json_cache_dir / "sles" / "15-SP7.json"
+    assert out_file.exists()
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+
+    doc_titles = [doc["docs"][0]["title"] for doc in merged["documents"]]
+    assert doc_titles == ["DC-first", "DC-second"]
+
