@@ -77,8 +77,7 @@ class DeliverablePaths:
         if self.xml.lang != "en-us":
             path += f"{self.xml.lang}/"
 
-        # We are only interested in the language, not the country code.
-        path += f"{self.product_docset}/pdf/{name}{draft}_{self.xml.lang.lang}.pdf"
+        path += f"{self.product_docset}/pdf/{name}{draft}_{self.xml.lang.pdf_tag}.pdf"
         return path
 
     def __repr__(self) -> str:

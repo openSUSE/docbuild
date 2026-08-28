@@ -91,3 +91,28 @@ def first_deliverable_from_lang() -> Callable[[etree._ElementTree, str], Deliver
 def meta_without_rootid() -> Metadata:
     """Return a predefined Metadata instance missing a rootid."""
     return Metadata(rootid=None)
+
+
+@pytest.fixture
+def deliverable_from_xml_factory() -> Callable[[str, str], Deliverable]:
+    """Return a factory to build a deliverable from an XML string and language."""
+
+    def _factory(xml_string: str, lang: str) -> Deliverable:
+        xml_template = f'''
+        <docservconfig>
+          <product id="sles">
+            <docset id="sles.15-sp6" path="15-SP6">
+              <resources>
+                 <locale lang="{lang}">
+                    {xml_string}
+                 </locale>
+              </resources>
+            </docset>
+          </product>
+        </docservconfig>
+        '''
+        root = etree.fromstring(xml_template)
+        return Deliverable(root.find(".//deliverable"))
+
+    return _factory
+

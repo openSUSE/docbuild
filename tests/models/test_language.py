@@ -189,3 +189,20 @@ def test_language_matches_with_whitespaces():
     lang = LanguageCode(language="de-de")
     assert lang.matches(" de-de ")
     assert lang.matches(" * ")
+
+
+@pytest.mark.parametrize(
+    ("code", "expected_tag"),
+    [
+        ("en-us", "en"),
+        ("de-de", "de"),
+        ("ja-jp", "ja"),
+        ("pt-br", "pt_br"),
+        ("zh-cn", "zh_cn"),
+
+    ],
+)
+def test_language_code_pdf_tag(code, expected_tag):
+    """Verify the pdf_tag property returns the correct language tag for filenames."""
+    lang = LanguageCode(language=code)
+    assert lang.pdf_tag == expected_tag

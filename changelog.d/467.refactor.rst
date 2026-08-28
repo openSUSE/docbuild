@@ -1,0 +1,1 @@
+Fixed PDF filename generation to use correct country-specific suffixes for languages like Brazilian Portuguese (`pt-br`) and Chinese (`zh_cn`).
