@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.22.1.dev28+g8dd50ef74.d20260827</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.22.1.dev29+gea9628428.d20260828</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=54d0b339"></script>
+    <script src="../_static/documentation_options.js?v=654cbe27"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -622,12 +622,12 @@ default to create a single configuration file.</p>
 <ol class="arabic">
 <li><p>Run the XSLT transformation with the following command:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xsltproc --stringparam outputfile portal.xml \</span>
-<span class="go">  --stringparam outputdir &quot;./output/&quot; \</span>
+<span class="go">  --stringparam outputdir &quot;$HOME/.config/docbuild/config.d/&quot; \</span>
 <span class="go">  --param use.xincludes &#39;true()&#39; \</span>
 <span class="go">  src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile</span>
 </pre></div>
 </div>
-<p>This will create all files in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory, with the main
+<p>This will create all files in the <code class="file docutils literal notranslate"><span class="pre">$HOME/.config/docbuild/config.d/</span></code> directory, with the main
 configuration file named <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code> and additional files for
 each category as needed.</p>
 </li>
@@ -652,6 +652,45 @@ use the variable <code class="docutils literal notranslate"><span class="pre">pa
 <li><p>Copy the generated output file to the desired location.</p></li>
 <li><p>Adjust the env configuration to point to the main configuration file,
 use the variable <code class="docutils literal notranslate"><span class="pre">paths.config_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.main_portal_config</span></code>.</p></li>
+</ol>
+</section>
+<section id="validating-with-jing">
+<h3>Validating with Jing<a class="headerlink" href="#validating-with-jing" title="Link to this heading">#</a></h3>
+<p>The easiest way to validate the Portal configuration file against the schema is using the command <strong class="command">docbuild portal validate</strong>, see <a class="reference internal" href="../user/portal-config/validate-portal.html#validate-portal"><span class="std std-ref">Validating the Portal Configuration</span></a>.</p>
+<p>If you prefer to validate the configuration file against the schema using
+<strong class="command">jing</strong>, use the following steps:</p>
+<ol class="arabic">
+<li><p>Copy the RNC schema file to the configuration directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$PATH_TO_DOCBUILD_GITHUB_REPO</span>
+<span class="go">cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a symbolic link to the RNC schema file in the configuration directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ln -s ../portal-config.rnc &quot;$HOME/.config/docbuild/config.d/portal-config.rnc&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set the appropriate Java system property for XInclude support:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">XINCLUDE_PROP=&quot;-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set the environment variable for your operating system:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>For<span class="w"> </span>openSUSE
+<span class="go">export ADDITIONAL_FLAGS=&quot;$XINCLUDE_PROP&quot;</span>
+<span class="gp"># </span>For<span class="w"> </span>Debian/Ubuntu
+<span class="go">export JAVA_ARGS=&quot;$XINCLUDE_PROP&quot;</span>
+<span class="gp"># </span>For<span class="w"> </span>Fedora/RHEL/CentOS
+<span class="go">export JAVA_OPTS=&quot;$XINCLUDE_PROP&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Validate the configuration file against the schema using <strong class="command">jing</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml</span>
+</pre></div>
+</div>
+</li>
 </ol>
 </section>
 </section>
@@ -710,6 +749,7 @@ use the variable <code class="docutils literal notranslate"><span class="pre">pa
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-xslt-parameters">Available XSLT Parameters</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-multiple-files">Creating Multiple Files</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-single-file">Creating a Single File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-with-jing">Validating with Jing</a></li>
 </ul>
 </li>
 </ul>

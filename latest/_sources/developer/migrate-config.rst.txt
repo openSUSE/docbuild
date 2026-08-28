@@ -175,11 +175,11 @@ To create a directory with multiple files, do the following:
    .. code-block:: console
 
       xsltproc --stringparam outputfile portal.xml \
-        --stringparam outputdir "./output/" \
+        --stringparam outputdir "$HOME/.config/docbuild/config.d/" \
         --param use.xincludes 'true()' \
         src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile
 
-   This will create all files in the :file:`output/` directory, with the main
+   This will create all files in the :file:`$HOME/.config/docbuild/config.d/` directory, with the main
    configuration file named :file:`portal.xml` and additional files for
    each category as needed.
 
@@ -211,3 +211,48 @@ To create a single configuration file, , do the following:
 
 #. Adjust the env configuration to point to the main configuration file,
    use the variable :literal:`paths.config_dir` and :literal:`paths.main_portal_config`.
+
+
+Validating with Jing
+~~~~~~~~~~~~~~~~~~~~
+
+The easiest way to validate the Portal configuration file against the schema is using the command :command:`docbuild portal validate`, see :ref:`validate-portal`.
+
+If you prefer to validate the configuration file against the schema using
+:command:`jing`, use the following steps:
+
+#. Copy the RNC schema file to the configuration directory:
+
+   .. code-block:: console
+
+      # cd $PATH_TO_DOCBUILD_GITHUB_REPO
+      cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/
+
+#. Create a symbolic link to the RNC schema file in the configuration directory:
+
+   .. code-block:: console
+
+      ln -s ../portal-config.rnc "$HOME/.config/docbuild/config.d/portal-config.rnc"
+
+#. Set the appropriate Java system property for XInclude support:
+
+   .. code-block:: console
+
+      XINCLUDE_PROP="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
+
+#. Set the environment variable for your operating system:
+
+   .. code-block:: console
+
+      # For openSUSE
+      export ADDITIONAL_FLAGS="$XINCLUDE_PROP"
+      # For Debian/Ubuntu
+      export JAVA_ARGS="$XINCLUDE_PROP"
+      # For Fedora/RHEL/CentOS
+      export JAVA_OPTS="$XINCLUDE_PROP"
+
+#. Validate the configuration file against the schema using :command:`jing`:
+
+   .. code-block:: console
+
+      jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml
