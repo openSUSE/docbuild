@@ -118,3 +118,13 @@ docbuild.models.language.LanguageCode
       Extract the country part of the language code (property).
 
 
+
+   .. py:method:: pdf_tag() -> str
+
+      Return the language tag used in PDF filenames.
+
+      For most languages, this is just the language code (e.g., ``en``).
+      For some languages where the country is significant (e.g., ``pt-br``),
+      it returns a ``language_country`` tag (e.g., ``pt_br``).
+
+

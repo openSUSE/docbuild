@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.language.LanguageCode &#8212; Docbuild Documentation 0.22.1.dev31+ga68f6e1e3.d20260828</title>
+    <title>docbuild.models.language.LanguageCode &#8212; Docbuild Documentation 0.22.1.dev32+g2eab50194.d20260828</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../../../_static/documentation_options.js?v=d1cd8df7"></script>
+    <script src="../../../../../_static/documentation_options.js?v=94652c03"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -725,6 +725,15 @@ conforming to Pydantic’s <a class="reference external" href="https://pydantic.
 <dd><p>Extract the country part of the language code (property).</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.pdf_tag">
+<span class="sig-name descname"><span class="pre">pdf_tag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.pdf_tag" title="Link to this definition">#</a></dt>
+<dd><p>Return the language tag used in PDF filenames.</p>
+<p>For most languages, this is just the language code (e.g., <code class="docutils literal notranslate"><span class="pre">en</span></code>).
+For some languages where the country is significant (e.g., <code class="docutils literal notranslate"><span class="pre">pt-br</span></code>),
+it returns a <code class="docutils literal notranslate"><span class="pre">language_country</span></code> tag (e.g., <code class="docutils literal notranslate"><span class="pre">pt_br</span></code>).</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -789,6 +798,7 @@ conforming to Pydantic’s <a class="reference external" href="https://pydantic.
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.language.LanguageCode.validate_language"><code class="docutils literal notranslate"><span class="pre">docbuild.models.language.LanguageCode.validate_language()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.language.LanguageCode.lang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.language.LanguageCode.lang()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.language.LanguageCode.country"><code class="docutils literal notranslate"><span class="pre">docbuild.models.language.LanguageCode.country()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.language.LanguageCode.pdf_tag"><code class="docutils literal notranslate"><span class="pre">docbuild.models.language.LanguageCode.pdf_tag()</span></code></a></li>
 </ul>
 </li>
 </ul>
