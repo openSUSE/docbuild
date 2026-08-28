@@ -4,6 +4,7 @@ import asyncio
 from collections.abc import Sequence
 import logging
 from pathlib import Path
+from typing import Any
 
 from aiostream import pipe, stream
 from lxml import etree  # type: ignore
@@ -14,7 +15,7 @@ from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.tasks.portal import parse_portal_config
 
-from .daps import process_deliverable
+from .daps import process_deliverable_group
 from .deliverables import get_deliverable_from_doctype
 from .manifest import store_productdocset_json
 from .repos import update_repositories
@@ -44,6 +45,7 @@ async def process_doctype(
     doctype: Doctype,
     repo_dir: Path,
     tmp_repo_dir: Path,
+    tmp_dir: Path,
     meta_cache_dir: Path,
     dapsmetatmpl: str,
     max_workers: int,
@@ -57,6 +59,7 @@ async def process_doctype(
     :param doctype: The Doctype object to process.
     :param repo_dir: Path to the repository directory.
     :param tmp_repo_dir: Path to the temporary repositories directory.
+    :param tmp_dir: Path to the general temporary directory holding build dirs.
     :param meta_cache_dir: Path to the metadata cache output directory.
     :param dapsmetatmpl: Template string for the DAPS command.
     :param max_workers: Maximum number of concurrent workers allowed.
@@ -78,36 +81,60 @@ async def process_doctype(
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
 
-    # Wrapper to catch exceptions safely and match the MapCallable signature
-    async def process_deliverable_wrapper(
-        deliverable: Deliverable, *args: object
-    ) -> tuple[bool, Deliverable]:
+    # Group by (repo URL, branch) so each unique checkout is shared
+    groups: dict[tuple[str, str], list[Deliverable]] = {}
+    failed: list[Deliverable] = []
+
+    for d in deliverables:
         try:
-            return await process_deliverable(
-                deliverable,
+            groups.setdefault((d.git.url, d.branch), []).append(d)
+        except Exception as e:
+            log.error("Failed to determine Git routing for %s: %s", d.pdlangdc, e)
+            failed.append(d)
+
+    log.info(
+        "Processing %d deliverables across %d worktree group(s).",
+        len(deliverables) - len(failed),
+        len(groups),
+    )
+
+    # The pipeline bounds concurrent worktrees, the semaphore bounds concurrent
+    # daps processes across all worktrees.
+    worktree_limit = get_deliverable_worker_limit(max_workers, len(groups))
+    semaphore = asyncio.Semaphore(worker_limit)
+
+    # Wrapper to catch exceptions safely and match the MapCallable signature
+    async def process_group_wrapper(
+        group: list[Deliverable], *args: object
+    ) -> list[Deliverable]:
+        try:
+            return await process_deliverable_group(
+                group,
                 repo_dir,
                 tmp_repo_dir,
+                tmp_dir,
                 meta_cache_dir,
-                dapstmpl=dapsmetatmpl,
+                dapsmetatmpl,
+                semaphore,
                 skip_repo_update=skip_repo_update,
             )
         except Exception as e:
-            log.error("Error in task for %s: %s", deliverable.full_id, e)
-            return False, deliverable
+            log.error("Group task failed unexpectedly: %s", e)
+            return list(group)
 
     # The elegant aiostream pipeline!
-    pipeline = stream.iterate(deliverables) | pipe.map(
-        process_deliverable_wrapper, task_limit=worker_limit, ordered=True
+    pipeline: Any = stream.iterate(groups.values()) | pipe.map(
+        process_group_wrapper,  # type: ignore[arg-type]
+        task_limit=worktree_limit,
+        ordered=True,
     )
-
-    failed: list[Deliverable] = []
 
     try:
         # Evaluate the pipeline and collect results
         async with pipeline.stream() as streamer:
-            async for success, deliverable in streamer:
-                if not success:
-                    failed.append(deliverable)
+            async for group_failures in streamer:
+                if group_failures:
+                    failed.extend(group_failures)
                     if exitfirst:
                         break  # Breaking automatically safely cancels pending tasks!
     except Exception as e:
@@ -121,6 +148,7 @@ async def process(
     tmp_metadata_dir: Path,
     repo_dir: Path,
     tmp_repo_dir: Path,
+    tmp_dir: Path,
     meta_cache_dir: Path,
     json_cache_dir: Path,
     dapsmetatmpl: str,
@@ -136,6 +164,7 @@ async def process(
     :param tmp_metadata_dir: Path to the temporary metadata directory.
     :param repo_dir: Path to the local repository directory.
     :param tmp_repo_dir: Path to the temporary worktree repository directory.
+    :param tmp_dir: Path to the general temporary directory holding build dirs.
     :param meta_cache_dir: Path to metadata output cache.
     :param json_cache_dir: Path to JSON output cache.
     :param dapsmetatmpl: Template string for the DAPS metadata command.
@@ -171,6 +200,7 @@ async def process(
             dt,
             repo_dir,
             tmp_repo_dir,
+            tmp_dir,
             meta_cache_dir,
             dapsmetatmpl,
             max_workers,
@@ -190,7 +220,7 @@ async def process(
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
         for d in all_failed_deliverables:
-            console_err.print(f"- {d.full_id}")
+            console_err.print(f"- {d.pdlangdc}")
         return 1
 
     return 0

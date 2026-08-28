@@ -13,14 +13,14 @@ log = logging.getLogger(__name__)
 
 
 def get_daps_command(
-    worktree_dir: Path,
+    builddir: Path,
     dcfile_path: Path,
     outputjson: Path,
     dapstmpl: str,
 ) -> list[str]:
     """Construct the DAPS command for native execution.
 
-    :param worktree_dir: The working directory for the git worktree.
+    :param builddir: The build directory DAPS should write its artifacts to.
     :param dcfile_path: Absolute path to the DC file within the worktree.
     :param outputjson: Path where DAPS should write its JSON output.
     :param dapstmpl: A template string with ``{builddir}``, ``{dcfile}``,
@@ -28,7 +28,7 @@ def get_daps_command(
     :return: A list of command arguments suitable for ``subprocess.exec``.
     """
     raw_daps_cmd = dapstmpl.format(
-        builddir=str(worktree_dir),
+        builddir=str(builddir),
         dcfile=str(dcfile_path),
         output=str(outputjson),
     )
@@ -99,20 +99,20 @@ async def process_deliverable(
     outputjson = outputdir / deliverable.xml.dcfile
 
     try:
+        mg = ManagedGitRepo(deliverable.git.url, repo_dir)
+        if not skip_repo_update:
+            if not await mg.clone_bare():
+                raise RuntimeError(
+                    f"Failed to ensure bare repository for {deliverable.full_id}"
+                )
+
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(tmp_repo_dir),
             prefix=(
-                f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}"
+                f"wt-{deliverable.xml.productid}-{deliverable.xml.docsetid}"
                 f"-{deliverable.xml.lang}-{deliverable.xml.dcfile}_"
             ),
         ) as worktree_dir:
-            mg = ManagedGitRepo(deliverable.git.url, repo_dir)
-            if not skip_repo_update:
-                if not await mg.clone_bare():
-                    raise RuntimeError(
-                        f"Failed to ensure bare repository for {deliverable.full_id}"
-                    )
-
             try:
                 await mg.create_worktree(worktree_dir, deliverable.branch)
             except Exception as e:
@@ -143,6 +143,7 @@ async def process_deliverable(
                 log.error("DAPS Error: %s", stderr_data.decode())
                 raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
 
+        await mg.prune_worktrees()
         update_metadata_json(outputjson, deliverable)
         log.debug("Updated metadata JSON for %s", deliverable.full_id)
         return True, deliverable
@@ -150,3 +151,142 @@ async def process_deliverable(
     except Exception as e:
         log.error("Error processing %s: %s", deliverable.full_id, str(e))
         return False, deliverable
+
+
+async def _run_daps_for_deliverable(
+    deliverable: Deliverable,
+    worktree_dir: Path,
+    tmp_dir: Path,
+    meta_cache_dir: Path,
+    dapstmpl: str,
+) -> tuple[bool, Deliverable]:
+    """Run daps for one deliverable inside an existing worktree.
+
+    :param deliverable: The Deliverable to process.
+    :param worktree_dir: Path to an already-checked-out working tree.
+    :param tmp_dir: Path to the general temporary directory holding build dirs.
+    :param meta_cache_dir: Path to the metadata cache output directory.
+    :param dapstmpl: Template string for the DAPS metadata command.
+    :return: A tuple of ``(success, deliverable)``.
+    """
+    log.info("> Processing deliverable: %s", deliverable.full_id)
+
+    if not deliverable.xml.dcfile:
+        log.debug("Deliverable %s has no DC file (prebuilt), skipping.", deliverable.full_id)
+        return True, deliverable
+
+    outputdir = meta_cache_dir / deliverable.paths.relpath
+    outputdir.mkdir(parents=True, exist_ok=True)
+    outputjson = outputdir / deliverable.xml.dcfile
+
+    full_dcfile_path = worktree_dir / deliverable.subdir / deliverable.xml.dcfile
+
+    try:
+        # The worktree is shared by the whole group, so every daps run needs its
+        # own build directory; a shared one makes concurrent runs clobber each other.
+        async with PersistentOnErrorTemporaryDirectory(
+            dir=str(tmp_dir),
+            prefix=f"daps-{deliverable.make_safe_name(deliverable.full_id)}_",
+            suffix="-build",
+        ) as build_dir:
+            cmd = get_daps_command(build_dir, full_dcfile_path, outputjson, dapstmpl)
+
+            daps_proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdin=asyncio.subprocess.DEVNULL,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            _, stderr_data = await daps_proc.communicate()
+
+            if daps_proc.returncode != 0:
+                log.error(
+                    "DAPS Error for %s: %s", deliverable.full_id, stderr_data.decode()
+                )
+                raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
+
+        update_metadata_json(outputjson, deliverable)
+        log.debug("Updated metadata JSON for %s", deliverable.full_id)
+        return True, deliverable
+
+    except Exception as e:
+        log.error("Error processing %s: %s", deliverable.full_id, str(e))
+        return False, deliverable
+
+
+async def process_deliverable_group(
+    deliverables: list[Deliverable],
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    tmp_dir: Path,
+    meta_cache_dir: Path,
+    dapstmpl: str,
+    semaphore: asyncio.Semaphore,
+    *,
+    skip_repo_update: bool = False,
+) -> list[Deliverable]:
+    """Process all deliverables that share the same repository and branch.
+
+    Creates a single worktree for the group and runs daps for each deliverable
+    concurrently within it, subject to the shared semaphore.
+
+    :param deliverables: Deliverables sharing the same ``(git.url, branch)`` pair.
+    :param repo_dir: Path to the base repositories directory.
+    :param tmp_repo_dir: Path to the temporary worktree directory.
+    :param tmp_dir: Path to the general temporary directory holding build dirs.
+    :param meta_cache_dir: Path to the metadata cache output directory.
+    :param dapstmpl: Template string for the DAPS metadata command.
+    :param semaphore: Shared semaphore bounding total concurrent daps processes.
+    :param skip_repo_update: If True, do not update/fetch the bare repository.
+    :return: A list of Deliverables that failed.
+    """
+    first = deliverables[0]
+    mg = ManagedGitRepo(first.git.url, repo_dir)
+
+    bare_repo_path = repo_dir / first.git.slug
+    if not bare_repo_path.is_dir():
+        log.error("Bare repository not found for %s at %s", first.git.name, bare_repo_path)
+        return list(deliverables)
+
+    if not skip_repo_update:
+        if not await mg.clone_bare():
+            log.error("Failed to ensure bare repository for %s", first.git.name)
+            return list(deliverables)
+
+    prefix = (
+        f"wt-{first.xml.productid}-{first.xml.docsetid}"
+        f"-{first.branch.replace('/', '-')}_"
+    )
+    log.info(
+        "Processing group %s/%s: %d deliverable(s).",
+        first.git.name, first.branch, len(deliverables),
+    )
+    failed: list[Deliverable] = []
+    async with PersistentOnErrorTemporaryDirectory(dir=str(tmp_repo_dir), prefix=prefix) as worktree_dir:
+        try:
+            await mg.create_worktree(worktree_dir, first.branch)
+        except Exception as e:
+            log.error("Failed to create worktree for %s/%s: %s", first.git.name, first.branch, e)
+            return list(deliverables)
+
+        async def _limited(d: Deliverable) -> tuple[bool, Deliverable]:
+            async with semaphore:
+                return await _run_daps_for_deliverable(
+                    d, worktree_dir, tmp_dir, meta_cache_dir, dapstmpl
+                )
+
+        tasks = [
+            asyncio.create_task(_limited(d), name=f"daps_{d.full_id}")
+            for d in deliverables
+        ]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for d, result in zip(deliverables, results, strict=False):
+            if isinstance(result, Exception):
+                log.error("Task error for %s: %s", d.full_id, result)
+                failed.append(d)
+            elif not result[0]:
+                failed.append(result[1])
+
+    await mg.prune_worktrees()
+    return failed
