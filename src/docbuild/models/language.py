@@ -169,6 +169,8 @@ class LanguageCode(BaseModel):
         parts = self.language.split("-")
         return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
 
+    _COUNTRY_SIGNIFICANT: ClassVar[frozenset[str]] = frozenset({"pt", "zh"})
+
     @computed_field(
         repr=False,
         title="The language part of the language code",
@@ -186,3 +188,19 @@ class LanguageCode(BaseModel):
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
         return self._parts[1] if len(self._parts) > 1 else "*"
+
+    @computed_field(
+        repr=False,
+        title="The language tag for PDF filenames",
+        examples=["en", "de", "pt_br"],
+    )
+    def pdf_tag(self) -> str:
+        """Return the language tag used in PDF filenames.
+
+        For most languages, this is just the language code (e.g., ``en``).
+        For some languages where the country is significant (e.g., ``pt-br``),
+        it returns a ``language_country`` tag (e.g., ``pt_br``).
+        """
+        if self.lang in self._COUNTRY_SIGNIFICANT:
+            return f"{self.lang}_{self.country}"
+        return self.lang

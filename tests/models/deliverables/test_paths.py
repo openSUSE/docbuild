@@ -25,15 +25,22 @@ def test_singlehtml_path(first_deliverable: Deliverable) -> None:
     )
 
 
-def test_pdf_path(first_deliverable: Deliverable) -> None:
-    assert first_deliverable.paths.pdf_path == "/sles/15-SP6/pdf/SLES-administration_en.pdf"
-
-
-def test_pdf_path_non_default_lang(first_de_deliverable: Deliverable) -> None:
-    assert (
-        first_de_deliverable.paths.pdf_path
-        == "/de-de/sles/15-SP6/pdf/SLES-administration_de.pdf"
+@pytest.mark.parametrize(
+    ("lang", "expected_path"),
+    [
+        ("en-us", "/sles/15-SP6/pdf/SLES-administration_en.pdf"),
+        ("de-de", "/de-de/sles/15-SP6/pdf/SLES-administration_de.pdf"),
+        ("pt-br", "/pt-br/sles/15-SP6/pdf/SLES-administration_pt_br.pdf"),
+        ("zh-cn", "/zh-cn/sles/15-SP6/pdf/SLES-administration_zh_cn.pdf"),
+    ],
+)
+def test_pdf_path(lang, expected_path, deliverable_from_xml_factory):
+    """Verify the generated PDF path conforms to the language suffix rules."""
+    deliverable = deliverable_from_xml_factory(
+        '<deliverable><dc file="DC-SLES-administration"/></deliverable>',
+        lang=lang,
     )
+    assert deliverable.paths.pdf_path == expected_path
 
 
 def test_html_path_with_meta_rootid(first_de_deliverable: Deliverable) -> None:
