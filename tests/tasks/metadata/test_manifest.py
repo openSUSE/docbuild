@@ -458,3 +458,26 @@ def test_store_productdocset_json_preserves_order(
     doc_titles = [doc["docs"][0]["title"] for doc in merged["documents"]]
     assert doc_titles == ["DC-first", "DC-second"]
 
+
+def test_merge_documents_by_dcfile_sets_default_correctly():
+    """Verify that merge_documents_by_dcfile sets default=True only for en-us."""
+    from docbuild.models.manifest import Document, SingleDocument
+    doc1 = Document(docs=[SingleDocument(lang="en-us", dcfile="DC-test")])
+    doc2 = Document(docs=[SingleDocument(lang="de-de", dcfile="DC-test")])
+    doc3 = Document(docs=[SingleDocument(lang="fr-fr", dcfile="DC-test")])
+
+    merged = manifest_pkg.merge_documents_by_dcfile([doc1, doc2, doc3])
+
+    assert len(merged) == 1
+
+    docs = merged[0].docs
+    assert len(docs) == 3
+
+    en_doc = next(d for d in docs if d.lang == "en-us")
+    de_doc = next(d for d in docs if d.lang == "de-de")
+    fr_doc = next(d for d in docs if d.lang == "fr-fr")
+
+    assert en_doc.default is True
+    assert de_doc.default is False
+    assert fr_doc.default is False
+

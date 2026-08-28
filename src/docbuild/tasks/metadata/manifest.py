@@ -84,6 +84,8 @@ def merge_documents_by_dcfile(documents: list[Document]) -> list[Document]:
         )
         for d in en_translations:
             d.default = True
+        for d in other_translations:
+            d.default = False
         merged.docs = en_translations + other_translations
 
     return list(groups.values())
@@ -248,8 +250,7 @@ def store_productdocset_json(
     all_deliverables.sort(key=keyfunc)  # groupby requires a sorted sequence
 
     for (product_id, docset_id), group in itertools.groupby(all_deliverables, key=keyfunc):
-        if not product_id or not docset_id:
-            continue
+        assert product_id and docset_id
 
         deliverables_in_group = list(group)
 

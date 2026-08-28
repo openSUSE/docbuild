@@ -1,0 +1,1 @@
+Part 3: The `default` flag for translated documents is now correctly set to `false`.
