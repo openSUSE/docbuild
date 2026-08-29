@@ -65,7 +65,7 @@ Module Contents
    :param result_queue: The queue for results from the workers.
 
 
-.. py:function:: run_all[T, R](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue, result_queue: asyncio.Queue, limit: int) -> None
+.. py:function:: run_all[T, R](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue, result_queue: asyncio.Queue, limit: int, *, name: str | None = None) -> None
    :async:
 
 
@@ -76,9 +76,10 @@ Module Contents
    :param input_queue: The queue for items to be processed by workers.
    :param result_queue: The queue for results from the workers.
    :param limit: The maximum number of concurrent workers.
+   :param name: The optional name of the task shown in the log
 
 
-.. py:function:: run_parallel[T, R, **P](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[Concatenate[T, P], collections.abc.Awaitable[R]], limit: int, *worker_args: P, **worker_kwargs: P) -> collections.abc.AsyncIterator[R | TaskFailedError[T]]
+.. py:function:: run_parallel[T, R, **P](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[Concatenate[T, P], collections.abc.Awaitable[R]], limit: int, *worker_args: P, name: str | None = None, **worker_kwargs: P) -> collections.abc.AsyncIterator[R | TaskFailedError[T]]
    :async:
 
 
@@ -127,6 +128,7 @@ Module Contents
        Higher values increase throughput up to the point where the event
        loop, network, or downstream service becomes the bottleneck.
    :param worker_args: Positional arguments to pass to ``worker_fn``.
+   :param name: The optional name of the task shown in the log.
    :param worker_kwargs: Keyword arguments to pass to ``worker_fn``.
    :raises ValueError: If ``limit`` is less than 1.
    :yields: Results in completion order (not input order). Failed items
