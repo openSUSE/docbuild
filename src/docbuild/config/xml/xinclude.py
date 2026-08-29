@@ -155,4 +155,5 @@ def parse_xml_with_xinclude_base(filepath: Path | str) -> etree._ElementTree:
         root_dir=root_path.parent,
         active_stack=active_stack,
     )
+    etree.cleanup_namespaces(tree.getroot())
     return tree
