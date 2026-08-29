@@ -316,4 +316,3 @@ def test_document_isgated_serialization() -> None:
     assert "isGated" in serialized
     assert serialized["isGated"] is True
     assert "isgated" not in serialized
-

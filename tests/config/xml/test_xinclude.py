@@ -211,3 +211,27 @@ def test_resolve_includes_skips_non_element_nodes() -> None:
     )
 
     tree.getroot.return_value.xpath.assert_called_once()
+
+def test_parse_xml_with_xinclude_base_cleans_up_namespaces(tmp_path: Path) -> None:
+    """Unused namespaces from included files are removed from the final tree."""
+    (tmp_path / "portal.xml").write_text(
+        f'<portal xmlns:xi="{XINCLUDE_NS}" xmlns:foo="http://www.example.com/foo"><xi:include href="product.xml"/></portal>',
+        encoding="utf-8",
+    )
+    (tmp_path / "product.xml").write_text(
+        '<product><name>Test Product</name></product>',
+        encoding="utf-8",
+    )
+
+    tree = parse_xml_with_xinclude_base(tmp_path / "portal.xml")
+
+    root = tree.getroot()
+
+    # Check that the 'foo' and 'xi' namespaces are not present on the root element
+    assert "foo" not in root.nsmap
+    assert "xi" not in root.nsmap
+
+    # Also check the serialized output
+    result_xml = etree.tostring(root, encoding="unicode")
+    assert 'xmlns:foo' not in result_xml
+    assert 'xmlns:xi' not in result_xml

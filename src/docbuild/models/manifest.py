@@ -67,18 +67,12 @@ class Description(BaseModel):
         """
         for n in node.xpath("descriptions/desc"):
             attrs: dict[str, Any] = dict(n.attrib)
-            text = "".join(
-                f"<{child.tag}>{
-                    ' '.join(
-                        x.strip()
-                        for t in child.itertext()
-                        for x in t.splitlines()
-                        if x.strip()
-                    )
-                }</{child.tag}>"
-                for child in n.iterchildren()
+            text = (n.text or "") + "".join(
+                etree.tostring(child, encoding="unicode", method="html")
+                for child in n
                 if child.tag != "title"
             )
+            text = " ".join(text.split()).strip()
 
             yield cls(**attrs, description=text)
 
