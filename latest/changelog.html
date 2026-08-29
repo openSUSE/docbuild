@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev32+g2eab50194.d20260828</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev33+g8921484a6.d20260829</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=94652c03"></script>
+    <script src="_static/documentation_options.js?v=b50833b1"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -466,6 +466,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Fixed the placeholder-resolution tests for the environment configuration, which previously mocked the wrong module and did not exercise the mocked code path. The mock now targets the <code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env</span></code> module so the tests fail when placeholder resolution breaks. Additionally, removed obsolete and duplicate test files and dead fixtures, and parametrized repeated check validation tests to reduce maintenance overhead. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/430">GH #430</a>)</p></li>
 <li><p>Adjusted invalid <a class="reference internal" href="reference/_autoapi/docbuild/models/product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a> error messages during doctype parsing to list allowed product acronyms (for example <code class="docutils literal notranslate"><span class="pre">sle-ha</span></code> and <code class="docutils literal notranslate"><span class="pre">sles</span></code>) instead of full product names. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/449">GH #449</a>)</p></li>
 <li><p>Fixed <code class="xref py py-func docutils literal notranslate"><span class="pre">store_productdocset_json()</span></code> not writing any product/docset JSON file when the doctype contained a docset wildcard (for example <code class="docutils literal notranslate"><span class="pre">appliance/*/*</span></code>). Doctypes are now resolved with <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.iter_doctypes" title="docbuild.models.doctype.Doctype.iter_doctypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_doctypes()</span></code></a> before the cached metadata files are collected. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/455">GH #455</a>)</p></li>
+<li><p>Correctly handle <code class="docutils literal notranslate"><span class="pre">&lt;subdir&gt;</span></code> in translated <code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;ref&quot;&gt;</span></code> elements, which fixes a regression causing <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">index</span> <span class="pre">out</span> <span class="pre">of</span> <span class="pre">range</span></code> errors for certain translated documents. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/469">GH #469</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">

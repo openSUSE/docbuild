@@ -206,7 +206,7 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
    .. py:method:: subdir() -> str
 
-      Return subdirectory or empty string.
+      Return combined subdirectory (locale-level + deliverable-level) or empty string.
 
 
 
