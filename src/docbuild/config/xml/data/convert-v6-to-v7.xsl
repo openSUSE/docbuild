@@ -1010,6 +1010,7 @@
     </xsl:variable>
 
     <deliverable type="ref">
+      <xsl:apply-templates select="subdir"/>
       <ref linkend="{$id}" />
     </deliverable>
   </xsl:template>

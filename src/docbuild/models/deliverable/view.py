@@ -3,6 +3,7 @@
 from collections.abc import Generator
 from dataclasses import dataclass, field
 from functools import cached_property
+import logging
 from typing import Literal, cast
 
 from lxml import etree  # type: ignore
@@ -10,6 +11,8 @@ from lxml import etree  # type: ignore
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
 from ..repo import Repo
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -86,8 +89,7 @@ class DeliverableXMLView:
             dcnode = cast(etree._Element, self.locale_en).find(
                 f"deliverable[@id={refid!r}]/dc"
             )
-            if dcnode is not None:
-                return dcnode.attrib.get("file")  # is already the @file attribute
+            return dcnode.attrib.get("file", None)
 
         return None
 
@@ -105,8 +107,8 @@ class DeliverableXMLView:
             dcnode = cast(etree._Element, self.locale_en).find(
                 f"deliverable[@id={refid!r}]"
             )
-            if dcnode is not None:
-                return dcnode.attrib.get("id")  # is already the @id attribute
+            return dcnode.attrib.get("id", None)
+
         return d_id
 
 
@@ -228,9 +230,9 @@ class DeliverableXMLView:
         return None
 
     def subdir(self) -> str:
-        """Return subdirectory or empty string."""
-        node = self.node.getparent().findtext("subdir", default=None)
-        return node.strip() if node is not None else ""
+        """Return combined subdirectory (locale-level + deliverable-level) or empty string."""
+        parts = self.node.xpath("parent::*/subdir/text() | subdir/text()")
+        return "/".join(p.strip() for p in parts)
 
     def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""
@@ -247,7 +249,7 @@ class DeliverableXMLView:
     # -- Output formats
     def _ref_format_attrs(self) -> dict[str, str] | None:
         """Return raw format attributes from the linked English DC deliverable."""
-        linkend = self.node[0].attrib.get("linkend")
+        linkend = self.node.find("ref").attrib.get("linkend")
         other_deli = self.node.xpath(
             f"../../locale[@lang='en-us']/deliverable[@id={linkend!r}]"
         )

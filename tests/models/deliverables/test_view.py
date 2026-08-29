@@ -95,6 +95,12 @@ def test_xml_subdir_empty(first_deliverable: Deliverable) -> None:
     assert first_deliverable.xml.subdir() == ""
 
 
+def test_subdir_combined(
+    first_ref_deliverable_with_subdir: Deliverable,
+) -> None:
+    """Test that locale and deliverable subdirs are combined."""
+    assert first_ref_deliverable_with_subdir.subdir == "l10n/sles/de-de/guide"
+
 def test_format_attrs_prebuilt_filters_unknown_url_formats() -> None:
     """Test unknown prebuilt URL format values are ignored."""
     xml_prebuilt = """
@@ -188,6 +194,51 @@ def test_xml_translations() -> None:
     assert view.translations == {"en-us", "de-de"}
 
 
+def test_xml_translations_no_docset() -> None:
+    """Test translations property with a node that has no docset."""
+    xml_content = """
+    <portal>
+        <product id="p1">
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable id="test" />
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    node = etree.fromstring(xml_content).xpath("//deliverable")[0]
+    view = DeliverableXMLView(node)
+    assert view.translations == {"en-us"}
+
+
+def test_xml_translations_no_lang_in_locale() -> None:
+    """Test translations property with a locale that has no lang attribute."""
+    xml_content = """
+    <portal>
+        <product id="p1">
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable id="test" />
+                    </locale>
+                    <locale> <!-- No lang attribute -->
+                        <deliverable id="test_translation">
+                            <ref linkend="test" />
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    node = etree.fromstring(xml_content).xpath("//locale[@lang='en-us']/deliverable")[0]
+    view = DeliverableXMLView(node)
+    assert view.translations == {"en-us"}
+
+
 def test_xml_category_title() -> None:
     """Test category_title safely resolves titles, names, and ID fallbacks."""
     xml_content = """
@@ -196,7 +247,7 @@ def test_xml_category_title() -> None:
             <categories>
                 <category lang="en-us">
                   <language id="cat-title" title="Has Title Element" />
-                  <language id="cat-name" title="Has Name Element" />
+                  <language id="cat-name" name="Has Name Element" />
                 </category>
             </categories>
             <docset path="d1">

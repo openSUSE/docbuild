@@ -14,16 +14,14 @@ DATADIR = Path(__file__).resolve().parent / "data"
 
 
 def _parse_xml(xml_file: str) -> etree._ElementTree:
-    root = etree.fromstring((DATADIR / xml_file).read_text(), parser=None)
+    parser = etree.XMLParser(remove_blank_text=True)
+    root = etree.fromstring((DATADIR / xml_file).read_bytes(), parser=parser)
     return root.getroottree()
 
 
 def _first_deliverable_node(node: etree._ElementTree, *, lang: str) -> etree._Element:
     result = node.xpath(
-        (
-            "(/product | /portal/product)"
-            f"/docset/resources/locale[@lang={lang!r}]/deliverable"
-        ),
+        f"//locale[@lang={lang!r}]/deliverable"
     )
     assert result
     return result[0]
@@ -48,6 +46,11 @@ def ref_node() -> etree._ElementTree:
 
 
 @pytest.fixture
+def ref_node_with_subdir() -> etree._ElementTree:
+    """Return an XML tree with a translated reference deliverable with a subdir."""
+    return _parse_xml("ref_locale_with_subdir.xml")
+
+@pytest.fixture
 def prebuilt_node() -> etree._ElementTree:
     """Return an XML tree with one prebuilt deliverable."""
     return _parse_xml("prebuilt.xml")
@@ -70,6 +73,13 @@ def first_ref_deliverable(ref_node: etree._ElementTree) -> Deliverable:
     """Return the first German reference deliverable model."""
     return Deliverable(_first_deliverable_node(ref_node, lang="de-de"))
 
+
+@pytest.fixture
+def first_ref_deliverable_with_subdir(
+    ref_node_with_subdir: etree._ElementTree,
+) -> Deliverable:
+    """Return the first German reference deliverable model with a subdir."""
+    return Deliverable(_first_deliverable_node(ref_node_with_subdir, lang="de-de"))
 
 @pytest.fixture
 def first_prebuilt_deliverable(prebuilt_node: etree._ElementTree) -> Deliverable:
