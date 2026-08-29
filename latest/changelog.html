@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev36+g53897c870.d20260829</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev37+g3af0e4154.d20260829</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=1ce7d945"></script>
+    <script src="_static/documentation_options.js?v=c0981eea"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -464,6 +464,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Part 2: The order of deliverables in the generated JSON now correctly follows the order in the Portal XML file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/467.part_2">GH #467.part_2</a>)</p></li>
 <li><p>Part 3: The <cite>default</cite> flag for translated documents is now correctly set to <cite>false</cite>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/467.part_3">GH #467.part_3</a>)</p></li>
 <li><p>The <strong class="command">docbuild metadata</strong> manifest now only includes referenced categories by default. A new <code class="docutils literal notranslate"><span class="pre">full_categories</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">process</span></code> function allows including all categories. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/467.part_5">GH #467.part_5</a>)</p></li>
+<li><p>Fixed missing text in field <code class="docutils literal notranslate"><span class="pre">description</span></code> of the generated JSON. Additionally, removed XML XInclude namespaces and excessive whitespaces in JSON. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/467.part_6">GH #467.part_6</a>)</p></li>
 <li><p>Fixed the placeholder-resolution tests for the environment configuration, which previously mocked the wrong module and did not exercise the mocked code path. The mock now targets the <code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env</span></code> module so the tests fail when placeholder resolution breaks. Additionally, removed obsolete and duplicate test files and dead fixtures, and parametrized repeated check validation tests to reduce maintenance overhead. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/430">GH #430</a>)</p></li>
 <li><p>Adjusted invalid <a class="reference internal" href="reference/_autoapi/docbuild/models/product/Product.html#docbuild.models.product.Product" title="docbuild.models.product.Product"><code class="xref py py-class docutils literal notranslate"><span class="pre">Product</span></code></a> error messages during doctype parsing to list allowed product acronyms (for example <code class="docutils literal notranslate"><span class="pre">sle-ha</span></code> and <code class="docutils literal notranslate"><span class="pre">sles</span></code>) instead of full product names. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/449">GH #449</a>)</p></li>
 <li><p>Fixed <code class="xref py py-func docutils literal notranslate"><span class="pre">store_productdocset_json()</span></code> not writing any product/docset JSON file when the doctype contained a docset wildcard (for example <code class="docutils literal notranslate"><span class="pre">appliance/*/*</span></code>). Doctypes are now resolved with <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.iter_doctypes" title="docbuild.models.doctype.Doctype.iter_doctypes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_doctypes()</span></code></a> before the cached metadata files are collected. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/455">GH #455</a>)</p></li>
