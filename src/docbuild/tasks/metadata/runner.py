@@ -134,6 +134,7 @@ async def process(
     *,
     exitfirst: bool = False,
     skip_repo_update: bool = False,
+    full_categories: bool = False,
 ) -> int:
     """Asynchronous entry point for metadata retrieval.
 
@@ -194,7 +195,12 @@ async def process(
     ]
 
     await asyncio.to_thread(
-        store_productdocset_json, doctypes, stitchnode, meta_cache_dir, json_cache_dir
+        store_productdocset_json,
+        doctypes,
+        stitchnode,
+        meta_cache_dir,
+        json_cache_dir,
+        full_categories=full_categories,
     )
 
     if all_failed_deliverables:

@@ -215,6 +215,8 @@ def store_productdocset_json(
     stitchnode: etree._ElementTree,
     meta_cache_dir: Path,
     json_cache_dir: Path,
+    *,
+    full_categories: bool = False,
 ) -> None:
     """Build and store a aggregated JSON manifest for each product/docset.
 
@@ -282,11 +284,20 @@ def store_productdocset_json(
         )
 
         # Global (portal-level) categories first, then local (product-level) ones
-        categories = list(Category.from_xml_node(stitchnode.getroot()))
-        global_ids = {c.id for c in categories}
-        categories += [
+        all_categories = list(Category.from_xml_node(stitchnode.getroot()))
+        global_ids = {c.id for c in all_categories}
+        all_categories += [
             c for c in Category.from_xml_node(productnode) if c.id not in global_ids
         ]
+
+        if full_categories:
+            categories = all_categories
+        else:
+            # Collect IDs of categories that are actually referenced by documents
+            referenced_category_ids = {doc.category for doc in merged_documents if doc.category}
+            categories = [
+                cat for cat in all_categories if cat.id in referenced_category_ids
+            ]
         configured_languages = configured_languages_from_docset(docsetnode)
         archives = [
             Archive(lang=lang, product=product_id, docset=docset_id)

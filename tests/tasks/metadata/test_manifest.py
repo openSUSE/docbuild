@@ -481,3 +481,94 @@ def test_merge_documents_by_dcfile_sets_default_correctly():
     assert de_doc.default is False
     assert fr_doc.default is False
 
+
+def test_store_productdocset_json_filters_categories(
+    test_dirs: dict[str, Path],
+):
+    """Categories are filtered to referenced ones, unless full_categories=True."""
+    xml_string = '''
+    <docservconfig>
+      <categories>
+        <category lang="en-us">
+            <language id="cat.referenced" title="Referenced"/>
+        </category>
+        <category lang="en-us">
+            <language id="cat.unreferenced" title="Unreferenced"/>
+        </category>
+      </categories>
+      <product id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <docset id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-SLES-deployment">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    '''
+    stitchnode = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/15-SP7/en-us")
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    # Create a dummy metadata file that references one category
+    deliverable_path = meta_cache_dir / "en-us" / "sles" / "15-SP7"
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / "DC-SLES-deployment"
+    doc_content = {
+        "docs": [
+            {
+                "title": "Doc1",
+                "dcfile": "DC-SLES-deployment",
+                "lang": "en-us",
+            }
+        ],
+        "category": "cat.referenced",
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    # 1. Test default behavior (filtered)
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+        # full_categories=False is the default
+    )
+
+    out_file = json_cache_dir / "sles" / "15-SP7.json"
+    assert out_file.exists()
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+
+    assert "categories" in merged
+    assert len(merged["categories"]) == 1
+    assert merged["categories"][0]["categoryId"] == "cat.referenced"
+
+    # 2. Test full_categories=True behavior
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+        full_categories=True,
+    )
+
+    assert out_file.exists()  # Should be overwritten
+    merged_full = json.loads(out_file.read_text(encoding="utf-8"))
+
+    assert "categories" in merged_full
+    assert len(merged_full["categories"]) == 2
+    category_ids = {c["categoryId"] for c in merged_full["categories"]}
+    assert category_ids == {"cat.referenced", "cat.unreferenced"}
+
+
