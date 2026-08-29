@@ -83,13 +83,18 @@ async def process_doctype(
         deliverable: Deliverable, *args: object
     ) -> tuple[bool, Deliverable]:
         try:
-            return await process_deliverable(
-                deliverable,
-                repo_dir,
-                tmp_repo_dir,
-                meta_cache_dir,
-                dapstmpl=dapsmetatmpl,
-                skip_repo_update=skip_repo_update,
+            # The task name will be inherited by all child tasks and logs.
+            # This helps to distinguish logs for different deliverables.
+            return await asyncio.create_task(
+                process_deliverable(
+                    deliverable,
+                    repo_dir,
+                    tmp_repo_dir,
+                    meta_cache_dir,
+                    dapstmpl=dapsmetatmpl,
+                    skip_repo_update=skip_repo_update,
+                ),
+                name=f"metadata:{deliverable.full_id}",
             )
         except Exception as e:
             log.error("Error in task for %s: %s", deliverable.full_id, e)
@@ -166,16 +171,19 @@ async def process(
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES, default_lang="*")]
 
     tasks = [
-        process_doctype(
-            stitchnode,
-            dt,
-            repo_dir,
-            tmp_repo_dir,
-            meta_cache_dir,
-            dapsmetatmpl,
-            max_workers,
-            exitfirst=exitfirst,
-            skip_repo_update=skip_repo_update,
+        asyncio.create_task(
+            process_doctype(
+                stitchnode,
+                dt,
+                repo_dir,
+                tmp_repo_dir,
+                meta_cache_dir,
+                dapsmetatmpl,
+                max_workers,
+                exitfirst=exitfirst,
+                skip_repo_update=skip_repo_update,
+            ),
+            name=f"metadata:{dt!s}",
         )
         for dt in doctypes
     ]
@@ -185,7 +193,9 @@ async def process(
         d for failed_list in results_per_doctype for d in failed_list
     ]
 
-    store_productdocset_json(doctypes, stitchnode, meta_cache_dir, json_cache_dir)
+    await asyncio.to_thread(
+        store_productdocset_json, doctypes, stitchnode, meta_cache_dir, json_cache_dir
+    )
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")

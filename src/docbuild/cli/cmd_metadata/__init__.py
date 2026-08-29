@@ -78,21 +78,27 @@ def metadata(
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(
-                process(
-                    main_portal_config=main_portal_config,
-                    tmp_metadata_dir=tmp_metadata_dir,
-                    repo_dir=repo_dir,
-                    tmp_repo_dir=tmp_repo_dir,
-                    meta_cache_dir=meta_cache_dir,
-                    json_cache_dir=json_cache_dir,
-                    dapsmetatmpl=dapsmetatmpl,
-                    max_workers=max_workers,
-                    doctypes=list(doctypes),
-                    exitfirst=exitfirst,
-                    skip_repo_update=skip_repo_update,
+
+            async def main() -> int:
+                # Name the top-level task for this command
+                return await asyncio.create_task(
+                    process(
+                        main_portal_config=main_portal_config,
+                        tmp_metadata_dir=tmp_metadata_dir,
+                        repo_dir=repo_dir,
+                        tmp_repo_dir=tmp_repo_dir,
+                        meta_cache_dir=meta_cache_dir,
+                        json_cache_dir=json_cache_dir,
+                        dapsmetatmpl=dapsmetatmpl,
+                        max_workers=max_workers,
+                        doctypes=list(doctypes),
+                        exitfirst=exitfirst,
+                        skip_repo_update=skip_repo_update,
+                    ),
+                    name="metadata",
                 )
-            )
+
+            result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
             stdout.print(f"Elapsed time {t.elapsed:0.2f}s")

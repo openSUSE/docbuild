@@ -133,8 +133,11 @@ async def process_doctype(
 
     async def build_wrapper(d: Deliverable, *args: object) -> tuple[bool, Deliverable]:
         try:
-            return await process_deliverable_build(
-                d, repo_dir, tmp_repo_dir, tmp_build_base_dir, daps_tmpls
+            return await asyncio.create_task(
+                process_deliverable_build(
+                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, daps_tmpls
+                ),
+                name=f"build:{d.full_id}",
             )
         except Exception as e:
             log.error("Build task error for %s: %s", d.full_id, e)
@@ -171,8 +174,11 @@ async def process(
     root = await parse_portal_config(main_portal_config)
 
     tasks = [
-        process_doctype(
-            root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+        asyncio.create_task(
+            process_doctype(
+                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+            ),
+            name=f"build:{dt!s}",
         )
         for dt in doctypes
     ]

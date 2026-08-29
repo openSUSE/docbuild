@@ -114,17 +114,20 @@ def build(
 
         if not skip_metadata:
             stdout.print("[bold blue]Running metadata generation (fail-fast validation)...[/bold blue]")
-            meta_result = await metadata_process(
-                main_portal_config=main_portal_config,
-                tmp_metadata_dir=tmp_metadata_dir,
-                repo_dir=repo_dir,
-                tmp_repo_dir=tmp_repo_dir,
-                meta_cache_dir=meta_cache_dir,
-                json_cache_dir=json_cache_dir,
-                dapsmetatmpl=dapsmetatmpl,
-                max_workers=max_workers,
-                doctypes=list(doctypes),
-                skip_repo_update=skip_repo_update,
+            meta_result = await asyncio.create_task(
+                metadata_process(
+                    main_portal_config=main_portal_config,
+                    tmp_metadata_dir=tmp_metadata_dir,
+                    repo_dir=repo_dir,
+                    tmp_repo_dir=tmp_repo_dir,
+                    meta_cache_dir=meta_cache_dir,
+                    json_cache_dir=json_cache_dir,
+                    dapsmetatmpl=dapsmetatmpl,
+                    max_workers=max_workers,
+                    doctypes=list(doctypes),
+                    skip_repo_update=skip_repo_update,
+                ),
+                name="build:metadata",
             )
 
             if meta_result != 0:
@@ -134,21 +137,28 @@ def build(
             build_skip_repo = True
 
         stdout.print(f"[bold blue]Starting async build pipeline with {max_workers} workers...[/bold blue]")
-        return await build_process(
-            main_portal_config=main_portal_config,
-            repo_dir=repo_dir,
-            tmp_repo_dir=tmp_repo_dir,
-            tmp_build_base_dir=tmp_build_base_dir,
-            max_workers=max_workers,
-            doctypes=doctypes,
-            daps_tmpls=daps_tmpls,
-            skip_repo_update=build_skip_repo,
+        return await asyncio.create_task(
+            build_process(
+                main_portal_config=main_portal_config,
+                repo_dir=repo_dir,
+                tmp_repo_dir=tmp_repo_dir,
+                tmp_build_base_dir=tmp_build_base_dir,
+                max_workers=max_workers,
+                doctypes=doctypes,
+                daps_tmpls=daps_tmpls,
+                skip_repo_update=build_skip_repo,
+            ),
+            name="build:build",
         )
 
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(run_pipeline())
+
+            async def main() -> int:
+                return await asyncio.create_task(run_pipeline(), name="build")
+
+            result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
             stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
