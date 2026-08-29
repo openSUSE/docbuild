@@ -1084,6 +1084,7 @@ div {
       #
       # TODO: Do we want only have references in translations?
       # The <ref> content model allows also descriptions.
+      ds.subdir?,
       ds.ref # | ds.deliverable.prebuilt
     }
 

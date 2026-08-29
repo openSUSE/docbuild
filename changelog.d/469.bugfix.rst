@@ -1,0 +1,1 @@
+Correctly handle ``<subdir>`` in translated ``<deliverable type="ref">`` elements, which fixes a regression causing ``list index out of range`` errors for certain translated documents.
