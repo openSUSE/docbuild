@@ -44,6 +44,11 @@ def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     main_portal_config = Path(context.envconfig.paths.main_portal_config).expanduser()
     repo_dir = Path(context.envconfig.paths.repo_dir).expanduser()
 
-    result = asyncio.run(clone_repositories(main_portal_config, repo_dir, repos))
+    async def main() -> int:
+        return await asyncio.create_task(
+            clone_repositories(main_portal_config, repo_dir, repos), name="repo-clone"
+        )
+
+    result = asyncio.run(main())
     log.info(f"Clone process completed with exit code: {result}")
     ctx.exit(result)

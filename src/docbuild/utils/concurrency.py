@@ -112,6 +112,8 @@ async def run_all[T, R](
     input_queue: asyncio.Queue,
     result_queue: asyncio.Queue,
     limit: int,
+    *,
+    name: str | None = None,
 ) -> None:
     """Orchestrate producer + workers, then signal the consumer when done.
 
@@ -120,13 +122,20 @@ async def run_all[T, R](
     :param input_queue: The queue for items to be processed by workers.
     :param result_queue: The queue for results from the workers.
     :param limit: The maximum number of concurrent workers.
+    :param name: The optional name of the task shown in the log
     """
     # Remove the internal .join() and let TaskGroup manage the lifecycle
     try:
         async with asyncio.TaskGroup() as tg:
-            tg.create_task(producer(items, input_queue, limit))
-            for _ in range(limit):
-                tg.create_task(worker(worker_fn, input_queue, result_queue))
+            tg.create_task(
+                producer(items, input_queue, limit),
+                name=f"{name}:producer" if name else "producer",
+            )
+            for i in range(limit):
+                tg.create_task(
+                    worker(worker_fn, input_queue, result_queue),
+                    name=f"{name}:worker-{i + 1}" if name else f"worker-{i + 1}",
+                )
     finally:
         # We use put_nowait here. If the result_queue is full,
         # we do not want to deadlock the entire process.
@@ -139,6 +148,7 @@ async def run_parallel[T, R, **P](
     worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
     *worker_args: P.args,
+    name: str | None = None,
     **worker_kwargs: P.kwargs,
 ) -> AsyncIterator[R | TaskFailedError[T]]:
     """Process items concurrently with bounded parallelism.
@@ -186,6 +196,7 @@ async def run_parallel[T, R, **P](
         Higher values increase throughput up to the point where the event
         loop, network, or downstream service becomes the bottleneck.
     :param worker_args: Positional arguments to pass to ``worker_fn``.
+    :param name: The optional name of the task shown in the log.
     :param worker_kwargs: Keyword arguments to pass to ``worker_fn``.
     :raises ValueError: If ``limit`` is less than 1.
     :yields: Results in completion order (not input order). Failed items
@@ -203,7 +214,8 @@ async def run_parallel[T, R, **P](
     result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(maxsize=0)
 
     runner = asyncio.create_task(
-        run_all(items, bound_fn, input_queue, result_queue, limit)
+        run_all(items, bound_fn, input_queue, result_queue, limit, name=name),
+        name=f"{name}:run-all" if name else "run-all",
     )
 
     try:

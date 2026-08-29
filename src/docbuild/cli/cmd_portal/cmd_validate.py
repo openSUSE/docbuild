@@ -58,8 +58,14 @@ def validate(
     log.debug("Main Portal XML config file: %s", main_portal_config)
     log.debug("Portal schema file: %s", portal_schema)
 
-    result = asyncio.run(
-        validate_portal_config(main_portal_config, portal_schema, verbose=context.verbose)
-    )
+    async def main() -> int:
+        return await asyncio.create_task(
+            validate_portal_config(
+                main_portal_config, portal_schema, verbose=context.verbose
+            ),
+            name="portal-validate",
+        )
+
+    result = asyncio.run(main())
 
     ctx.exit(result)

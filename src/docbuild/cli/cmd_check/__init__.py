@@ -34,9 +34,13 @@ def check_files(ctx: DocBuildContext, doctypes: tuple[Doctype, ...]) -> None:
     repo_root = Path(ctx.envconfig.paths.repo_dir).expanduser()
 
     # Pass pure Python types to our isolated task logic
-    missing: list[str] = asyncio.run(
-        check_repository_files(main_portal_config, repo_root, doctypes)
-    )
+    async def main() -> list[str]:
+        return await asyncio.create_task(
+            check_repository_files(main_portal_config, repo_root, doctypes),
+            name="check-files",
+        )
+
+    missing: list[str] = asyncio.run(main())
 
     if missing:
         missing_str = "\n- ".join(str(f) for f in missing if f)

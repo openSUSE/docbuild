@@ -20,10 +20,14 @@ async def update_repositories(
     :return: ``True`` if all repositories updated successfully, ``False`` otherwise.
     """
     log.info("Updating Git repositories...")
-    unique_urls = {d.git.url for d in deliverables}
+    repo_map = {d.git.url: d.git.name for d in deliverables}
+    unique_urls = set(repo_map.keys())
     repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
 
-    tasks = [repo.clone_bare() for repo in repos]
+    tasks = [
+        asyncio.create_task(repo.clone_bare(), name=f"update:{repo_map.get(repo.remote_url, repo.slug)}")
+        for repo in repos
+    ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     res = True

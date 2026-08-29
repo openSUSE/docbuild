@@ -48,7 +48,9 @@ async def clone_repositories(
     timer = make_timer("git-clone-repos")
     with timer() as t:
         tasks = [
-            ManagedGitRepo(str(repo), repo_dir).clone_bare()
+            asyncio.create_task(
+                ManagedGitRepo(str(repo), repo_dir).clone_bare(), name=f"clone:{repo.name}"
+            )
             for repo in unique_git_repos
         ]
         results = await asyncio.gather(*tasks)

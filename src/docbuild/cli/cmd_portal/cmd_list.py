@@ -368,4 +368,11 @@ def list_cmd(
 
     """ # noqa: D301
     console = Console()
-    asyncio.run(async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo, flat))
+
+    async def main() -> None:
+        await asyncio.create_task(
+            async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo, flat),
+            name="portal-list",
+        )
+
+    asyncio.run(main())

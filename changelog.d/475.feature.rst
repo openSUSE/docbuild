@@ -1,0 +1,1 @@
+Improved logging by replacing generic asyncio task names (e.g., ``Task-1``) with meaningful, hierarchical names (e.g., ``build:metadata:sles/15-SP6@supported/en-us``). This provides better traceability in debug logs.

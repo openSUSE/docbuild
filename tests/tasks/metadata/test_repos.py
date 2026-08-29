@@ -19,7 +19,12 @@ class TestUpdateRepositories:
     async def test_success(self, mock_clone_bare: AsyncMock, tmp_path: Path):
         """Verify update_repositories returns True when all repos clone successfully."""
         mock_deliverable = Mock(spec=Deliverable)
-        mock_deliverable.git = Mock(spec=Repo, url="gh://SUSE/doc-test")
+        mock_repo = Mock(spec=Repo)
+        mock_repo.configure_mock(
+            url="gh://SUSE/doc-test",
+            name="SUSE/doc-test"
+        )
+        mock_deliverable.git = mock_repo
         mock_clone_bare.return_value = True
 
         result = await update_repositories([mock_deliverable], tmp_path / "repos")
@@ -33,7 +38,12 @@ class TestUpdateRepositories:
     ):
         """Verify update_repositories logs an error and returns False on failure."""
         mock_deliverable = Mock(spec=Deliverable)
-        mock_deliverable.git = Mock(spec=Repo, url="gh://SUSE/non-existent-repo")
+        mock_repo = Mock(spec=Repo)
+        mock_repo.configure_mock(
+            url="gh://SUSE/non-existent-repo",
+            name="SUSE/non-existent-repo"
+        )
+        mock_deliverable.git = mock_repo
         mock_clone_bare.return_value = False
 
         result = await update_repositories([mock_deliverable], tmp_path / "repos")
