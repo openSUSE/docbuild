@@ -9,16 +9,47 @@ docbuild.models.path
 
 
 
-Classes
--------
-
-.. toctree::
-   :hidden:
-
-   /reference/_autoapi/docbuild/models/path/EnsureWritableDirectory
+Attributes
+----------
 
 .. autoapisummary::
 
-   docbuild.models.path.EnsureWritableDirectory
+   docbuild.models.path.WritablePath
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.models.path.ensure_writeable_directory
+
+
+Module Contents
+---------------
+
+.. py:function:: ensure_writeable_directory(path: pathlib.Path) -> pathlib.Path
+
+   Validate a path is a writable directory, creating it if needed.
+
+   Behavior:
+
+   1. Expands user paths (e.g., ``~/data`` -> ``/home/user/data``).
+   2. If path DOES NOT exist: It creates it (including parents) after
+      verifying the first existing parent is writable.
+   3. If path DOES exist (or was just created): It checks if it's a
+      directory and has R/W/X permissions.
+
+   :param path: The path to validate.
+   :type path: pathlib.Path
+   :return: The fully resolved, validated `pathlib.Path` object.
+   :rtype: pathlib.Path
+   :raises ValueError: If validation fails at any step (permissions, type, etc.).
+
+
+.. py:data:: WritablePath
+
+   A Pydantic custom type that ensures a directory exists and is writable.
+   The final validated type is a :py:class:`pathlib.Path` object.
 
 

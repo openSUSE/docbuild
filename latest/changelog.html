@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev37+g3af0e4154.d20260829</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.22.1.dev38+g9f94d9956.d20260831</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=c0981eea"></script>
+    <script src="_static/documentation_options.js?v=03277bf6"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -508,6 +508,7 @@ tests are intentionally excluded. (<a class="extlink-gh reference external" href
 <li><p>Consolidate XPath logic in <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Doctype</span></code></a> by introducing <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.lifecycle_xpath_segment" title="docbuild.models.doctype.Doctype.lifecycle_xpath_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lifecycle_xpath_segment()</span></code></a> and <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.locale_xpath_segment" title="docbuild.models.doctype.Doctype.locale_xpath_segment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">locale_xpath_segment()</span></code></a> helper methods, refactoring <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.xpath" title="docbuild.models.doctype.Doctype.xpath"><code class="xref py py-meth docutils literal notranslate"><span class="pre">xpath()</span></code></a> to use them, and adding an optional <code class="docutils literal notranslate"><span class="pre">absolute</span></code> argument.</p>
 <p>Refactor <a class="reference internal" href="reference/_autoapi/docbuild/config/xml/list/index.html#docbuild.config.xml.list.list_all_deliverables" title="docbuild.config.xml.list.list_all_deliverables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list_all_deliverables()</span></code></a> to delegate XPath construction to <a class="reference internal" href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.xpath" title="docbuild.models.doctype.Doctype.xpath"><code class="xref py py-meth docutils literal notranslate"><span class="pre">xpath()</span></code></a> instead of building expressions manually. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/431">GH #431</a>)</p>
 </li>
+<li><p>Refactored the <cite>EnsureWritableDirectory</cite> type to a more modern and Pythonic <cite>Annotated</cite> Pydantic type. This improves type hinting and developer experience by making validated paths behave as native <cite>pathlib.Path</cite> objects, removing the need for widespread casting. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/461">GH #461</a>)</p></li>
 <li><p>Fixed PDF filename generation to use correct country-specific suffixes for languages like Brazilian Portuguese (<cite>pt-br</cite>) and Chinese (<cite>zh_cn</cite>). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/467">GH #467</a>)</p></li>
 </ul>
 </section>

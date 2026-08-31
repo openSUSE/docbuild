@@ -73,7 +73,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: repo_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -82,7 +82,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: tmp_repo_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -91,7 +91,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_cache_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -100,7 +100,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: base_server_cache_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -109,7 +109,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: meta_cache_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -118,7 +118,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: json_cache_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -127,7 +127,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: runtime_base_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
@@ -136,7 +136,7 @@ docbuild.models.config.env.EnvPathsConfig
 
 
    .. py:attribute:: lock_dir
-      :type:  docbuild.models.path.EnsureWritableDirectory
+      :type:  docbuild.models.path.WritablePath
       :value: None
 
 
