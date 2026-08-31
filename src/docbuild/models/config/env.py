@@ -20,7 +20,7 @@ from ...config.app import (
     replace_placeholders,
 )
 from ..language import LanguageCode
-from ..path import EnsureWritableDirectory
+from ..path import WritablePath
 from ..serverroles import ServerRole
 
 # --- Custom Types and Utilities ---
@@ -180,14 +180,14 @@ class EnvTmpPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    tmp_base_dir: EnsureWritableDirectory = Field(
+    tmp_base_dir: WritablePath = Field(
         title="Temporary Base Directory",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
     )
     "Root path for temporary files."
 
-    tmp_dir: EnsureWritableDirectory = Field(
+    tmp_dir: WritablePath = Field(
         title="General Temporary Directory for specific server",
         description=(
             "A general-purpose subdirectory within the base temporary path to "
@@ -197,14 +197,14 @@ class EnvTmpPaths(BaseModel):
     )
     "General temporary directory."
 
-    tmp_deliverable_dir: EnsureWritableDirectory = Field(
+    tmp_deliverable_dir: WritablePath = Field(
         title="Temporary Deliverable Directory",
         description="The directory where deliverable repositories are cloned and processed.",
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
     )
     "Directory for temporary deliverable clones."
 
-    tmp_metadata_dir: EnsureWritableDirectory = Field(
+    tmp_metadata_dir: WritablePath = Field(
         title="Temporary Metadata Directory",
         description="Temporary directory for metadata files.",
         examples=["/var/tmp/docbuild/doc-example-com/metadata"],
@@ -212,7 +212,7 @@ class EnvTmpPaths(BaseModel):
     "Temporary metadata directory."
 
     # SPLIT: static base directory (validated)
-    tmp_build_base_dir: EnsureWritableDirectory = Field(
+    tmp_build_base_dir: WritablePath = Field(
         title="Temporary Build Base Directory",
         description="The base directory where intermediate build files are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/build/"],
@@ -229,14 +229,14 @@ class EnvTmpPaths(BaseModel):
     )
     "Dynamic suffix for build directory."
 
-    tmp_out_dir: EnsureWritableDirectory = Field(
+    tmp_out_dir: WritablePath = Field(
         title="Temporary Output Directory",
         description="The final temporary directory where built artifacts land before deployment.",
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
     )
     "Temporary final output directory."
 
-    log_dir: EnsureWritableDirectory = Field(
+    log_dir: WritablePath = Field(
         title="Log Directory",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
@@ -341,35 +341,35 @@ class EnvPathsConfig(BaseModel):
 
     # --- WRITABLE PATHS START HERE ---
 
-    repo_dir: EnsureWritableDirectory = Field(
+    repo_dir: WritablePath = Field(
         title="Permanent Repository Directory",
         description="The directory where permanent bare Git repositories are stored.",
         examples=["/var/cache/docbuild/repos/permanent-full/"],
     )
     "Path for permanent bare Git repositories."
 
-    tmp_repo_dir: EnsureWritableDirectory = Field(
+    tmp_repo_dir: WritablePath = Field(
         title="Temporary Repository Directory",
         description="Directory used for temporary working copies cloned from permanent bare repos.",
         examples=["/var/cache/docbuild/repos/temporary-branches/"],
     )
     "Directory for temporary working copies."
 
-    base_cache_dir: EnsureWritableDirectory = Field(
+    base_cache_dir: WritablePath = Field(
         title="Base Cache Directory",
         description="The root directory for all application-level caches.",
         examples=["/var/cache/docserv", "~/.cache/docbuild"],
     )
     "Base path for all caches."
 
-    base_server_cache_dir: EnsureWritableDirectory = Field(
+    base_server_cache_dir: WritablePath = Field(
         title="Base Server Cache Directory",
         description="The base directory for server-specific caches.",
         examples=["/var/cache/docserv/doc-example-com"],
     )
     "Base path for server caches."
 
-    meta_cache_dir: EnsureWritableDirectory = Field(
+    meta_cache_dir: WritablePath = Field(
         title="Metadata Cache Directory",
         description="Cache specifically for repository and deliverable metadata.",
         examples=[
@@ -379,7 +379,7 @@ class EnvPathsConfig(BaseModel):
     )
     "Metadata cache path."
 
-    json_cache_dir: EnsureWritableDirectory = Field(
+    json_cache_dir: WritablePath = Field(
         title="JSON Cache Directory",
         description="Cache specifically for JSON data used in the portal.",
         examples=[
@@ -389,7 +389,7 @@ class EnvPathsConfig(BaseModel):
     )
     "JSON cache path."
 
-    runtime_base_dir: EnsureWritableDirectory = Field(
+    runtime_base_dir: WritablePath = Field(
         title="Base Runtime Directory (Per-Run)",
         description=(
             "The base directory for lightweight runtime artifacts such as "
@@ -400,7 +400,7 @@ class EnvPathsConfig(BaseModel):
     )
     "Base runtime path."
 
-    lock_dir: EnsureWritableDirectory = Field(
+    lock_dir: WritablePath = Field(
         title="Lock Directory",
         description=(
             "Directory for lock files used to prevent concurrent builds or "

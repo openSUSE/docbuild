@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 import pytest
 
 # Import the custom type under test
-from docbuild.models.path import EnsureWritableDirectory
+from docbuild.models.path import WritablePath
 
 # --- Test Setup ---
 
@@ -16,10 +16,23 @@ from docbuild.models.path import EnsureWritableDirectory
 class PathTestModel(BaseModel):
     """Model using the custom path type for testing validation."""
 
-    writable_dir: EnsureWritableDirectory
+    writable_dir: WritablePath
 
 
 # --- Test Cases ---
+
+
+def test_writable_directory_creates_and_resolves(tmp_path: Path):
+    """Test that a non-existent path is created and the field is a Path object."""
+    new_dir = tmp_path / "new_dir"
+    assert not new_dir.exists()
+
+    model = PathTestModel(writable_dir=new_dir)  # type: ignore
+
+    assert new_dir.exists()
+    assert new_dir.is_dir()
+    assert isinstance(model.writable_dir, Path)
+    assert model.writable_dir == new_dir.resolve()
 
 
 def test_writable_directory_path_expansion(monkeypatch, tmp_path: Path):
@@ -36,9 +49,10 @@ def test_writable_directory_path_expansion(monkeypatch, tmp_path: Path):
 
     # 3. Validation should resolve "~" before creation
     model = PathTestModel(writable_dir=test_path_str)  # type: ignore
+
     # 4. Assertions
-    # The attribute _path should match the expected resolved path
-    assert Path(str(model.writable_dir)).resolve() == expected_resolved_path
+    assert model.writable_dir == expected_resolved_path
+    assert expected_resolved_path.is_dir()
 
 
 def test_writable_directory_failure_not_a_directory(tmp_path: Path):
@@ -53,11 +67,7 @@ def test_writable_directory_failure_not_a_directory(tmp_path: Path):
 
 
 def test_writable_directory_failure_mkdir_os_error(monkeypatch, tmp_path: Path):
-    """Test that an OSError during directory creation is handled.
-
-    This ensures that if ``Path.mkdir()`` raises an ``OSError``, the exception
-    is caught and correctly reported as a Pydantic validation error.
-    """
+    """Test that an OSError during directory creation is handled."""
 
     # 1. Mock Path.mkdir to always raise an OSError when called
     def mock_mkdir(*args, **kwargs):
@@ -74,60 +84,30 @@ def test_writable_directory_failure_mkdir_os_error(monkeypatch, tmp_path: Path):
 
     # Assert that the error is correctly wrapped in a ValueError/ValidationError
     error_msg = excinfo.value.errors()[0]["msg"]
-    assert "Value error" in error_msg
     assert "Failed to create directory" in error_msg
     assert "Simulated permission denied" in error_msg
 
 
-def test_writable_directory_attribute_access(tmp_path: Path):
-    """Test that Path attributes are accessible via __getattr__."""
+def test_writable_directory_attributes_are_path_attributes(tmp_path: Path):
+    """Test that the validated field is a Path and has its attributes."""
     test_dir = tmp_path / "test_attributes"
     test_dir.mkdir()
 
     model = PathTestModel(writable_dir=test_dir)  # type: ignore
 
-    # Test built-in Path attributes (via __getattr__)
+    # Test that the field is a Path object
+    assert isinstance(model.writable_dir, Path)
+
+    # Test built-in Path attributes
     assert model.writable_dir.name == "test_attributes"
     assert model.writable_dir.is_absolute()
 
     # Test string representation
     assert str(model.writable_dir) == str(test_dir.resolve())
-    assert repr(model.writable_dir).startswith("EnsureWritableDirectory")
-
-
-@pytest.mark.parametrize(
-    "path_consumer, expected_factory",
-    [
-        (os.fspath, lambda p: str(p.resolve())),
-        (Path, lambda p: p.resolve()),
-        (lambda p: (p / "test.txt").read_text(), lambda p: "hello"),
-    ],
-    ids=["os.fspath", "Path constructor", "open and read"],
-)
-def test_fspath_protocol_compatibility(
-    request: pytest.FixtureRequest, tmp_path: Path, path_consumer, expected_factory
-):
-    """Test that the type works with functions expecting ``os.PathLike``."""
-    test_dir = tmp_path / "fspath_test"
-    model = PathTestModel(writable_dir=test_dir)  # type: ignore
-    custom_path_obj = model.writable_dir
-
-    # Pre-condition for the open() test case
-    if request.node.callspec.id == "open and read":
-        (test_dir / "test.txt").write_text("hello")
-
-    # Execute the function that consumes the path-like object
-    result = path_consumer(custom_path_obj)
-    expected = expected_factory(test_dir)
-    assert result == expected
 
 
 def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypatch):
-    """Test validation fails when the parent directory is not writable.
-
-    This simulates the scenario where a user tries to create a directory
-    in a protected root folder (like /data).
-    """
+    """Test validation fails when the parent directory is not writable."""
     # 1. Setup a "protected" parent and a target child
     protected_parent = tmp_path / "protected_parent"
     protected_parent.mkdir()
@@ -166,23 +146,16 @@ def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypa
 def test_writable_directory_permission_failures(
     tmp_path: Path, monkeypatch, permission_to_fail, expected_missing_perm
 ):
-    """Test validation fails when a specific permission is missing.
-
-    This test is robust against being run by the root user by patching
-    ``os.access`` to simulate a specific permission failure (R, W, or X).
-    """
+    """Test validation fails when a specific permission is missing."""
     test_dir = tmp_path / "permission_test_dir"
     test_dir.mkdir()
 
     original_os_access = os.access
 
-    # Patch os.access() to fail only the specified permission check for our test directory.
+    # Patch os.access() to fail only for the specified permission check
     def fake_access(path, mode):
-        # Resolve path to ensure comparison works reliably across OSs
         if Path(path).resolve() == test_dir.resolve() and mode == permission_to_fail:
             return False
-
-        # For all other checks, or other paths, use the original behavior.
         return original_os_access(path, mode)
 
     monkeypatch.setattr(os, "access", fake_access)

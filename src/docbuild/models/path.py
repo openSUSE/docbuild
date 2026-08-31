@@ -2,128 +2,72 @@
 
 import os
 from pathlib import Path
-from typing import Self
+from typing import Annotated
 
-from pydantic import GetCoreSchemaHandler
-from pydantic_core import core_schema
+from pydantic import AfterValidator
 
 
-class EnsureWritableDirectory:
-    """A Pydantic custom type that ensures a directory exists and is writable.
+def ensure_writeable_directory(path: Path) -> Path:
+    """Validate a path is a writable directory, creating it if needed.
 
     Behavior:
 
     1. Expands user paths (e.g., ``~/data`` -> ``/home/user/data``).
-    2. Validates input is a path.
-    3. If path DOES NOT exist: It creates it (including parents).
-    4. If path DOES exist (or was just created): It checks if it's a directory and has R/W/X permissions.
+    2. If path DOES NOT exist: It creates it (including parents) after
+       verifying the first existing parent is writable.
+    3. If path DOES exist (or was just created): It checks if it's a
+       directory and has R/W/X permissions.
+
+    :param path: The path to validate.
+    :type path: pathlib.Path
+    :return: The fully resolved, validated `pathlib.Path` object.
+    :rtype: pathlib.Path
+    :raises ValueError: If validation fails at any step (permissions, type, etc.).
     """
+    # Ensure user expansion happens before any filesystem operations
+    path = path.expanduser()
 
-    def __init__(self, path: str | Path) -> None:
-        """Initialize the instance with the fully resolved and expanded path.
+    # 1. Existence and Creation Logic
+    if not path.exists():
+        # Find the first existing parent directory to check for write permissions.
+        # For a path like '/a/b/c', path.parents is ('/a/b', '/a', '/').
+        # We find the first one in that sequence that exists.
+        parent = next((p for p in path.parents if p.exists()), path.root)
 
-        Assumes the validation step (validate_and_create) has already handled
-        creation and permission checks.
-        """
-        self._path: Path = Path(path).expanduser().resolve()
-
-    # --- Pydantic V2 Core Schema ---
-
-    @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type: type[Path], handler: GetCoreSchemaHandler
-    ) -> core_schema.CoreSchema:
-        """Define Validation AND Serialization logic."""
-        # 1. Validation Logic (The Chain)
-        validation_schema = core_schema.chain_schema(
-            [
-                handler(Path),
-                core_schema.no_info_plain_validator_function(cls.validate_and_create),
-            ]
-        )
-        # 2. Serialization Logic (Convert to String)
-        # This tells Pydantic: "When dumping to JSON or Python, use str(instance)"
-        serialization_schema = core_schema.plain_serializer_function_ser_schema(
-            lambda instance: str(instance),
-            when_used="always",  # Apply to both JSON and Python (dict) dumps
-        )
-        # 3. Combine Validation and Serialization
-        return core_schema.json_or_python_schema(
-            json_schema=validation_schema,
-            python_schema=validation_schema,
-            serialization=serialization_schema,
-        )
-
-    # --- Validation & Creation Logic ---
-
-    @classmethod
-    def validate_and_create(cls: type[Self], path: Path) -> type[Self]:
-        """Expand user, check existence/permissions, or check parent for creation."""
-        # Ensure user expansion happens before any filesystem operations
-        path = path.expanduser()
-
-        # 1. Existence and Creation Logic
-        if not path.exists():
-            # Check if the parent is writable so we can create the directory
-            parent = path.parent
-            # Find the first existing parent directory to check for write permissions.
-            # For a path like '/a/b/c', path.parents is ('/a/b', '/a', '/').
-            # We find the first one in that sequence that exists.
-            parent = next((p for p in path.parents if p.exists()), path.root)
-
-            if not os.access(parent, os.W_OK):
-                raise ValueError(
-                    f"Cannot create directory '{path}'. "
-                    f"Permission denied: Parent directory '{parent}' is not writable."
-                )
-
-            try:
-                path.mkdir(parents=True, exist_ok=True)
-            except OSError as e:
-                raise ValueError(
-                    f"Failed to create directory '{path}': {e.strerror}"
-                ) from e
-
-        # 2. Type Check
-        if not path.is_dir():
-            raise ValueError(f"Path exists but is not a directory: '{path}'")
-
-        # 3. Permission Checks (R/W/X)
-        missing_perms = []
-        if not os.access(path, os.R_OK):
-            missing_perms.append("READ")
-        if not os.access(path, os.W_OK):
-            missing_perms.append("WRITE")
-        if not os.access(path, os.X_OK):
-            missing_perms.append("EXECUTE")
-
-        if missing_perms:
+        if not os.access(parent, os.W_OK):
             raise ValueError(
-                f"Insufficient permissions for directory '{path}'. "
-                f"Missing: {', '.join(missing_perms)}"
+                f"Cannot create directory '{path}'. "
+                f"Permission denied: Parent directory '{parent}' is not writable."
             )
 
-        return cls(path)
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            raise ValueError(f"Failed to create directory '{path}': {e.strerror}") from e
 
-    # --- Usability Methods ---
-    def __str__(self) -> str:
-        """Return the string representation of the path."""
-        return str(self._path)
+    # 2. Type Check
+    if not path.is_dir():
+        raise ValueError(f"Path exists but is not a directory: '{path}'")
 
-    def __repr__(self) -> str:
-        """Return the developer-friendly representation of the object."""
-        return f"{self.__class__.__name__}('{self._path}')"
+    # 3. Permission Checks (R/W/X)
+    permissions = (
+        ("READ", os.R_OK),
+        ("WRITE", os.W_OK),
+        ("EXECUTE", os.X_OK),
+    )
+    missing_perms = [
+        name for name, mode in permissions if not os.access(path, mode)
+    ]
 
-    def __truediv__(self, other: str) -> Path:
-        """Implement the / operator to delegate to the underlying Path object."""
-        return self._path / other
+    if missing_perms:
+        raise ValueError(
+            f"Insufficient permissions for directory '{path}'. "
+            f"Missing: {', '.join(missing_perms)}"
+        )
+    return path.resolve()
 
-    # Allows access to methods/attributes of the underlying Path object
-    # (e.g., .joinpath)
-    def __getattr__(self, name: str) -> object:
-        """Delegate attribute access to the underlying Path object."""
-        return getattr(self._path, name)
 
-    def __fspath__(self) -> str:
-        """Return the string path for os.PathLike compatibility."""
-        return str(self._path)
+WritablePath = Annotated[Path, AfterValidator(ensure_writeable_directory)]
+"""A Pydantic custom type that ensures a directory exists and is writable.
+The final validated type is a :py:class:`pathlib.Path` object.
+"""

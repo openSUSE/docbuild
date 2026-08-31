@@ -90,13 +90,13 @@ def build(
     result = 1  # Default exit code for interruption or error
 
     # Paths for Metadata & Build
-    main_portal_config = Path(env.paths.main_portal_config)
-    repo_dir = Path(env.paths.repo_dir)
-    tmp_repo_dir = Path(env.paths.tmp_repo_dir)
-    tmp_metadata_dir = Path(env.paths.tmp.tmp_metadata_dir)
-    meta_cache_dir = Path(env.paths.meta_cache_dir)
-    json_cache_dir = Path(env.paths.json_cache_dir)
-    tmp_build_base_dir = Path(env.paths.tmp.tmp_build_base_dir)
+    main_portal_config = env.paths.main_portal_config
+    repo_dir = env.paths.repo_dir
+    tmp_repo_dir = env.paths.tmp_repo_dir
+    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
+    meta_cache_dir = env.paths.meta_cache_dir
+    json_cache_dir = env.paths.json_cache_dir
+    tmp_build_base_dir = env.paths.tmp.tmp_build_base_dir
 
     dapsmetatmpl = str(env.build.daps.meta)
     daps_tmpls = {

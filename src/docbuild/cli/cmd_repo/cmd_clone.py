@@ -10,7 +10,6 @@ Pass any of the following URLs to clone:
 
 import asyncio
 import logging
-from pathlib import Path
 
 import click
 
@@ -41,8 +40,8 @@ def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     if context.envconfig is None:
         raise click.ClickException("Environment configuration is missing.")
 
-    main_portal_config = Path(context.envconfig.paths.main_portal_config).expanduser()
-    repo_dir = Path(context.envconfig.paths.repo_dir).expanduser()
+    main_portal_config = context.envconfig.paths.main_portal_config
+    repo_dir = context.envconfig.paths.repo_dir
 
     async def main() -> int:
         return await asyncio.create_task(

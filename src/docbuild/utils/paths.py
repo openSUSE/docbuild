@@ -38,6 +38,7 @@ def calc_max_len(files: tuple[Path | str, ...], last_parts: int = -2) -> int:
 
     return max_length
 
+
 def mark_cache_dir(path: Path | str) -> None:
     """Add a standard CACHEDIR.TAG file to a directory.
 
