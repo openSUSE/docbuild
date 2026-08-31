@@ -15,4 +15,10 @@
     },
     "python.analysis.diagnosticsSource": "Pyright",
     "python.analysis.typeCheckingMode": "standard",
+    "terminal.integrated.env.linux": {
+        "PROMPT_COMMAND": "if [ -f \"${workspaceFolder}/devel/activate-aliases.sh\" ]; then source \"${workspaceFolder}/devel/activate-aliases.sh\"; unset PROMPT_COMMAND; fi"
+    },
+    "terminal.integrated.env.osx": {
+        "PROMPT_COMMAND": "if [ -f \"${workspaceFolder}/devel/activate-aliases.sh\" ]; then source \"${workspaceFolder}/devel/activate-aliases.sh\"; unset PROMPT_COMMAND; fi"
+    }
 }
