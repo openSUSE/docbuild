@@ -62,7 +62,7 @@ async def process_deliverable_build(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
-    target_base_dir: str,
+    target_base_dir: Path,
     target_dir_dyn: str,
     daps_tmpls: dict[str, str],
 ) -> tuple[bool, Deliverable]:
@@ -104,14 +104,14 @@ async def process_deliverable_build(
                     success = False
                 else:
                     # 3. Resolve placeholders for the target path
-                    target_suffix = (
-                        target_dir_dyn.replace("{{product}}", str(deliverable.xml.productid or ""))
-                        .replace("{{docset}}", str(deliverable.xml.docsetid or ""))
-                        .replace("{{lang}}", str(deliverable.xml.lang))
+                    target_suffix = target_dir_dyn.format(
+                        product=deliverable.xml.productid,
+                        docset=deliverable.xml.docsetid,
+                        lang=deliverable.xml.lang,
                     )
 
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    target_dest = str(Path(target_base_dir) / target_suffix / fmt)
+                    target_dest = target_base_dir / target_suffix / fmt
 
                     log.debug("Syncing %s result to %s", fmt, target_dest)
 
@@ -139,7 +139,7 @@ async def process_doctype(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
-    target_base_dir: str,
+    target_base_dir: Path,
     target_dir_dyn: str,
     max_workers: int,
     daps_tmpls: dict[str, str],
@@ -163,8 +163,11 @@ async def process_doctype(
 
     async def build_wrapper(d: Deliverable, *args: object) -> tuple[bool, Deliverable]:
         try:
-            return await process_deliverable_build(
-                d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls
+            return await asyncio.create_task(
+                process_deliverable_build(
+                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls
+                ),
+                name=f"build:{d.full_id}",
             )
         except Exception as e:
             log.error("Build task error for %s: %s", d.full_id, e)
@@ -191,7 +194,7 @@ async def process(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
-    target_base_dir: str,
+    target_base_dir: Path,
     target_dir_dyn: str,
     max_workers: int,
     doctypes: tuple[Doctype, ...] | list[Doctype],
@@ -203,8 +206,11 @@ async def process(
     root = await parse_portal_config(main_portal_config)
 
     tasks = [
-        process_doctype(
-            root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+        asyncio.create_task(
+            process_doctype(
+                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+            ),
+            name=f"build:{dt}",
         )
         for dt in doctypes
     ]

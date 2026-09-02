@@ -94,8 +94,8 @@ async def test_process_deliverable_build_success(
             tmp_path,
             tmp_path,
             tmp_path,
-            str(tmp_path / "target"),
-            "{{product}}/{{docset}}/{{lang}}",
+            tmp_path / "target",
+            "{product}/{docset}/{lang}",
             daps_tmpls
         )
 
@@ -134,8 +134,8 @@ async def test_process_doctype_build(
             repo_dir=tmp_path,
             tmp_repo_dir=tmp_path,
             tmp_build_base_dir=tmp_path,
-            target_base_dir=str(tmp_path / "target"),
-            target_dir_dyn="{{product}}",
+            target_base_dir=tmp_path / "target",
+            target_dir_dyn="{product}",
             max_workers=2,
             daps_tmpls=daps_tmpls,
             skip_repo_update=False,
@@ -159,7 +159,7 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         mock_pd.return_value = []
         result = await process(
             tmp_path, tmp_path, tmp_path, tmp_path,
-            str(tmp_path / "target"), "{{product}}",
+            tmp_path / "target", "{product}",
             1, [doctype], daps_tmpls
         )
         assert result == 0
@@ -167,7 +167,7 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         mock_pd.return_value = [Mock(spec=Deliverable)]
         result = await process(
             tmp_path, tmp_path, tmp_path, tmp_path,
-            str(tmp_path / "target"), "{{product}}",
+            tmp_path / "target", "{product}",
             1, [doctype], daps_tmpls
         )
         assert result == 1
