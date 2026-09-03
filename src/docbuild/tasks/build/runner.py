@@ -113,6 +113,9 @@ async def process_deliverable_build(
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
                     target_dest = target_base_dir / target_suffix / fmt
 
+                    # Ensure the target directory structure exists before syncing
+                    target_dest.mkdir(parents=True, exist_ok=True)
+
                     log.debug("Syncing %s result to %s", fmt, target_dest)
 
                     try:

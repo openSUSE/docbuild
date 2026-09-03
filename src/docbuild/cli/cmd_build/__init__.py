@@ -97,7 +97,7 @@ def build(
     meta_cache_dir = env.paths.meta_cache_dir
     json_cache_dir = env.paths.json_cache_dir
     tmp_build_base_dir = env.paths.tmp.tmp_build_base_dir
-    target_base_dir = Path(env.paths.target.target_base_dir)
+    target_base_dir = env.paths.target.target_base_dir
     target_dir_dyn = env.paths.target.target_dir_dyn
 
     dapsmetatmpl = str(env.build.daps.meta)
