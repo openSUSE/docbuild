@@ -111,10 +111,11 @@ async def process_deliverable_build(
                     )
 
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    target_dest = Path(target_base_dir) / target_suffix / fmt
+                    target_dest = Path(str(target_base_dir)) / target_suffix / fmt
 
-                    # Ensure the target directory structure exists before syncing
-                    target_dest.mkdir(parents=True, exist_ok=True)
+                    # Ensure the target directory structure exists before syncing (local paths only)
+                    if ":" not in str(target_base_dir):
+                        target_dest.mkdir(parents=True, exist_ok=True)
 
                     log.debug("Syncing %s result to %s", fmt, target_dest)
 
