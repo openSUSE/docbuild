@@ -81,7 +81,7 @@ DEFAULT_ENV_CONFIG = {
         },
         "target": {
             "target_base_dir": f"{Path.home()}/Documents/{APP_NAME}/target",
-            "target_dir_dyn": "{lang}/{product}/{docset}",
+            "target_dir_dyn": "{{lang}}/{{product}}/{{docset}}",
             "backup_dir": f"{STATE_HOME}/{{general.name}}/backup",
         },
     },

@@ -269,10 +269,10 @@ class EnvTargetPaths(BaseModel):
 
     # SPLIT: dynamic suffix
     target_dir_dyn: str = Field(
-        default="{lang}/{product}/{docset}",
+        default="{{lang}}/{{product}}/{{docset}}",
         title="Target Directory Suffix",
         description="The dynamic suffix of the remote path containing runtime placeholders.",
-        examples=["{lang}/{product}/{docset}"],
+        examples=["{{lang}}/{{product}}/{{docset}}"],
     )
     "Dynamic suffix for final remote destination."
 
