@@ -61,7 +61,7 @@ async def test_build_format_failure(tmp_path: Path) -> None:
 async def test_process_deliverable_build_success(
     mock_mgr_class: Mock, tmp_path: Path
 ) -> None:
-    """Test successful build execution for enabled formats."""
+    """Test successful build execution for enabled formats and rsync."""
     mock_deliverable = Mock(
         spec=Deliverable,
         full_id="sles/15:TEST",
@@ -70,6 +70,9 @@ async def test_process_deliverable_build_success(
         branch="main",
     )
     mock_deliverable.xml.dcfile = "DC-test"
+    mock_deliverable.xml.productid = "sles"
+    mock_deliverable.xml.docsetid = "15"
+    mock_deliverable.xml.lang = "en-us"
     mock_deliverable.git.url = "https://git.test"
     mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"
 
@@ -79,19 +82,28 @@ async def test_process_deliverable_build_success(
 
     daps_tmpls = {"html": "daps -d {{dcfile}} --builddir {{builddir}} html"}
 
-    with patch.object(
-        build_runner, "run_command", new_callable=AsyncMock
-    ) as mock_run:
+    with (
+        patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run,
+        patch.object(build_runner, "rsync", new_callable=AsyncMock) as mock_rsync,
+    ):
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
+        mock_rsync.return_value = Mock(returncode=0, stdout="Sync OK", stderr="")
 
         success, deliverable = await process_deliverable_build(
-            mock_deliverable, tmp_path, tmp_path, tmp_path, daps_tmpls
+            mock_deliverable,
+            tmp_path,
+            tmp_path,
+            tmp_path,
+            tmp_path / "target",
+            "{product}/{docset}/{lang}",
+            daps_tmpls
         )
 
         assert success is True
         assert deliverable == mock_deliverable
         mock_mgr_instance.create_worktree.assert_called_once()
         mock_run.assert_called_once()
+        mock_rsync.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -122,6 +134,8 @@ async def test_process_doctype_build(
             repo_dir=tmp_path,
             tmp_repo_dir=tmp_path,
             tmp_build_base_dir=tmp_path,
+            target_base_dir=tmp_path / "target",
+            target_dir_dyn="{product}",
             max_workers=2,
             daps_tmpls=daps_tmpls,
             skip_repo_update=False,
@@ -143,9 +157,17 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         patch.object(build_runner, "process_doctype", new_callable=AsyncMock) as mock_pd,
     ):
         mock_pd.return_value = []
-        result = await process(tmp_path, tmp_path, tmp_path, tmp_path, 1, [doctype], daps_tmpls)
+        result = await process(
+            tmp_path, tmp_path, tmp_path, tmp_path,
+            tmp_path / "target", "{product}",
+            1, [doctype], daps_tmpls
+        )
         assert result == 0
 
         mock_pd.return_value = [Mock(spec=Deliverable)]
-        result = await process(tmp_path, tmp_path, tmp_path, tmp_path, 1, [doctype], daps_tmpls)
+        result = await process(
+            tmp_path, tmp_path, tmp_path, tmp_path,
+            tmp_path / "target", "{product}",
+            1, [doctype], daps_tmpls
+        )
         assert result == 1

@@ -15,6 +15,7 @@ from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
+from ...utils.sync import rsync
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
 from ..portal import parse_portal_config
@@ -61,9 +62,11 @@ async def process_deliverable_build(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
+    target_base_dir: Path,
+    target_dir_dyn: str,
     daps_tmpls: dict[str, str],
 ) -> tuple[bool, Deliverable]:
-    """Process a single deliverable: checkout worktree and build formats."""
+    """Process a single deliverable: checkout worktree, build formats, and sync."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
 
@@ -96,11 +99,40 @@ async def process_deliverable_build(
                 fmt_success, _ = await build_format(
                     deliverable, fmt, cwd, deliverable_build_dir, tmpl
                 )
+
                 if not fmt_success:
                     success = False
                 else:
-                    # Call rsync to target directory
-                    log.debug("Syncing result to ...")
+                    # 3. Resolve placeholders for the target path
+                    target_suffix = target_dir_dyn.format(
+                        product=deliverable.xml.productid,
+                        docset=deliverable.xml.docsetid,
+                        lang=deliverable.xml.lang,
+                    )
+
+                    # Final destination includes the format (e.g. /target/sles/15/en-us/html)
+                    target_dest = Path(str(target_base_dir)) / target_suffix / fmt
+
+                    # Ensure the target directory structure exists before syncing (local paths only)
+                    if ":" not in str(target_base_dir):
+                        target_dest.mkdir(parents=True, exist_ok=True)
+
+                    log.debug("Syncing %s result to %s", fmt, target_dest)
+
+                    try:
+                        # Sync contents of the build directory to the target destination
+                        sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
+                        if sync_result.returncode == 0:
+                            log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
+                        else:
+                            log.error(
+                                "Failed to sync %s for %s to %s:\n%s",
+                                fmt, deliverable.full_id, target_dest, sync_result.stderr
+                            )
+                            success = False
+                    except Exception as e:
+                        log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
+                        success = False
 
     return success, deliverable
 
@@ -111,6 +143,8 @@ async def process_doctype(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
+    target_base_dir: Path,
+    target_dir_dyn: str,
     max_workers: int,
     daps_tmpls: dict[str, str],
     *,
@@ -135,7 +169,7 @@ async def process_doctype(
         try:
             return await asyncio.create_task(
                 process_deliverable_build(
-                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, daps_tmpls
+                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls
                 ),
                 name=f"build:{d.full_id}",
             )
@@ -164,6 +198,8 @@ async def process(
     repo_dir: Path,
     tmp_repo_dir: Path,
     tmp_build_base_dir: Path,
+    target_base_dir: Path,
+    target_dir_dyn: str,
     max_workers: int,
     doctypes: tuple[Doctype, ...] | list[Doctype],
     daps_tmpls: dict[str, str],
@@ -176,9 +212,9 @@ async def process(
     tasks = [
         asyncio.create_task(
             process_doctype(
-                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
             ),
-            name=f"build:{dt!s}",
+            name=f"build:{dt}",
         )
         for dt in doctypes
     ]
@@ -190,5 +226,5 @@ async def process(
         log.error("Build completed with %d failures.", len(all_failed))
         return 1
 
-    log.info("All deliverables built successfully!")
+    log.info("All deliverables built successfully and synced to target!")
     return 0

@@ -97,6 +97,8 @@ def build(
     meta_cache_dir = env.paths.meta_cache_dir
     json_cache_dir = env.paths.json_cache_dir
     tmp_build_base_dir = env.paths.tmp.tmp_build_base_dir
+    target_base_dir = env.paths.target.target_base_dir
+    target_dir_dyn = env.paths.target.target_dir_dyn
 
     dapsmetatmpl = str(env.build.daps.meta)
     daps_tmpls = {
@@ -143,6 +145,8 @@ def build(
                 repo_dir=repo_dir,
                 tmp_repo_dir=tmp_repo_dir,
                 tmp_build_base_dir=tmp_build_base_dir,
+                target_base_dir=target_base_dir,
+                target_dir_dyn=target_dir_dyn,
                 max_workers=max_workers,
                 doctypes=doctypes,
                 daps_tmpls=daps_tmpls,
