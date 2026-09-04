@@ -15,6 +15,7 @@ __pycache__/
 /docs/build/
 # Sphinx warnings
 /docs/*.log
+/docs/source/reference/_autoapi/
 develop-eggs/
 /dist/
 downloads/
