@@ -1,1 +1,0 @@
-The ``--set-env`` option now correctly parses keys with dots when they are quoted (e.g., ``'key.with.dots'``) or bracketed (e.g., ``[key.with.dots]``). It also correctly interprets boolean and numeric values.

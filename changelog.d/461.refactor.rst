@@ -1,1 +1,0 @@
-Refactored the `EnsureWritableDirectory` type to a more modern and Pythonic `Annotated` Pydantic type. This improves type hinting and developer experience by making validated paths behave as native `pathlib.Path` objects, removing the need for widespread casting.

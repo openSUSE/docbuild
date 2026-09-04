@@ -1,2 +1,0 @@
-The :command:`docbuild metadata` manifest now only includes referenced categories by default. A new ``full_categories`` argument in the ``process`` function allows including all categories.
-

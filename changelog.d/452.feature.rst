@@ -1,1 +1,0 @@
-Added an async :command:`rsync` utility function and ``RsyncOptions`` dataclass for flexible directory synchronization, and registered :command:`rsync` as a validated system dependency.

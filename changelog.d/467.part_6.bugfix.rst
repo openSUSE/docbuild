@@ -1,2 +1,0 @@
-Fixed missing text in field ``description`` of the generated JSON. Additionally, removed XML XInclude namespaces and excessive whitespaces in JSON.
-
