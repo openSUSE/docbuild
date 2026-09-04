@@ -1,1 +1,0 @@
-Fixed ``--outputdir`` parameter in the example stylesheet command to point to the correct directory for the new Portal configuration files. Add also a new section to validate the config file with :command:`jing`.

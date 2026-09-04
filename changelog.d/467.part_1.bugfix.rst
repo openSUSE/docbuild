@@ -1,3 +1,0 @@
-Part 1:
-* Fix incorrect serialization of `isGated` in the manifest. The key is now correctly serialized as `isGated` instead of `isGate`.
-* The `acronym` in the manifest is now correctly read from the `productid` attribute of the product.

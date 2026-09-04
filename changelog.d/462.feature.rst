@@ -1,1 +1,0 @@
-Integrated ``rsync`` into the ``docbuild build`` subcommand to automatically synchronize successful build artifacts to their final target directories.

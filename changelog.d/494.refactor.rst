@@ -1,1 +1,0 @@
-Removed auto-generated Sphinx autoapi files from version control.
