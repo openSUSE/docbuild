@@ -16,6 +16,8 @@ Functions
 
    docbuild.cli.cmd_cli.handle_validation_error
    docbuild.cli.cmd_cli.load_app_config
+   docbuild.cli.cmd_cli.parse_key
+   docbuild.cli.cmd_cli.apply_override
    docbuild.cli.cmd_cli.load_env_config
    docbuild.cli.cmd_cli.cli
 
@@ -44,6 +46,71 @@ Module Contents
 .. py:function:: load_app_config(ctx: click.Context, app_config: pathlib.Path, max_workers: str | None, skip_validation: bool = False) -> None
 
    Load and validate Application configuration.
+
+
+.. py:function:: parse_key(key: str) -> list[str]
+
+   Parse dot-separated key path, respecting quoted/bracketed segments.
+
+   Parses a key string that may contain dots as separators or within quoted
+   or bracketed segments. This enables setting configuration values where keys
+   themselves contain dots (e.g., XSLT parameters).
+
+   Supported delimiters:
+   - Single quotes: ``'segment.with.dots'``
+   - Double quotes: ``"segment.with.dots"``
+   - Square brackets: ``[segment.with.dots]``
+
+   Examples:
+       >>> parse_key('server.host')
+       ['server', 'host']
+
+       >>> parse_key("server.'db.connection'")
+       ['server', 'db.connection']
+
+       >>> parse_key('xslt.html.[show.edit.link]')
+       ['xslt', 'html', 'show.edit.link']
+
+   :param key: A dot-separated key path with optional quoted/bracketed segments.
+   :return: A list of key segments suitable for nested dictionary access.
+   :raises click.BadParameter: If the key contains misplaced delimiters, unmatched
+       quotes/brackets, or invalid syntax (e.g., characters after closing delimiter).
+
+
+
+.. py:function:: apply_override(config: dict[str, Any], override: str) -> None
+
+   Parse and apply a single KEY=VALUE override to the configuration dictionary.
+
+   Processes a command-line override string (e.g., from ``--set-env``) and merges
+   it into the configuration dictionary. The key is parsed to support nested keys
+   with dots, and the value is automatically converted to its appropriate type
+   (boolean, integer, float, or string).
+
+   Type conversion behavior:
+   - ``true``/``false`` (case-insensitive) → ``bool``
+   - Numeric literals (e.g., ``42``, ``3.14``) → ``int`` or ``float``
+   - Quoted strings (e.g., ``'text'``, ``"text"``) → ``str``
+   - Unquoted non-numeric strings → ``str`` (fallback)
+
+   Examples:
+       >>> config = {'server': {}}
+       >>> apply_override(config, 'server.port=8080')
+       >>> config['server']['port']
+       8080
+
+       >>> config = {'xslt': {'html': {}}}
+       >>> apply_override(config, "xslt.html.'show.edit.link'=true")
+       >>> config['xslt']['html']['show.edit.link']
+       True
+
+   :param config: The configuration dictionary to update. Intermediate nested
+       dictionaries are created as needed.
+   :param override: A string in the format ``KEY=VALUE`` where KEY is a dot-separated
+       path (supporting quoted/bracketed segments) and VALUE is a literal.
+   :raises click.BadParameter: If the override string is malformed (missing '='),
+       or if the key syntax is invalid (see :func:`parse_key`).
+
 
 
 .. py:function:: load_env_config(ctx: click.Context, env_config: pathlib.Path, env_overrides: tuple[str, ...], skip_validation: bool = False) -> None

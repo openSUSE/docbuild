@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Tool &#8212; Docbuild Documentation 0.22.1.dev46+g0872486c5.d20260904</title>
+    <title>Configuring the Tool &#8212; Docbuild Documentation 0.22.1.dev48+gfa7edf1b8.d20260904</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=8f71dec0"></script>
+    <script src="../_static/documentation_options.js?v=2075f255"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -639,6 +639,89 @@ between configurations without needing to remember the exact command syntax.</p>
 </pre></div>
 </div>
 <p>Options passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> have the highest priority and will strictly overwrite the corresponding settings loaded from your default, system, or local configuration files.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Values passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> are subject to the same validation rules as configuration files. If a value does not comply with the <a class="reference internal" href="../glossary.html#term-Pydantic"><span class="xref std std-term">Pydantic</span></a> model (for example, an invalid enum value or incorrect data type), the command will fail with a clear validation error describing what is required.</p>
+</div>
+<section id="handling-keys-with-dots">
+<h2>Handling Keys with Dots<a class="headerlink" href="#handling-keys-with-dots" title="Link to this heading">#</a></h2>
+<p>If your configuration keys contain dots, use quotes or brackets to prevent them from being treated as nested separators:</p>
+<ul>
+<li><p><strong>Single quotes</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">'key.with.dots'</span></code>)</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.&#39;show.edit.link&#39;=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+<li><p><strong>Double quotes</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">&quot;key.with.dots&quot;</span></code>)</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s1">&#39;xslt.html.&quot;show.edit.link&quot;=1&#39;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+<li><p><strong>Square brackets</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">[key.with.dots]</span></code>)</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.[show.edit.link]=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+</ul>
+<p>All three syntaxes are equivalent. Choose whichever is most convenient for your shell environment.</p>
+</section>
+<section id="type-conversion">
+<h2>Type Conversion<a class="headerlink" href="#type-conversion" title="Link to this heading">#</a></h2>
+<p>Values are automatically converted to their appropriate types:</p>
+<ul>
+<li><p><strong>Booleans</strong>: <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code> (case-insensitive)</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;server.enabled=true&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+<li><p><strong>Integers and floats</strong>: Numeric literals without quotes</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;server.port=8080&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+<li><p><strong>Strings</strong>: Quoted strings or values that don’t match the above patterns</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;server.name=&#39;My Server&#39;&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="validation-of-cli-values">
+<h2>Validation of CLI Values<a class="headerlink" href="#validation-of-cli-values" title="Link to this heading">#</a></h2>
+<p>CLI overrides are validated against the same rules as configuration files. However, validation timing depends on the subcommand:</p>
+<ul class="simple">
+<li><p><strong>Validation occurs</strong> when running actual commands (e.g., <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span></code>, <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">repo</span> <span class="pre">clone</span></code>)</p></li>
+<li><p><strong>Validation is skipped</strong> by default with <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">list</span></code> for convenience (to view raw config even if invalid)</p></li>
+</ul>
+<p>To validate CLI overrides before running a command, use one of these options:</p>
+<ul class="simple">
+<li><p>Run the command that uses the config (validation happens automatically)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">validate</span></code> to check the config without running a full command</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">list</span> <span class="pre">--validate</span></code> to force validation when listing config</p></li>
+</ul>
+<section id="example-invalid-enum-value">
+<h3>Example: Invalid Enum Value<a class="headerlink" href="#example-invalid-enum-value" title="Link to this heading">#</a></h3>
+<p>If you pass an invalid value via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code>, the command will fail with a clear validation error:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>build
+<span class="go">1 Validation error in config file &#39;unknown&#39;:</span>
+
+<span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;:</span>
+<span class="go">   Input should be &#39;production&#39;, &#39;staging&#39;, &#39;testing&#39; or other valid values</span>
+<span class="go">   Expected: Environment Role</span>
+<span class="go">   See: https://opensuse.github.io/docbuild/latest/errors/enum.html</span>
+</pre></div>
+</div>
+<p>To find the valid values for a field, check the error message or consult the configuration reference documentation. You can also validate the config explicitly with <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">validate</span></code>:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>config<span class="w"> </span>validate
+<span class="go">1 Validation error in config file &#39;unknown&#39;:</span>
+<span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;: Input should be &#39;production&#39;, &#39;staging&#39;, &#39;testing&#39; ...</span>
+
+<span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=production&quot;</span><span class="w"> </span>config<span class="w"> </span>validate
+<span class="go">✓ Configuration is valid</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -698,7 +781,15 @@ between configurations without needing to remember the exact command syntax.</p>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-placeholders">Using Placeholders</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#viewing-the-environment-configuration">Viewing the Environment Configuration</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#using-multiple-environment-configurations">Using Multiple Environment Configurations</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overwriting-config-options-on-the-command-line">Overwriting Config Options on the Command Line</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overwriting-config-options-on-the-command-line">Overwriting Config Options on the Command Line</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-keys-with-dots">Handling Keys with Dots</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#type-conversion">Type Conversion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-of-cli-values">Validation of CLI Values</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-invalid-enum-value">Example: Invalid Enum Value</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
   </nav></div>

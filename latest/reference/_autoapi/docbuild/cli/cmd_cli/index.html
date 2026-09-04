@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.22.1.dev46+g0872486c5.d20260904</title>
+    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.22.1.dev48+gfa7edf1b8.d20260904</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../_static/documentation_options.js?v=8f71dec0"></script>
+    <script src="../../../../../_static/documentation_options.js?v=2075f255"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -624,6 +624,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_app_config" title="docbuild.cli.cmd_cli.load_app_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_app_config</span></code></a>(→ None)</p></td>
 <td><p>Load and validate Application configuration.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(→ list[str])</p></td>
+<td><p>Parse dot-separated key path, respecting quoted/bracketed segments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(→ None)</p></td>
+<td><p>Parse and apply a single KEY=VALUE override to the configuration dictionary.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_env_config" title="docbuild.cli.cmd_cli.load_env_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_env_config</span></code></a>(→ None)</p></td>
 <td><p>Load and validate Environment configuration.</p></td>
 </tr>
@@ -663,6 +669,90 @@ status code after handling the error.</p></li>
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cli.load_app_config">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">load_app_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.5.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_validation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.load_app_config" title="Link to this definition">#</a></dt>
 <dd><p>Load and validate Application configuration.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_cli.parse_key">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">parse_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.parse_key" title="Link to this definition">#</a></dt>
+<dd><p>Parse dot-separated key path, respecting quoted/bracketed segments.</p>
+<p>Parses a key string that may contain dots as separators or within quoted
+or bracketed segments. This enables setting configuration values where keys
+themselves contain dots (e.g., XSLT parameters).</p>
+<p>Supported delimiters:
+- Single quotes: <code class="docutils literal notranslate"><span class="pre">'segment.with.dots'</span></code>
+- Double quotes: <code class="docutils literal notranslate"><span class="pre">&quot;segment.with.dots&quot;</span></code>
+- Square brackets: <code class="docutils literal notranslate"><span class="pre">[segment.with.dots]</span></code></p>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="s1">&#39;server.host&#39;</span><span class="p">)</span>
+<span class="go">[&#39;server&#39;, &#39;host&#39;]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="s2">&quot;server.&#39;db.connection&#39;&quot;</span><span class="p">)</span>
+<span class="go">[&#39;server&#39;, &#39;db.connection&#39;]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="s1">&#39;xslt.html.[show.edit.link]&#39;</span><span class="p">)</span>
+<span class="go">[&#39;xslt&#39;, &#39;html&#39;, &#39;show.edit.link&#39;]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – A dot-separated key path with optional quoted/bracketed segments.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of key segments suitable for nested dictionary access.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.BadParameter" title="(in Click v8.5.x)"><strong>click.BadParameter</strong></a> – If the key contains misplaced delimiters, unmatched
+quotes/brackets, or invalid syntax (e.g., characters after closing delimiter).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_cli.apply_override">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">apply_override</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.apply_override" title="Link to this definition">#</a></dt>
+<dd><p>Parse and apply a single KEY=VALUE override to the configuration dictionary.</p>
+<p>Processes a command-line override string (e.g., from <code class="docutils literal notranslate"><span class="pre">--set-env</span></code>) and merges
+it into the configuration dictionary. The key is parsed to support nested keys
+with dots, and the value is automatically converted to its appropriate type
+(boolean, integer, float, or string).</p>
+<p>Type conversion behavior:
+- <code class="docutils literal notranslate"><span class="pre">true</span></code>/<code class="docutils literal notranslate"><span class="pre">false</span></code> (case-insensitive) → <code class="docutils literal notranslate"><span class="pre">bool</span></code>
+- Numeric literals (e.g., <code class="docutils literal notranslate"><span class="pre">42</span></code>, <code class="docutils literal notranslate"><span class="pre">3.14</span></code>) → <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>
+- Quoted strings (e.g., <code class="docutils literal notranslate"><span class="pre">'text'</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;text&quot;</span></code>) → <code class="docutils literal notranslate"><span class="pre">str</span></code>
+- Unquoted non-numeric strings → <code class="docutils literal notranslate"><span class="pre">str</span></code> (fallback)</p>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;server&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">apply_override</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;server.port=8080&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;server&#39;</span><span class="p">][</span><span class="s1">&#39;port&#39;</span><span class="p">]</span>
+<span class="go">8080</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;xslt&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;html&#39;</span><span class="p">:</span> <span class="p">{}}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">apply_override</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;xslt.html.&#39;show.edit.link&#39;=true&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xslt&#39;</span><span class="p">][</span><span class="s1">&#39;html&#39;</span><span class="p">][</span><span class="s1">&#39;show.edit.link&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> – The configuration dictionary to update. Intermediate nested
+dictionaries are created as needed.</p></li>
+<li><p><strong>override</strong> – A string in the format <code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code> where KEY is a dot-separated
+path (supporting quoted/bracketed segments) and VALUE is a literal.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.BadParameter" title="(in Click v8.5.x)"><strong>click.BadParameter</strong></a> – If the override string is malformed (missing ‘=’),
+or if the key syntax is invalid (see <a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_key()</span></code></a>).</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -745,6 +835,8 @@ status code after handling the error.</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.handle_validation_error"><code class="docutils literal notranslate"><span class="pre">handle_validation_error()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.load_app_config"><code class="docutils literal notranslate"><span class="pre">load_app_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.parse_key"><code class="docutils literal notranslate"><span class="pre">parse_key()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.apply_override"><code class="docutils literal notranslate"><span class="pre">apply_override()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.load_env_config"><code class="docutils literal notranslate"><span class="pre">load_env_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.cli"><code class="docutils literal notranslate"><span class="pre">cli()</span></code></a></li>
 </ul>
