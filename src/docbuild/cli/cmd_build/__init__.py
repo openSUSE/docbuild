@@ -124,6 +124,7 @@ def build(
                     tmp_repo_dir=tmp_repo_dir,
                     meta_cache_dir=meta_cache_dir,
                     json_cache_dir=json_cache_dir,
+                    prebuilt_dir=env.paths.prebuilt_dir,
                     dapsmetatmpl=dapsmetatmpl,
                     max_workers=max_workers,
                     doctypes=list(doctypes),
