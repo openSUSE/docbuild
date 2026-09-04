@@ -94,6 +94,7 @@ class TestProcessDoctype:
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
             meta_cache_dir=tmp_path / "cache" / "metadata",
+            prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
             max_workers=8,
             exitfirst=False,
@@ -123,6 +124,7 @@ class TestProcessDoctype:
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
             meta_cache_dir=tmp_path / "cache" / "metadata",
+            prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
             max_workers=8,
             exitfirst=False,
@@ -159,6 +161,7 @@ class TestProcessDoctype:
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
             meta_cache_dir=tmp_path / "cache" / "metadata",
+            prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
             max_workers=1,  # Force sequential to guarantee order in test
             exitfirst=True,
@@ -188,6 +191,7 @@ class TestProcessDoctype:
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
             meta_cache_dir=tmp_path / "cache" / "metadata",
+            prebuilt_dir=tmp_path / "prebuilt",
             dapsmetatmpl="daps-template",
             max_workers=8,
             exitfirst=False,
@@ -232,7 +236,7 @@ class TestProcess:
         mock_process_doctype.return_value = []
 
         with patch.object(runner_pkg, "stdout"):
-            result = await process(**runner_kwargs, doctypes=tuple())
+            result = await process(**runner_kwargs, prebuilt_dir=Path("/tmp"), doctypes=tuple())
 
         assert result == 0
         mock_parse_portal_config.assert_awaited_once()
@@ -245,6 +249,7 @@ class TestProcess:
             runner_kwargs["repo_dir"],
             runner_kwargs["tmp_repo_dir"],
             runner_kwargs["meta_cache_dir"],
+            Path("/tmp"),
             runner_kwargs["dapsmetatmpl"],
             runner_kwargs["max_workers"],
             exitfirst=False,
@@ -278,7 +283,7 @@ class TestProcess:
         mock_process_doctype.return_value = [failed_d]
 
         with patch.object(runner_pkg, "console_err") as mock_console_err:
-            result = await process(**runner_kwargs, doctypes=tuple())
+            result = await process(**runner_kwargs, prebuilt_dir=Path("/tmp"), doctypes=tuple())
 
         assert result == 1
         assert mock_console_err.print.called
@@ -301,7 +306,7 @@ class TestProcess:
         provided_doctype = Doctype.from_str("sles/15/en-us")
 
         with patch.object(runner_pkg, "stdout"):
-            result = await process(**runner_kwargs, doctypes=[provided_doctype])
+            result = await process(**runner_kwargs, prebuilt_dir=Path("/tmp"), doctypes=[provided_doctype])
 
         assert result == 0
         mock_process_doctype.assert_awaited_once_with(
@@ -310,6 +315,7 @@ class TestProcess:
             runner_kwargs["repo_dir"],
             runner_kwargs["tmp_repo_dir"],
             runner_kwargs["meta_cache_dir"],
+            Path("/tmp"),
             runner_kwargs["dapsmetatmpl"],
             runner_kwargs["max_workers"],
             exitfirst=False,

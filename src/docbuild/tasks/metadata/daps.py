@@ -1,6 +1,7 @@
 """DAPS command construction and deliverable processing."""
 
 import asyncio
+import json
 import logging
 from pathlib import Path
 import shlex
@@ -8,6 +9,8 @@ import shlex
 from docbuild.models.deliverable import Deliverable
 from docbuild.utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from docbuild.utils.git import ManagedGitRepo
+
+from .prebuilt import extract_prebuilt_metadata
 
 log = logging.getLogger(__name__)
 
@@ -62,6 +65,7 @@ async def process_deliverable(
     repo_dir: Path,
     tmp_repo_dir: Path,
     meta_cache_dir: Path,
+    prebuilt_dir: Path,
     *,
     dapstmpl: str,
     skip_repo_update: bool = False,
@@ -82,8 +86,26 @@ async def process_deliverable(
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
     if not deliverable.xml.dcfile:
-        log.debug("Deliverable %s has no DC file (prebuilt), skipping.", deliverable.full_id)
-        return True, deliverable
+        log.info("Deliverable %s is prebuilt. Extracting metadata from Antora HTML...", deliverable.full_id)
+
+        try:
+            # 1. Run the extractor
+            meta_dict = extract_prebuilt_metadata(deliverable, prebuilt_dir)
+
+            # 2. Write it to the metadata cache JSON file
+            outputdir = meta_cache_dir / deliverable.paths.relpath
+            outputdir.mkdir(parents=True, exist_ok=True)
+            outputjson = outputdir / "DC-prebuilt.json"  # Using a generic name for prebuilt
+
+            with open(outputjson, "w", encoding="utf-8") as f:
+                json.dump(meta_dict, f, indent=2)
+
+            log.debug("Successfully extracted and saved prebuilt metadata for %s", deliverable.full_id)
+            return True, deliverable
+
+        except Exception as e:
+            log.error("Failed to extract metadata for prebuilt deliverable %s: %s", deliverable.full_id, e)
+            return False, deliverable
 
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():

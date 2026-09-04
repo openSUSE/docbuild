@@ -1,0 +1,1 @@
+Added support for extracting metadata from prebuilt Antora deliverables via fast JSON-LD parsing.

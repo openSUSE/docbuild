@@ -340,6 +340,14 @@ class EnvPathsConfig(BaseModel):
     )
     "Path for server root files."
 
+    prebuilt_dir: Path = Field(
+        default=Path("/data/docserv2/external-builds/external-tree"),
+        title="Prebuilt/External Directory",
+        description="The base directory containing prebuilt external documentation (e.g., Antora).",
+        examples=["/data/docserv2/external-builds/external-tree/"],
+    )
+    "Path to externally built documentation."
+
     # --- WRITABLE PATHS START HERE ---
 
     repo_dir: WritablePath = Field(

@@ -46,6 +46,7 @@ def test_metadata_command_delegates_to_task(runner, tmp_path, mock_generate_meta
         tmp_repo_dir=tmp_path / "tmp_repos",
         meta_cache_dir=tmp_path / "cache_meta",
         json_cache_dir=tmp_path / "cache_json",
+        prebuilt_dir=mock_env.paths.prebuilt_dir,
         dapsmetatmpl="daps --meta",
         max_workers=4,
         doctypes=[],
