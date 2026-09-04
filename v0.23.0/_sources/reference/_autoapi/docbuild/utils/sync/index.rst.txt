@@ -1,0 +1,49 @@
+docbuild.utils.sync
+===================
+
+.. py:module:: docbuild.utils.sync
+
+.. autoapi-nested-parse::
+
+   Synchronization utilities.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/sync/RsyncOptions
+
+.. autoapisummary::
+
+   docbuild.utils.sync.RsyncOptions
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.utils.sync.rsync
+
+
+Module Contents
+---------------
+
+.. py:function:: rsync(source: str | os.PathLike[str], target: str | os.PathLike[str], *, content_only: bool | None = None, options: RsyncOptions | None = None) -> subprocess.CompletedProcess[str]
+   :async:
+
+
+   Asynchronously execute the rsync command.
+
+   :param source: Path to the source file or directory.
+   :param target: Path to the target destination.
+   :param content_only: If True, appends a trailing slash to the source to sync contents.
+                        If None, infers the intent from the raw source string.
+   :param options: Configuration object containing the rsync flags.
+   :return: Process execution results containing stdout, stderr, and exit code.
+
+
