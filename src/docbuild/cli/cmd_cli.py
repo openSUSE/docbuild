@@ -1,5 +1,6 @@
 """Main CLI tool for document operations."""
 
+import ast
 from collections.abc import Sequence
 import logging
 from pathlib import Path
@@ -122,6 +123,125 @@ def load_app_config(
             raise e
 
 
+def parse_key(key: str) -> list[str]:
+    """Parse dot-separated key path, respecting quoted/bracketed segments.
+
+    Parses a key string that may contain dots as separators or within quoted
+    or bracketed segments. This enables setting configuration values where keys
+    themselves contain dots (e.g., XSLT parameters).
+
+    Supported delimiters:
+    - Single quotes: ``'segment.with.dots'``
+    - Double quotes: ``"segment.with.dots"``
+    - Square brackets: ``[segment.with.dots]``
+
+    Examples:
+        >>> parse_key('server.host')
+        ['server', 'host']
+
+        >>> parse_key("server.'db.connection'")
+        ['server', 'db.connection']
+
+        >>> parse_key('xslt.html.[show.edit.link]')
+        ['xslt', 'html', 'show.edit.link']
+
+    :param key: A dot-separated key path with optional quoted/bracketed segments.
+    :return: A list of key segments suitable for nested dictionary access.
+    :raises click.BadParameter: If the key contains misplaced delimiters, unmatched
+        quotes/brackets, or invalid syntax (e.g., characters after closing delimiter).
+
+    """
+    parts = []
+    current = ""
+    i = 0
+    delims = {"'": "'", '"': '"', "[": "]"}
+
+    while i < len(key):
+        if key[i] == '.':
+            parts.append(current)
+            current = ""
+            i += 1
+        elif key[i] in delims:
+            if current:
+                raise click.BadParameter(f"Misplaced delimiter in key: {key!r}")
+            start_delim = key[i]
+            end_delim = delims[start_delim]
+            i += 1
+            start = i
+            while i < len(key) and key[i] != end_delim:
+                i += 1
+            if i >= len(key):
+                raise click.BadParameter(f"Unmatched '{start_delim}' in key: {key!r}")
+            current = key[start:i]
+            i += 1
+            if i < len(key) and key[i] != '.':
+                raise click.BadParameter(f"Invalid syntax after delimiter in key: {key!r}")
+        else:
+            current += key[i]
+            i += 1
+
+    parts.append(current)
+    return parts
+
+
+def apply_override(config: dict[str, Any], override: str) -> None:
+    """Parse and apply a single KEY=VALUE override to the configuration dictionary.
+
+    Processes a command-line override string (e.g., from ``--set-env``) and merges
+    it into the configuration dictionary. The key is parsed to support nested keys
+    with dots, and the value is automatically converted to its appropriate type
+    (boolean, integer, float, or string).
+
+    Type conversion behavior:
+    - ``true``/``false`` (case-insensitive) → ``bool``
+    - Numeric literals (e.g., ``42``, ``3.14``) → ``int`` or ``float``
+    - Quoted strings (e.g., ``'text'``, ``"text"``) → ``str``
+    - Unquoted non-numeric strings → ``str`` (fallback)
+
+    Examples:
+        >>> config = {'server': {}}
+        >>> apply_override(config, 'server.port=8080')
+        >>> config['server']['port']
+        8080
+
+        >>> config = {'xslt': {'html': {}}}
+        >>> apply_override(config, "xslt.html.'show.edit.link'=true")
+        >>> config['xslt']['html']['show.edit.link']
+        True
+
+    :param config: The configuration dictionary to update. Intermediate nested
+        dictionaries are created as needed.
+    :param override: A string in the format ``KEY=VALUE`` where KEY is a dot-separated
+        path (supporting quoted/bracketed segments) and VALUE is a literal.
+    :raises click.BadParameter: If the override string is malformed (missing '='),
+        or if the key syntax is invalid (see :func:`parse_key`).
+
+    """
+    if "=" not in override:
+        raise click.BadParameter(
+            f"Invalid format for override: {override!r}. Use 'KEY=VALUE'.",
+            param_hint="-C / --set-env",
+        )
+
+    key, value_str = override.split("=", 1)
+    keys = parse_key(key)
+
+    # Parse value: handle bool/int/float/str
+    if value_str.lower() in ('true', 'false'):
+        value = value_str.lower() == 'true'
+    else:
+        try:
+            value = ast.literal_eval(value_str)
+        except (ValueError, SyntaxError):
+            value = value_str
+
+    # Navigate and set value
+    d = config
+    for k in keys[:-1]:
+        d = d.setdefault(k, {})
+    d[keys[-1]] = value
+
+
 def load_env_config(
     ctx: click.Context,
     env_config: Path,
@@ -144,17 +264,7 @@ def load_env_config(
     # --- Merge CLI overrides ---
     # Overwrites any values from config files with highest priority.
     for override in env_overrides:
-        if "=" not in override:
-            raise click.BadParameter(
-                f"Invalid format for override: {override!r}. Use 'KEY=VALUE'.",
-                param_hint="-C / --set-env",
-            )
-        key, value = override.split("=", 1)
-        keys = key.split('.')
-        d = raw_envconfig
-        for k in keys[:-1]:
-            d = d.setdefault(k, {})
-        d[keys[-1]] = value
+        apply_override(raw_envconfig, override)
 
     # Always store the raw dict so `config list` has access to it
     context.raw_envconfig = raw_envconfig
