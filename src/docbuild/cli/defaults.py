@@ -60,6 +60,7 @@ DEFAULT_ENV_CONFIG = {
         "portal_rncschema": "{root_config_dir}/portal-config.rnc",
         "jinja_dir": f"{DATA_HOME}/jinja",
         "server_rootfiles_dir": "{root_config_dir}/server-root-files",
+        "prebuilt_dir": "/data/docserv2/external-builds/external-tree",
         "tmp_repo_dir": f"{STATE_HOME}/repos/branches",
         "repo_dir": f"{STATE_HOME}/repos/permanent",
         "base_cache_dir": f"{CACHE_HOME}",

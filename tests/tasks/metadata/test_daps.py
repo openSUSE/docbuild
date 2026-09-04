@@ -221,6 +221,7 @@ class TestProcessDeliverable:
             repo_dir=setup_paths["repo_dir"],
             tmp_repo_dir=setup_paths["tmp_repo_dir"],
             meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
         )
 
@@ -241,6 +242,7 @@ class TestProcessDeliverable:
             repo_dir=tmp_path / "repos",
             tmp_repo_dir=tmp_path / "tmp_repos",
             meta_cache_dir=tmp_path / "cache",
+            prebuilt_dir=tmp_path / "prebuilt",
             dapstmpl="daps -d {dcfile} metadata",
         )
 
@@ -269,6 +271,7 @@ class TestProcessDeliverable:
             repo_dir=setup_paths["repo_dir"],
             tmp_repo_dir=setup_paths["tmp_repo_dir"],
             meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
         )
 
@@ -305,6 +308,7 @@ class TestProcessDeliverable:
             repo_dir=setup_paths["repo_dir"],
             tmp_repo_dir=setup_paths["tmp_repo_dir"],
             meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
             skip_repo_update=True,
         )
