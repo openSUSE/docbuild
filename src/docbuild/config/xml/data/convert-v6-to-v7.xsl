@@ -660,6 +660,7 @@
                                                                and not(language/url/@format = 'pdf')]"/>
     
     <xsl:if test="$eligible-links">
+      <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
         <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
 

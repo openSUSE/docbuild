@@ -10,6 +10,7 @@ from docbuild.config.xml.checks import (
     check_duplicated_url_in_extralinks,
     check_enabled_format,
     check_format_subdeliverable,
+    check_git_remote_for_dc_deliverables,
     check_lang_code_in_desc,
     check_lang_code_in_docset,
     check_lang_code_in_extralinks,
@@ -457,6 +458,71 @@ def test_check_lang_code_in_docset_v7_duplicate_locale_lang(xmlnode):
     messages = [r.message for r in results]
     assert_results("non-unique lang attributes", messages)
     assert_results("docset=docset1", messages)
+
+
+def test_check_git_remote_for_dc_deliverables_requires_git(xmlnode):
+    resources = xmlnode.find(".//resources")
+    git = resources.find("git")
+    assert git is not None
+    resources.remove(git)
+
+    results = collect_check_results(check_git_remote_for_dc_deliverables(xmlnode))
+    assert len(results) > 0
+    messages = [r.message for r in results]
+    assert_results("Missing git remote in docset=docset1", messages)
+    assert_results("DC-TEST-ONE", messages)
+
+
+def test_check_git_remote_for_dc_deliverables_requires_git_for_root_docset(xmlnode):
+    docset = copy.deepcopy(xmlnode.find(".//docset"))
+    resources = docset.find("resources")
+    git = resources.find("git")
+    assert git is not None
+    resources.remove(git)
+
+    results = collect_check_results(check_git_remote_for_dc_deliverables(docset))
+    assert len(results) > 0
+    messages = [r.message for r in results]
+    assert_results("Missing git remote in docset=docset1", messages)
+    assert_results("DC-TEST-ONE", messages)
+
+
+def test_check_git_remote_for_dc_deliverables_allows_prebuilt_without_git(xmlnode):
+    resources = xmlnode.find(".//resources")
+    git = resources.find("git")
+    assert git is not None
+    resources.remove(git)
+
+    locale = resources.find("locale")
+    deliverable = locale.find("deliverable")
+    prebuilt = E.deliverable(
+        E.prebuilt(
+            E.title("Release Notes"),
+            E.url(href="https://example.invalid/release-notes", format="html"),
+            E.descriptions(E.desc(E.p("Prebuilt release notes."), lang="en-us")),
+        ),
+        id="deli-1",
+        type="prebuilt",
+    )
+    locale.replace(deliverable, prebuilt)
+
+    results = collect_check_results(check_git_remote_for_dc_deliverables(xmlnode))
+    assert len(results) == 0
+
+
+def test_check_git_remote_for_dc_deliverables_only_reports_docset_without_git(xmlnode):
+    second_docset = copy.deepcopy(xmlnode.find(".//docset"))
+    second_docset.set("id", "docset2")
+    second_resources = second_docset.find("resources")
+    second_git = second_resources.find("git")
+    assert second_git is not None
+    second_resources.remove(second_git)
+    xmlnode.find(".//product").append(second_docset)
+
+    results = collect_check_results(check_git_remote_for_dc_deliverables(xmlnode))
+    assert len(results) == 1
+    messages = [r.message for r in results]
+    assert_results("docset=docset2", messages)
 
 
 def test_check_lang_code_in_extralinks_v7_duplicate_url_lang(xmlnode):

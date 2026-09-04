@@ -461,6 +461,45 @@ def check_subdeliverable_in_deliverable(
 
 
 @register_check
+def check_git_remote_for_dc_deliverables(
+    tree: etree._Element | etree._ElementTree,
+) -> Iterator[CheckResult]:
+    """Ensure DAPS/DC deliverables keep a sibling ``<git>`` resource.
+
+    :param tree: The XML tree to check.
+    :yield: CheckResult for each docset with DC deliverables but no git remote.
+    """
+    for docset in tree.xpath("self::docset | .//docset"):
+        resources = docset.find("resources")
+        if resources is None:
+            continue
+
+        if resources.find("git") is not None:
+            continue
+
+        dc_deliverables = [
+            deliverable
+            for locale in resources.findall("locale", namespaces=None)
+            for deliverable in locale.findall(".//deliverable", namespaces=None)
+            if deliverable.find("dc") is not None
+        ]
+        if not dc_deliverables:
+            continue
+
+        docset = docset_id(resources)
+        deliverables = ", ".join(dc_identifier(deliverable) for deliverable in dc_deliverables)
+        message = (
+            f"Missing git remote in docset={docset} for DC deliverables: {deliverables}. "
+            "Add resources/git or use only prebuilt deliverables when omitting git."
+        )
+        yield CheckResult(
+            message=message,
+            xpath=semantic_xpath(resources),
+            error_code="missing_git_remote",
+        )
+
+
+@register_check
 def check_unsupported_language_code(
     tree: etree._Element | etree._ElementTree,
 ) -> Iterator[CheckResult]:

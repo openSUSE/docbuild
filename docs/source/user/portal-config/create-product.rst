@@ -92,7 +92,9 @@ a new product, proceed as follows:
 
    * For the ``<resources>`` element:
 
-     * Create a ``<git>`` element to define the Git repository for this release.
+     * If possible, create a ``<git>`` element to define the Git repository for the sources of this release.
+       This is only needed if your product is built via DAPS. For other build systems like Antora, the
+       deliverables are built outside of docbuild. In that case, omit this tag.
 
      * Create a ``<locale>`` element for the English language (``en-us``) and
        add a ``<branch>`` element to define the Git branch for this release.
