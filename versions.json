@@ -10,11 +10,6 @@
     "url": "https://opensuse.github.io/docbuild/stable/"
   },
   {
-    "name": "v0.18.0",
-    "version": "v0.18.0",
-    "url": "https://opensuse.github.io/docbuild/v0.18.0/"
-  },
-  {
     "name": "v0.23.0",
     "version": "v0.23.0",
     "url": "https://openSUSE.github.io/docbuild/v0.23.0/"
@@ -28,5 +23,10 @@
     "name": "v0.21.0",
     "version": "v0.21.0",
     "url": "https://openSUSE.github.io/docbuild/v0.21.0/"
+  },
+  {
+    "name": "v0.20.0",
+    "version": "v0.20.0",
+    "url": "https://opensuse.github.io/docbuild/v0.20.0/"
   }
 ]
