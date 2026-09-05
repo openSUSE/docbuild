@@ -1,0 +1,32 @@
+<portal schemaversion="7.0">
+  <categories>
+    <category lang="en-us">
+      <language id="cat.test" title="Test Category"/>
+    </category>
+  </categories>
+  <productfamilies>
+    <item id="f.linux">Linux</item>
+  </productfamilies>
+  <series>
+    <item id="s.pas">Products &amp; Solutions</item>
+  </series>
+  <product id="testproduct" family="f.linux" series="s.pas">
+    <name>Test Product</name>
+    <maintainers>
+      <contact>test@example.com</contact>
+    </maintainers>
+    <docset id="testdocset" lifecycle="supported">
+      <version>1.0</version>
+      <resources>
+        <locale lang="en-us">
+          <branch>main</branch>
+          <deliverable id="testdc" type="dc">
+            <dc file="DC-test">
+              <format html="true"/>
+            </dc>
+          </deliverable>
+        </locale>
+      </resources>
+    </docset>
+  </product>
+</portal>

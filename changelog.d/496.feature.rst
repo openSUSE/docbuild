@@ -1,0 +1,1 @@
+The ``<git>`` element in portal configuration is now optional, which accommodates projects like SUMA/MLM and Cloud Native that do not require source Git repositories for their documentation builds.

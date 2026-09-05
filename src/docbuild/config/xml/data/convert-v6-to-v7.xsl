@@ -656,7 +656,8 @@
 
   <xsl:template name="docset-without-builddocs">
     <resources>
-      <git remote="https://TODO" />
+      <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
+      <xsl:comment><xsl:text>&lt;git remote="https://TODO" /&gt;</xsl:text></xsl:comment>
        <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf')]]"
          mode="builddocs" />
     </resources>
