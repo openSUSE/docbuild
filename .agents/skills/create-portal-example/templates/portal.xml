@@ -1,0 +1,21 @@
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+  <!-- Global categories -->
+  <categories>
+    <category lang="en-us">
+      <language id="cat.about" title="About" />
+      <language id="cat.initial-config" title="Initial configuration" />
+      <language id="cat.administration" title="Administration" />
+      <language id="cat.additional-doc" title="Additional documentation" />
+    </category>
+  </categories>
+  <productfamilies>
+    <item id="f.linux">Linux</item>
+    <item id="f.windows">Windows</item>
+  </productfamilies>
+  <series>
+    <item id="s.pas">Products &amp; Solutions</item>
+    <item id="s.trd">Technical References</item>
+    <item id="s.rn">Release Notes</item>
+  </series>
+  {{ products }}
+</portal>

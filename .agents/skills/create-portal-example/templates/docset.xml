@@ -1,0 +1,14 @@
+<docset lifecycle="supported" id="nas.foo2" path="foo2">
+  <name>Foo</name>
+  <version>2</version>
+  <descriptions treatment="append">
+      <desc lang="en-us">
+      </desc>
+  </descriptions>
+  <resources>
+      <git remote="https://github.com/foo-inc/foo.git" />
+      <locale lang="en-us">
+        {{ deliverables }}
+      </locale>
+  </resources>
+</docset>

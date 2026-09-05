@@ -1,0 +1,5 @@
+<deliverable id="nas.foo2.dc-foo-gui" type="dc">
+    <dc file="DC-foo-gui">
+      <format epub="0" html="1" pdf="1" single-html="1" />
+    </dc>
+</deliverable>

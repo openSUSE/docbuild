@@ -1,0 +1,14 @@
+<deliverable id="nas.foo2." type="prebuilt" >
+  <prebuilt>
+    <title>Overview</title>
+    <url format="html"
+      href="/nas/foo2/latest/en/index.html" />
+    <descriptions>
+      <desc lang="en-us">
+        <p>
+          An overview of the product.
+        </p>
+      </desc>
+    </descriptions>
+  </prebuilt>
+</deliverable>

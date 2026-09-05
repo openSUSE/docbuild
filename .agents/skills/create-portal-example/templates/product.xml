@@ -1,0 +1,14 @@
+<product id="nas" family="f.linux" series="s.pas" rank="04000">
+  <name>NAS</name>
+  <acronym>nas</acronym>
+  <maintainers>
+    <contact>tux@example.com</contact>
+  </maintainers>
+  <descriptions>
+    <desc lang="en-us">
+      The NAS product is a fancy, stable, and customizable product.
+    </desc>
+  </descriptions>
+
+  {{ docsets }}
+</product>
