@@ -320,37 +320,56 @@ class DeliverableXMLView:
         """Return a concise string representation of the deliverable."""
         return f"{self.__class__.__name__}({self!s})"
 
+    @property
+    def _target_node(self) -> etree._Element:
+        """Return the referenced English node if this is a ref, else self.node."""
+        if self.is_ref:
+            ref_node = self.node.find("ref")
+            if ref_node is not None:
+                refid = ref_node.get("linkend")
+                if self.locale_en is not None:
+                    en_node = self.locale_en.find(f"deliverable[@id={refid!r}]")
+                    if en_node is not None:
+                        return en_node
+        return self.node
+
     def local_desc(self) -> Generator[etree._Element, None, None]:
         """Yield local ``<desc>`` elements, usually from prebuilts."""
-        yield from self.node.xpath("./prebuilt/descriptions/desc")
+        yield from self._target_node.xpath("./prebuilt/descriptions/desc")
 
     @cached_property
     def prebuilt_title(self) -> str:
         """Return the prebuilt title text if present."""
-        return (self.node.findtext("./prebuilt/title") or "").strip()
+        return (self._target_node.findtext("./prebuilt/title") or "").strip()
 
     @cached_property
     def prebuilt_html_url(self) -> str:
         """Return the local prebuilt HTML URL (starts with '/')."""
-        for node in self.node.xpath('./prebuilt/url[@format="html"]'):
+        for node in self._target_node.xpath('./prebuilt/url[@format="html"]'):
             href = node.get("href", "")
             if href.startswith("/"):
+                if self.is_ref:
+                    short_lang = str(self.lang).split("-")[0]
+                    return href.replace("/en/", f"/{short_lang}/")
                 return href
         return ""
 
     @cached_property
     def prebuilt_pdf_url(self) -> str:
         """Return the local prebuilt PDF URL (starts with '/')."""
-        for node in self.node.xpath('./prebuilt/url[@format="pdf"]'):
+        for node in self._target_node.xpath('./prebuilt/url[@format="pdf"]'):
             href = node.get("href", "")
             if href.startswith("/"):
+                if self.is_ref:
+                    short_lang = str(self.lang).split("-")[0]
+                    return href.replace("/en/", f"/{short_lang}/")
                 return href
         return ""
 
     @cached_property
     def is_gated(self) -> bool:
         """Return True if the deliverable is marked as gated."""
-        return str(self.node.get("gated", "false")).lower() == "true"
+        return str(self._target_node.get("gated", "false")).lower() == "true"
 
     @cached_property
     def docset_version(self) -> str:

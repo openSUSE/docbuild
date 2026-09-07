@@ -12,14 +12,19 @@ from docbuild.models.language import LanguageCode
 log = logging.getLogger(__name__)
 
 
-def _find_html_path(prebuilt_dir: Path, html_url: str) -> Path | None:
+def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str) -> Path | None:
     """Attempt to find the prebuilt HTML file in multiple candidate paths."""
     if not html_url:
         return None
 
     clean_url = html_url.lstrip("/")
+    lang_str = str(deliverable.xml.lang)
+    short_lang = lang_str.split("-")[0]
+
     candidates = [
         prebuilt_dir / clean_url,
+        prebuilt_dir / lang_str / clean_url,
+        prebuilt_dir / short_lang / clean_url,
         prebuilt_dir / "en" / clean_url,
         prebuilt_dir / "en-us" / clean_url,
     ]
@@ -91,7 +96,8 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
     """
     html_url = deliverable.xml.prebuilt_html_url
 
-    html_path = _find_html_path(prebuilt_dir, html_url)
+    # Pass deliverable so it can search translated directories
+    html_path = _find_html_path(prebuilt_dir, deliverable, html_url)
     json_ld = _read_json_ld(html_path)
 
     in_language = json_ld.get("inLanguage", str(deliverable.xml.lang))
@@ -111,6 +117,11 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             desc_text = desc_node.text.strip()
             break
 
+    # Build format dict dynamically so we don't include empty 'pdf' keys
+    fmt = {"html": html_url}
+    if pdf_url := deliverable.xml.prebuilt_pdf_url:
+        fmt["pdf"] = pdf_url
+
     raw_data = {
         "productname": deliverable.xml.productname,
         "acronym": deliverable.xml.acronym or "",
@@ -124,10 +135,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
                 "description": desc_text,
                 "dcfile": deliverable.xml.dcfile or "",
                 "rootid": "",
-                "format": {
-                    "html": html_url,
-                    "pdf": deliverable.xml.prebuilt_pdf_url
-                },
+                "format": fmt,
                 "dateModified": date_modified
             }
         ],
