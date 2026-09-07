@@ -319,3 +319,36 @@ class DeliverableXMLView:
     def __repr__(self) -> str:
         """Return a concise string representation of the deliverable."""
         return f"{self.__class__.__name__}({self!s})"
+
+    @cached_property
+    def description(self) -> str:
+        """Return the description node text if present."""
+        if nodes := self.node.xpath("./description/text()"):
+            return nodes[0].strip()
+        return ""
+
+    @cached_property
+    def prebuilt_title(self) -> str:
+        """Return the prebuilt title text if present."""
+        if nodes := self.node.xpath("./prebuilt/title/text()"):
+            return nodes[0].strip()
+        return ""
+
+    @cached_property
+    def prebuilt_html_url(self) -> str:
+        """Return the prebuilt HTML URL."""
+        for node in self.node.xpath('./prebuilt/url[@format="html"]'):
+            return node.get("href", "")
+        return ""
+
+    @cached_property
+    def prebuilt_pdf_url(self) -> str:
+        """Return the prebuilt PDF URL."""
+        for node in self.node.xpath('./prebuilt/url[@format="pdf"]'):
+            return node.get("href", "")
+        return ""
+
+    @cached_property
+    def is_gated(self) -> bool:
+        """Return True if the deliverable is marked as gated."""
+        return str(self.node.get("gated", "false")).lower() == "true"

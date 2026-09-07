@@ -75,7 +75,9 @@ async def process_doctype(
     if skip_repo_update:
         log.info("Skipping repository %s updates as requested.", repo_dir)
     else:
-        await update_repositories(deliverables, repo_dir)
+        # Filter out prebuilt deliverables that don't have a Git remote configured
+        git_deliverables = [d for d in deliverables if d.xml.git_remote() is not None]
+        await update_repositories(git_deliverables, repo_dir)
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
 

@@ -7,9 +7,9 @@ from pathlib import Path
 import shlex
 
 from docbuild.models.deliverable import Deliverable
-from docbuild.utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
-from docbuild.utils.git import ManagedGitRepo
 
+from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
+from ...utils.git import ManagedGitRepo
 from .prebuilt import extract_prebuilt_metadata
 
 log = logging.getLogger(__name__)
@@ -95,7 +95,15 @@ async def process_deliverable(
             # 2. Write it to the metadata cache JSON file
             outputdir = meta_cache_dir / deliverable.paths.relpath
             outputdir.mkdir(parents=True, exist_ok=True)
-            outputjson = outputdir / "DC-prebuilt.json"  # Using a generic name for prebuilt
+
+            # Use HTML basename for uniqueness, fallback to deliverable ID if missing
+            html_url = meta_dict.get("docs", [{}])[0].get("format", {}).get("html", "")
+            if html_url:
+                json_filename = Path(html_url.lstrip("/")).name.replace(".html", ".json")
+            else:
+                json_filename = f"{deliverable._node.get('id', 'prebuilt')}.json"
+
+            outputjson = outputdir / json_filename
 
             with open(outputjson, "w", encoding="utf-8") as f:
                 json.dump(meta_dict, f, indent=2)

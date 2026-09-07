@@ -29,6 +29,23 @@ def mock_deliverable():
     mock_dev._node = node
     # Mock the LanguageCode stringification
     mock_dev.xml.lang.__str__.return_value = "en-us"
+
+    # Mock the new XML properties so Pydantic validation passes
+    mock_dev.xml.productname = "Test Product"
+    mock_dev.xml.acronym = "TP"
+    mock_dev.xml.prebuilt_html_url = "/admission-controller/latest/en/index.html"
+    mock_dev.xml.prebuilt_pdf_url = "/admission-controller/latest/en/admission-controller.pdf"
+    mock_dev.xml.prebuilt_title = "SUSE Security Admission Controller"
+    mock_dev.xml.description = "Test description for admission controller."
+    mock_dev.xml.is_gated = True
+    mock_dev.xml.categoryid = "cloud-native"
+    mock_dev.xml.dcfile = ""
+
+    # Mock the docset_node version
+    mock_docset = MagicMock()
+    mock_docset.findtext.return_value = "1.37"
+    mock_dev.xml.docset_node = mock_docset
+
     return mock_dev
 
 
