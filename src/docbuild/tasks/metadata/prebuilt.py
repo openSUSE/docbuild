@@ -104,17 +104,24 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
 
     tasks, products = _extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
+    # Extract text from the first valid local description
+    desc_text = ""
+    for desc_node in deliverable.xml.local_desc():
+        if desc_node.text:
+            desc_text = desc_node.text.strip()
+            break
+
     raw_data = {
-        "productname": deliverable.xml.productname or "",
+        "productname": deliverable.xml.productname,
         "acronym": deliverable.xml.acronym or "",
-        "version": deliverable.xml.docset_node.findtext("version", default="") if deliverable.xml.docset_node is not None else "",
+        "version": deliverable.xml.docset_version,
         "docs": [
             {
                 "lang": lang_code,
                 "default": is_default,
                 "title": json_ld.get("headline", ""),
                 "subtitle": "",
-                "description": deliverable.xml.description,
+                "description": desc_text,
                 "dcfile": deliverable.xml.dcfile or "",
                 "rootid": "",
                 "format": {
@@ -129,7 +136,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
         "docTypes": [],
         "isGated": deliverable.xml.is_gated,
         "rank": "",
-        "category": getattr(deliverable.xml, "categoryid", "")
+        "category": deliverable.xml.categoryid or ""
     }
 
     return raw_data

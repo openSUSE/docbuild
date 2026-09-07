@@ -320,35 +320,42 @@ class DeliverableXMLView:
         """Return a concise string representation of the deliverable."""
         return f"{self.__class__.__name__}({self!s})"
 
-    @cached_property
-    def description(self) -> str:
-        """Return the description node text if present."""
-        if nodes := self.node.xpath("./description/text()"):
-            return nodes[0].strip()
-        return ""
+    def local_desc(self) -> Generator[etree._Element, None, None]:
+        """Yield local ``<desc>`` elements, usually from prebuilts."""
+        yield from self.node.xpath("./prebuilt/descriptions/desc")
 
     @cached_property
     def prebuilt_title(self) -> str:
         """Return the prebuilt title text if present."""
-        if nodes := self.node.xpath("./prebuilt/title/text()"):
-            return nodes[0].strip()
-        return ""
+        return (self.node.findtext("./prebuilt/title") or "").strip()
 
     @cached_property
     def prebuilt_html_url(self) -> str:
-        """Return the prebuilt HTML URL."""
+        """Return the local prebuilt HTML URL (starts with '/')."""
         for node in self.node.xpath('./prebuilt/url[@format="html"]'):
-            return node.get("href", "")
+            href = node.get("href", "")
+            if href.startswith("/"):
+                return href
         return ""
 
     @cached_property
     def prebuilt_pdf_url(self) -> str:
-        """Return the prebuilt PDF URL."""
+        """Return the local prebuilt PDF URL (starts with '/')."""
         for node in self.node.xpath('./prebuilt/url[@format="pdf"]'):
-            return node.get("href", "")
+            href = node.get("href", "")
+            if href.startswith("/"):
+                return href
         return ""
 
     @cached_property
     def is_gated(self) -> bool:
         """Return True if the deliverable is marked as gated."""
         return str(self.node.get("gated", "false")).lower() == "true"
+
+    @cached_property
+    def docset_version(self) -> str:
+        """Return the docset version."""
+        if self.docset_node is not None:
+            node = self.docset_node.findtext("version", default="")
+            return node.strip() if node else ""
+        return ""
