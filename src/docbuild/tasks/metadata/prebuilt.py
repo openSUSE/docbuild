@@ -130,9 +130,9 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
         fmt["pdf"] = pdf_url
 
     raw_data = {
-        "productname": deliverable.xml.productname,
+        "productname": deliverable.xml.productname or "SUSE Rancher Prime",
         "acronym": deliverable.xml.acronym or "",
-        "version": deliverable.xml.docset_version,
+        "version": deliverable.xml.docset_version or "",
         "docs": [
             {
                 "lang": lang_code,

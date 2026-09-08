@@ -159,21 +159,14 @@ class DeliverableXMLView:
     @cached_property
     def is_dc(self) -> bool:
         """Return True if the deliverable is marked as DC."""
-        if self.kind is not None:
-            return self._is_kind("dc")
-        # Fallback: infer DC from a local <dc> child only.
-        # A translated <ref> may resolve dcfile from English, but should
-        # still be classified as ref when @type is missing.
+        # Safest check: does it contain a <dc> tag?
         return self.node.find("dc") is not None
 
     @cached_property
     def is_ref(self) -> bool:
         """Return True if the deliverable is marked as a reference."""
-        if self.kind is not None:
-            return self._is_kind("ref")
-        # Fallback: if no type is specified, we can infer ref from the
-        # presence of a <ref> child node
-        return self.node[0].tag == "ref"
+        # Safest check: does it contain a <ref> tag?
+        return self.node.find("ref") is not None
 
     def _is_kind(self, expected: str) -> bool:
         """Return ``True`` when the deliverable type matches ``expected``."""
