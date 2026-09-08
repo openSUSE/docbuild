@@ -225,7 +225,7 @@ class DeliverableXMLView:
         node = self.node.getparent().xpath(
             "ancestor::resources/locale[@lang!='en-us']/branch",
         )
-        if len(node) > 0:
+        if len(node) > 0 and node[0].text is not None:
             return node[0].text.strip()
         return None
 
@@ -349,8 +349,7 @@ class DeliverableXMLView:
             href = node.get("href", "")
             if href.startswith("/"):
                 if self.is_ref:
-                    short_lang = str(self.lang).split("-")[0]
-                    return href.replace("/en/", f"/{short_lang}/")
+                    return href.replace("/en/", f"/{self.lang.lang}/")
                 return href
         return ""
 
@@ -361,8 +360,7 @@ class DeliverableXMLView:
             href = node.get("href", "")
             if href.startswith("/"):
                 if self.is_ref:
-                    short_lang = str(self.lang).split("-")[0]
-                    return href.replace("/en/", f"/{short_lang}/")
+                    return href.replace("/en/", f"/{self.lang.lang}/")
                 return href
         return ""
 

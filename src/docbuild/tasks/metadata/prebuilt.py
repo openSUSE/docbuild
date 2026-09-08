@@ -19,8 +19,10 @@ def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str)
         return None
 
     clean_url = html_url.lstrip("/")
-    lang_str = str(deliverable.xml.lang)
-    short_lang = lang_str.split("-")[0]
+
+    # Use LanguageCode object and wrap in str() - Pylance type-checking
+    lang_str = str(deliverable.xml.lang.language)
+    short_lang = str(deliverable.xml.lang.lang)
 
     # Create raw list, then deduplicate while preserving order using dict.fromkeys()
     raw_candidates = [
