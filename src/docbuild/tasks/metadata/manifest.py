@@ -113,9 +113,10 @@ def load_documents_from_deliverables(
         if d.xml.dcfile:
             # Legacy DAPS behavior
             actual_file = meta_cache_dir / d.paths.relpath / d.xml.dcfile
-        elif d.xml.is_prebuilt and d.xml.target_id:
-            # Prebuilts are saved using their target deliverable ID
-            actual_file = meta_cache_dir / d.paths.relpath / f"{d.xml.target_id}.json"
+        elif d.xml.resolved_prebuilt_html_url:
+            # Prebuilts and translated refs are saved using their HTML stem
+            stem = Path(d.xml.resolved_prebuilt_html_url).stem
+            actual_file = meta_cache_dir / d.paths.relpath / f"{stem}.json"
 
         # 2. Skip if we couldn't resolve a file name or if it doesn't exist
         if not actual_file or not actual_file.is_file():

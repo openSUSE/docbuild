@@ -20,8 +20,13 @@ async def update_repositories(
     :return: ``True`` if all repositories updated successfully, ``False`` otherwise.
     """
     log.info("Updating Git repositories...")
-    repo_map = {d.git.url: d.git.name for d in deliverables}
+    repo_map = {
+        d.git.url: d.git.name
+        for d in deliverables
+        if getattr(d, "git", None) and hasattr(d.git, "url")
+    }
     unique_urls = set(repo_map.keys())
+
     repos = [ManagedGitRepo(url, bare_repo_dir) for url in unique_urls]
 
     tasks = [

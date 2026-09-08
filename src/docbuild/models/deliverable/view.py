@@ -98,9 +98,7 @@ class DeliverableXMLView:
         """Return the deliverable ID (``<deliverable id=…>``) or None if absent."""
         if (d_id := self.node.get("id")) is not None:
             return d_id
-
-        elif self.is_ref:
-            # If this is a reference, the ID is its linkend target
+        if self.is_ref:
             ref_node = self.node.find("ref")
             if ref_node is not None:
                 return ref_node.get("linkend")
@@ -115,6 +113,19 @@ class DeliverableXMLView:
             if ref_node is not None and ref_node.get("linkend"):
                 return ref_node.get("linkend")
         return self.deliverableid
+
+    @cached_property
+    def resolved_prebuilt_html_url(self) -> str | None:
+        """Return the prebuilt HTML URL, resolving refs to their target."""
+        if self.prebuilt_html_url:
+            return self.prebuilt_html_url
+        if self.is_ref and self._target_node is not None:
+            prebuilt_node = self._target_node.find("prebuilt")
+            if prebuilt_node is not None:
+                url_node = prebuilt_node.find("url[@format='html']")
+                if url_node is not None:
+                    return url_node.get("href")
+        return None
 
     @cached_property
     def basefile(self) -> str | None:
