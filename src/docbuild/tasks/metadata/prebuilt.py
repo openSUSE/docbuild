@@ -142,8 +142,8 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
                 "title": json_ld.get("headline") or deliverable.xml.prebuilt_title,
                 "subtitle": "",
                 "description": desc_text,
-                "dcfile": deliverable.xml.dcfile or deliverable.xml.deliverableid or "",
-                "rootid": deliverable.xml.deliverableid or "",
+                "dcfile": deliverable.xml.dcfile or deliverable.xml.target_id or "",
+                "rootid": deliverable.xml.target_id or "",
                 "format": fmt,
                 "dateModified": date_modified
             }

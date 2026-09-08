@@ -108,12 +108,20 @@ class DeliverableXMLView:
         return None
 
     @cached_property
+    def target_id(self) -> str | None:
+        """Return the target deliverable ID (linkend for refs, else deliverableid)."""
+        if self.is_ref:
+            ref_node = self.node.find("ref")
+            if ref_node is not None and ref_node.get("linkend"):
+                return ref_node.get("linkend")
+        return self.deliverableid
+
+    @cached_property
     def basefile(self) -> str | None:
-        """Return :attr:`dcfile` stripped of its ``DC-`` prefix, or deliverableid as fallback."""
+        """Return :attr:`dcfile` stripped of its ``DC-`` prefix, or target_id as fallback."""
         if self.dcfile:
             return self.dcfile.lstrip("DC-")
-        # Prebuilts don't have DC files, so fall back to the deliverable ID for logging/identity
-        return self.deliverableid
+        return self.target_id
 
     @cached_property
     def translations(self) -> set[str]:

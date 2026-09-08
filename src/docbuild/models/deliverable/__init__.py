@@ -46,8 +46,8 @@ class Deliverable:
     #    return self.paths.base_format_path(fmt)
 
     def _append_dcfile(self, identifier: str) -> str:
-        """Append the DC filename (or deliverable ID) suffix to an identifier when present."""
-        suffix = self.xml.dcfile or self.xml.deliverableid
+        """Append the DC filename (or target ID) suffix to an identifier when present."""
+        suffix = self.xml.dcfile or self.xml.target_id
         if suffix:
             return f"{identifier}:{suffix}"
         return f"{identifier}:"
