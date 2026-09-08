@@ -46,10 +46,10 @@ class Deliverable:
     #    return self.paths.base_format_path(fmt)
 
     def _append_dcfile(self, identifier: str) -> str:
-        """Append the DC filename suffix to an identifier when present."""
-        dcfile = self.xml.dcfile
-        if dcfile:
-            return f"{identifier}:{dcfile}"
+        """Append the DC filename (or deliverable ID) suffix to an identifier when present."""
+        suffix = self.xml.dcfile or self.xml.deliverableid
+        if suffix:
+            return f"{identifier}:{suffix}"
         return f"{identifier}:"
 
     # -- XML-derived properties

@@ -44,8 +44,9 @@ def test_dcfile(first_deliverable: Deliverable) -> None:
 
 
 def test_dcfile_on_prebuilt(first_prebuilt_deliverable: Deliverable) -> None:
-    assert first_prebuilt_deliverable.xml.dcfile is None
-    assert first_prebuilt_deliverable.full_id.endswith(":")  # No DC file suffix
+        assert first_prebuilt_deliverable.xml.dcfile is None
+        expected_suffix = f":{first_prebuilt_deliverable.xml.deliverableid}"
+        assert first_prebuilt_deliverable.full_id.endswith(expected_suffix)
 
 
 def test_basefile(first_deliverable: Deliverable) -> None:
