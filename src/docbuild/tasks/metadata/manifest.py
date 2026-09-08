@@ -98,12 +98,8 @@ def load_documents_from_deliverables(
     """Load JSON metadata and return validated Document models from deliverables.
 
     This function iterates through a list of :class:`~docbuild.models.deliverable.Deliverable`
-    objects, finds their corresponding ``DC-*.json`` files in the metadata
-    cache, loads the JSON, and validates it into a
-    :class:`~docbuild.models.manifest.Document` model.
-
-    Deliverables are skipped if they don't have a ``dcfile`` or if the
-    corresponding file does not exist in the cache.
+    objects, finds their corresponding JSON metadata files in the cache, loads the JSON,
+    and validates it into a :class:`~docbuild.models.manifest.Document` model.
 
     :param deliverables: A list of Deliverable objects to process.
     :param meta_cache_dir: The base path to the metadata cache directory.
@@ -111,12 +107,20 @@ def load_documents_from_deliverables(
     """
     loaded_docs = []
     for d in deliverables:
-        if not d.xml.dcfile:
-            continue
+        actual_file = None
 
-        actual_file = meta_cache_dir / d.paths.relpath / d.xml.dcfile
+        # 1. Determine the expected JSON filename
+        if d.xml.dcfile:
+            # Legacy DAPS behavior
+            actual_file = meta_cache_dir / d.paths.relpath / d.xml.dcfile
+        elif d.xml.is_prebuilt:
+            # Prebuilts are saved using the stem of their HTML URL
+            html_url = d.xml.prebuilt_html_url
+            if html_url:
+                actual_file = meta_cache_dir / d.paths.relpath / f"{Path(html_url).stem}.json"
 
-        if not actual_file.is_file():
+        # 2. Skip if we couldn't resolve a file name or if it doesn't exist
+        if not actual_file or not actual_file.is_file():
             continue
 
         stdout.print(f"  | {actual_file.stem} [{d.xml.lang}]", markup=False)
@@ -133,6 +137,7 @@ def load_documents_from_deliverables(
 
         except (json.JSONDecodeError, ValidationError, OSError) as e:
             log.error("Error processing metadata file %s: %s", actual_file, e)
+
     return loaded_docs
 
 
