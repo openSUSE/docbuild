@@ -67,7 +67,7 @@
   <!-- Define a key to group <language> elements by their @lang attribute -->
   <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
   <!-- Define a key to group product category <language> elements by product ID and @lang -->
-  <xsl:key name="productCategoryLangKey" match="product/category/language" use="concat(ancestor::product[1]/@productid, '|', @lang)" />
+   <xsl:key name="productCategoryLangKey" match="product/category/language" use="concat(ancestor::product[1]/@productid, '|', @lang)" />
 
 
 <!-- ======== Variables -->
@@ -613,13 +613,13 @@
 
               <xsl:apply-templates select="internal" />
 
-              <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
-                            or language/url/@format = 'pdf']">
-                 <external>
-                    <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')
-                                                 or language/url/@format = 'pdf']" mode="external-link"/>
-                 </external>
-              </xsl:if>
+               <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
+                              or language/url/@format = 'pdf']">
+                  <external>
+                     <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')
+                                                  or language/url/@format = 'pdf']" mode="external-link"/>
+                  </external>
+               </xsl:if>
             </xsl:otherwise>
           </xsl:choose>
         </docset>
@@ -655,11 +655,45 @@
   </xsl:template>
 
   <xsl:template name="docset-without-builddocs">
-    <resources>
-      <git remote="https://TODO" />
-       <xsl:apply-templates select="external[link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf')]]"
-         mode="builddocs" />
-    </resources>
+    <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
+                                                               and not(starts-with(language/url/@href, 'external-tree'))
+                                                               and not(language/url/@format = 'pdf')]"/>
+    
+    <xsl:if test="$eligible-links">
+      <resources>
+        <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+
+        <!-- Use first link to get list of all unique languages present in any eligible link -->
+        <xsl:for-each select="$eligible-links[1]/language">
+          <xsl:variable name="currentLang" select="@lang"/>
+          
+          <!-- Check if this language appears in any eligible link -->
+          <xsl:if test="$eligible-links/language[@lang = $currentLang]">
+            <locale lang="{$currentLang}">
+              <branch>main</branch>
+              <xsl:choose>
+                <!-- English: output full deliverable structure -->
+                <xsl:when test="starts-with($currentLang, 'en')">
+                  <xsl:for-each select="$eligible-links[language[@lang = $currentLang]]">
+                    <xsl:apply-templates select="." mode="external-link-deliverable">
+                      <xsl:with-param name="lang" select="$currentLang"/>
+                    </xsl:apply-templates>
+                  </xsl:for-each>
+                </xsl:when>
+                <!-- Non-English: output ref to English deliverable -->
+                <xsl:otherwise>
+                  <xsl:for-each select="$eligible-links[language[@lang = $currentLang]]">
+                    <xsl:apply-templates select="." mode="external-link-ref">
+                      <xsl:with-param name="lang" select="$currentLang"/>
+                    </xsl:apply-templates>
+                  </xsl:for-each>
+                </xsl:otherwise>
+              </xsl:choose>
+            </locale>
+          </xsl:if>
+        </xsl:for-each>
+      </resources>
+    </xsl:if>
   </xsl:template>
 
 
@@ -671,7 +705,7 @@
     <xsl:if test="link[not(starts-with(language/url/@href, 'https://')) and not(language/url/@format = 'pdf') and @lang != 'en-us']">
       <xsl:message>TODO: Found non-English links in docset/external</xsl:message>
     </xsl:if>
-  </xsl:template>
+   </xsl:template>
 
   <xsl:template match="link" mode="external-link">
     <link>
@@ -684,22 +718,84 @@
       </xsl:for-each>
 
       <descriptions>
-        <xsl:for-each select="language">
-          <desc>
-             <xsl:attribute name="lang">
-               <xsl:choose>
-                 <xsl:when test="@lang"><xsl:value-of select="@lang"/></xsl:when>
-                 <xsl:otherwise>en-us</xsl:otherwise>
-               </xsl:choose>
-             </xsl:attribute>
-             <xsl:if test="@title">
-               <title><xsl:value-of select="@title"/></title>
-             </xsl:if>
-             <p>TODO</p>
-          </desc>
-        </xsl:for-each>
-      </descriptions>
+         <xsl:for-each select="language">
+           <desc>
+              <xsl:attribute name="lang">
+                <xsl:choose>
+                  <xsl:when test="@lang"><xsl:value-of select="@lang"/></xsl:when>
+                  <xsl:otherwise>en-us</xsl:otherwise>
+                </xsl:choose>
+              </xsl:attribute>
+              <xsl:if test="@title">
+                <title><xsl:value-of select="@title"/></title>
+              </xsl:if>
+	      <p><xsl:comment>TODO</xsl:comment></p>
+           </desc>
+         </xsl:for-each>
+       </descriptions>
     </link>
+  </xsl:template>
+
+  <xsl:template match="link" mode="external-link-deliverable">
+    <xsl:param name="lang"/>
+    <xsl:variable name="id">
+      <xsl:call-template name="generate-external-link-id">
+        <xsl:with-param name="link" select="."/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <deliverable id="{$id}" type="prebuilt">
+      <xsl:apply-templates select="@gated|@titleformat|@category"/>
+      
+      <prebuilt>
+        <!-- Title from language element -->
+        <xsl:if test="language[@lang = $lang]/@title">
+          <title><xsl:value-of select="language[@lang = $lang]/@title"/></title>
+        </xsl:if>
+
+        <!-- URLs for this language -->
+        <xsl:for-each select="language[@lang = $lang]/url">
+          <url>
+            <xsl:copy-of select="@href|@format"/>
+          </url>
+        </xsl:for-each>
+
+        <!-- Descriptions for this language -->
+        <descriptions>
+          <xsl:for-each select="language[@lang = $lang]">
+            <desc>
+              <xsl:attribute name="lang"><xsl:value-of select="$lang"/></xsl:attribute>
+              <p>
+                <xsl:comment>TODO</xsl:comment>
+              </p>
+            </desc>
+          </xsl:for-each>
+        </descriptions>
+      </prebuilt>
+    </deliverable>
+  </xsl:template>
+
+  <xsl:template match="link" mode="external-link-ref">
+    <xsl:param name="lang"/>
+    <xsl:variable name="en-id">
+      <xsl:call-template name="generate-external-link-id">
+        <xsl:with-param name="link" select="."/>
+        <xsl:with-param name="lang" select="'en-us'"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <deliverable type="ref">
+      <ref linkend="{$en-id}"/>
+    </deliverable>
+  </xsl:template>
+
+  <xsl:template name="generate-external-link-id">
+    <xsl:param name="link"/>
+
+    <xsl:variable name="deliverable-node">
+      <xsl:apply-templates select="$link" mode="builddocs"/>
+    </xsl:variable>
+    <xsl:value-of select="exsl:node-set($deliverable-node)/deliverable/@id"/>
   </xsl:template>
 
   <xsl:template match="link/@*">

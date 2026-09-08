@@ -993,7 +993,7 @@ div {
 ds.resources =
   ## Container for definitions of documents to build
   element resources {
-    ds.git,
+    ds.git?,
     ds.locale_default,
     ds.locale_translation*
   }

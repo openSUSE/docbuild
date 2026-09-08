@@ -24,8 +24,8 @@ usage() {
 Usage: $SCRIPT_NAME [OPTIONS] <INPUT_FILE>
 
 Options:
-  -s, --schema FILE      Path to RNC/RNG schema file (Default: $SCHEMAFILE)
-  -x, --xinclude         Enable XInclude processing
+  -s, --schema FILE      Path to RNC/RNG schema file (default: $SCHEMAFILE)
+  -x, --xinclude         Enable XInclude processing (default: $USE_XINCLUDE)
   -i, --id               Disable checking of ID/IDREF/IDREFS
   -h, --help             Show this help message
 
