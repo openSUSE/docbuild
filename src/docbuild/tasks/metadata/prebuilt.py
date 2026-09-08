@@ -1,5 +1,6 @@
 """Extractor for prebuilt (Antora) deliverable metadata."""
 
+import datetime
 import json
 import logging
 from pathlib import Path
@@ -21,13 +22,15 @@ def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str)
     lang_str = str(deliverable.xml.lang)
     short_lang = lang_str.split("-")[0]
 
-    candidates = [
+    # Create raw list, then deduplicate while preserving order using dict.fromkeys()
+    raw_candidates = [
         prebuilt_dir / clean_url,
         prebuilt_dir / lang_str / clean_url,
         prebuilt_dir / short_lang / clean_url,
         prebuilt_dir / "en" / clean_url,
         prebuilt_dir / "en-us" / clean_url,
     ]
+    candidates = list(dict.fromkeys(raw_candidates))
 
     for candidate in candidates:
         if candidate.exists():
@@ -105,8 +108,12 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
     is_default = (lang_code == "en-us")
 
     date_modified = json_ld.get("dateModified", "")
-    if "T" in date_modified:
-        date_modified = date_modified.split("T")[0]
+    if date_modified:
+        if "T" in date_modified:
+            date_modified = date_modified.split("T")[0]
+    else:
+        # Fallback so Pydantic validation doesn't fail on empty date strings
+        date_modified = datetime.date.today().isoformat()
 
     tasks, products = _extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
@@ -130,7 +137,8 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             {
                 "lang": lang_code,
                 "default": is_default,
-                "title": json_ld.get("headline", ""),
+                # Fallback to XML title if HTML JSON-LD is missing
+                "title": json_ld.get("headline") or deliverable.xml.prebuilt_title,
                 "subtitle": "",
                 "description": desc_text,
                 "dcfile": deliverable.xml.dcfile or "",

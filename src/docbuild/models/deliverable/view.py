@@ -145,9 +145,16 @@ class DeliverableXMLView:
         """Return True if the deliverable is marked as prebuilt."""
         if self.kind is not None:
             return self._is_kind("prebuilt")
-        # Fallback: if no type is specified, we can infer prebuilt from the
-        # presence of a <prebuilt> child node
-        return self.node[0].tag == "prebuilt"
+
+        # Fallback 1: infer prebuilt from a local <prebuilt> child node
+        if len(self.node) > 0 and self.node[0].tag == "prebuilt":
+            return True
+
+        # Fallback 2: if it's a translated reference, check if the English target is prebuilt
+        if self.is_ref and self._target_node is not self.node:
+            return self._target_node.find("prebuilt") is not None
+
+        return False
 
     @cached_property
     def is_dc(self) -> bool:

@@ -124,9 +124,9 @@ def test_extract_prebuilt_metadata_missing_html(tmp_path: Path, mock_deliverable
     assert doc["description"] == "Test description for admission controller."
     assert doc["format"]["html"] == "/admission-controller/latest/en/index.html"
 
-    # JSON properties should fall back to empty defaults gracefully
-    assert doc["title"] == ""
-    assert doc["dateModified"] == ""
+    # JSON properties should fall back to XML properties or defaults
+    assert doc["title"] == "SUSE Security Admission Controller"
+    assert "T" not in doc["dateModified"]
     assert result["tasks"] == []
 
 
@@ -141,7 +141,8 @@ def test_extract_prebuilt_metadata_no_json_ld(tmp_path: Path, mock_deliverable: 
 
     result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
 
-    # Should safely return with empty JSON fallbacks
+    # Should safely return with XML fallbacks
     doc = result["docs"][0]
-    assert doc["title"] == ""
+    assert doc["title"] == "SUSE Security Admission Controller"
+    assert "T" not in doc["dateModified"]
     assert result["tasks"] == []
