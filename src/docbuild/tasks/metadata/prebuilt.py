@@ -139,12 +139,11 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             {
                 "lang": lang_code,
                 "default": is_default,
-                # Fallback to XML title if HTML JSON-LD is missing
                 "title": json_ld.get("headline") or deliverable.xml.prebuilt_title,
                 "subtitle": "",
                 "description": desc_text,
-                "dcfile": deliverable.xml.dcfile or "",
-                "rootid": "",
+                "dcfile": deliverable.xml.dcfile or deliverable.xml.deliverableid or "",
+                "rootid": deliverable.xml.deliverableid or "",
                 "format": fmt,
                 "dateModified": date_modified
             }

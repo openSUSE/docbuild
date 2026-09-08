@@ -157,7 +157,6 @@ class DeliverableXMLView:
     @cached_property
     def is_dc(self) -> bool:
         """Return True if the deliverable is marked as DC."""
-        # Safest check: does it contain a <dc> tag?
         return self.node.find("dc") is not None
 
     @cached_property
