@@ -206,3 +206,9 @@ def test_language_code_pdf_tag(code, expected_tag):
     """Verify the pdf_tag property returns the correct language tag for filenames."""
     lang = LanguageCode(language=code)
     assert lang.pdf_tag == expected_tag
+
+
+def test_language_code_accepts_uppercase():
+    """Test that language codes with uppercase letters are accepted."""
+    assert LanguageCode(language="en-US").language == "en-us"
+    assert LanguageCode(language="ZH-CN").language == "zh-cn"

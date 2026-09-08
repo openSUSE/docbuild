@@ -21,11 +21,11 @@ class LanguageCode(BaseModel):
         title="The natural language",
         description=(
             "A natural language in the format ll-cc, "
-            "whereas 'll' is the language and 'cc' the country "
-            "both in lowercase letters. "
+            "whereas 'll' is the language (ISO 639-1) and 'cc' the country (ISO 3166-1). "
+            "The model accepts different spellings, but normalizes it to lowercase. "
             "The special syntax '*' denotes every language."
         ),
-        examples=["en-us", "de-de"],
+        examples=["en-us", "de-de", "zh-CN"],
         frozen=True,
     )
     """The natural language in the format ``ll-cc``, where ``ll`` is the
@@ -127,7 +127,7 @@ class LanguageCode(BaseModel):
     def _normalize_language_separator(cls, value: str) -> str:
         """Strip whitespaces, normalize separator, and auto-complete partial languages."""
         if isinstance(value, str):
-            val = value.strip().replace("_", "-")
+            val = value.strip().lower().replace("_", "-")
 
             # Auto-complete partial languages (e.g. "en" -> "en-us")
             if val != "*" and "-" not in val:
