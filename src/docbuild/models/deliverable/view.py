@@ -86,10 +86,10 @@ class DeliverableXMLView:
             # If validation is correct, we don't explicitly need to check for a
             # ref/@linkend attribute.
             refid = self.node.find("ref").get("linkend")
-            dcnode = cast(etree._Element, self.locale_en).find(
-                f"deliverable[@id={refid!r}]/dc"
-            )
-            return dcnode.attrib.get("file", None)
+            if self.locale_en is not None:
+                dcnode = self.locale_en.find(f"deliverable[@id={refid!r}]/dc")
+                if dcnode is not None:
+                    return dcnode.attrib.get("file", None)
 
         return None
 
