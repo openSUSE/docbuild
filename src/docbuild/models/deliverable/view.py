@@ -96,26 +96,24 @@ class DeliverableXMLView:
     @cached_property
     def deliverableid(self) -> str | None:
         """Return the deliverable ID (``<deliverable id=…>``) or None if absent."""
-        # d_id = self.node.attrib.get("id")
         if (d_id := self.node.get("id")) is not None:
-            return d_id  # is already the @id attribute
+            return d_id
 
         elif self.is_ref:
-            # If this is a reference deliverable, we can try to get the ID from the
-            # linked English deliverable.
-            refid = self.node.find("ref").get("linkend")
-            dcnode = cast(etree._Element, self.locale_en).find(
-                f"deliverable[@id={refid!r}]"
-            )
-            return dcnode.attrib.get("id", None)
+            # If this is a reference, the ID is its linkend target
+            ref_node = self.node.find("ref")
+            if ref_node is not None:
+                return ref_node.get("linkend")
 
-        return d_id
-
+        return None
 
     @cached_property
     def basefile(self) -> str | None:
-        """Return :attr:`dcfile` stripped of its ``DC-`` prefix."""
-        return self.dcfile and self.dcfile.lstrip("DC-")
+        """Return :attr:`dcfile` stripped of its ``DC-`` prefix, or deliverableid as fallback."""
+        if self.dcfile:
+            return self.dcfile.lstrip("DC-")
+        # Prebuilts don't have DC files, so fall back to the deliverable ID for logging/identity
+        return self.deliverableid
 
     @cached_property
     def translations(self) -> set[str]:
