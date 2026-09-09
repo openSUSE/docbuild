@@ -109,13 +109,21 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
     lang_code = LanguageCode(language=in_language).language
     is_default = (lang_code == "en-us")
 
-    date_modified = json_ld.get("dateModified", "")
+    date_modified = json_ld.get("dateModified", "").strip()
     if date_modified:
         if "T" in date_modified:
             date_modified = date_modified.split("T")[0]
-    else:
-        # Fallback so Pydantic validation doesn't fail on empty date strings
-        date_modified = datetime.date.today().isoformat()
+
+        try:
+            # Strictly validate that it matches YYYY-MM-DD
+            datetime.date.fromisoformat(date_modified)
+        except ValueError:
+            log.warning(
+                "Invalid date format '%s' in JSON-LD for %s. Falling back to empty string.",
+                date_modified,
+                html_url
+            )
+            date_modified = ""
 
     tasks, products = _extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
