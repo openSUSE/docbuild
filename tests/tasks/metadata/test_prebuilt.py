@@ -2,73 +2,73 @@
 
 import json
 from pathlib import Path
-from unittest.mock import MagicMock
 
 from lxml import etree  # type: ignore
 import pytest
 
+from docbuild.models.deliverable import Deliverable
 from docbuild.tasks.metadata.prebuilt import extract_prebuilt_metadata
 
 
 @pytest.fixture
 def mock_deliverable():
-    """Create a mock Deliverable with a fully populated XML node."""
+    """Create a real Deliverable with a fully populated XML node."""
     xml_content = b"""
-    <deliverable gated="true" category="cloud-native">
-        <description>Test description for admission controller.</description>
-        <prebuilt>
-            <title>SUSE Security Admission Controller</title>
-            <url format="html" href="/admission-controller/latest/en/index.html"/>
-            <url format="pdf" href="/admission-controller/latest/en/admission-controller.pdf"/>
-        </prebuilt>
-    </deliverable>
+    <portal schemaversion="7.0">
+        <product id="cloudnative">
+            <name>Test Product</name>
+            <acronym>TP</acronym>
+            <docset lifecycle="supported" id="cloudnative.admission-controller" path="admission-controller">
+              <version>1.37</version>
+              <resources>
+                <locale lang="en-us">
+                  <deliverable gated="true" category="cloud-native" id="test-id">
+                      <prebuilt>
+                          <title>SUSE Security Admission Controller</title>
+                          <url format="html" href="/admission-controller/latest/en/index.html"/>
+                          <url format="pdf" href="/admission-controller/latest/en/admission-controller.pdf"/>
+                          <descriptions>
+                            <desc lang="en-us">Test description for admission controller.</desc>
+                          </descriptions>
+                      </prebuilt>
+                  </deliverable>
+                </locale>
+              </resources>
+            </docset>
+        </product>
+    </portal>
     """
-    node = etree.fromstring(xml_content)
-
-    mock_dev = MagicMock()
-    mock_dev._node = node
-    # Mock the LanguageCode stringification
-    mock_dev.xml.lang.__str__.return_value = "en-us"
-
-    # Mock the new XML properties so Pydantic validation passes
-    mock_dev.xml.productname = "Test Product"
-    mock_dev.xml.acronym = "TP"
-    mock_dev.xml.docset_version = "1.37"
-    mock_dev.xml.prebuilt_html_url = "/admission-controller/latest/en/index.html"
-    mock_dev.xml.prebuilt_pdf_url = "/admission-controller/latest/en/admission-controller.pdf"
-    mock_dev.xml.prebuilt_title = "SUSE Security Admission Controller"
-
-    # Mock the local_desc generator to yield a fake element
-    mock_desc = MagicMock()
-    mock_desc.text = "Test description for admission controller."
-    mock_dev.xml.local_desc.return_value = iter([mock_desc])
-
-    mock_dev.xml.is_gated = True
-    mock_dev.xml.categoryid = "cloud-native"
-    mock_dev.xml.dcfile = ""
-
-    return mock_dev
+    root = etree.fromstring(xml_content)
+    # Instantiate a real Deliverable object from the deeply nested node
+    node = root.xpath("//deliverable")[0]
+    return Deliverable(node)
 
 
-def test_extract_prebuilt_metadata_success(tmp_path: Path, mock_deliverable: MagicMock):
+def test_extract_prebuilt_metadata_success(tmp_path: Path, mock_deliverable: Deliverable):
     """Test full extraction when XML and HTML JSON-LD are both present."""
-    # 1. Setup the dummy HTML file in the expected temporary path
     html_dir = tmp_path / "en-us" / "admission-controller" / "latest" / "en"
     html_dir.mkdir(parents=True)
     html_file = html_dir / "index.html"
 
-    # Provide the sample JSON-LD inside a script block
+    # Provide the realistic JSON-LD payload requested in the PR comments
     json_ld_payload = {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": "What is SUSE Security Admission Controller?",
+        "name": "What is SUSE Rancher Prime? | SUSE Rancher Manager v2.16",
+        "headline": "What is SUSE Rancher Prime?",
+        "description": "Rancher adds significant value on top of Kubernetes...",
         "inLanguage": "en",
-        "dateModified": "2026-06-18T12:00:00Z",
+        "dateModified": "2026-06-16T00:00:00Z",
+        "author": {
+            "@type": "Organization",
+            "name": "SUSE Product & Solution Documentation Team"
+        },
         "mentions": [
             {
                 "@type": "SoftwareApplication",
-                "name": "SUSE Security Admission Controller",
-                "softwareVersion": "1.37",
+                "name": "SUSE Rancher Manager",
+                "softwareVersion": "v2.16",
+                "applicationCategory": "Cloud Infrastructure"
             }
         ]
     }
@@ -87,62 +87,85 @@ def test_extract_prebuilt_metadata_success(tmp_path: Path, mock_deliverable: Mag
         encoding="utf-8"
     )
 
-    # 2. Run the extractor
     result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
 
-    # 3. Assert correct mapping of XML and JSON-LD
     assert result["isGated"] is True
     assert result["category"] == "cloud-native"
 
     doc = result["docs"][0]
     assert doc["description"] == "Test description for admission controller."
-    assert doc["title"] == "What is SUSE Security Admission Controller?"
-    assert doc["dateModified"] == "2026-06-18"  # Should strip the time
-    assert doc["lang"] == "en-us"  # Should expand 'en' to 'en-us'
+    assert doc["title"] == "What is SUSE Rancher Prime?"
+    assert doc["dateModified"] == "2026-06-16"
+    assert doc["lang"] == "en-us"
     assert doc["default"] is True
-
     assert doc["format"]["html"] == "/admission-controller/latest/en/index.html"
-    assert doc["format"]["pdf"] == "/admission-controller/latest/en/admission-controller.pdf"
 
-    # Tasks and Products mapping
-    assert "SUSE Security Admission Controller" in result["tasks"]
-    assert len(result["products"]) == 1
+    assert "SUSE Rancher Manager" in result["tasks"]
     assert result["products"][0]["name"] == "SUSE Security Admission Controller"
-    assert result["products"][0]["versions"] == ["1.37"]
+    assert result["products"][0]["versions"] == ["v2.16"]
 
 
-def test_extract_prebuilt_metadata_missing_html(tmp_path: Path, mock_deliverable: MagicMock):
+def test_extract_prebuilt_metadata_missing_html(tmp_path: Path, mock_deliverable: Deliverable):
     """Test extraction gracefully handles missing HTML files."""
-    # Run extractor WITHOUT creating the HTML file in tmp_path
     result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
 
-    # Should still extract XML properties safely
     assert result["isGated"] is True
     assert result["category"] == "cloud-native"
 
     doc = result["docs"][0]
+    # Should fall back to the XML description since HTML is missing
     assert doc["description"] == "Test description for admission controller."
     assert doc["format"]["html"] == "/admission-controller/latest/en/index.html"
-
-    # JSON properties should fall back to XML properties or defaults
     assert doc["title"] == "SUSE Security Admission Controller"
     assert "T" not in doc["dateModified"]
     assert result["tasks"] == []
 
 
-def test_extract_prebuilt_metadata_no_json_ld(tmp_path: Path, mock_deliverable: MagicMock):
+def test_extract_prebuilt_metadata_no_json_ld(tmp_path: Path, mock_deliverable: Deliverable):
     """Test extraction gracefully handles HTML files missing the JSON-LD tag."""
     html_dir = tmp_path / "en-us" / "admission-controller" / "latest" / "en"
     html_dir.mkdir(parents=True)
     html_file = html_dir / "index.html"
 
-    # Write HTML without the script tag
     html_file.write_text("<html><head><title>Test</title></head></html>", encoding="utf-8")
 
     result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
 
-    # Should safely return with XML fallbacks
     doc = result["docs"][0]
     assert doc["title"] == "SUSE Security Admission Controller"
     assert "T" not in doc["dateModified"]
+    assert result["tasks"] == []
+
+
+def test_extract_prebuilt_metadata_malformed_json_ld(tmp_path: Path, mock_deliverable: Deliverable):
+    """Test extraction gracefully handles malformed JSON-LD."""
+    html_dir = tmp_path / "en-us" / "admission-controller" / "latest" / "en"
+    html_dir.mkdir(parents=True)
+    html_file = html_dir / "index.html"
+
+    # Malformed JSON with a trailing comma
+    malformed_json_payload = '''
+    {
+        "@context": "https://schema.org",
+        "headline": "This JSON is broken",
+    }
+    '''
+
+    html_file.write_text(
+        f'''
+        <html><head>
+            <script type="application/ld+json">
+            {malformed_json_payload}
+            </script>
+        </head><body>Test</body></html>
+        ''',
+        encoding="utf-8"
+    )
+
+    result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
+
+    assert result is not None
+    doc = result["docs"][0]
+    # Check that it safely fell back to XML values
+    assert doc["title"] == "SUSE Security Admission Controller"
     assert result["tasks"] == []

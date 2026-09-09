@@ -98,10 +98,8 @@ class DeliverableXMLView:
         """Return the deliverable ID (``<deliverable id=…>``) or None if absent."""
         if (d_id := self.node.get("id")) is not None:
             return d_id
-        if self.is_ref:
-            ref_node = self.node.find("ref")
-            if ref_node is not None:
-                return ref_node.get("linkend")
+        if self.is_ref and (ref_node := self.node.find("ref")) is not None:
+            return ref_node.get("linkend")
 
         return None
 
@@ -358,10 +356,9 @@ class DeliverableXMLView:
         """Return the prebuilt title text if present."""
         return (self._target_node.findtext("./prebuilt/title") or "").strip()
 
-    @cached_property
-    def prebuilt_html_url(self) -> str:
-        """Return the local prebuilt HTML URL (starts with '/')."""
-        for node in self._target_node.xpath('./prebuilt/url[@format="html"]'):
+    def _get_prebuilt_url(self, fmt: str) -> str:
+        """Extract local prebuilt URLs for a given format."""
+        for node in self._target_node.xpath(f'./prebuilt/url[@format="{fmt}"]'):
             href = node.get("href", "")
             if href.startswith("/"):
                 if self.is_ref:
@@ -370,15 +367,14 @@ class DeliverableXMLView:
         return ""
 
     @cached_property
+    def prebuilt_html_url(self) -> str:
+        """Return the local prebuilt HTML URL (starts with '/')."""
+        return self._get_prebuilt_url("html")
+
+    @cached_property
     def prebuilt_pdf_url(self) -> str:
         """Return the local prebuilt PDF URL (starts with '/')."""
-        for node in self._target_node.xpath('./prebuilt/url[@format="pdf"]'):
-            href = node.get("href", "")
-            if href.startswith("/"):
-                if self.is_ref:
-                    return href.replace("/en/", f"/{self.lang.lang}/")
-                return href
-        return ""
+        return self._get_prebuilt_url("pdf")
 
     @cached_property
     def is_gated(self) -> bool:

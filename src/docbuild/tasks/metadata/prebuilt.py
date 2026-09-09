@@ -21,8 +21,8 @@ def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str)
     clean_url = html_url.lstrip("/")
 
     # Use LanguageCode object and wrap in str() - Pylance type-checking
-    lang_str = str(deliverable.xml.lang.language)
-    short_lang = str(deliverable.xml.lang.lang)
+    lang_str: str = deliverable.xml.lang.language
+    short_lang: str = deliverable.xml.lang.lang
 
     # Create raw list, then deduplicate while preserving order using dict.fromkeys()
     raw_candidates = [
@@ -120,11 +120,10 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
     tasks, products = _extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
     # Extract text from the first valid local description
-    desc_text = ""
-    for desc_node in deliverable.xml.local_desc():
-        if desc_node.text:
-            desc_text = desc_node.text.strip()
-            break
+    desc_text = next(
+        (node.text.strip() for node in deliverable.xml.local_desc() if node.text),
+        ""  # the default
+    )
 
     # Build format dict dynamically so we don't include empty 'pdf' keys
     fmt = {"html": html_url}

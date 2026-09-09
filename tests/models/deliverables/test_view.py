@@ -49,17 +49,18 @@ def test_missing_branch_raises(node: etree._ElementTree) -> None:
         _ = deliverable.branch
 
 
-def test_missing_git_raises(node: etree._ElementTree) -> None:
-    git = node.xpath("(/product | /portal/product)/docset/resources/git")[0]
-    git.getparent().remove(git)
+def test_missing_git_returns_none(node: etree._ElementTree) -> None:
+    """Test that a deliverable without a git node safely returns None."""
+    git_node = node.xpath("(/product | /portal/product)/docset/resources/git")[0]
+    git_node.getparent().remove(git_node)
 
     first_node = node.xpath(
         "(/product | /portal/product)/docset/resources/locale[@lang='en-us']/deliverable"
     )[0]
     deliverable = Deliverable(first_node)
 
-    with pytest.raises(ValueError, match="No git remote found"):
-        _ = deliverable.git
+    assert deliverable.git is None
+    assert deliverable.has_git_repo is False
 
 
 def test_xml_git_remote(first_deliverable: Deliverable) -> None:

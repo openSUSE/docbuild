@@ -45,7 +45,7 @@ class Deliverable:
     #    """Return the base path for a specific output format."""
     #    return self.paths.base_format_path(fmt)
 
-    def _append_dcfile(self, identifier: str) -> str:
+    def _append_id_deliverable(self, identifier: str) -> str:
         """Append the DC filename (or target ID) suffix to an identifier when present."""
         suffix = self.xml.dcfile or self.xml.target_id
         if suffix:
@@ -72,20 +72,20 @@ class Deliverable:
     def pdlangdc(self) -> str:
         """Return product/docset/language plus DC filename identifier."""
         # TODO: what to do for a pre-built deliverable?
-        return self._append_dcfile(self.pdlang)
+        return self._append_id_deliverable(self.pdlang)
 
     @cached_property
     def full_id(self) -> str:
         """Return the canonical unique identifier for this deliverable."""
         branch = self.make_safe_name(self.branch)
         identifier = f"{self.xml.product_docset}/{branch}/{self.xml.lang}"
-        return self._append_dcfile(identifier)
+        return self._append_id_deliverable(identifier)
 
     @cached_property
     def docsuite(self) -> str:
         """Return docsuite identifier in ``product/docset/lang:dc`` format."""
         # TODO: what to do for a pre-built deliverable?
-        return self._append_dcfile(self.pdlang)
+        return self._append_id_deliverable(self.pdlang)
 
     @cached_property
     def lang_is_default(self) -> bool:
@@ -110,14 +110,18 @@ class Deliverable:
         return self.xml.subdir()
 
     @cached_property
-    def git(self) -> Repo:
+    def git(self) -> Repo | None:
         """Return the Git repository configuration for this deliverable."""
         if repo := self.xml.git_remote():
             return repo
-        raise ValueError(
-            f"No git remote found for {self!s}"
-            # f"{self.xml.productid}/{self.xml.docsetid}/{self.xml.lang}/{self.xml.dcfile}"
-        )
+        return None
+
+    @property
+    def has_git_repo(self) -> bool:
+        """Check if the deliverable has a git repository."""
+        # The git_remote() method on the XML view is the source of truth.
+        # If it returns a Repo object, then a git repo is configured.
+        return self.xml.git_remote() is not None
 
     @cached_property
     def format(self) -> dict[Literal["html", "single-html", "pdf", "epub"], bool]:
