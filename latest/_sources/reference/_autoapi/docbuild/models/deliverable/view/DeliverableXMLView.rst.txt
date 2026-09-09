@@ -102,11 +102,27 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: target_id
+      :type: str | None
+
+
+      Return the target deliverable ID (linkend for refs, else deliverableid).
+
+
+
+   .. py:property:: resolved_prebuilt_html_url
+      :type: str | None
+
+
+      Return the prebuilt HTML URL, resolving refs to their target.
+
+
+
    .. py:property:: basefile
       :type: str | None
 
 
-      Return :attr:`dcfile` stripped of its ``DC-`` prefix.
+      Return :attr:`dcfile` stripped of its ``DC-`` prefix, or target_id as fallback.
 
 
 
@@ -236,5 +252,51 @@ docbuild.models.deliverable.view.DeliverableXMLView
    .. py:method:: __repr__() -> str
 
       Return a concise string representation of the deliverable.
+
+
+
+   .. py:method:: local_desc() -> collections.abc.Generator[lxml.etree._Element, None, None]
+
+      Yield local ``<desc>`` elements, usually from prebuilts.
+
+
+
+   .. py:property:: prebuilt_title
+      :type: str
+
+
+      Return the prebuilt title text if present.
+
+
+
+   .. py:property:: prebuilt_html_url
+      :type: str
+
+
+      Return the local prebuilt HTML URL (starts with '/').
+
+
+
+   .. py:property:: prebuilt_pdf_url
+      :type: str
+
+
+      Return the local prebuilt PDF URL (starts with '/').
+
+
+
+   .. py:property:: is_gated
+      :type: bool
+
+
+      Return True if the deliverable is marked as gated.
+
+
+
+   .. py:property:: docset_version
+      :type: str
+
+
+      Return the docset version.
 
 

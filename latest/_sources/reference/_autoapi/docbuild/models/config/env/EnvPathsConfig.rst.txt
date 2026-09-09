@@ -72,6 +72,15 @@ docbuild.models.config.env.EnvPathsConfig
 
 
 
+   .. py:attribute:: prebuilt_dir
+      :type:  pathlib.Path
+      :value: None
+
+
+      Path to externally built documentation.
+
+
+
    .. py:attribute:: repo_dir
       :type:  docbuild.models.path.WritablePath
       :value: None

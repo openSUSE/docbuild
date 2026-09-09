@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.23.1.dev3+ge9e78a819.d20260909</title>
+    <title>docbuild.models.deliverable.view.DeliverableXMLView &#8212; Docbuild Documentation 0.23.1.dev4+g5abbebb60.d20260909</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=818741af"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=34860ede"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -696,9 +696,21 @@
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.target_id">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">target_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.target_id" title="Link to this definition">#</a></dt>
+<dd><p>Return the target deliverable ID (linkend for refs, else deliverableid).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.resolved_prebuilt_html_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">resolved_prebuilt_html_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.resolved_prebuilt_html_url" title="Link to this definition">#</a></dt>
+<dd><p>Return the prebuilt HTML URL, resolving refs to their target.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.basefile">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basefile</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.basefile" title="Link to this definition">#</a></dt>
-<dd><p>Return <a class="reference internal" href="#docbuild.models.deliverable.view.DeliverableXMLView.dcfile" title="docbuild.models.deliverable.view.DeliverableXMLView.dcfile"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dcfile</span></code></a> stripped of its <code class="docutils literal notranslate"><span class="pre">DC-</span></code> prefix.</p>
+<dd><p>Return <a class="reference internal" href="#docbuild.models.deliverable.view.DeliverableXMLView.dcfile" title="docbuild.models.deliverable.view.DeliverableXMLView.dcfile"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dcfile</span></code></a> stripped of its <code class="docutils literal notranslate"><span class="pre">DC-</span></code> prefix, or target_id as fallback.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -813,6 +825,42 @@ format element is found.</p>
 <dd><p>Return a concise string representation of the deliverable.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.local_desc">
+<span class="sig-name descname"><span class="pre">local_desc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Generator" title="(in Python v3.14)"><span class="pre">collections.abc.Generator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.local_desc" title="Link to this definition">#</a></dt>
+<dd><p>Yield local <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> elements, usually from prebuilts.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_title">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">prebuilt_title</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_title" title="Link to this definition">#</a></dt>
+<dd><p>Return the prebuilt title text if present.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_html_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">prebuilt_html_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_html_url" title="Link to this definition">#</a></dt>
+<dd><p>Return the local prebuilt HTML URL (starts with ‘/’).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_pdf_url">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">prebuilt_pdf_url</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_pdf_url" title="Link to this definition">#</a></dt>
+<dd><p>Return the local prebuilt PDF URL (starts with ‘/’).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.is_gated">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_gated</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.is_gated" title="Link to this definition">#</a></dt>
+<dd><p>Return True if the deliverable is marked as gated.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docbuild.models.deliverable.view.DeliverableXMLView.docset_version">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">docset_version</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#docbuild.models.deliverable.view.DeliverableXMLView.docset_version" title="Link to this definition">#</a></dt>
+<dd><p>Return the docset version.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -877,6 +925,8 @@ format element is found.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.lang"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.lang</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.dcfile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.dcfile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.deliverableid"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.deliverableid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.target_id"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.target_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.resolved_prebuilt_html_url"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.resolved_prebuilt_html_url</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.basefile"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.basefile</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.translations"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.translations</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.kind"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.kind</span></code></a></li>
@@ -896,6 +946,12 @@ format element is found.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.format_attrs"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.format_attrs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.__str__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.__str__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.__repr__"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.local_desc"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.local_desc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_title"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_title</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_html_url"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_html_url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_pdf_url"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.prebuilt_pdf_url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.is_gated"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.is_gated</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.deliverable.view.DeliverableXMLView.docset_version"><code class="docutils literal notranslate"><span class="pre">docbuild.models.deliverable.view.DeliverableXMLView.docset_version</span></code></a></li>
 </ul>
 </li>
 </ul>

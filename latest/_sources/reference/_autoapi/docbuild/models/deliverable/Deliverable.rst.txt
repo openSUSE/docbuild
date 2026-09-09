@@ -83,10 +83,18 @@ docbuild.models.deliverable.Deliverable
 
 
    .. py:property:: git
-      :type: docbuild.models.repo.Repo
+      :type: docbuild.models.repo.Repo | None
 
 
       Return the Git repository configuration for this deliverable.
+
+
+
+   .. py:property:: has_git_repo
+      :type: bool
+
+
+      Check if the deliverable has a git repository.
 
 
 
