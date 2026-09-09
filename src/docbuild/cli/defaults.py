@@ -50,7 +50,9 @@ DEFAULT_ENV_CONFIG = {
         "role": "production",
         "enable_mail": False,
         "default_lang": "en-us",
-        "languages": ["en-us"],
+        "languages": [
+            "de-de", "en-us", "es-es", "fr-fr", "ja-jp", "ko-kr", "pt-br",  "zh-cn",
+        ],
         "canonical_url_domain": "http://localhost/",
     },
     "paths": {

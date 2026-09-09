@@ -1,0 +1,1 @@
+Change the default set of languages. Previously, only English was enabled. Now, the it contains the full list of supported languages.
