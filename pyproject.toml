@@ -91,7 +91,7 @@ docs = [
     "sphobjinv>=2.4",
 ]
 repl = [
-    "ipython>=9.16.1",
+    "ipython>=9.17.1",
 ]
 github-action = [
   {include-group = "tests"},
