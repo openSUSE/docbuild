@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.23.1.dev6+ga1b72cfef.d20260910</title>
+    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.23.1.dev7+gb931ae593.d20260910</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=dda7b505"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=dff1ff1a"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -667,7 +667,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable</span></code></a>(...)</p></td>
 <td><p>Check that subdeliverables within a deliverable are unique.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="docbuild.config.xml.checks.check_unsupported_language_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_unsupported_language_code</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_git_remote_for_dc_deliverables" title="docbuild.config.xml.checks.check_git_remote_for_dc_deliverables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_git_remote_for_dc_deliverables</span></code></a>(...)</p></td>
+<td><p>Ensure DAPS/DC deliverables keep a sibling <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> resource.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="docbuild.config.xml.checks.check_unsupported_language_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_unsupported_language_code</span></code></a>(...)</p></td>
 <td><p>Check for language codes that match the portal format but are not supported.</p></td>
 </tr>
 </tbody>
@@ -908,6 +911,20 @@ links section.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_git_remote_for_dc_deliverables">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_git_remote_for_dc_deliverables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_git_remote_for_dc_deliverables" title="Link to this definition">#</a></dt>
+<dd><p>Ensure DAPS/DC deliverables keep a sibling <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tree</strong> – The XML tree to check.</p>
+</dd>
+<dt class="field-even">Yield<span class="colon">:</span></dt>
+<dd class="field-even"><p>CheckResult for each docset with DC deliverables but no git remote.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="docbuild.config.xml.checks.check_unsupported_language_code">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_unsupported_language_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="Link to this definition">#</a></dt>
 <dd><p>Check for language codes that match the portal format but are not supported.</p>
@@ -991,6 +1008,7 @@ but is not in <a class="reference internal" href="../../../constants/index.html#
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_docset"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_docset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_git_remote_for_dc_deliverables"><code class="docutils literal notranslate"><span class="pre">check_git_remote_for_dc_deliverables()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_unsupported_language_code"><code class="docutils literal notranslate"><span class="pre">check_unsupported_language_code()</span></code></a></li>
 </ul>
 </li>

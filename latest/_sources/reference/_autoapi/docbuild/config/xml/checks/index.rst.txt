@@ -38,6 +38,7 @@ Functions
    docbuild.config.xml.checks.check_lang_code_in_docset
    docbuild.config.xml.checks.check_lang_code_in_extralinks
    docbuild.config.xml.checks.check_subdeliverable_in_deliverable
+   docbuild.config.xml.checks.check_git_remote_for_dc_deliverables
    docbuild.config.xml.checks.check_unsupported_language_code
 
 
@@ -227,6 +228,14 @@ Module Contents
 
    :param tree: The XML tree to check.
    :yield: CheckResult for each deliverable with duplicate subdeliverables.
+
+
+.. py:function:: check_git_remote_for_dc_deliverables(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]
+
+   Ensure DAPS/DC deliverables keep a sibling ``<git>`` resource.
+
+   :param tree: The XML tree to check.
+   :yield: CheckResult for each docset with DC deliverables but no git remote.
 
 
 .. py:function:: check_unsupported_language_code(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]

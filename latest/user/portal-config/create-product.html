@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Product &#8212; Docbuild Documentation 0.23.1.dev6+ga1b72cfef.d20260910</title>
+    <title>Creating a Product &#8212; Docbuild Documentation 0.23.1.dev7+gb931ae593.d20260910</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=dda7b505"></script>
+    <script src="../../_static/documentation_options.js?v=dff1ff1a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -564,7 +564,9 @@ it in the product configuration.</p>
 </li>
 <li><p>For the <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code> element:</p>
 <ul class="simple">
-<li><p>Create a <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> element to define the Git repository for this release.</p></li>
+<li><p>If possible, create a <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> element to define the Git repository for the sources of this release.
+This is only needed if your product is built via DAPS. For other build systems like Antora, the
+deliverables are built outside of docbuild. In that case, omit this tag.</p></li>
 <li><p>Create a <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element for the English language (<code class="docutils literal notranslate"><span class="pre">en-us</span></code>) and
 add a <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt;</span></code> element to define the Git branch for this release.</p></li>
 </ul>
