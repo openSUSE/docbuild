@@ -1,0 +1,1387 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Agentic Workflow &#8212; Docbuild Documentation 0.23.1.dev6+ga1b72cfef.d20260910</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0a0e13a7" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
+
+    <script src="../_static/documentation_options.js?v=dda7b505"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'developer/agentic-workflow';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Knowing GitHub Project Setup" href="knowing-github-setup.html" />
+    <link rel="prev" title="XML Config Changes" href="howto/xml-config.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.23.0" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/logo.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Docbuild Documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user/index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code-review" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1ZM1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0Zm2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06Z"></path></svg> Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference/index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-file-code" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06ZM3.28 7.78 1.81 9.25l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Zm8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"></path></svg> Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-checklist" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"></path></svg> Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-question" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg> Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user/index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code-review" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1ZM1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0Zm2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06Z"></path></svg> Developer Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference/index.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-file-code" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06ZM3.28 7.78 1.81 9.25l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Zm8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"></path></svg> Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../changelog.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-checklist" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25Zm13.274 9.537v-.001l-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074ZM4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75Z"></path></svg> Change Log
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../glossary.html">
+    <svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-question" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.756 2.756 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6.24 6.24 0 0 0-.26.16.952.952 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661.103-.067.207-.132.313-.195l.007-.004c.1-.061.182-.11.258-.161a.969.969 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.612.612 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1.01 1.01 0 0 0-.34.398ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg> Glossary
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Concepts</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async-pipeline.html">Async Pipeline Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="directory-overview.html">Project Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project-dependencies.html">Project Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="prepare-environment.html">Preparing Your Development Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install-vscode.html">Installing Visual Studio Code Editor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop-project.html">Developing the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-pullrequests.html">Create Pull Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="run-testsuite.html">Running the Test Suite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-package.html">Updating a Specific Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bump-version.html">Bumping the Version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update-project.html">Updating the Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add-newsfragments.html">Adding News Fragments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-changelog.html">Building the Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="create-release.html">Creating a New Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trigger-actions.html">Triggering Actions Manually</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="maintain-ghactions/index.html">Maintaining GitHub Actions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="maintain-ghactions/release.html">Updating the Release Workflow</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="migrate-config.html">Migrating old Docserv Config to new Portal Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build-docs.html">Building Documentation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="howto/index.html">Howto</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="howto/add-rm-product.html">Adding or removing a new product</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/change-language-set.html">Changing the language set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/change-lifecycle.html">Changing the lifecycle set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/app-config.html">Application Config Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/env-config.html">Environment Config Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto/xml-config.html">XML Config Changes</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Agentic Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="knowing-github-setup.html">Knowing GitHub Project Setup</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-code-review" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H8.061l-2.574 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-8.5C0 1.784.784 1 1.75 1ZM1.5 2.75v8.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72a.75.75 0 0 1 0 1.06L5.31 7l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0Zm2.44 0a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L10.69 7 9.22 5.53a.75.75 0 0 1 0-1.06Z"></path></svg> Developer Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Agentic Workflow</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="agentic-workflow">
+<span id="id1"></span><h1>Agentic Workflow<a class="headerlink" href="#agentic-workflow" title="Link to this heading">#</a></h1>
+<p>This document describes the unified agentic workflow for docbuild development. It covers when to use each agent, what they do, and how they work together.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>The docbuild agentic workflow runs in <strong>OpenCode</strong>, an interactive command-line environment. It consists of a primary orchestrator agent (<strong class="command">docbuild</strong>) and <strong>5 specialized sub-agents</strong> that work together to help you:</p>
+<ul class="simple">
+<li><p><strong>Design</strong> new features with sound architecture</p></li>
+<li><p><strong>Write</strong> code that matches the design</p></li>
+<li><p><strong>Test</strong> thoroughly with &gt;95% coverage</p></li>
+<li><p><strong>Document</strong> with complete docstrings and guides</p></li>
+<li><p><strong>Review</strong> code for quality and safety</p></li>
+</ul>
+<p>You interact with the primary agent by running <strong class="command">docbuild</strong> from your OpenCode shell, which then starts the OpenCode environment. Sub-agents are invoked via at-commands (e.g., <strong class="command">&#64;code-reviewer</strong>) from within OpenCode to analyze files, branches, or pull requests.</p>
+</section>
+<section id="the-primary-agent-docbuild">
+<h2>The Primary Agent: <strong class="command">docbuild</strong><a class="headerlink" href="#the-primary-agent-docbuild" title="Link to this heading">#</a></h2>
+<p>The main entry point to the agentic workflow is the <strong class="command">docbuild</strong> command, which acts as the primary orchestrator.
+In OpenCode, press <kbd class="kbd docutils literal notranslate">Tab</kbd> to cycle through the list of available primary agents.</p>
+<p><strong>Role:</strong> Routes requests to specialized sub-agents and coordinates workflows.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>You have a complex task (e.g., “implement new feature”, “fix critical bug”)</p></li>
+<li><p>You want agents to collaborate on a multi-step workflow</p></li>
+<li><p>You need a summary report across multiple review passes</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ol class="arabic simple">
+<li><p>Interprets your request from the command line.</p></li>
+<li><p>Determines which sub-agents are needed.</p></li>
+<li><p>Delegates to code-reviewer, test-engineer, doc-writer, design-reviewer, etc. inside OpenCode.</p></li>
+<li><p>Aggregates results into a summary report.</p></li>
+</ol>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span><span class="s2">&quot;implement caching for API responses&quot;</span>
+
+The<span class="w"> </span>docbuild<span class="w"> </span>agent<span class="w"> </span>would<span class="w"> </span><span class="k">then</span><span class="w"> </span>coordinate<span class="w"> </span>the<span class="w"> </span>following<span class="w"> </span>workflow<span class="w"> </span>inside<span class="w"> </span>OpenCode:
+<span class="w">  </span><span class="m">1</span>.<span class="w"> </span>design-reviewer<span class="w"> </span>→<span class="w"> </span><span class="s2">&quot;Review the caching architecture&quot;</span>
+<span class="w">  </span><span class="m">2</span>.<span class="w"> </span>code-reviewer<span class="w"> </span>→<span class="w"> </span><span class="s2">&quot;Validate code matches design&quot;</span>
+<span class="w">  </span><span class="m">3</span>.<span class="w"> </span>test-engineer<span class="w"> </span>→<span class="w"> </span><span class="s2">&quot;Run tests, check coverage&quot;</span>
+<span class="w">  </span><span class="m">4</span>.<span class="w"> </span>doc-writer<span class="w"> </span>→<span class="w"> </span><span class="s2">&quot;Complete documentation&quot;</span>
+<span class="w">  </span><span class="m">5</span>.<span class="w"> </span>Aggregate<span class="w"> </span>results
+<span class="w">  </span>↓
+Summary:
+<span class="w">  </span>✅<span class="w"> </span>Architecture:<span class="w"> </span>Approved<span class="w"> </span><span class="o">(</span>use<span class="w"> </span>@lru_cache,<span class="w"> </span>good!<span class="o">)</span>
+<span class="w">  </span>✅<span class="w"> </span>Code<span class="w"> </span>quality:<span class="w"> </span>Matches<span class="w"> </span>design<span class="w"> </span>intent
+<span class="w">  </span>✅<span class="w"> </span>Coverage:<span class="w"> </span><span class="m">97</span>%<span class="w"> </span><span class="o">(</span>no<span class="w"> </span>drops<span class="o">)</span>
+<span class="w">  </span>⚠️<span class="w"> </span>Docs:<span class="w"> </span>Missing<span class="w"> </span>example<span class="w"> </span><span class="k">in</span><span class="w"> </span>cache_ttl<span class="w"> </span>parameter
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="quick-reference-sub-agent-invocation">
+<h2>Quick Reference: Sub-Agent Invocation<a class="headerlink" href="#quick-reference-sub-agent-invocation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Use Case</p></th>
+<th class="head"><p>Context</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong class="command">&#64;code-reviewer &lt;file|branch&gt;</strong></p></td>
+<td><p>Check if code matches its design intent</p></td>
+<td><p>Context-aware</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong class="command">&#64;test-engineer &lt;file|branch&gt;</strong></p></td>
+<td><p>Auto-run tests, analyze coverage</p></td>
+<td><p>Context-aware</p></td>
+</tr>
+<tr class="row-even"><td><p><strong class="command">&#64;doc-writer &lt;file|branch&gt;</strong></p></td>
+<td><p>Check docstrings &amp; guide completeness</p></td>
+<td><p>Context-aware</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong class="command">&#64;design-reviewer &lt;file|branch&gt;</strong></p></td>
+<td><p>Holistic architecture review</p></td>
+<td><p>Context-aware</p></td>
+</tr>
+<tr class="row-even"><td><p><strong class="command">&#64;pr-review &lt;branch|PR-URL&gt;</strong></p></td>
+<td><p>Independent code quality check</p></td>
+<td><p>Context-independent</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="the-sub-agents">
+<h2>The Sub-Agents<a class="headerlink" href="#the-sub-agents" title="Link to this heading">#</a></h2>
+<section id="code-reviewer-context-aware">
+<h3>1. Code Reviewer (Context-Aware)<a class="headerlink" href="#code-reviewer-context-aware" title="Link to this heading">#</a></h3>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">code-review.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">docbuild-guidelines.skill.md</span></code></p>
+<p><strong>Role:</strong> Validates that your code matches its stated design intent and enforces quality standards.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>After writing code for a feature</p></li>
+<li><p>You want to check if implementation matches your design</p></li>
+<li><p>You need coverage analysis (&gt;95% required)</p></li>
+<li><p>You want feedback before running tests</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ul class="simple">
+<li><p>Compares code against stated feature intent</p></li>
+<li><p>Flags code smells (duplication, complexity, poor naming)</p></li>
+<li><p>Detects logical flaws and edge cases</p></li>
+<li><p>Enforces &gt;95% test coverage</p></li>
+<li><p><strong>Flags coverage drops</strong> (e.g., 99% → 98%)</p></li>
+<li><p>Checks for YAGNI violations against the feature scope</p></li>
+<li><p>Suggests simplifications</p></li>
+</ul>
+<p><strong>Output Example:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>File: src/docbuild/cli/cache_api.py
+
+✅ Code matches design intent
+⚠️ Coverage drop detected: 99.5% → 98.7%
+  → Missing tests for cache_miss() edge case
+
+🔴 Code smell: DRY violation
+  → Lines 45-52 duplicate logic from lines 12-19
+  → Suggestion: Extract to shared _get_cache_key() function
+
+🔴 Incomplete: TTL parameter documented but no example
+  → See @doc-writer for docstring improvements
+</pre></div>
+</div>
+<p><strong>Example Invocation:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@code-reviewer src/docbuild/cli/cache_api.py
+@code-reviewer feature/caching  (analyzes all files in branch)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="test-engineer-testing-expertise">
+<h3>2. Test Engineer (Testing Expertise)<a class="headerlink" href="#test-engineer-testing-expertise" title="Link to this heading">#</a></h3>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">pytest-expert.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">testing.skill.md</span></code></p>
+<p><strong>Role:</strong> Ensures comprehensive test coverage and suggests advanced pytest patterns.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>After code changes (auto-runs tests)</p></li>
+<li><p>You need coverage gap analysis</p></li>
+<li><p>You want suggestions for parametrized tests</p></li>
+<li><p>You need mocking advice</p></li>
+<li><p>You want to interpret coverage reports</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ul class="simple">
+<li><p><strong>Auto-runs tests</strong> after code changes (full suite by default)</p></li>
+<li><p>Analyzes coverage reports (<code class="docutils literal notranslate"><span class="pre">--cov-report=term-missing</span></code>)</p></li>
+<li><p>Flags coverage &lt; 95% on new code</p></li>
+<li><p>Suggests <code class="docutils literal notranslate"><span class="pre">&#64;pytest.mark.parametrize</span></code> opportunities</p></li>
+<li><p>Reviews fixture patterns &amp; scope management</p></li>
+<li><p>Flags flaky or incomplete tests</p></li>
+<li><p>Advises on mocking (what to mock, what not to)</p></li>
+</ul>
+<p><strong>Output Example:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Tests run: 245 passed in 3.2s
+
+Coverage: 97.2% (good!)
+  → docbuild/cli/cache_api.py: 95.5%
+  → Missing coverage:
+    - Line 67: cache_miss() error path (mock failure case)
+    - Line 89: TTL expiry edge case (time.sleep() test)
+
+Parametrize opportunities:
+  ✓ test_cache_ttl() could use @pytest.mark.parametrize
+    → Current: 3 separate tests
+    → Suggested: 1 parametrized test with 6 cases
+    → Saves: ~40 lines of boilerplate
+
+Mocking feedback:
+  ✓ Good: Mocking external API calls
+  ⚠️ Review: fixture scope=function vs. session
+    → Current uses session-scoped cache (persists across tests)
+    → Risk: Test isolation if one test pollutes cache
+    → Suggestion: function-scoped for isolation
+</pre></div>
+</div>
+<p><strong>Example Invocation:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@test-engineer src/docbuild/cli/cache_api.py
+@test-engineer feature/caching  (runs full test suite on branch)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="doc-writer-documentation-completeness">
+<h3>3. Doc Writer (Documentation Completeness)<a class="headerlink" href="#doc-writer-documentation-completeness" title="Link to this heading">#</a></h3>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">doc-writer.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">documentation.skill.md</span></code></p>
+<p><strong>Role:</strong> Ensures docstrings are complete and guides are updated.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>After code changes (docstrings need updates)</p></li>
+<li><p>You modified public APIs</p></li>
+<li><p>You want to check docstring completeness</p></li>
+<li><p>You need to update Developer or User Guides</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ul class="simple">
+<li><p>Scans docstrings for missing elements:</p>
+<ul>
+<li><p>Parameter descriptions</p></li>
+<li><p>Return type documentation</p></li>
+<li><p>Exception (<code class="docutils literal notranslate"><span class="pre">raises</span></code>) documentation</p></li>
+<li><p>Examples (for complex/algorithmic functions)</p></li>
+</ul>
+</li>
+<li><p>Suggests complex function examples</p></li>
+<li><p>Determines if changes need Developer Guide or User Guide updates</p></li>
+<li><p>Validates Sphinx RST syntax</p></li>
+<li><p>Checks for contradictions between code and docs</p></li>
+</ul>
+<p><strong>Output Example:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>File: src/docbuild/cli/cache_api.py
+
+🔴 Incomplete docstrings:
+  Line 45: get_cached_api_response()
+    ✗ Missing: &#39;ttl&#39; parameter description
+    ✗ Missing: example for algorithm explanation
+    ✗ Missing: &#39;CacheError&#39; exception documentation
+
+  Line 78: _cache_decorator()
+    ✓ Has params, returns
+    ✗ Missing: example showing usage pattern
+
+✅ Good: Lines 12-30 have complete docstring with example
+
+📖 Guide updates needed:
+  ✓ User Guide: &quot;Caching API Responses&quot; section
+    → Add: Configuration options, TTL defaults
+  ✓ Developer Guide: &quot;Cache Implementation&quot; section
+    → Add: Architecture diagram, extension points
+
+Sphinx build: ✅ No errors (existing warnings are pre-existing)
+</pre></div>
+</div>
+<p><strong>Example Invocation:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@doc-writer src/docbuild/cli/cache_api.py
+@doc-writer feature/caching
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="design-reviewer-architecture-patterns">
+<h3>4. Design Reviewer (Architecture &amp; Patterns)<a class="headerlink" href="#design-reviewer-architecture-patterns" title="Link to this heading">#</a></h3>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">design-review.skill.md</span></code></p>
+<p><strong>Role:</strong> Holistic architecture review using Python design patterns.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>Before writing code (validate architecture)</p></li>
+<li><p>After significant refactoring</p></li>
+<li><p>You suspect over-engineering</p></li>
+<li><p>You want pattern recommendations</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ul class="simple">
+<li><p>Reviews class design (composition vs. inheritance)</p></li>
+<li><p>Checks Single Responsibility Principle (SRP)</p></li>
+<li><p>Identifies over-abstraction (unnecessary interfaces, factories)</p></li>
+<li><p>Suggests appropriate design patterns</p></li>
+<li><p>Reviews async/await usage</p></li>
+<li><p>Flags speculative complexity</p></li>
+</ul>
+<p><strong>Output Example:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Architecture Review: src/docbuild/config/cache.py
+
+✅ Good: Dataclass for CacheConfig (no over-engineering)
+
+🔴 SRP violation: CacheManager class
+  → Responsibilities: cache storage, TTL management, stats tracking
+  → Suggestion: Extract stats tracking to separate CacheStats class
+  → Result: Each class has single reason to change
+
+⚠️ Over-abstraction: CacheBackend interface
+  → Current: 1 implementation (InMemoryCache)
+  → Risk: Interface adds complexity without flexibility need
+  → Question: Will we add other backends (Redis, Memcached)?
+    - If NO → Delete interface, use InMemoryCache directly
+    - If YES → Keep interface, add Redis implementation
+
+✅ Pattern match: Decorator for cache_api()
+  → Good choice for transparent caching
+
+Composition opportunity:
+  → Cache uses Strategy pattern for TTL (fixed, LRU, adaptive)
+  → Consider: Composition over inheritance
+    - Current: TTLStrategy base class + 3 subclasses
+    - Alternative: Simple callable config + switch
+    - Trade-off: Simpler code vs. extensibility
+</pre></div>
+</div>
+<p><strong>Example Invocation:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@design-review src/docbuild/config/cache.py
+@design-review feature/caching  (reviews all design files in branch)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="pr-reviewer-context-independent">
+<h3>5. PR Reviewer (Context-Independent)<a class="headerlink" href="#pr-reviewer-context-independent" title="Link to this heading">#</a></h3>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">code-smell.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">pytest-expert.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">docbuild-guidelines.skill.md</span></code></p>
+<p><strong>Role:</strong> Independent code quality check that doesn’t assume context or intent.</p>
+<p><strong>When to use:</strong></p>
+<ul class="simple">
+<li><p>Reviewing a pull request (independent of PR description)</p></li>
+<li><p>You want a skeptical review (assumes code might not do what it claims)</p></li>
+<li><p>You want pure code quality feedback</p></li>
+<li><p>You have a branch to review in isolation</p></li>
+</ul>
+<p><strong>Key Feature:</strong> <strong>CONTEXT-INDEPENDENT</strong></p>
+<ul class="simple">
+<li><p>Does NOT read PR description</p></li>
+<li><p>Does NOT assume feature intent</p></li>
+<li><p>Does NOT validate against design (that’s code-reviewer’s job)</p></li>
+<li><p>Pure question: “Is this code well-written?”</p></li>
+</ul>
+<p><strong>What it does:</strong></p>
+<ul class="simple">
+<li><p>Detects code smells (duplication, complexity, naming, tight coupling)</p></li>
+<li><p>Logical flaws and edge cases</p></li>
+<li><p>Security concerns</p></li>
+<li><p>Test coverage analysis</p></li>
+<li><p>Asks: “Does this code do what it claims to do?” (from code alone)</p></li>
+</ul>
+<p><strong>Output Example:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>PR Review: feature/caching (independent, no context)
+
+🔴 Code smell: Duplication
+  → Lines 45-52 and 12-19 have identical cache lookup logic
+  → No comment explaining why duplication is needed
+  → Suggestion: Extract to shared function
+
+🔴 Complexity: CacheManager.sync()
+  → Cyclomatic complexity: 8 (acceptable is ≤5)
+  → Consider: Break into smaller functions
+
+⚠️ Security: TTL from user input
+  → Line 67: ttl = request.args.get(&#39;ttl&#39;)
+  → Risk: No validation (could be negative, huge, non-integer)
+  → Suggestion: Validate range and type
+
+✅ Good: Tests look comprehensive
+  ✅ Coverage: 97.2%
+  ✅ Edge cases covered (empty cache, expired entries)
+
+⚠️ Missing: Docstring examples
+  → get_cached_api_response() does complex things
+  → Algorithm explanation would help reviewers understand intent
+</pre></div>
+</div>
+<p><strong>Example Invocation:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@pr-review feature/caching
+@pr-review https://github.com/opensuse/docbuild/pull/123
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="common-workflows">
+<h2>Common Workflows<a class="headerlink" href="#common-workflows" title="Link to this heading">#</a></h2>
+<section id="workflow-1-implement-new-feature">
+<h3>Workflow 1: Implement New Feature<a class="headerlink" href="#workflow-1-implement-new-feature" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Design phase:</strong>
+*   <strong class="command">&#64;design-review feature-branch</strong>
+*   → Get architecture feedback
+*   → Adjust design based on feedback</p></li>
+<li><p><strong>Implementation:</strong>
+*   Write code…</p></li>
+<li><p><strong>Quality checks:</strong>
+*   <strong class="command">&#64;code-reviewer feature-branch</strong>
+*   → Validate code matches design
+*   → Fix coverage drops
+*   <strong class="command">&#64;test-engineer feature-branch</strong>
+*   → Auto-run tests
+*   → Fill coverage gaps with tests</p></li>
+<li><p><strong>Documentation:</strong>
+*   <strong class="command">&#64;doc-writer feature-branch</strong>
+*   → Complete docstrings
+*   → Update guides</p></li>
+<li><p><strong>Final review:</strong>
+*   <strong class="command">&#64;pr-review feature-branch</strong>
+*   → Independent code quality check
+*   → Catch anything missed</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="workflow-2-fix-a-bug">
+<h3>Workflow 2: Fix a Bug<a class="headerlink" href="#workflow-2-fix-a-bug" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Root cause analysis:</strong>
+*   <strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+*   → Identify logical flaw</p></li>
+<li><p><strong>Implement fix…</strong></p></li>
+<li><p><strong>Verify fix:</strong>
+*   <strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+*   → Ensure tests catch the bug
+*   → No coverage regressions</p></li>
+<li><p><strong>Documentation:</strong>
+*   <strong class="command">&#64;doc-writer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+*   → Update any clarifications in docstrings</p></li>
+<li><p><strong>Independent review:</strong>
+*   <strong class="command">&#64;pr-review bugfix-branch</strong>
+*   → Ensure fix is sound and doesn’t introduce new issues</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="workflow-3-code-review-on-pr-as-reviewer">
+<h3>Workflow 3: Code Review on PR (as Reviewer)<a class="headerlink" href="#workflow-3-code-review-on-pr-as-reviewer" title="Link to this heading">#</a></h3>
+<p>You receive a PR for review:</p>
+<ol class="arabic simple">
+<li><p><strong>Initial analysis:</strong>
+*   <strong class="command">&#64;pr-review https://github.com/opensuse/docbuild/pull/456</strong>
+*   → Get independent code quality assessment
+*   → Identify smells, security issues, coverage gaps</p></li>
+<li><p><strong>Context-aware review:</strong>
+*   <strong class="command">&#64;code-reviewer pr-branch</strong>
+*   → Check if code matches stated feature intent
+*   → Coverage should not drop</p></li>
+<li><p><strong>Summary for PR comment:</strong>
+*   Combine feedback from pr-reviewer (independent) and code-reviewer (context-aware) into a comprehensive review.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="workflow-4-refactoring-existing-code">
+<h3>Workflow 4: Refactoring Existing Code<a class="headerlink" href="#workflow-4-refactoring-existing-code" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Design phase:</strong>
+*   <strong class="command">&#64;design-review</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+*   → Identify over-engineering, SRP violations
+*   → Plan refactoring</p></li>
+<li><p><strong>Refactor…</strong></p></li>
+<li><p><strong>Quality assurance:</strong>
+*   <strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+*   → Ensure refactoring matches intent (improved design)
+*   → No logic changes, no coverage drops
+*   <strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+*   → Verify all tests still pass
+*   → Coverage unchanged or improved</p></li>
+<li><p><strong>Independent review:</strong>
+*   <strong class="command">&#64;pr-review refactor-branch</strong>
+*   → Ensure refactoring doesn’t introduce bugs
+*   → Code is cleaner, not just different</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="understanding-coverage-reports">
+<h2>Understanding Coverage Reports<a class="headerlink" href="#understanding-coverage-reports" title="Link to this heading">#</a></h2>
+<p>When test-engineer runs tests, it reports coverage like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>File: src/docbuild/cli/cache_api.py
+  Lines: 87
+  Covered: 83
+  Coverage: 95.4%
+
+  Missing lines:
+    67: except CacheError as e:        # Error path not tested
+    89: if ttl_remaining &lt; 60:          # Edge case: near-expiry
+    102: logger.debug(f&quot;Cache stats&quot;)  # Debug logging not exercised
+</pre></div>
+</div>
+<p><strong>What each means:</strong></p>
+<ul class="simple">
+<li><p><strong>Missing</strong> → Code path never executed in tests</p></li>
+<li><p><strong>Covered</strong> → Code path has at least one test</p></li>
+</ul>
+<p><strong>When to fix:</strong></p>
+<ul class="simple">
+<li><p>New code should have &gt;95% coverage</p></li>
+<li><p>Coverage should not drop compared to main branch</p></li>
+<li><p>Debug/logging paths (nice to have, not critical)</p></li>
+<li><p>Error handling is more important than happy paths</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="agent-vs-skill-the-what-vs-the-how">
+<h2>Agent vs. Skill: The “What” vs. The “How”<a class="headerlink" href="#agent-vs-skill-the-what-vs-the-how" title="Link to this heading">#</a></h2>
+<p>A key concept in this workflow is the separation of roles between agents and skills:</p>
+<ul class="simple">
+<li><p>An <strong>Agent</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.opencode/agents/name.md</span></code>) describes the agent’s high-level purpose, persona, and goals. It answers the question, “<strong>WHAT</strong> is your job?”</p></li>
+<li><p>A <strong>Skill</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.agents/skills/.../SKILL.md</span></code>) provides a detailed, step-by-step procedure for a specific task. It answers the question, “<strong>HOW</strong> do you do your job?”</p></li>
+</ul>
+<p>Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.</p>
+</section>
+<hr class="docutils" />
+<section id="id2">
+<h2>Agent vs. Skill: The “What” vs. The “How”<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>A key concept in this workflow is the separation of roles between agents and skills:</p>
+<ul class="simple">
+<li><p>An <strong>Agent</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.opencode/agents/name.md</span></code>) describes the agent’s high-level purpose, persona, and goals. It answers the question, “<strong>WHAT</strong> is your job?”</p></li>
+<li><p>A <strong>Skill</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.agents/skills/.../SKILL.md</span></code>) provides a detailed, step-by-step procedure for a specific task. It answers the question, “<strong>HOW</strong> do you do your job?”</p></li>
+</ul>
+<p>Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.</p>
+</section>
+<hr class="docutils" />
+<section id="skills-what-agents-use">
+<h2>Skills: What Agents Use<a class="headerlink" href="#skills-what-agents-use" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Skill</p></th>
+<th class="head"><p>Used By</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">docbuild-guidelines.skill.md</span></code></p></td>
+<td><p>code-reviewer, pr-reviewer</p></td>
+<td><p>Surgical changes, YAGNI, simplicity</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">code-review.skill.md</span></code></p></td>
+<td><p>code-reviewer</p></td>
+<td><p>Context-aware design validation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">code-smell.skill.md</span></code></p></td>
+<td><p>pr-reviewer</p></td>
+<td><p>Context-independent quality checks</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">pytest-expert.skill.md</span></code></p></td>
+<td><p>test-engineer, pr-reviewer</p></td>
+<td><p>Coverage, parametrize, mocking</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">doc-writer.skill.md</span></code></p></td>
+<td><p>doc-writer</p></td>
+<td><p>Docstring completeness, examples</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">design-review.skill.md</span></code></p></td>
+<td><p>design-reviewer</p></td>
+<td><p>Patterns, SRP, over-engineering</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="skill-file-structure">
+<h2>Skill File Structure<a class="headerlink" href="#skill-file-structure" title="Link to this heading">#</a></h2>
+<p>Each skill in the <code class="file docutils literal notranslate"><span class="pre">.agents/skills/</span></code> directory is a Markdown file (<code class="file docutils literal notranslate"><span class="pre">SKILL.md</span></code>) that provides instructions to an agent. All procedural skills follow a standard structure composed of two parts:</p>
+<section id="a-yaml-frontmatter-for-metadata">
+<h3>1. A YAML Frontmatter for Metadata<a class="headerlink" href="#a-yaml-frontmatter-for-metadata" title="Link to this heading">#</a></h3>
+<p>The file begins with a YAML block that provides structured data about the skill.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">skill-name</span><span class="p p-Indicator">]</span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">One-sentence description of the skill&#39;s purpose.</span><span class="p p-Indicator">]</span>
+<span class="nt">license</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GPL-3.0-or-later</span>
+<span class="nt">compatibility</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">opencode</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">github_copilot</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">claude</span><span class="p p-Indicator">]</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">category</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">e.g.</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">testing</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">documentation</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">design</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">audience</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">developers</span><span class="p p-Indicator">]</span>
+<span class="nn">---</span>
+</pre></div>
+</div>
+</section>
+<section id="a-markdown-body-with-standard-sections">
+<h3>2. A Markdown Body with Standard Sections<a class="headerlink" href="#a-markdown-body-with-standard-sections" title="Link to this heading">#</a></h3>
+<p>The body of the skill uses Markdown headings to create a consistent, four-part structure:</p>
+<ul class="simple">
+<li><p><strong>Context:</strong> Explains the background and the “why” of the skill. It sets the scene for the agent.</p></li>
+<li><p><strong>Procedure:</strong> A numbered, step-by-step list of actions the agent should take to complete the task.</p></li>
+<li><p><strong>Checklist:</strong> A list of questions the agent can use to verify its work during the procedure.</p></li>
+<li><p><strong>Validation:</strong> The final success criteria. It defines what must be true for the task to be considered complete.</p></li>
+</ul>
+<p>This structure ensures that all skills are consistent, predictable, and easy for both agents and humans to understand.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
+<section id="core-principle-ask-when-unsure">
+<h3>Core Principle: Ask When Unsure<a class="headerlink" href="#core-principle-ask-when-unsure" title="Link to this heading">#</a></h3>
+<p>A critical guardrail for all agents in this workflow is to <strong>ask for clarification</strong> when a request is ambiguous or they lack context. Agents will not make assumptions about your intent. They will state what they are unsure about and, if possible, present you with options.</p>
+</section>
+<section id="use-the-right-agent-for-the-right-phase">
+<h3>1. Use the right agent for the right phase<a class="headerlink" href="#use-the-right-agent-for-the-right-phase" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Design phase → <strong class="command">&#64;design-review</strong> (before code)</p></li>
+<li><p>After code → <strong class="command">&#64;code-reviewer</strong> (validation)</p></li>
+<li><p>Testing → <strong class="command">&#64;test-engineer</strong> (coverage analysis)</p></li>
+<li><p>Docs → <strong class="command">&#64;doc-writer</strong> (completeness)</p></li>
+<li><p>Final → <strong class="command">&#64;pr-review</strong> (independent check)</p></li>
+</ul>
+</section>
+<section id="let-agents-auto-run-tests">
+<h3>2. Let agents auto-run tests<a class="headerlink" href="#let-agents-auto-run-tests" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>test-engineer auto-runs tests after changes</p></li>
+<li><p>Don’t manually run tests first; let it analyze and report</p></li>
+</ul>
+</section>
+<section id="address-coverage-gaps-first">
+<h3>3. Address coverage gaps first<a class="headerlink" href="#address-coverage-gaps-first" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Coverage &lt; 95% blocks approval</p></li>
+<li><p>Write tests to fill gaps (use test-engineer for parametrize suggestions)</p></li>
+</ul>
+</section>
+<section id="code-reviewer-is-your-sounding-board">
+<h3>4. Code-reviewer is your sounding board<a class="headerlink" href="#code-reviewer-is-your-sounding-board" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Use it to validate “does my code match my design?”</p></li>
+<li><p>Use it to catch missed edge cases</p></li>
+<li><p>Use it to enforce YAGNI (no speculative features)</p></li>
+</ul>
+</section>
+<section id="pr-reviewer-is-skeptical-by-design">
+<h3>5. PR-Reviewer is skeptical by design<a class="headerlink" href="#pr-reviewer-is-skeptical-by-design" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>It doesn’t know your intent; that’s the point</p></li>
+<li><p>If it finds issues, they’re real (no context bias)</p></li>
+<li><p>Use pr-reviewer as final sanity check</p></li>
+</ul>
+</section>
+<section id="documentation-is-not-optional">
+<h3>6. Documentation is not optional<a class="headerlink" href="#documentation-is-not-optional" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>doc-writer ensures completeness</p></li>
+<li><p>Complex functions get examples</p></li>
+<li><p>Guides stay in sync with code</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="directory-structure">
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.
+├── .agents/
+│   └── skills/      # Shared skills used by agents
+│       ├── ...
+│       └── docstrings/
+│           └── SKILL.md
+│
+└── .opencode/
+    └── agents/      # Agent definitions for OpenCode
+        ├── code-reviewer.md
+        ├── docbuild.md
+        └── ...
+</pre></div>
+</div>
+<p><strong>Why this structure:</strong></p>
+<ul class="simple">
+<li><p>Agent and skill definitions are separated for clarity.</p></li>
+<li><p>GitHub Copilot uses symlinks from <code class="file docutils literal notranslate"><span class="pre">.github/</span></code></p></li>
+<li><p>OpenCode auto-discovers agents &amp; skills</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="integration-with-development-tools">
+<h2>Integration with Development Tools<a class="headerlink" href="#integration-with-development-tools" title="Link to this heading">#</a></h2>
+<section id="with-opencode">
+<h3>With OpenCode<a class="headerlink" href="#with-opencode" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Run <strong class="command">docbuild &lt;task&gt;</strong> from your shell to start the workflow.</p></li>
+<li><p>Inside OpenCode, use at-commands like <strong class="command">&#64;code-reviewer</strong> to invoke sub-agents.</p></li>
+<li><p>Skills guide agent behavior</p></li>
+</ul>
+</section>
+<section id="with-github-copilot">
+<h3>With GitHub Copilot<a class="headerlink" href="#with-github-copilot" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Agents discovered from <code class="file docutils literal notranslate"><span class="pre">.github/agents/</span></code> (symlinked to <code class="file docutils literal notranslate"><span class="pre">../.opencode/agents/</span></code>)</p></li>
+<li><p>Instructions in <code class="file docutils literal notranslate"><span class="pre">.github/instructions/</span></code> provide general guidance</p></li>
+</ul>
+</section>
+<section id="with-claude">
+<h3>With Claude<a class="headerlink" href="#with-claude" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Paste agent/skill files directly or link them</p></li>
+<li><p>All agents work across models (Claude 3.5, GPT-4o, etc.)</p></li>
+</ul>
+</section>
+<section id="with-vs-code">
+<h3>With VS Code<a class="headerlink" href="#with-vs-code" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Agent files can be referenced in VS Code Copilot Chat</p></li>
+<li><p>Same at-commands work</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="when-in-doubt">
+<h2>When in Doubt<a class="headerlink" href="#when-in-doubt" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scenario</p></th>
+<th class="head"><p>Use This Agent</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>“Is my design sound?”</p></td>
+<td><p><strong class="command">&#64;design-review</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>“Does my code do what I said?”</p></td>
+<td><p><strong class="command">&#64;code-reviewer</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>“Do I have enough tests?”</p></td>
+<td><p><strong class="command">&#64;test-engineer</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>“Are my docstrings complete?”</p></td>
+<td><p><strong class="command">&#64;doc-writer</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>“Can you find anything wrong with this code?”</p></td>
+<td><p><strong class="command">&#64;pr-review</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>“I have a complex task”</p></td>
+<td><p><strong class="command">docbuild &lt;task&gt;</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">AGENTS.md</span></code> — Project setup and conventions</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> — Dependencies and tool configuration</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.github/instructions/python.instructions.md</span></code> — Python style guide</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">pytest.ini</span></code> — Pytest configuration (coverage thresholds, etc.)</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="howto/xml-config.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">XML Config Changes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="knowing-github-setup.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Knowing GitHub Project Setup</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primary-agent-docbuild">The Primary Agent: <strong class="command">docbuild</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-reference-sub-agent-invocation">Quick Reference: Sub-Agent Invocation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sub-agents">The Sub-Agents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-reviewer-context-aware">1. Code Reviewer (Context-Aware)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-engineer-testing-expertise">2. Test Engineer (Testing Expertise)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#doc-writer-documentation-completeness">3. Doc Writer (Documentation Completeness)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#design-reviewer-architecture-patterns">4. Design Reviewer (Architecture &amp; Patterns)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-reviewer-context-independent">5. PR Reviewer (Context-Independent)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-1-implement-new-feature">Workflow 1: Implement New Feature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-2-fix-a-bug">Workflow 2: Fix a Bug</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-3-code-review-on-pr-as-reviewer">Workflow 3: Code Review on PR (as Reviewer)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workflow-4-refactoring-existing-code">Workflow 4: Refactoring Existing Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-coverage-reports">Understanding Coverage Reports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agent-vs-skill-the-what-vs-the-how">Agent vs. Skill: The “What” vs. The “How”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Agent vs. Skill: The “What” vs. The “How”</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skills-what-agents-use">Skills: What Agents Use</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skill-file-structure">Skill File Structure</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-yaml-frontmatter-for-metadata">1. A YAML Frontmatter for Metadata</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-markdown-body-with-standard-sections">2. A Markdown Body with Standard Sections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-principle-ask-when-unsure">Core Principle: Ask When Unsure</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-the-right-agent-for-the-right-phase">1. Use the right agent for the right phase</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#let-agents-auto-run-tests">2. Let agents auto-run tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#address-coverage-gaps-first">3. Address coverage gaps first</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-reviewer-is-your-sounding-board">4. Code-reviewer is your sounding board</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pr-reviewer-is-skeptical-by-design">5. PR-Reviewer is skeptical by design</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-is-not-optional">6. Documentation is not optional</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-structure">Directory Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-with-development-tools">Integration with Development Tools</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-opencode">With OpenCode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-github-copilot">With GitHub Copilot</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-claude">With Claude</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-vs-code">With VS Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-in-doubt">When in Doubt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/developer/agentic-workflow.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/developer/agentic-workflow.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Tom Schraitle | Sushant Gaurav.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

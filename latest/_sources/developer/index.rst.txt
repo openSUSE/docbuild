@@ -39,4 +39,5 @@ This guide provides all the necessary information for contributing to the projec
    :maxdepth: 2
    :caption: Appendix
 
+   agentic-workflow
    knowing-github-setup
