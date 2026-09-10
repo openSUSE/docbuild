@@ -3,6 +3,11 @@ name: code-review
 description: A skill for context-aware code review to validate implementation against design intent.
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
+dependencies:
+  skills:
+    - name: testing
+      uri: "../testing/SKILL.md"
+
 metadata:
   category: code-quality
   audience: [developers]
@@ -20,7 +25,9 @@ This skill guides a context-aware code review to determine if code correctly imp
 
 ## 2. Test Coverage and Quality
 
-*   **Check for test coverage.** Use `pytest --cov` and review the output.
+For all the following items, use the `testing` skill located at `.agents/skills/testing/SKILL.md`:
+
+*   **Check for test coverage.** Apply the rules in the `testing` skill for a single file and for the whole test suite.
 *   **Enforce >95% coverage** for new or modified code.
 *   **Coverage must not decrease.** Compare the coverage report with the `main` branch.
 *   **Look for untested paths,** especially in error handling and edge cases.
