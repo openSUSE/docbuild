@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 import shlex
 
+from docbuild.models.cache import Cache
 from docbuild.models.deliverable import Deliverable
 
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
@@ -13,6 +14,45 @@ from ...utils.git import ManagedGitRepo
 from .prebuilt import extract_prebuilt_metadata
 
 log = logging.getLogger(__name__)
+
+
+async def get_daps_hashes(worktree_dir: Path, dcfile_path: Path) -> dict[str, str]:
+    """Run daps list-srcfiles --hashes and parse the output.
+
+    Converts absolute paths to relative paths based on the worktree.
+    """
+    cmd = ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"]
+
+    proc = await asyncio.create_subprocess_exec(
+        *cmd,
+        cwd=worktree_dir,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout_data, stderr_data = await proc.communicate()
+
+    if proc.returncode != 0:
+        log.warning("daps list-srcfiles failed: %s", stderr_data.decode())
+        return {}
+
+    hashes = {}
+    for line in stdout_data.decode().splitlines():
+        line = line.strip()
+        if not line or ":" not in line:
+            continue
+
+        # Output format: ABSOLUTE_PATH:MD5_HASH
+        parts = line.rsplit(":", maxsplit=1)
+        if len(parts) == 2:
+            abs_path, md5 = parts
+            try:
+                # Make path relative to worktree for consistent caching across runs
+                rel_path = str(Path(abs_path).relative_to(worktree_dir))
+                hashes[rel_path] = md5
+            except ValueError:
+                hashes[abs_path] = md5
+
+    return hashes
 
 
 def get_daps_command(
@@ -60,7 +100,7 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
             jsonconfig["category"] = category
 
 
-async def process_deliverable(
+async def process_deliverable(    # noqa: C901
     deliverable: Deliverable,
     repo_dir: Path,
     tmp_repo_dir: Path,
@@ -69,6 +109,7 @@ async def process_deliverable(
     *,
     dapstmpl: str,
     skip_repo_update: bool = False,
+    env_config_hash: str = "",
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable asynchronously.
 
@@ -154,6 +195,21 @@ async def process_deliverable(
                 Path(worktree_dir) / deliverable.subdir / deliverable.xml.dcfile
             )
 
+            # --- CACHE CHECK LOGIC ---
+            cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
+            old_cache = Cache.from_json(cache_file)
+
+            # Fetch current hashes using our new helper
+            current_file_hashes = await get_daps_hashes(Path(worktree_dir), full_dcfile_path)
+            new_cache = Cache(env_config_hash=env_config_hash, file_hashes=current_file_hashes)
+
+            # If the hashes match and the output JSON already exists, SKIP!
+            if old_cache.combined_hash == new_cache.combined_hash and cache_file.exists() and outputjson.exists():
+                log.info("Cache hit for %s! Skipping DAPS execution.", deliverable.full_id)
+                return True, deliverable
+
+            log.info("Cache miss for %s. Running full build...", deliverable.full_id)
+
             cmd = get_daps_command(
                 Path(worktree_dir),
                 full_dcfile_path,
@@ -174,7 +230,11 @@ async def process_deliverable(
                 raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
 
         update_metadata_json(outputjson, deliverable)
-        log.debug("Updated metadata JSON for %s", deliverable.full_id)
+
+        # Save new cache for next time.
+        new_cache.to_json(cache_file)
+
+        log.debug("Updated metadata JSON and cache for %s", deliverable.full_id)
         return True, deliverable
 
     except Exception as e:

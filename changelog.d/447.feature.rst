@@ -1,0 +1,1 @@
+Implement dependency-aware caching for DAPS metadata extraction. ``docbuild metadata`` now caches file dependencies and environment configurations, significantly speeding up subsequent runs by skipping unnecessary DAPS executions for unchanged deliverables.

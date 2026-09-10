@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from typing import Any
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import ANY, AsyncMock, Mock, patch
 
 from lxml import etree  # type: ignore
 import pytest
@@ -254,6 +254,7 @@ class TestProcess:
             runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
+            env_config_hash=ANY,
         )
 
     @patch.object(runner_pkg, "store_productdocset_json", new_callable=Mock)
@@ -320,4 +321,5 @@ class TestProcess:
             runner_kwargs["max_workers"],
             exitfirst=False,
             skip_repo_update=False,
+            env_config_hash=ANY,
         )
