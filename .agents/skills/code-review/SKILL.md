@@ -4,9 +4,7 @@ description: A skill for context-aware code review to validate implementation ag
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 dependencies:
-  skills:
-    - name: testing
-      uri: "../testing/SKILL.md"
+  skills: [testing]
 
 metadata:
   category: code-quality
@@ -25,7 +23,7 @@ This skill guides a context-aware code review to determine if code correctly imp
 
 ## 2. Test Coverage and Quality
 
-For all the following items, use the `testing` skill located at `.agents/skills/testing/SKILL.md`:
+For all the following items, use the `testing` skill:
 
 *   **Check for test coverage.** Apply the rules in the `testing` skill for a single file and for the whole test suite.
 *   **Enforce >95% coverage** for new or modified code.
