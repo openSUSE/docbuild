@@ -36,6 +36,15 @@ docbuild.models.config.env.EnvBuildDaps
 
 
 
+   .. py:attribute:: list_srcfiles
+      :type:  str
+      :value: None
+
+
+      The command template used to list source files with hashes.
+
+
+
    .. py:attribute:: html
       :type:  str
       :value: None

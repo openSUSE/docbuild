@@ -1,0 +1,24 @@
+docbuild.models.cache
+=====================
+
+.. py:module:: docbuild.models.cache
+
+.. autoapi-nested-parse::
+
+   Caching related classes.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/models/cache/Cache
+
+.. autoapisummary::
+
+   docbuild.models.cache.Cache
+
+

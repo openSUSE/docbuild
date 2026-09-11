@@ -1,0 +1,56 @@
+docbuild.models.cache.Cache
+===========================
+
+.. py:class:: docbuild.models.cache.Cache
+
+   Represent an immutable cache of source files and environment config.
+
+
+   .. py:method:: from_json(path: pathlib.Path) -> Self
+      :classmethod:
+
+
+      Load the cache from a JSON file. Returns an empty cache on failure.
+
+
+
+   .. py:method:: to_json(path: pathlib.Path) -> None
+
+      Save the cache to a JSON file.
+
+
+
+   .. py:property:: combined_hash
+      :type: str
+
+
+      A single hash representing the state of all files and the environment.
+
+
+
+   .. py:method:: __hash__() -> int
+
+      Return hash of this cache based on combined_hash.
+
+
+
+   .. py:method:: __eq__(other: object) -> bool
+
+      Two caches are equal if their combined hashes match.
+
+
+
+   .. py:method:: files() -> frozenset[str]
+
+      Return a frozenset of all relative file paths in the cache.
+
+
+
+   .. py:method:: diff(other: Self) -> set[str]
+
+      Compare this cache with another.
+
+      Returns a comprehensive set of all files that have been added,
+      removed, or modified.
+
+
