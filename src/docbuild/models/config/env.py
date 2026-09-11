@@ -61,6 +61,13 @@ class EnvBuildDaps(BaseModel):
     )
     "The command used to extract DAPS metadata."
 
+    list_srcfiles: str = Field(
+        default="{build.daps.command} -d {{dcfile}} list-srcfiles --hashes",
+        title="DAPS List Source Files Template",
+        description="The template string to run list-srcfiles.",
+    )
+    "The command template used to list source files with hashes."
+
     html: str = Field(
         default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} html",
         title="DAPS HTML Command Template",

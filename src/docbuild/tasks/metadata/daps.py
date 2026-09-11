@@ -11,37 +11,37 @@ from docbuild.models.deliverable import Deliverable
 
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
+from ...utils.shell import run_command
 from .prebuilt import extract_prebuilt_metadata
 
 log = logging.getLogger(__name__)
 
 
-async def get_daps_hashes(worktree_dir: Path, dcfile_path: Path) -> dict[str, str]:
+async def get_daps_hashes(
+    worktree_dir: Path,
+    dcfile_path: Path,
+    daps_list_srcfiles_tmpl: str
+) -> dict[str, str]:
     """Run daps list-srcfiles --hashes and parse the output.
 
     Converts absolute paths to relative paths based on the worktree.
     """
-    cmd = ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"]
+    cmd_str = daps_list_srcfiles_tmpl.format(dcfile=str(dcfile_path))
+    cmd = shlex.split(cmd_str)
 
-    proc = await asyncio.create_subprocess_exec(
-        *cmd,
-        cwd=worktree_dir,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout_data, stderr_data = await proc.communicate()
+    # Use the centralized run_command utility
+    result = await run_command(cmd, cwd=worktree_dir)
 
-    if proc.returncode != 0:
-        log.warning("daps list-srcfiles failed: %s", stderr_data.decode())
+    if result.returncode != 0:
+        log.error("daps list-srcfiles failed: %s", result.stderr)
         return {}
 
     hashes = {}
-    for line in stdout_data.decode().splitlines():
+    for line in result.stdout.splitlines():
         line = line.strip()
         if not line or ":" not in line:
             continue
 
-        # Output format: ABSOLUTE_PATH:MD5_HASH
         parts = line.rsplit(":", maxsplit=1)
         if len(parts) == 2:
             abs_path, md5 = parts
@@ -108,6 +108,7 @@ async def process_deliverable(    # noqa: C901
     prebuilt_dir: Path,
     *,
     dapstmpl: str,
+    daps_list_srcfiles_tmpl: str,
     skip_repo_update: bool = False,
     env_config_hash: str = "",
 ) -> tuple[bool, Deliverable]:
@@ -199,12 +200,14 @@ async def process_deliverable(    # noqa: C901
             cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
             old_cache = Cache.from_json(cache_file)
 
-            # Fetch current hashes using our new helper
-            current_file_hashes = await get_daps_hashes(Path(worktree_dir), full_dcfile_path)
+            # Fetch current hashes using our new helper with the configured template
+            current_file_hashes = await get_daps_hashes(
+                Path(worktree_dir), full_dcfile_path, daps_list_srcfiles_tmpl
+            )
             new_cache = Cache(env_config_hash=env_config_hash, file_hashes=current_file_hashes)
 
-            # If the hashes match and the output JSON already exists, SKIP!
-            if old_cache.combined_hash == new_cache.combined_hash and cache_file.exists() and outputjson.exists():
+            # If the hashes match, SKIP!
+            if old_cache.combined_hash == new_cache.combined_hash:
                 log.info("Cache hit for %s! Skipping DAPS execution.", deliverable.full_id)
                 return True, deliverable
 

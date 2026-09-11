@@ -11,6 +11,7 @@ from docbuild.models.deliverable import Deliverable
 import docbuild.tasks.metadata.daps as daps_pkg
 from docbuild.tasks.metadata.daps import (
     get_daps_command,
+    get_daps_hashes,
     process_deliverable,
     update_metadata_json,
 )
@@ -182,12 +183,14 @@ class TestProcessDeliverable:
         ],
         ids=["success", "bare_repo_not_found", "clone_fails", "daps_fails"],
     )
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
     @patch.object(daps_pkg, "edit_json")
     @patch.object(daps_pkg, "ManagedGitRepo")
     async def test_scenarios(
         self,
         mock_managed_git_repo: Mock,
         mock_edit_json: Mock,
+        mock_get_daps_hashes: AsyncMock,
         deliverable: Deliverable,
         setup_paths: dict,
         mock_subprocess: AsyncMock,
@@ -200,6 +203,9 @@ class TestProcessDeliverable:
         expected_log: str | None,
     ):
         """Test success, missing repo, clone failure, and DAPS failure scenarios."""
+        # Force a cache miss so the test proceeds
+        mock_get_daps_hashes.return_value = {"fake.xml": "123"}
+
         mock_repo_instance = AsyncMock()
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.clone_bare.return_value = clone_returns
@@ -214,6 +220,7 @@ class TestProcessDeliverable:
         mock_edit_json.return_value.__enter__.return_value = mock_json_data
 
         if make_bare_repo:
+            assert deliverable.git is not None
             (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
         success, res_deliverable = await process_deliverable(
@@ -223,6 +230,7 @@ class TestProcessDeliverable:
             meta_cache_dir=setup_paths["meta_cache_dir"],
             prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
         )
 
         assert success is expected_success
@@ -244,6 +252,7 @@ class TestProcessDeliverable:
             meta_cache_dir=tmp_path / "cache",
             prebuilt_dir=tmp_path / "prebuilt",
             dapstmpl="daps -d {dcfile} metadata",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
         )
 
         assert success is True
@@ -264,6 +273,7 @@ class TestProcessDeliverable:
         mock_repo_instance.clone_bare.return_value = True
         mock_repo_instance.create_worktree.side_effect = RuntimeError("git clone failed")
 
+        assert deliverable.git is not None
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
         success, res_deliverable = await process_deliverable(
@@ -273,12 +283,14 @@ class TestProcessDeliverable:
             meta_cache_dir=setup_paths["meta_cache_dir"],
             prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
         )
 
         assert success is False
         assert res_deliverable is deliverable
         assert any("Error processing" in r.message for r in caplog.records)
 
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
     @patch.object(daps_pkg, "update_metadata_json")
     @patch.object(daps_pkg.asyncio, "create_subprocess_exec", new_callable=AsyncMock)
     @patch.object(daps_pkg, "ManagedGitRepo")
@@ -287,10 +299,14 @@ class TestProcessDeliverable:
         mock_managed_git_repo: Mock,
         mock_subprocess_exec: AsyncMock,
         mock_update_metadata_json: Mock,
+        mock_get_daps_hashes: AsyncMock,
         deliverable: Deliverable,
         setup_paths: dict,
     ):
         """When skip_repo_update=True, clone_bare is not called."""
+        # Force a cache miss so the test proceeds
+        mock_get_daps_hashes.return_value = {"fake.xml": "123"}
+
         mock_repo_instance = AsyncMock()
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.create_worktree.return_value = None
@@ -300,6 +316,7 @@ class TestProcessDeliverable:
         mock_daps_proc.returncode = 0
         mock_subprocess_exec.return_value = mock_daps_proc
 
+        assert deliverable.git is not None
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
         # Using explicit paths instead of mock_context!
@@ -310,6 +327,7 @@ class TestProcessDeliverable:
             meta_cache_dir=setup_paths["meta_cache_dir"],
             prebuilt_dir=Path("/tmp/prebuilt"),
             dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
             skip_repo_update=True,
         )
 
@@ -318,3 +336,50 @@ class TestProcessDeliverable:
         mock_repo_instance.clone_bare.assert_not_awaited()
         mock_repo_instance.create_worktree.assert_awaited_once()
         mock_update_metadata_json.assert_called_once()
+
+
+async def test_get_daps_hashes_success():
+    """Test that valid output is parsed and paths are made relative."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "/tmp/worktree/file1.xml:hash1\n/tmp/worktree/subdir/file2.xml:hash2\n"
+
+    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result) as mock_run:
+        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles --hashes")
+
+        mock_run.assert_called_once_with(
+            ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"],
+            cwd=worktree_dir
+        )
+        assert result == {"file1.xml": "hash1", "subdir/file2.xml": "hash2"}
+
+
+async def test_get_daps_hashes_failure():
+    """Test that a non-zero return code returns an empty dictionary."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 1
+    mock_result.stderr = "Command failed"
+
+    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result):
+        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        assert result == {}
+
+
+async def test_get_daps_hashes_malformed_output():
+    """Test that empty or malformed lines are safely skipped."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "\nmalformed_line\n/tmp/worktree/valid.xml:hash1\n"
+
+    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result):
+        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        assert result == {"valid.xml": "hash1"}

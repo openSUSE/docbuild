@@ -89,3 +89,26 @@ def test_cache_diff():
 
     # The diff should contain the modified, added, and removed files
     assert diff_set == {"modified.xml", "added.xml", "removed.xml"}
+
+
+def test_cache_from_json_malformed(tmp_path: Path):
+    """Test that corrupted JSON safely returns an empty cache."""
+    cache_file = tmp_path / "bad.json"
+    cache_file.write_text("{this_is_not_valid_json: 123", encoding="utf-8")
+
+    loaded = Cache.from_json(cache_file)
+    assert loaded.env_config_hash == ""
+    assert loaded.file_hashes == {}
+
+
+def test_cache_from_json_io_error(tmp_path: Path):
+    """Test that file read errors safely return an empty cache."""
+    cache_file = tmp_path / "unreadable.json"
+    cache_file.touch(mode=0o000)  # Remove all read permissions
+
+    try:
+        loaded = Cache.from_json(cache_file)
+        assert loaded.env_config_hash == ""
+        assert loaded.file_hashes == {}
+    finally:
+        cache_file.chmod(0o644)  # Restore permissions so tmp_path cleanup doesn't crash

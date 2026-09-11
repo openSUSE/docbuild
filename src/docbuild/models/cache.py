@@ -49,9 +49,19 @@ class Cache:
 
         return hasher.hexdigest()
 
-    def files(self) -> set[str]:
-        """Return a set of all relative file paths in the cache."""
-        return set(self.file_hashes.keys())
+    def __hash__(self) -> int:
+        """Return hash of this cache based on combined_hash."""
+        return hash(self.combined_hash)
+
+    def __eq__(self, other: object) -> bool:
+        """Two caches are equal if their combined hashes match."""
+        if not isinstance(other, Cache):
+            return NotImplemented
+        return self.combined_hash == other.combined_hash
+
+    def files(self) -> frozenset[str]:
+        """Return a frozenset of all relative file paths in the cache."""
+        return frozenset(self.file_hashes.keys())
 
     def diff(self, other: Self) -> set[str]:
         """Compare this cache with another.
@@ -59,8 +69,8 @@ class Cache:
         Returns a comprehensive set of all files that have been added,
         removed, or modified.
         """
-        # Get added and removed files
-        changed = self.files().symmetric_difference(other.files())
+        # Get added and removed files (convert to mutable set!)
+        changed = set(self.files().symmetric_difference(other.files()))
 
         # Check for modified files by comparing hashes of common files
         for path in self.files().intersection(other.files()):

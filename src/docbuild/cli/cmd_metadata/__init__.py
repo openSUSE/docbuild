@@ -69,6 +69,7 @@ def metadata(
     meta_cache_dir = env.paths.meta_cache_dir
     json_cache_dir = env.paths.json_cache_dir
     dapsmetatmpl = str(env.build.daps.meta)
+    daps_list_srcfiles_tmpl = str(env.build.daps.list_srcfiles)
 
     # Unpack max_workers for the new concurrency semaphore
     max_workers = context.appconfig.max_workers if context.appconfig else 1
@@ -91,6 +92,7 @@ def metadata(
                         json_cache_dir=json_cache_dir,
                         prebuilt_dir=env.paths.prebuilt_dir,
                         dapsmetatmpl=dapsmetatmpl,
+                        daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
                         max_workers=max_workers,
                         doctypes=list(doctypes),
                         exitfirst=exitfirst,
