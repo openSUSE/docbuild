@@ -292,3 +292,4 @@ git_repos/
 .DS_Store
 lean_audit.txt
 output/
+/prebuilt/

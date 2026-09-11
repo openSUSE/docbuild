@@ -1,0 +1,1 @@
+Added shell script that syncs CN HTML files from Docserv into a local prebuilt directory (useful for calling metadata and checking if all HTML files are available).
