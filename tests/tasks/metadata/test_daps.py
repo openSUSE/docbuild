@@ -347,7 +347,7 @@ async def test_get_daps_hashes_success():
     mock_result.returncode = 0
     mock_result.stdout = "/tmp/worktree/file1.xml:hash1\n/tmp/worktree/subdir/file2.xml:hash2\n"
 
-    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result) as mock_run:
+    with patch.object(daps_pkg, "run_command", return_value=mock_result) as mock_run:
         result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles --hashes")
 
         mock_run.assert_called_once_with(
@@ -366,7 +366,7 @@ async def test_get_daps_hashes_failure():
     mock_result.returncode = 1
     mock_result.stderr = "Command failed"
 
-    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result):
+    with patch.object(daps_pkg, "run_command", return_value=mock_result):
         result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
         assert result == {}
 
@@ -380,6 +380,6 @@ async def test_get_daps_hashes_malformed_output():
     mock_result.returncode = 0
     mock_result.stdout = "\nmalformed_line\n/tmp/worktree/valid.xml:hash1\n"
 
-    with patch("docbuild.tasks.metadata.daps.run_command", return_value=mock_result):
+    with patch.object(daps_pkg, "run_command", return_value=mock_result):
         result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
         assert result == {"valid.xml": "hash1"}
