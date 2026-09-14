@@ -249,19 +249,30 @@ Values are automatically converted to their appropriate types:
 
   .. code-block:: shell-session
 
-     $ docbuild -C "server.enabled=true" config list --env
-
-* **Integers and floats**: Numeric literals without quotes
-
-  .. code-block:: shell-session
-
-     $ docbuild -C "server.port=8080" config list --env
+     $ docbuild -C "general.enabled_mail=true" config list --env
 
 * **Strings**: Quoted strings or values that don't match the above patterns
 
   .. code-block:: shell-session
 
-     $ docbuild -C "server.name='My Server'" config list --env
+     $ docbuild -C "general.name='My ENV Name'" config list --env
+
+
+
+Using placeholders in CLI overrides
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is possible to use placeholders in CLI overrides, just like in configuration files. Static placeholders will be resolved based on the current configuration context, while dynamic placeholders will remain as templates for runtime resolution:
+
+.. code-block:: shell-session
+
+   $ docbuild -C 'general.canonical_url_domain=https://docs.example.org' \
+              -C 'xslt.html.homepage={general.canonical_url_domain}' \
+              config list --env | grep example
+   "canonical_url_domain": "https://docs.example.org/"
+      "homepage": "https://docs.example.org"
+
+
 
 Validation of CLI Values
 ~~~~~~~~~~~~~~~~~~~~~~~~
