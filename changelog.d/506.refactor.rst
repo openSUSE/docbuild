@@ -1,0 +1,1 @@
+Refactored the environment configuration to have a single source of truth for default values. The :data:`~docbuild.cli.defaults.DEFAULT_ENV_CONFIG` dictionary is now generated directly from the Pydantic models.

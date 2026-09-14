@@ -11,7 +11,7 @@ from .models.serverroles import ServerRole
 APP_NAME: str = "docbuild"
 """The name of the application, used in paths and config files."""
 
-DEFAULT_SERVER_NAME = "default-env"
+DEFAULT_ENV_NAME = "default-env"
 """The default server name used in the application configuration."""
 
 DEFAULT_LANGS: tuple[str, ...]= ("en-us",)
@@ -122,10 +122,10 @@ GIT_CONFIG_FILENAME: Path = Path(__file__).parent / "etc/git/gitconfig"
 """The project-specific Git configuration file (relative to this project)"""
 
 # --- State and Logging Constants ---
-BASE_LOG_DIR: Path = Path(f"{STATE_HOME}/{DEFAULT_SERVER_NAME}/log")
+BASE_LOG_DIR: Path = Path(f"{STATE_HOME}/{DEFAULT_ENV_NAME}/log")
 """The directory where log files will be stored."""
 
-BASE_STATE_DIR: Path = STATE_HOME / DEFAULT_SERVER_NAME
+BASE_STATE_DIR: Path = STATE_HOME / DEFAULT_ENV_NAME
 """The directory where application state, logs, and locks are stored,
 per XDG Base Directory Specification."""
 

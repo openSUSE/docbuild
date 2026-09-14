@@ -256,3 +256,14 @@ def test_env_config_invalid_placeholder_syntax(monkeypatch):
     # We expect a ValueError because our model validator wraps PlaceholderSyntaxError
     with pytest.raises(ValueError, match="Configuration placeholder error"):
         EnvConfig.from_dict(invalid_data)
+
+
+def test_get_default_config_unresolved():
+    """
+    Test that get_default_config(resolve_placeholders=False) returns
+    a dictionary with unresolved placeholders.
+    """
+    unresolved_config = EnvConfig.get_default_config(resolve_placeholders=False)
+    assert isinstance(unresolved_config, dict)
+    # Check for a known placeholder
+    assert "{base_cache_dir}" in unresolved_config["paths"]["base_server_cache_dir"]

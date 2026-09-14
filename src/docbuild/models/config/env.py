@@ -1,4 +1,94 @@
-"""Pydantic models for application and environment configuration."""
+"""Pydantic models for environment configuration.
+
+This module defines the Pydantic models for parsing and validating the environment
+configuration (``env.toml``). The models serve as the single source of truth for
+default values.
+
+Below is a complete example of the default configuration in JSON with comments
+format, showing all available fields and their default values. Placeholders
+like ``{general.name}`` are resolved from other values in the configuration.
+Placeholders with double curly braces like ``{{product}}`` are resolved at
+runtime during the build process.
+
+.. code-block:: javascript
+
+    {
+        // General settings for the documentation server environment.
+        // Corresponds to the EnvGeneral model.
+        "general": {
+            "name": "default-env",
+            "role": "production",
+            "enable_mail": false,
+            "default_lang": "en-us",
+            "languages": [
+                "de-de", "en-us", "es-es", "fr-fr", "ja-jp", "ko-kr", "pt-br", "zh-cn"
+            ],
+            "canonical_url_domain": "https://documentation.suse.com"
+        },
+        // All file system path definitions.
+        // Corresponds to the EnvPaths model.
+        "paths": {
+            "root_config_dir": "~/.config/docbuild",
+            "config_dir": "{root_config_dir}/config.d",
+            "main_portal_config": "{config_dir}/portal.xml",
+            "portal_rncschema": "{root_config_dir}/portal-config.rnc",
+            "jinja_dir": "~/.local/share/docbuild/jinja",
+            "server_rootfiles_dir": "{root_config_dir}/server-root-files",
+            "prebuilt_dir": "{base_server_cache_dir}/build",
+            "tmp_repo_dir": "~/.local/state/docbuild/repos/branches",
+            "repo_dir": "~/.local/state/docbuild/repos/permanent",
+            "base_cache_dir": "~/.cache/docbuild",
+            "base_server_cache_dir": "{base_cache_dir}/{general.name}",
+            "meta_cache_dir": "{base_server_cache_dir}/meta",
+            "json_cache_dir": "{base_server_cache_dir}/json",
+            "runtime_base_dir": "/run/user/1000/docbuild",
+            "lock_dir": "{runtime_base_dir}/locks",
+            // Temporary paths, corresponds to the EnvTmpPaths model.
+            "tmp": {
+                "tmp_base_dir": "/tmp/docbuild",
+                "tmp_dir": "{tmp_base_dir}/{general.name}",
+                "tmp_deliverable_dir": "{tmp_dir}/deliverable",
+                "tmp_metadata_dir": "{tmp_dir}/metadata",
+                "tmp_build_base_dir": "{tmp_dir}/build",
+                "tmp_build_dir_dyn": "{{product}}-{{docset}}-{{lang}}",
+                "tmp_out_dir": "{tmp_dir}/out",
+                "log_dir": "~/.local/state/docbuild/{general.name}/log",
+                "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX"
+            },
+            // Target paths for deployment, corresponds to the EnvTargetPaths model.
+            "target": {
+                "target_base_dir": "~/Documents/docbuild/target",
+                "target_dir_dyn": "{{lang}}/{{product}}/{{docset}}",
+                "backup_dir": "~/.local/state/docbuild/{general.name}/backup"
+            }
+        },
+        // Settings for DAPS and container builds.
+        // Corresponds to the EnvBuild model.
+        "build": {
+            // DAPS command templates, corresponds to the EnvBuildDaps model.
+            "daps": {
+                "command": "daps",
+                "meta": "daps --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
+                "list_srcfiles": "{build.daps.command} -d {{dcfile}} list-srcfiles --hashes",
+                "html": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} html",
+                "pdf": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} pdf",
+                "single_html": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} single-html",
+                "epub": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} epub"
+            },
+            // Container settings, corresponds to the EnvBuildContainer model.
+            "container": {
+                "image": "registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"
+            }
+        },
+        // Custom XSLT parameters passed to DAPS.
+        // Corresponds to the EnvXslt model.
+        "xslt": {
+            "common": {},
+            "html": {},
+            "pdf": {}
+        }
+    }
+"""
 
 from copy import deepcopy
 from pathlib import Path
@@ -18,6 +108,16 @@ from ...config.app import (
     PlaceholderResolutionError,
     PlaceholderSyntaxError,
     replace_placeholders,
+)
+from ...constants import (
+    ALLOWED_LANGUAGES,
+    APP_NAME,
+    CACHE_HOME,
+    CONFIG_HOME,
+    DATA_HOME,
+    DEFAULT_ENV_NAME,
+    RUNTIME_DIR,
+    STATE_HOME,
 )
 from ..language import LanguageCode
 from ..path import WritablePath
@@ -46,7 +146,7 @@ class EnvBuildDaps(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     command: str = Field(
-        ...,
+        default="daps",
         title="DAPS Command",
         description="The base daps command executable.",
         examples=["daps"]
@@ -54,7 +154,7 @@ class EnvBuildDaps(BaseModel):
     "The base command used for DAPS execution."
 
     meta: str = Field(
-        ...,
+        default="{build.daps.command} --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
         title="DAPS Metadata Subcommand",
         description="The daps metadata command for extracting info.",
         examples=["daps metadata"]
@@ -90,7 +190,7 @@ class EnvBuildDaps(BaseModel):
     "The command template used to build Single HTML."
 
     epub: str = Field(
-        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}}  epub",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} epub",
         title="DAPS EPUB Command Template",
         description="The template string to build EPUB.",
     )
@@ -102,8 +202,8 @@ class EnvBuildContainer(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
-    container: str = Field(
-        ...,
+    image: str = Field(
+        default="registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest",
         title="Container Image",
         description="The container registry path or image name.",
         examples=["registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"]
@@ -116,8 +216,8 @@ class EnvBuild(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    daps: EnvBuildDaps
-    container: EnvBuildContainer
+    daps: EnvBuildDaps = Field(default_factory=EnvBuildDaps)
+    container: EnvBuildContainer = Field(default_factory=EnvBuildContainer)
 
 
 # --- Configuration Models ---
@@ -129,6 +229,7 @@ class EnvGeneral(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(
+        default=DEFAULT_ENV_NAME,
         title="Environment Name",
         description="A human-readable identifier for the environment.",
         examples=["documentation-suse-com", "docserv-suse-de"],
@@ -136,6 +237,7 @@ class EnvGeneral(BaseModel):
     "The descriptive name of the environment."
 
     role: ServerRole = Field(
+        default=ServerRole.PRODUCTION,
         title="Environment Role",
         description="The operational role of the environment.",
         examples=["production"],
@@ -143,6 +245,7 @@ class EnvGeneral(BaseModel):
     "The environment type, used for build behavior differences."
 
     enable_mail: bool = Field(
+        default=False,
         title="Enable Email",
         description="Flag to enable email sending features (e.g., build notifications).",
         examples=[True],
@@ -150,6 +253,7 @@ class EnvGeneral(BaseModel):
     "Whether email functionality should be active."
 
     default_lang: LanguageCode = Field(
+        default=LanguageCode(language="en-us"),
         title="Default Language",
         description="The primary language code (e.g., 'en') used for non-localized content.",
         examples=["en-us", "de-de", "ja-jp"],
@@ -157,6 +261,7 @@ class EnvGeneral(BaseModel):
     "The default language code."
 
     languages: list[LanguageCode] = Field(
+        default_factory=lambda: [LanguageCode(language=lang) for lang in ALLOWED_LANGUAGES],
         title="Supported Languages",
         description="A list of all language codes supported by this documentation instance.",
         examples=[["en-us", "de-de", "fr-fr"]],
@@ -164,6 +269,7 @@ class EnvGeneral(BaseModel):
     "A list of supported language codes."
 
     canonical_url_domain: HttpUrl = Field(
+        default=HttpUrl("https://documentation.suse.com"),
         title="Canonical URL Domain",
         description="The base domain used to construct canonical URLs for SEO purposes.",
         examples=["https://docs.example.com"],
@@ -188,6 +294,7 @@ class EnvTmpPaths(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     tmp_base_dir: WritablePath = Field(
+        default=f"/tmp/{APP_NAME}",
         title="Temporary Base Directory",
         description="The root directory for all temporary build artifacts.",
         examples=["/var/tmp/docbuild/"],
@@ -195,6 +302,7 @@ class EnvTmpPaths(BaseModel):
     "Root path for temporary files."
 
     tmp_dir: WritablePath = Field(
+        default="{tmp_base_dir}/{general.name}",
         title="General Temporary Directory for specific server",
         description=(
             "A general-purpose subdirectory within the base temporary path to "
@@ -205,6 +313,7 @@ class EnvTmpPaths(BaseModel):
     "General temporary directory."
 
     tmp_deliverable_dir: WritablePath = Field(
+        default="{tmp_dir}/deliverable",
         title="Temporary Deliverable Directory",
         description="The directory where deliverable repositories are cloned and processed.",
         examples=["/var/tmp/docbuild/doc-example-com/deliverable/"],
@@ -212,6 +321,7 @@ class EnvTmpPaths(BaseModel):
     "Directory for temporary deliverable clones."
 
     tmp_metadata_dir: WritablePath = Field(
+        default="{tmp_dir}/metadata",
         title="Temporary Metadata Directory",
         description="Temporary directory for metadata files.",
         examples=["/var/tmp/docbuild/doc-example-com/metadata"],
@@ -220,6 +330,7 @@ class EnvTmpPaths(BaseModel):
 
     # SPLIT: static base directory (validated)
     tmp_build_base_dir: WritablePath = Field(
+        default="{tmp_dir}/build",
         title="Temporary Build Base Directory",
         description="The base directory where intermediate build files are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/build/"],
@@ -237,6 +348,7 @@ class EnvTmpPaths(BaseModel):
     "Dynamic suffix for build directory."
 
     tmp_out_dir: WritablePath = Field(
+        default="{tmp_dir}/out",
         title="Temporary Output Directory",
         description="The final temporary directory where built artifacts land before deployment.",
         examples=["/var/tmp/docbuild/doc-example-com/out/"],
@@ -244,6 +356,7 @@ class EnvTmpPaths(BaseModel):
     "Temporary final output directory."
 
     log_dir: WritablePath = Field(
+        default=f"{STATE_HOME}/{{general.name}}/log",
         title="Log Directory",
         description="The directory where build logs and application logs are stored.",
         examples=["/var/tmp/docbuild/doc-example-com/log"],
@@ -252,6 +365,7 @@ class EnvTmpPaths(BaseModel):
 
     # RENAMED: To indicate this is a dynamic template
     tmp_deliverable_name_dyn: str = Field(
+        default="{{product}}_{{docset}}_{{lang}}_XXXXXX",
         title="Temporary Deliverable Name (Dynamic)",
         description=(
             "The dynamic template name used for the current deliverable being built."
@@ -268,6 +382,7 @@ class EnvTargetPaths(BaseModel):
 
     # SPLIT: static base directory or remote destination
     target_base_dir: str = Field(
+        default=f"{Path.home()}/Documents/{APP_NAME}/target",
         title="Target Server Base Directory",
         description="The static remote destination or base path for built documentation.",
         examples=["doc@10.100.100.100:/srv/docs"],
@@ -284,19 +399,21 @@ class EnvTargetPaths(BaseModel):
     "Dynamic suffix for final remote destination."
 
     backup_dir: Path = Field(
+        default=f"{STATE_HOME}/{{general.name}}/backup",
         title="Build Server Backup Directory",
         description="The location on the build server before it is synced to the target path.",
-        examples=["/var/lib/docbuild/backups"]
+        examples=["/var/lib/docbuild/backups"],
     )
     "Local directory for storing build backups before deployment."
 
 
-class EnvPathsConfig(BaseModel):
+class EnvPaths(BaseModel):
     """Defines various application paths, including permanent storage and cache."""
 
     model_config = ConfigDict(extra="forbid")
 
     config_dir: Path = Field(
+        default="{root_config_dir}/config.d",
         title="Configuration Directory",
         description="The configuration directory containing application and environment files (e.g. app.toml).",
         examples=["/etc/docbuild/config.d"],
@@ -304,6 +421,7 @@ class EnvPathsConfig(BaseModel):
     "Path to configuration files."
 
     main_portal_config: Path = Field(
+        default="{config_dir}/portal.xml",
         title="Main Portal XML Configuration File",
         description="Path of the main Portal XML configuration file.",
         examples=[
@@ -314,6 +432,7 @@ class EnvPathsConfig(BaseModel):
     "Path to the main portal XML configuration file."
 
     portal_rncschema: Path = Field(
+        default="{root_config_dir}/portal-config.rnc",
         title="Portal RELAX NG (RNC) Schema File",
         description=(
             "Path of the RELAX NG (RNC) schema file used for "
@@ -327,6 +446,7 @@ class EnvPathsConfig(BaseModel):
     "Path to the portal RELAX NG (RNC) schema file."
 
     root_config_dir: Path = Field(
+        default=CONFIG_HOME,
         title="Root Configuration Directory",
         description="The highest-level directory containing common config files.",
         examples=["/etc/docbuild"],
@@ -334,6 +454,7 @@ class EnvPathsConfig(BaseModel):
     "Path to the root configuration files."
 
     jinja_dir: Path = Field(
+        default=f"{DATA_HOME}/jinja",
         title="Jinja Template Directory",
         description="Directory containing environment-specific Jinja templates.",
         examples=["/etc/docbuild/jinja-doc-suse-com"],
@@ -341,6 +462,7 @@ class EnvPathsConfig(BaseModel):
     "Path for Jinja templates."
 
     server_rootfiles_dir: Path = Field(
+        default="{root_config_dir}/server-root-files",
         title="Server Root Files Directory",
         description="Files placed in the root of the server deployment.",
         examples=["/etc/docbuild/server-root-files-doc-suse-com"],
@@ -348,7 +470,7 @@ class EnvPathsConfig(BaseModel):
     "Path for server root files."
 
     prebuilt_dir: Path = Field(
-        default=Path("~/.cache/docbuild/build"),
+        default="{base_server_cache_dir}/build",
         title="Prebuilt/External Directory",
         description="The base directory containing prebuilt external documentation (e.g., Antora).",
         examples=["/data/docserv2/external-builds/external-tree/"],
@@ -358,6 +480,7 @@ class EnvPathsConfig(BaseModel):
     # --- WRITABLE PATHS START HERE ---
 
     repo_dir: WritablePath = Field(
+        default=f"{STATE_HOME}/repos/permanent",
         title="Permanent Repository Directory",
         description="The directory where permanent bare Git repositories are stored.",
         examples=["/var/cache/docbuild/repos/permanent-full/"],
@@ -365,6 +488,7 @@ class EnvPathsConfig(BaseModel):
     "Path for permanent bare Git repositories."
 
     tmp_repo_dir: WritablePath = Field(
+        default=f"{STATE_HOME}/repos/branches",
         title="Temporary Repository Directory",
         description="Directory used for temporary working copies cloned from permanent bare repos.",
         examples=["/var/cache/docbuild/repos/temporary-branches/"],
@@ -372,6 +496,7 @@ class EnvPathsConfig(BaseModel):
     "Directory for temporary working copies."
 
     base_cache_dir: WritablePath = Field(
+        default=CACHE_HOME,
         title="Base Cache Directory",
         description="The root directory for all application-level caches.",
         examples=["/var/cache/docserv", "~/.cache/docbuild"],
@@ -379,6 +504,7 @@ class EnvPathsConfig(BaseModel):
     "Base path for all caches."
 
     base_server_cache_dir: WritablePath = Field(
+        default="{base_cache_dir}/{general.name}",
         title="Base Server Cache Directory",
         description="The base directory for server-specific caches.",
         examples=["/var/cache/docserv/doc-example-com"],
@@ -386,6 +512,7 @@ class EnvPathsConfig(BaseModel):
     "Base path for server caches."
 
     meta_cache_dir: WritablePath = Field(
+        default="{base_server_cache_dir}/meta",
         title="Metadata Cache Directory",
         description="Cache specifically for repository and deliverable metadata.",
         examples=[
@@ -396,6 +523,7 @@ class EnvPathsConfig(BaseModel):
     "Metadata cache path."
 
     json_cache_dir: WritablePath = Field(
+        default="{base_server_cache_dir}/json",
         title="JSON Cache Directory",
         description="Cache specifically for JSON data used in the portal.",
         examples=[
@@ -406,6 +534,7 @@ class EnvPathsConfig(BaseModel):
     "JSON cache path."
 
     runtime_base_dir: WritablePath = Field(
+        default=RUNTIME_DIR,
         title="Base Runtime Directory (Per-Run)",
         description=(
             "The base directory for lightweight runtime artifacts such as "
@@ -417,6 +546,7 @@ class EnvPathsConfig(BaseModel):
     "Base runtime path."
 
     lock_dir: WritablePath = Field(
+        default="{runtime_base_dir}/locks",
         title="Lock Directory",
         description=(
             "Directory for lock files used to prevent concurrent builds or "
@@ -426,10 +556,10 @@ class EnvPathsConfig(BaseModel):
     )
     "Directory for lock files."
 
-    tmp: EnvTmpPaths
+    tmp: EnvTmpPaths = Field(default_factory=EnvTmpPaths)
     "Temporary build paths."
 
-    target: EnvTargetPaths
+    target: EnvTargetPaths = Field(default_factory=EnvTargetPaths)
     "Target deployment and backup paths."
 
 
@@ -449,12 +579,14 @@ class EnvConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     general: EnvGeneral = Field(
+        default_factory=EnvGeneral,
         title="General Configuration",
         description="General settings like environment name, role, and languages.",
     )
     "General application settings."
 
-    paths: EnvPathsConfig = Field(
+    paths: EnvPaths = Field(
+        default_factory=EnvPaths,
         title="Path Configuration",
         description="All file system path definitions.",
     )
@@ -462,6 +594,7 @@ class EnvConfig(BaseModel):
 
     # Build section integration
     build: EnvBuild = Field(
+        default_factory=EnvBuild,
         title="Build Configuration",
         description="Settings for DAPS command execution and containerization.",
     )
@@ -494,3 +627,22 @@ class EnvConfig(BaseModel):
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """Create an EnvConfig instance from a dictionary."""
         return cls.model_validate(data)
+
+    @classmethod
+    def get_default_config(cls, resolve_placeholders: bool = True) -> dict[str, Any]:
+        """Generate the default environment configuration from the model.
+
+        :param resolve_placeholders: If True, resolve placeholders in the config.
+        :return: The default configuration as a dictionary.
+        """
+        # 1. Create a raw instance with model-defined defaults
+        raw_instance = cls.model_validate({})
+        # 2. Dump to a dictionary
+        raw_dict = raw_instance.model_dump(mode="json")
+
+        if not resolve_placeholders:
+            return raw_dict
+
+        # 3. Resolve placeholders
+        resolved_dict = replace_placeholders(raw_dict)
+        return resolved_dict or {}
