@@ -51,15 +51,15 @@ class Repo:
     .. code-block:: python
 
         >>> from docbuild.models.repo import Repo
-        >>> repo = Repo("https://github.com/openSUSE/docbuild.git")
+        >>> repo = Repo("https://github.com/openSUSE/docbuild")
         >>> repo.url
-        'https://github.com/openSUSE/docbuild.git'
+        'https://github.com/opensuse/docbuild.git'
         >>> repo.name
-        'openSUSE/docbuild'
+        'opensuse/docbuild'
         >>> repo.surl
-        'gh://openSUSE/docbuild'
+        'gh://opensuse/docbuild'
         >>> repo.treeurl
-        'https://github.com/openSUSE/docbuild/tree/main'
+        'https://github.com/opensuse/docbuild/tree/main'
 
         >>> # Create a new Repo with a different branch from an existing one
         >>> r1 = Repo("gh://opensuse/docbuild@main")
