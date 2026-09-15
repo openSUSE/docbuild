@@ -233,8 +233,8 @@ def test_repo_init_from_repo_without_reparsing(monkeypatch):
         # Case 1: Simple copy
         copy = Repo(original)
         assert copy == original
-        assert copy.origin == original.origin
-        assert copy.branch == "develop"
+        for attribute in ("url", "treeurl", "surl", "name", "branch", "origin"):
+            assert getattr(copy, attribute) == getattr(original, attribute)
 
         # Case 2: Set branch on a repo that has none
         copy_with_branch = Repo(original_no_branch, default_branch="develop")

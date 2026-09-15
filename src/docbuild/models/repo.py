@@ -173,7 +173,9 @@ class Repo:
 
         if isinstance(value, Repo):
             # Perform a cheap copy of attributes.
-            for attribute in ("url", "treeurl", "surl", "name", "branch", "origin"):
+            for attribute in (
+                "url", "treeurl", "surl", "name", "branch", "origin",
+            ):
                 object.__setattr__(self, attribute, getattr(value, attribute))
 
             # If a new branch is provided that differs from the original, update
