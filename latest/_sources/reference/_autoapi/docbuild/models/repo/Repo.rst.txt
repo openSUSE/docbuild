@@ -1,9 +1,17 @@
 docbuild.models.repo.Repo
 =========================
 
-.. py:class:: docbuild.models.repo.Repo(value: str, default_branch: str | None = None)
+.. py:class:: docbuild.models.repo.Repo(value: Self | str, default_branch: str | None = None)
 
-   A repository model that can be initialized from a URL or a short name.
+   A model for Git URL and SSH repositories.
+
+   It can be initialized from another Repo object, a URL, or a short name.
+
+   Initializing from an existing ``Repo`` object is a cheap operation that
+   avoids re-parsing the URL. The ``default_branch`` parameter can be used
+   to create a new ``Repo`` instance with a different branch. If provided,
+   it will overwrite the original branch (or set one if the original
+   ``Repo`` had no branch).
 
    This model can be compared directly with strings, which will check
    against the repository's abbreviated name (e.g., ``org/repo``).
@@ -39,16 +47,23 @@ docbuild.models.repo.Repo
    .. code-block:: python
 
        >>> from docbuild.models.repo import Repo
-       >>> repo = Repo("https://github.com/openSUSE/docbuild.git")
+       >>> repo = Repo("https://github.com/openSUSE/docbuild")
        >>> repo.url
-       'https://github.com/openSUSE/docbuild.git'
+       'https://github.com/opensuse/docbuild.git'
        >>> repo.name
-       'openSUSE/docbuild'
+       'opensuse/docbuild'
        >>> repo.surl
-       'gh://openSUSE/docbuild'
+       'gh://opensuse/docbuild'
        >>> repo.treeurl
-       'https://github.com/openSUSE/docbuild/tree/main'
+       'https://github.com/opensuse/docbuild/tree/main'
 
+       >>> # Create a new Repo with a different branch from an existing one
+       >>> r1 = Repo("gh://opensuse/docbuild@main")
+       >>> r2 = Repo(r1, default_branch="v1")
+       >>> r2.branch
+       'v1'
+       >>> r2.surl
+       'gh://opensuse/docbuild@v1'
 
 
    .. py:attribute:: DEFAULT_HOST
@@ -106,6 +121,18 @@ docbuild.models.repo.Repo
    .. py:method:: __eq__(other: object) -> bool
 
       Compare Repo with another Repo (by name) or a string (by name).
+
+      For example:
+
+      .. code-block:: python
+
+          >>> repo = Repo("opensuse/docbuild")
+          >>> repo == "https://github.com/opensuse/docbuild.git"
+          True
+          >>> repo == "gh://opensuse/docbuild"
+          True
+          >>> repo == "opensuse/docbuild@v1"
+          True
 
 
 

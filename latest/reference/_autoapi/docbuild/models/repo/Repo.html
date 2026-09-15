@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.repo.Repo &#8212; Docbuild Documentation 0.23.1.dev17+g3e1f7b544.d20260915</title>
+    <title>docbuild.models.repo.Repo &#8212; Docbuild Documentation 0.23.1.dev18+g095dd0a53.d20260915</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../_static/documentation_options.js?v=b4ff5d6e"></script>
+    <script src="../../../../../_static/documentation_options.js?v=3a497937"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -622,8 +622,14 @@
 <h1>docbuild.models.repo.Repo<a class="headerlink" href="#docbuild-models-repo-repo" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
-<dd><p>A repository model that can be initialized from a URL or a short name.</p>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.models.repo.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Self</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.models.repo.Repo" title="Link to this definition">#</a></dt>
+<dd><p>A model for Git URL and SSH repositories.</p>
+<p>It can be initialized from another Repo object, a URL, or a short name.</p>
+<p>Initializing from an existing <code class="docutils literal notranslate"><span class="pre">Repo</span></code> object is a cheap operation that
+avoids re-parsing the URL. The <code class="docutils literal notranslate"><span class="pre">default_branch</span></code> parameter can be used
+to create a new <code class="docutils literal notranslate"><span class="pre">Repo</span></code> instance with a different branch. If provided,
+it will overwrite the original branch (or set one if the original
+<code class="docutils literal notranslate"><span class="pre">Repo</span></code> had no branch).</p>
 <p>This model can be compared directly with strings, which will check
 against the repository’s abbreviated name (e.g., <code class="docutils literal notranslate"><span class="pre">org/repo</span></code>).</p>
 <p>Two Repo objects are considered equal if their derived names are the same,
@@ -651,15 +657,23 @@ services, for example:</p>
 <p>Additionally, branches other than default branches (main or master) can be
 added by <code class="docutils literal notranslate"><span class="pre">&#64;BRANCH_NAME</span></code> to any of the above URLs.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">docbuild.models.repo</span><span class="w"> </span><span class="kn">import</span> <span class="n">Repo</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;https://github.com/openSUSE/docbuild.git&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;https://github.com/openSUSE/docbuild&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">url</span>
-<span class="go">&#39;https://github.com/openSUSE/docbuild.git&#39;</span>
+<span class="go">&#39;https://github.com/opensuse/docbuild.git&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">name</span>
-<span class="go">&#39;openSUSE/docbuild&#39;</span>
+<span class="go">&#39;opensuse/docbuild&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">surl</span>
-<span class="go">&#39;gh://openSUSE/docbuild&#39;</span>
+<span class="go">&#39;gh://opensuse/docbuild&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span><span class="o">.</span><span class="n">treeurl</span>
-<span class="go">&#39;https://github.com/openSUSE/docbuild/tree/main&#39;</span>
+<span class="go">&#39;https://github.com/opensuse/docbuild/tree/main&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a new Repo with a different branch from an existing one</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;gh://opensuse/docbuild@main&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r2</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">default_branch</span><span class="o">=</span><span class="s2">&quot;v1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r2</span><span class="o">.</span><span class="n">branch</span>
+<span class="go">&#39;v1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r2</span><span class="o">.</span><span class="n">surl</span>
+<span class="go">&#39;gh://opensuse/docbuild@v1&#39;</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -709,6 +723,16 @@ a GitHub repo.</p>
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__eq__">
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__eq__" title="Link to this definition">#</a></dt>
 <dd><p>Compare Repo with another Repo (by name) or a string (by name).</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;opensuse/docbuild&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">==</span> <span class="s2">&quot;https://github.com/opensuse/docbuild.git&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">==</span> <span class="s2">&quot;gh://opensuse/docbuild&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">==</span> <span class="s2">&quot;opensuse/docbuild@v1&quot;</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

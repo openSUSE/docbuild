@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev17+g3e1f7b544.d20260915</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev18+g095dd0a53.d20260915</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=b4ff5d6e"></script>
+    <script src="_static/documentation_options.js?v=3a497937"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -477,6 +477,8 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Refactored the environment configuration to have a single source of truth for default values. The <a class="reference internal" href="reference/_autoapi/docbuild/cli/defaults/index.html#docbuild.cli.defaults.DEFAULT_ENV_CONFIG" title="docbuild.cli.defaults.DEFAULT_ENV_CONFIG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG</span></code></a> dictionary is now generated directly from the Pydantic models. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/506">GH #506</a>)</p></li>
+<li><p>Allows to pass another <a class="reference internal" href="reference/_autoapi/docbuild/models/repo/Repo.html#docbuild.models.repo.Repo" title="docbuild.models.repo.Repo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code></a> object besides <code class="docutils literal notranslate"><span class="pre">str</span></code> in the initializer.
+Initializing from an existing Repo reuses its normalized values without reparsing. If that Repo has no branch, <code class="docutils literal notranslate"><span class="pre">default_branch</span></code> can be used to select the branch for its tree URL; an existing branch always takes precedence. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/521">GH #521</a>)</p></li>
 </ul>
 </section>
 </section>
