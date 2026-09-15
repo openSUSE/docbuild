@@ -1,0 +1,1 @@
+Added the ``docbuild cache`` command group with ``dir``, ``list``, and ``prune`` subcommands to easily inspect and manage the metadata caching system.

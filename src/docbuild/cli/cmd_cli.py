@@ -31,6 +31,7 @@ from ..utils.errors import format_pydantic_error, format_toml_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_cache import cache
 from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_doctor import doctor
@@ -469,3 +470,4 @@ cli.add_command(metadata)
 cli.add_command(portal)
 cli.add_command(cmd_check)
 cli.add_command(doctor)
+cli.add_command(cache)
