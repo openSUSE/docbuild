@@ -278,7 +278,20 @@ class Repo:
         return result
 
     def __eq__(self, other: object) -> bool:
-        """Compare Repo with another Repo (by name) or a string (by name)."""
+        """Compare Repo with another Repo (by name) or a string (by name).
+
+        For example:
+
+        .. code-block:: python
+
+            >>> repo = Repo("opensuse/docbuild")
+            >>> repo == "https://github.com/opensuse/docbuild.git"
+            True
+            >>> repo == "gh://opensuse/docbuild"
+            True
+            >>> repo == "opensuse/docbuild@v1"
+            True
+        """
         if isinstance(other, str):
             return self.name == Repo(other).name
         if isinstance(other, Repo):
