@@ -1,0 +1,2 @@
+Allows to pass another :class:`~docbuild.models.repo.Repo` object besides ``str`` in the initializer.
+Initializing from an existing Repo reuses its normalized values without reparsing. If that Repo has no branch, ``default_branch`` can be used to select the branch for its tree URL; an existing branch always takes precedence.

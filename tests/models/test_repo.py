@@ -212,6 +212,61 @@ def test_repo_compare_with_eq(repo_url):
     assert object() != repo1
 
 
+def test_repo_init_from_repo_without_reparsing(monkeypatch):
+    """Verify that initializing from a Repo object avoids re-parsing."""
+
+    # Create the original Repo objects from strings FIRST.
+    original = Repo("gh://org/repo@develop")
+    original_no_branch = Repo("gh://org/repo")
+    original_with_branch = Repo("opensuse/docbuild@main")
+    original_again = Repo("gh://org/repo@develop")
+
+    with monkeypatch.context() as m:
+        m.setattr(
+            Repo,
+            "_consolidate_match",
+            lambda *_args: pytest.fail("Repo input should not be reparsed"),
+        )
+
+        # Now, test the Repo-from-Repo initializations
+
+        # Case 1: Simple copy
+        copy = Repo(original)
+        assert copy == original
+        assert copy.origin == original.origin
+        assert copy.branch == "develop"
+
+        # Case 2: Set branch on a repo that has none
+        copy_with_branch = Repo(original_no_branch, default_branch="develop")
+        assert copy_with_branch.branch == "develop"
+        assert copy_with_branch.surl == "gh://org/repo@develop"
+        assert copy_with_branch.treeurl == "https://github.com/org/repo/tree/develop"
+
+        # Case 3: Override existing branch
+        copy_override = Repo(original_with_branch, default_branch="v1")
+        assert copy_override.branch == "v1"
+        assert copy_override.surl == "gh://opensuse/docbuild@v1"
+
+        # Case 4: Same branch should not trigger any change
+        copy_again = Repo(original_again, default_branch="develop")
+        assert copy_again.branch == "develop"
+        assert copy_again.surl == "gh://org/repo@develop"
+
+
+def test_repo_init_from_string_with_branch():
+    """Verify string parsing with default_branch."""
+    # Case 1: Use default_branch when parsing a name
+    r = Repo("opensuse/docbuild", default_branch="v1")
+    assert r.branch == "v1"
+    assert r.surl == "gh://opensuse/docbuild@v1"
+    assert r.treeurl == "https://github.com/opensuse/docbuild/tree/v1"
+
+    # Case 2: default_branch should not override explicit branch in string
+    r2 = Repo("opensuse/docbuild@main", default_branch="v1")
+    assert r2.branch == "main"
+    assert r2.surl == "gh://opensuse/docbuild@main"
+
+
 def test_repo_compare_with_in(repo_url):
     repo = Repo(repo_url)
     assert "org/repo" in repo

@@ -2,12 +2,20 @@
 
 from dataclasses import dataclass, field
 import re
-from typing import ClassVar
+from typing import ClassVar, Self
 
 
 @dataclass(frozen=True, init=False)
 class Repo:
-    """A repository model that can be initialized from a URL or a short name.
+    """A model for Git URL and SSH repositories.
+
+    It can be initialized from another Repo object, a URL, or a short name.
+
+    Initializing from an existing ``Repo`` object is a cheap operation that
+    avoids re-parsing the URL. The ``default_branch`` parameter can be used
+    to create a new ``Repo`` instance with a different branch. If provided,
+    it will overwrite the original branch (or set one if the original
+    ``Repo`` had no branch).
 
     This model can be compared directly with strings, which will check
     against the repository's abbreviated name (e.g., ``org/repo``).
@@ -53,6 +61,13 @@ class Repo:
         >>> repo.treeurl
         'https://github.com/openSUSE/docbuild/tree/main'
 
+        >>> # Create a new Repo with a different branch from an existing one
+        >>> r1 = Repo("gh://opensuse/docbuild@main")
+        >>> r2 = Repo(r1, default_branch="v1")
+        >>> r2.branch
+        'v1'
+        >>> r2.surl
+        'gh://opensuse/docbuild@v1'
     """
 
     DEFAULT_HOST: ClassVar[str] = "https://github.com"
@@ -144,13 +159,40 @@ class Repo:
     origin: str = field(init=False, repr=False)
     """The original unchanged URL of the repository."""
 
-    def __init__(self, value: str, default_branch: str | None = None) -> None:
-        """Initialize a repository model from a URL or a short name.
+    def __init__(self, value: Self | str, default_branch: str | None = None) -> None:
+        """Initialize a repository model.
 
-        :param default_branch: The default branch to use if no branch is specified in the URL.
+        :param value: A URL string, a short name (e.g., ``org/repo``), or an
+            existing ``Repo`` object.
+        :param default_branch: If the input ``value`` does not specify a branch,
+            this branch is used. If ``value`` is another ``Repo`` object,
+            this parameter can be used to override its branch.
         """
         if not value:
             raise ValueError("Repository value cannot be empty.")
+
+        if isinstance(value, Repo):
+            # Perform a cheap copy of attributes.
+            for attribute in ("url", "treeurl", "surl", "name", "branch", "origin"):
+                object.__setattr__(self, attribute, getattr(value, attribute))
+
+            # If a new branch is provided that differs from the original, update
+            # branch-dependent attributes without re-parsing the whole URL.
+            if default_branch is not None and default_branch != value.branch:
+                service, _, _ = value.surl.partition("://")
+                owner, repo = value.name.split("/", maxsplit=1)
+                treeurl_template = self._TREE_PATTERN.get(service, self._TREE_PATTERN["gh"])
+
+                object.__setattr__(self, "branch", default_branch)
+                object.__setattr__(self, "surl", f"{service}://{value.name}@{default_branch}")
+                object.__setattr__(
+                    self,
+                    "treeurl",
+                    treeurl_template.format(
+                        owner=owner, repo=repo, branch=default_branch
+                    ),
+                )
+            return
 
         # Store the original string
         object.__setattr__(self, "origin", value)
@@ -159,7 +201,7 @@ class Repo:
 
         # Consolidate data from regex match
         name = f"{data['org']}/{data['repo']}"
-        branch = data.get("branch")
+        branch = data.get("branch") or default_branch
         host = data.get("host")
         schema = data.get("schema")
 
@@ -259,6 +301,8 @@ class Repo:
 
 
 if __name__ == "__main__":
+    # Run it as:
+    # python -m src.docbuild.models.repo
     test_urls = [
         "https://github.com/lycheeverse/lychee/tree/relative-link-fixes",  # New #variant
         "https://GitHub.com/opensuse/docbuild.git",  # HTTPS no branch
