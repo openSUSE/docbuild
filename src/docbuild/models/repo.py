@@ -204,24 +204,8 @@ class Repo:
         # Consolidate data from regex match
         name = f"{data['org']}/{data['repo']}"
         branch = data.get("branch") or default_branch
-        host = data.get("host")
-        schema = data.get("schema")
-
-        match schema:
-            case "http" | "https":
-                # For https, a host from regex does not include the schema
-                service = self._MAP_URL2SERVICE.get(f"{schema}://{host}", "gh")
-                url = f"{schema}://{host}/{name}.git"
-            case "git@":
-                # For ssh, map to service and get canonical URL
-                service = self._MAP_URL2SERVICE.get(f"https://{host}", "gh")
-                host = self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)
-                url = f"{host}/{name}.git"
-            case _:
-                # For abbreviations (gh://) or bare (org/repo)
-                service = schema or "gh"
-                host = self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)
-                url = f"{host}/{name}.git"
+        service = data["service"]
+        url = data["url"]
 
         # Build URLs
         surl = f"{service}://{name}"
@@ -253,17 +237,38 @@ class Repo:
                 "or an abbreviated name."
             )
         raw_data = match.groupdict()
-        result = {
-            "schema": raw_data.get("https_schema")
-            or raw_data.get("ssh_schema")
-            or raw_data.get("gh_schema"),
-            "host": raw_data.get("https_host") or raw_data.get("ssh_host"),
-            "org": raw_data.get("https_org")
+        org = (
+            raw_data.get("https_org")
             or raw_data.get("ssh_org")
-            or raw_data.get("gh_org"),
-            "repo": raw_data.get("https_repo")
+            or raw_data.get("gh_org")
+        )
+        repo = (
+            raw_data.get("https_repo")
             or raw_data.get("ssh_repo")
-            or raw_data.get("gh_repo"),
+            or raw_data.get("gh_repo")
+        )
+
+        match raw_data:
+            case {
+                "https_schema": https_schema,
+                "https_host": https_host,
+            } if https_schema and https_host:
+                service = self._MAP_URL2SERVICE.get(
+                    f"{https_schema}://{https_host}", "gh"
+                )
+                url = f"{https_schema}://{https_host}/{org}/{repo}.git"
+            case {"ssh_schema": "git@", "ssh_host": ssh_host} if ssh_host:
+                service = self._MAP_URL2SERVICE.get(f"https://{ssh_host}", "gh")
+                url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
+            case _:
+                service = raw_data.get("gh_schema") or "gh"
+                url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
+
+        result = {
+            "org": org,
+            "repo": repo,
+            "service": service,
+            "url": url,
         }
 
         # Branch Logic: Prioritize the /tree/ branch, fallback to @branch
