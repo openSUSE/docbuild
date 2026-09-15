@@ -18,7 +18,7 @@ docbuild.models.config.env.EnvBuildContainer
 
 
 
-   .. py:attribute:: container
+   .. py:attribute:: image
       :type:  str
       :value: None
 

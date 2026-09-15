@@ -15,7 +15,7 @@ Attributes
 .. autoapisummary::
 
    docbuild.constants.APP_NAME
-   docbuild.constants.DEFAULT_SERVER_NAME
+   docbuild.constants.DEFAULT_ENV_NAME
    docbuild.constants.DEFAULT_LANGS
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
@@ -65,7 +65,7 @@ Module Contents
    The name of the application, used in paths and config files.
 
 
-.. py:data:: DEFAULT_SERVER_NAME
+.. py:data:: DEFAULT_ENV_NAME
    :value: 'default-env'
 
 

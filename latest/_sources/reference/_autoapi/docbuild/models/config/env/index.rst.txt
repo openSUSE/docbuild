@@ -5,7 +5,96 @@ docbuild.models.config.env
 
 .. autoapi-nested-parse::
 
-   Pydantic models for application and environment configuration.
+   Pydantic models for environment configuration.
+
+   This module defines the Pydantic models for parsing and validating the environment
+   configuration (``env.toml``). The models serve as the single source of truth for
+   default values.
+
+   Below is a complete example of the default configuration in JSON with comments
+   format, showing all available fields and their default values. Placeholders
+   like ``{general.name}`` are resolved from other values in the configuration.
+   Placeholders with double curly braces like ``{{product}}`` are resolved at
+   runtime during the build process.
+
+   .. code-block:: javascript
+
+       {
+           // General settings for the documentation server environment.
+           // Corresponds to the EnvGeneral model.
+           "general": {
+               "name": "default-env",
+               "role": "production",
+               "enable_mail": false,
+               "default_lang": "en-us",
+               "languages": [
+                   "de-de", "en-us", "es-es", "fr-fr", "ja-jp", "ko-kr", "pt-br", "zh-cn"
+               ],
+               "canonical_url_domain": "https://documentation.suse.com"
+           },
+           // All file system path definitions.
+           // Corresponds to the EnvPaths model.
+           "paths": {
+               "root_config_dir": "~/.config/docbuild",
+               "config_dir": "{root_config_dir}/config.d",
+               "main_portal_config": "{config_dir}/portal.xml",
+               "portal_rncschema": "{root_config_dir}/portal-config.rnc",
+               "jinja_dir": "~/.local/share/docbuild/jinja",
+               "server_rootfiles_dir": "{root_config_dir}/server-root-files",
+               "prebuilt_dir": "{base_server_cache_dir}/build",
+               "tmp_repo_dir": "~/.local/state/docbuild/repos/branches",
+               "repo_dir": "~/.local/state/docbuild/repos/permanent",
+               "base_cache_dir": "~/.cache/docbuild",
+               "base_server_cache_dir": "{base_cache_dir}/{general.name}",
+               "meta_cache_dir": "{base_server_cache_dir}/meta",
+               "json_cache_dir": "{base_server_cache_dir}/json",
+               "runtime_base_dir": "/run/user/1000/docbuild",
+               "lock_dir": "{runtime_base_dir}/locks",
+               // Temporary paths, corresponds to the EnvTmpPaths model.
+               "tmp": {
+                   "tmp_base_dir": "/tmp/docbuild",
+                   "tmp_dir": "{tmp_base_dir}/{general.name}",
+                   "tmp_deliverable_dir": "{tmp_dir}/deliverable",
+                   "tmp_metadata_dir": "{tmp_dir}/metadata",
+                   "tmp_build_base_dir": "{tmp_dir}/build",
+                   "tmp_build_dir_dyn": "{{product}}-{{docset}}-{{lang}}",
+                   "tmp_out_dir": "{tmp_dir}/out",
+                   "log_dir": "~/.local/state/docbuild/{general.name}/log",
+                   "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX"
+               },
+               // Target paths for deployment, corresponds to the EnvTargetPaths model.
+               "target": {
+                   "target_base_dir": "~/Documents/docbuild/target",
+                   "target_dir_dyn": "{{lang}}/{{product}}/{{docset}}",
+                   "backup_dir": "~/.local/state/docbuild/{general.name}/backup"
+               }
+           },
+           // Settings for DAPS and container builds.
+           // Corresponds to the EnvBuild model.
+           "build": {
+               // DAPS command templates, corresponds to the EnvBuildDaps model.
+               "daps": {
+                   "command": "daps",
+                   "meta": "daps --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
+                   "list_srcfiles": "{build.daps.command} -d {{dcfile}} list-srcfiles --hashes",
+                   "html": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} html",
+                   "pdf": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} pdf",
+                   "single_html": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} single-html",
+                   "epub": "{build.daps.command} --builddir={{builddir}} -d {{dcfile}} epub"
+               },
+               // Container settings, corresponds to the EnvBuildContainer model.
+               "container": {
+                   "image": "registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"
+               }
+           },
+           // Custom XSLT parameters passed to DAPS.
+           // Corresponds to the EnvXslt model.
+           "xslt": {
+               "common": {},
+               "html": {},
+               "pdf": {}
+           }
+       }
 
 
 
@@ -21,7 +110,7 @@ Classes
    /reference/_autoapi/docbuild/models/config/env/EnvGeneral
    /reference/_autoapi/docbuild/models/config/env/EnvTmpPaths
    /reference/_autoapi/docbuild/models/config/env/EnvTargetPaths
-   /reference/_autoapi/docbuild/models/config/env/EnvPathsConfig
+   /reference/_autoapi/docbuild/models/config/env/EnvPaths
    /reference/_autoapi/docbuild/models/config/env/EnvXslt
    /reference/_autoapi/docbuild/models/config/env/EnvConfig
 
@@ -33,7 +122,7 @@ Classes
    docbuild.models.config.env.EnvGeneral
    docbuild.models.config.env.EnvTmpPaths
    docbuild.models.config.env.EnvTargetPaths
-   docbuild.models.config.env.EnvPathsConfig
+   docbuild.models.config.env.EnvPaths
    docbuild.models.config.env.EnvXslt
    docbuild.models.config.env.EnvConfig
 

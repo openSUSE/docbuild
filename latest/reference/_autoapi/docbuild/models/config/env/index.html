@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.23.1.dev16+g18050f130.d20260914</title>
+    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.23.1.dev17+g3e1f7b544.d20260915</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=e0abfa90"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=b4ff5d6e"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -620,7 +620,93 @@
                   
   <section id="module-docbuild.models.config.env">
 <span id="docbuild-models-config-env"></span><h1>docbuild.models.config.env<a class="headerlink" href="#module-docbuild.models.config.env" title="Link to this heading">#</a></h1>
-<p>Pydantic models for application and environment configuration.</p>
+<p>Pydantic models for environment configuration.</p>
+<p>This module defines the Pydantic models for parsing and validating the environment
+configuration (<code class="docutils literal notranslate"><span class="pre">env.toml</span></code>). The models serve as the single source of truth for
+default values.</p>
+<p>Below is a complete example of the default configuration in JSON with comments
+format, showing all available fields and their default values. Placeholders
+like <code class="docutils literal notranslate"><span class="pre">{general.name}</span></code> are resolved from other values in the configuration.
+Placeholders with double curly braces like <code class="docutils literal notranslate"><span class="pre">{{product}}</span></code> are resolved at
+runtime during the build process.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// General settings for the documentation server environment.</span>
+<span class="w">    </span><span class="c1">// Corresponds to the EnvGeneral model.</span>
+<span class="w">    </span><span class="s2">&quot;general&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;default-env&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;role&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;enable_mail&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;default_lang&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;en-us&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;languages&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;de-de&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;en-us&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;es-es&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;fr-fr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ja-jp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ko-kr&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pt-br&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;zh-cn&quot;</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="s2">&quot;canonical_url_domain&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://documentation.suse.com&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// All file system path definitions.</span>
+<span class="w">    </span><span class="c1">// Corresponds to the EnvPaths model.</span>
+<span class="w">    </span><span class="s2">&quot;paths&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;root_config_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.config/docbuild&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;config_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{root_config_dir}/config.d&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;main_portal_config&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{config_dir}/portal.xml&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;portal_rncschema&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{root_config_dir}/portal-config.rnc&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;jinja_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.local/share/docbuild/jinja&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;server_rootfiles_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{root_config_dir}/server-root-files&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;prebuilt_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{base_server_cache_dir}/build&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;tmp_repo_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.local/state/docbuild/repos/branches&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;repo_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.local/state/docbuild/repos/permanent&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;base_cache_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.cache/docbuild&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;base_server_cache_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{base_cache_dir}/{general.name}&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;meta_cache_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{base_server_cache_dir}/meta&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;json_cache_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{base_server_cache_dir}/json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;runtime_base_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/run/user/1000/docbuild&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;lock_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{runtime_base_dir}/locks&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="c1">// Temporary paths, corresponds to the EnvTmpPaths model.</span>
+<span class="w">        </span><span class="s2">&quot;tmp&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;tmp_base_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;/tmp/docbuild&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{tmp_base_dir}/{general.name}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_deliverable_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{tmp_dir}/deliverable&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_metadata_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{tmp_dir}/metadata&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_build_base_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{tmp_dir}/build&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_build_dir_dyn&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{{product}}-{{docset}}-{{lang}}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_out_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{tmp_dir}/out&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;log_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.local/state/docbuild/{general.name}/log&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;tmp_deliverable_name_dyn&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{{product}}_{{docset}}_{{lang}}_XXXXXX&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// Target paths for deployment, corresponds to the EnvTargetPaths model.</span>
+<span class="w">        </span><span class="s2">&quot;target&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;target_base_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/Documents/docbuild/target&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;target_dir_dyn&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{{lang}}/{{product}}/{{docset}}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;backup_dir&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;~/.local/state/docbuild/{general.name}/backup&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// Settings for DAPS and container builds.</span>
+<span class="w">    </span><span class="c1">// Corresponds to the EnvBuild model.</span>
+<span class="w">    </span><span class="s2">&quot;build&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// DAPS command templates, corresponds to the EnvBuildDaps model.</span>
+<span class="w">        </span><span class="s2">&quot;daps&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;command&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;daps&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;meta&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;daps --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;list_srcfiles&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{build.daps.command} -d {{dcfile}} list-srcfiles --hashes&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;html&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{build.daps.command} --builddir={{builddir}} -d {{dcfile}} html&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;pdf&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{build.daps.command} --builddir={{builddir}} -d {{dcfile}} pdf&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;single_html&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{build.daps.command} --builddir={{builddir}} -d {{dcfile}} single-html&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;epub&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;{build.daps.command} --builddir={{builddir}} -d {{dcfile}} epub&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// Container settings, corresponds to the EnvBuildContainer model.</span>
+<span class="w">        </span><span class="s2">&quot;container&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s2">&quot;image&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// Custom XSLT parameters passed to DAPS.</span>
+<span class="w">    </span><span class="c1">// Corresponds to the EnvXslt model.</span>
+<span class="w">    </span><span class="s2">&quot;xslt&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;common&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="s2">&quot;html&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">        </span><span class="s2">&quot;pdf&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 <section id="classes">
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -645,7 +731,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths" title="docbuild.models.config.env.EnvTargetPaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvTargetPaths</span></code></a></p></td>
 <td><p>Defines target paths.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="EnvPathsConfig.html#docbuild.models.config.env.EnvPathsConfig" title="docbuild.models.config.env.EnvPathsConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvPathsConfig</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="EnvPaths.html#docbuild.models.config.env.EnvPaths" title="docbuild.models.config.env.EnvPaths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvPaths</span></code></a></p></td>
 <td><p>Defines various application paths, including permanent storage and cache.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="EnvXslt.html#docbuild.models.config.env.EnvXslt" title="docbuild.models.config.env.EnvXslt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvXslt</span></code></a></p></td>
