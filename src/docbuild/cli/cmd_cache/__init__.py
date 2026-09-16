@@ -120,7 +120,11 @@ def cache_dir(ctx: click.Context) -> None:
 
 @cache.command(name="list")
 @click.argument("doctypes", nargs=-1, callback=validate_doctypes)
-@click.option("-t", "--type", "cache_type", type=click.Choice(["meta", "json", "all"]), default="all", help="Which cache type to list.")
+@click.option("-t", "--type", "cache_type",
+    type=click.Choice(["meta", "json", "all"]),
+    default="all",
+    help="Which cache type to list."
+)
 @click.pass_context
 def cache_list(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str) -> None:
     """List cache files.
