@@ -15,9 +15,9 @@
     </locale>
     <locale lang="de-de">
       <subdir>l10n/sles/de-de</subdir>
-      <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="ref">
+      <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="xref">
         <subdir>guide</subdir>
-        <ref linkend="sles.15-SP6.dc-sles-administration"/>
+        <xref linkend="sles.15-SP6.dc-sles-administration"/>
       </deliverable>
     </locale>
   </resources>

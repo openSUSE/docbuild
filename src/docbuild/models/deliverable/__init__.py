@@ -127,11 +127,8 @@ class Deliverable:
     def format(self) -> dict[Literal["html", "single-html", "pdf", "epub"], bool]:
         """Return enabled output formats normalized to booleans."""
         attrs = self.xml.format_attrs()
-        #if attrs is None:
-        #    raise ValueError(
-        #        f"No format found for {self!s}"
-        #        # f"{self.productid}/{self.docsetid}/{self.lang}/{self.dcfile}"
-        #    )
+        if attrs is None:
+            return {}
 
         expected: tuple[Literal["html", "single-html", "pdf", "epub"], ...] = (
             "html",

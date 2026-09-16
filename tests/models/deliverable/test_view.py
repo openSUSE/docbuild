@@ -3,6 +3,7 @@
 from lxml import etree  # type: ignore
 import pytest
 
+from docbuild.constants import XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.deliverable.view import DeliverableXMLView
 
@@ -182,7 +183,7 @@ def test_xml_translations() -> None:
                     </locale>
                     <locale lang="de-de">
                         <deliverable xml:id="test_translation">
-                            <ref linkend="test" />
+                            <xref linkend="test" />
                         </deliverable>
                     </locale>
                     <locale lang="ja-jp">
@@ -232,7 +233,7 @@ def test_xml_translations_no_lang_in_locale() -> None:
                     </locale>
                     <locale> <!-- No lang attribute -->
                         <deliverable xml:id="test_translation">
-                            <ref linkend="test" />
+                            <xref linkend="test" />
                         </deliverable>
                     </locale>
                 </resources>
@@ -287,3 +288,156 @@ def test_xml_category_title() -> None:
         d3.category_title == "cat-missing"
     )  # Falls back to raw ID if not defined in <categories>
     assert d4.category_title is None  # No category assigned
+
+
+def test_xref_recursive_resolution() -> None:
+    """Test recursive target resolution for xref deliverables."""
+    xml_content = """
+    <portal>
+        <product xml:id="p1">
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="target-dc" type="dc">
+                            <dc file="DC-target">
+                                <format html="1" pdf="1" />
+                            </dc>
+                        </deliverable>
+                        <deliverable xml:id="mid-xref" type="xref">
+                            <xref linkend="target-dc" />
+                        </deliverable>
+                    </locale>
+                    <locale lang="de-de">
+                        <deliverable xml:id="de-xref" type="xref">
+                            <xref linkend="mid-xref" />
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    root = etree.fromstring(xml_content)
+    de_node = root.xpath("//deliverable[@xml:id='de-xref']")[0]
+    view = DeliverableXMLView(de_node)
+
+    assert view.is_xref is True
+    assert view.target_node is not None
+    assert view.target_node.get(XML_ID) == "mid-xref"
+    assert view.final_target_node is not None
+    assert view.final_target_node.get(XML_ID) == "target-dc"
+    assert view.dcfile == "DC-target"
+    assert view.target_id == "mid-xref"
+    assert view.format_attrs() == {
+        "html": True,
+        "pdf": True,
+        "epub": False,
+        "single-html": False,
+    }
+
+
+def test_xref_circular_and_broken() -> None:
+    """Test target_node and final_target_node handling of cycles and broken links."""
+    xml_content = """
+    <portal>
+        <product xml:id="p1">
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="cycle-a" type="xref">
+                            <xref linkend="cycle-b" />
+                        </deliverable>
+                        <deliverable xml:id="cycle-b" type="xref">
+                            <xref linkend="cycle-a" />
+                        </deliverable>
+                        <deliverable xml:id="broken-xref" type="xref">
+                            <xref linkend="non-existent" />
+                        </deliverable>
+                        <deliverable xml:id="not-an-xref" type="dc">
+                            <dc file="DC-test" />
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    root = etree.fromstring(xml_content)
+
+    view_a = DeliverableXMLView(root.xpath("//deliverable[@xml:id='cycle-a']")[0])
+    assert view_a.final_target_node is not None  # Cycle handled without infinite loop
+
+    view_broken = DeliverableXMLView(root.xpath("//deliverable[@xml:id='broken-xref']")[0])
+    assert view_broken.target_node is None
+    assert view_broken.final_target_node is None
+
+    view_not_xref = DeliverableXMLView(root.xpath("//deliverable[@xml:id='not-an-xref']")[0])
+    assert view_not_xref.is_xref is False
+    assert view_not_xref.target_node is None
+    assert view_not_xref.final_target_node is view_not_xref.node
+
+
+def test_xref_to_prebuilt_formats_and_category() -> None:
+    """Test format resolution and category extraction for xrefs to prebuilt deliverables."""
+    xml_content = """
+    <portal>
+        <product xml:id="p1">
+            <categories>
+                <category lang="en-us">
+                    <language xml:id="cat1">
+                        <title>Category One</title>
+                    </language>
+                    <language xml:id="cat2">
+                        <title>Category Two</title>
+                    </language>
+                </category>
+            </categories>
+            <docset path="d1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="pb-target" type="prebuilt" category="cat1">
+                            <prebuilt>
+                                <title>Prebuilt Title</title>
+                                <url format="html" href="/cloudnative/en/index.html"/>
+                                <url format="pdf" href="/cloudnative/en/guide.pdf"/>
+                            </prebuilt>
+                        </deliverable>
+                    </locale>
+                    <locale lang="de-de">
+                        <deliverable xml:id="pb-xref-inherit" type="xref">
+                            <xref linkend="pb-target"/>
+                        </deliverable>
+                        <deliverable xml:id="pb-xref-override" type="xref">
+                            <xref linkend="pb-target" category="cat2"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    root = etree.fromstring(xml_content)
+
+    inherit_node = root.xpath("//deliverable[@xml:id='pb-xref-inherit']")[0]
+    inherit_deliv = Deliverable(inherit_node)
+    assert inherit_deliv.xml.is_xref is True
+    assert inherit_deliv.xml.is_prebuilt is True
+    assert inherit_deliv.xml.categoryid == "cat1"
+    assert inherit_deliv.xml.category_title == "Category One"
+    assert inherit_deliv.xml.format_attrs() == {
+        "epub": False,
+        "html": True,
+        "pdf": True,
+        "single-html": False,
+    }
+    assert inherit_deliv.format == {
+        "epub": False,
+        "html": True,
+        "pdf": True,
+        "single-html": False,
+    }
+
+    override_node = root.xpath("//deliverable[@xml:id='pb-xref-override']")[0]
+    override_deliv = Deliverable(override_node)
+    assert override_deliv.xml.categoryid == "cat2"
+    assert override_deliv.xml.category_title == "Category Two"

@@ -13,7 +13,7 @@
     </locale>
     <locale lang="de-de">
       <branch>main</branch>
-      <deliverable type="ref">
+      <deliverable type="xref">
         <dc file="DC-Guide">
           <format html="true"/>
         </dc>

@@ -909,11 +909,8 @@ ds.docset =
     ds.descriptions?,
     (
       (ds.resources,
-       ds.internal?,
        ds.external?)
        |
-      (ds.internal,
-       ds.external?) |
       ds.external
     )
   }
@@ -1079,8 +1076,8 @@ div {
       ),
       #
       ds.subdir?,
-      # The <ref> content model allows also descriptions.
-      ds.ref
+      # The <xref> content model allows also descriptions.
+      ds.xref
     }
 
 }
@@ -1282,26 +1279,13 @@ ds.subdeliverable =
 
 
 [
-  db:refname [ "internal" ]
-  db:refpurpose [ "Wrapper for internal references" ]
-]
-div {
-ds.internal =
-  ## Wrapper for internal references
-  element internal {
-    ds.ref+
-  }
-}
-
-
-[
-  db:refname [ "ref" ]
+  db:refname [ "xref" ]
   db:refpurpose [ "Reference to a document or navigational page" ]
 ]
 div {
-  ds.ref =
-    ## Internal reference
-    element ref {
+  ds.xref =
+    ## Internal cross-reference
+    element xref {
       (
         ds.linkend.attr,
         ds.category.attr?,

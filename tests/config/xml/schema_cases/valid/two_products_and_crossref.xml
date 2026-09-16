@@ -54,7 +54,7 @@
                         </dc>
                     </deliverable>
                     <deliverable type="xref">
-                        <ref linkend="sles.v15-sp6.helloworld" />
+                        <xref linkend="sles.v15-sp6.helloworld" />
                     </deliverable>
                 </locale>
                 <locale lang="de-de">

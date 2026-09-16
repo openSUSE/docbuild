@@ -8,7 +8,7 @@ from typing import Literal, cast
 
 from lxml import etree  # type: ignore
 
-from ...constants import XML_NS
+from ...constants import XML_ID
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
 from ..repo import Repo
@@ -37,7 +37,7 @@ class DeliverableXMLView:
     @cached_property
     def product_id(self) -> str:
         """Return the product ID (``<product xml:id=…>``) or None if absent.."""
-        return self.product_node.get(f"{{{XML_NS}}}id")
+        return self.product_node.get(XML_ID)
 
     @cached_property
     def product_path(self) -> str | None:
@@ -72,7 +72,7 @@ class DeliverableXMLView:
     @cached_property
     def docset_id(self) -> str:
         """Return the docset real ID (``<docset xml:id=…>``)."""
-        return self.docset_node.get(f"{{{XML_NS}}}id")
+        return self.docset_node.get(XML_ID)
 
     @cached_property
     def docset_path(self) -> str | None:
@@ -102,32 +102,33 @@ class DeliverableXMLView:
         if (dcnode := self.node.find("dc")) is not None:
             return dcnode.attrib.get("file")
 
-        elif self.is_ref:
-            # If validation is correct, we don't explicitly need to check for a
-            # ref/@linkend attribute.
-            refid = self.node.find("ref").get("linkend")
-            if self.locale_en is not None:
-                dcnodes = self.locale_en.xpath("id($refid)/dc", refid=refid)
-                if dcnodes:
-                    return dcnodes[0].attrib.get("file", None)
+        if self.is_xref and (target := self.final_target_node) is not None and target is not self.node:
+            if (dcnode := target.find("dc")) is not None:
+                return dcnode.attrib.get("file")
 
         return None
 
     @cached_property
     def deliverableid(self) -> str | None:
         """Return the deliverable ID (`<deliverable xml:id=…>`) or None if absent."""
-        xml_id = self.node.get(f"{{{XML_NS}}}id")
+        xml_id = self.xml_id
         if xml_id:
             return xml_id
-        if self.is_ref and (ref_node := self.node.find("ref")) is not None:
+        if self.is_xref and (ref_node := self.xref_node) is not None:
             return ref_node.get("linkend")
         return None
 
+    @property
+    def identifier(self) -> str:
+        """Return the fully qualified deliverable identifier string."""
+        return f"{self.product_docset}/{self.lang}:{self.deliverableid}"
+
+
     @cached_property
     def target_id(self) -> str | None:
-        """Return the target deliverable ID (linkend for refs, else deliverableid)."""
-        if self.is_ref:
-            ref_node = self.node.find("ref")
+        """Return the target deliverable ID (linkend for xrefs, else deliverableid)."""
+        if self.is_xref:
+            ref_node = self.xref_node
             if ref_node is not None and ref_node.get("linkend"):
                 return ref_node.get("linkend")
         return self.deliverableid
@@ -137,8 +138,8 @@ class DeliverableXMLView:
         """Return the prebuilt HTML URL, resolving refs to their target."""
         if self.prebuilt_html_url:
             return self.prebuilt_html_url
-        if self.is_ref and self._target_node is not None:
-            prebuilt_node = self._target_node.find("prebuilt")
+        if self.is_xref and (target := self.final_target_node) is not None:
+            prebuilt_node = target.find("prebuilt")
             if prebuilt_node is not None:
                 url_node = prebuilt_node.find("url[@format='html']")
                 if url_node is not None:
@@ -155,14 +156,14 @@ class DeliverableXMLView:
     @cached_property
     def translations(self) -> set[str]:
         """Return a set of all language codes available for this deliverable."""
-        d_id = self.node.get(f"{{{XML_NS}}}id")
+        d_id = self.xml_id
         if self.docset_node is None or not d_id:
             return {str(self.lang)}
 
         # Always include the base language
         langs = {str(self.lang)}
 
-        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[ref[@linkend='{d_id}']]"):
+        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[xref[@linkend='{d_id}']]"):
             # We must look at the parent <locale> to get the 'lang' attribute
             parent_loc = deliv_node.getparent()
             if loc_lang := parent_loc.get("lang"):
@@ -178,16 +179,16 @@ class DeliverableXMLView:
     @cached_property
     def is_prebuilt(self) -> bool:
         """Return True if the deliverable is marked as prebuilt."""
-        if self.kind is not None:
+        if self.kind is not None and not self.is_xref:
             return self._is_kind("prebuilt")
 
         # Fallback 1: infer prebuilt from a local <prebuilt> child node
-        if len(self.node) > 0 and self.node[0].tag == "prebuilt":
+        if self.node.find("prebuilt") is not None:
             return True
 
         # Fallback 2: if it's a translated reference, check if the English target is prebuilt
-        if self.is_ref and self._target_node is not self.node:
-            return self._target_node.find("prebuilt") is not None
+        if self.is_xref and (target := self.final_target_node) is not None and target is not self.node:
+            return target.find("prebuilt") is not None or target.get("type") == "prebuilt"
 
         return False
 
@@ -197,10 +198,18 @@ class DeliverableXMLView:
         return self.node.find("dc") is not None
 
     @cached_property
-    def is_ref(self) -> bool:
-        """Return True if the deliverable is marked as a reference."""
-        # Safest check: does it contain a <ref> tag?
-        return self.node.find("ref") is not None
+    def xref_node(self) -> etree._Element | None:
+        """Return the child <xref> element if present."""
+        return self.node.find("xref")
+
+    @cached_property
+    def is_xref(self) -> bool:
+        """Return True if the deliverable is marked as a cross-reference."""
+        if self.kind == "xref":
+            return True
+        if self.xref_node is not None:
+            return True
+        return False
 
     def _is_kind(self, expected: str) -> bool:
         """Return ``True`` when the deliverable type matches ``expected``."""
@@ -210,7 +219,16 @@ class DeliverableXMLView:
     @cached_property
     def categoryid(self) -> str | None:
         """Return the raw category ID from ``@category``, or ``None`` if absent."""
-        return self.node.get("category")
+        if cat := self.node.get("category"):
+            return cat
+        if self.is_xref:
+            if self.xref_node is not None and (cat := self.xref_node.get("category")):
+                return cat
+            if (
+                target := self.final_target_node
+            ) is not None and target is not self.node:
+                return target.get("category")
+        return None
 
     # Categories can be defined per product and at the document root.
     def categories(self) -> Generator[etree._Element, None, None]:
@@ -231,7 +249,7 @@ class DeliverableXMLView:
     @cached_property
     def category_title(self) -> str | None:
         """Return the resolved category title, or the raw ID if not found."""
-        cat_id = self.node.get("category")
+        cat_id = self.categoryid
         if not cat_id:
             return None
 
@@ -283,30 +301,33 @@ class DeliverableXMLView:
         return None
 
     # -- Output formats
-    def _ref_format_attrs(self) -> dict[str, str] | None:
-        """Return raw format attributes from the linked English DC deliverable."""
-        linkend = self.node.find("ref").attrib.get("linkend")
-        other_deli = self.node.xpath(
-            f"../../locale[@lang='en-us']/deliverable[@xml:id='{linkend}']"
-        )
-        #if not other_deli:
-        #    raise ValueError(f"English deliverable not found for linkend={linkend!r}")
-
-        return self._dc_format_attrs(other_deli[0])
+    def _xref_format_attrs(self, expected_formats: tuple[str, ...]) -> dict[str, str] | None:
+        """Return raw format attributes from the linked deliverable."""
+        if (target := self.final_target_node) is not None and target is not self.node:
+            if target.find("dc") is not None:
+                return self._dc_format_attrs(target)
+            if target.find("prebuilt") is not None or target.get("type") == "prebuilt":
+                return self._prebuilt_format_attrs(expected_formats, source_node=target)
+        return None
 
     def _dc_format_attrs(self, source_node: etree._Element | None = None) -> dict[str, str] | None:
         """Return raw format attributes from ``dc/format`` in the given node."""
         node = (source_node if source_node is not None else self.node).find("dc/format")
         return node.attrib if node is not None else None
 
-    def _prebuilt_format_attrs(self, expected_formats: tuple[str, ...]) -> dict[str, str]:
+    def _prebuilt_format_attrs(
+        self,
+        expected_formats: tuple[str, ...],
+        source_node: etree._Element | None = None,
+    ) -> dict[str, str]:
         """Return raw format attributes from prebuilt URL nodes."""
         # For validated prebuilt deliverables, each <url> uses a single
         # format attribute (e.g. format="html").
-        url_nodes = self.node.xpath("prebuilt/url")
+        node = source_node if source_node is not None else self.node
+        url_nodes = node.xpath("prebuilt/url")
         attrs = {fmt: "0" for fmt in expected_formats}  # default all formats to False
         for url_node in url_nodes:
-            if (url_format := url_node.attrib["format"]) in expected_formats:
+            if (url_format := url_node.attrib.get("format")) in expected_formats:
                 attrs[url_format] = "1"
         return attrs
 
@@ -324,8 +345,8 @@ class DeliverableXMLView:
         # _ = dcfile
         raw_attrs = None
 
-        if self.is_ref:
-            raw_attrs = self._ref_format_attrs()
+        if self.is_xref:
+            raw_attrs = self._xref_format_attrs(expected_formats)
         elif self.is_dc:
             raw_attrs = self._dc_format_attrs()
         elif self.is_prebuilt:
@@ -356,36 +377,106 @@ class DeliverableXMLView:
         """Return a concise string representation of the deliverable."""
         return f"{self.__class__.__name__}({self!s})"
 
-    @property
-    def _target_node(self) -> etree._Element:
-        """Return the referenced English node if this is a ref, else self.node."""
-        if self.is_ref:
-            ref_node = self.node.find("ref")
-            if ref_node is not None:
-                refid = ref_node.get("linkend")
-                if self.locale_en is not None:
-                    en_nodes = self.locale_en.xpath("id($refid)", refid=refid)
-                    if en_nodes:
-                        return en_nodes[0]
-        return self.node
+    @cached_property
+    def target_node(self) -> etree._Element | None:
+        """Return the direct target element of a reference deliverable.
+
+        For a ``<deliverable><xref linkend="foo">``, this will return the
+        element with ``xml:id="foo"``. If the reference is broken or the
+        deliverable is not a reference, it returns ``None``.
+
+        :returns: The target ``etree._Element`` or ``None``.
+        """
+        if not self.is_xref:
+            return None
+
+        ref_node = self.xref_node
+        if ref_node is None:
+            return None
+
+        linkend = ref_node.get("linkend")
+        if not linkend:
+            return None
+
+        # Use the XPath `id()` function to find the element by its xml:id
+        # Fall back to attribute search for trees constructed via XInclude where
+        # libxml2's document ID hash table is not populated for inserted nodes.
+        target_nodes = self.node.xpath("id($linkend)", linkend=linkend)
+        if not target_nodes:
+            target_nodes = self.node.xpath("//*[@xml:id=$linkend]", linkend=linkend)
+
+        if target_nodes:
+            return target_nodes[0]
+        return None
+
+    @cached_property
+    def xml_id(self) -> str | None:
+        """Return the xml:id of the deliverable."""
+        return self.node.get(XML_ID)
+
+    @cached_property
+    def final_target_node(self) -> etree._Element | None:
+        """Recursively resolve reference chains to find the terminal node.
+
+        This property follows a chain of ``<deliverable><xref linkend="..."/>``
+        until it finds a node that is not a reference deliverable.
+
+        - If the deliverable is not a reference, it returns the node itself.
+        - It detects and stops on circular dependencies, returning the first
+          node that is part of the cycle.
+        - It stops when it encounters a non-deliverable element (e.g., ``<product>``).
+        - If a reference is broken (points to a non-existent ID), it returns ``None``.
+
+        :returns: The terminal ``etree._Element`` in a reference chain, or ``None``.
+        """
+        if not self.is_xref:
+            return self.node
+
+        current_view = self
+        visited_ids = {self.xml_id} if self.xml_id else set()
+
+        while current_view is not None and current_view.is_xref:
+            target_node = current_view.target_node
+            if target_node is None:
+                return None  # Broken reference
+
+            # A non-deliverable is a terminal node.
+            if etree.QName(target_node).localname != "deliverable":
+                return target_node
+
+            target_id = target_node.get(XML_ID)
+            if not target_id:
+                return target_node
+
+            if target_id in visited_ids:
+                return current_view.node  # Cycle detected
+
+            visited_ids.add(target_id)
+            current_view = DeliverableXMLView(target_node)
+
+        return current_view.node if current_view else None
 
     def local_desc(self) -> Generator[etree._Element, None, None]:
         """Yield local ``<desc>`` elements, usually from prebuilts."""
-        yield from self._target_node.xpath("./prebuilt/descriptions/desc")
+        if (target := self.final_target_node) is not None:
+            yield from target.xpath("./prebuilt/descriptions/desc")
 
     @cached_property
     def prebuilt_title(self) -> str:
         """Return the prebuilt title text if present."""
-        return (self._target_node.findtext("./prebuilt/title") or "").strip()
+        if (target := self.final_target_node) is not None:
+            return (target.findtext("./prebuilt/title") or "").strip()
+        return ""
 
     def _get_prebuilt_url(self, fmt: str) -> str:
         """Extract local prebuilt URLs for a given format."""
-        for node in self._target_node.xpath(f'./prebuilt/url[@format="{fmt}"]'):
-            href = node.get("href", "")
-            if href.startswith("/"):
-                if self.is_ref:
-                    return href.replace("/en/", f"/{self.lang.lang}/")
-                return href
+        if (target := self.final_target_node) is not None:
+            for node in target.xpath(f'./prebuilt/url[@format="{fmt}"]'):
+                href = node.get("href", "")
+                if href.startswith("/"):
+                    if self.is_xref:
+                        return href.replace("/en/", f"/{self.lang.lang}/")
+                    return href
         return ""
 
     @cached_property
@@ -401,8 +492,9 @@ class DeliverableXMLView:
     @cached_property
     def is_gated(self) -> bool:
         """Return True if the deliverable is marked as gated."""
-        return str(self._target_node.get("gated", "false")).lower() == "true"
-
+        if (target := self.final_target_node) is not None:
+            return str(target.get("gated", "false")).lower() == "true"
+        return False
     @cached_property
     def docset_version(self) -> str:
         """Return the docset version."""

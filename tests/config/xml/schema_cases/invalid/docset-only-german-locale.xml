@@ -5,8 +5,8 @@
     <git remote="https://example.com/test/repo.git"/>
     <locale lang="de-de">
       <branch>main</branch>
-      <deliverable type="ref">
-        <ref linkend="test.1.guide"/>
+      <deliverable type="xref">
+        <xref linkend="test.1.guide"/>
       </deliverable>
     </locale>
   </resources>

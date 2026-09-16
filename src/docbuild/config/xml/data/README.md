@@ -84,7 +84,7 @@ Version 7.0 introduces several elements to support a more hierarchical portal st
 * `@family`: Links a product to a specific product family via `IDREF`.  
 * `@series`: Links a product to a specific series/tab via IDREF.  
 * `@path`: Used on products and docsets to specify relative directory names.  
-* `@linkend`: Used in `<ref\>` elements to point to external link identifiers.  
+* `@linkend`: Used in `<xref\>` elements to point to external link identifiers.  
 * `@treatment`: Defines how version-specific descriptions interact with global ones (append, prepend, or replace).
 * `@sitemap`: Determines whether the resource is included in the sitemap. Default is `true`.
 
@@ -140,9 +140,9 @@ The minimum structure is this:
 ```
 
 ### Deliverable References
-In version 7.0, translations of deliverables are primarily handled as references (`<ref\>`) back to the source DC file in the en-us locale, rather than duplicating the full deliverable metadata.
+In version 7.0, translations of deliverables are primarily handled as cross-references (`<deliverable type="xref"><xref .../></deliverable>`) back to the source DC file in the en-us locale, rather than duplicating the full deliverable metadata.
 
-Additionally, the `<ref/>` contains only a `@linkend` attribute to link to a resource. You don't need `dc`, `product`, or other strange combinations anymore.
+Additionally, the `<xref/>` contains only a `@linkend` attribute to link to a resource. You don't need `dc`, `product`, or other strange combinations anymore.
 
 ### Expanded Root Element Support
 The schema no longer restricts the start of a document to just a product definition. It now allows for much more variety in valid root elements, supporting the standalone definition of `<product>`s, `<docset>`s, `<categories>`, and more.

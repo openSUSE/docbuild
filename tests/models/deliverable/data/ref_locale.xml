@@ -1,4 +1,4 @@
-<product xml:id="sles" schemaversion="6.0">
+<product xml:id="sles" schemaversion="7.0">
   <docset lifecycle="supported" xml:id="sles.15-SP6" path="15-SP6">
     <resources>
       <git remote="https://github.com/SUSE/doc-sle.git" />
@@ -11,8 +11,8 @@
         </deliverable>
       </locale>
       <locale lang="de-de">
-        <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="ref">
-          <ref linkend="sles.15-SP6.dc-sles-administration" />
+        <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="xref">
+          <xref linkend="sles.15-SP6.dc-sles-administration" />
         </deliverable>
       </locale>
     </resources>

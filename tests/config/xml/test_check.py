@@ -6,6 +6,7 @@ import pytest
 
 from docbuild.config.xml.checks import (
     check_dc_in_language,
+    check_deliverable_reference,
     check_duplicated_format_in_extralinks,
     check_duplicated_url_in_extralinks,
     check_enabled_format,
@@ -22,7 +23,7 @@ from docbuild.config.xml.checks import (
     docset_id,
     register_check,
 )
-from docbuild.constants import XML_NS
+from docbuild.constants import XML_ID
 
 # This is a non-namespace ElementMaker for creating XML elements.
 E = objectify.ElementMaker(annotate=False, namespace=None, nsmap=None)
@@ -274,17 +275,17 @@ def test_check_enabled_format_cases(
             ),
             type="dc",
         )
-        deli.set(f"{{{XML_NS}}}id", "deli-2")
+        deli.set(XML_ID, "deli-2")
         locale.append(deli)
     elif scenario == "no_format_element":
         deli = E.deliverable(E.dc("DC-no-format"))
-        deli.set(f"{{{XML_NS}}}id", "no-fmt")
+        deli.set(XML_ID, "no-fmt")
         locale.append(deli)
     elif scenario == "direct_format_disabled":
         deli = E.deliverable(
             E.format(html="0", pdf="0", epub="0", **{"single-html": "0"}),
         )
-        deli.set(f"{{{XML_NS}}}id", "direct-format")
+        deli.set(XML_ID, "direct-format")
         locale.append(deli)
 
     results = collect_check_results(check_enabled_format(xmlnode))
@@ -518,7 +519,7 @@ def test_check_git_remote_for_dc_deliverables_allows_prebuilt_without_git(xmlnod
         ),
         type="prebuilt",
     )
-    prebuilt.set(f"{{{XML_NS}}}id", "deli-1")
+    prebuilt.set(XML_ID, "deli-1")
     locale.replace(deliverable, prebuilt)
 
     results = collect_check_results(check_git_remote_for_dc_deliverables(xmlnode))
@@ -527,7 +528,7 @@ def test_check_git_remote_for_dc_deliverables_allows_prebuilt_without_git(xmlnod
 
 def test_check_git_remote_for_dc_deliverables_only_reports_docset_without_git(xmlnode):
     second_docset = copy.deepcopy(xmlnode.find(".//docset"))
-    second_docset.set(f"{{{XML_NS}}}id", "docset2")
+    second_docset.set(XML_ID, "docset2")
     second_resources = second_docset.find("resources")
     second_git = second_resources.find("git")
     assert second_git is not None
@@ -606,7 +607,7 @@ def test_check_dc_in_language_with_deliverable_no_dc(xmlnode):
     language = xmlnode.find(".//resources/locale")
     # Add deliverable without dc
     no_dc_deli = E.deliverable(E.format(html="1"))
-    no_dc_deli.set(f"{{{XML_NS}}}id", "no-dc-1")
+    no_dc_deli.set(XML_ID, "no-dc-1")
     language.append(no_dc_deli)
 
     results = collect_check_results(check_dc_in_language(xmlnode))
@@ -619,7 +620,7 @@ def test_check_format_subdeliverable_default_false(xmlnode):
     new_deli = E.deliverable(
         E.dc("DC-test", E.format(), E.subdeliverable("book")),
     )
-    new_deli.set(f"{{{XML_NS}}}id", "test-1")
+    new_deli.set(XML_ID, "test-1")
     language.append(new_deli)
 
     results = collect_check_results(check_format_subdeliverable(xmlnode))
@@ -703,7 +704,7 @@ def test_check_format_subdeliverable_html_only(xmlnode):
         ),
         E.subdeliverable("book"),
     )
-    new_deli.set(f"{{{XML_NS}}}id", "html-only")
+    new_deli.set(XML_ID, "html-only")
     language.append(new_deli)
 
     results = collect_check_results(check_format_subdeliverable(xmlnode))
@@ -952,3 +953,115 @@ def test_check_spotlight_not_in_portal():
     node = etree.fromstring("<docset><spotlight linkend='p1'/></docset>")
     results = collect_check_results(check_spotlight(node))
     assert len(results) == 0
+
+
+@pytest.mark.parametrize(
+    "linkend,expected_error",
+    [
+        ("product1", None),
+        ("docset1", None),
+        ("deli-1", None),
+        ("family1", "points to <item>"),
+        ("series1", "points to <item>"),
+        ("cat.root", "points to <language>"),
+        ("nonexistent", "does not point to a valid target"),
+    ],
+)
+def test_check_deliverable_reference_target(xmlnode, linkend: str, expected_error: str | None):
+    portal = copy.deepcopy(xmlnode)
+    locale = portal.xpath("//locale[@lang='en-us']")[0]
+    deliv = etree.SubElement(locale, "deliverable", type="xref")
+    etree.SubElement(deliv, "xref", linkend=linkend)
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    if expected_error is None:
+        assert len(results) == 0
+    else:
+        assert len(results) == 1
+        assert expected_error in results[0].message
+
+
+def test_check_deliverable_reference_circular(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    locale = portal.xpath("//locale[@lang='en-us']")[0]
+    deliv = etree.SubElement(locale, "deliverable", type="xref", attrib={XML_ID: "self-ref"})
+    etree.SubElement(deliv, "xref", linkend="self-ref")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert len(results) == 1
+    assert results[0].error_code == "circular_deliverable_reference"
+
+
+def test_check_deliverable_reference_valid_translation_chain(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref"})
+    etree.SubElement(en_ref, "xref", linkend="deli-1")
+
+    de_locale = etree.SubElement(resources, "locale", lang="de-de")
+    de_ref = etree.SubElement(de_locale, "deliverable", type="xref")
+    etree.SubElement(de_ref, "xref", linkend="en-ref")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert len(results) == 0
+
+
+def test_check_deliverable_reference_invalid_3plus_chain(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref1 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref1"})
+    etree.SubElement(en_ref1, "xref", linkend="deli-1")
+
+    en_ref2 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref2"})
+    etree.SubElement(en_ref2, "xref", linkend="en-ref1")
+
+    de_locale = etree.SubElement(resources, "locale", lang="de-de")
+    de_ref = etree.SubElement(de_locale, "deliverable", type="xref")
+    etree.SubElement(de_ref, "xref", linkend="en-ref2")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    error_codes = [r.error_code for r in results]
+    assert "invalid_reference_chain" in error_codes
+
+
+def test_check_deliverable_reference_nested_in_english(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref1 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref1"})
+    etree.SubElement(en_ref1, "xref", linkend="deli-1")
+
+    en_ref2 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref2"})
+    etree.SubElement(en_ref2, "xref", linkend="en-ref1")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert any(r.error_code == "nested_deliverable_reference" for r in results)
+
+
+def test_check_deliverable_reference_multi_hop_circular(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    deliv_a = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "hop-a"})
+    etree.SubElement(deliv_a, "xref", linkend="hop-b")
+
+    deliv_b = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "hop-b"})
+    etree.SubElement(deliv_b, "xref", linkend="hop-a")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert all(r.error_code == "circular_deliverable_reference" for r in results)
+    assert len(results) == 2
+
+
+def test_check_deliverable_reference_missing_linkend(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    locale = portal.xpath("//locale[@lang='en-us']")[0]
+    deliv = etree.SubElement(locale, "deliverable", type="xref")
+    etree.SubElement(deliv, "xref")  # No linkend attribute
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert len(results) == 1
+    assert results[0].error_code == "broken_deliverable_reference"
+    assert "does not point to a valid target" in results[0].message

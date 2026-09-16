@@ -7,13 +7,15 @@ from docbuild.models.deliverable import Deliverable
 
 def test_dc_kind(first_deliverable: Deliverable) -> None:
     assert first_deliverable.xml.is_dc is True
-    assert first_deliverable.xml.is_ref is False
+    assert first_deliverable.xml.is_xref is False
     assert first_deliverable.xml.is_prebuilt is False
 
 
 def test_ref_kind(first_ref_deliverable: Deliverable) -> None:
-    assert first_ref_deliverable.xml.is_ref is True
+    assert first_ref_deliverable.xml.kind == "xref"
+    assert first_ref_deliverable.xml.is_xref is True
     assert first_ref_deliverable.xml.is_dc is False
+    assert first_ref_deliverable.xml.is_prebuilt is False
 
 
 def test_prebuilt_kind(first_prebuilt_deliverable: Deliverable) -> None:
@@ -70,12 +72,12 @@ def test_fallback_is_dc_from_dcfile(node: etree._ElementTree) -> None:
     first_node = node.xpath("(/product | /portal/product)/docset/resources/locale[@lang='en-us']/deliverable")[0]
     deliverable = Deliverable(first_node)
     assert deliverable.xml.is_dc is True
-    assert deliverable.xml.is_ref is False
+    assert deliverable.xml.is_xref is False
     assert deliverable.xml.is_prebuilt is False
 
 
-def test_fallback_is_ref_from_child_tag(ref_node: etree._ElementTree) -> None:
-    """Test that is_ref returns True based on <ref> child when @type is missing."""
+def test_fallback_is_xref_from_child_tag(ref_node: etree._ElementTree) -> None:
+    """Test that is_xref returns True based on <xref> child when @type is missing."""
     # Remove all @type attributes
     for deli in ref_node.xpath("//deliverable"):
         if "type" in deli.attrib:
@@ -83,7 +85,7 @@ def test_fallback_is_ref_from_child_tag(ref_node: etree._ElementTree) -> None:
 
     first_node = ref_node.xpath("(/product | /portal/product)/docset/resources/locale[@lang='de-de']/deliverable")[0]
     deliverable = Deliverable(first_node)
-    assert deliverable.xml.is_ref is True
+    assert deliverable.xml.is_xref is True
     assert deliverable.xml.is_dc is False
     assert deliverable.xml.is_prebuilt is False
 
@@ -99,4 +101,4 @@ def test_fallback_is_prebuilt_from_child_tag(prebuilt_node: etree._ElementTree) 
     deliverable = Deliverable(first_node)
     assert deliverable.xml.is_prebuilt is True
     assert deliverable.xml.is_dc is False
-    assert deliverable.xml.is_ref is False
+    assert deliverable.xml.is_xref is False

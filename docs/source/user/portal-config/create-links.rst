@@ -11,9 +11,8 @@ the ``<external>`` element. Follow this procedure:
 
 #. Find for a product and release the file in your configuration directory.
 
-#. Find the release (``<docset>``) you want to appear the deliverable.
-   After the ``</resources>`` end tag and after a ``</internal>`` end tag,
-   add the following structure:
+#. Find the release (``<docset>``) where you want the deliverable to appear.
+   After the ``</resources>`` end tag, add the following structure:
 
    .. code-block:: xml
       :name: external-ref-deliverable

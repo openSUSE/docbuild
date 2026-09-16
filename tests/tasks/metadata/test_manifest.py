@@ -52,13 +52,13 @@ def deliverable() -> Deliverable:
 @pytest.fixture
 def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
     """Minimal stitched docservconfig ElementTree matching the deliverable fixture."""
-    from docbuild.constants import XML_NS
+    from docbuild.constants import XML_ID
 
     prod_node = etree.Element(
         "product",
         productid=deliverable.xml.product_id,
     )
-    prod_node.set(f"{{{XML_NS}}}id", deliverable.xml.product_id)
+    prod_node.set(XML_ID, deliverable.xml.product_id)
 
     etree.SubElement(prod_node, "name").text = "SUSE Linux Enterprise Server"
     etree.SubElement(prod_node, "acronym").text = "SLES"
@@ -69,7 +69,7 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
         setid=deliverable.xml.docset_path,
         productid=deliverable.xml.product_id,
     )
-    docset_node.set(f"{{{XML_NS}}}id", deliverable.xml.docset_path)
+    docset_node.set(XML_ID, deliverable.xml.docset_path)
 
     resources_node = etree.SubElement(docset_node, "resources")
     locale_node = etree.SubElement(resources_node, "locale", lang="en-us")

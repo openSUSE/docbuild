@@ -97,17 +97,17 @@
         <locale lang="de-de">
           <branch>maintenance/SLE16.0</branch>
           <subdir>l10n/de-de</subdir>
-          <deliverable type="ref">
-            <ref linkend="sles-16.0-sle-comparison" />
+          <deliverable type="xref">
+            <xref linkend="sles-16.0-sle-comparison" />
           </deliverable>
-          <deliverable type="ref">
-            <ref linkend="hello-world">
+          <deliverable type="xref">
+            <xref linkend="hello-world">
               <descriptions>
                 <desc lang="en-us">
                   <p>A different description</p>
                 </desc>
               </descriptions>
-            </ref>
+            </xref>
           </deliverable>
         </locale>
       </resources>
@@ -170,11 +170,11 @@
               </descriptions>
             </prebuilt>
           </deliverable>
+          <deliverable type="xref">
+            <xref linkend="sles-16.0-sle-comparison" />
+          </deliverable>
         </locale>
       </resources>
-      <internal>
-        <ref linkend="sles-16.0-sle-comparison" />
-      </internal>
       <external>
         <link>
           <url href="https://github.com" format="html"/>

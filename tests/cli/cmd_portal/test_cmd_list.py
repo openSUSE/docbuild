@@ -217,8 +217,8 @@ def test_portal_list_ref_uses_english_dcfile(mock_parse, tmp_path) -> None:
         "                    </deliverable>\n"
         "                </locale>\n"
         '                <locale lang="de-de">\n'
-        '                    <deliverable xml:id="admin_guide_de" type="ref">\n'
-        '                        <ref linkend="admin_guide"/>\n'
+        '                    <deliverable xml:id="admin_guide_de" type="xref">\n'
+        '                        <xref linkend="admin_guide"/>\n'
         "                    </deliverable>\n"
         "                </locale>\n"
         "            </resources>\n"
@@ -259,8 +259,8 @@ def test_portal_list_ref_without_id_uses_linked_id(mock_parse, tmp_path) -> None
         "                    </deliverable>\n"
         "                </locale>\n"
         '                <locale lang="de-de">\n'
-        '                    <deliverable type="ref">\n'
-        '                        <ref linkend="admin_guide"/>\n'
+        '                    <deliverable type="xref">\n'
+        '                        <xref linkend="admin_guide"/>\n'
         "                    </deliverable>\n"
         "                </locale>\n"
         "            </resources>\n"
@@ -343,8 +343,8 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
                     </deliverable>
                 </locale>
                 <locale lang="de-de">
-                    <deliverable xml:id="admin_guide_de" category="tuning-and-performance">
-                        <ref linkend="admin_guide"/>
+                    <deliverable xml:id="admin_guide_de" type="xref">
+                        <xref linkend="admin_guide" category="tuning-and-performance"/>
                     </deliverable>
                 </locale>
             </resources>

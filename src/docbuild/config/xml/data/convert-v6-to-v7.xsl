@@ -63,8 +63,8 @@
   <!-- Should sitemap be generated for translations? -->
   <xsl:param name="sitemap.for.translations">false</xsl:param>
 
-  <!-- Prefix for generated reference deliverable IDs (from <internal> refs) -->
-  <xsl:param name="ref.prefix">ref.</xsl:param>
+  <!-- Prefix for generated reference deliverable IDs (from <internal> xrefs) -->
+  <xsl:param name="xref.prefix">xref.</xsl:param>
 
 <!-- ======== Keys -->
   <!-- Define a key to group <language> elements by their @lang attribute -->
@@ -640,7 +640,7 @@
                                              not(self::external or
                                                  self::internal)
                                            ]" />
-              <xsl:if test="external/link[not(starts-with(language/url/@href, 'https://'))
+              <xsl:if test="internal or external/link[not(starts-with(language/url/@href, 'https://'))
                                           and not(starts-with(language/url/@href, 'external-tree'))
                                           ]">
                  <xsl:call-template name="docset-without-builddocs" />
@@ -697,14 +697,18 @@
     <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
                                                                and not(starts-with(language/url/@href, 'external-tree'))]"/>
 
-    <xsl:if test="$eligible-links">
+    <xsl:if test="$eligible-links or internal">
       <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
-        <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+        <xsl:if test="$eligible-links">
+          <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+        </xsl:if>
 
         <locale lang="en-us">
           <branch>main</branch>
-          <xsl:apply-templates select="$eligible-links" mode="external-link-deliverable"/>
+          <xsl:if test="$eligible-links">
+            <xsl:apply-templates select="$eligible-links" mode="external-link-deliverable"/>
+          </xsl:if>
           <xsl:apply-templates select="internal"/>
         </locale>
 
@@ -1188,19 +1192,19 @@
       product=<xsl:value-of select="concat(@product, '::', $pid)"/>
       idabbrev=<xsl:value-of select="$abbrev"/>
     </xsl:message>-->
-    <xsl:variable name="ref-node">
-      <ref linkend="{$ref}">
+    <xsl:variable name="xref-node">
+      <xref linkend="{$ref}">
         <xsl:apply-templates select="@category|@titleformat"/>
-      </ref>
+      </xref>
     </xsl:variable>
     <xsl:choose>
       <xsl:when test="ancestor::internal">
         <deliverable type="xref">
-          <xsl:copy-of select="$ref-node"/>
+          <xsl:copy-of select="$xref-node"/>
         </deliverable>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:copy-of select="$ref-node"/>
+        <xsl:copy-of select="$xref-node"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
