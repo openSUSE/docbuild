@@ -13,6 +13,7 @@ from rich.console import Console
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.models.homepage import Homepage
 from docbuild.tasks.portal import parse_portal_config
 
 from .daps import process_deliverable
@@ -220,6 +221,17 @@ async def process(
         json_cache_dir,
         full_categories=full_categories,
     )
+
+    # Generate and save homepage.json
+    try:
+        log.info("Generating homepage.json...")
+        homepage = Homepage.from_portal(stitchnode)
+        homepage_path = json_cache_dir / "homepage.json"
+        # Run the file save in a thread to avoid blocking the asyncio event loop
+        await asyncio.to_thread(homepage.save, homepage_path)
+        log.info("Successfully generated %s", homepage_path)
+    except Exception as e:
+        log.error("Failed to generate homepage.json: %s", e)
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
