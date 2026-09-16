@@ -92,6 +92,9 @@ DATA_HOME: Path = platformdirs.user_data_path(APP_NAME)
 CACHE_HOME: Path = platformdirs.user_cache_path(APP_NAME)
 """The user-specific cache directory, typically located at ~/.cache/docbuild."""
 
+CACHE_FILE_EXT: str = ".cache.json"
+"""The standard file extension used for docbuild cache files."""
+
 RUNTIME_DIR: Path = platformdirs.user_runtime_path(APP_NAME)
 """The user-specific runtime directory, typically located at /run/user/1000/docbuild."""
 
