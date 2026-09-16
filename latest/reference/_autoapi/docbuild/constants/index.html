@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.23.1.dev20+gfc61c2ac1.d20260916</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.23.1.dev21+gfa2a6a8ac.d20260916</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../_static/documentation_options.js?v=ea635f8e"></script>
+    <script src="../../../../_static/documentation_options.js?v=b7cb076e"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -463,6 +463,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../models/doctype/Doctype.html">docbuild.models.doctype.Doctype</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../models/envroles/index.html">docbuild.models.envroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../models/envroles/EnvRole.html">docbuild.models.envroles.EnvRole</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../models/language/index.html">docbuild.models.language</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../models/language/LanguageCode.html">docbuild.models.language.LanguageCode</a></li>
 </ul>
@@ -496,10 +500,6 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../models/repo/index.html">docbuild.models.repo</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../models/repo/Repo.html">docbuild.models.repo.Repo</a></li>
-</ul>
-</details></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../models/serverroles/index.html">docbuild.models.serverroles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="../models/serverroles/ServerRole.html">docbuild.models.serverroles.ServerRole</a></li>
 </ul>
 </details></li>
 </ul>
@@ -635,11 +635,11 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_DELIVERABLES" title="docbuild.constants.DEFAULT_DELIVERABLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DELIVERABLES</span></code></a></p></td>
 <td><p>The default deliverables when no specific doctype is provided.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES" title="docbuild.constants.SERVER_ROLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES</span></code></a></p></td>
-<td><p>The unique primary server role values.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.ENV_ROLES" title="docbuild.constants.ENV_ROLES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ENV_ROLES</span></code></a></p></td>
+<td><p>The unique primary env role values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="docbuild.constants.SERVER_ROLES_ALIASES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SERVER_ROLES_ALIASES</span></code></a></p></td>
-<td><p>All valid server role names and aliases for validation and testing.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ENV_ROLES_ALIASES" title="docbuild.constants.ENV_ROLES_ALIASES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ENV_ROLES_ALIASES</span></code></a></p></td>
+<td><p>All valid env role names and aliases for validation and testing.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DEFAULT_LIFECYCLE" title="docbuild.constants.DEFAULT_LIFECYCLE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_LIFECYCLE</span></code></a></p></td>
 <td><p>The default lifecycle state for a docset.</p></td>
@@ -774,15 +774,15 @@
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="docbuild.constants.SERVER_ROLES">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES" title="Link to this definition">#</a></dt>
-<dd><p>The unique primary server role values.</p>
+<dt class="sig sig-object py" id="docbuild.constants.ENV_ROLES">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ENV_ROLES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.ENV_ROLES" title="Link to this definition">#</a></dt>
+<dd><p>The unique primary env role values.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="docbuild.constants.SERVER_ROLES_ALIASES">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SERVER_ROLES_ALIASES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('PRODUCTION',</span> <span class="pre">'STAGING',</span> <span class="pre">'TESTING',</span> <span class="pre">'PROD',</span> <span class="pre">'P',</span> <span class="pre">'prod',</span> <span class="pre">'p',</span> <span class="pre">'STAGE',</span> <span class="pre">'S',</span> <span class="pre">'stage',</span> <span class="pre">'s',...</span></span><a class="headerlink" href="#docbuild.constants.SERVER_ROLES_ALIASES" title="Link to this definition">#</a></dt>
-<dd><p>All valid server role names and aliases for validation and testing.</p>
+<dt class="sig sig-object py" id="docbuild.constants.ENV_ROLES_ALIASES">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">ENV_ROLES_ALIASES</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('PRODUCTION',</span> <span class="pre">'STAGING',</span> <span class="pre">'TESTING',</span> <span class="pre">'PROD',</span> <span class="pre">'P',</span> <span class="pre">'prod',</span> <span class="pre">'p',</span> <span class="pre">'STAGE',</span> <span class="pre">'S',</span> <span class="pre">'stage',</span> <span class="pre">'s',...</span></span><a class="headerlink" href="#docbuild.constants.ENV_ROLES_ALIASES" title="Link to this definition">#</a></dt>
+<dd><p>All valid env role names and aliases for validation and testing.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -1039,8 +1039,8 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_LANGS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LANGS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ALLOWED_LANGUAGES"><code class="docutils literal notranslate"><span class="pre">ALLOWED_LANGUAGES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_DELIVERABLES"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DELIVERABLES</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SERVER_ROLES"><code class="docutils literal notranslate"><span class="pre">SERVER_ROLES</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SERVER_ROLES_ALIASES"><code class="docutils literal notranslate"><span class="pre">SERVER_ROLES_ALIASES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_ROLES"><code class="docutils literal notranslate"><span class="pre">ENV_ROLES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ENV_ROLES_ALIASES"><code class="docutils literal notranslate"><span class="pre">ENV_ROLES_ALIASES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_LIFECYCLE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LIFECYCLE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ALLOWED_LIFECYCLES"><code class="docutils literal notranslate"><span class="pre">ALLOWED_LIFECYCLES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SINGLE_LANG_REGEX"><code class="docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></li>

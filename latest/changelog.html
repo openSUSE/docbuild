@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev20+gfc61c2ac1.d20260916</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev21+gfa2a6a8ac.d20260916</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=ea635f8e"></script>
+    <script src="_static/documentation_options.js?v=b7cb076e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -481,6 +481,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Refactored the environment configuration to have a single source of truth for default values. The <a class="reference internal" href="reference/_autoapi/docbuild/cli/defaults/index.html#docbuild.cli.defaults.DEFAULT_ENV_CONFIG" title="docbuild.cli.defaults.DEFAULT_ENV_CONFIG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_ENV_CONFIG</span></code></a> dictionary is now generated directly from the Pydantic models. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/506">GH #506</a>)</p></li>
 <li><p>Allows to pass another <a class="reference internal" href="reference/_autoapi/docbuild/models/repo/Repo.html#docbuild.models.repo.Repo" title="docbuild.models.repo.Repo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code></a> object besides <code class="docutils literal notranslate"><span class="pre">str</span></code> in the initializer.
 Initializing from an existing Repo reuses its normalized values without reparsing. If that Repo has no branch, <code class="docutils literal notranslate"><span class="pre">default_branch</span></code> can be used to select the branch for its tree URL; an existing branch always takes precedence. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/521">GH #521</a>)</p></li>
+<li><p>Renamed <code class="docutils literal notranslate"><span class="pre">ServerRole</span></code> to <code class="docutils literal notranslate"><span class="pre">EnvRole</span></code> to better reflect its purpose. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/522">GH #522</a>)</p></li>
 </ul>
 </section>
 </section>
@@ -934,7 +935,7 @@ All directory-related keys now consistently use the <code class="docutils litera
 <h3>Features<a class="headerlink" href="#id35" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added <strong class="command">check files</strong> subcommand to verify that all DC files defined in XML configurations exist in their respective remote repositories. The implementation includes an optimization to group checks by repository, significantly reducing Git network overhead. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/78">GH #78</a>)</p></li>
-<li><p>Implemented a “smart” <a class="reference internal" href="reference/_autoapi/docbuild/models/serverroles/ServerRole.html#docbuild.models.serverroles.ServerRole" title="docbuild.models.serverroles.ServerRole"><code class="xref py py-class docutils literal notranslate"><span class="pre">ServerRole</span></code></a> enum that accepts case-insensitive or abbreviated aliases like <code class="docutils literal notranslate"><span class="pre">p</span></code>, <code class="docutils literal notranslate"><span class="pre">prod</span></code>, or <code class="docutils literal notranslate"><span class="pre">PRODUCTION</span></code>. The new value <code class="docutils literal notranslate"><span class="pre">devel</span></code> is an alias for <code class="docutils literal notranslate"><span class="pre">testing</span></code>.
+<li><p>Implemented a “smart” <code class="xref py py-class docutils literal notranslate"><span class="pre">ServerRole</span></code> enum that accepts case-insensitive or abbreviated aliases like <code class="docutils literal notranslate"><span class="pre">p</span></code>, <code class="docutils literal notranslate"><span class="pre">prod</span></code>, or <code class="docutils literal notranslate"><span class="pre">PRODUCTION</span></code>. The new value <code class="docutils literal notranslate"><span class="pre">devel</span></code> is an alias for <code class="docutils literal notranslate"><span class="pre">testing</span></code>.
 Refactor CLI error handling to display Pydantic validation failures in a clean, structured format. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/113">GH #113</a>)</p></li>
 </ul>
 </section>

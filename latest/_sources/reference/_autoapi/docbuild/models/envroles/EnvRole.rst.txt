@@ -1,15 +1,15 @@
-docbuild.models.serverroles.ServerRole
-======================================
+docbuild.models.envroles.EnvRole
+================================
 
-.. py:class:: docbuild.models.serverroles.ServerRole
+.. py:class:: docbuild.models.envroles.EnvRole
 
    Bases: :py:obj:`enum.StrEnum`
 
-   .. autoapi-inheritance-diagram:: docbuild.models.serverroles.ServerRole
+   .. autoapi-inheritance-diagram:: docbuild.models.envroles.EnvRole
       :parts: 1
 
 
-   The server role.
+   The environment role.
 
    This Enum supports various aliases and case variations for each role.
 

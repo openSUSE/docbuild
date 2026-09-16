@@ -28,7 +28,7 @@ docbuild.models.config.env.EnvGeneral
 
 
    .. py:attribute:: role
-      :type:  docbuild.models.serverroles.ServerRole
+      :type:  docbuild.models.envroles.EnvRole
       :value: None
 
 

@@ -19,8 +19,8 @@ Attributes
    docbuild.constants.DEFAULT_LANGS
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
-   docbuild.constants.SERVER_ROLES
-   docbuild.constants.SERVER_ROLES_ALIASES
+   docbuild.constants.ENV_ROLES
+   docbuild.constants.ENV_ROLES_ALIASES
    docbuild.constants.DEFAULT_LIFECYCLE
    docbuild.constants.ALLOWED_LIFECYCLES
    docbuild.constants.SINGLE_LANG_REGEX
@@ -95,18 +95,18 @@ Module Contents
    The default deliverables when no specific doctype is provided.
 
 
-.. py:data:: SERVER_ROLES
+.. py:data:: ENV_ROLES
    :type:  tuple[str, ...]
 
-   The unique primary server role values.
+   The unique primary env role values.
 
 
-.. py:data:: SERVER_ROLES_ALIASES
+.. py:data:: ENV_ROLES_ALIASES
    :type:  tuple[str, ...]
    :value: ('PRODUCTION', 'STAGING', 'TESTING', 'PROD', 'P', 'prod', 'p', 'STAGE', 'S', 'stage', 's',...
 
 
-   All valid server role names and aliases for validation and testing.
+   All valid env role names and aliases for validation and testing.
 
 
 .. py:data:: DEFAULT_LIFECYCLE
