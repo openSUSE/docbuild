@@ -169,3 +169,45 @@ def test_extract_prebuilt_metadata_malformed_json_ld(tmp_path: Path, mock_delive
     # Check that it safely fell back to XML values
     assert doc["title"] == "SUSE Security Admission Controller"
     assert result["tasks"] == []
+
+def test_extract_prebuilt_description_whitespace_normalization(tmp_path: Path):
+    """Test that description text with messy whitespace is normalized."""
+    xml_content = b"""
+    <portal schemaversion="7.0">
+        <product id="cloudnative">
+            <name>Test Product</name>
+            <docset id="test-docset" path="test-docset">
+              <resources>
+                <locale lang="en-us">
+                  <deliverable id="test-id">
+                      <prebuilt>
+                          <title>Test Title</title>
+                          <url format="html" href="/index.html"/>
+                          <descriptions>
+                            <desc lang="en-us">
+                                <p>Hello troubleshooting!  </p>
+                                <p>
+                                  Second line
+                                    with lots of
+                                      whitespace.
+                                </p>
+                            </desc>
+                          </descriptions>
+                      </prebuilt>
+                  </deliverable>
+                </locale>
+              </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+    root = etree.fromstring(xml_content)
+    node = root.xpath("//deliverable")[0]
+    deliverable = Deliverable(node)
+
+    # We don't need a real HTML file for this test, so pass a dummy path
+    result = extract_prebuilt_metadata(deliverable, tmp_path)
+
+    doc = result["docs"][0]
+    expected_description = "Hello troubleshooting! Second line with lots of whitespace."
+    assert doc["description"] == expected_description

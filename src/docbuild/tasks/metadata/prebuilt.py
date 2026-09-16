@@ -129,7 +129,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
 
     # Extract text from the first valid local description
     desc_text = next(
-        (node.text.strip() for node in deliverable.xml.local_desc() if node.text),
+        (' '.join(node.xpath("string()").split()) for node in deliverable.xml.local_desc()),
         ""  # the default
     )
 
