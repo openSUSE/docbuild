@@ -1,0 +1,1 @@
+Renamed ``ServerRole`` to ``EnvRole`` to better reflect its purpose.

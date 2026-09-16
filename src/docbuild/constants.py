@@ -5,8 +5,8 @@ import re
 
 import platformdirs
 
+from .models.envroles import EnvRole
 from .models.lifecycle import LifecycleFlag
-from .models.serverroles import ServerRole
 
 APP_NAME: str = "docbuild"
 """The name of the application, used in paths and config files."""
@@ -26,15 +26,15 @@ DEFAULT_DELIVERABLES: str = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 
 # The primary, unique values of the Enum ('production', 'staging', 'testing')
-SERVER_ROLES: tuple[str, ...]= tuple(
-    [role.value for role in ServerRole]
+ENV_ROLES: tuple[str, ...] = tuple(
+    [role.value for role in EnvRole]
 )
-"""The unique primary server role values."""
+"""The unique primary env role values."""
 
 # Every single valid name and alias defined in the Enum
 # ('PRODUCTION', 'PROD', 'P', 'production', 'prod', 'p', 'devel', etc.)
-SERVER_ROLES_ALIASES: tuple[str, ...] = tuple(ServerRole.__members__.keys())
-"""All valid server role names and aliases for validation and testing."""
+ENV_ROLES_ALIASES: tuple[str, ...] = tuple(EnvRole.__members__.keys())
+"""All valid env role names and aliases for validation and testing."""
 
 DEFAULT_LIFECYCLE: str = "supported"
 """The default lifecycle state for a docset."""

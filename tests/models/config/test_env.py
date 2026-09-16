@@ -194,7 +194,7 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
 
 
 def test_envconfig_invalid_role_fails(mock_valid_raw_env_data: dict[str, Any]):
-    """Test that an invalid role string is rejected by ServerRole enum."""
+    """Test that an invalid role string is rejected by EnvRole enum."""
     data = mock_valid_raw_env_data.copy()
     data["general"]["role"] = "testing_invalid"
 

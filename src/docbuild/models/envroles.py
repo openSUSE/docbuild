@@ -1,11 +1,11 @@
-"""Server roles for the docbuild application."""
+"""Environment roles for the docbuild application."""
 
 from enum import StrEnum
 from typing import Self
 
 
-class ServerRole(StrEnum):
-    """The server role.
+class EnvRole(StrEnum):
+    """The environment role.
 
     This Enum supports various aliases and case variations for each role.
     """
@@ -46,7 +46,7 @@ class ServerRole(StrEnum):
     dev = "testing"
 
     @classmethod
-    def _missing_(cls: type[Self], value: object) -> "ServerRole | None":
+    def _missing_(cls: type[Self], value: object) -> "EnvRole | None":
         """Handle aliases and case-insensitive lookups using class members.
 
         If the value passed isn't a valid value (for example, 'production'),

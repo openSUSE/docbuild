@@ -119,9 +119,9 @@ from ...constants import (
     RUNTIME_DIR,
     STATE_HOME,
 )
+from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import WritablePath
-from ..serverroles import ServerRole
 
 # --- Custom Types and Utilities ---
 
@@ -236,8 +236,8 @@ class EnvGeneral(BaseModel):
     )
     "The descriptive name of the environment."
 
-    role: ServerRole = Field(
-        default=ServerRole.PRODUCTION,
+    role: EnvRole = Field(
+        default=EnvRole.PRODUCTION,
         title="Environment Role",
         description="The operational role of the environment.",
         examples=["production"],
