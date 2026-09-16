@@ -32,12 +32,12 @@ async def _verify_repository_files(
         log.error(f"Repository inaccessible: {repo_surl}")
         for d in deliverables:
             # Format: [repo] product/version/lang:file
-            missing.append(f"[{repo_surl}] {d.xml.productid}/{d.xml.docsetid}/{d.xml.lang}:{d.xml.dcfile}")
+            missing.append(f"[{repo_surl}] {d.xml.product_id}/{d.xml.docset_path}/{d.xml.lang}:{d.xml.dcfile}")
         return missing
 
     available_files = await repo_handler.ls_tree(branch)
     for d in deliverables:
-        display_name = f"[{repo_surl}] {d.xml.productid}/{d.xml.docsetid}/{d.xml.lang}:{d.xml.dcfile}"
+        display_name = f"[{repo_surl}] {d.xml.product_id}/{d.xml.docset_path}/{d.xml.lang}:{d.xml.dcfile}"
         if d.xml.dcfile in available_files:
             log.info(f"Found: {display_name}")
         else:

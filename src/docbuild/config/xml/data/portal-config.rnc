@@ -588,7 +588,7 @@ ds.product =
       ds.path.attr? &
       ds.schemaversion.attr? &
       ds.enabled.attr? &
-      ds.site-section.attr? & # TODO: Do we still need this attribute?
+      # ds.site-section.attr? & # TODO: Do we still need this attribute?
       ds.series.attr &
       ds.family.attr &
       ds.rank.attr? &

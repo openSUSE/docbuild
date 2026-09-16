@@ -109,7 +109,7 @@ def deliverable_from_xml_factory() -> Callable[[str, str], Deliverable]:
 
     def _factory(xml_string: str, lang: str) -> Deliverable:
         xml_template = f'''
-        <docservconfig>
+        <portal>
           <product id="sles">
             <docset id="sles.15-sp6" path="15-SP6">
               <resources>
@@ -119,10 +119,9 @@ def deliverable_from_xml_factory() -> Callable[[str, str], Deliverable]:
               </resources>
             </docset>
           </product>
-        </docservconfig>
+        </portal>
         '''
         root = etree.fromstring(xml_template)
         return Deliverable(root.find(".//deliverable"))
 
     return _factory
-

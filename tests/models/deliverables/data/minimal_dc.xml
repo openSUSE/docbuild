@@ -1,4 +1,4 @@
-<product id="sles" schemaversion="6.0">
+<product id="sles" schemaversion="6.0" path="sles_path">
   <name>SUSE Linux Enterprise Server</name>
   <acronym>SLES</acronym>
   <categories>

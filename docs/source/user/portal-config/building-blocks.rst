@@ -159,6 +159,12 @@ It contains the following attributes:
   the whole portal configuration.
   The product ID should be short and descriptive.
 
+* ``path`` (optional)
+
+  A relative directory name for the product, used for building
+  the output path. If not specified, the ``id`` is used as the
+  fallback.
+
 * ``family`` (required)
 
   The product family this product belongs to.
@@ -239,6 +245,8 @@ Furthermore, a product contains the following child elements:
   Each ``<docset>`` element contains the deliverables for
   this release for at least English. Other languages are optional.
 
+
+.. _single-vs-multifile:
 
 Single vs. Multi File Configuration
 -----------------------------------

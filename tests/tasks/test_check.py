@@ -11,8 +11,8 @@ from docbuild.tasks.check import check_repository_files
 def mock_deliverable():
     """Create a mock Deliverable object with required nested attributes."""
     deli = MagicMock()
-    deli.xml.productid = "sles"
-    deli.xml.docsetid = "16.0"
+    deli.xml.product_id = "sles"
+    deli.xml.docset_path = "16.0"
     deli.xml.lang = "en-us"
     deli.xml.dcfile = "README.md"
 

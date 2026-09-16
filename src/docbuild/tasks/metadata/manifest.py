@@ -252,7 +252,7 @@ def store_productdocset_json(
         all_deliverables.extend(get_deliverable_from_doctype(stitchnode, dt))
 
     # 2. Group deliverables by the product/docset they belong to
-    keyfunc = lambda d: (d.xml.productid, d.xml.docsetid)  # noqa: E731
+    keyfunc = lambda d: (d.xml.product_id, d.xml.docset_path)  # noqa: E731
     all_deliverables.sort(key=keyfunc)  # groupby requires a sorted sequence
 
     for (product_id, docset_id), group in itertools.groupby(all_deliverables, key=keyfunc):

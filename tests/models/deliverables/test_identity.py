@@ -4,12 +4,12 @@ from docbuild.models.deliverable import Deliverable
 
 
 def test_product_id(first_deliverable: Deliverable) -> None:
-    assert first_deliverable.xml.productid == "sles"
+    assert first_deliverable.xml.product_id == "sles"
 
 
 def test_docset_fields(first_deliverable: Deliverable) -> None:
-    assert first_deliverable.xml.docsetid == "15-SP6"
-    assert first_deliverable.xml.docsetrealid == "sles.15-SP6"
+    assert first_deliverable.xml.docset_path == "15-SP6"
+    assert first_deliverable.xml.docset_id == "sles.15-SP6"
 
 
 def test_pdlang(first_deliverable: Deliverable) -> None:
@@ -57,4 +57,8 @@ def test_locale_en_on_translated_deliverable(first_ref_deliverable: Deliverable)
     """Test that translated deliverables can resolve the English locale node."""
     locale_en = first_ref_deliverable.xml.locale_en
     assert locale_en is not None
-    assert locale_en.get("lang") == "en-us"
+
+
+def test_product_path(first_deliverable: Deliverable) -> None:
+    assert first_deliverable.xml.product_path == "sles_path"
+

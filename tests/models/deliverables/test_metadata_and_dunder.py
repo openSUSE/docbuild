@@ -35,8 +35,8 @@ def test_hash_uses_full_id(first_deliverable: Deliverable) -> None:
 def test_repr_contains_product_and_docset(first_deliverable: Deliverable) -> None:
     representation = repr(first_deliverable)
     assert "Deliverable(" in representation
-    assert "productid='sles'" in representation
-    assert "docsetid='15-SP6'" in representation
+    assert "product_id='sles'" in representation
+    assert "docset_path='15-SP6'" in representation
 
 
 def test_make_safe_name() -> None:
@@ -49,8 +49,8 @@ def test_make_safe_name() -> None:
 def test_xml_str_representation(first_deliverable: Deliverable) -> None:
     """Test the __str__ method of DeliverableXMLView."""
     xml_str = str(first_deliverable.xml)
-    assert "productid='sles'" in xml_str
-    assert "docsetid='15-SP6'" in xml_str
+    assert "product_id='sles'" in xml_str
+    assert "docset_path='15-SP6'" in xml_str
     assert "lang=" in xml_str
     assert "branch=" in xml_str
     assert "dcfile=" in xml_str

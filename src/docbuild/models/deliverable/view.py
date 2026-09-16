@@ -34,16 +34,28 @@ class DeliverableXMLView:
 
     # -- Identity fields
     @cached_property
-    def productid(self) -> str:
+    def product_id(self) -> str:
         """Return the product ID (``<product id=…>``) or None if absent.."""
         return self.product_node.attrib.get("id")
 
     @cached_property
+    def product_path(self) -> str | None:
+        """Return the product path for the deliverable.
+
+        This corresponds to the ``path`` attribute on the ``<product>`` tag and
+        is used to specify a relative directory name for the product.
+        If the ``path`` attribute is not present, this property will be ``None``.
+
+        :return: The product path string, or ``None`` if not set.
+        """
+        return self.product_node.attrib.get("path", None)
+
+    @cached_property
     def product_docset(self) -> str:
         """Return the product/docset ID (``<product id=…>/<docset id=…>``)."""
-        productid = self.productid
-        docsetid = self.docsetid
-        return f"{productid}/{docsetid}"
+        product_id = self.product_id
+        docset_path = self.docset_path
+        return f"{product_id}/{docset_path}"
 
     @cached_property
     def productname(self) -> str | None:
@@ -57,13 +69,20 @@ class DeliverableXMLView:
         return node.strip() if node is not None else ""
 
     @cached_property
-    def docsetrealid(self) -> str | None:
-        """Return the docset real ID (``<docset id=…>``) or None if absent."""
-        return self.docset_node.attrib.get("id", None)
+    def docset_id(self) -> str:
+        """Return the docset real ID (``<docset id=…>``)."""
+        return self.docset_node.attrib["id"]
 
     @cached_property
-    def docsetid(self) -> str | None:
-        """Return the docset path/name (``<docset path=…>``), NOT the real ID."""
+    def docset_path(self) -> str | None:
+        """Return the docset path for the deliverable.
+
+        This corresponds to the ``path`` attribute on the ``<docset>`` tag and
+        is used to specify a relative directory name for the docset.
+        If the ``path`` attribute is not present, this property will be ``None``.
+
+        :return: The product path string, or ``None`` if not set.
+        """
         return self.docset_node.attrib.get("path", None)
 
     @cached_property
@@ -325,8 +344,8 @@ class DeliverableXMLView:
     def __str__(self) -> str:
         """Return a human-readable string representation of the deliverable."""
         return (
-            f"productid={self.productid!r}, "
-            f"docsetid={self.docsetid!r}, lang={self.lang!r}, "
+            f"product_id={self.product_id!r}, "
+            f"docset_path={self.docset_path!r}, lang={self.lang!r}, "
             f"branch={self.branch()!r}, dcfile={self.dcfile!r}"
         )
 

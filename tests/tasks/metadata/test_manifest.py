@@ -53,18 +53,18 @@ def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
     """Minimal stitched docservconfig ElementTree matching the deliverable fixture."""
     prod_node = etree.Element(
         "product",
-        id=deliverable.xml.productid,
-        productid=deliverable.xml.productid,
+        id=deliverable.xml.product_id,
+        productid=deliverable.xml.product_id,
     )
     etree.SubElement(prod_node, "name").text = "SUSE Linux Enterprise Server"
     etree.SubElement(prod_node, "acronym").text = "SLES"
     docset_node = etree.SubElement(
         prod_node,
         "docset",
-        id=deliverable.xml.docsetid,
-        path=deliverable.xml.docsetid,
-        setid=deliverable.xml.docsetid,
-        productid=deliverable.xml.productid,
+        id=deliverable.xml.docset_path,
+        path=deliverable.xml.docset_path,
+        setid=deliverable.xml.docset_path,
+        productid=deliverable.xml.product_id,
     )
     resources_node = etree.SubElement(docset_node, "resources")
     locale_node = etree.SubElement(resources_node, "locale", lang="en-us")
@@ -122,7 +122,7 @@ def test_store_productdocset_json_merges_and_writes(
     meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
     )
 
     store_productdocset_json(
@@ -134,8 +134,8 @@ def test_store_productdocset_json_merges_and_writes(
 
     out_file = (
         json_cache_dir
-        / deliverable.xml.productid
-        / f"{deliverable.xml.docsetid}.json"
+        / deliverable.xml.product_id
+        / f"{deliverable.xml.docset_path}.json"
     )
     assert out_file.exists()
     merged = json.loads(out_file.read_text(encoding="utf-8"))
@@ -161,7 +161,7 @@ def test_store_productdocset_json_warns_on_empty_metadata(
     (deliverable_path / deliverable.xml.dcfile).write_text("{}", encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
     )
 
     with patch.object(manifest_pkg, "log") as mock_log:
@@ -189,7 +189,7 @@ def test_store_productdocset_json_handles_read_error(
     (deliverable_path / deliverable.xml.dcfile).write_text("{ not json }", encoding="utf-8")
 
     doctype = Doctype.from_str(
-        f"{deliverable.xml.productid}/{deliverable.xml.docsetid}/{deliverable.xml.lang}"
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
     )
 
     with patch.object(manifest_pkg, "log") as mock_log:

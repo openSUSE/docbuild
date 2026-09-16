@@ -30,8 +30,8 @@ def build_hierarchy(
 
     for deliv in deliverables:
         lang = str(deliv.xml.lang)
-        product = deliv.xml.productid or "unknown-product"
-        docset = deliv.xml.docsetid or "unknown-docset"
+        product = deliv.xml.product_id or "unknown-product"
+        docset = deliv.xml.docset_path or "unknown-docset"
 
         hierarchy[lang][product][docset].append(deliv)
 
@@ -187,16 +187,16 @@ def print_flat(
         deliverables,
         key=lambda d: (
             str(d.xml.lang),
-            d.xml.productid or "",
-            d.xml.docsetid or "",
+            d.xml.product_id or "",
+            d.xml.docset_path or "",
             d.xml.node.get("id", ""),
         )
     )
 
     for deliv in sorted_deliverables:
         lang = str(deliv.xml.lang)
-        product = deliv.xml.productid or "unknown-product"
-        docset = deliv.xml.docsetid or "unknown-docset"
+        product = deliv.xml.product_id or "unknown-product"
+        docset = deliv.xml.docset_path or "unknown-docset"
         d_id = deliv.xml.deliverableid or "unnamed-deliverable"
 
         display_name = get_display_name(deliv, d_id)
@@ -244,8 +244,8 @@ def validate_docsets_against_xml(
             valid_docsets = set()
             for node in list_all_deliverables(tree, [broad_dt]):
                 deli = Deliverable(_node=node)
-                if deli.xml.docsetid:
-                    valid_docsets.add(deli.xml.docsetid)
+                if deli.xml.docset_path:
+                    valid_docsets.add(deli.xml.docset_path)
 
             valid_docsets_str = ["*", *sorted(valid_docsets)]
 

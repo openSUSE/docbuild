@@ -49,57 +49,6 @@ a new product, proceed as follows:
 
    * Assign a maintainer for the product.
 
-#. Add a release.
+#. Add a docset.
 
-   Each release is defined with a ``<docset>`` element.
-   Depending on the amount of deliverables and the complexity
-   of the release, you can either put the
-   ``<docset>`` element directly into the product configuration
-   file or create a separate file for each release and include
-   it in the product configuration.
-
-   We choose the second option and create a file named
-   :file:`1.0.xml` for the 1.0 release of the NAS product:
-
-   .. code-block:: xml
-      :caption: The 1.0 release of the NAS product :file:`1.0.xml`
-      :name: nas.docset
-
-      <docset id="nas-1.0" path="1.0" lifecycle="supported">
-        <version>1.0</version>
-        <resources>
-          <git remote="https://github.com/example/nas.git"/>
-          <locale lang="en-us">
-            <branch>main</branch>
-            <!-- ... deliverables ... -->
-          </locale>
-        </resources>
-      </docset>
-
-   * For the ``<docset>`` element:
-
-     * Add an ``id`` attribute.
-
-       The ID is created by concatenating the product ID and the release version.
-
-     * Add a ``path`` attribute for the ``<docset>`` element.
-
-       The ``path`` is used as part of the URL of the portal. Set it to the version of the release, for example "1.0".
-
-     * Add a ``lifecycle`` attribute for the ``<docset>`` element.
-
-       For new products, set it to "supported".
-
-   * For the ``<resources>`` element:
-
-     * If possible, create a ``<git>`` element to define the Git repository for the sources of this release.
-       This is only needed if your product is built via DAPS. For other build systems like Antora, the
-       deliverables are built outside of docbuild. In that case, omit this tag.
-
-     * Create a ``<locale>`` element for the English language (``en-us``) and
-       add a ``<branch>`` element to define the Git branch for this release.
-
-
-#. Add a deliverable.
-
-   Continue with section :ref:`add-deliverable`.
+   Continue with section :ref:`create-docset`.

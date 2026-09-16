@@ -70,8 +70,8 @@ async def test_process_deliverable_build_success(
         branch="main",
     )
     mock_deliverable.xml.dcfile = "DC-test"
-    mock_deliverable.xml.productid = "sles"
-    mock_deliverable.xml.docsetid = "15"
+    mock_deliverable.xml.product_id = "sles"
+    mock_deliverable.xml.docset_path = "15"
     mock_deliverable.xml.lang = "en-us"
     mock_deliverable.git.url = "https://git.test"
     mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"

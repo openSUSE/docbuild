@@ -174,7 +174,7 @@ async def process_deliverable(    # noqa: C901
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(tmp_repo_dir),
             prefix=(
-                f"clone-{deliverable.xml.productid}-{deliverable.xml.docsetid}"
+                f"clone-{deliverable.xml.product_id}-{deliverable.xml.docset_path}"
                 f"-{deliverable.xml.lang}-{deliverable.xml.dcfile}_"
             ),
         ) as worktree_dir:

@@ -105,8 +105,8 @@ async def process_deliverable_build(
                 else:
                     # 3. Resolve placeholders for the target path
                     target_suffix = target_dir_dyn.format(
-                        product=deliverable.xml.productid,
-                        docset=deliverable.xml.docsetid,
+                        product=deliverable.xml.product_id,
+                        docset=deliverable.xml.docset_path,
                         lang=deliverable.xml.lang,
                     )
 

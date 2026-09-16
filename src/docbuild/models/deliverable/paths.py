@@ -18,7 +18,7 @@ class DeliverablePaths:
     @cached_property
     def product_docset(self) -> str:
         """Return product and docset joined by a slash."""
-        return f"{self.xml.productid}/{self.xml.docsetid}"
+        return f"{self.xml.product_id}/{self.xml.docset_path}"
 
     @cached_property
     def relpath(self) -> str:
@@ -28,10 +28,10 @@ class DeliverablePaths:
     @cached_property
     def zip_path(self) -> str:
         """Return the path to the ZIP file."""
-        productid = self.xml.productid
-        docsetid = self.xml.docsetid
+        product_id = self.xml.product_id
+        docset_path = self.xml.docset_path
         lang = self.xml.lang
-        return f"{lang}/{productid}/{docsetid}/{productid}-{docsetid}-{lang}.zip"
+        return f"{lang}/{product_id}/{docset_path}/{product_id}-{docset_path}-{lang}.zip"
 
     def base_format_path(self, fmt: str) -> str:
         """Return the base path for a given format."""
@@ -52,7 +52,7 @@ class DeliverablePaths:
         if self.xml.lang != "en-us":
             path += f"{self.xml.lang}/"
 
-        path += f"{self.xml.productid}/{self.xml.docsetid}/{fmt}/{rootid}/"
+        path += f"{self.xml.product_id}/{self.xml.docset_path}/{fmt}/{rootid}/"
         return path
 
     @cached_property
