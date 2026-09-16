@@ -1138,7 +1138,18 @@
   </xsl:template>
 
   <!-- ref  -->
-  <xsl:template match="ref[not(@linkend)]">
+  <xsl:template match="internal">
+    <xsl:comment> Internal references converted to deliverables </xsl:comment>
+    <xsl:apply-templates select="ref"/>
+  </xsl:template>
+
+  <xsl:template match="internal/ref">
+    <deliverable type="ref">
+      <xsl:apply-templates select="."/>
+    </deliverable>
+  </xsl:template>
+
+  <xsl:template match="ref">
     <xsl:variable name="pid" select="@product"/>
     <xsl:variable name="cnfg" select="$config/product[@xml:id=$pid]"/>
     <xsl:variable name="abbrev" select="$cnfg/@idabbrev"/>

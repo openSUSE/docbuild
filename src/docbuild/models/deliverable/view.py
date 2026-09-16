@@ -199,8 +199,7 @@ class DeliverableXMLView:
     @cached_property
     def is_ref(self) -> bool:
         """Return True if the deliverable is marked as a reference."""
-        # Safest check: does it contain a <ref> tag?
-        return self.node.find("ref") is not None
+        return self.kind == "ref"
 
     def _is_kind(self, expected: str) -> bool:
         """Return ``True`` when the deliverable type matches ``expected``."""

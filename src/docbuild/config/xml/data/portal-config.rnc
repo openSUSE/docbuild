@@ -909,11 +909,7 @@ ds.docset =
     ds.descriptions?,
     (
       (ds.resources,
-       ds.internal?,
-       ds.external?)
-       |
-      (ds.internal,
-       ds.external?) |
+       ds.external?)|
       ds.external
     )
   }
@@ -1031,6 +1027,7 @@ ds.locale_default =
     (
      ds.deliverable_en_us_dc
      | ds.deliverable_en_us_prebuilt
+     | ds.deliverable_ref
     )+
   }
 }
@@ -1175,6 +1172,20 @@ ds.deliverable_en_us_prebuilt =
 }
 
 
+[
+  db:refname [ "deliverable (ref)" ]
+  db:refpurpose [ "Definition of a reference to a translation or to another deliverable" ]
+]
+div {
+ds.deliverable_ref =
+  element deliverable {
+    attribute type { "ref" },
+    ds.id.attr?,
+    ds.ref
+  }
+}
+
+
 
 [
   db:refname [ "prebuilt" ]
@@ -1275,17 +1286,7 @@ ds.subdeliverable =
 }
 
 
-[
-  db:refname [ "internal" ]
-  db:refpurpose [ "Wrapper for internal references" ]
-]
-div {
-ds.internal =
-  ## Wrapper for internal references
-  element internal {
-    ds.ref+
-  }
-}
+
 
 
 [
