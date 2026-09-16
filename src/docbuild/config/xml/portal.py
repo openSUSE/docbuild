@@ -6,11 +6,10 @@ from typing import Any
 
 from lxml import etree  # type: ignore
 
-from ...constants import XML_NS
+from ...constants import XML_ID
 from ...models.deliverable import Deliverable
 from .xinclude import parse_xml_with_xinclude_base
 
-XML_ID = etree.QName(XML_NS, "id")
 SPECIAL_IDS = {"sbp", "trd", "smart"}
 
 

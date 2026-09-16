@@ -1,0 +1,1 @@
+Added support for deliverable cross-references (``<deliverable type="xref">``) with recursive target resolution and semantic validation in :command:`docbuild portal validate`.

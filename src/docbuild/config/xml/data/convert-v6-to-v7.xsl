@@ -640,7 +640,7 @@
                                              not(self::external or
                                                  self::internal)
                                            ]" />
-              <xsl:if test="external/link[not(starts-with(language/url/@href, 'https://'))
+              <xsl:if test="internal or external/link[not(starts-with(language/url/@href, 'https://'))
                                           and not(starts-with(language/url/@href, 'external-tree'))
                                           ]">
                  <xsl:call-template name="docset-without-builddocs" />
@@ -697,14 +697,18 @@
     <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
                                                                and not(starts-with(language/url/@href, 'external-tree'))]"/>
 
-    <xsl:if test="$eligible-links">
+    <xsl:if test="$eligible-links or internal">
       <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
-        <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+        <xsl:if test="$eligible-links">
+          <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+        </xsl:if>
 
         <locale lang="en-us">
           <branch>main</branch>
-          <xsl:apply-templates select="$eligible-links" mode="external-link-deliverable"/>
+          <xsl:if test="$eligible-links">
+            <xsl:apply-templates select="$eligible-links" mode="external-link-deliverable"/>
+          </xsl:if>
           <xsl:apply-templates select="internal"/>
         </locale>
 

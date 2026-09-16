@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 from typing import Final
 
+from lxml.etree import QName
 import platformdirs
 
 from .models.envroles import EnvRole
@@ -148,11 +149,13 @@ PORTALLOGGER_NAME: str = f"{APP_NAME}.portal"
 """The standardized name for the Portal-related logger."""
 
 # --- Locking constants ---
+
 BASE_LOCK_DIR: Path = RUNTIME_DIR / "locks"
 """The directory where PID lock files will be stored."""
 
 XMLDATADIR: Path = Path(__file__).parent / "config" / "xml" / "data"
 """Directory where additional files (RNC, XSLT) for XML processing are stored."""
+
 
 # --- UI and Error Reporting Constants ---
 
@@ -162,16 +165,19 @@ DEFAULT_ERROR_LIMIT: int = 5
 
 # --- XML namespaces ---
 
-XML_NS = "http://www.w3.org/XML/1998/namespace"
+XML_NS: Final[str] = "http://www.w3.org/XML/1998/namespace"
 """The XML namespace URI for XML elements."""
 
-XINCLUDE_NS = "http://www.w3.org/2001/XInclude"
+XML_ID: Final[QName] = QName(XML_NS, "id")
+"""The QName for the xml:id attribute."""
+
+XINCLUDE_NS: Final[str] = "http://www.w3.org/2001/XInclude"
 """The XML namespace URI for XInclude elements."""
 
-DOCBOOK_NS = "http://docbook.org/ns/docbook"
+DOCBOOK_NS: Final[str] = "http://docbook.org/ns/docbook"
 """The XML namespace URI for DocBook elements."""
 
-XLINK_NS = "http://www.w3.org/1999/xlink"
+XLINK_NS: Final[str] = "http://www.w3.org/1999/xlink"
 """The XML namespace URI for XLink attributes."""
 
 

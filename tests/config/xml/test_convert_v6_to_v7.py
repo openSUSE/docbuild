@@ -366,3 +366,45 @@ def test_locale_path_cloudnative_and_sles(xslt_transformer):
             "//product[@xml:id='sles']//resources/locale[@lang='de-de']"
         )[0]
         assert sles_de.attrib.get("path") is None
+
+
+def test_docset_with_only_internal_refs_gets_resources(xslt_transformer):
+    """Test that a docset with only <internal> (no builddocs, no external) produces <resources>."""
+    v6_xml = etree.XML("""<docservconfig>
+      <product productid="trd" schemaversion="6.0">
+        <docset lifecycle="supported" setid="ai">
+          <version includes-productname="true">Artificial Intelligence</version>
+          <descriptions treatment="prepend">
+            <desc lang="en-us">
+              <p>Documents published in this area focus on AI-based solutions.</p>
+            </desc>
+          </descriptions>
+          <internal>
+            <ref product="trd" docset="clearml" dc="DC-rc_suse-ai_clearml" titleformat="title subtitle"/>
+            <ref product="trd" docset="contributors" dc="DC-suse-trd_contrib-guide" titleformat="title subtitle"/>
+          </internal>
+        </docset>
+      </product>
+    </docservconfig>""")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outdir = str(Path(tmpdir)) + "/"
+        _ = xslt_transformer(
+            v6_xml,
+            outputdir=etree.XSLT.strparam(outdir),
+            outputfile=etree.XSLT.strparam("portal.xml"),
+        )
+        result_tree = etree.parse(str(Path(tmpdir) / "portal.xml"))
+
+        # <resources> and <locale lang="en-us"> must be generated
+        locales = result_tree.xpath("//product[@xml:id='trd']//resources/locale[@lang='en-us']")
+        assert len(locales) == 1
+        assert locales[0].findtext("branch") == "main"
+
+        # The <internal> references must be converted to <deliverable type="xref">
+        xrefs = locales[0].xpath("./deliverable[@type='xref']")
+        assert len(xrefs) == 2
+        linkends = [x.find("ref").attrib.get("linkend") for x in xrefs]
+        assert "trd.clearml.dc-rc_suse-ai_clearml" in linkends
+        assert "trd.contributors.dc-suse-trd_contrib-guide" in linkends
+
