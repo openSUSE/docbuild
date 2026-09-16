@@ -34,6 +34,7 @@ Attributes
    docbuild.constants.CONFIG_HOME
    docbuild.constants.DATA_HOME
    docbuild.constants.CACHE_HOME
+   docbuild.constants.CACHE_FILE_EXT
    docbuild.constants.RUNTIME_DIR
    docbuild.constants.APP_CONFIG_BASENAMES
    docbuild.constants.PROJECT_LEVEL_APP_CONFIG_FILENAMES
@@ -190,6 +191,14 @@ Module Contents
    :type:  pathlib.Path
 
    The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+
+.. py:data:: CACHE_FILE_EXT
+   :type:  str
+   :value: '.cache.json'
+
+
+   The standard file extension used for docbuild cache files.
 
 
 .. py:data:: RUNTIME_DIR
