@@ -9,20 +9,48 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.smart.container" title="Containerization"/>
-      <language id="cat.smart.deploy-upgrade" title="Deployment &amp; Upgrade"/>
-      <language id="cat.smart.network" title="Network"/>
-      <language id="cat.smart.systems-management" title="System Management"/>
-      <language id="cat.smart.systemtuning-performance" title="System Tuning &amp; Performance"/>
-      <language id="cat.smart.virtualization-cloud" title="Virtualization &amp; Cloud"/>
-      <language id="cat.smart.security" title="Security"/>
-      <language id="cat.smart.access-control" title="Access Control"/>
-      <language id="cat.smart.ha" title="High Availability"/>
-      <language id="cat.smart.storage" title="Storage"/>
-      <language id="cat.smart.sap" title="SAP"/>
-      <language id="cat.smart.rancher" title="Rancher"/>
-      <language id="cat.smart.desktop" title="Desktop Applications"/>
-      <language id="cat.smart.micro-clouds" title="SLE Micro in Public Clouds"/>
+      <language id="cat.smart.container">
+        <title>Containerization</title>
+      </language>
+      <language id="cat.smart.deploy-upgrade">
+        <title>Deployment &amp; Upgrade</title>
+      </language>
+      <language id="cat.smart.network">
+        <title>Network</title>
+      </language>
+      <language id="cat.smart.systems-management">
+        <title>System Management</title>
+      </language>
+      <language id="cat.smart.systemtuning-performance">
+        <title>System Tuning &amp; Performance</title>
+      </language>
+      <language id="cat.smart.virtualization-cloud">
+        <title>Virtualization &amp; Cloud</title>
+      </language>
+      <language id="cat.smart.security">
+        <title>Security</title>
+      </language>
+      <language id="cat.smart.access-control">
+        <title>Access Control</title>
+      </language>
+      <language id="cat.smart.ha">
+        <title>High Availability</title>
+      </language>
+      <language id="cat.smart.storage">
+        <title>Storage</title>
+      </language>
+      <language id="cat.smart.sap">
+        <title>SAP</title>
+      </language>
+      <language id="cat.smart.rancher">
+        <title>Rancher</title>
+      </language>
+      <language id="cat.smart.desktop">
+        <title>Desktop Applications</title>
+      </language>
+      <language id="cat.smart.micro-clouds">
+        <title>SLE Micro in Public Clouds</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

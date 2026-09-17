@@ -1,7 +1,9 @@
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="cat.root" title="Root" />
+      <language id="cat.root">
+        <title>Root</title>
+      </language>
     </category>
   </categories>
   <product id="sles">
@@ -10,7 +12,9 @@
     <maintainer></maintainer>
     <categories>
       <category lang="en-us">
-        <language id="cat.product" title="Product" />
+        <language id="cat.product">
+          <title>Product</title>
+        </language>
       </category>
     </categories>
     <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">

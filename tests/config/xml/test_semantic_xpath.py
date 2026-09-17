@@ -80,14 +80,14 @@ def test_xpath_literal_escaping(input_value: str, expected_output: str) -> None:
 
 def test_is_unique_among_same_tag_siblings_for_root_node() -> None:
     """Root nodes are treated as unique because they have no parent."""
-    root = etree.fromstring("<portal id=\"root\"/>", parser=None)
+    root = etree.fromstring('<portal id="root"/>', parser=None)
 
     assert is_unique_among_same_tag_siblings(root, "id", "root")
 
 
 def test_position_among_same_tag_siblings_for_root_node() -> None:
     """Root nodes have no parent and therefore position 1."""
-    root = etree.fromstring("<portal id=\"root\"/>", parser=None)
+    root = etree.fromstring('<portal id="root"/>', parser=None)
 
     assert position_among_same_tag_siblings(root) == 1
 
@@ -175,7 +175,9 @@ def test_semantic_xpath_uses_language_attributes(
         <portal>
             <categories>
                 <category lang="de-de">
-                    <language {attr_name}="{attr_value}" title="Root"/>
+                    <language {attr_name}="{attr_value}">
+                        <title>Root</title>
+                    </language>
                 </category>
             </categories>
         </portal>

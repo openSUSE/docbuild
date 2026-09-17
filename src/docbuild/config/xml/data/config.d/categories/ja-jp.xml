@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category lang="ja-jp">
-  <language linkend="cat.about" title="について"/>
-  <language linkend="cat.deployment" title="配備"/>
-  <language linkend="cat.initial-config" title="初期設定"/>
-  <language linkend="cat.update-upgrade" title="アップデート＆アップグレード"/>
-  <language linkend="cat.administration" title="管理"/>
-  <language linkend="cat.container-virtualization" title="コンテナと仮想化"/>
-  <language linkend="cat.product-usage" title="製品用途"/>
-  <language linkend="cat.security-compliance" title="セキュリティとコンプライアンス"/>
-  <language linkend="cat.tuning-performance" title="チューニング＆パフォーマンス"/>
-  <language linkend="cat.solution-doc" title="ソリューション文書"/>
-  <language linkend="cat.additional-doc" title="関連ドキュメント"/>
-  <language linkend="cat.best-practices" title="ベストプラクティス"/>
+  <language linkend="cat.about">
+    <title>について</title>
+  </language>
+  <language linkend="cat.deployment">
+    <title>配備</title>
+  </language>
+  <language linkend="cat.initial-config">
+    <title>初期設定</title>
+  </language>
+  <language linkend="cat.update-upgrade">
+    <title>アップデート＆アップグレード</title>
+  </language>
+  <language linkend="cat.administration">
+    <title>管理</title>
+  </language>
+  <language linkend="cat.container-virtualization">
+    <title>コンテナと仮想化</title>
+  </language>
+  <language linkend="cat.product-usage">
+    <title>製品用途</title>
+  </language>
+  <language linkend="cat.security-compliance">
+    <title>セキュリティとコンプライアンス</title>
+  </language>
+  <language linkend="cat.tuning-performance">
+    <title>チューニング＆パフォーマンス</title>
+  </language>
+  <language linkend="cat.solution-doc">
+    <title>ソリューション文書</title>
+  </language>
+  <language linkend="cat.additional-doc">
+    <title>関連ドキュメント</title>
+  </language>
+  <language linkend="cat.best-practices">
+    <title>ベストプラクティス</title>
+  </language>
 </category>

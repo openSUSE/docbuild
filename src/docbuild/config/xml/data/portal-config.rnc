@@ -355,13 +355,6 @@ ds.lang.en-us.attr =
     ]
     attribute lang { "en-us" }
 
-ds.title.attr =
-    ## Localized title of description
-    [
-      db:refpurpose [ "Localized title of description" ]
-    ]
-    attribute title { text }
-
 ds.titleformat.attr =
   ## How to display the document title on the product version navigational page, a combination of the following values:
   ## * `title`: title as extracted from the document
@@ -834,10 +827,8 @@ div {
 ds.category_language_default =
   ## Metadata for category displayed on product detail navigational page
   element language {
-    (
-      ds.id.attr,
-      ds.title.attr
-    ),
+    ds.id.attr,
+    ds.title,
     ds.htmlblock*
   }
 }
@@ -850,10 +841,8 @@ div {
 ds.category_language_translation =
   ## Metadata for category displayed on product detail navigational page
   element language {
-    (
-      ds.linkend.attr,
-      ds.title.attr
-    ),
+    ds.linkend.attr,
+    ds.title,
     ds.htmlblock*
   }
 }

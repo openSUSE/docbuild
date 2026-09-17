@@ -237,7 +237,9 @@ class DeliverableXMLView:
         for cat in self.all_categories:
             lang_nodes = cat.xpath(f"language[@id='{cat_id}']")
             if lang_nodes:
-                title = lang_nodes[0].get("title")
+                title = lang_nodes[0].findtext("title")
+                if not title:
+                    title = lang_nodes[0].get("title")
                 if not title:
                     title = lang_nodes[0].get("name")
                 return title.strip() if title else cat_id

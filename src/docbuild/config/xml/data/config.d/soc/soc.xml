@@ -10,7 +10,8 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.soc.soc-clm" title="SUSE OpenStack Cloud Lifecycle Manager documentation">
+      <language id="cat.soc.soc-clm">
+        <title>SUSE OpenStack Cloud Lifecycle Manager documentation</title>
         <p>
         Cloud Lifecycle Manager (CLM) was
         introduced in the SUSE OpenStack Cloud 8 release in 2018. Based on
@@ -20,7 +21,8 @@
         without downtime.
       </p>
       </language>
-      <language id="cat.soc.soc-crow" title="SUSE OpenStack Cloud Crowbar documentation">
+      <language id="cat.soc.soc-crow">
+        <title>SUSE OpenStack Cloud Crowbar documentation</title>
         <p>
         Crowbar has been the deployment engine of choice for SUSE OpenStack
         Cloud prior to version 8. Based on Chef, Crowbar makes it fast and
@@ -28,34 +30,66 @@
         smaller deployments.
       </p>
       </language>
-      <language id="cat.soc.soc-general" title="SUSE OpenStack Cloud general documentation"/>
-      <language id="cat.soc.ostack-upstream" title="OpenStack upstream documentation"/>
-      <language id="cat.soc.release-notes" title="Release notes"/>
-      <language id="cat.soc.best-practice" title="Best practices"/>
+      <language id="cat.soc.soc-general">
+        <title>SUSE OpenStack Cloud general documentation</title>
+      </language>
+      <language id="cat.soc.ostack-upstream">
+        <title>OpenStack upstream documentation</title>
+      </language>
+      <language id="cat.soc.release-notes">
+        <title>Release notes</title>
+      </language>
+      <language id="cat.soc.best-practice">
+        <title>Best practices</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.soc.release-notes" title="Versionshinweise"/>
-      <language linkend="cat.soc.best-practice" title="Best Practices"/>
+      <language linkend="cat.soc.release-notes">
+        <title>Versionshinweise</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>Best Practices</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.soc.release-notes" title="Notas de la versión"/>
-      <language linkend="cat.soc.best-practice" title="Prácticas recomendadas"/>
+      <language linkend="cat.soc.release-notes">
+        <title>Notas de la versión</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>Prácticas recomendadas</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.soc.release-notes" title="Notes de version"/>
-      <language linkend="cat.soc.best-practice" title="Meilleures pratiques"/>
+      <language linkend="cat.soc.release-notes">
+        <title>Notes de version</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>Meilleures pratiques</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.soc.release-notes" title="リリースノート"/>
-      <language linkend="cat.soc.best-practice" title="ベストプラクティス"/>
+      <language linkend="cat.soc.release-notes">
+        <title>リリースノート</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>ベストプラクティス</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.soc.release-notes" title="Detalhes da versão"/>
-      <language linkend="cat.soc.best-practice" title="Melhores práticas"/>
+      <language linkend="cat.soc.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>Melhores práticas</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.soc.release-notes" title="发行说明"/>
-      <language linkend="cat.soc.best-practice" title="最佳实践"/>
+      <language linkend="cat.soc.release-notes">
+        <title>发行说明</title>
+      </language>
+      <language linkend="cat.soc.best-practice">
+        <title>最佳实践</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

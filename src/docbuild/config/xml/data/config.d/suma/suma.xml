@@ -9,9 +9,14 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.suma.release-notes" title="Release notes"/>
-      <language id="cat.suma.core-doc" title="Core product documentation"/>
-      <language id="cat.suma.archive" title="Archives">
+      <language id="cat.suma.release-notes">
+        <title>Release notes</title>
+      </language>
+      <language id="cat.suma.core-doc">
+        <title>Core product documentation</title>
+      </language>
+      <language id="cat.suma.archive">
+        <title>Archives</title>
         <p>
        Archives only contain core product documentation but not related
        documents.
@@ -19,9 +24,14 @@
       </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.suma.release-notes" title="Versionshinweise"/>
-      <language linkend="cat.suma.core-doc" title="Haupt-Produktdokumentation"/>
-      <language linkend="cat.suma.archive" title="Archive">
+      <language linkend="cat.suma.release-notes">
+        <title>Versionshinweise</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>Haupt-Produktdokumentation</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>Archive</title>
         <p>
         Archive enthalten nur die Haupt-Produktdokumentation, aber keine
         weiteren Dokumente.
@@ -29,9 +39,14 @@
       </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.suma.release-notes" title="Notas de la versión"/>
-      <language linkend="cat.suma.core-doc" title="Documentación principal del producto"/>
-      <language linkend="cat.suma.archive" title="Archivos de reserva">
+      <language linkend="cat.suma.release-notes">
+        <title>Notas de la versión</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>Documentación principal del producto</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>Archivos de reserva</title>
         <p>
         Los archivos de reserva solo contienen documentación básica del
         producto, pero no documentos relacionados.
@@ -39,9 +54,14 @@
       </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.suma.release-notes" title="Notes de version"/>
-      <language linkend="cat.suma.core-doc" title="Documentation produit de base"/>
-      <language linkend="cat.suma.archive" title="Archives">
+      <language linkend="cat.suma.release-notes">
+        <title>Notes de version</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>Documentation produit de base</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>Archives</title>
         <p>
         Les archives contiennent uniquement la documentation produit de base,
         mais pas les documents connexes.
@@ -49,18 +69,28 @@
       </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.suma.release-notes" title="リリースノート"/>
-      <language linkend="cat.suma.core-doc" title="コア製品のマニュアル"/>
-      <language linkend="cat.suma.archive" title="アーカイブ">
+      <language linkend="cat.suma.release-notes">
+        <title>リリースノート</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>コア製品のマニュアル</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>アーカイブ</title>
         <p>
         アーカイブには、コア製品のマニュアルのみが含まれ、関連ドキュメントは含まれません。
       </p>
       </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.suma.release-notes" title="Detalhes da versão"/>
-      <language linkend="cat.suma.core-doc" title="Documentação do produto principal"/>
-      <language linkend="cat.suma.archive" title="Arquivos">
+      <language linkend="cat.suma.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>Documentação do produto principal</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>Arquivos</title>
         <p>
         Os arquivos contêm apenas a documentação do produto principal, mas
         não os documentos relacionados.
@@ -68,9 +98,14 @@
       </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.suma.release-notes" title="发行说明"/>
-      <language linkend="cat.suma.core-doc" title="核心产品文档"/>
-      <language linkend="cat.suma.archive" title="存档">
+      <language linkend="cat.suma.release-notes">
+        <title>发行说明</title>
+      </language>
+      <language linkend="cat.suma.core-doc">
+        <title>核心产品文档</title>
+      </language>
+      <language linkend="cat.suma.archive">
+        <title>存档</title>
         <p>
         存档只包含核心产品文档，而不包含相关文档。
       </p>

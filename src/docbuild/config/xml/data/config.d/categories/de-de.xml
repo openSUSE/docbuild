@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category lang="de-de">
-  <language linkend="cat.about" title="Über"/>
-  <language linkend="cat.deployment" title="Bereitstellung"/>
-  <language linkend="cat.initial-config" title="Erstmalige Konfiguration"/>
-  <language linkend="cat.update-upgrade" title="Update &amp; Upgrade"/>
-  <language linkend="cat.administration" title="Administration"/>
-  <language linkend="cat.container-virtualization" title="Container und Virtualisierung"/>
-  <language linkend="cat.product-usage" title="Verwendung des Produkts"/>
-  <language linkend="cat.security-compliance" title="Sicherheit und Konformität"/>
-  <language linkend="cat.tuning-performance" title="Tuning &amp; Leistung"/>
-  <language linkend="cat.solution-doc" title="Dokumentation zur Lösung"/>
-  <language linkend="cat.additional-doc" title="Weitere Dokumentation"/>
-  <language linkend="cat.best-practices" title="Bewährte Methoden"/>
+  <language linkend="cat.about">
+    <title>Über</title>
+  </language>
+  <language linkend="cat.deployment">
+    <title>Bereitstellung</title>
+  </language>
+  <language linkend="cat.initial-config">
+    <title>Erstmalige Konfiguration</title>
+  </language>
+  <language linkend="cat.update-upgrade">
+    <title>Update &amp; Upgrade</title>
+  </language>
+  <language linkend="cat.administration">
+    <title>Administration</title>
+  </language>
+  <language linkend="cat.container-virtualization">
+    <title>Container und Virtualisierung</title>
+  </language>
+  <language linkend="cat.product-usage">
+    <title>Verwendung des Produkts</title>
+  </language>
+  <language linkend="cat.security-compliance">
+    <title>Sicherheit und Konformität</title>
+  </language>
+  <language linkend="cat.tuning-performance">
+    <title>Tuning &amp; Leistung</title>
+  </language>
+  <language linkend="cat.solution-doc">
+    <title>Dokumentation zur Lösung</title>
+  </language>
+  <language linkend="cat.additional-doc">
+    <title>Weitere Dokumentation</title>
+  </language>
+  <language linkend="cat.best-practices">
+    <title>Bewährte Methoden</title>
+  </language>
 </category>

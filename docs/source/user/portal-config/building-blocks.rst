@@ -64,13 +64,13 @@ A ``<category>`` element consists of the following structure:
   German (Germany).
 
 * One or more ``<language>`` elements. Each ``<language>`` element
-  consists of the following attributes:
+  contains:
 
   * A required ``id`` attribute, which is used to reference the category
     from deliverables. Per convention, each category ID should start with
     the ``cat.`` prefix.
 
-  * A required ``title`` attribute, which defines the title of the
+  * A required ``<title>`` element, which defines the title of the
     category in this language. This will be used as a headline in
     the product index page.
 
@@ -82,8 +82,12 @@ A ``<category>`` element consists of the following structure:
 
    <categories>
       <category lang="en-us">
-        <language id="cat.about" title="About"/>
-        <language id="cat.deployment" title="Deployment"/>
+        <language id="cat.about">
+          <title>About</title>
+        </language>
+        <language id="cat.deployment">
+          <title>Deployment</title>
+        </language>
         <!-- ... -->
       </category>
       <!-- ... other languages ... -->
@@ -99,7 +103,9 @@ English category with the ``linkend`` attribute:
    :name: category-translations
 
    <category lang="de-de">
-      <language linkend="cat.about" title="Über" />
+      <language linkend="cat.about">
+        <title>Über</title>
+      </language>
    </category>
 
 This design was chosen that it makes possible to identify typos in the category IDs.

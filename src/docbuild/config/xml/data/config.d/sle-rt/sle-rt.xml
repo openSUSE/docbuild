@@ -9,32 +9,60 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.sle-rt.core-doc" title="Core product documentation"/>
-      <language id="cat.sle-rt.release-notes" title="Release notes"/>
+      <language id="cat.sle-rt.core-doc">
+        <title>Core product documentation</title>
+      </language>
+      <language id="cat.sle-rt.release-notes">
+        <title>Release notes</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.sle-rt.core-doc" title="Haupt-Produktdokumentation"/>
-      <language linkend="cat.sle-rt.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>Haupt-Produktdokumentation</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>Versionshinweise</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.sle-rt.core-doc" title="Documentación principal del producto"/>
-      <language linkend="cat.sle-rt.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>Documentación principal del producto</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>Notas de la versión</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.sle-rt.core-doc" title="Documentation produit de base"/>
-      <language linkend="cat.sle-rt.release-notes" title="Notes de version"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>Documentation produit de base</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>Notes de version</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.sle-rt.core-doc" title="コア製品のマニュアル"/>
-      <language linkend="cat.sle-rt.release-notes" title="リリースノート"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>コア製品のマニュアル</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>リリースノート</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.sle-rt.core-doc" title="Documentação do produto principal"/>
-      <language linkend="cat.sle-rt.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>Documentação do produto principal</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.sle-rt.core-doc" title="核心产品文档"/>
-      <language linkend="cat.sle-rt.release-notes" title="发行说明"/>
+      <language linkend="cat.sle-rt.core-doc">
+        <title>核心产品文档</title>
+      </language>
+      <language linkend="cat.sle-rt.release-notes">
+        <title>发行说明</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

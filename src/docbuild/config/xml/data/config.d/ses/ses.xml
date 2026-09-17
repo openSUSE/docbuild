@@ -10,29 +10,51 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.ses.ses-doc" title="SES product documentation"/>
-      <language id="cat.ses.windows-ses-doc" title="SES for Windows product documentation"/>
-      <language id="cat.ses.rook-ses-doc-tp" title="SES with Rook product documentation (limited availability)"/>
-      <language id="cat.ses.ses-man-pages" title="Man pages"/>
-      <language id="cat.ses.release-notes" title="Release notes"/>
+      <language id="cat.ses.ses-doc">
+        <title>SES product documentation</title>
+      </language>
+      <language id="cat.ses.windows-ses-doc">
+        <title>SES for Windows product documentation</title>
+      </language>
+      <language id="cat.ses.rook-ses-doc-tp">
+        <title>SES with Rook product documentation (limited availability)</title>
+      </language>
+      <language id="cat.ses.ses-man-pages">
+        <title>Man pages</title>
+      </language>
+      <language id="cat.ses.release-notes">
+        <title>Release notes</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.ses.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.ses.release-notes">
+        <title>Versionshinweise</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.ses.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.ses.release-notes">
+        <title>Notas de la versión</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.ses.release-notes" title="Notes de version"/>
+      <language linkend="cat.ses.release-notes">
+        <title>Notes de version</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.ses.release-notes" title="リリースノート"/>
+      <language linkend="cat.ses.release-notes">
+        <title>リリースノート</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.ses.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.ses.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.ses.release-notes" title="发行说明"/>
+      <language linkend="cat.ses.release-notes">
+        <title>发行说明</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

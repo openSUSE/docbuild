@@ -170,12 +170,20 @@ def test_category_from_xml_node() -> None:
     doc = """<product>
         <categories>
             <category lang="en-us">
-                <language id="cat.about" title="About" default="1"/>
-                <language id="cat.deployment" title="Deployment"/>
+                <language id="cat.about" default="1">
+                    <title>About</title>
+                </language>
+                <language id="cat.deployment">
+                    <title>Deployment</title>
+                </language>
             </category>
             <category lang="de-de">
-                <language linkend="cat.about" title="Über"/>
-                <language linkend="cat.deployment" title="Bereitstellung"/>
+                <language linkend="cat.about">
+                    <title>Über</title>
+                </language>
+                <language linkend="cat.deployment">
+                    <title>Bereitstellung</title>
+                </language>
             </category>
         </categories>
     </product>
@@ -207,7 +215,9 @@ def test_category_from_xml_node() -> None:
     doc_no_id = """<product>
         <categories>
             <category lang="en-us">
-                <language title="No ID"/>
+                <language>
+                    <title>No ID</title>
+                </language>
             </category>
         </categories>
     </product>"""

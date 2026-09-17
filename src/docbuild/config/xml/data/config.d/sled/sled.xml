@@ -10,39 +10,81 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.sled.installation-upgrade" title="Installation and upgrade"/>
-      <language id="cat.sled.end-user" title="End users"/>
-      <language id="cat.sled.release-notes" title="Release notes"/>
+      <language id="cat.sled.installation-upgrade">
+        <title>Installation and upgrade</title>
+      </language>
+      <language id="cat.sled.end-user">
+        <title>End users</title>
+      </language>
+      <language id="cat.sled.release-notes">
+        <title>Release notes</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.sled.installation-upgrade" title="Versionshinweise"/>
-      <language linkend="cat.sled.end-user" title="Endbenutzer"/>
-      <language linkend="cat.sled.release-notes" title="Versionshinweise"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>Versionshinweise</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>Endbenutzer</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>Versionshinweise</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.sled.installation-upgrade" title="Notas de la versión"/>
-      <language linkend="cat.sled.end-user" title="Usuarios finales"/>
-      <language linkend="cat.sled.release-notes" title="Notas de la versión"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>Notas de la versión</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>Usuarios finales</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>Notas de la versión</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.sled.installation-upgrade" title="Notes de version"/>
-      <language linkend="cat.sled.end-user" title="Utilisateurs finaux"/>
-      <language linkend="cat.sled.release-notes" title="Notes de version"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>Notes de version</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>Utilisateurs finaux</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>Notes de version</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.sled.installation-upgrade" title="リリースノート"/>
-      <language linkend="cat.sled.end-user" title="エンドユーザ"/>
-      <language linkend="cat.sled.release-notes" title="リリースノート"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>リリースノート</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>エンドユーザ</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>リリースノート</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.sled.installation-upgrade" title="Detalhes da versão"/>
-      <language linkend="cat.sled.end-user" title="Usuários finais"/>
-      <language linkend="cat.sled.release-notes" title="Detalhes da versão"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>Detalhes da versão</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>Usuários finais</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.sled.installation-upgrade" title="发行说明"/>
-      <language linkend="cat.sled.end-user" title="最终用户"/>
-      <language linkend="cat.sled.release-notes" title="发行说明"/>
+      <language linkend="cat.sled.installation-upgrade">
+        <title>发行说明</title>
+      </language>
+      <language linkend="cat.sled.end-user">
+        <title>最终用户</title>
+      </language>
+      <language linkend="cat.sled.release-notes">
+        <title>发行说明</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

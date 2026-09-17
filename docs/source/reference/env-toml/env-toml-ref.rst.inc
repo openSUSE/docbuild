@@ -345,18 +345,87 @@ Configuration for container
 [xslt.common]
 -------------
 
-Common XSLT parameters passed to the transformation process for ALL formats.
+These keys are considered as XSLT parameters and passed
+to the transformation process for ALL output formats
+
+.. _envtoml-xslt-common-homepage:
+
+``homepage``
+    :Type: :code:`unknown`
+    :Default: ``https://documentation.suse.com/``
+
+
+.. _envtoml-xslt-common-overview-page:
+
+``overview-page``
+    :Type: :code:`str`
+    :Default: ``https://documentation.suse.com/``
+
+    The URL for the documentation overview page.
+
+.. _envtoml-xslt-common-overview-page-title:
+
+``overview-page-title``
+    :Type: :code:`str`
+    :Default: ``documentation.suse.com``
+
+    The title displayed for the overview page link.
+
+.. _envtoml-xslt-common-show-edit-link:
+
+``show.edit.link``
+    :Type: :code:`int`
+    :Default: ``n/a``
+
+    A flag to control the visibility of the "Edit on GitHub" link (1 for true).
+
+.. _envtoml-xslt-common-twittercards-twitter-account:
+
+``twittercards.twitter.account``
+    :Type: :code:`str`
+    :Default: ``n/a``
+
+    The Twitter username to associate with Twitter Cards.
+
+.. _envtoml-xslt-common-generate-json-ld:
+
+``generate.json-ld``
+    :Type: :code:`int`
+    :Default: ``n/a``
+
+    A flag to enable or disable the generation of JSON-LD structured data (1 for true).
+
+.. _envtoml-xslt-common-search-description-length:
+
+``search.description.length``
+    :Type: :code:`int`
+    :Default: ``n/a``
+
+    The maximum character length for search result descriptions.
+
+.. _envtoml-xslt-common-socialmedia-description-length:
+
+``socialmedia.description.length``
+    :Type: :code:`int`
+    :Default: ``n/a``
+
+    The maximum character length for descriptions used in social media sharing.
 
 .. _envtoml-section-xslt-html:
 
 [xslt.html]
 -----------
 
-HTML-specific XSLT parameters.
+Parameters specifically for HTML output
+
+.. _envtoml-xslt-html-"external-js-onlineonly":
+
+``"external.js.onlineonly"``
+    :Type: :code:`unknown`
+    :Default: ``n/a``
+
 
 .. _envtoml-section-xslt-pdf:
 
 [xslt.pdf]
 ----------
-
-PDF-specific XSLT parameters.

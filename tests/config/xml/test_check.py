@@ -39,7 +39,9 @@ def xmlnode() -> etree._Element:
         """<portal schemaversion="7.0">
             <categories>
                 <category lang="en-us">
-                    <language id="cat.root" title="Root"/>
+                    <language id="cat.root">
+                        <title>Root</title>
+                    </language>
                 </category>
             </categories>
             <productfamilies>
@@ -192,7 +194,11 @@ def test_check_duplicated_format_in_extralinks_cases(
         (
             "duplicate_href_insert",
             False,
-            ["non-unique href values", "language=en-us", "https://example.invalid/docs"],
+            [
+                "non-unique href values",
+                "language=en-us",
+                "https://example.invalid/docs",
+            ],
         ),
         ("missing_href", True, []),
         ("unknown_lang", True, []),
@@ -205,9 +211,13 @@ def test_check_duplicated_url_in_extralinks_cases(
     link = xmlnode.find(".//external/link")
 
     if scenario == "duplicate_href_append":
-        link.append(E.url(lang="en-us", format="pdf", href="https://example.invalid/docs"))
+        link.append(
+            E.url(lang="en-us", format="pdf", href="https://example.invalid/docs")
+        )
     elif scenario == "duplicate_href_insert":
-        link.insert(1, E.url(lang="en-us", href="https://example.invalid/docs", format="html"))
+        link.insert(
+            1, E.url(lang="en-us", href="https://example.invalid/docs", format="html")
+        )
     elif scenario == "missing_href":
         link.append(E.url(lang="en-us", format="pdf"))
     elif scenario == "unknown_lang":
@@ -255,7 +265,9 @@ def test_check_enabled_format_cases(
         locale.append(
             E.deliverable(
                 E.dc(
-                    E.format(**{"html": "0", "pdf": "0", "single-html": "0", "epub": "0"}),
+                    E.format(
+                        **{"html": "0", "pdf": "0", "single-html": "0", "epub": "0"}
+                    ),
                     file="DC-TEST-TWO",
                 ),
                 id="deli-2",
@@ -614,8 +626,8 @@ def test_check_format_subdeliverable_default_false(xmlnode):
 @pytest.mark.parametrize(
     "num_locales",
     [
-        1,   # Single locale - success
-        2,   # Two unique locales - success
+        1,  # Single locale - success
+        2,  # Two unique locales - success
     ],
 )
 def test_check_lang_code_in_docset_unique_langs(xmlnode, num_locales):
@@ -648,10 +660,16 @@ def test_check_subdeliverable_in_deliverable_empty_text(xmlnode):
 @pytest.mark.parametrize(
     "deliverable_xml,expected_identifier",
     [
-        ('<deliverable id="deli-1"><dc file="DC-TEST">text</dc></deliverable>', "DC-TEST"),
-        ('<deliverable id="deli-1"><dc>DC-FROM-TEXT</dc></deliverable>', "DC-FROM-TEXT"),
+        (
+            '<deliverable id="deli-1"><dc file="DC-TEST">text</dc></deliverable>',
+            "DC-TEST",
+        ),
+        (
+            '<deliverable id="deli-1"><dc>DC-FROM-TEXT</dc></deliverable>',
+            "DC-FROM-TEXT",
+        ),
         ('<deliverable id="deli-2"><dc/></deliverable>', "deli-2"),
-        ('<deliverable><format/></deliverable>', "n/a"),
+        ("<deliverable><format/></deliverable>", "n/a"),
     ],
 )
 def test_dc_identifier_cases(deliverable_xml: str, expected_identifier: str):
@@ -675,7 +693,10 @@ def test_check_format_subdeliverable_html_only(xmlnode):
     """Test subdeliverable with only HTML format enabled (allowed)."""
     language = xmlnode.find(".//resources/locale")
     new_deli = E.deliverable(
-        E.dc("DC-html-only", E.format(html="1", pdf="0", epub="0", **{"single-html": "0"})),
+        E.dc(
+            "DC-html-only",
+            E.format(html="1", pdf="0", epub="0", **{"single-html": "0"}),
+        ),
         E.subdeliverable("book"),
         id="html-only",
     )
@@ -868,6 +889,7 @@ def test_check_lang_code_in_desc_no_parent():
     class MockElement:
         def __init__(self):
             self.attrib = {}
+
         def getparent(self):
             return None
 

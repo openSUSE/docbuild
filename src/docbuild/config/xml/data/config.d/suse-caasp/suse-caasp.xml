@@ -9,39 +9,81 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.suse-caasp.core-doc" title="Core product documentation"/>
-      <language id="cat.suse-caasp.release-notes" title="Release notes"/>
-      <language id="cat.suse-caasp.best-practice" title="Best practices"/>
+      <language id="cat.suse-caasp.core-doc">
+        <title>Core product documentation</title>
+      </language>
+      <language id="cat.suse-caasp.release-notes">
+        <title>Release notes</title>
+      </language>
+      <language id="cat.suse-caasp.best-practice">
+        <title>Best practices</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.suse-caasp.core-doc" title="Haupt-Produktdokumentation"/>
-      <language linkend="cat.suse-caasp.release-notes" title="Versionshinweise"/>
-      <language linkend="cat.suse-caasp.best-practice" title="Best Practices"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>Haupt-Produktdokumentation</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>Versionshinweise</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>Best Practices</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.suse-caasp.core-doc" title="Documentación principal del producto"/>
-      <language linkend="cat.suse-caasp.release-notes" title="Notas de la versión"/>
-      <language linkend="cat.suse-caasp.best-practice" title="Prácticas recomendadas"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>Documentación principal del producto</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>Notas de la versión</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>Prácticas recomendadas</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.suse-caasp.core-doc" title="Documentation produit de base"/>
-      <language linkend="cat.suse-caasp.release-notes" title="Notes de version"/>
-      <language linkend="cat.suse-caasp.best-practice" title="Meilleures pratiques"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>Documentation produit de base</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>Notes de version</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>Meilleures pratiques</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.suse-caasp.core-doc" title="コア製品のマニュアル"/>
-      <language linkend="cat.suse-caasp.release-notes" title="リリースノート"/>
-      <language linkend="cat.suse-caasp.best-practice" title="ベストプラクティス"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>コア製品のマニュアル</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>リリースノート</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>ベストプラクティス</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.suse-caasp.core-doc" title="Documentação do produto principal"/>
-      <language linkend="cat.suse-caasp.release-notes" title="Detalhes da versão"/>
-      <language linkend="cat.suse-caasp.best-practice" title="Melhores práticas"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>Documentação do produto principal</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>Detalhes da versão</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>Melhores práticas</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.suse-caasp.core-doc" title="核心产品文档"/>
-      <language linkend="cat.suse-caasp.release-notes" title="发行说明"/>
-      <language linkend="cat.suse-caasp.best-practice" title="最佳实践"/>
+      <language linkend="cat.suse-caasp.core-doc">
+        <title>核心产品文档</title>
+      </language>
+      <language linkend="cat.suse-caasp.release-notes">
+        <title>发行说明</title>
+      </language>
+      <language linkend="cat.suse-caasp.best-practice">
+        <title>最佳实践</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>
