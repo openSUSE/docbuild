@@ -2,8 +2,8 @@
 
 # --- Default Values ---
 SCHEMAFILE="portal-config.rnc"
-OUTPUT="portal-test.xml"
-OUTDIR="./"
+OUTPUT="portal.xml"
+OUTDIR="output/"
 
 # Get the directory where the script is located using shell built-ins
 # If $0 contains a slash, SCRIPT_DIR is the part before the last slash.
@@ -13,9 +13,9 @@ case "$0" in
     *)   SCRIPT_DIR="." ;;
 esac
 
-XSLT="$SCRIPT_DIR/convert-v6-to-v7.xsl"
-INPUT="docserv-stitch-2026-04-27.xml"
-USE_XINCLUDE=false
+XSLT="$SCRIPT_DIR/../src/docbuild/config/xml/data/convert-v6-to-v7.xsl"
+INPUT=""
+USE_XINCLUDE=""
 
 
 if ! command -v xsltproc >/dev/null 2>&1; then
@@ -32,17 +32,23 @@ usage() {
 Usage: $SCRIPT_NAME [OPTIONS] [INPUT_FILE]
 
 Options:
-  -s, --schema FILE      Path to schema file (Default: $SCHEMAFILE)
-  -o, --output FILE      Name of the output file (Default: $OUTPUT)
-  -d, --dir DIR          Output directory (Default: $OUTDIR)
+  -s, --schema FILE      Path to schema file (Default: ${SCHEMAFILE@Q})
+  -o, --output FILE      Name of the output file (Default: ${OUTPUT@Q})
+                         Use a trailing slash to mark it as directory,
+                         otherwise it's just a prefix
+  -d, --dir DIR          Output directory (Default: ${OUTDIR@Q})
   -x, --xinclude         Enable xinclude processing
   -h, --help             Show this help message
 
 Arguments:
-  INPUT_FILE             The Docserv stitch file
+  INPUT_FILE             The full Docserv stitch file without any XIncludes
 
 Example:
+* Use mostly the defaults:
   $SCRIPT_NAME -x --schema custom.rnc docserv-stitch.xml
+
+* Store
+  $SCRIPT_NAME -x --dir "~/.config/docbuild/config.d/" docserv-stitch.xml
 EOF
     exit 0
 }
@@ -60,10 +66,15 @@ while [ $# -gt 0 ]; do
             ;;
         -d|--dir)
             OUTDIR="$2"
+            # Expand a leading ~ (quoted "~/..." is not expanded by the shell)
+            case "$OUTDIR" in
+                "~") OUTDIR="$HOME" ;;
+                "~/"*) OUTDIR="$HOME/${OUTDIR#\~/}" ;;
+            esac
             shift 2
             ;;
         -x|--xinclude)
-            USE_XINCLUDE=true
+            USE_XINCLUDE=1
             shift
             ;;
         -h|--help)
@@ -81,18 +92,14 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-# --- Prepare xsltproc Arguments ---
-XINCLUDE_FLAGS=""
-if [ "$USE_XINCLUDE" = true ]; then
-    # --stringparam use.xincludes 1 passes the parameter to your XSLT logic
-    # Note: You may also need to add the physical --xinclude flag here if xsltproc
-    # needs to resolve the tags before passing them to the XSLT.
-    XINCLUDE_FLAGS="--xinclude --stringparam use.xincludes 1"
+if [ -z "$INPUT" ]; then
+    echo "Error: No input Docserv stitchfile specified." >&2
+    usage
 fi
 
 # --- Execution ---
 # Note: Administrative privileges (sudo) may be required if writing to system-protected directories.
-xsltproc $XINCLUDE_FLAGS \
+xsltproc ${USE_XINCLUDE:+--stringparam use.xincludes 1} \
          --stringparam schemafile "$SCHEMAFILE" \
          --stringparam outputfile "$OUTPUT" \
          --stringparam outputdir "$OUTDIR" \
