@@ -74,21 +74,6 @@ If you add a docset, include at least one deliverable.
 
 ## Validation
 
-If the config uses XIncludes (split-file layout), resolve them first:
-
-```shell
-xmllint --xinclude --noout CONFIG.xml
-```
-
-Validate a single (or resolved) config against the schema. Checks
-ID/IDREF/IDREFS by default:
-
-```shell
-jing -c src/docbuild/config/xml/data/portal-config.rnc CONFIG.xml
-```
-
-If you don't need the ID/IDREF/IDREFS check, use the option `-i`:
-
-```shell
-jing -i -c src/docbuild/config/xml/data/portal-config.rnc CONFIG.xml
-```
+To validate the generated config against the schema, use the
+`validate-portal-config` skill (CLI `docbuild portal validate`, or
+`jing`/`xmllint` directly).
