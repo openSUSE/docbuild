@@ -14,6 +14,7 @@ Furthermore, it defines translations for specific products that docbuild will bu
    building-blocks
    create-portal
    create-product
+   create-docset
    add-deliverable
    add-translations
    change-lifecycle

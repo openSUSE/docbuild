@@ -22,11 +22,25 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
-   .. py:property:: productid
+   .. py:property:: product_id
       :type: str
 
 
       Return the product ID (``<product id=…>``) or None if absent..
+
+
+
+   .. py:property:: product_path
+      :type: str | None
+
+
+      Return the product path for the deliverable.
+
+      This corresponds to the ``path`` attribute on the ``<product>`` tag and
+      is used to specify a relative directory name for the product.
+      If the ``path`` attribute is not present, this property will be ``None``.
+
+      :return: The product path string, or ``None`` if not set.
 
 
 
@@ -54,19 +68,25 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
-   .. py:property:: docsetrealid
+   .. py:property:: docset_id
+      :type: str
+
+
+      Return the docset real ID (``<docset id=…>``).
+
+
+
+   .. py:property:: docset_path
       :type: str | None
 
 
-      Return the docset real ID (``<docset id=…>``) or None if absent.
+      Return the docset path for the deliverable.
 
+      This corresponds to the ``path`` attribute on the ``<docset>`` tag and
+      is used to specify a relative directory name for the docset.
+      If the ``path`` attribute is not present, this property will be ``None``.
 
-
-   .. py:property:: docsetid
-      :type: str | None
-
-
-      Return the docset path/name (``<docset path=…>``), NOT the real ID.
+      :return: The product path string, or ``None`` if not set.
 
 
 

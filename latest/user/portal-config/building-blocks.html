@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building Blocks &#8212; Docbuild Documentation 0.23.1.dev21+gfa2a6a8ac.d20260916</title>
+    <title>Building Blocks &#8212; Docbuild Documentation 0.23.1.dev23+g492e8c29f.d20260918</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=b7cb076e"></script>
+    <script src="../../_static/documentation_options.js?v=dd18456f"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -398,6 +398,7 @@
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Building Blocks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create-portal.html">Creating a Portal Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create-product.html">Creating a Product</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-docset.html">Creating Docsets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="add-deliverable.html">Adding Deliverables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="add-translations.html">Adding Translations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="change-lifecycle.html">Changing the Lifecycle of a Release</a></li>
@@ -614,6 +615,11 @@ It must not start with a number and must be unique across
 the whole portal configuration.
 The product ID should be short and descriptive.</p>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> (optional)</p>
+<p>A relative directory name for the product, used for building
+the output path. If not specified, the <code class="docutils literal notranslate"><span class="pre">id</span></code> is used as the
+fallback.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">family</span></code> (required)</p>
 <p>The product family this product belongs to.
 It must match an existing product family ID that is defined
@@ -686,7 +692,7 @@ this release for at least English. Other languages are optional.</p>
 </ul>
 </section>
 <section id="single-vs-multi-file-configuration">
-<h2>Single vs. Multi File Configuration<a class="headerlink" href="#single-vs-multi-file-configuration" title="Link to this heading">#</a></h2>
+<span id="single-vs-multifile"></span><h2>Single vs. Multi File Configuration<a class="headerlink" href="#single-vs-multi-file-configuration" title="Link to this heading">#</a></h2>
 <p>Technically it doesn’t matter if you put all the configuration in a
 single file or split it into multiple files and refer to them.</p>
 <p>A single configuration file may be helpful when you validate the

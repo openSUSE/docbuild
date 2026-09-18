@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Product &#8212; Docbuild Documentation 0.23.1.dev21+gfa2a6a8ac.d20260916</title>
+    <title>Creating a Product &#8212; Docbuild Documentation 0.23.1.dev23+g492e8c29f.d20260918</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=b7cb076e"></script>
+    <script src="../../_static/documentation_options.js?v=dd18456f"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
     <link rel="icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Adding Deliverables" href="add-deliverable.html" />
+    <link rel="next" title="Creating Docsets" href="create-docset.html" />
     <link rel="prev" title="Creating a Portal Configuration" href="create-portal.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -398,6 +398,7 @@
 <li class="toctree-l2"><a class="reference internal" href="building-blocks.html">Building Blocks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="create-portal.html">Creating a Portal Configuration</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Creating a Product</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-docset.html">Creating Docsets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="add-deliverable.html">Adding Deliverables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="add-translations.html">Adding Translations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="change-lifecycle.html">Changing the Lifecycle of a Release</a></li>
@@ -524,57 +525,8 @@ determine a good rank for your product.</p></li>
 <li><p>Assign a maintainer for the product.</p></li>
 </ul>
 </li>
-<li><p>Add a release.</p>
-<p>Each release is defined with a <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element.
-Depending on the amount of deliverables and the complexity
-of the release, you can either put the
-<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element directly into the product configuration
-file or create a separate file for each release and include
-it in the product configuration.</p>
-<p>We choose the second option and create a file named
-<code class="file docutils literal notranslate"><span class="pre">1.0.xml</span></code> for the 1.0 release of the NAS product:</p>
-<div class="literal-block-wrapper docutils container" id="nas-docset">
-<div class="code-block-caption"><span class="caption-text">The 1.0 release of the NAS product <code class="file docutils literal notranslate"><span class="pre">1.0.xml</span></code></span><a class="headerlink" href="#nas-docset" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;nas-1.0&quot;</span><span class="w"> </span><span class="na">path=</span><span class="s">&quot;1.0&quot;</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;supported&quot;</span><span class="nt">&gt;</span>
-<span class="w">  </span><span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
-<span class="w">  </span><span class="nt">&lt;resources&gt;</span>
-<span class="w">    </span><span class="nt">&lt;git</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;https://github.com/example/nas.git&quot;</span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">      </span><span class="nt">&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;</span>
-<span class="w">      </span><span class="cm">&lt;!-- ... deliverables ... --&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/locale&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/resources&gt;</span>
-<span class="nt">&lt;/docset&gt;</span>
-</pre></div>
-</div>
-</div>
-<ul>
-<li><p>For the <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element:</p>
-<ul>
-<li><p>Add an <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.</p>
-<p>The ID is created by concatenating the product ID and the release version.</p>
-</li>
-<li><p>Add a <code class="docutils literal notranslate"><span class="pre">path</span></code> attribute for the <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">path</span></code> is used as part of the URL of the portal. Set it to the version of the release, for example “1.0”.</p>
-</li>
-<li><p>Add a <code class="docutils literal notranslate"><span class="pre">lifecycle</span></code> attribute for the <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element.</p>
-<p>For new products, set it to “supported”.</p>
-</li>
-</ul>
-</li>
-<li><p>For the <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code> element:</p>
-<ul class="simple">
-<li><p>If possible, create a <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> element to define the Git repository for the sources of this release.
-This is only needed if your product is built via DAPS. For other build systems like Antora, the
-deliverables are built outside of docbuild. In that case, omit this tag.</p></li>
-<li><p>Create a <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element for the English language (<code class="docutils literal notranslate"><span class="pre">en-us</span></code>) and
-add a <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt;</span></code> element to define the Git branch for this release.</p></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>Add a deliverable.</p>
-<p>Continue with section <a class="reference internal" href="add-deliverable.html#add-deliverable"><span class="std std-ref">Adding Deliverables</span></a>.</p>
+<li><p>Add a docset.</p>
+<p>Continue with section <a class="reference internal" href="create-docset.html#create-docset"><span class="std std-ref">Creating Docsets</span></a>.</p>
 </li>
 </ol>
 </section>
@@ -599,11 +551,11 @@ add a <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt
       </div>
     </a>
     <a class="right-next"
-       href="add-deliverable.html"
+       href="create-docset.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Adding Deliverables</p>
+        <p class="prev-next-title">Creating Docsets</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
