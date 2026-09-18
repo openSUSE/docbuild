@@ -1,0 +1,15 @@
+docbuild.utils.sync.RsyncOptions
+================================
+
+.. py:class:: docbuild.utils.sync.RsyncOptions
+
+   Configuration options for rsync execution.
+
+
+   .. py:method:: to_args() -> list[str]
+
+      Convert the configured options into a list of command-line arguments.
+
+      :return: A list of string arguments formatted for the rsync command.
+
+
