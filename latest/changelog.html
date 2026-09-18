@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev35+g5d620f9af.d20260918</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev36+g12e71b6a3.d20260918</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=0ce1b8c1"></script>
+    <script src="_static/documentation_options.js?v=3b02638d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -467,6 +467,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Automatically generates <code class="file docutils literal notranslate"><span class="pre">homepage.json</span></code> from the Portal XML configuration during the <strong class="command">docbuild metadata</strong> command, storing it directly into the JSON cache directory for frontend template consumption. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/141">GH #141</a>)</p></li>
 <li><p>Implement dependency-aware caching for DAPS metadata extraction. <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">metadata</span></code> now caches file dependencies and environment configurations, significantly speeding up subsequent runs by skipping unnecessary DAPS executions for unchanged deliverables. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/447">GH #447</a>)</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">cache</span></code> command group with <code class="docutils literal notranslate"><span class="pre">dir</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, and <code class="docutils literal notranslate"><span class="pre">prune</span></code> subcommands to easily inspect and manage the metadata caching system. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/485">GH #485</a>)</p></li>
 <li><p>Added support for extracting metadata from prebuilt Antora deliverables via fast JSON-LD parsing. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/491">GH #491</a>)</p></li>
