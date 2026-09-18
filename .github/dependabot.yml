@@ -19,15 +19,23 @@ updates:
     labels:
       - "area:dependencies"
       - "skip-changelog"
+    # Ignore patch releases for version updates.
+    # This will NOT ignore security updates.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
 
-  - package-ecosystem: "pip"
+  - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
-    allow:
-      - dependency-type: "all"
     assignees:
       - "tomschr"
     labels:
       - "area:dependencies"
       - "skip-changelog"
+    # Ignore patch releases for version updates.
+    # This will NOT ignore security updates.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]

@@ -1,0 +1,1 @@
+Improved `Dependabot` configuration to use ``uv`` and ignore patch releases for version updates. This does not affect security updates.
