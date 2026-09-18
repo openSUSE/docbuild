@@ -1,2 +1,0 @@
-Removed :exc:`DeprecationWarning` caused by :func:`asyncio.iscoroutinefunction` in :mod:`aiostream`.
-Upstream fixed it (related to :gh:`498`).

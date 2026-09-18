@@ -1,1 +1,0 @@
-Automatically generates :file:`homepage.json` from the Portal XML configuration during the :command:`docbuild metadata` command, storing it directly into the JSON cache directory for frontend template consumption.

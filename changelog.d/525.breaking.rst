@@ -1,1 +1,0 @@
-Integrate ``path`` attribute for ``<product>`` tag and expose it to :class:`~docbuild.model.deliverable.view.DeliverableXMLView`. Also rename properties (``productid`` -> ``product_id``, ``docsetid`` -> ``docset_path``, ``docsetrealid`` -> ``docset_id``).

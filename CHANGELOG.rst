@@ -21,6 +21,54 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.24.0
+==============
+
+Breaking Changes
+----------------
+
+- Integrate ``path`` attribute for ``<product>`` tag and expose it to :class:`~docbuild.model.deliverable.view.DeliverableXMLView`. Also rename properties (``productid`` -> ``product_id``, ``docsetid`` -> ``docset_path``, ``docsetrealid`` -> ``docset_id``). (:gh:`525`)
+
+
+Bug Fixes
+---------
+
+- Fix a grouping problem in the migration stylesheet. For Cloudnative, no translations were added. (:gh:`503`)
+- The :class:`~docbuild.models.language.LanguageCode` model now accepts language codes with uppercase letters, like 'zh-CN'. (:gh:`504`)
+- Change the default set of languages. Previously, only English was enabled. Now, the it contains the full list of supported languages. (:gh:`507`)
+- Add prebuilt descriptions into result JSON file (:gh:`523`)
+
+
+Features
+--------
+
+- Automatically generates :file:`homepage.json` from the Portal XML configuration during the :command:`docbuild metadata` command, storing it directly into the JSON cache directory for frontend template consumption. (:gh:`141`)
+- Implement dependency-aware caching for DAPS metadata extraction. ``docbuild metadata`` now caches file dependencies and environment configurations, significantly speeding up subsequent runs by skipping unnecessary DAPS executions for unchanged deliverables. (:gh:`447`)
+- Added the ``docbuild cache`` command group with ``dir``, ``list``, and ``prune`` subcommands to easily inspect and manage the metadata caching system. (:gh:`485`)
+- Added support for extracting metadata from prebuilt Antora deliverables via fast JSON-LD parsing. (:gh:`491`)
+- The ``<git>`` element in portal configuration is now optional, which accommodates projects like SUMA/MLM and Cloud Native that do not require source Git repositories for their documentation builds. (:gh:`496`)
+
+
+Infrastructure
+--------------
+
+- Suppress :exc:`DeprecationWarning` of :func:`asyncio.iscoroutinefunction` in :mod:`aiostream`. (:gh:`498`)
+- Implemented a unique agentic workflow (:gh:`501`)
+- Added shell script that syncs CN HTML files from Docserv into a local prebuilt directory (useful for calling metadata and checking if all HTML files are available). (:gh:`516`)
+- Improved `Dependabot` configuration to use ``uv`` and ignore patch releases for version updates. This does not affect security updates. (:gh:`537`)
+- Removed :exc:`DeprecationWarning` caused by :func:`asyncio.iscoroutinefunction` in :mod:`aiostream`.
+  Upstream fixed it (related to :gh:`498`). (:gh:`543`)
+
+
+Code Refactoring
+----------------
+
+- Refactored the environment configuration to have a single source of truth for default values. The :data:`~docbuild.cli.defaults.DEFAULT_ENV_CONFIG` dictionary is now generated directly from the Pydantic models. (:gh:`506`)
+- Allows to pass another :class:`~docbuild.models.repo.Repo` object besides ``str`` in the initializer.
+  Initializing from an existing Repo reuses its normalized values without reparsing. If that Repo has no branch, ``default_branch`` can be used to select the branch for its tree URL; an existing branch always takes precedence. (:gh:`521`)
+- Renamed ``ServerRole`` to ``EnvRole`` to better reflect its purpose. (:gh:`522`)
+
+
 Version 0.23.0
 ==============
 

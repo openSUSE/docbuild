@@ -1,1 +1,0 @@
-Fix a grouping problem in the migration stylesheet. For Cloudnative, no translations were added.

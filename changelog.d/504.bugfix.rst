@@ -1,1 +1,0 @@
-The :class:`~docbuild.models.language.LanguageCode` model now accepts language codes with uppercase letters, like 'zh-CN'.
