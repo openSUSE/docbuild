@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev36+g12e71b6a3.d20260918</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.23.1.dev37+gfda9168d1.d20260918</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=3b02638d"></script>
+    <script src="_static/documentation_options.js?v=85791244"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -481,6 +481,8 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Implemented a unique agentic workflow (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/501">GH #501</a>)</p></li>
 <li><p>Added shell script that syncs CN HTML files from Docserv into a local prebuilt directory (useful for calling metadata and checking if all HTML files are available). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/516">GH #516</a>)</p></li>
 <li><p>Improved <cite>Dependabot</cite> configuration to use <code class="docutils literal notranslate"><span class="pre">uv</span></code> and ignore patch releases for version updates. This does not affect security updates. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/537">GH #537</a>)</p></li>
+<li><p>Removed <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#DeprecationWarning" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DeprecationWarning</span></code></a> caused by <code class="xref py py-func docutils literal notranslate"><span class="pre">asyncio.iscoroutinefunction()</span></code> in <code class="xref py py-mod docutils literal notranslate"><span class="pre">aiostream</span></code>.
+Upstream fixed it (related to <a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/498">GH #498</a>). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/543">GH #543</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
