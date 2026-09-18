@@ -16,14 +16,14 @@ wheels = [
 
 [[package]]
 name = "aiostream"
-version = "0.7.1"
+version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8b/65/b9b69695702b76a878c9879f2ee80cefce75bc5cb864fc100460bc1c5380/aiostream-0.7.1.tar.gz", hash = "sha256:272aaa0d8f83beb906f5aa9022bb59046bb7a103fa3770f807c31f918595acf6", size = 44059, upload-time = "2025-10-13T20:02:06.961Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/9e/cb65144bda3298d98960241ca3ead20adc8203ce348923e2b2e76f6cc60e/aiostream-0.8.0.tar.gz", hash = "sha256:c281608c5afa1f313a7bdcd7b9c286953b22d704bdbaef8a0f51480bdaca98c0", size = 44819, upload-time = "2026-09-14T17:53:08.766Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/a0/d7c6ca304140f3f49987d710e15bc164248924a35d8cdfac2f6e87fca041/aiostream-0.7.1-py3-none-any.whl", hash = "sha256:ea8739e9158ee6a606b3feedf3762721c3507344e540d09a10984c5e88a13b37", size = 41416, upload-time = "2025-10-13T20:02:05.535Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/a1/6c750f1e1f5f4d7b3e2fe239370929617f8fb6b29102c345cd8be7c9a700/aiostream-0.8.0-py3-none-any.whl", hash = "sha256:25a431a88aa3c729de4fd61310f34077bb100c1a55c7b476d28692facf7b282a", size = 41852, upload-time = "2026-09-14T17:53:07.485Z" },
 ]
 
 [[package]]
@@ -388,7 +388,7 @@ typing = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiostream", specifier = ">=0.7.1" },
+    { name = "aiostream", specifier = ">=0.8.0" },
     { name = "click", specifier = ">=8.5.0" },
     { name = "jinja2", specifier = ">=3.1.6,<4.0.0" },
     { name = "lxml", specifier = ">=6.1.3" },
