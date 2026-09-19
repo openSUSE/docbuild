@@ -9,28 +9,44 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.sle-ha.initial-config" title="Initial configuration"/>
+      <language id="cat.sle-ha.initial-config">
+        <title>Initial configuration</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.sle-ha.initial-config" title="Erstmalige Konfiguration"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>Erstmalige Konfiguration</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.sle-ha.initial-config" title="Configuración inicial"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>Configuración inicial</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.sle-ha.initial-config" title="Configuration initiale"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>Configuration initiale</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.sle-ha.initial-config" title="初期設定"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>初期設定</title>
+      </language>
     </category>
     <category lang="ko-kr">
-      <language linkend="cat.sle-ha.initial-config" title="초기 구성"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>초기 구성</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.sle-ha.initial-config" title="Configuração inicial"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>Configuração inicial</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.sle-ha.initial-config" title="初始配置"/>
+      <language linkend="cat.sle-ha.initial-config">
+        <title>初始配置</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

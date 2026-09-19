@@ -6,48 +6,66 @@
   </maintainers>
   <categories>
     <category lang="en-us">
-      <language id="cat.suse-edge.core-doc" title="SUSE Edge Solution Documentation"/>
-      <language id="cat.suse-edge.slmicro" title="SUSE Linux Micro">
+      <language id="cat.suse-edge.core-doc">
+        <title>SUSE Edge Solution Documentation</title>
+      </language>
+      <language id="cat.suse-edge.slmicro">
+        <title>SUSE Linux Micro</title>
         <p>
         SUSE Linux Micro is used as the base Operating System for the SUSE Edge
         platform stack. It provides a secure, stable, and minimal starting
         point to start building on.
       </p>
       </language>
-      <language id="cat.suse-edge.suma" title="SUSE Multi Linux Manager">
+      <language id="cat.suse-edge.suma">
+        <title>SUSE Multi Linux Manager</title>
         <p>
        SUSE Multi Linux Manager is a best-in-class open source infrastructure management
        solution for your software-defined infrastructure.
       </p>
       </language>
-      <language id="cat.suse-edge.container" title="Container Management">
+      <language id="cat.suse-edge.container">
+        <title>Container Management</title>
         <p>
         Container management tools shipping with SUSE Edge.
       </p>
       </language>
-      <language id="cat.suse-edge.kubernetes" title="Kubernetes">
+      <language id="cat.suse-edge.kubernetes">
+        <title>Kubernetes</title>
         <p>
         Kubernetes distributions shipping with SUSE Edge.
       </p>
       </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.suse-edge.core-doc" title="Documentation SUSE Edge"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>Documentation SUSE Edge</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.suse-edge.core-doc" title="SUSE Edge Dokumentation"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>SUSE Edge Dokumentation</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.suse-edge.core-doc" title="Documentación de SUSE Edge"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>Documentación de SUSE Edge</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.suse-edge.core-doc" title="SUSE Edgeドキュメント"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>SUSE Edgeドキュメント</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.suse-edge.core-doc" title="Documentação do SUSE Edge"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>Documentação do SUSE Edge</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.suse-edge.core-doc" title="SUSE Edge 文档"/>
+      <language linkend="cat.suse-edge.core-doc">
+        <title>SUSE Edge 文档</title>
+      </language>
     </category>
   </categories>
   <xi:include href="desc/desc.xml"/>

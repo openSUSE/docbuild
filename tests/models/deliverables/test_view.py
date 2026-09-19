@@ -42,7 +42,9 @@ def test_missing_branch_raises(node: etree._ElementTree) -> None:
     for branch in node.xpath("//locale/branch"):
         branch.getparent().remove(branch)
 
-    first_node = node.xpath("(/product | /portal/product)/docset/resources/locale/deliverable")[0]
+    first_node = node.xpath(
+        "(/product | /portal/product)/docset/resources/locale/deliverable"
+    )[0]
     deliverable = Deliverable(first_node)
 
     with pytest.raises(ValueError, match="No branch found for this deliverable"):
@@ -66,7 +68,9 @@ def test_missing_git_returns_none(node: etree._ElementTree) -> None:
 def test_xml_git_remote(first_deliverable: Deliverable) -> None:
     """Test the xml.git_remote() method directly."""
     assert first_deliverable.xml.git_remote() is not None
-    assert first_deliverable.xml.git_remote().url == "https://github.com/suse/doc-sle.git"
+    assert (
+        first_deliverable.xml.git_remote().url == "https://github.com/suse/doc-sle.git"
+    )
 
 
 def test_xml_git_remote_none(node: etree._ElementTree) -> None:
@@ -101,6 +105,7 @@ def test_subdir_combined(
 ) -> None:
     """Test that locale and deliverable subdirs are combined."""
     assert first_ref_deliverable_with_subdir.subdir == "l10n/sles/de-de/guide"
+
 
 def test_format_attrs_prebuilt_filters_unknown_url_formats() -> None:
     """Test unknown prebuilt URL format values are ignored."""
@@ -247,7 +252,10 @@ def test_xml_category_title() -> None:
         <product id="p1">
             <categories>
                 <category lang="en-us">
-                  <language id="cat-title" title="Has Title Element" />
+                  <language id="cat-title">
+                    <title>Has Title Element</title>
+                  </language>
+                  <language id="cat-title-attr" title="Has Title Attribute" />
                   <language id="cat-name" name="Has Name Element" />
                 </category>
             </categories>
@@ -255,6 +263,7 @@ def test_xml_category_title() -> None:
                 <resources>
                     <locale lang="en-us">
                         <deliverable id="d1" category="cat-title" />
+                        <deliverable id="d1b" category="cat-title-attr" />
                         <deliverable id="d2" category="cat-name" />
                         <deliverable id="d3" category="cat-missing" />
                         <deliverable id="d4" />
@@ -266,11 +275,15 @@ def test_xml_category_title() -> None:
     """
     root = etree.fromstring(xml_content)
     d1 = DeliverableXMLView(root.xpath("//deliverable[@id='d1']")[0])
+    d1b = DeliverableXMLView(root.xpath("//deliverable[@id='d1b']")[0])
     d2 = DeliverableXMLView(root.xpath("//deliverable[@id='d2']")[0])
     d3 = DeliverableXMLView(root.xpath("//deliverable[@id='d3']")[0])
     d4 = DeliverableXMLView(root.xpath("//deliverable[@id='d4']")[0])
 
     assert d1.category_title == "Has Title Element"
+    assert d1b.category_title == "Has Title Attribute"
     assert d2.category_title == "Has Name Element"
-    assert d3.category_title == "cat-missing"  # Falls back to raw ID if not defined in <categories>
-    assert d4.category_title is None           # No category assigned
+    assert (
+        d3.category_title == "cat-missing"
+    )  # Falls back to raw ID if not defined in <categories>
+    assert d4.category_title is None  # No category assigned

@@ -1,7 +1,9 @@
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="cat.test" title="Test Category"/>
+      <language id="cat.test">
+        <title>Test Category</title>
+      </language>
     </category>
   </categories>
   <productfamilies>

@@ -1,0 +1,1 @@
+Moved the ``title`` attribute in ``<language>`` elements to a ``<title>`` tag for consistency. Affected files are the Portal schema, migration stylesheet, models, and configuration files.

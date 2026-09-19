@@ -3,7 +3,9 @@
   <acronym>SLES</acronym>
   <categories>
     <category lang="en-us">
-      <language id="cat.about" title="About" />
+      <language id="cat.about">
+        <title>About</title>
+      </language>
     </category>
   </categories>
   <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">

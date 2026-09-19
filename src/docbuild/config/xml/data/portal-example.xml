@@ -3,19 +3,42 @@
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="about" title="About" />
-      <language id="deployment" title="Deployment" />
-      <language id="inital-config" title="Initial configuration" />
-      <language id="update-upgrade" title="Update &amp; Upgrade" />
-      <language id="administration" title="Administration" />
-      <language id="container-virtualization"
-        title="Containers and virtualization" />
-      <language id="product-usage" title="Product usage" />
-      <language id="security-compliance" title="Security &amp; compliance" />
-      <language id="tuning-performance" title="Tuning &amp; performance" />
-      <language id="solution-doc" title="Solution documentation" />
-      <language id="additional-doc" title="Additional documentation" />
-      <language id="best-practices" title="Best practices" />
+      <language id="about">
+        <title>About</title>
+      </language>
+      <language id="deployment">
+        <title>Deployment</title>
+      </language>
+      <language id="inital-config">
+        <title>Initial configuration</title>
+      </language>
+      <language id="update-upgrade">
+        <title>Update &amp; Upgrade</title>
+      </language>
+      <language id="administration">
+        <title>Administration</title>
+      </language>
+      <language id="container-virtualization">
+        <title>Containers and virtualization</title>
+      </language>
+      <language id="product-usage">
+        <title>Product usage</title>
+      </language>
+      <language id="security-compliance">
+        <title>Security &amp; compliance</title>
+      </language>
+      <language id="tuning-performance">
+        <title>Tuning &amp; performance</title>
+      </language>
+      <language id="solution-doc">
+        <title>Solution documentation</title>
+      </language>
+      <language id="additional-doc">
+        <title>Additional documentation</title>
+      </language>
+      <language id="best-practices">
+        <title>Best practices</title>
+      </language>
     </category>
     <!-- more categories for different languages -->
   </categories>
@@ -100,7 +123,9 @@
 
     <categories>
       <category lang="en-us">
-        <language id="rancher" title="Cloud Native Documentation" />
+        <language id="rancher">
+          <title>Cloud Native Documentation</title>
+        </language>
       </category>
     </categories>
     <descriptions>

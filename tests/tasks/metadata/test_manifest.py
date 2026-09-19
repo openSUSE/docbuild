@@ -20,6 +20,7 @@ from docbuild.tasks.metadata.manifest import (
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture
 def deliverable() -> Deliverable:
     """Provide a Deliverable built from a minimal docservconfig XML."""
@@ -92,6 +93,7 @@ def test_dirs(tmp_path: Path) -> dict[str, Path]:
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
+
 
 def test_store_productdocset_json_merges_and_writes(
     test_dirs: dict[str, Path],
@@ -172,7 +174,9 @@ def test_store_productdocset_json_warns_on_empty_metadata(
             json_cache_dir=json_cache_dir,
         )
 
-    mock_log.error.assert_called_with("Empty metadata file %s", deliverable_path / deliverable.xml.dcfile)
+    mock_log.error.assert_called_with(
+        "Empty metadata file %s", deliverable_path / deliverable.xml.dcfile
+    )
 
 
 def test_store_productdocset_json_handles_read_error(
@@ -186,7 +190,9 @@ def test_store_productdocset_json_handles_read_error(
 
     deliverable_path = meta_cache_dir / deliverable.paths.relpath
     deliverable_path.mkdir(parents=True, exist_ok=True)
-    (deliverable_path / deliverable.xml.dcfile).write_text("{ not json }", encoding="utf-8")
+    (deliverable_path / deliverable.xml.dcfile).write_text(
+        "{ not json }", encoding="utf-8"
+    )
 
     doctype = Doctype.from_str(
         f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
@@ -201,7 +207,6 @@ def test_store_productdocset_json_handles_read_error(
         )
 
     mock_log.error.assert_called()
-
 
 
 @pytest.mark.parametrize(
@@ -220,10 +225,14 @@ def test_merge_descriptions_with_treatment(
 ) -> None:
     """Merges descriptions according to append/prepend/replace treatment."""
     product_desc = [
-        manifest_pkg.Description(lang="en-us", default=True, description="<p>global</p>")
+        manifest_pkg.Description(
+            lang="en-us", default=True, description="<p>global</p>"
+        )
     ]
     docset_desc = [
-        manifest_pkg.Description(lang=docset_lang, default=False, description="<p>local</p>")
+        manifest_pkg.Description(
+            lang=docset_lang, default=False, description="<p>local</p>"
+        )
     ]
 
     merged = merge_descriptions_with_treatment(
@@ -393,6 +402,7 @@ def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> No
 
     assert [str(lang) for lang in languages] == ["en-us", "de-de", "fr-fr"]
 
+
 def test_store_productdocset_json_preserves_order(
     test_dirs: dict[str, Path],
 ) -> None:
@@ -462,6 +472,7 @@ def test_store_productdocset_json_preserves_order(
 def test_merge_documents_by_dcfile_sets_default_correctly():
     """Verify that merge_documents_by_dcfile sets default=True only for en-us."""
     from docbuild.models.manifest import Document, SingleDocument
+
     doc1 = Document(docs=[SingleDocument(lang="en-us", dcfile="DC-test")])
     doc2 = Document(docs=[SingleDocument(lang="de-de", dcfile="DC-test")])
     doc3 = Document(docs=[SingleDocument(lang="fr-fr", dcfile="DC-test")])
@@ -486,14 +497,18 @@ def test_store_productdocset_json_filters_categories(
     test_dirs: dict[str, Path],
 ):
     """Categories are filtered to referenced ones, unless full_categories=True."""
-    xml_string = '''
+    xml_string = """
     <docservconfig>
       <categories>
         <category lang="en-us">
-            <language id="cat.referenced" title="Referenced"/>
+            <language id="cat.referenced">
+                <title>Referenced</title>
+            </language>
         </category>
         <category lang="en-us">
-            <language id="cat.unreferenced" title="Unreferenced"/>
+            <language id="cat.unreferenced">
+                <title>Unreferenced</title>
+            </language>
         </category>
       </categories>
       <product id="sles">
@@ -515,7 +530,7 @@ def test_store_productdocset_json_filters_categories(
         </docset>
       </product>
     </docservconfig>
-    '''
+    """
     stitchnode = etree.ElementTree(etree.fromstring(xml_string))
     doctype = Doctype.from_str("sles/15-SP7/en-us")
     meta_cache_dir = test_dirs["meta_cache_dir"]
@@ -570,5 +585,3 @@ def test_store_productdocset_json_filters_categories(
     assert len(merged_full["categories"]) == 2
     category_ids = {c["categoryId"] for c in merged_full["categories"]}
     assert category_ids == {"cat.referenced", "cat.unreferenced"}
-
-

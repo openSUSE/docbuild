@@ -153,10 +153,14 @@ class Category(BaseModel):
 
             <categories>
               <category lang="en-us">
-                <language id="cat.about" title="About"/>
+                <language id="cat.about">
+                  <title>About</title>
+                </language>
               </category>
               <category lang="de-de">
-                <language linkend="cat.about" title="Über"/>
+                <language linkend="cat.about">
+                  <title>Über</title>
+                </language>
               </category>
             </categories>
 
@@ -175,9 +179,10 @@ class Category(BaseModel):
                 cat_id = lng.attrib.get("id") or lng.attrib.get("linkend", "")
                 if not cat_id:
                     continue
+                title = lng.findtext("title")
                 translation_data: dict[str, str | bool] = {
                     "lang": cat_lang,
-                    "title": lng.attrib.get("title", ""),
+                    "title": title.strip() if title else "",
                 }
                 if "default" in lng.attrib:
                     translation_data["default"] = convert2bool(

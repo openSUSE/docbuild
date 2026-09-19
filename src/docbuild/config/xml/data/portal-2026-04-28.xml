@@ -3,128 +3,308 @@
 <portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="cat.about" title="About" />
-      <language id="cat.deployment" title="Deployment" />
-      <language id="cat.initial-config" title="Initial configuration" />
-      <language id="cat.update-upgrade" title="Update &amp; Upgrade" />
-      <language id="cat.administration" title="Administration" />
-      <language id="cat.container-virtualization"
-        title="Containers and virtualization" />
-      <language id="cat.product-usage" title="Product usage" />
-      <language id="cat.security-compliance" title="Security &amp; compliance" />
-      <language id="cat.tuning-performance" title="Tuning &amp; performance" />
-      <language id="cat.solution-doc" title="Solution documentation" />
-      <language id="cat.additional-doc" title="Additional documentation" />
-      <language id="cat.best-practices" title="Best practices" />
+      <language id="cat.about">
+        <title>About</title>
+      </language>
+      <language id="cat.deployment">
+        <title>Deployment</title>
+      </language>
+      <language id="cat.initial-config">
+        <title>Initial configuration</title>
+      </language>
+      <language id="cat.update-upgrade">
+        <title>Update &amp; Upgrade</title>
+      </language>
+      <language id="cat.administration">
+        <title>Administration</title>
+      </language>
+      <language id="cat.container-virtualization">
+        <title>Containers and virtualization</title>
+      </language>
+      <language id="cat.product-usage">
+        <title>Product usage</title>
+      </language>
+      <language id="cat.security-compliance">
+        <title>Security &amp; compliance</title>
+      </language>
+      <language id="cat.tuning-performance">
+        <title>Tuning &amp; performance</title>
+      </language>
+      <language id="cat.solution-doc">
+        <title>Solution documentation</title>
+      </language>
+      <language id="cat.additional-doc">
+        <title>Additional documentation</title>
+      </language>
+      <language id="cat.best-practices">
+        <title>Best practices</title>
+      </language>
     </category>
     <category lang="de-de">
-      <language linkend="cat.about" title="Über" />
-      <language linkend="cat.deployment" title="Bereitstellung" />
-      <language linkend="cat.initial-config" title="Erstmalige Konfiguration" />
-      <language linkend="cat.update-upgrade" title="Update &amp; Upgrade" />
-      <language linkend="cat.administration" title="Administration" />
-      <language linkend="cat.container-virtualization"
-        title="Container und Virtualisierung" />
-      <language linkend="cat.product-usage" title="Verwendung des Produkts" />
-      <language linkend="cat.security-compliance"
-        title="Sicherheit und Konformität" />
-      <language linkend="cat.tuning-performance" title="Tuning &amp; Leistung" />
-      <language linkend="cat.solution-doc" title="Dokumentation zur Lösung" />
-      <language linkend="cat.additional-doc" title="Weitere Dokumentation" />
-      <language linkend="cat.best-practices" title="Bewährte Methoden" />
+      <language linkend="cat.about">
+        <title>Über</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>Bereitstellung</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>Erstmalige Konfiguration</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>Update &amp; Upgrade</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>Administration</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>Container und Virtualisierung</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>Verwendung des Produkts</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>Sicherheit und Konformität</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>Tuning &amp; Leistung</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>Dokumentation zur Lösung</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>Weitere Dokumentation</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>Bewährte Methoden</title>
+      </language>
     </category>
     <category lang="es-es">
-      <language linkend="cat.about" title="Acerca de" />
-      <language linkend="cat.deployment" title="Despliegue" />
-      <language linkend="cat.initial-config" title="Configuración inicial" />
-      <language linkend="cat.update-upgrade" title="Actualización" />
-      <language linkend="cat.administration" title="Administración" />
-      <language linkend="cat.container-virtualization"
-        title="Contenedores y virtualización" />
-      <language linkend="cat.product-usage" title="Uso del producto" />
-      <language linkend="cat.security-compliance"
-        title="Seguridad y conformidad" />
-      <language linkend="cat.tuning-performance"
-        title="Puesta a punto y rendimiento" />
-      <language linkend="cat.solution-doc" title="Documentación de la solución" />
-      <language linkend="cat.additional-doc" title="Documentación adicional" />
-      <language linkend="cat.best-practices" title="Buenas prácticas" />
+      <language linkend="cat.about">
+        <title>Acerca de</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>Despliegue</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>Configuración inicial</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>Actualización</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>Administración</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>Contenedores y virtualización</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>Uso del producto</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>Seguridad y conformidad</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>Puesta a punto y rendimiento</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>Documentación de la solución</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>Documentación adicional</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>Buenas prácticas</title>
+      </language>
     </category>
     <category lang="fr-fr">
-      <language linkend="cat.about" title="A propos de" />
-      <language linkend="cat.deployment" title="Déploiement" />
-      <language linkend="cat.initial-config" title="Configuration initiale" />
-      <language linkend="cat.update-upgrade"
-        title="Mise à jour et mise à niveau" />
-      <language linkend="cat.administration" title="Administration" />
-      <language linkend="cat.container-virtualization"
-        title="Conteneurs et virtualisation" />
-      <language linkend="cat.product-usage" title="Utilisation du produit" />
-      <language linkend="cat.security-compliance" title="Sécurité et conformité" />
-      <language linkend="cat.tuning-performance"
-        title="Mise au point et performance" />
-      <language linkend="cat.solution-doc" title="Documentation de la solution" />
-      <language linkend="cat.additional-doc"
-        title="Documentation supplémentaire" />
-      <language linkend="cat.best-practices" title="Meilleures pratiques" />
+      <language linkend="cat.about">
+        <title>A propos de</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>Déploiement</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>Configuration initiale</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>Mise à jour et mise à niveau</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>Administration</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>Conteneurs et virtualisation</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>Utilisation du produit</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>Sécurité et conformité</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>Mise au point et performance</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>Documentation de la solution</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>Documentation supplémentaire</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>Meilleures pratiques</title>
+      </language>
     </category>
     <category lang="ja-jp">
-      <language linkend="cat.about" title="について" />
-      <language linkend="cat.deployment" title="配備" />
-      <language linkend="cat.initial-config" title="初期設定" />
-      <language linkend="cat.update-upgrade" title="アップデート＆アップグレード" />
-      <language linkend="cat.administration" title="管理" />
-      <language linkend="cat.container-virtualization" title="コンテナと仮想化" />
-      <language linkend="cat.product-usage" title="製品用途" />
-      <language linkend="cat.security-compliance" title="セキュリティとコンプライアンス" />
-      <language linkend="cat.tuning-performance" title="チューニング＆パフォーマンス" />
-      <language linkend="cat.solution-doc" title="ソリューション文書" />
-      <language linkend="cat.additional-doc" title="関連ドキュメント" />
-      <language linkend="cat.best-practices" title="ベストプラクティス" />
+      <language linkend="cat.about">
+        <title>について</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>配備</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>初期設定</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>アップデート＆アップグレード</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>管理</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>コンテナと仮想化</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>製品用途</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>セキュリティとコンプライアンス</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>チューニング＆パフォーマンス</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>ソリューション文書</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>関連ドキュメント</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>ベストプラクティス</title>
+      </language>
     </category>
     <category lang="ko-kr">
-      <language linkend="cat.about" title="소개" />
-      <language linkend="cat.deployment" title="배포" />
-      <language linkend="cat.initial-config" title="초기 구성" />
-      <language linkend="cat.update-upgrade" title="업데이트 및 업그레이드" />
-      <language linkend="cat.administration" title="관리" />
-      <language linkend="cat.container-virtualization" title="컨테이너와 가상화" />
-      <language linkend="cat.product-usage" title="제품 사용" />
-      <language linkend="cat.security-compliance" title="보안 및 규정 준수" />
-      <language linkend="cat.tuning-performance" title="튜닝 및 성능" />
-      <language linkend="cat.solution-doc" title="솔루션 문서" />
-      <language linkend="cat.additional-doc" title="추가 문서" />
-      <language linkend="cat.best-practices" title="추가 문서" />
+      <language linkend="cat.about">
+        <title>소개</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>배포</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>초기 구성</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>업데이트 및 업그레이드</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>관리</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>컨테이너와 가상화</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>제품 사용</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>보안 및 규정 준수</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>튜닝 및 성능</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>솔루션 문서</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>추가 문서</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>추가 문서</title>
+      </language>
     </category>
     <category lang="pt-br">
-      <language linkend="cat.about" title="Sobre" />
-      <language linkend="cat.deployment" title="Implantação" />
-      <language linkend="cat.initial-config" title="Configuração inicial" />
-      <language linkend="cat.update-upgrade" title="Atualização e upgrade" />
-      <language linkend="cat.administration" title="Administração" />
-      <language linkend="cat.container-virtualization"
-        title="Containers e virtualização" />
-      <language linkend="cat.product-usage" title="Uso do produto" />
-      <language linkend="cat.security-compliance"
-        title="Segurança e conformidade" />
-      <language linkend="cat.tuning-performance" title="Ajuste e desempenho" />
-      <language linkend="cat.solution-doc" title="Documentação da solução" />
-      <language linkend="cat.additional-doc" title="Documentação adicional" />
-      <language linkend="cat.best-practices" title="Práticas recomendadas" />
+      <language linkend="cat.about">
+        <title>Sobre</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>Implantação</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>Configuração inicial</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>Atualização e upgrade</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>Administração</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>Containers e virtualização</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>Uso do produto</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>Segurança e conformidade</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>Ajuste e desempenho</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>Documentação da solução</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>Documentação adicional</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>Práticas recomendadas</title>
+      </language>
     </category>
     <category lang="zh-cn">
-      <language linkend="cat.about" title="关于" />
-      <language linkend="cat.deployment" title="部署" />
-      <language linkend="cat.initial-config" title="初始配置" />
-      <language linkend="cat.update-upgrade" title="更新和升级" />
-      <language linkend="cat.administration" title="管理" />
-      <language linkend="cat.container-virtualization" title="容器和虚拟化" />
-      <language linkend="cat.product-usage" title="产品用途" />
-      <language linkend="cat.security-compliance" title="安全与合规" />
-      <language linkend="cat.tuning-performance" title="performance" />
-      <language linkend="cat.solution-doc" title="解决方案文档" />
-      <language linkend="cat.additional-doc" title="其他文档" />
-      <language linkend="cat.best-practices" title="最佳做法" />
+      <language linkend="cat.about">
+        <title>关于</title>
+      </language>
+      <language linkend="cat.deployment">
+        <title>部署</title>
+      </language>
+      <language linkend="cat.initial-config">
+        <title>初始配置</title>
+      </language>
+      <language linkend="cat.update-upgrade">
+        <title>更新和升级</title>
+      </language>
+      <language linkend="cat.administration">
+        <title>管理</title>
+      </language>
+      <language linkend="cat.container-virtualization">
+        <title>容器和虚拟化</title>
+      </language>
+      <language linkend="cat.product-usage">
+        <title>产品用途</title>
+      </language>
+      <language linkend="cat.security-compliance">
+        <title>安全与合规</title>
+      </language>
+      <language linkend="cat.tuning-performance">
+        <title>performance</title>
+      </language>
+      <language linkend="cat.solution-doc">
+        <title>解决方案文档</title>
+      </language>
+      <language linkend="cat.additional-doc">
+        <title>其他文档</title>
+      </language>
+      <language linkend="cat.best-practices">
+        <title>最佳做法</title>
+      </language>
     </category>
   </categories>
   <productfamilies>
@@ -282,35 +462,47 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.cloudnative.initial-config"
-          title="Initial configuration" />
-        <language id="cat.cloudnative.rancher"
-          title="Cloud Native Documentation" />
+        <language id="cat.cloudnative.initial-config">
+          <title>Initial configuration</title>
+        </language>
+        <language id="cat.cloudnative.rancher">
+          <title>Cloud Native Documentation</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.cloudnative.initial-config"
-          title="Erstmalige Konfiguration" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>Erstmalige Konfiguration</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.cloudnative.initial-config"
-          title="Configuración inicial" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>Configuración inicial</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.cloudnative.initial-config"
-          title="Configuration initiale" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>Configuration initiale</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.cloudnative.initial-config" title="初期設定" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>初期設定</title>
+        </language>
       </category>
       <category lang="ko-kr">
-        <language linkend="cat.cloudnative.initial-config" title="초기 구성" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>초기 구성</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.cloudnative.initial-config"
-          title="Configuração inicial" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>Configuração inicial</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.cloudnative.initial-config" title="初始配置" />
+        <language linkend="cat.cloudnative.initial-config">
+          <title>初始配置</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -3014,51 +3206,81 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.compliance.core-doc" title="Core documentation" />
-        <language id="cat.compliance.release-notes" title="Release notes" />
-        <language id="cat.compliance.solution" title="Solution documentation" />
+        <language id="cat.compliance.core-doc">
+          <title>Core documentation</title>
+        </language>
+        <language id="cat.compliance.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.compliance.solution">
+          <title>Solution documentation</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.compliance.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.compliance.release-notes"
-          title="Versionshinweise" />
-        <language linkend="cat.compliance.solution"
-          title="Dokumentation für Lösungen" />
+        <language linkend="cat.compliance.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>Dokumentation für Lösungen</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.compliance.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.compliance.release-notes"
-          title="Notas de la versión" />
-        <language linkend="cat.compliance.solution"
-          title="Documentación de la solución" />
+        <language linkend="cat.compliance.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>Documentación de la solución</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.compliance.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.compliance.release-notes"
-          title="Notes de version" />
-        <language linkend="cat.compliance.solution"
-          title="Documentation de la solution" />
+        <language linkend="cat.compliance.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>Documentation de la solution</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.compliance.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.compliance.release-notes" title="リリースノート" />
-        <language linkend="cat.compliance.solution" title="ソリューションマニュアル" />
+        <language linkend="cat.compliance.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>ソリューションマニュアル</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.compliance.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.compliance.release-notes"
-          title="Detalhes da versão" />
-        <language linkend="cat.compliance.solution"
-          title="Documentação da solução" />
+        <language linkend="cat.compliance.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>Documentação da solução</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.compliance.core-doc" title="核心产品文档" />
-        <language linkend="cat.compliance.release-notes" title="发行说明" />
-        <language linkend="cat.compliance.solution" title="解决方案文档" />
+        <language linkend="cat.compliance.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.compliance.release-notes">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.compliance.solution">
+          <title>解决方案文档</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -4580,31 +4802,51 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.ses.ses-doc" title="SES product documentation" />
-        <language id="cat.ses.windows-ses-doc"
-          title="SES for Windows product documentation" />
-        <language id="cat.ses.rook-ses-doc-tp"
-          title="SES with Rook product documentation (limited availability)" />
-        <language id="cat.ses.ses-man-pages" title="Man pages" />
-        <language id="cat.ses.release-notes" title="Release notes" />
+        <language id="cat.ses.ses-doc">
+          <title>SES product documentation</title>
+        </language>
+        <language id="cat.ses.windows-ses-doc">
+          <title>SES for Windows product documentation</title>
+        </language>
+        <language id="cat.ses.rook-ses-doc-tp">
+          <title>SES with Rook product documentation (limited availability)</title>
+        </language>
+        <language id="cat.ses.ses-man-pages">
+          <title>Man pages</title>
+        </language>
+        <language id="cat.ses.release-notes">
+          <title>Release notes</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.ses.release-notes" title="Versionshinweise" />
+        <language linkend="cat.ses.release-notes">
+          <title>Versionshinweise</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.ses.release-notes" title="Notas de la versión" />
+        <language linkend="cat.ses.release-notes">
+          <title>Notas de la versión</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.ses.release-notes" title="Notes de version" />
+        <language linkend="cat.ses.release-notes">
+          <title>Notes de version</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.ses.release-notes" title="リリースノート" />
+        <language linkend="cat.ses.release-notes">
+          <title>リリースノート</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.ses.release-notes" title="Detalhes da versão" />
+        <language linkend="cat.ses.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.ses.release-notes" title="发行说明" />
+        <language linkend="cat.ses.release-notes">
+          <title>发行说明</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -5052,45 +5294,81 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sled.installation-upgrade"
-          title="Installation and upgrade" />
-        <language id="cat.sled.end-user" title="End users" />
-        <language id="cat.sled.release-notes" title="Release notes" />
+        <language id="cat.sled.installation-upgrade">
+          <title>Installation and upgrade</title>
+        </language>
+        <language id="cat.sled.end-user">
+          <title>End users</title>
+        </language>
+        <language id="cat.sled.release-notes">
+          <title>Release notes</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sled.installation-upgrade"
-          title="Versionshinweise" />
-        <language linkend="cat.sled.end-user" title="Endbenutzer" />
-        <language linkend="cat.sled.release-notes" title="Versionshinweise" />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>Endbenutzer</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>Versionshinweise</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sled.installation-upgrade"
-          title="Notas de la versión" />
-        <language linkend="cat.sled.end-user" title="Usuarios finales" />
-        <language linkend="cat.sled.release-notes" title="Notas de la versión"
-         />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>Usuarios finales</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>Notas de la versión</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sled.installation-upgrade"
-          title="Notes de version" />
-        <language linkend="cat.sled.end-user" title="Utilisateurs finaux" />
-        <language linkend="cat.sled.release-notes" title="Notes de version" />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>Utilisateurs finaux</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>Notes de version</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sled.installation-upgrade" title="リリースノート" />
-        <language linkend="cat.sled.end-user" title="エンドユーザ" />
-        <language linkend="cat.sled.release-notes" title="リリースノート" />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>エンドユーザ</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>リリースノート</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sled.installation-upgrade"
-          title="Detalhes da versão" />
-        <language linkend="cat.sled.end-user" title="Usuários finais" />
-        <language linkend="cat.sled.release-notes" title="Detalhes da versão" />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>Usuários finais</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sled.installation-upgrade" title="发行说明" />
-        <language linkend="cat.sled.end-user" title="最终用户" />
-        <language linkend="cat.sled.release-notes" title="发行说明" />
+        <language linkend="cat.sled.installation-upgrade">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.sled.end-user">
+          <title>最终用户</title>
+        </language>
+        <language linkend="cat.sled.release-notes">
+          <title>发行说明</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -6934,33 +7212,44 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sle-ha.initial-config" title="Initial configuration"
-         />
+        <language id="cat.sle-ha.initial-config">
+          <title>Initial configuration</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sle-ha.initial-config"
-          title="Erstmalige Konfiguration" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>Erstmalige Konfiguration</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sle-ha.initial-config"
-          title="Configuración inicial" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>Configuración inicial</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sle-ha.initial-config"
-          title="Configuration initiale" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>Configuration initiale</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sle-ha.initial-config" title="初期設定" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>初期設定</title>
+        </language>
       </category>
       <category lang="ko-kr">
-        <language linkend="cat.sle-ha.initial-config" title="초기 구성" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>초기 구성</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sle-ha.initial-config"
-          title="Configuração inicial" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>Configuração inicial</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sle-ha.initial-config" title="初始配置" />
+        <language linkend="cat.sle-ha.initial-config">
+          <title>初始配置</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -8890,40 +9179,60 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sle-hpc.core-doc" title="Core documentation" />
-        <language id="cat.sle-hpc.release-notes" title="Release notes" />
+        <language id="cat.sle-hpc.core-doc">
+          <title>Core documentation</title>
+        </language>
+        <language id="cat.sle-hpc.release-notes">
+          <title>Release notes</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sle-hpc.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.sle-hpc.release-notes" title="Versionshinweise"
-         />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>Versionshinweise</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sle-hpc.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.sle-hpc.release-notes"
-          title="Notas de la versión" />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>Notas de la versión</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sle-hpc.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.sle-hpc.release-notes" title="Notes de version"
-         />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>Notes de version</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sle-hpc.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.sle-hpc.release-notes" title="リリースノート" />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>リリースノート</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sle-hpc.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.sle-hpc.release-notes" title="Detalhes da versão"
-         />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sle-hpc.core-doc" title="核心产品文档" />
-        <language linkend="cat.sle-hpc.release-notes" title="发行说明" />
+        <language linkend="cat.sle-hpc.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.sle-hpc.release-notes">
+          <title>发行说明</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -9196,68 +9505,113 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sle-micro.initial-config"
-          title="Initial configuration" />
-        <language id="cat.sle-micro.core-doc" title="Core product documentation" />
-        <language id="cat.sle-micro.release-notes" title="Release notes" />
-        <language id="cat.sle-micro.container" title="Containerization" />
-        <language id="cat.sle-micro.deploy-upgrade"
-          title="Deployment &amp; Upgrade" />
-        <language id="cat.sle-micro.network" title="Network" />
-        <language id="cat.sle-micro.systems-management"
-          title="System Management" />
-        <language id="cat.sle-micro.systemtuning-performance"
-          title="System Tuning &amp; Performance" />
-        <language id="cat.sle-micro.security" title="Security" />
-        <language id="cat.sle-micro.storage" title="Access Control" />
-        <language id="cat.sle-micro.rancher" title="Rancher" />
-        <language id="cat.sle-micro.micro-clouds"
-          title="SLE Micro in Public Clouds" />
+        <language id="cat.sle-micro.initial-config">
+          <title>Initial configuration</title>
+        </language>
+        <language id="cat.sle-micro.core-doc">
+          <title>Core product documentation</title>
+        </language>
+        <language id="cat.sle-micro.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.sle-micro.container">
+          <title>Containerization</title>
+        </language>
+        <language id="cat.sle-micro.deploy-upgrade">
+          <title>Deployment &amp; Upgrade</title>
+        </language>
+        <language id="cat.sle-micro.network">
+          <title>Network</title>
+        </language>
+        <language id="cat.sle-micro.systems-management">
+          <title>System Management</title>
+        </language>
+        <language id="cat.sle-micro.systemtuning-performance">
+          <title>System Tuning &amp; Performance</title>
+        </language>
+        <language id="cat.sle-micro.security">
+          <title>Security</title>
+        </language>
+        <language id="cat.sle-micro.storage">
+          <title>Access Control</title>
+        </language>
+        <language id="cat.sle-micro.rancher">
+          <title>Rancher</title>
+        </language>
+        <language id="cat.sle-micro.micro-clouds">
+          <title>SLE Micro in Public Clouds</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sle-micro.initial-config"
-          title="Erstmalige Konfiguration" />
-        <language linkend="cat.sle-micro.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.sle-micro.release-notes" title="Versionshinweise"
-         />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>Erstmalige Konfiguration</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>Versionshinweise</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sle-micro.initial-config"
-          title="Configuración inicial" />
-        <language linkend="cat.sle-micro.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.sle-micro.release-notes"
-          title="Notas de la versión" />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>Configuración inicial</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>Notas de la versión</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sle-micro.initial-config"
-          title="Configuration initiale" />
-        <language linkend="cat.sle-micro.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.sle-micro.release-notes" title="Notes de version"
-         />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>Configuration initiale</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>Notes de version</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sle-micro.initial-config" title="初期設定" />
-        <language linkend="cat.sle-micro.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.sle-micro.release-notes" title="リリースノート" />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>初期設定</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>リリースノート</title>
+        </language>
       </category>
       <category lang="ko-kr">
-        <language linkend="cat.sle-micro.initial-config" title="초기 구성" />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>초기 구성</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sle-micro.initial-config"
-          title="Configuração inicial" />
-        <language linkend="cat.sle-micro.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.sle-micro.release-notes"
-          title="Detalhes da versão" />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>Configuração inicial</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sle-micro.initial-config" title="初始配置" />
-        <language linkend="cat.sle-micro.core-doc" title="核心产品文档" />
-        <language linkend="cat.sle-micro.release-notes" title="发行说明" />
+        <language linkend="cat.sle-micro.initial-config">
+          <title>初始配置</title>
+        </language>
+        <language linkend="cat.sle-micro.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.sle-micro.release-notes">
+          <title>发行说明</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -12742,38 +13096,60 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sle-rt.core-doc" title="Core product documentation" />
-        <language id="cat.sle-rt.release-notes" title="Release notes" />
+        <language id="cat.sle-rt.core-doc">
+          <title>Core product documentation</title>
+        </language>
+        <language id="cat.sle-rt.release-notes">
+          <title>Release notes</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sle-rt.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.sle-rt.release-notes" title="Versionshinweise" />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>Versionshinweise</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sle-rt.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.sle-rt.release-notes" title="Notas de la versión"
-         />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>Notas de la versión</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sle-rt.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.sle-rt.release-notes" title="Notes de version" />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>Notes de version</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sle-rt.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.sle-rt.release-notes" title="リリースノート" />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>リリースノート</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sle-rt.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.sle-rt.release-notes" title="Detalhes da versão"
-         />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sle-rt.core-doc" title="核心产品文档" />
-        <language linkend="cat.sle-rt.release-notes" title="发行说明" />
+        <language linkend="cat.sle-rt.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.sle-rt.release-notes">
+          <title>发行说明</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -13430,48 +13806,70 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sles-sap.initial-config" title="Initial configuration" />
-        <language id="cat.sles-sap.solution-overview" title="Solution overview">
+        <language id="cat.sles-sap.initial-config">
+          <title>Initial configuration</title>
+        </language>
+        <language id="cat.sles-sap.solution-overview">
+          <title>Solution overview</title>
           <p> This document describes the supported High Availability solutions
             for SAP HANA, S/4HANA, and NetWeaver. </p>
         </language>
-        <language id="cat.sles-sap.core-doc" title="Core product documentation"
-         />
+        <language id="cat.sles-sap.core-doc">
+          <title>Core product documentation</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sles-sap.initial-config"
-          title="Erstmalige Konfiguration" />
-        <language linkend="cat.sles-sap.core-doc"
-          title="Haupt-Produktdokumentation" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>Erstmalige Konfiguration</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sles-sap.initial-config"
-          title="Configuración inicial" />
-        <language linkend="cat.sles-sap.core-doc"
-          title="Documentación principal del producto" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>Configuración inicial</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sles-sap.initial-config"
-          title="Configuration initiale" />
-        <language linkend="cat.sles-sap.core-doc"
-          title="Documentation produit de base" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>Configuration initiale</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sles-sap.initial-config" title="初期設定" />
-        <language linkend="cat.sles-sap.core-doc" title="コア製品のマニュアル" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>初期設定</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
       </category>
       <category lang="ko-kr">
-        <language linkend="cat.sles-sap.initial-config" title="초기 구성" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>초기 구성</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sles-sap.initial-config"
-          title="Configuração inicial" />
-        <language linkend="cat.sles-sap.core-doc"
-          title="Documentação do produto principal" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>Configuração inicial</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sles-sap.initial-config" title="初始配置" />
-        <language linkend="cat.sles-sap.core-doc" title="核心产品文档" />
+        <language linkend="cat.sles-sap.initial-config">
+          <title>初始配置</title>
+        </language>
+        <language linkend="cat.sles-sap.core-doc">
+          <title>核心产品文档</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -15230,33 +15628,47 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.sles.initial-config" title="Initial configuration" />
-        <language id="cat.sles.smart-docs" title="Smart Docs" />
+        <language id="cat.sles.initial-config">
+          <title>Initial configuration</title>
+        </language>
+        <language id="cat.sles.smart-docs">
+          <title>Smart Docs</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.sles.initial-config"
-          title="Erstmalige Konfiguration" />
+        <language linkend="cat.sles.initial-config">
+          <title>Erstmalige Konfiguration</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.sles.initial-config"
-          title="Configuración inicial" />
+        <language linkend="cat.sles.initial-config">
+          <title>Configuración inicial</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.sles.initial-config"
-          title="Configuration initiale" />
+        <language linkend="cat.sles.initial-config">
+          <title>Configuration initiale</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.sles.initial-config" title="初期設定" />
+        <language linkend="cat.sles.initial-config">
+          <title>初期設定</title>
+        </language>
       </category>
       <category lang="ko-kr">
-        <language linkend="cat.sles.initial-config" title="초기 구성" />
+        <language linkend="cat.sles.initial-config">
+          <title>초기 구성</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.sles.initial-config" title="Configuração inicial"
-         />
+        <language linkend="cat.sles.initial-config">
+          <title>Configuração inicial</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.sles.initial-config" title="初始配置" />
+        <language linkend="cat.sles.initial-config">
+          <title>初始配置</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -20772,23 +21184,48 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.smart.container" title="Containerization" />
-        <language id="cat.smart.deploy-upgrade" title="Deployment &amp; Upgrade" />
-        <language id="cat.smart.network" title="Network" />
-        <language id="cat.smart.systems-management" title="System Management" />
-        <language id="cat.smart.systemtuning-performance"
-          title="System Tuning &amp; Performance" />
-        <language id="cat.smart.virtualization-cloud"
-          title="Virtualization &amp; Cloud" />
-        <language id="cat.smart.security" title="Security" />
-        <language id="cat.smart.access-control" title="Access Control" />
-        <language id="cat.smart.ha" title="High Availability" />
-        <language id="cat.smart.storage" title="Storage" />
-        <language id="cat.smart.sap" title="SAP" />
-        <language id="cat.smart.rancher" title="Rancher" />
-        <language id="cat.smart.desktop" title="Desktop Applications" />
-        <language id="cat.smart.micro-clouds" title="SLE Micro in Public Clouds"
-         />
+        <language id="cat.smart.container">
+          <title>Containerization</title>
+        </language>
+        <language id="cat.smart.deploy-upgrade">
+          <title>Deployment &amp; Upgrade</title>
+        </language>
+        <language id="cat.smart.network">
+          <title>Network</title>
+        </language>
+        <language id="cat.smart.systems-management">
+          <title>System Management</title>
+        </language>
+        <language id="cat.smart.systemtuning-performance">
+          <title>System Tuning &amp; Performance</title>
+        </language>
+        <language id="cat.smart.virtualization-cloud">
+          <title>Virtualization &amp; Cloud</title>
+        </language>
+        <language id="cat.smart.security">
+          <title>Security</title>
+        </language>
+        <language id="cat.smart.access-control">
+          <title>Access Control</title>
+        </language>
+        <language id="cat.smart.ha">
+          <title>High Availability</title>
+        </language>
+        <language id="cat.smart.storage">
+          <title>Storage</title>
+        </language>
+        <language id="cat.smart.sap">
+          <title>SAP</title>
+        </language>
+        <language id="cat.smart.rancher">
+          <title>Rancher</title>
+        </language>
+        <language id="cat.smart.desktop">
+          <title>Desktop Applications</title>
+        </language>
+        <language id="cat.smart.micro-clouds">
+          <title>SLE Micro in Public Clouds</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -21339,53 +21776,81 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.soc.soc-clm"
-          title="SUSE OpenStack Cloud Lifecycle Manager documentation">
+        <language id="cat.soc.soc-clm">
+          <title>SUSE OpenStack Cloud Lifecycle Manager documentation</title>
           <p> Cloud Lifecycle Manager (CLM) was introduced in the SUSE OpenStack
             Cloud 8 release in 2018. Based on Ansible and taking some of the
             functionality of the HPE Helion Lifecycle Manager that SUSE acquired
             in 2017, it supports template-oriented deployments of larger clouds
             that can scale out without downtime. </p>
         </language>
-        <language id="cat.soc.soc-crow"
-          title="SUSE OpenStack Cloud Crowbar documentation">
+        <language id="cat.soc.soc-crow">
+          <title>SUSE OpenStack Cloud Crowbar documentation</title>
           <p> Crowbar has been the deployment engine of choice for SUSE
             OpenStack Cloud prior to version 8. Based on Chef, Crowbar makes it
             fast and easy to deploy private cloud environments, and is better
             suited to smaller deployments. </p>
         </language>
-        <language id="cat.soc.soc-general"
-          title="SUSE OpenStack Cloud general documentation" />
-        <language id="cat.soc.ostack-upstream"
-          title="OpenStack upstream documentation" />
-        <language id="cat.soc.release-notes" title="Release notes" />
-        <language id="cat.soc.best-practice" title="Best practices" />
+        <language id="cat.soc.soc-general">
+          <title>SUSE OpenStack Cloud general documentation</title>
+        </language>
+        <language id="cat.soc.ostack-upstream">
+          <title>OpenStack upstream documentation</title>
+        </language>
+        <language id="cat.soc.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.soc.best-practice">
+          <title>Best practices</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.soc.release-notes" title="Versionshinweise" />
-        <language linkend="cat.soc.best-practice" title="Best Practices" />
+        <language linkend="cat.soc.release-notes">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>Best Practices</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.soc.release-notes" title="Notas de la versión" />
-        <language linkend="cat.soc.best-practice" title="Prácticas recomendadas"
-         />
+        <language linkend="cat.soc.release-notes">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>Prácticas recomendadas</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.soc.release-notes" title="Notes de version" />
-        <language linkend="cat.soc.best-practice" title="Meilleures pratiques"
-         />
+        <language linkend="cat.soc.release-notes">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>Meilleures pratiques</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.soc.release-notes" title="リリースノート" />
-        <language linkend="cat.soc.best-practice" title="ベストプラクティス" />
+        <language linkend="cat.soc.release-notes">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>ベストプラクティス</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.soc.release-notes" title="Detalhes da versão" />
-        <language linkend="cat.soc.best-practice" title="Melhores práticas" />
+        <language linkend="cat.soc.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>Melhores práticas</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.soc.release-notes" title="发行说明" />
-        <language linkend="cat.soc.best-practice" title="最佳实践" />
+        <language linkend="cat.soc.release-notes">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.soc.best-practice">
+          <title>最佳实践</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -22035,59 +22500,91 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.suma.release-notes" title="Release notes" />
-        <language id="cat.suma.core-doc" title="Core product documentation" />
-        <language id="cat.suma.archive" title="Archives">
+        <language id="cat.suma.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.suma.core-doc">
+          <title>Core product documentation</title>
+        </language>
+        <language id="cat.suma.archive">
+          <title>Archives</title>
           <p> Archives only contain core product documentation but not related
             documents. </p>
         </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.suma.release-notes" title="Versionshinweise" />
-        <language linkend="cat.suma.core-doc" title="Haupt-Produktdokumentation" />
-        <language linkend="cat.suma.archive" title="Archive">
+        <language linkend="cat.suma.release-notes">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>Archive</title>
           <p> Archive enthalten nur die Haupt-Produktdokumentation, aber keine
             weiteren Dokumente. </p>
         </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.suma.release-notes" title="Notas de la versión" />
-        <language linkend="cat.suma.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.suma.archive" title="Archivos de reserva">
+        <language linkend="cat.suma.release-notes">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>Archivos de reserva</title>
           <p> Los archivos de reserva solo contienen documentación básica del
             producto, pero no documentos relacionados. </p>
         </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.suma.release-notes" title="Notes de version" />
-        <language linkend="cat.suma.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.suma.archive" title="Archives">
+        <language linkend="cat.suma.release-notes">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>Archives</title>
           <p> Les archives contiennent uniquement la documentation produit de
             base, mais pas les documents connexes. </p>
         </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.suma.release-notes" title="リリースノート" />
-        <language linkend="cat.suma.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.suma.archive" title="アーカイブ">
+        <language linkend="cat.suma.release-notes">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>アーカイブ</title>
           <p> アーカイブには、コア製品のマニュアルのみが含まれ、関連ドキュメントは含まれません。 </p>
         </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.suma.release-notes" title="Detalhes da versão" />
-        <language linkend="cat.suma.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.suma.archive" title="Arquivos">
+        <language linkend="cat.suma.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>Arquivos</title>
           <p> Os arquivos contêm apenas a documentação do produto principal, mas
             não os documentos relacionados. </p>
         </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.suma.release-notes" title="发行说明" />
-        <language linkend="cat.suma.core-doc" title="核心产品文档" />
-        <language linkend="cat.suma.archive" title="存档">
+        <language linkend="cat.suma.release-notes">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.suma.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.suma.archive">
+          <title>存档</title>
           <p> 存档只包含核心产品文档，而不包含相关文档。 </p>
         </language>
       </category>
@@ -23178,22 +23675,26 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.suse-ai.introduction" title="Introduction">
+        <language id="cat.suse-ai.introduction">
+          <title>Introduction</title>
           <p> This section presents documents that help you understand what AI
             is, how it works, and why SUSE AI is the right product for your
             locally hosed AI workloads. </p>
         </language>
-        <language id="cat.suse-ai.installation-upgrade" title="Deployment">
+        <language id="cat.suse-ai.installation-upgrade">
+          <title>Deployment</title>
           <p> This section includes documents that describe how to install and
             upgrade the operating system components, such as hardware drivers or
             GPU related software. </p>
         </language>
-        <language id="cat.suse-ai.configuration" title="Configuration">
+        <language id="cat.suse-ai.configuration">
+          <title>Configuration</title>
           <p> This section describes how to configure the SUSE AI product. Here
             you can find, for example, tasks related to configuring the
             OpenWebUI interface. </p>
         </language>
-        <language id="cat.suse-ai.additional" title="Additional Resources">
+        <language id="cat.suse-ai.additional">
+          <title>Additional Resources</title>
           <p> Here you can find references to the documentation of the products
             and components that SUSE AI requires. </p>
         </language>
@@ -23299,52 +23800,81 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.suse-caasp.core-doc"
-          title="Core product documentation" />
-        <language id="cat.suse-caasp.release-notes" title="Release notes" />
-        <language id="cat.suse-caasp.best-practice" title="Best practices" />
+        <language id="cat.suse-caasp.core-doc">
+          <title>Core product documentation</title>
+        </language>
+        <language id="cat.suse-caasp.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.suse-caasp.best-practice">
+          <title>Best practices</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.suse-caasp.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.suse-caasp.release-notes"
-          title="Versionshinweise" />
-        <language linkend="cat.suse-caasp.best-practice" title="Best Practices"
-         />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>Best Practices</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.suse-caasp.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.suse-caasp.release-notes"
-          title="Notas de la versión" />
-        <language linkend="cat.suse-caasp.best-practice"
-          title="Prácticas recomendadas" />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>Prácticas recomendadas</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.suse-caasp.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.suse-caasp.release-notes"
-          title="Notes de version" />
-        <language linkend="cat.suse-caasp.best-practice"
-          title="Meilleures pratiques" />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>Meilleures pratiques</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.suse-caasp.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.suse-caasp.release-notes" title="リリースノート" />
-        <language linkend="cat.suse-caasp.best-practice" title="ベストプラクティス" />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>ベストプラクティス</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.suse-caasp.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.suse-caasp.release-notes"
-          title="Detalhes da versão" />
-        <language linkend="cat.suse-caasp.best-practice"
-          title="Melhores práticas" />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>Melhores práticas</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.suse-caasp.core-doc" title="核心产品文档" />
-        <language linkend="cat.suse-caasp.release-notes" title="发行说明" />
-        <language linkend="cat.suse-caasp.best-practice" title="最佳实践" />
+        <language linkend="cat.suse-caasp.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.suse-caasp.release-notes">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.suse-caasp.best-practice">
+          <title>最佳实践</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -23640,48 +24170,81 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.suse-cap.core-doc" title="Core product documentation" />
-        <language id="cat.suse-cap.release-notes" title="Release notes" />
-        <language id="cat.suse-cap.best-practice" title="Best practices" />
+        <language id="cat.suse-cap.core-doc">
+          <title>Core product documentation</title>
+        </language>
+        <language id="cat.suse-cap.release-notes">
+          <title>Release notes</title>
+        </language>
+        <language id="cat.suse-cap.best-practice">
+          <title>Best practices</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.suse-cap.core-doc"
-          title="Haupt-Produktdokumentation" />
-        <language linkend="cat.suse-cap.release-notes" title="Versionshinweise" />
-        <language linkend="cat.suse-cap.best-practice" title="Best Practices" />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>Haupt-Produktdokumentation</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>Versionshinweise</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>Best Practices</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.suse-cap.core-doc"
-          title="Documentación principal del producto" />
-        <language linkend="cat.suse-cap.release-notes"
-          title="Notas de la versión" />
-        <language linkend="cat.suse-cap.best-practice"
-          title="Prácticas recomendadas" />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>Documentación principal del producto</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>Notas de la versión</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>Prácticas recomendadas</title>
+        </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.suse-cap.core-doc"
-          title="Documentation produit de base" />
-        <language linkend="cat.suse-cap.release-notes" title="Notes de version" />
-        <language linkend="cat.suse-cap.best-practice"
-          title="Meilleures pratiques" />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>Documentation produit de base</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>Notes de version</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>Meilleures pratiques</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.suse-cap.core-doc" title="コア製品のマニュアル" />
-        <language linkend="cat.suse-cap.release-notes" title="リリースノート" />
-        <language linkend="cat.suse-cap.best-practice" title="ベストプラクティス" />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>コア製品のマニュアル</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>リリースノート</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>ベストプラクティス</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.suse-cap.core-doc"
-          title="Documentação do produto principal" />
-        <language linkend="cat.suse-cap.release-notes"
-          title="Detalhes da versão" />
-        <language linkend="cat.suse-cap.best-practice" title="Melhores práticas"
-         />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>Documentação do produto principal</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>Detalhes da versão</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>Melhores práticas</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.suse-cap.core-doc" title="核心产品文档" />
-        <language linkend="cat.suse-cap.release-notes" title="发行说明" />
-        <language linkend="cat.suse-cap.best-practice" title="最佳实践" />
+        <language linkend="cat.suse-cap.core-doc">
+          <title>核心产品文档</title>
+        </language>
+        <language linkend="cat.suse-cap.release-notes">
+          <title>发行说明</title>
+        </language>
+        <language linkend="cat.suse-cap.best-practice">
+          <title>最佳实践</title>
+        </language>
       </category>
     </categories>
     <descriptions>
@@ -23868,46 +24431,59 @@
     </maintainers>
     <categories>
       <category lang="en-us">
-        <language id="cat.suse-edge.core-doc"
-          title="SUSE Edge Solution Documentation" />
-        <language id="cat.suse-edge.slmicro" title="SUSE Linux Micro">
+        <language id="cat.suse-edge.core-doc">
+          <title>SUSE Edge Solution Documentation</title>
+        </language>
+        <language id="cat.suse-edge.slmicro">
+          <title>SUSE Linux Micro</title>
           <p> SUSE Linux Micro is used as the base Operating System for the SUSE
             Edge platform stack. It provides a secure, stable, and minimal
             starting point to start building on. </p>
         </language>
-        <language id="cat.suse-edge.suma" title="SUSE Multi Linux Manager">
+        <language id="cat.suse-edge.suma">
+          <title>SUSE Multi Linux Manager</title>
           <p> SUSE Multi Linux Manager is a best-in-class open source
             infrastructure management solution for your software-defined
             infrastructure. </p>
         </language>
-        <language id="cat.suse-edge.container" title="Container Management">
+        <language id="cat.suse-edge.container">
+          <title>Container Management</title>
           <p> Container management tools shipping with SUSE Edge. </p>
         </language>
-        <language id="cat.suse-edge.kubernetes" title="Kubernetes">
+        <language id="cat.suse-edge.kubernetes">
+          <title>Kubernetes</title>
           <p> Kubernetes distributions shipping with SUSE Edge. </p>
         </language>
       </category>
       <category lang="fr-fr">
-        <language linkend="cat.suse-edge.core-doc"
-          title="Documentation SUSE Edge" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>Documentation SUSE Edge</title>
+        </language>
       </category>
       <category lang="de-de">
-        <language linkend="cat.suse-edge.core-doc"
-          title="SUSE Edge Dokumentation" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>SUSE Edge Dokumentation</title>
+        </language>
       </category>
       <category lang="es-es">
-        <language linkend="cat.suse-edge.core-doc"
-          title="Documentación de SUSE Edge" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>Documentación de SUSE Edge</title>
+        </language>
       </category>
       <category lang="ja-jp">
-        <language linkend="cat.suse-edge.core-doc" title="SUSE Edgeドキュメント" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>SUSE Edgeドキュメント</title>
+        </language>
       </category>
       <category lang="pt-br">
-        <language linkend="cat.suse-edge.core-doc"
-          title="Documentação do SUSE Edge" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>Documentação do SUSE Edge</title>
+        </language>
       </category>
       <category lang="zh-cn">
-        <language linkend="cat.suse-edge.core-doc" title="SUSE Edge 文档" />
+        <language linkend="cat.suse-edge.core-doc">
+          <title>SUSE Edge 文档</title>
+        </language>
       </category>
     </categories>
     <descriptions>

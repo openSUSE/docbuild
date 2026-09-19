@@ -392,14 +392,14 @@
                <!-- Create an <language> for each, pulling categoryid from its parent -->
                 <xsl:choose>
                   <xsl:when test=" starts-with($currentLang, 'en')">
-                    <language id="{concat($cat.prefix, ../@categoryid)}"
-                              title="{@title}">
+                    <language id="{concat($cat.prefix, ../@categoryid)}">
+                      <title><xsl:value-of select="@title"/></title>
                       <xsl:apply-templates select="node()"/>
                     </language>
                   </xsl:when>
                   <xsl:otherwise>
-                    <language linkend="{concat($cat.prefix, ../@categoryid)}"
-                              title="{@title}">
+                    <language linkend="{concat($cat.prefix, ../@categoryid)}">
+                      <title><xsl:value-of select="@title"/></title>
                       <xsl:apply-templates select="node()"/>
                     </language>
                   </xsl:otherwise>
@@ -551,7 +551,7 @@
                     </xsl:otherwise>
                   </xsl:choose>
 
-                  <xsl:attribute name="title">
+                  <title>
                     <xsl:choose>
                       <xsl:when test="$sourceLanguage/@title">
                         <xsl:value-of select="$sourceLanguage/@title"/>
@@ -566,7 +566,7 @@
                         <xsl:value-of select="string($currentCategory/@categoryid)"/>
                       </xsl:otherwise>
                     </xsl:choose>
-                  </xsl:attribute>
+                  </title>
 
                   <xsl:apply-templates select="$sourceLanguage/node()"/>
                 </language>

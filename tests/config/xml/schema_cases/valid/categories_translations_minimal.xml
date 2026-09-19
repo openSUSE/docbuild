@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <categories>
   <category lang="en-us">
-    <language id="cat.install" title="Installation"/>
+    <language id="cat.install">
+      <title>Installation</title>
+    </language>
   </category>
   <category lang="de-de">
-    <language linkend="cat.install" title="Installation"/>
+    <language linkend="cat.install">
+      <title>Installation</title>
+    </language>
   </category>
 </categories>

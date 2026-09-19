@@ -2,10 +2,18 @@
   <!-- Global categories -->
   <categories>
     <category lang="en-us">
-      <language id="cat.about" title="About" />
-      <language id="cat.initial-config" title="Initial configuration" />
-      <language id="cat.administration" title="Administration" />
-      <language id="cat.additional-doc" title="Additional documentation" />
+      <language id="cat.about">
+        <title>About</title>
+      </language>
+      <language id="cat.initial-config">
+        <title>Initial configuration</title>
+      </language>
+      <language id="cat.administration">
+        <title>Administration</title>
+      </language>
+      <language id="cat.additional-doc">
+        <title>Additional documentation</title>
+      </language>
     </category>
   </categories>
   <productfamilies>
