@@ -1,28 +1,28 @@
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="cat.root">
+      <language xml:id="cat.root">
         <title>Root</title>
       </language>
     </category>
   </categories>
-  <product id="sles">
+  <product xml:id="sles">
     <name>SUSE Linux Enterprise Server</name>
     <acronym>SLES</acronym>
     <maintainer></maintainer>
     <categories>
       <category lang="en-us">
-        <language id="cat.product">
+        <language xml:id="cat.product">
           <title>Product</title>
         </language>
       </category>
     </categories>
-    <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">
+    <docset lifecycle="supported" xml:id="sles.15-SP6" path="15-SP6">
       <resources>
         <git remote="https://github.com/SUSE/doc-sle.git" />
         <locale lang="en-us">
           <branch>maintenance/SLE15SP6</branch>
-          <deliverable id="sles.15-SP6.dc-sles-administration" type="dc">
+          <deliverable xml:id="sles.15-SP6.dc-sles-administration" type="dc">
             <dc file="DC-SLES-administration">
               <format epub="0" html="0" pdf="1" single-html="1" />
             </dc>

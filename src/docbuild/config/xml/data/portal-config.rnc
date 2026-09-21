@@ -310,7 +310,7 @@ ds.id.attr =
   [
     db:refpurpose [ "ID attribute for identifying an object" ]
   ]
-  attribute id { xsd:ID }
+  attribute xml:id { xsd:ID }
 
 ds.linkend.attr =
     ## A reference to an ID attribute

@@ -17,7 +17,7 @@ def test_branch_property_fallback_locale() -> None:
     <docset>
         <resources>
             <locale lang="en-us">
-                <deliverable type="dc" id="test"/>
+                <deliverable type="dc" xml:id="test"/>
             </locale>
             <locale lang="de-de">
                 <branch>maintenance/SLE15SP6-fallback</branch>
@@ -151,12 +151,12 @@ def test_xml_git_remote_fallback_invalid_url() -> None:
     """Test git_remote() gracefully falls back to string on invalid URLs."""
     xml_content = """
     <portal>
-        <product id="p1">
+        <product xml:id="p1">
             <docset path="d1">
                 <resources>
                     <git remote="https://todo" />
                     <locale lang="en-us">
-                        <deliverable id="test" />
+                        <deliverable xml:id="test" />
                     </locale>
                 </resources>
             </docset>
@@ -174,19 +174,19 @@ def test_xml_translations() -> None:
     """Test translations property dynamically finds other locales."""
     xml_content = """
     <portal>
-        <product id="p1">
+        <product xml:id="p1">
             <docset path="d1">
                 <resources>
                     <locale lang="en-us">
-                        <deliverable id="test" />
+                        <deliverable xml:id="test" />
                     </locale>
                     <locale lang="de-de">
-                        <deliverable id="test_translation">
+                        <deliverable xml:id="test_translation">
                             <ref linkend="test" />
                         </deliverable>
                     </locale>
                     <locale lang="ja-jp">
-                        <deliverable id="other_doc" />
+                        <deliverable xml:id="other_doc" />
                     </locale>
                 </resources>
             </docset>
@@ -204,11 +204,11 @@ def test_xml_translations_no_docset() -> None:
     """Test translations property with a node that has no docset."""
     xml_content = """
     <portal>
-        <product id="p1">
+        <product xml:id="p1">
             <docset path="d1">
                 <resources>
                     <locale lang="en-us">
-                        <deliverable id="test" />
+                        <deliverable xml:id="test" />
                     </locale>
                 </resources>
             </docset>
@@ -224,14 +224,14 @@ def test_xml_translations_no_lang_in_locale() -> None:
     """Test translations property with a locale that has no lang attribute."""
     xml_content = """
     <portal>
-        <product id="p1">
+        <product xml:id="p1">
             <docset path="d1">
                 <resources>
                     <locale lang="en-us">
-                        <deliverable id="test" />
+                        <deliverable xml:id="test" />
                     </locale>
                     <locale> <!-- No lang attribute -->
-                        <deliverable id="test_translation">
+                        <deliverable xml:id="test_translation">
                             <ref linkend="test" />
                         </deliverable>
                     </locale>
@@ -249,24 +249,24 @@ def test_xml_category_title() -> None:
     """Test category_title safely resolves titles, names, and ID fallbacks."""
     xml_content = """
     <portal>
-        <product id="p1">
+        <product xml:id="p1">
             <categories>
                 <category lang="en-us">
-                  <language id="cat-title">
+                  <language xml:id="cat-title">
                     <title>Has Title Element</title>
                   </language>
-                  <language id="cat-title-attr" title="Has Title Attribute" />
-                  <language id="cat-name" name="Has Name Element" />
+                  <language xml:id="cat-title-attr" title="Has Title Attribute" />
+                  <language xml:id="cat-name" name="Has Name Element" />
                 </category>
             </categories>
             <docset path="d1">
                 <resources>
                     <locale lang="en-us">
-                        <deliverable id="d1" category="cat-title" />
-                        <deliverable id="d1b" category="cat-title-attr" />
-                        <deliverable id="d2" category="cat-name" />
-                        <deliverable id="d3" category="cat-missing" />
-                        <deliverable id="d4" />
+                        <deliverable xml:id="d1" category="cat-title" />
+                        <deliverable xml:id="d1b" category="cat-title-attr" />
+                        <deliverable xml:id="d2" category="cat-name" />
+                        <deliverable xml:id="d3" category="cat-missing" />
+                        <deliverable xml:id="d4" />
                     </locale>
                 </resources>
             </docset>
@@ -274,11 +274,11 @@ def test_xml_category_title() -> None:
     </portal>
     """
     root = etree.fromstring(xml_content)
-    d1 = DeliverableXMLView(root.xpath("//deliverable[@id='d1']")[0])
-    d1b = DeliverableXMLView(root.xpath("//deliverable[@id='d1b']")[0])
-    d2 = DeliverableXMLView(root.xpath("//deliverable[@id='d2']")[0])
-    d3 = DeliverableXMLView(root.xpath("//deliverable[@id='d3']")[0])
-    d4 = DeliverableXMLView(root.xpath("//deliverable[@id='d4']")[0])
+    d1 = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d1']")[0])
+    d1b = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d1b']")[0])
+    d2 = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d2']")[0])
+    d3 = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d3']")[0])
+    d4 = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d4']")[0])
 
     assert d1.category_title == "Has Title Element"
     assert d1b.category_title == "Has Title Attribute"

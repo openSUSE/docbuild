@@ -8,6 +8,7 @@ from typing import Literal, cast
 
 from lxml import etree  # type: ignore
 
+from ...constants import XML_NS
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
 from ..repo import Repo
@@ -35,8 +36,8 @@ class DeliverableXMLView:
     # -- Identity fields
     @cached_property
     def product_id(self) -> str:
-        """Return the product ID (``<product id=…>``) or None if absent.."""
-        return self.product_node.attrib.get("id")
+        """Return the product ID (``<product xml:id=…>``) or None if absent.."""
+        return self.product_node.get(f"{{{XML_NS}}}id")
 
     @cached_property
     def product_path(self) -> str | None:
@@ -70,8 +71,8 @@ class DeliverableXMLView:
 
     @cached_property
     def docset_id(self) -> str:
-        """Return the docset real ID (``<docset id=…>``)."""
-        return self.docset_node.attrib["id"]
+        """Return the docset real ID (``<docset xml:id=…>``)."""
+        return self.docset_node.get(f"{{{XML_NS}}}id")
 
     @cached_property
     def docset_path(self) -> str | None:
@@ -106,20 +107,20 @@ class DeliverableXMLView:
             # ref/@linkend attribute.
             refid = self.node.find("ref").get("linkend")
             if self.locale_en is not None:
-                dcnode = self.locale_en.find(f"deliverable[@id={refid!r}]/dc")
-                if dcnode is not None:
-                    return dcnode.attrib.get("file", None)
+                dcnodes = self.locale_en.xpath("id($refid)/dc", refid=refid)
+                if dcnodes:
+                    return dcnodes[0].attrib.get("file", None)
 
         return None
 
     @cached_property
     def deliverableid(self) -> str | None:
-        """Return the deliverable ID (``<deliverable id=…>``) or None if absent."""
-        if (d_id := self.node.get("id")) is not None:
-            return d_id
+        """Return the deliverable ID (`<deliverable xml:id=…>`) or None if absent."""
+        xml_id = self.node.get(f"{{{XML_NS}}}id")
+        if xml_id:
+            return xml_id
         if self.is_ref and (ref_node := self.node.find("ref")) is not None:
             return ref_node.get("linkend")
-
         return None
 
     @cached_property
@@ -154,14 +155,14 @@ class DeliverableXMLView:
     @cached_property
     def translations(self) -> set[str]:
         """Return a set of all language codes available for this deliverable."""
-        d_id = self.node.get("id")
+        d_id = self.node.get(f"{{{XML_NS}}}id")
         if self.docset_node is None or not d_id:
             return {str(self.lang)}
 
         # Always include the base language
         langs = {str(self.lang)}
 
-        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[ref[@linkend={d_id!r}]]"):
+        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[ref[@linkend='{d_id}']]"):
             # We must look at the parent <locale> to get the 'lang' attribute
             parent_loc = deliv_node.getparent()
             if loc_lang := parent_loc.get("lang"):
@@ -235,7 +236,7 @@ class DeliverableXMLView:
             return None
 
         for cat in self.all_categories:
-            lang_nodes = cat.xpath(f"language[@id='{cat_id}']")
+            lang_nodes = cat.xpath("id($cat_id)", cat_id=cat_id)
             if lang_nodes:
                 title = lang_nodes[0].findtext("title")
                 if not title:
@@ -286,7 +287,7 @@ class DeliverableXMLView:
         """Return raw format attributes from the linked English DC deliverable."""
         linkend = self.node.find("ref").attrib.get("linkend")
         other_deli = self.node.xpath(
-            f"../../locale[@lang='en-us']/deliverable[@id={linkend!r}]"
+            f"../../locale[@lang='en-us']/deliverable[@xml:id='{linkend}']"
         )
         #if not other_deli:
         #    raise ValueError(f"English deliverable not found for linkend={linkend!r}")
@@ -363,9 +364,9 @@ class DeliverableXMLView:
             if ref_node is not None:
                 refid = ref_node.get("linkend")
                 if self.locale_en is not None:
-                    en_node = self.locale_en.find(f"deliverable[@id={refid!r}]")
-                    if en_node is not None:
-                        return en_node
+                    en_nodes = self.locale_en.xpath("id($refid)", refid=refid)
+                    if en_nodes:
+                        return en_nodes[0]
         return self.node
 
     def local_desc(self) -> Generator[etree._Element, None, None]:

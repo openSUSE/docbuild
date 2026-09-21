@@ -170,10 +170,10 @@ def test_category_from_xml_node() -> None:
     doc = """<product>
         <categories>
             <category lang="en-us">
-                <language id="cat.about" default="1">
+                <language xml:id="cat.about" default="1">
                     <title>About</title>
                 </language>
-                <language id="cat.deployment">
+                <language xml:id="cat.deployment">
                     <title>Deployment</title>
                 </language>
             </category>

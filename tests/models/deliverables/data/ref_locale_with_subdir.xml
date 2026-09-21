@@ -4,18 +4,18 @@
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0"
-  id="sles.15-SP6"
+  xml:id="sles.15-SP6"
   path="15-SP6"
   product="sles">
   <resources>
     <locale lang="en-us">
-      <deliverable id="sles.15-SP6.dc-sles-administration" type="dc">
+      <deliverable xml:id="sles.15-SP6.dc-sles-administration" type="dc">
         <dc file="DC-SLES-administration"/>
       </deliverable>
     </locale>
     <locale lang="de-de">
       <subdir>l10n/sles/de-de</subdir>
-      <deliverable id="sles.15-SP6.dc-sles-administration.de" type="ref">
+      <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="ref">
         <subdir>guide</subdir>
         <ref linkend="sles.15-SP6.dc-sles-administration"/>
       </deliverable>

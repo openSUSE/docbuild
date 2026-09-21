@@ -273,7 +273,7 @@ def test_iter_wildcard_docset_expands_with_portal_root():
     root = etree.fromstring(
         """
         <portal>
-           <product id="sles">
+           <product xml:id="sles">
               <docset path="15-SP6"><resources><locale lang="en-us"/><locale lang="de-de"/></resources></docset>
               <docset path="16.0"><resources><locale lang="en-us"/></resources></docset>
            </product>
@@ -332,10 +332,10 @@ def test_iter_wildcard_product_expands_with_portal_root():
     root = etree.fromstring(
         """
         <portal>
-            <product id="sles">
+            <product xml:id="sles">
             <docset path="15-SP6"><resources><locale lang="en-us"/></resources></docset>
             </product>
-            <product id="smart">
+            <product xml:id="smart">
             <docset path="2.0"><resources><locale lang="en-us"/></resources></docset>
             </product>
         </portal>
@@ -382,7 +382,7 @@ def test_sorted_langs_in_doctype_instantiation():
         (
             "sles/15-SP6/en-us",
             (
-                "product[@id='sles']"
+                "product[@xml:id='sles']"
                 "/docset[@path='15-SP6']"
                 "/resources/locale[@lang='en-us']"
             ),
@@ -390,13 +390,13 @@ def test_sorted_langs_in_doctype_instantiation():
         # 2: product + all docsets + a single language
         (
             "sles//en-us",
-            ("product[@id='sles']/docset/resources/locale[@lang='en-us']"),
+            ("product[@xml:id='sles']/docset/resources/locale[@lang='en-us']"),
         ),
         # 3: product + one docset + one lifecycle + multiple languages
         (
             "sles/15-SP6@supported/en-us,de-de",
             (
-                "product[@id='sles']"
+                "product[@xml:id='sles']"
                 "/docset[@path='15-SP6'][@lifecycle='supported']"
                 "/resources/locale[@lang='de-de' or @lang='en-us']"
             ),
@@ -405,7 +405,7 @@ def test_sorted_langs_in_doctype_instantiation():
         (
             "sles/15-SP7@supported,beta/de-de",
             (
-                "product[@id='sles']"
+                "product[@xml:id='sles']"
                 "/docset[@path='15-SP7'][@lifecycle='supported' or @lifecycle='beta']"
                 "/resources/locale[@lang='de-de']"
             ),
@@ -414,7 +414,7 @@ def test_sorted_langs_in_doctype_instantiation():
         (
             "sles/15-SP6@supported/*",
             (
-                "product[@id='sles']"
+                "product[@xml:id='sles']"
                 "/docset[@path='15-SP6'][@lifecycle='supported']"
                 "/resources/locale"
             ),
@@ -426,12 +426,12 @@ def test_sorted_langs_in_doctype_instantiation():
         # 8: fallback to English for empty language lists
         (
             Doctype(product="sles", docset=["15-SP6"], langs=[]),
-            "product[@id='sles']/docset[@path='15-SP6']/resources/locale[@lang='en-us']",
+            "product[@xml:id='sles']/docset[@path='15-SP6']/resources/locale[@lang='en-us']",
         ),
         # 9: explicit language plus wildcard means all languages
         (
             Doctype(product="sles", docset=["15-SP6"], langs=["en-us", "*"]),
-            "product[@id='sles']/docset[@path='15-SP6']/resources/locale",
+            "product[@xml:id='sles']/docset[@path='15-SP6']/resources/locale",
         ),
     ],
 )
@@ -452,7 +452,7 @@ def test_product_xpath_segment():
 
     # Test with a specific product
     dt_specific = Doctype.from_str("sles/15-SP6/en-us")
-    assert dt_specific.product_xpath_segment() == "product[@id='sles']"
+    assert dt_specific.product_xpath_segment() == "product[@xml:id='sles']"
 
 
 @pytest.mark.parametrize(

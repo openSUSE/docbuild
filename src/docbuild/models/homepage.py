@@ -6,6 +6,7 @@ from typing import Self, cast
 from lxml import etree  # type: ignore
 from pydantic import BaseModel, ConfigDict, Field
 
+from docbuild.constants import XML_NS
 from docbuild.models.deliverable import Deliverable
 
 
@@ -68,7 +69,7 @@ class Homepage(BaseModel):
     def _extract_categories(cls, root: etree._Element | etree._ElementTree, prod_id: str, prefix: str) -> list[CategoryItem]:
         """Extract specialized docset categories."""
         items = []
-        for ds in root.xpath(f"/portal/product[@id='{prod_id}']/docset"):
+        for ds in root.xpath("id($prod_id)/docset", prod_id=prod_id):
             name = ds.xpath("string(./version)").strip()
             if name.startswith("Smart Docs: "):
                 name = name.replace("Smart Docs: ", "")
@@ -82,7 +83,7 @@ class Homepage(BaseModel):
         items = []
         special_ids = {"sbp", "trd", "smart"}
         for prod in root.xpath("/portal/product"):
-            prod_id = prod.get("id", "")
+            prod_id = prod.get(f"{{{XML_NS}}}id") or ""
             if prod_id in special_ids:
                 continue
 
@@ -109,7 +110,7 @@ class Homepage(BaseModel):
             supported, unsupported = [], []
             for ds in prod.xpath("docset"):
                 # Ensure we only grab the immediate <version> tag, not nested ones!
-                ds_name = ds.xpath("string(./version)").strip() or ds.get("id", "")
+                ds_name = ds.xpath("string(./version)").strip() or ds.get(f"{{{XML_NS}}}id") or ""
 
                 ds_path = ds.get("path", "")
                 if not ds_path.startswith("/"):
@@ -139,14 +140,15 @@ class Homepage(BaseModel):
     def _resolve_spotlight_target(cls, target: etree._Element, linkend: str, text: str) -> tuple[str, str]:
         """Resolve the tag-specific logic for a spotlight target."""
         if target.tag == "product":
-            link = f"/{target.get('id', '')}/"
+            prod_id = target.get(f"{{{XML_NS}}}id") or ""
+            link = f"/{prod_id}/"
             if not text:
                 text = target.xpath("string(name)").strip()
             return text, link
 
         if target.tag == "docset":
             prod_node = target.getparent()
-            prod_id = prod_node.get("id", "") if prod_node is not None else ""
+            prod_id = prod_node.get(f"{{{XML_NS}}}id") or "" if prod_node is not None else ""
             ds_path = target.get("path", "")
 
             link = f"/{prod_id}/{ds_path}".replace("//", "/")
@@ -188,7 +190,7 @@ class Homepage(BaseModel):
         if not linkend:
             return text, ""
 
-        target_nodes = root.xpath(f"//*[@id='{linkend}']")
+        target_nodes = root.xpath("id($linkend)", linkend=linkend)
         if not target_nodes:
             return text, linkend
 
@@ -202,7 +204,7 @@ class Homepage(BaseModel):
 
         family_map = {}
         for rank_idx, pf in enumerate(root.xpath("/portal/productfamilies/item"), start=1):
-            item_id = pf.get("id", "")
+            item_id = pf.get(f"{{{XML_NS}}}id") or ""
             item_text = pf.xpath("string()").strip()
             if item_id:
                 family_map[item_id] = item_text

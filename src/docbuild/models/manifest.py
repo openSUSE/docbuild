@@ -17,7 +17,7 @@ from pydantic import (
     model_validator,
 )
 
-from ..constants import DEFAULT_LANGS
+from ..constants import DEFAULT_LANGS, XML_NS
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 from ..utils.convert import convert2bool
@@ -176,7 +176,7 @@ class Category(BaseModel):
         for cat in node.xpath("categories/category"):
             cat_lang = cat.attrib.get("lang", "en-us")
             for lng in cat.xpath("language"):
-                cat_id = lng.attrib.get("id") or lng.attrib.get("linkend", "")
+                cat_id = lng.attrib.get(f"{{{XML_NS}}}id") or lng.attrib.get("linkend", "")
                 if not cat_id:
                     continue
                 title = lng.findtext("title")

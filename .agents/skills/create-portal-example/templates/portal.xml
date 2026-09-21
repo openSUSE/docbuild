@@ -2,28 +2,28 @@
   <!-- Global categories -->
   <categories>
     <category lang="en-us">
-      <language id="cat.about">
+      <language xml:id="cat.about">
         <title>About</title>
       </language>
-      <language id="cat.initial-config">
+      <language xml:id="cat.initial-config">
         <title>Initial configuration</title>
       </language>
-      <language id="cat.administration">
+      <language xml:id="cat.administration">
         <title>Administration</title>
       </language>
-      <language id="cat.additional-doc">
+      <language xml:id="cat.additional-doc">
         <title>Additional documentation</title>
       </language>
     </category>
   </categories>
   <productfamilies>
-    <item id="f.linux">Linux</item>
-    <item id="f.windows">Windows</item>
+    <item xml:id="f.linux">Linux</item>
+    <item xml:id="f.windows">Windows</item>
   </productfamilies>
   <series>
-    <item id="s.pas">Products &amp; Solutions</item>
-    <item id="s.trd">Technical References</item>
-    <item id="s.rn">Release Notes</item>
+    <item xml:id="s.pas">Products &amp; Solutions</item>
+    <item xml:id="s.trd">Technical References</item>
+    <item xml:id="s.rn">Release Notes</item>
   </series>
   {{ products }}
 </portal>

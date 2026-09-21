@@ -2,26 +2,26 @@
 <portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
     <categories>
         <category lang="en-us">
-            <language id="base">
+            <language xml:id="base">
                 <title>General Documentation</title>
             </language>
         </category>
     </categories>
 
     <productfamilies>
-        <item id="os">Operating Systems</item>
+        <item xml:id="os">Operating Systems</item>
     </productfamilies>
 
     <series>
-        <item id="products">Main Products</item>
+        <item xml:id="products">Main Products</item>
     </series>
 
-    <product id="sles" series="products" family="os">
+    <product xml:id="sles" series="products" family="os">
         <name>SUSE Linux Enterprise Server</name>
         <maintainers>
             <contact>doc-team@example.com</contact>
         </maintainers>
-        <docset id="v15-sp6" lifecycle="supported">
+        <docset xml:id="v15-sp6" lifecycle="supported">
             <version>15 SP6</version>
             <external/>
         </docset>

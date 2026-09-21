@@ -19,30 +19,30 @@ def sample_portal_xml() -> etree._ElementTree:
 
       <productfamilies>
         <!-- Test missing rank (should fall back to enumerate count '1') -->
-        <item id="f.linux" path="/linux">Linux</item>
+        <item xml:id="f.linux" path="/linux">Linux</item>
       </productfamilies>
 
-      <product id="sbp">
-        <docset id="sbp.cloud" path="/cloud">
+      <product xml:id="sbp">
+        <docset xml:id="sbp.cloud" path="/cloud">
           <version>Cloud Computing</version>
         </docset>
       </product>
 
-      <product id="trd">
-        <docset id="trd.amd" path="amd/">
+      <product xml:id="trd">
+        <docset xml:id="trd.amd" path="amd/">
           <version>AMD</version>
         </docset>
       </product>
 
-      <product id="smart">
-        <docset id="smart.container" path="container/">
+      <product xml:id="smart">
+        <docset xml:id="smart.container" path="container/">
           <!-- Test Smart Docs prefix stripping -->
           <version>Smart Docs: Containerization</version>
         </docset>
       </product>
 
       <!-- Test mapping family ID 'f.linux' back to 'Linux' -->
-      <product id="app-building" family="f.linux" rank="04150">
+      <product xml:id="app-building" family="f.linux" rank="04150">
         <name>Appliance Building</name>
         <descriptions>
           <desc lang="en-us">
@@ -51,15 +51,15 @@ def sample_portal_xml() -> etree._ElementTree:
             <p>Ignore this paragraph.</p>
           </desc>
         </descriptions>
-        <docset id="app-1" path="1.0" lifecycle="supported">
+        <docset xml:id="app-1" path="1.0" lifecycle="supported">
           <version>App Builder 1.0</version>
           <!-- Nested deliverable version to prove we don't accidentally grab it (the Keg bug) -->
           <deliverable><version>Keg Image Generator</version></deliverable>
         </docset>
-        <docset id="app-2" path="2.0">
+        <docset xml:id="app-2" path="2.0">
           <version>App Builder 2.0</version>
         </docset>
-        <docset id="app-0.9" path="0.9" lifecycle="unsupported">
+        <docset xml:id="app-0.9" path="0.9" lifecycle="unsupported">
           <version>App Builder 0.9</version>
         </docset>
       </product>

@@ -20,6 +20,7 @@ from docbuild.config.xml.checks import (
     docset_id,
     register_check,
 )
+from docbuild.constants import XML_NS
 
 # This is a non-namespace ElementMaker for creating XML elements.
 E = objectify.ElementMaker(annotate=False, namespace=None, nsmap=None)
@@ -39,29 +40,29 @@ def xmlnode() -> etree._Element:
         """<portal schemaversion="7.0">
             <categories>
                 <category lang="en-us">
-                    <language id="cat.root">
+                    <language xml:id="cat.root">
                         <title>Root</title>
                     </language>
                 </category>
             </categories>
             <productfamilies>
-                <item id="family1">Family 1</item>
+                <item xml:id="family1">Family 1</item>
             </productfamilies>
             <series>
-                <item id="series1">Series 1</item>
+                <item xml:id="series1">Series 1</item>
             </series>
-            <product id="product1" series="series1" family="family1">
+            <product xml:id="product1" series="series1" family="family1">
                 <name>Product 1</name>
                 <maintainers>
                     <contact>docs@example.invalid</contact>
                 </maintainers>
-                <docset id="docset1" lifecycle="supported">
+                <docset xml:id="docset1" lifecycle="supported">
                     <version>1.0</version>
                     <resources>
                         <git remote="https://example.invalid/repo.git"/>
                         <locale lang="en-us">
                             <branch>main</branch>
-                            <deliverable id="deli-1" type="dc">
+                            <deliverable xml:id="deli-1" type="dc">
                                 <dc file="DC-TEST-ONE">
                                     <format html="1" pdf="0" single-html="0" epub="0"/>
                                     <subdeliverable>book-1</subdeliverable>
@@ -262,27 +263,27 @@ def test_check_enabled_format_cases(
             )
         )
     elif scenario == "dc_with_disabled_formats":
-        locale.append(
-            E.deliverable(
-                E.dc(
-                    E.format(
-                        **{"html": "0", "pdf": "0", "single-html": "0", "epub": "0"}
-                    ),
-                    file="DC-TEST-TWO",
+        deli = E.deliverable(
+            E.dc(
+                E.format(
+                    **{"html": "0", "pdf": "0", "single-html": "0", "epub": "0"}
                 ),
-                id="deli-2",
-                type="dc",
-            )
+                file="DC-TEST-TWO",
+            ),
+            type="dc",
         )
+        deli.set(f"{{{XML_NS}}}id", "deli-2")
+        locale.append(deli)
     elif scenario == "no_format_element":
-        locale.append(E.deliverable(E.dc("DC-no-format"), id="no-fmt"))
+        deli = E.deliverable(E.dc("DC-no-format"))
+        deli.set(f"{{{XML_NS}}}id", "no-fmt")
+        locale.append(deli)
     elif scenario == "direct_format_disabled":
-        locale.append(
-            E.deliverable(
-                E.format(html="0", pdf="0", epub="0", **{"single-html": "0"}),
-                id="direct-format",
-            )
+        deli = E.deliverable(
+            E.format(html="0", pdf="0", epub="0", **{"single-html": "0"}),
         )
+        deli.set(f"{{{XML_NS}}}id", "direct-format")
+        locale.append(deli)
 
     results = collect_check_results(check_enabled_format(xmlnode))
     messages = [r.message for r in results]
@@ -398,11 +399,11 @@ def test_check_subdeliverable_in_deliverable():
         <product product="fake" schemaversion="6.0">
             <name>Fake Doc</name>
             <acronym>fake</acronym>
-            <docset id="ds1" lifecycle="supported">
+            <docset xml:id="ds1" lifecycle="supported">
                 <resources>
                     <locale lang="en-us" default="1">
                         <branch>main</branch>
-                        <deliverable id="d1" type="dc">
+                        <deliverable xml:id="d1" type="dc">
                             <dc file="DC-fake-all">
                             <subdeliverable>book-1</subdeliverable>
                             </dc>
@@ -420,10 +421,10 @@ def test_check_subdeliverable_in_deliverable():
 def test_check_subdeliverable_in_deliverable_duplicate_subdeliverable():
     node = etree.fromstring(
         """
-        <product id="fake" schemaversion="6.0">
+        <product xml:id="fake" schemaversion="6.0">
             <name>Fake Doc</name>
             <acronym>fake</acronym>
-            <docset id="ds1" lifecycle="supported">
+            <docset xml:id="ds1" lifecycle="supported">
                 <resources>
                     <locale lang="en-us" default="1">
                         <branch>main</branch>
@@ -513,9 +514,9 @@ def test_check_git_remote_for_dc_deliverables_allows_prebuilt_without_git(xmlnod
             E.url(href="https://example.invalid/release-notes", format="html"),
             E.descriptions(E.desc(E.p("Prebuilt release notes."), lang="en-us")),
         ),
-        id="deli-1",
         type="prebuilt",
     )
+    prebuilt.set(f"{{{XML_NS}}}id", "deli-1")
     locale.replace(deliverable, prebuilt)
 
     results = collect_check_results(check_git_remote_for_dc_deliverables(xmlnode))
@@ -524,7 +525,7 @@ def test_check_git_remote_for_dc_deliverables_allows_prebuilt_without_git(xmlnod
 
 def test_check_git_remote_for_dc_deliverables_only_reports_docset_without_git(xmlnode):
     second_docset = copy.deepcopy(xmlnode.find(".//docset"))
-    second_docset.set("id", "docset2")
+    second_docset.set(f"{{{XML_NS}}}id", "docset2")
     second_resources = second_docset.find("resources")
     second_git = second_resources.find("git")
     assert second_git is not None
@@ -602,7 +603,8 @@ def test_check_dc_in_language_with_deliverable_no_dc(xmlnode):
     """Test deliverable without dc element."""
     language = xmlnode.find(".//resources/locale")
     # Add deliverable without dc
-    no_dc_deli = E.deliverable(E.format(html="1"), id="no-dc-1")
+    no_dc_deli = E.deliverable(E.format(html="1"))
+    no_dc_deli.set(f"{{{XML_NS}}}id", "no-dc-1")
     language.append(no_dc_deli)
 
     results = collect_check_results(check_dc_in_language(xmlnode))
@@ -614,8 +616,8 @@ def test_check_format_subdeliverable_default_false(xmlnode):
     language = xmlnode.find(".//resources/locale")
     new_deli = E.deliverable(
         E.dc("DC-test", E.format(), E.subdeliverable("book")),
-        id="test-1",
     )
+    new_deli.set(f"{{{XML_NS}}}id", "test-1")
     language.append(new_deli)
 
     results = collect_check_results(check_format_subdeliverable(xmlnode))
@@ -661,14 +663,14 @@ def test_check_subdeliverable_in_deliverable_empty_text(xmlnode):
     "deliverable_xml,expected_identifier",
     [
         (
-            '<deliverable id="deli-1"><dc file="DC-TEST">text</dc></deliverable>',
+            '<deliverable xml:id="deli-1"><dc file="DC-TEST">text</dc></deliverable>',
             "DC-TEST",
         ),
         (
-            '<deliverable id="deli-1"><dc>DC-FROM-TEXT</dc></deliverable>',
+            '<deliverable xml:id="deli-1"><dc>DC-FROM-TEXT</dc></deliverable>',
             "DC-FROM-TEXT",
         ),
-        ('<deliverable id="deli-2"><dc/></deliverable>', "deli-2"),
+        ('<deliverable xml:id="deli-2"><dc/></deliverable>', "deli-2"),
         ("<deliverable><format/></deliverable>", "n/a"),
     ],
 )
@@ -698,8 +700,8 @@ def test_check_format_subdeliverable_html_only(xmlnode):
             E.format(html="1", pdf="0", epub="0", **{"single-html": "0"}),
         ),
         E.subdeliverable("book"),
-        id="html-only",
     )
+    new_deli.set(f"{{{XML_NS}}}id", "html-only")
     language.append(new_deli)
 
     results = collect_check_results(check_format_subdeliverable(xmlnode))
@@ -710,7 +712,7 @@ def test_check_format_subdeliverable_html_only(xmlnode):
     "node_xml,expected_docset_id",
     [
         (
-            '<docset id="custom-set"><resources><locale lang="en"/></resources></docset>',
+            '<docset xml:id="custom-set"><resources><locale lang="en"/></resources></docset>',
             "custom-set",
         ),
         ('<locale lang="en"/>', "n/a"),
@@ -730,7 +732,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
             check_dc_in_language,
             """
             <root>
-                <docset id="1">
+                <docset xml:id="a">
                     <resources>
                         <locale lang="en-us"><deliverable><dc file="A"/></deliverable><deliverable><dc file="A"/></deliverable></locale>
                         <locale lang="de-de"><deliverable><dc file="B"/></deliverable><deliverable><dc file="B"/></deliverable></locale>
@@ -743,7 +745,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
             check_duplicated_format_in_extralinks,
             """
             <portal>
-                <docset id="ds1">
+                <docset xml:id="ds1">
                     <external>
                         <link>
                             <url lang="en" format="html"/>
@@ -760,7 +762,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
             check_duplicated_url_in_extralinks,
             """
             <portal>
-               <docset id="ds1">
+               <docset xml:id="ds1">
                    <external>
                     <link>
                         <url lang="en" href="url1"/>
@@ -776,11 +778,11 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
         (
             check_enabled_format,
             """
-            <docset id="ds1">
-                <deliverable id="d1">
+            <docset xml:id="ds1">
+                <deliverable xml:id="d1">
                   <format html="0" pdf="0" single-html="0" epub="0"/>
                 </deliverable>
-                <deliverable id="d2">
+                <deliverable xml:id="d2">
                   <format html="0" pdf="0" single-html="0" epub="0"/>
                 </deliverable>
             </docset>
@@ -789,12 +791,12 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
         (
             check_format_subdeliverable,
             """
-            <docset id="ds1">
-                <deliverable id="d1">
+            <docset xml:id="ds1">
+                <deliverable xml:id="d1">
                     <format pdf="1"/>
                     <subdeliverable>s1</subdeliverable>
                 </deliverable>
-                <deliverable id="d2">
+                <deliverable xml:id="d2">
                     <format epub="1"/>
                     <subdeliverable>s2</subdeliverable>
                 </deliverable>
@@ -805,7 +807,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
             check_lang_code_in_desc,
             """
             <portal>
-                <docset id="d1">
+                <docset xml:id="d1">
                     <external>
                         <link>
                             <descriptions>
@@ -828,13 +830,13 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
             check_lang_code_in_docset,
             """
             <portal>
-                <docset id="ds1">
+                <docset xml:id="ds1">
                     <resources>
                         <locale lang="en"/>
                         <locale lang="en"/>
                     </resources>
                 </docset>
-                <docset id="ds2">
+                <docset xml:id="ds2">
                     <resources>
                         <locale lang="de"/>
                         <locale lang="de"/>
@@ -846,7 +848,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
         (
             check_lang_code_in_extralinks,
             """
-            <docset id="d1">
+            <docset xml:id="d1">
                 <external>
                     <link><url lang="en"/><url lang="en"/></link>
                     <link><url lang="de"/><url lang="de"/></link>
@@ -857,7 +859,7 @@ def test_check_docset_id_cases(node_xml: str, expected_docset_id: str):
         (
             check_subdeliverable_in_deliverable,
             """
-            <docset id="d1">
+            <docset xml:id="d1">
                 <deliverable>
                 <subdeliverable>a</subdeliverable>
                 <subdeliverable>a</subdeliverable>
@@ -904,8 +906,8 @@ def test_check_lang_code_in_desc_no_parent():
 def test_check_format_subdeliverable_no_subdeliverable():
     node = etree.fromstring(
         """
-        <docset id="ds1">
-            <deliverable id="d1"><format pdf="1"/></deliverable>
+        <docset xml:id="ds1">
+            <deliverable xml:id="d1"><format pdf="1"/></deliverable>
         </docset>
         """
     )

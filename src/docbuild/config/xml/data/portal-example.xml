@@ -3,40 +3,40 @@
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
-      <language id="about">
+      <language xml:id="about">
         <title>About</title>
       </language>
-      <language id="deployment">
+      <language xml:id="deployment">
         <title>Deployment</title>
       </language>
-      <language id="inital-config">
+      <language xml:id="inital-config">
         <title>Initial configuration</title>
       </language>
-      <language id="update-upgrade">
+      <language xml:id="update-upgrade">
         <title>Update &amp; Upgrade</title>
       </language>
-      <language id="administration">
+      <language xml:id="administration">
         <title>Administration</title>
       </language>
-      <language id="container-virtualization">
+      <language xml:id="container-virtualization">
         <title>Containers and virtualization</title>
       </language>
-      <language id="product-usage">
+      <language xml:id="product-usage">
         <title>Product usage</title>
       </language>
-      <language id="security-compliance">
+      <language xml:id="security-compliance">
         <title>Security &amp; compliance</title>
       </language>
-      <language id="tuning-performance">
+      <language xml:id="tuning-performance">
         <title>Tuning &amp; performance</title>
       </language>
-      <language id="solution-doc">
+      <language xml:id="solution-doc">
         <title>Solution documentation</title>
       </language>
-      <language id="additional-doc">
+      <language xml:id="additional-doc">
         <title>Additional documentation</title>
       </language>
-      <language id="best-practices">
+      <language xml:id="best-practices">
         <title>Best practices</title>
       </language>
     </category>
@@ -44,19 +44,19 @@
   </categories>
   <productfamilies>
     <!-- Order is determined by the order of elements -->
-    <item id="linux">Linux</item>
-    <item id="cn">Cloud Native</item>
-    <item id="suse-edge">SUSE Edge</item>
-    <item id="suse-ai">SUSE AI</item>
+    <item xml:id="linux">Linux</item>
+    <item xml:id="cn">Cloud Native</item>
+    <item xml:id="suse-edge">SUSE Edge</item>
+    <item xml:id="suse-ai">SUSE AI</item>
   </productfamilies>
   <series>
-    <item id="pas">Products &amp; Solutions</item>
-    <item id="sbp">SUSE Best Practices</item>
-    <item id="trd">Technical References</item>
-    <item id="rn">Release Notes</item>
+    <item xml:id="pas">Products &amp; Solutions</item>
+    <item xml:id="sbp">SUSE Best Practices</item>
+    <item xml:id="trd">Technical References</item>
+    <item xml:id="rn">Release Notes</item>
   </series>
 
-  <product id="sles" family="linux" series="pas" rank="004">
+  <product xml:id="sles" family="linux" series="pas" rank="004">
     <name>SUSE Linux Enterprise Server</name>
     <acronym>SLES</acronym>
     <maintainers>
@@ -67,19 +67,19 @@
     <!-- optional categories -->
     <!-- optional descriptions -->
 
-    <docset id="sles-16.0" path="16.0" lifecycle="supported">
+    <docset xml:id="sles-16.0" path="16.0" lifecycle="supported">
       <version>16.0</version>
       <canonical>sles/16.0</canonical>
       <resources>
         <git remote="https://github.com/SUSE/doc-modular.git" />
         <locale lang="en-us">
           <branch>maintenance/SLE16.0</branch>
-          <deliverable category="about" id="sles-16.0-sle-comparison">
+          <deliverable category="about" xml:id="sles-16.0-sle-comparison">
             <dc file="DC-SLE-comparison">
               <format html="1" pdf="1" />
             </dc>
           </deliverable>
-          <deliverable id="hello-world" type="prebuilt">
+          <deliverable xml:id="hello-world" type="prebuilt">
             <prebuilt>
               <title>Hello</title>
               <subtitle>World</subtitle>
@@ -114,7 +114,7 @@
     </docset>
   </product>
 
-  <product id="cloudnative" family="linux" series="pas" rank="005">
+  <product xml:id="cloudnative" family="linux" series="pas" rank="005">
     <name>Cloud Native</name>
     <acronym>rancher</acronym>
     <maintainers>
@@ -123,7 +123,7 @@
 
     <categories>
       <category lang="en-us">
-        <language id="rancher">
+        <language xml:id="rancher">
           <title>Cloud Native Documentation</title>
         </language>
       </category>
@@ -140,7 +140,7 @@
       </desc>
     </descriptions>
 
-    <docset id="cn-continuous-delivery" path="continuous-delivery" lifecycle="supported">
+    <docset xml:id="cn-continuous-delivery" path="continuous-delivery" lifecycle="supported">
       <version>SUSE Rancher Prime: Continuous Delivery (Fleet)</version>
       <descriptions treatment="append">
         <desc lang="en-us">
@@ -159,7 +159,7 @@
         <git remote="https://github.com/..." />
         <locale lang="en-us">
           <branch>main</branch>
-          <deliverable id="cn-continuous-delivery-overview" type="prebuilt">
+          <deliverable xml:id="cn-continuous-delivery-overview" type="prebuilt">
             <prebuilt>
               <title>Overview</title>
               <url href="/cloudnative/continuous-delivery/latest/en/index.html" format="html" />

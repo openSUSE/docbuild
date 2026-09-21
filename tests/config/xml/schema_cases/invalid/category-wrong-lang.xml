@@ -1,6 +1,6 @@
 <categories>
   <category lang="en"><!-- Incomplete lang -->
-     <language id="base">
+     <language xml:id="base">
        <title>General Documentation</title>
      </language>
   </category>

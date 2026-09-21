@@ -1,17 +1,17 @@
-<product id="sles" schemaversion="6.0">
-  <docset lifecycle="supported" id="sles.15-SP6" path="15-SP6">
+<product xml:id="sles" schemaversion="6.0">
+  <docset lifecycle="supported" xml:id="sles.15-SP6" path="15-SP6">
     <resources>
       <git remote="https://github.com/SUSE/doc-sle.git" />
       <locale lang="en-us">
         <branch>maintenance/SLE15SP6</branch>
-        <deliverable id="sles.15-SP6.dc-sles-administration" type="dc">
+        <deliverable xml:id="sles.15-SP6.dc-sles-administration" type="dc">
           <dc file="DC-SLES-administration">
             <format epub="0" html="1" pdf="1" single-html="1" />
           </dc>
         </deliverable>
       </locale>
       <locale lang="de-de">
-        <deliverable id="sles.15-SP6.dc-sles-administration.de" type="ref">
+        <deliverable xml:id="sles.15-SP6.dc-sles-administration.de" type="ref">
           <ref linkend="sles.15-SP6.dc-sles-administration" />
         </deliverable>
       </locale>

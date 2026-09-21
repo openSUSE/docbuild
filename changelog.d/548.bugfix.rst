@@ -1,0 +1,1 @@
+Changed all element identifiers from ``id`` to ``xml:id`` throughout the Portal schema and configuration system. This aligns with XML standards and allows proper namespace handling. Affected elements: ``<product>``, ``<docset>``, ``<deliverable>``, ``<language>``, ``<item>``, and ``<category>``.

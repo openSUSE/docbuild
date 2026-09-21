@@ -1,4 +1,4 @@
-<docset lifecycle="supported" id="nas.foo2" path="foo2">
+<docset lifecycle="supported" xml:id="nas.foo2" path="foo2">
   <name>Foo</name>
   <version>2</version>
   <descriptions treatment="append">

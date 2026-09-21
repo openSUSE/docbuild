@@ -4,11 +4,11 @@ This directory contains:
 
 * A RELAX NG schema (`src/docbuild/config/xml/data/product-config-schema.rnc`).
   It's the successor of the previous Docserv product schema.
-* An example `config.d` directory.
+* Stylesheet which helps for the migration.
 
-## File structure
+## File structure of the Portal Config directory
 
-The `config.d` directory contains several subdirectories
+The configuration directory contains several subdirectories
 
 ```text
 config.d/
@@ -44,53 +44,13 @@ config.d/
 
 ## Creating combined config
 
-To create a single XML config, use the following command:
-
-```shell
-xmllint --xinclude \
-  --output portal-$(date --iso-8601).xml \
-  src/docbuild/config/xml/data/config.d/portal.xml
-```
-
-## Migrating to the new portal schema
-
-To migrate an old Docserv stitchfile to a _single portal XML config_, use
-the following command:
-
-```shell
-$ xsltproc --param use.xincludes "0" \
-         --stringparam outputdir "./" \
-         --stringparam outputfile portal-test.xml \
-         --stringparam schemafile "portal-config.rnc" \
-convert-v6-to-v7.xsl docserv-stitch-2026-??-??.xml
-Written file: "portal-test.xml"
-```
-
-The result is written to the file `portal-test.xml`.
-
-The XSLT parameters have the following meaning:
-
-* `use.xinclude` (default: `false()`): split the result config into different files and use XInclude elements to refer to.
-* `outputdir` (default `output/`): determines the directory to write output files to. Mind the trailing slash.
-* `outputfile` (default: `portal.xml`): The main output base filename.
-* `schemafile` (default: empty): The RNG or RNC schema file that is referenced in a `<?xml-model?>` processing instruction at the header.
-  The stylesheet takes care of the format and creates the appropriate PI.
-
-To create a splited XML config, use the following command:
-
-
-```shell
-xsltproc --xinclude \
-  --param use.xinclude 1 \
-  --stringparam outputdir "config.d/" \
-  convert-v6-to-v7.xsl \
-  docserv-stitch-2026-??-??.xml
-```
+To create a single XML config, use the `tools/migrate-config.sh` script.
+This allows you to create the above structure or a single Portal config file.
 
 ## General Changes
 These changes reflect broad architectural shifts and naming conventions throughout the entire configuration system.
 
-* **Rebranding**: The naming convention has shifted from "Docserv²" to "Portal."
+* **Rebranding**: The naming convention has shifted from "Docserv²" to "Portal (Config)."
 
 * **Enhanced Modularity**: The schema now explicitly supports splitting large configuration files into smaller, more manageable parts. By utilizing inclusion mechanisms, you can maintain different sections of the portal (like `<categories>` or specific products) in separate files, leading to a cleaner and more maintainable structure.
 
@@ -138,10 +98,10 @@ Many elements were renamed to move away from "Docserv²" terminology and adopt a
 | `<builddocs>`    | `<resources>` | Container for definitions of resources |
 | `<overridedesc>` | `<descriptions>` | Version-specific content |
 | `<language>` (in resources) | `<locale>` | Regional build definitions |
-| `@productid`     | `@id` (type ID) | Unique identifier for products |
-| `@setid`         | `@id` (type ID) | Unique identifier for docsets |
-| `@categoryid`    | `@id` (type ID) | Unique identifier for categories |
-| `@linkid`        | `@id` (type ID) | Unique identifier for external links |
+| `@productid`     | `@xml:id` (type ID) | Unique identifier for products |
+| `@setid`         | `@xml:id` (type ID) | Unique identifier for docsets |
+| `@categoryid`    | `@xml:id` (type ID) | Unique identifier for categories |
+| `@linkid`        | `@xml:id` (type ID) | Unique identifier for external links |
 
 ## Removed Elements and Attributes
 

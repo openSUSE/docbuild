@@ -1,4 +1,4 @@
-<product id="nas" family="f.linux" series="s.pas" rank="04000">
+<product xml:id="nas" family="f.linux" series="s.pas" rank="04000">
   <name>NAS</name>
   <acronym>nas</acronym>
   <maintainers>

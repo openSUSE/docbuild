@@ -26,8 +26,8 @@ def deliverable() -> Deliverable:
     """Provide a Deliverable built from a minimal docservconfig XML."""
     xml_string = """
     <docservconfig>
-      <product id="sles">
-        <docset id="sles.15-sp7" path="15-SP7">
+      <product xml:id="sles">
+        <docset xml:id="sles.15-sp7" path="15-SP7">
           <resources>
              <git remote="https://github.com/SUSE/doc-sle.git"/>
              <locale lang="en-us">
@@ -52,21 +52,25 @@ def deliverable() -> Deliverable:
 @pytest.fixture
 def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
     """Minimal stitched docservconfig ElementTree matching the deliverable fixture."""
+    from docbuild.constants import XML_NS
+
     prod_node = etree.Element(
         "product",
-        id=deliverable.xml.product_id,
         productid=deliverable.xml.product_id,
     )
+    prod_node.set(f"{{{XML_NS}}}id", deliverable.xml.product_id)
+
     etree.SubElement(prod_node, "name").text = "SUSE Linux Enterprise Server"
     etree.SubElement(prod_node, "acronym").text = "SLES"
     docset_node = etree.SubElement(
         prod_node,
         "docset",
-        id=deliverable.xml.docset_path,
         path=deliverable.xml.docset_path,
         setid=deliverable.xml.docset_path,
         productid=deliverable.xml.product_id,
     )
+    docset_node.set(f"{{{XML_NS}}}id", deliverable.xml.docset_path)
+
     resources_node = etree.SubElement(docset_node, "resources")
     locale_node = etree.SubElement(resources_node, "locale", lang="en-us")
     deliverable_node = etree.SubElement(locale_node, "deliverable")
@@ -252,13 +256,13 @@ def test_store_productdocset_json_applies_docset_description_treatment(
     """Docset descriptions with treatment=append are merged with product descriptions."""
     xml_string = """
     <docservconfig>
-      <product id="sles">
+      <product xml:id="sles">
         <name>SUSE Linux Enterprise Server</name>
         <acronym>SLES</acronym>
         <descriptions>
           <desc lang="en-us"><p>Global</p></desc>
         </descriptions>
-        <docset id="sles.16.0" path="16.0" lifecycle="supported">
+        <docset xml:id="sles.16.0" path="16.0" lifecycle="supported">
           <descriptions treatment="append">
             <desc lang="en-us"><p>Local</p></desc>
           </descriptions>
@@ -313,10 +317,10 @@ def test_store_productdocset_json_expands_docset_wildcard(tmp_path: Path) -> Non
     """A wildcard doctype writes one JSON file per configured docset."""
     xml_string = """
     <docservconfig>
-      <product id="appliance">
+      <product xml:id="appliance">
         <name>Appliance building</name>
         <acronym>appliance</acronym>
-        <docset id="appliance.keg-2" path="keg-2" lifecycle="supported">
+        <docset xml:id="appliance.keg-2" path="keg-2" lifecycle="supported">
           <resources>
             <git remote="https://github.com/SUSE-Enceladus/keg.git"/>
             <locale lang="en-us">
@@ -324,7 +328,7 @@ def test_store_productdocset_json_expands_docset_wildcard(tmp_path: Path) -> Non
             </locale>
           </resources>
         </docset>
-        <docset id="appliance.kiwi-9" path="kiwi-9" lifecycle="supported">
+        <docset xml:id="appliance.kiwi-9" path="kiwi-9" lifecycle="supported">
           <resources>
             <git remote="https://github.com/OSInside/kiwi-suse-doc.git"/>
             <locale lang="en-us">
@@ -409,10 +413,10 @@ def test_store_productdocset_json_preserves_order(
     """Documents in the manifest should be in the same order as in the XML."""
     xml_string = """
     <docservconfig>
-      <product id="sles">
+      <product xml:id="sles">
         <name>SUSE Linux Enterprise Server</name>
         <acronym>SLES</acronym>
-        <docset id="sles.15-sp7" path="15-SP7">
+        <docset xml:id="sles.15-sp7" path="15-SP7">
           <resources>
              <git remote="https://github.com/SUSE/doc-sle.git"/>
              <locale lang="en-us">
@@ -501,20 +505,20 @@ def test_store_productdocset_json_filters_categories(
     <docservconfig>
       <categories>
         <category lang="en-us">
-            <language id="cat.referenced">
+            <language xml:id="cat.referenced">
                 <title>Referenced</title>
             </language>
         </category>
         <category lang="en-us">
-            <language id="cat.unreferenced">
+            <language xml:id="cat.unreferenced">
                 <title>Unreferenced</title>
             </language>
         </category>
       </categories>
-      <product id="sles">
+      <product xml:id="sles">
         <name>SUSE Linux Enterprise Server</name>
         <acronym>SLES</acronym>
-        <docset id="sles.15-sp7" path="15-SP7">
+        <docset xml:id="sles.15-sp7" path="15-SP7">
           <resources>
              <git remote="https://github.com/SUSE/doc-sle.git"/>
              <locale lang="en-us">

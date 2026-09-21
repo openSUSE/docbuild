@@ -10,10 +10,11 @@ from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.markup import escape
 
-from docbuild.config.xml.checks import CheckResult, register_check
-from docbuild.config.xml.xinclude import parse_xml_with_xinclude_base
-from docbuild.utils.decorators import RegistryDecorator
-from docbuild.utils.shell import run_command
+from ..config.xml.checks import CheckResult, register_check
+from ..config.xml.xinclude import parse_xml_with_xinclude_base
+from ..constants import XML_NS
+from ..utils.decorators import RegistryDecorator
+from ..utils.shell import run_command
 
 # Cast to help with type checking
 registry: RegistryDecorator = register_check  # type: ignore[assignment]
@@ -32,7 +33,7 @@ XINCLUDE_PROP = (
     "org.apache.xerces.parsers.XIncludeParserConfiguration"
 )
 
-XML_BASE_ATTR = "{http://www.w3.org/XML/1998/namespace}base"
+XML_BASE_ATTR = f"{{{XML_NS}}}base"
 
 
 def filename_from_xml_base(

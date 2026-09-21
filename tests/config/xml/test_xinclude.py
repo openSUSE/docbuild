@@ -14,8 +14,9 @@ from docbuild.config.xml.xinclude import (
     resolve_includes,
     xpointer_to_xpath,
 )
+from docbuild.constants import XML_NS
 
-XML_BASE_ATTR = "{http://www.w3.org/XML/1998/namespace}base"
+XML_BASE_ATTR = f"{{{XML_NS}}}base"
 
 
 def test_parse_xml_with_xinclude_base_nested_include_marks_source(tmp_path: Path) -> None:

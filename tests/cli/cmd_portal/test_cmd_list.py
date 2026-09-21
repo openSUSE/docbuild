@@ -60,18 +60,18 @@ def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="15sp4" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="admin_guide"/>\n'
+        '                    <deliverable xml:id="admin_guide"/>\n'
         "                </locale>\n"
         "            </resources>\n"
         "        </docset>\n"
         '        <docset path="15sp5" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="dummy_guide"/>\n'
+        '                    <deliverable xml:id="dummy_guide"/>\n'
         "                </locale>\n"
         "            </resources>\n"
         "        </docset>\n"
@@ -126,11 +126,11 @@ def test_portal_list_success(mock_parse, tmp_path) -> None:
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="15sp4" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="admin_guide">\n'
+        '                    <deliverable xml:id="admin_guide">\n'
         '                        <dc file="DC-admin-guide"/>\n'
         "                    </deliverable>\n"
         "                </locale>\n"
@@ -165,11 +165,11 @@ def test_portal_list_with_doctype_filter(mock_parse, tmp_path) -> None:
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="15sp4" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="admin_guide">\n'
+        '                    <deliverable xml:id="admin_guide">\n'
         '                        <dc file="DC-admin-guide"/>\n'
         "                    </deliverable>\n"
         "                </locale>\n"
@@ -206,18 +206,18 @@ def test_portal_list_ref_uses_english_dcfile(mock_parse, tmp_path) -> None:
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="16.0" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="admin_guide" type="dc">\n'
+        '                    <deliverable xml:id="admin_guide" type="dc">\n'
         '                        <dc file="DC-admin-guide">\n'
         '                            <format html="1"/>\n'
         "                        </dc>\n"
         "                    </deliverable>\n"
         "                </locale>\n"
         '                <locale lang="de-de">\n'
-        '                    <deliverable id="admin_guide_de" type="ref">\n'
+        '                    <deliverable xml:id="admin_guide_de" type="ref">\n'
         '                        <ref linkend="admin_guide"/>\n'
         "                    </deliverable>\n"
         "                </locale>\n"
@@ -248,11 +248,11 @@ def test_portal_list_ref_without_id_uses_linked_id(mock_parse, tmp_path) -> None
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="16.0" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
-        '                    <deliverable id="admin_guide" type="dc">\n'
+        '                    <deliverable xml:id="admin_guide" type="dc">\n'
         '                        <dc file="DC-admin-guide">\n'
         '                            <format html="1"/>\n'
         "                        </dc>\n"
@@ -291,7 +291,7 @@ def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
     portal_content = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<portal schemaversion="7.0">\n'
-        '    <product id="sles">\n'
+        '    <product xml:id="sles">\n'
         '        <docset path="15sp4" lifecycle="supported">\n'
         "            <resources>\n"
         '                <locale lang="en-us">\n'
@@ -320,22 +320,22 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
 <portal schemaversion="7.0">
     <categories>
         <category lang="en-us">
-            <language id="tuning-and-performance">
+            <language xml:id="tuning-and-performance">
                 <title>Tuning and performance</title>
             </language>
         </category>
     </categories>
-    <product id="sles">
+    <product xml:id="sles">
         <docset path="16.0" lifecycle="supported">
             <resources>
                 <git remote="https://github.com/SUSE/doc-modular.git" />
                 <locale lang="en-us">
-                    <deliverable id="admin_guide" category="tuning-and-performance">
+                    <deliverable xml:id="admin_guide" category="tuning-and-performance">
                         <dc file="DC-admin-guide">
                             <format epub="0" html="1" pdf="1" single-html="0"/>
                         </dc>
                     </deliverable>
-                    <deliverable id="prebuilt_docs" type="prebuilt">
+                    <deliverable xml:id="prebuilt_docs" type="prebuilt">
                         <title>SUSE Docs</title>
                         <prebuilt>
                             <url href="https://documentation.suse.com/sles/" format="html"/>
@@ -343,7 +343,7 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
                     </deliverable>
                 </locale>
                 <locale lang="de-de">
-                    <deliverable id="admin_guide" category="tuning-and-performance">
+                    <deliverable xml:id="admin_guide_de" category="tuning-and-performance">
                         <ref linkend="admin_guide"/>
                     </deliverable>
                 </locale>
@@ -354,7 +354,7 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
             <resources>
                 <git remote="https://todo" />
                 <locale lang="en-us">
-                    <deliverable id="bad_repo_doc">
+                    <deliverable xml:id="bad_repo_doc">
                         <dc file="DC-bad-repo" />
                     </deliverable>
                 </locale>
@@ -369,7 +369,7 @@ COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
 def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
     """Test that all metadata flags successfully inject info into the tree."""
     runner = CliRunner()
-    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
 
     mock_ctx = DocBuildContext()
     mock_ctx.envconfig = MagicMock()
@@ -431,7 +431,7 @@ def test_portal_list_repo_requires_argument() -> None:
 def test_portal_list_flat_mode_basic(mock_parse, tmp_path) -> None:
     """Test that the --flat flag formats the output as a flat list."""
     runner = CliRunner()
-    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
 
     mock_ctx = DocBuildContext()
     mock_ctx.envconfig = MagicMock()
@@ -443,14 +443,14 @@ def test_portal_list_flat_mode_basic(mock_parse, tmp_path) -> None:
     assert res_flat.exit_code == 0
     assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
     assert "en-us/sles/16.0:SUSE Docs (Prebuilt)" in res_flat.output
-    assert "de-de/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
+    assert "de-de/sles/16.0:admin_guide_de (DC-admin-guide)" in res_flat.output
 
 
 @patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
 def test_portal_list_flat_mode_metadata(mock_parse, tmp_path) -> None:
     """Test that the --flat flag properly appends metadata branches."""
     runner = CliRunner()
-    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"))
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
 
     mock_ctx = DocBuildContext()
     mock_ctx.envconfig = MagicMock()

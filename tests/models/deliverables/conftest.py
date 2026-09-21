@@ -110,8 +110,8 @@ def deliverable_from_xml_factory() -> Callable[[str, str], Deliverable]:
     def _factory(xml_string: str, lang: str) -> Deliverable:
         xml_template = f'''
         <portal>
-          <product id="sles">
-            <docset id="sles.15-sp6" path="15-SP6">
+          <product xml:id="sles">
+            <docset xml:id="sles.15-sp6" path="15-SP6">
               <resources>
                  <locale lang="{lang}">
                     {xml_string}

@@ -202,7 +202,7 @@ class Doctype(BaseModel):
                 for product_id in sorted(
                     {
                         product_id
-                        for product_id in portal_root.xpath("product/@id")
+                        for product_id in portal_root.xpath("product/@xml:id")
                         if product_id
                     },
                 )
@@ -217,7 +217,7 @@ class Doctype(BaseModel):
                     {
                         cast(str, docset)
                         for docset in portal_root.xpath(
-                            f"product[@id={product_value.acronym!r}]/docset/@path",
+                            f"product[@xml:id={product_value.acronym!r}]/docset/@path",
                         )
                         if docset
                     },
@@ -235,7 +235,7 @@ class Doctype(BaseModel):
                             cast(str, lang)
                             for lang in portal_root.xpath(
                                 (
-                                    f"product[@id={product_value.acronym!r}]"
+                                    f"product[@xml:id={product_value.acronym!r}]"
                                     f"/docset[@path={docset!r}]"
                                     "/resources/locale/@lang"
                                 ),
@@ -327,7 +327,7 @@ class Doctype(BaseModel):
 
         >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath(absolute=True)
         >>> expected = (
-        ...     "//product[@id='sles']/docset[@path='15-SP6']"
+        ...     "//product[@xml:id='sles']/docset[@path='15-SP6']"
         ...     "[@lifecycle='supported']"
         ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
         ...     "/deliverable"
@@ -341,7 +341,7 @@ class Doctype(BaseModel):
         # Example: /sles/15-SP6@supported/en-us,de-de
         product = "product"
         if self.product is not Product.ALL:
-            product += f"[@id={self.product.acronym!r}]"
+            product += f"[@xml:id={self.product.acronym!r}]"
 
         docset = self.docset_xpath_segment()
         docset += self.lifecycle_xpath_segment()
@@ -351,10 +351,10 @@ class Doctype(BaseModel):
     def product_xpath_segment(self: Self) -> str:
         """Return the XPath segment for the product node.
 
-        Example: "product[@id='sles']" or "product"
+        Example: "product[@xml:id='sles']" or "product"
         """
         if self.product is not Product.ALL:
-            return f"product[@id={self.product.acronym!r}]"
+            return f"product[@xml:id={self.product.acronym!r}]"
         return "product"
 
     def docset_xpath_segment(self: Self, docset: str | None = None) -> str:

@@ -78,42 +78,42 @@
       * series (str): the series that this product belongs
       * family (str): the product family that this product belongs
       * rank (int): The product rank that influences the tiles on the portal homepage
-      * idabbrev (str): The product ID abbreviation used in <deliverable id="...">. The IDs for
+      * idabbrev (str): The product ID abbreviation used in <deliverable xml:id="...">. The IDs for
         products are not changed.
     -->
     <config>
-      <product id="appliance" series="s.pas" family="f.linux" rank="04150" idabbrev="app"/>
-      <product id="cloudnative" series="s.pas" family="f.cn" rank="00030" idabbrev="cn" />
-      <product id="container" series="s.pas" family="f.linux" rank="04130" idabbrev="cont" />
-      <product id="compliance" series="s.pas" family="f.linux" rank="04130" idabbrev="comp" />
-      <product id="liberty" series="s.pas" family="f.linux" rank="00060" idabbrev="lib" />
-      <product id="releasenotes" series="s.rn" family="f.linux" idabbrev="rn" rank="0"/>
-      <product id="sbp" series="s.sbp" family="f.linux" rank="0" />
-      <product id="ses" series="s.pas" family="f.linux" rank="04160" />
-      <product id="sled" series="s.pas" family="f.linux" rank="04100" />
-      <product id="sle-ha" series="s.pas" family="f.linux" rank="04070" />
-      <product id="sle-hpc" series="s.pas" family="f.linux" rank="04110" />
-      <product id="sle-micro" series="s.pas" family="f.linux" rank="00020" />
-      <product id="sle-public-cloud" series="s.pas" family="f.linux" rank="04060" idabbrev="spc" />
-      <product id="sle-rt" series="s.pas" family="f.linux" rank="04080" />
-      <product id="sles-sap" series="s.pas" family="f.linux" rank="00050" />
-      <product id="sles" series="s.pas" family="f.linux" rank="00080" />
-      <product id="sle-vmdp" series="s.pas" family="f.linux" rank="04120" />
-      <product id="smart" series="s.pas" family="f.linux" rank="0"/>
-      <product id="smt" series="s.pas" family="f.linux" rank="04330" />
-      <product id="soc" series="s.pas" family="f.linux" rank="04300" />
-      <product id="style" series="s.pas" family="f.linux" rank="0"/>
-      <product id="subscription" series="s.pas" family="f.linux" rank="04140" idabbrev="sub" />
-      <product id="suma" series="s.pas" family="f.linux" rank="0"/>
-      <product id="suma-retail" series="s.pas" family="f.linux" rank="0"/>
-      <product id="suse-ai" series="s.pas" family="f.suse-ai" rank="00010" />
-      <product id="suse-ai-factory" series="s.pas" family="f.suse-ai" rank="00010" />
-      <product id="suse-caasp" series="s.pas" family="f.linux" rank="04310" />
-      <product id="suse-cap" series="s.pas" family="f.linux" rank="04320"/>
-      <product id="suse-distribution-migration-system" series="s.pas" family="f.linux" idabbrev="suma-dms" rank="0"/>
-      <product id="suse-edge" series="s.pas" family="f.suse-edge" rank="00040" />
-      <product id="suse-telco" series="s.pas" family="f.suse-edge" rank="000410" />
-      <product id="trd" series="s.trd" family="f.linux" rank="0"/>
+      <product xml:id="appliance" series="s.pas" family="f.linux" rank="04150" idabbrev="app"/>
+      <product xml:id="cloudnative" series="s.pas" family="f.cn" rank="00030" idabbrev="cn" />
+      <product xml:id="container" series="s.pas" family="f.linux" rank="04130" idabbrev="cont" />
+      <product xml:id="compliance" series="s.pas" family="f.linux" rank="04130" idabbrev="comp" />
+      <product xml:id="liberty" series="s.pas" family="f.linux" rank="00060" idabbrev="lib" />
+      <product xml:id="releasenotes" series="s.rn" family="f.linux" idabbrev="rn" rank="0"/>
+      <product xml:id="sbp" series="s.sbp" family="f.linux" rank="0" />
+      <product xml:id="ses" series="s.pas" family="f.linux" rank="04160" />
+      <product xml:id="sled" series="s.pas" family="f.linux" rank="04100" />
+      <product xml:id="sle-ha" series="s.pas" family="f.linux" rank="04070" />
+      <product xml:id="sle-hpc" series="s.pas" family="f.linux" rank="04110" />
+      <product xml:id="sle-micro" series="s.pas" family="f.linux" rank="00020" />
+      <product xml:id="sle-public-cloud" series="s.pas" family="f.linux" rank="04060" idabbrev="spc" />
+      <product xml:id="sle-rt" series="s.pas" family="f.linux" rank="04080" />
+      <product xml:id="sles-sap" series="s.pas" family="f.linux" rank="00050" />
+      <product xml:id="sles" series="s.pas" family="f.linux" rank="00080" />
+      <product xml:id="sle-vmdp" series="s.pas" family="f.linux" rank="04120" />
+      <product xml:id="smart" series="s.pas" family="f.linux" rank="0"/>
+      <product xml:id="smt" series="s.pas" family="f.linux" rank="04330" />
+      <product xml:id="soc" series="s.pas" family="f.linux" rank="04300" />
+      <product xml:id="style" series="s.pas" family="f.linux" rank="0"/>
+      <product xml:id="subscription" series="s.pas" family="f.linux" rank="04140" idabbrev="sub" />
+      <product xml:id="suma" series="s.pas" family="f.linux" rank="0"/>
+      <product xml:id="suma-retail" series="s.pas" family="f.linux" rank="0"/>
+      <product xml:id="suse-ai" series="s.pas" family="f.suse-ai" rank="00010" />
+      <product xml:id="suse-ai-factory" series="s.pas" family="f.suse-ai" rank="00010" />
+      <product xml:id="suse-caasp" series="s.pas" family="f.linux" rank="04310" />
+      <product xml:id="suse-cap" series="s.pas" family="f.linux" rank="04320"/>
+      <product xml:id="suse-distribution-migration-system" series="s.pas" family="f.linux" idabbrev="suma-dms" rank="0"/>
+      <product xml:id="suse-edge" series="s.pas" family="f.suse-edge" rank="00040" />
+      <product xml:id="suse-telco" series="s.pas" family="f.suse-edge" rank="000410" />
+      <product xml:id="trd" series="s.trd" family="f.linux" rank="0"/>
     </config>
   </xsl:variable>
   <xsl:variable name="config" select="exsl:node-set($_transformation-map)/*" />
@@ -343,16 +343,16 @@
         <portal schemaversion="{$schemaversion}" xmlns:xi="http://www.w3.org/2001/XInclude">
           <xsl:apply-templates select="categories" />
           <productfamilies>
-            <item id="f.linux">Linux</item>
-            <item id="f.cn">Cloud Native</item>
-            <item id="f.suse-edge">SUSE Edge</item>
-            <item id="f.suse-ai">SUSE AI</item>
+            <item xml:id="f.linux">Linux</item>
+            <item xml:id="f.cn">Cloud Native</item>
+            <item xml:id="f.suse-edge">SUSE Edge</item>
+            <item xml:id="f.suse-ai">SUSE AI</item>
           </productfamilies>
           <series>
-            <item id="s.pas">Products &amp; Solutions</item>
-            <item id="s.sbp" >SUSE Best Practices</item>
-            <item id="s.trd">Technical References</item>
-            <item id="s.rn">Release Notes</item>
+            <item xml:id="s.pas">Products &amp; Solutions</item>
+            <item xml:id="s.sbp" >SUSE Best Practices</item>
+            <item xml:id="s.trd">Technical References</item>
+            <item xml:id="s.rn">Release Notes</item>
           </series>
           <!-- <xi:include href="categories.xml" />
           <xsl:element name="include" namespace="http://www.w3.org/2001/XInclude">
@@ -392,7 +392,7 @@
                <!-- Create an <language> for each, pulling categoryid from its parent -->
                 <xsl:choose>
                   <xsl:when test=" starts-with($currentLang, 'en')">
-                    <language id="{concat($cat.prefix, ../@categoryid)}">
+                    <language xml:id="{concat($cat.prefix, ../@categoryid)}">
                       <title><xsl:value-of select="@title"/></title>
                       <xsl:apply-templates select="node()"/>
                     </language>
@@ -424,7 +424,7 @@
 
   <xsl:template match="product/@productid">
     <xsl:variable name="id" select="." />
-    <xsl:attribute name="id">
+    <xsl:attribute name="xml:id">
       <xsl:value-of select="$id" />
     </xsl:attribute>
   </xsl:template>
@@ -536,7 +536,7 @@
                 <language>
                   <xsl:choose>
                     <xsl:when test="starts-with($currentLang, 'en')">
-                      <xsl:attribute name="id">
+                      <xsl:attribute name="xml:id">
                         <xsl:call-template name="unique-category-id">
                           <xsl:with-param name="node" select="$currentCategory"/>
                         </xsl:call-template>
@@ -633,7 +633,7 @@
   </xsl:template>
 
   <xsl:template match="docset/@setid">
-    <xsl:attribute name="id">
+    <xsl:attribute name="xml:id">
       <xsl:value-of select="concat(ancestor::product/@productid, $id.sep, .)" />
     </xsl:attribute>
     <xsl:attribute name="path">
@@ -745,7 +745,7 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <deliverable id="{$id}" type="prebuilt">
+    <deliverable xml:id="{$id}" type="prebuilt">
       <xsl:apply-templates select="@gated|@titleformat|@category"/>
       
       <prebuilt>
@@ -796,7 +796,7 @@
     <xsl:variable name="deliverable-node">
       <xsl:apply-templates select="$link" mode="builddocs"/>
     </xsl:variable>
-    <xsl:value-of select="exsl:node-set($deliverable-node)/deliverable/@id"/>
+    <xsl:value-of select="exsl:node-set($deliverable-node)/deliverable/@xml:id"/>
   </xsl:template>
 
   <xsl:template match="link/@*">
@@ -982,7 +982,7 @@
        </xsl:call-template>
     </xsl:variable>
 
-    <deliverable id="{$id}" type="prebuilt">
+    <deliverable xml:id="{$id}" type="prebuilt">
       <xsl:apply-templates select="@category" mode="builddocs" />
       <xsl:apply-templates
         select="language[@lang='en-us'][1] | language[1][not(../language[@lang='en-us'])]"
@@ -1078,7 +1078,7 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <deliverable id="{$id}" type="dc">
+    <deliverable xml:id="{$id}" type="dc">
       <xsl:apply-templates select="@*"/>
       <dc file="{normalize-space(dc/text())}">
         <xsl:apply-templates />

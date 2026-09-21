@@ -15,7 +15,7 @@ publish on the portal:
   .. code-block:: xml
      :caption: Example of a Deliverable Built from Source
 
-     <deliverable type="dc" id="nas.1.0.overview">
+     <deliverable type="dc" xml:id="nas.1.0.overview">
        <dc file="DC-NAS-overview">
          <format epub="0" html="1" pdf="1" single-html="1" />
        </dc>
@@ -31,7 +31,7 @@ publish on the portal:
   .. code-block:: xml
      :caption: Example of a Prebuilt Deliverable
 
-     <deliverable id="cn.continuous-delivery.latest-en-index.overview" type="prebuilt" category="cat.cloudnative.rancher">
+     <deliverable xml:id="cn.continuous-delivery.latest-en-index.overview" type="prebuilt" category="cat.cloudnative.rancher">
        <prebuilt>
          <title>Overview</title>
          <url format="html" href="/cloudnative/continuous-delivery/latest/en/index.html"/>
@@ -69,7 +69,7 @@ To add a deliverable, proceed as follows:
    .. code-block:: xml
       :caption: Example of a Deliverable Built from Source
 
-      <deliverable type="dc" id="nas.1.0.overview">
+      <deliverable type="dc" xml:id="nas.1.0.overview">
         <dc file="DC-NAS-overview">
           <format epub="0" html="1" pdf="1" single-html="1" />
         </dc>

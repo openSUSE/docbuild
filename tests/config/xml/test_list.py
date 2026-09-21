@@ -9,7 +9,7 @@ from docbuild.models.doctype import Doctype
 def node() -> etree._ElementTree:
     """Fixture to create a mock XML node for testing."""
     xml_data = """<portal>
-    <product id="sles" schemaversion="7.0">
+    <product xml:id="sles" schemaversion="7.0">
         <docset path="15sp4" lifecycle="supported">
             <resources>
                 <locale lang="en-us">

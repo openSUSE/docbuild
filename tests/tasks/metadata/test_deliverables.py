@@ -25,11 +25,11 @@ def xmlconfig(request) -> etree.ElementTree:
         (
             """
             <portal>
-              <product id="sles">
-                <docset id="sles.16-sp6" path="15-sp6">
+              <product xml:id="sles">
+                <docset xml:id="sles.16-sp6" path="15-sp6">
                   <resources>
                     <locale lang="en-us">
-                        <deliverable id="sles.16-sp6.admin">
+                        <deliverable xml:id="sles.16-sp6.admin">
                             <dc file="DC-SLE-Micro-5.5-admin">
                                 <format html="1"/>
                             </dc>
@@ -38,8 +38,8 @@ def xmlconfig(request) -> etree.ElementTree:
                   </resources>
                 </docset>
               </product>
-              <product id="other">
-                <docset id="other.1.0" path="1.0">
+              <product xml:id="other">
+                <docset xml:id="other.1.0" path="1.0">
                    <resources>
                      <locale lang="en-us">
                         <deliverable>
@@ -65,8 +65,8 @@ def xmlconfig(request) -> etree.ElementTree:
         (
             """
             <portal>
-              <product id="sles">
-                <docset id="sles.16-sp6" path="15-sp6">
+              <product xml:id="sles">
+                <docset xml:id="sles.16-sp6" path="15-sp6">
                     <resources>
                         <locale lang="en-us">
                             <deliverable>
@@ -78,8 +78,8 @@ def xmlconfig(request) -> etree.ElementTree:
                     </resources>
                 </docset>
               </product>
-              <product id="other">
-              <docset id="other.1.0" path="1.0">
+              <product xml:id="other">
+              <docset xml:id="other.1.0" path="1.0">
                   <resources>
                     <locale lang="en-us">
                       <deliverable>
@@ -103,8 +103,8 @@ def xmlconfig(request) -> etree.ElementTree:
         ("<portal/>", "nonexistent/1.0/en-us", 0, set()),
         (
             """<portal>
-                 <product id='sles'>
-                    <docset id='sles.15-sp6' path="15-sp6" />
+                 <product xml:id='sles'>
+                    <docset xml:id='sles.15-sp6' path="15-sp6" />
                  </product>
                </portal>""",
             "sles/15-sp6/de-de",

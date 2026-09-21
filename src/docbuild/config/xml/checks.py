@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from lxml import etree
 
-from ...constants import ALLOWED_LANGUAGES
+from ...constants import ALLOWED_LANGUAGES, XML_NS
 from ...utils.convert import convert2bool
 from ...utils.decorators import factory_registry
 from .semantic_xpath import semantic_xpath
@@ -33,7 +33,7 @@ register_check = factory_registry()
 
 def docset_id(node: etree._Element) -> str:
     """Return a stable docset identifier for error messages."""
-    ids = node.xpath("ancestor-or-self::docset/@id")
+    ids = node.xpath("ancestor-or-self::docset/@xml:id")
     return ids[0] if ids else "n/a"
 
 
@@ -41,14 +41,14 @@ def dc_identifier(deliverable: etree._Element) -> str:
     """Return a DC identifier from legacy or current schema representation."""
     dc_node = deliverable.find("dc")
     if dc_node is None:
-        return deliverable.get("id", "n/a")
+        return deliverable.get(f"{{{XML_NS}}}id", "n/a")
 
     file_attr = dc_node.get("file")
     if file_attr:
         return file_attr
 
     text = (dc_node.text or "").strip()
-    return text if text else deliverable.get("id", "n/a")
+    return text if text else deliverable.get(f"{{{XML_NS}}}id", "n/a")
 
 
 @register_check
@@ -364,7 +364,7 @@ def check_lang_code_in_docset(
         duplicates = [item for item, count in Counter(langs).items() if count > 1]
 
         if duplicates:
-            setid = docset.get("setid") or docset.get("id", "n/a")
+            setid = docset.get("setid") or docset.get(f"{{{XML_NS}}}id", "n/a")
             message = (
                 "Some language elements within a set have non-unique lang attributes "
                 f"In docset={setid}, check for duplicate resources/locale. "
