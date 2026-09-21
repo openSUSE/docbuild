@@ -1121,7 +1121,7 @@
   </xsl:template>
 
   <!-- ref  -->
-  <xsl:template match="ref">
+  <xsl:template match="ref[not(@linkend)]">
     <xsl:variable name="pid" select="@product"/>
     <xsl:variable name="cnfg" select="$config/product[@id=$pid]"/>
     <xsl:variable name="abbrev" select="$cnfg/@idabbrev"/>

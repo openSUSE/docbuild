@@ -34,9 +34,10 @@ Usage: $SCRIPT_NAME [OPTIONS] [INPUT_FILE]
 Options:
   -s, --schema FILE      Path to schema file (Default: ${SCHEMAFILE@Q})
   -o, --output FILE      Name of the output file (Default: ${OUTPUT@Q})
-                         Use a trailing slash to mark it as directory,
-                         otherwise it's just a prefix
   -d, --dir DIR          Output directory (Default: ${OUTDIR@Q})
+                         Use a trailing slash to mark it as directory,
+                         otherwise it's just a prefix and it might get
+                         unexpected results!
   -x, --xinclude         Enable xinclude processing
   -h, --help             Show this help message
 
@@ -69,7 +70,7 @@ while [ $# -gt 0 ]; do
             # Expand a leading ~ (quoted "~/..." is not expanded by the shell)
             case "$OUTDIR" in
                 "~") OUTDIR="$HOME" ;;
-                "~/"*) OUTDIR="$HOME/${OUTDIR#\~/}" ;;
+                \~/*) OUTDIR="$HOME/${OUTDIR#\~/}" ;;
             esac
             shift 2
             ;;
