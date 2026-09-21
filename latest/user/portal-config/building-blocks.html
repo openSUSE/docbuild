@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building Blocks &#8212; Docbuild Documentation 0.23.1.dev37+gfda9168d1.d20260918</title>
+    <title>Building Blocks &#8212; Docbuild Documentation 0.24.1.dev1+g3a782d2f4.d20260921</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=85791244"></script>
+    <script src="../../_static/documentation_options.js?v=387d9d93"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@
     <link rel="prev" title="Managing Portal Configuration" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.23.0" />
+  <meta name="docsearch:version" content="0.24.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -531,12 +531,12 @@ The language code consists of a language and a country code,
 for example, <code class="docutils literal notranslate"><span class="pre">en-us</span></code> for English (United States) or <code class="docutils literal notranslate"><span class="pre">de-de</span></code> for
 German (Germany).</p></li>
 <li><p>One or more <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> elements. Each <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> element
-consists of the following attributes:</p>
+contains:</p>
 <ul class="simple">
 <li><p>A required <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute, which is used to reference the category
 from deliverables. Per convention, each category ID should start with
 the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix.</p></li>
-<li><p>A required <code class="docutils literal notranslate"><span class="pre">title</span></code> attribute, which defines the title of the
+<li><p>A required <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> element, which defines the title of the
 category in this language. This will be used as a headline in
 the product index page.</p></li>
 </ul>
@@ -547,8 +547,12 @@ the product index page.</p></li>
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code> Configuration</span><a class="headerlink" href="#global-categories" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;categories&gt;</span>
 <span class="w">   </span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.about&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;About&quot;</span><span class="nt">/&gt;</span>
-<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.deployment&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;Deployment&quot;</span><span class="nt">/&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.about&quot;</span><span class="nt">&gt;</span>
+<span class="w">       </span><span class="nt">&lt;title&gt;</span>About<span class="nt">&lt;/title&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/language&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.deployment&quot;</span><span class="nt">&gt;</span>
+<span class="w">       </span><span class="nt">&lt;title&gt;</span>Deployment<span class="nt">&lt;/title&gt;</span>
+<span class="w">     </span><span class="nt">&lt;/language&gt;</span>
 <span class="w">     </span><span class="cm">&lt;!-- ... --&gt;</span>
 <span class="w">   </span><span class="nt">&lt;/category&gt;</span>
 <span class="w">   </span><span class="cm">&lt;!-- ... other languages ... --&gt;</span>
@@ -562,7 +566,9 @@ English category with the <code class="docutils literal notranslate"><span class
 <div class="literal-block-wrapper docutils container" id="category-translations">
 <div class="code-block-caption"><span class="caption-text">Translations of Categories</span><a class="headerlink" href="#category-translations" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;de-de&quot;</span><span class="nt">&gt;</span>
-<span class="w">   </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;cat.about&quot;</span><span class="w"> </span><span class="na">title=</span><span class="s">&quot;Über&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;cat.about&quot;</span><span class="nt">&gt;</span>
+<span class="w">     </span><span class="nt">&lt;title&gt;</span>Über<span class="nt">&lt;/title&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/language&gt;</span>
 <span class="nt">&lt;/category&gt;</span>
 </pre></div>
 </div>

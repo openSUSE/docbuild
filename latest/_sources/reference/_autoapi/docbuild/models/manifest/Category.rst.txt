@@ -44,10 +44,14 @@ docbuild.models.manifest.Category
 
           <categories>
             <category lang="en-us">
-              <language id="cat.about" title="About"/>
+              <language id="cat.about">
+                <title>About</title>
+              </language>
             </category>
             <category lang="de-de">
-              <language linkend="cat.about" title="Über"/>
+              <language linkend="cat.about">
+                <title>Über</title>
+              </language>
             </category>
           </categories>
 
