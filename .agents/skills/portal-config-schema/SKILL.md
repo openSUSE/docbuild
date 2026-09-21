@@ -62,11 +62,7 @@ Follow the documented workflow in
 The migration is a **one-time** process, only relevant for existing Docserv
 installations, not for new users starting from scratch.
 
-Migration stylesheet:
-
-```
-src/docbuild/config/xml/data/convert-v6-to-v7.xsl
-```
+The easiest is to use the `tools/migrate-config.sh` script (see below).
 
 Input is a Docserv **stitchfile** (all v6 config files merged with XIncludes
 resolved into one XML). Full reference:
@@ -85,18 +81,19 @@ resolved into one XML). Full reference:
 
 ### Key XSLT parameters
 
-* `use.xincludes` (default `false`): split output vs. single file. When true,
-  also pass `--xinclude` to `xsltproc`.
+* `use.xincludes` (default `false`): split output vs. single file. 
 * `outputdir` (default `output/`): target directory (keep the trailing slash).
   The intended real target is usually `$HOME/.config/docbuild/config.d/`.
   **Always ask the user before writing there** — that directory may already
   hold a live config that would be overwritten. Write to a scratch dir first
   if unsure.
-* `outputfile` (default `portal.xml`): main output base filename.
+* `outputfile` (default `portal.xml`): main output base filename. Ususally you
+  can keep this value.
 * `schemafile` (default empty): RNC/RNG path written into the `<?xml-model?>`
   PI header; the stylesheet detects RNC vs. RNG automatically.
 * `schemaversion` (default `7.0`): target schema version.
 * `cat.prefix` (default `cat.`): prefix for category IDs to avoid collisions.
+  Usually not need to be changed. You can keep the default.
 
 ### Convenience wrapper
 
@@ -107,20 +104,19 @@ Docserv stitchfile as a required positional argument.
 Example (single file):
 
 ```shell
-xsltproc --stringparam schemafile "portal-config.rnc" \
-  --stringparam outputfile "portal-$(date --iso-8601).xml" \
-  --stringparam outputdir "./" \
-  src/docbuild/config/xml/data/convert-v6-to-v7.xsl STITCHFILE.xml
+tools/migrate-config.sh --output "portal-$(date --iso-8601).xml" \
+  --schema "portal-config.rnc" \
+  --dir "./" \
+  STITCHFILE.xml
 ```
 
 Example (split, into the user config dir):
 
 ```shell
-xsltproc --xinclude \
-  --stringparam outputfile portal.xml \
-  --stringparam outputdir "$HOME/.config/docbuild/config.d/" \
-  --param use.xincludes 'true()' \
-  src/docbuild/config/xml/data/convert-v6-to-v7.xsl STITCHFILE.xml
+tools/migrate-config.sh --xinclude --output "portal-$(date --iso-8601).xml" \
+  --schema "portal-config.rnc" \
+  --dir "./" \
+  STITCHFILE.xml
 ```
 
 > **Ask before overwriting.** `$HOME/.config/docbuild/config.d/` may already
