@@ -23,6 +23,54 @@ from ..portal import parse_portal_config
 log = logging.getLogger(__name__)
 
 
+def _generate_llmstxt(deliverable: Deliverable, target_dest: Path) -> None:
+    """Generate LLMs text and inject markdown links into HTML files."""
+    try:
+        import os
+
+        from docbuild.config.load import handle_config
+        from docbuild.tasks.build.llms import clean_and_convert, inject_llms_links
+
+        _, raw_config, _ = handle_config(None, [Path.cwd()], ["env.toml"], "env.toml", {})
+        build_llmstxt = raw_config.get("build", {}).get("build_llmstxt", True)
+        llmstxt_dir = raw_config.get("paths", {}).get("llmstxt_dir", "docs")
+
+        if build_llmstxt:
+            log.info("Generating LLMs text for %s...", deliverable.full_id)
+            llms_dest = target_dest / llmstxt_dir
+            llms_dest.mkdir(parents=True, exist_ok=True)
+
+            title = getattr(deliverable.xml, "title", deliverable.full_id)
+            index_lines = [f"# {title}", ""]
+
+            for html_file in target_dest.rglob("*.html"):
+                if llmstxt_dir in html_file.parts:
+                    continue
+
+                html_content = html_file.read_text(encoding="utf-8")
+                md_content = clean_and_convert(html_content)
+
+                rel_path = html_file.relative_to(target_dest)
+                md_file = llms_dest / rel_path.with_suffix(".md")
+                md_file.parent.mkdir(parents=True, exist_ok=True)
+                md_file.write_text(md_content, encoding="utf-8")
+
+                md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
+                llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+
+                new_html = inject_llms_links(html_content, md_rel_to_html, llms_txt_rel_to_html)
+                html_file.write_text(new_html, encoding="utf-8")
+
+                index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
+                index_lines.append(f"- [{html_file.name}]({index_entry})")
+
+            llms_index = target_dest / "llms.txt"
+            llms_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
+            log.info("Finished generating llms.txt for %s", deliverable.full_id)
+    except Exception as ex:
+        log.error("Failed to generate LLMs text for %s: %s", deliverable.full_id, ex)
+
+
 async def build_format(
     deliverable: Deliverable,
     fmt: Literal["html", "pdf", "single-html", "epub"],
@@ -122,6 +170,8 @@ async def process_deliverable_build(
                     try:
                         # Sync contents of the build directory to the target destination
                         sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
+                        if fmt == 'html':
+                            _generate_llmstxt(deliverable, target_dest)
                         if sync_result.returncode == 0:
                             log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                         else:

@@ -212,9 +212,15 @@ class EnvBuildContainer(BaseModel):
 
 
 class EnvBuild(BaseModel):
-    """General build configuration."""
+    """Configuration for docbuild build execution."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="allow")
+
+    build_llmstxt: bool = Field(
+        default=True,
+        title="Build LLMs Text",
+        description="Whether to generate Markdown files and llms.txt for AI bots.",
+    )
 
     daps: EnvBuildDaps = Field(default_factory=EnvBuildDaps)
     container: EnvBuildContainer = Field(default_factory=EnvBuildContainer)
@@ -408,9 +414,15 @@ class EnvTargetPaths(BaseModel):
 
 
 class EnvPaths(BaseModel):
-    """Defines various application paths, including permanent storage and cache."""
+    """Configuration for file and directory paths."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="allow")
+
+    llmstxt_dir: str = Field(
+        default="docs",
+        title="LLMs Text Directory",
+        description="Directory name to store the generated llms.txt and Markdown files.",
+    )
 
     config_dir: Path = Field(
         default="{root_config_dir}/config.d",
