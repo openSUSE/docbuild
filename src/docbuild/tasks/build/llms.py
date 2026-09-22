@@ -1,110 +1,65 @@
 """Utilities for generating Markdown and llms.txt files from HTML."""
 
 from html import escape
-from html.parser import HTMLParser
-from io import StringIO
-import re
+from typing import Final
 
 from justhtml import JustHTML
 
-# Standard HTML5 void elements that cannot contain children or have closing tags
-VOID_ELEMENTS: set[str] = {
-    "area", "base", "br", "col", "embed", "hr", "img", "input",
-    "link", "meta", "param", "source", "track", "wbr"
-}
 
+class HTMLCleaner:
+    """Base class to strip specific tags, IDs, and classes using DOM traversal."""
 
-class HTMLCleaner(HTMLParser):
-    """Base class to strip specific tags, IDs, and classes."""
+    VOID_ELEMENTS: Final[frozenset[str]] = frozenset({
+        "area", "base", "br", "col", "embed", "hr", "img", "input",
+        "link", "meta", "param", "source", "track", "wbr"
+    })
 
     def __init__(self, tags_to_strip: list[str], ids_to_strip: list[str], classes_to_strip: list[str]) -> None:
         """Initialize the HTML stripper with target elements to remove."""
-        super().__init__(convert_charrefs=False)
-        self.tags_to_strip = set(tags_to_strip)
-        self.ids_to_strip = set(ids_to_strip)
-        self.classes_to_strip = set(classes_to_strip)
-        self.result = StringIO()
-        self.skip_depth = 0
+        self.tags_to_strip = frozenset(tags_to_strip)
+        self.ids_to_strip = frozenset(ids_to_strip)
+        self.classes_to_strip = frozenset(classes_to_strip)
 
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        """Process an opening HTML tag and drop it if it matches strip criteria."""
-        attrs_dict = {k: v or "" for k, v in attrs}
-        tag_id = attrs_dict.get("id", "")
-        tag_classes = attrs_dict.get("class", "").split()
+    def should_strip(self, node: object) -> bool:
+        """Determine if a DOM node should be stripped."""
+        # JustHTML stores the tag name in the .name attribute
+        node_name = getattr(node, "name", None)
+        if not node_name:
+            return False
 
-        should_strip = (
+        tag = str(node_name).lower()
+
+        # Safely extract attributes (handling None, dicts, and lists of tuples)
+        raw_attrs = getattr(node, "attrs", None)
+        if raw_attrs is None:
+            attrs = {}
+        elif isinstance(raw_attrs, list):
+            attrs = {k: v or "" for k, v in raw_attrs}
+        else:
+            attrs = dict(raw_attrs)
+
+        node_id = attrs.get("id", "")
+        node_classes = attrs.get("class", "").split()
+
+        return (
             tag in self.tags_to_strip or
-            tag_id in self.ids_to_strip or
-            any(cls in self.classes_to_strip for cls in tag_classes)
+            node_id in self.ids_to_strip or
+            any(cls in self.classes_to_strip for cls in node_classes)
         )
 
-        if should_strip:
-            if tag not in VOID_ELEMENTS:
-                self.skip_depth += 1
+    def clean(self, node: object) -> None:
+        """Recursively clean the DOM tree in place."""
+        children = getattr(node, "children", None)
+        if not children:
             return
 
-        if self.skip_depth > 0:
-            if tag not in VOID_ELEMENTS:
-                self.skip_depth += 1
-            return
-
-        attr_str = "".join(f' {k}="{v}"' if v is not None else f' {k}' for k, v in attrs)
-        self.result.write(f"<{tag}{attr_str}>")
-
-    def handle_endtag(self, tag: str) -> None:
-        """Process a closing HTML tag."""
-        if self.skip_depth > 0:
-            if tag not in VOID_ELEMENTS:
-                self.skip_depth -= 1
-            return
-        self.result.write(f"</{tag}>")
-
-    def handle_data(self, data: str) -> None:
-        """Process text data between tags."""
-        if self.skip_depth == 0:
-            self.result.write(data)
-
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        """Process an empty HTML tag (like <br/> or <img/>)."""
-        attrs_dict = {k: v or "" for k, v in attrs}
-        tag_id = attrs_dict.get("id", "")
-        tag_classes = attrs_dict.get("class", "").split()
-
-        should_strip = (
-            tag in self.tags_to_strip or
-            tag_id in self.ids_to_strip or
-            any(cls in self.classes_to_strip for cls in tag_classes)
-        )
-
-        if should_strip or self.skip_depth > 0:
-            return
-
-        attr_str = "".join(f' {k}="{v}"' if v is not None else f' {k}' for k, v in attrs)
-        self.result.write(f"<{tag}{attr_str} />")
-
-    def handle_entityref(self, name: str) -> None:
-        """Process a general entity reference."""
-        if self.skip_depth == 0:
-            self.result.write(f"&{name};")
-
-    def handle_charref(self, name: str) -> None:
-        """Process a numeric character reference."""
-        if self.skip_depth == 0:
-            self.result.write(f"&#{name};")
-
-    def handle_comment(self, data: str) -> None:
-        """Process an HTML comment."""
-        if self.skip_depth == 0:
-            self.result.write(f"<!--{data}-->")
-
-    def handle_decl(self, decl: str) -> None:
-        """Process an HTML declaration."""
-        if self.skip_depth == 0:
-            self.result.write(f"<!{decl}>")
-
-    def get_clean_html(self) -> str:
-        """Return the fully cleaned HTML string."""
-        return self.result.getvalue()
+        # Iterate backwards to safely pop items from the list without skipping indexes
+        for i in range(len(children) - 1, -1, -1):
+            child = children[i]
+            if self.should_strip(child):
+                children.pop(i)
+            else:
+                self.clean(child)
 
 
 class DocBookHTMLCleaner(HTMLCleaner):
@@ -139,50 +94,86 @@ class AntoraHTMLCleaner(HTMLCleaner):
         )
 
 
+def detect_generator(doc: JustHTML) -> str | None:
+    """Detect the HTML type from the <meta name="generator"> tag."""
+    target_generators: Final[tuple[str, ...]] = ("daps", "docbook", "antora")
+
+    for meta in doc.query("meta"):
+        attrs = getattr(meta, "attrs", {})
+        name = attrs.get("name", "").lower()
+
+        if name == "generator":
+            content = attrs.get("content", "").lower()
+            for gen in target_generators:
+                if gen in content:
+                    return gen
+    return None
+
+
+def get_cleaner(doc: JustHTML) -> HTMLCleaner:
+    """Return the appropriate HTMLCleaner instance based on the document type."""
+    generator = detect_generator(doc)
+
+    match generator:
+        case "antora":
+            return AntoraHTMLCleaner()
+        case "daps" | "docbook":
+            return DocBookHTMLCleaner()
+        case _:
+            return HTMLCleaner([], [], [])
+
+
 def clean_and_convert(html_content: str) -> str:
-    """Detect HTML type, clean it, and convert to Markdown."""
-    generator_match = re.search(r'<meta\s+name=["\']generator["\']\s+content=["\']([^"\']+)["\']', html_content, re.IGNORECASE)
-    generator = generator_match.group(1).lower() if generator_match else ""
+    """Parse HTML into a DOM tree, clean it, and convert to Markdown."""
+    doc = JustHTML(html_content, sanitize=False)
+    cleaner = get_cleaner(doc)
 
-    if "antora" in generator:
-        cleaner = AntoraHTMLCleaner()
-    else:
-        cleaner = DocBookHTMLCleaner()
+    # Mutate the DOM tree in place
+    cleaner.clean(doc.root)
 
-    cleaner.feed(html_content)
-    clean_html = cleaner.get_clean_html()
-
-    doc = JustHTML(clean_html)
     return doc.to_markdown()
 
 
 def inject_llms_links(html_content: str, md_rel_path: str, llmstxt_rel_path: str) -> str:
     """Inject alternate markdown link tags into the <head> of an HTML document."""
-    # Parse HTML without sanitization to preserve document head structure
     doc = JustHTML(html_content, sanitize=False)
     head = doc.query_one("head")
 
-    # If <head> does not exist, create and prepend it to <html> or root
     if head is None:
         target_parent = doc.query_one("html") or doc.root
-        head = JustHTML("<head></head>", fragment=True, sanitize=False).root.children[0]
+        parsed_head = JustHTML("<head></head>", fragment=True, sanitize=False).root
+
+        # Safely extract the created <head> node
+        if not parsed_head.children:
+            return doc.to_html()
+
+        head = parsed_head.children[0]
         head.parent = target_parent
+
+        # Ensure children list exists before inserting
+        if target_parent.children is None:
+            target_parent.children = []
         target_parent.children.insert(0, head)
 
-    # Sanitize attribute values against HTML injection
     safe_md_path = escape(md_rel_path, quote=True)
     safe_llms_path = escape(llmstxt_rel_path, quote=True)
 
-    # Construct link fragments using JustHTML parser
     md_markup = f'<link rel="alternate" type="text/markdown" href="{safe_md_path}">'
     llms_markup = f'<link rel="alternate" type="text/markdown" href="{safe_llms_path}">'
 
-    md_node = JustHTML(md_markup, fragment=True, sanitize=False).root.children[0]
-    llms_node = JustHTML(llms_markup, fragment=True, sanitize=False).root.children[0]
+    parsed_md = JustHTML(md_markup, fragment=True, sanitize=False).root
+    parsed_llms = JustHTML(llms_markup, fragment=True, sanitize=False).root
 
-    # Attach nodes to head element
-    md_node.parent = head
-    llms_node.parent = head
-    head.children.extend([md_node, llms_node])
+    # Safely extract the link nodes and append them
+    if parsed_md.children and parsed_llms.children:
+        md_node = parsed_md.children[0]
+        llms_node = parsed_llms.children[0]
+
+        md_node.parent = head
+        llms_node.parent = head
+
+        if head.children is None:
+            head.children = []
+        head.children.extend([md_node, llms_node])
 
     return doc.to_html()
