@@ -23,50 +23,64 @@ from ..portal import parse_portal_config
 log = logging.getLogger(__name__)
 
 
-def _generate_llmstxt(deliverable: Deliverable, target_dest: Path) -> None:
-    """Generate LLMs text and inject markdown links into HTML files."""
+async def generate_llmstxt(deliverable: Deliverable, target_dest: Path, build_llmstxt: bool, llmstxt_dir: str) -> None:
+    """Generate LLMs text and inject markdown links into HTML files concurrently."""
+    if not build_llmstxt:
+        return
+
     try:
+        import asyncio
         import os
 
-        from docbuild.config.load import handle_config
+        from aiostream import pipe, stream
+
         from docbuild.tasks.build.llms import clean_and_convert, inject_llms_links
 
-        _, raw_config, _ = handle_config(None, [Path.cwd()], ["env.toml"], "env.toml", {})
-        build_llmstxt = raw_config.get("build", {}).get("build_llmstxt", True)
-        llmstxt_dir = raw_config.get("paths", {}).get("llmstxt_dir", "docs")
+        log.info("Generating LLMs text for %s...", deliverable.full_id)
+        llms_dest = target_dest / llmstxt_dir
+        llms_dest.mkdir(parents=True, exist_ok=True)
 
-        if build_llmstxt:
-            log.info("Generating LLMs text for %s...", deliverable.full_id)
-            llms_dest = target_dest / llmstxt_dir
-            llms_dest.mkdir(parents=True, exist_ok=True)
+        title = getattr(deliverable.xml, "title", deliverable.full_id)
+        index_lines = [f"# {title}", ""]
 
-            title = getattr(deliverable.xml, "title", deliverable.full_id)
-            index_lines = [f"# {title}", ""]
+        html_files = list(target_dest.rglob("*.html"))
 
-            for html_file in target_dest.rglob("*.html"):
-                if llmstxt_dir in html_file.parts:
-                    continue
-
-                html_content = html_file.read_text(encoding="utf-8")
-                md_content = clean_and_convert(html_content)
+        async def process_file(html_file: Path) -> str | None:
+            if llmstxt_dir in html_file.parts:
+                return None
+            try:
+                # Offload disk I/O and CPU-bound parsing to a background thread
+                html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
+                md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
                 rel_path = html_file.relative_to(target_dest)
                 md_file = llms_dest / rel_path.with_suffix(".md")
                 md_file.parent.mkdir(parents=True, exist_ok=True)
-                md_file.write_text(md_content, encoding="utf-8")
+                await asyncio.to_thread(md_file.write_text, md_content, encoding="utf-8")
 
                 md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
                 llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
 
-                new_html = inject_llms_links(html_content, md_rel_to_html, llms_txt_rel_to_html)
-                html_file.write_text(new_html, encoding="utf-8")
+                new_html = await asyncio.to_thread(inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html)
+                await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
 
                 index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
-                index_lines.append(f"- [{html_file.name}]({index_entry})")
+                return f"- [{html_file.name}]({index_entry})"
+            except Exception as e:
+                log.error("Failed processing %s: %s", html_file, e)
+                return None
 
-            llms_index = target_dest / "llms.txt"
-            llms_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
-            log.info("Finished generating llms.txt for %s", deliverable.full_id)
+        # Process HTML files concurrently using aiostream
+        pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
+
+        async with pipeline.stream() as streamer:
+            async for result in streamer:
+                if result:
+                    index_lines.append(result)
+
+        llms_index = target_dest / "llms.txt"
+        llms_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
+        log.info("Finished generating llms.txt for %s", deliverable.full_id)
     except Exception as ex:
         log.error("Failed to generate LLMs text for %s: %s", deliverable.full_id, ex)
 
@@ -113,6 +127,8 @@ async def process_deliverable_build(
     target_base_dir: Path,
     target_dir_dyn: str,
     daps_tmpls: dict[str, str],
+    build_llmstxt: bool = True,
+    llmstxt_dir: str = "docs",
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable: checkout worktree, build formats, and sync."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
@@ -171,7 +187,7 @@ async def process_deliverable_build(
                         # Sync contents of the build directory to the target destination
                         sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
                         if fmt == 'html':
-                            _generate_llmstxt(deliverable, target_dest)
+                            await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
                         if sync_result.returncode == 0:
                             log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                         else:
@@ -199,6 +215,8 @@ async def process_doctype(
     daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
+    build_llmstxt: bool = True,
+    llmstxt_dir: str = "docs",
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using aiostream."""
     deliverables: list[Deliverable] = await asyncio.to_thread(
@@ -219,7 +237,7 @@ async def process_doctype(
         try:
             return await asyncio.create_task(
                 process_deliverable_build(
-                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls
+                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls, build_llmstxt, llmstxt_dir
                 ),
                 name=f"build:{d.full_id}",
             )
@@ -255,6 +273,8 @@ async def process(
     daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
+    build_llmstxt: bool = True,
+    llmstxt_dir: str = "docs",
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
@@ -262,7 +282,7 @@ async def process(
     tasks = [
         asyncio.create_task(
             process_doctype(
-                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update
+                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update, build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir
             ),
             name=f"build:{dt}",
         )

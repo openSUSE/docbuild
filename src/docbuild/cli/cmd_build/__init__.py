@@ -152,6 +152,8 @@ def build(
                 doctypes=doctypes,
                 daps_tmpls=daps_tmpls,
                 skip_repo_update=build_skip_repo,
+                build_llmstxt=env.build.build_llmstxt,
+                llmstxt_dir=env.paths.llmstxt_dir,
             ),
             name="build:build",
         )

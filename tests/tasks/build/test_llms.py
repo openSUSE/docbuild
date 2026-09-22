@@ -1,92 +1,76 @@
-from docbuild.tasks.build.llms import HTMLStripper, clean_and_convert, inject_llms_links
+"""Tests for the LLMs integration module."""
 
+from docbuild.tasks.build.llms import clean_and_convert, inject_llms_links
 
-def test_html_stripper_basic() -> None:
-    html = '<html><body><p id="main">Test</p></body></html>'
-    stripper = HTMLStripper([], [], [])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == html
+DAPS_HTML = """
+<html>
+<head>
+    <meta name="generator" content="DAPS">
+    <title>SLES Guide</title>
+</head>
+<body>
+    <div id="_mainnav" class="navbar">Menu</div>
+    <aside id="_side-toc-page">TOC</aside>
+    <main>
+        <h1>Introduction</h1>
+        <p>This is core content.</p>
+        <a class="permalink" href="#intro">Link</a>
+    </main>
+    <footer class="bottom-pagination">Next Page</footer>
+</body>
+</html>
+"""
 
+ANTORA_HTML = """
+<html>
+<head>
+    <meta name="generator" content="Antora">
+    <title>Rancher Guide</title>
+</head>
+<body>
+    <header class="toolbar">Top Nav</header>
+    <nav class="nav-container">
+        <div class="nav-panel-menu">Menu</div>
+    </nav>
+    <main>
+        <h1>Concept</h1>
+        <p>Rancher core concept.</p>
+    </main>
+    <footer class="footer">Copyright</footer>
+</body>
+</html>
+"""
 
-def test_html_stripper_removes_tags() -> None:
-    html = '<body><nav>Skip this</nav><p>Keep this</p></body>'
-    stripper = HTMLStripper(["nav"], [], [])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<body><p>Keep this</p></body>'
+def test_clean_and_convert_daps() -> None:
+    """Ensure DAPS HTML correctly strips navbars, side-tocs, and permalinks."""
+    md = clean_and_convert(DAPS_HTML)
+    assert "Introduction" in md
+    assert "This is core content." in md
+    assert "Menu" not in md
+    assert "TOC" not in md
+    assert "Link" not in md
+    assert "Next Page" not in md
 
-
-def test_html_stripper_removes_ids_and_classes() -> None:
-    html = '<div id="toc">TOC</div><div class="navbar">Nav</div><p class="keep">Text</p>'
-    stripper = HTMLStripper([], ["toc"], ["navbar"])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<p class="keep">Text</p>'
-
-
-def test_html_stripper_nested_stripping() -> None:
-    html = '<header><div><p>Deep skip</p></div></header><main>Content</main>'
-    stripper = HTMLStripper(["header"], [], [])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<main>Content</main>'
-
-
-def test_html_stripper_void_elements() -> None:
-    html = '<div><img src="test.png"><hr></div><meta class="toc">'
-    stripper = HTMLStripper([], [], ["toc"])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<div><img src="test.png"><hr></div>'
-
-
-def test_html_stripper_entities_and_comments() -> None:
-    html = '<div>&amp; &#160; <!-- comment --> <!DOCTYPE html></div><nav>&amp;</nav>'
-    stripper = HTMLStripper(["nav"], [], [])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<div>&amp; &#160; <!-- comment --> <!DOCTYPE html></div>'
-
-
-def test_html_stripper_startendtag() -> None:
-    html = '<img src="a.jpg" /><img class="navbar" src="b.jpg" />'
-    stripper = HTMLStripper([], [], ["navbar"])
-    stripper.feed(html)
-    assert stripper.get_clean_html() == '<img src="a.jpg" />'
-
-
-def test_clean_and_convert() -> None:
-    raw_html = """
-    <html>
-    <head><title>Test</title></head>
-    <body>
-        <header>My Header</header>
-        <nav id="_mainnav">Nav items</nav>
-        <div id="toc">Table of contents</div>
-        <main>
-            <h1>Main Title</h1>
-            <p>Important text.</p>
-            <a class="permalink" href="#main">#</a>
-        </main>
-        <footer>My Footer</footer>
-    </body>
-    </html>
-    """
-    markdown = clean_and_convert(raw_html)
-    assert "Main Title" in markdown
-    assert "Important text." in markdown
-
-    # Assert stripped items are GONE
-    assert "My Header" not in markdown
-    assert "Nav items" not in markdown
-    assert "Table of contents" not in markdown
-    assert "My Footer" not in markdown
-
+def test_clean_and_convert_antora() -> None:
+    """Ensure Antora HTML correctly strips toolbars, nav-containers, and footers."""
+    md = clean_and_convert(ANTORA_HTML)
+    assert "Concept" in md
+    assert "Rancher core concept." in md
+    assert "Top Nav" not in md
+    assert "Menu" not in md
+    assert "Copyright" not in md
 
 def test_inject_llms_links_with_head() -> None:
-    html = "<html><head><title>T</title></head><body></body></html>"
-    result = inject_llms_links(html, "doc.md", "llms.txt")
-    assert '<link rel="alternate" type="text/markdown" href="doc.md">' in result
+    """Test link injection when <head> exists."""
+    html = "<html><head><title>Test</title></head><body><h1>Hi</h1></body></html>"
+    result = inject_llms_links(html, "docs/index.md", "llms.txt")
+    assert '<link rel="alternate" type="text/markdown" href="docs/index.md">' in result
     assert '<link rel="alternate" type="text/markdown" href="llms.txt">' in result
-    assert "</head>" in result
-
+    assert "<title>Test</title>" in result
 
 def test_inject_llms_links_without_head() -> None:
-    html = "<html><body>No head here</body></html>"
-    result = inject_llms_links(html, "doc.md", "llms.txt")
-    assert result == html  # Should return unmodified safely
+    """Test link injection fallback when <head> is missing."""
+    html = "<html><body><h1>No Head</h1></body></html>"
+    result = inject_llms_links(html, "docs/index.md", "llms.txt")
+    assert "<head>" in result
+    assert '<link rel="alternate" type="text/markdown" href="docs/index.md">' in result
