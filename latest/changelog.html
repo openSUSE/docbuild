@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev4+ga2b98d516.d20260922</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev5+g3c0f87f79.d20260922</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=96581b72"></script>
+    <script src="_static/documentation_options.js?v=5dbaec35"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -454,6 +454,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <ul class="simple">
 <li><p>Fix an infinite recursion issue in the migration stylesheet. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/547">GH #547</a>)</p></li>
 <li><p>Changed all element identifiers from <code class="docutils literal notranslate"><span class="pre">id</span></code> to <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> throughout the Portal schema and configuration system. This aligns with XML standards and allows proper namespace handling. Affected elements: <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;deliverable&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;item&gt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&lt;category&gt;</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/548">GH #548</a>)</p></li>
+<li><p>Fixed migration stylesheet to generate valid deliverable IDs for v6→v7 config conversion. Resolved empty <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> attributes (XSLT 1.0 syntax error) and ID separator inconsistency that caused ~1940 IDREF validation errors. The stylesheet now generates consistent IDs using dots as separators, matching the portal schema requirements. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/551">GH #551</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
