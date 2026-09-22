@@ -51,3 +51,13 @@ To add translations for a product, proceed as follows:
 
    The ``linkend`` attribute of the ``<ref>`` element
    points to the ID of the original deliverable.
+
+.. note::
+
+   For deliverables that are themselves references (see "Internal Reference"
+   in :ref:`add-deliverable`), the translated deliverable will also be a
+   reference, creating a two-level chain. The translated ``<deliverable>``
+   points to the ``xml:id`` of the English ``<deliverable>``, which in turn
+   points to the final target document. This is the correct and expected
+   behavior for maintaining a single source of truth for the reference.
+

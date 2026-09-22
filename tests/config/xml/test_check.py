@@ -14,6 +14,7 @@ from docbuild.config.xml.checks import (
     check_lang_code_in_desc,
     check_lang_code_in_docset,
     check_lang_code_in_extralinks,
+    check_ref_deliverable_linkend,
     check_subdeliverable_in_deliverable,
     check_unsupported_language_code,
     dc_identifier,
@@ -913,3 +914,140 @@ def test_check_format_subdeliverable_no_subdeliverable():
     )
     results = collect_check_results(check_format_subdeliverable(node))
     assert len(results) == 0
+
+
+# ---- Tests for check_ref_deliverable_linkend ----
+def test_check_ref_deliverable_linkend_valid_dc_target():
+    """Test ref deliverable with valid linkend to a dc deliverable."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="deli-1" type="dc">
+                            <dc file="DC-TEST"/>
+                        </deliverable>
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="deli-1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) == 0
+
+
+def test_check_ref_deliverable_linkend_valid_prebuilt_target():
+    """Test ref deliverable with valid linkend to a prebuilt deliverable."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="prebuilt-1" type="prebuilt">
+                            <prebuilt>
+                                <title>Prebuilt Docs</title>
+                                <url href="https://example.invalid/docs" format="html"/>
+                            </prebuilt>
+                        </deliverable>
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="prebuilt-1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) == 0
+
+
+def test_check_ref_deliverable_linkend_valid_product_target():
+    """Test ref deliverable with valid linkend to a product."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <product xml:id="product1">
+                <name>Product 1</name>
+            </product>
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="product1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) == 0
+
+
+def test_check_ref_deliverable_linkend_valid_docset_target():
+    """Test ref deliverable with valid linkend to a docset."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="docset1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) == 0
+
+
+def test_check_ref_deliverable_linkend_invalid_target():
+    """Test ref deliverable with invalid linkend (target not found)."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="nonexistent-target"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) > 0
+    messages = [r.message for r in results]
+    assert_results("invalid linkend='nonexistent-target'", messages)
+    assert_results("ref=ref-deli-1", messages)
+    assert_results("docset=docset1", messages)
+
+
+def test_check_ref_deliverable_linkend_multiple_invalid():
+    """Test multiple ref deliverables with invalid linkends."""
+    node = etree.fromstring(
+        f"""<portal schemaversion="7.0">
+            <docset xml:id="docset1">
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable xml:id="ref-deli-1" type="ref">
+                            <ref linkend="invalid-1"/>
+                        </deliverable>
+                        <deliverable xml:id="ref-deli-2" type="ref">
+                            <ref linkend="invalid-2"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </portal>"""
+    )
+    results = collect_check_results(check_ref_deliverable_linkend(node))
+    assert len(results) == 2
+    messages = [r.message for r in results]
+    assert_results("invalid-1", messages)
+    assert_results("invalid-2", messages)

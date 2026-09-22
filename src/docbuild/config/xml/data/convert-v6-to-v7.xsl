@@ -63,6 +63,9 @@
   <!-- Should sitemap be generated for translations? -->
   <xsl:param name="sitemap.for.translations">false</xsl:param>
 
+  <!-- Prefix for generated reference deliverable IDs -->
+  <xsl:param name="ref.prefix">ref.</xsl:param>
+
 <!-- ======== Keys -->
   <!-- Define a key to group <language> elements by their @lang attribute -->
   <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
@@ -597,7 +600,7 @@
 
           <xsl:choose>
             <xsl:when test="builddocs">
-              <xsl:apply-templates select="@*|node()[not(self::external)]" />
+              <xsl:apply-templates select="@*|node()[not(self::external or self::internal)]" />
             </xsl:when>
             <xsl:otherwise>
               <xsl:apply-templates select="@*|node()[
@@ -610,8 +613,6 @@
                                           ]">
                  <xsl:call-template name="docset-without-builddocs" />
               </xsl:if>
-
-              <xsl:apply-templates select="internal" />
 
                <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
                               or language/url/@format = 'pdf']">
@@ -648,11 +649,7 @@
     </descriptions>
   </xsl:template>
 
-  <xsl:template match="docset/builddocs">
-    <resources>
-      <xsl:apply-templates />
-    </resources>
-  </xsl:template>
+
 
   <xsl:template name="docset-without-builddocs">
     <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
@@ -662,7 +659,7 @@
     <xsl:if test="$eligible-links">
       <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
-        <xsl:comment> &lt;git remote="https://TODO"/> </xsl:comment>
+        <xsl:comment> &lt;git remote="https://TODO"/&gt; </xsl:comment>
 
         <!-- Use first link to get list of all unique languages present in any eligible link -->
         <xsl:for-each select="$eligible-links[1]/language">
@@ -690,6 +687,9 @@
                   </xsl:for-each>
                 </xsl:otherwise>
               </xsl:choose>
+              <xsl:call-template name="process-internal-refs">
+                <xsl:with-param name="lang" select="$currentLang"/>
+              </xsl:call-template>
             </locale>
           </xsl:if>
         </xsl:for-each>
@@ -1021,45 +1021,28 @@
   </xsl:template>
 
   <!-- builddocs -->
-  <xsl:template match="builddocs/language">
-    <xsl:variable name="has.external.prebuilt" select="@lang = 'en-us' and ../../external/link[not(starts-with(language/url/@href, 'https://'))]" />
-    <xsl:choose>
-      <xsl:when test="deliverable or $has.external.prebuilt">
-        <locale lang="{@lang}">
-          <xsl:if test="$sitemap.for.translations = 'false'">
-            <xsl:attribute name="sitemap">false</xsl:attribute>
-          </xsl:if>
-          <xsl:apply-templates />
-          <xsl:if test="$has.external.prebuilt">
-            <xsl:apply-templates select="../../external/link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
-          </xsl:if>
+  <!-- New Template Set -->
+  <xsl:template match="docset/builddocs">
+    <resources>
+      <!-- Process only language children -->
+      <xsl:apply-templates select="language"/>
+      <!-- If no en-us locale existed, create one just for the internal refs -->
+      <xsl:if test="not(language[@lang='en-us']) and ../internal">
+        <locale lang="en-us">
+          <xsl:apply-templates select="../internal"/>
         </locale>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:comment>
-          <xsl:text>&#10;        &lt;language lang=&quot;</xsl:text>
-          <xsl:value-of select="@lang"/>
-          <xsl:text>&quot;</xsl:text>
-          <xsl:if test="@translation-type">
-            <xsl:text> translation-type=&quot;</xsl:text>
-            <xsl:value-of select="@translation-type"/>
-            <xsl:text>&quot;</xsl:text>
-          </xsl:if>
-          <xsl:text>&gt;&#10;</xsl:text>
-          <xsl:if test="branch">
-            <xsl:text>          &lt;branch&gt;</xsl:text>
-            <xsl:value-of select="branch"/>
-            <xsl:text>&lt;/branch&gt;&#10;</xsl:text>
-          </xsl:if>
-          <xsl:if test="subdir">
-            <xsl:text>          &lt;subdir&gt;</xsl:text>
-            <xsl:value-of select="subdir"/>
-            <xsl:text>&lt;/subdir&gt;&#10;</xsl:text>
-          </xsl:if>
-          <xsl:text>        &lt;/language&gt;&#10;      </xsl:text>
-        </xsl:comment>
-      </xsl:otherwise>
-    </xsl:choose>
+      </xsl:if>
+    </resources>
+  </xsl:template>
+
+  <xsl:template match="builddocs/language">
+    <locale lang="{@lang}">
+      <xsl:copy-of select="@sitemap"/>
+      <xsl:apply-templates/>
+      <xsl:call-template name="process-internal-refs">
+        <xsl:with-param name="lang" select="@lang"/>
+      </xsl:call-template>
+    </locale>
   </xsl:template>
 
   <xsl:template match="builddocs/language/@default" />
@@ -1138,48 +1121,86 @@
   </xsl:template>
 
   <!-- ref  -->
-  <xsl:template match="ref[not(@linkend)]">
+  <xsl:template name="process-internal-refs">
+    <xsl:param name="lang"/>
+    <xsl:if test="starts-with($lang, 'en') and (ancestor::docset/internal/ref | ../internal/ref)">
+      <xsl:comment> Internal references converted to deliverables </xsl:comment>
+    </xsl:if>
+    <xsl:for-each select="ancestor::docset/internal/ref | ../internal/ref">
+      <xsl:variable name="linkend_val">
+        <xsl:call-template name="get-ref-linkend"/>
+      </xsl:variable>
+      <xsl:choose>
+        <xsl:when test="starts-with($lang, 'en')">
+          <deliverable type="ref">
+            <xsl:attribute name="xml:id">
+              <xsl:value-of select="concat($ref.prefix, $linkend_val)"/>
+            </xsl:attribute>
+            <ref>
+              <xsl:attribute name="linkend">
+                <xsl:value-of select="$linkend_val"/>
+              </xsl:attribute>
+              <xsl:apply-templates select="@category|@titleformat"/>
+            </ref>
+          </deliverable>
+        </xsl:when>
+        <xsl:otherwise>
+          <deliverable type="ref">
+            <ref>
+              <xsl:attribute name="linkend">
+                <xsl:value-of select="concat($ref.prefix, $linkend_val)"/>
+              </xsl:attribute>
+            </ref>
+          </deliverable>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="internal">
+    <xsl:comment> Internal references converted to deliverables </xsl:comment>
+    <xsl:apply-templates select="ref"/>
+  </xsl:template>
+
+  <xsl:template name="get-ref-linkend">
     <xsl:variable name="pid" select="@product"/>
     <xsl:variable name="cnfg" select="$config/product[@xml:id=$pid]"/>
     <xsl:variable name="abbrev" select="$cnfg/@idabbrev"/>
     <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
-    <xsl:variable name="ref" >
+    <xsl:variable name="ref_linkend">
       <xsl:choose>
         <xsl:when test="not(@docset) and not(@dc)">
-          <xsl:call-template name="generate.id">
-            <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-          </xsl:call-template>
+          <xsl:call-template name="generate.id"><xsl:with-param name="product.idabbrev" select="$product.idabbrev"/></xsl:call-template>
         </xsl:when>
         <xsl:when test="@product and @docset and not(@dc)">
-          <xsl:call-template name="generate.id">
-            <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-            <xsl:with-param name="docset" select="@docset"/>
-          </xsl:call-template>
+          <xsl:call-template name="generate.id"><xsl:with-param name="product.idabbrev" select="$product.idabbrev"/><xsl:with-param name="docset" select="@docset"/></xsl:call-template>
         </xsl:when>
         <xsl:when test="@product and @docset and @dc">
-          <xsl:call-template name="generate.id">
-            <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-            <xsl:with-param name="docset" select="@docset"/>
-            <xsl:with-param name="dc" select="@dc"/>
-          </xsl:call-template>
+          <xsl:call-template name="generate.id"><xsl:with-param name="product.idabbrev" select="$product.idabbrev"/><xsl:with-param name="docset" select="@docset"/><xsl:with-param name="dc" select="@dc"/></xsl:call-template>
         </xsl:when>
         <xsl:when test="@deliverable">
           <xsl:value-of select="concat(@product, $id.sep, @docset, $id.sep, @deliverable)"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:message>WARN: Couldn't create a linkend for &lt;ref <xsl:for-each select="@*">
-              <xsl:value-of select="concat(local-name(.), '=&quot;', ., '&quot; ')"/>
+            <xsl:value-of select="concat(local-name(.), '=&quot;', ., '&quot; ')"/>
           </xsl:for-each>
           <xsl:text>/&gt;</xsl:text>
           </xsl:message>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <!--<xsl:message>ref: <xsl:value-of select="count($cnfg)"/>
-      product=<xsl:value-of select="concat(@product, '::', $pid)"/>
-      idabbrev=<xsl:value-of select="$abbrev"/>
-    </xsl:message>-->
-    <ref linkend="{$ref}">
+    <xsl:value-of select="$ref_linkend"/>
+  </xsl:template>
+
+  <xsl:template match="ref">
+    <xsl:variable name="linkend_val">
+      <xsl:call-template name="get-ref-linkend"/>
+    </xsl:variable>
+    <ref>
+      <xsl:attribute name="linkend">
+        <xsl:value-of select="$linkend_val"/>
+      </xsl:attribute>
       <xsl:apply-templates select="@category|@titleformat"/>
     </ref>
   </xsl:template>

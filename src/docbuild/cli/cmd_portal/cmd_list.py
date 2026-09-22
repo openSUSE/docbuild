@@ -11,6 +11,7 @@ from rich.tree import Tree
 from ...cli.context import DocBuildContext
 from ...config.xml.list import list_all_deliverables
 from ...models.deliverable import Deliverable
+from ...models.deliverable.view import DeliverableXMLView
 from ...models.doctype import Doctype
 from ...models.product import Product
 from ...tasks.portal import parse_portal_config
@@ -62,11 +63,29 @@ def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype]
 
 
 def get_display_name(deliv: Deliverable, d_id: str) -> str:
-    """Determine the main display name for a deliverable."""
+    """Determine the main display name for a deliverable.
+
+    This function constructs a string to be used when displaying a deliverable
+    in the `portal list` command. It prioritizes different properties to generate
+    a meaningful name, adding suffixes to indicate the deliverable's type.
+
+    - If the deliverable is prebuilt, it uses the title from the XML node,
+      appending "(Prebuilt)".
+    - If the deliverable is a reference, it uses the deliverable ID,
+      appending "(Ref)".
+    - Otherwise, it uses the deliverable ID and includes the dcfile if available.
+
+    :param deliv: The deliverable object.
+    :param d_id: The ID of the deliverable.
+    :returns: The formatted display name for the deliverable.
+    """
     if deliv.xml.is_prebuilt:
         title_node = deliv.xml.node.find("title")
         title = title_node.text if title_node is not None else d_id
         return f"{title} (Prebuilt)"
+    if deliv.xml.is_ref:
+        target = deliv.xml.target_id or d_id
+        return f"{d_id} (ref -> {target})"
 
     dc_file = deliv.xml.dcfile
     return f"{d_id} ({dc_file})" if dc_file else d_id
@@ -304,6 +323,7 @@ async def async_list_cmd(
         console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
         return
 
+    validate_references(deliverables, console)
     if flat:
         print_flat(
             deliverables,
@@ -376,3 +396,55 @@ def list_cmd(
         )
 
     asyncio.run(main())
+
+
+def validate_references(deliverables: list[Deliverable], console: Console) -> None:
+    """Validate the integrity of deliverable references."""
+    errors = []
+    for deliv in deliverables:
+        if not deliv.xml.is_ref:
+            continue
+
+        target_node = deliv.xml._target_node
+
+        # A ref's target_node should never be the node itself. This indicates
+        # the target wasn't found and the property fell back to returning self.node.
+        if target_node is deliv.xml.node:
+            errors.append(
+                f"* Broken reference: {deliv.xml.product_docset}/{deliv.xml.lang}:{deliv.xml.deliverableid} "
+                f"points to a non-existent 'en-us' target: '{deliv.xml.target_id}'"
+            )
+            continue  # Can't check for nesting if the target is broken
+
+        if target_node.get("type") == "ref":
+            target_view = DeliverableXMLView(target_node)
+
+            # A translated deliverable (non-English) is allowed to point to an
+            # English deliverable that is itself a reference. This is a valid,
+            # single-level chain for maintaining a DRY linkend.
+            is_translation_chain = (
+                not deliv.xml.lang.startswith("en") and target_view.lang.startswith("en")
+            )
+
+            if is_translation_chain:
+                # Ensure the chain stops here. The English target must not point
+                # to yet another reference.
+                grandchild_node = target_view._target_node
+                if grandchild_node and grandchild_node.get("type") == "ref":
+                    errors.append(
+                        f"* Invalid 3+ level reference chain: {deliv.xml.identifier} -> {target_view.identifier} -> {grandchild_node.get('id')}"
+                    )
+                continue  # Valid translation chain, so we can skip the error
+
+            # For all other cases, nested references are an error.
+            errors.append(
+                f"* Nested reference: {deliv.xml.identifier} points to another reference: {target_view.identifier}"
+            )
+
+    if errors:
+        err_count = len(errors)
+        noun = "error" if err_count == 1 else "errors"
+        console.print(f"[red]Error parsing Portal config:[/red] {err_count} validation {noun} found for references:\n")
+        for err in errors:
+            console.print(err)
+        raise click.Abort()

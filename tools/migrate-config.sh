@@ -104,7 +104,8 @@ fi
 # --- Execution ---
 # Note: Administrative privileges (sudo) may be required if writing to system-protected directories.
 xsltproc ${USE_XINCLUDE:+--stringparam use.xincludes 1} \
-         --stringparam schemafile "$SCHEMAFILE" \
+         --param internal.refs.in.translations "true()" \
+	 --stringparam schemafile "$SCHEMAFILE" \
          --stringparam outputfile "$OUTPUT" \
          --stringparam outputdir "$OUTDIR" \
          "$XSLT" "$INPUT"

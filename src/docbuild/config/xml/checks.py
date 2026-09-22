@@ -530,3 +530,71 @@ def check_unsupported_language_code(
                 xpath=semantic_xpath(node),
                 error_code="unsupported_language",
             )
+
+
+@register_check
+def check_ref_deliverable_linkend(
+    tree: etree._Element | etree._ElementTree,
+) -> Iterator[CheckResult]:
+    """Check that deliverables with type="ref" have valid linkend targets.
+
+    Valid targets are: another deliverable of type "dc" or "prebuilt",
+    a product, or a docset, matched by their ``xml:id`` attribute.
+
+    .. code-block:: xml
+
+        <deliverable id="deli-1" type="ref">
+            <ref linkend="invalid-target"/>
+        </deliverable>
+
+    :param tree: The XML tree to check.
+    :yield: CheckResult for each ref deliverable with invalid linkend.
+    """
+    # Check each ref deliverable
+    # Schema validation guarantees <ref> element exists and has linkend attribute
+    for ref_deli in tree.findall(".//deliverable[@type='ref']", namespaces=None):
+        ref_elem = ref_deli.find("ref")
+        linkend = ref_elem.get("linkend")
+
+        # Use XPath id() function to efficiently look up elements by xml:id
+        targets = tree.xpath("id($target)", target=linkend)
+
+        # After RNC validation, there should be exactly one target (if it exists)
+        if not targets:
+            xml_id_attr = f"{{{XML_NS}}}id"
+            ref_id = ref_deli.get(xml_id_attr, "n/a")
+            setid = docset_id(ref_deli)
+            message = (
+                f"Deliverable ref={ref_id} in docset={setid} has invalid linkend='{linkend}'. "
+                f"Valid targets are: deliverable[@type='dc'|'prebuilt'], product, or docset."
+            )
+            yield CheckResult(
+                message=message,
+                xpath=semantic_xpath(ref_deli),
+                error_code="invalid_ref_linkend",
+            )
+            continue
+
+        target = targets[0]
+        tag = etree.QName(target).localname
+
+        valid_target = False
+        match tag:
+            case "deliverable":
+                valid_target = target.get("type") in ("dc", "prebuilt")
+            case "product" | "docset":
+                valid_target = True
+
+        if not valid_target:
+            xml_id_attr = f"{{{XML_NS}}}id"
+            ref_id = ref_deli.get(xml_id_attr, "n/a")
+            setid = docset_id(ref_deli)
+            message = (
+                f"Deliverable ref={ref_id} in docset={setid} has invalid linkend='{linkend}'. "
+                f"Valid targets are: deliverable[@type='dc'|'prebuilt'], product, or docset."
+            )
+            yield CheckResult(
+                message=message,
+                xpath=semantic_xpath(ref_deli),
+                error_code="invalid_ref_linkend",
+            )
