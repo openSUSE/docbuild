@@ -416,14 +416,29 @@ def validate_references(deliverables: list[Deliverable], console: Console) -> No
             )
             continue  # Can't check for nesting if the target is broken
 
-        # Check for nested references (a ref pointing to another ref)
         if target_node.get("type") == "ref":
-            # Create a view for the target to build a clean identifier string
             target_view = DeliverableXMLView(target_node)
-            target_id_str = f"{target_view.product_docset}/{target_view.lang}:{target_view.deliverableid}"
+
+            # A translated deliverable (non-English) is allowed to point to an
+            # English deliverable that is itself a reference. This is a valid,
+            # single-level chain for maintaining a DRY linkend.
+            is_translation_chain = (
+                not deliv.xml.lang.startswith("en") and target_view.lang.startswith("en")
+            )
+
+            if is_translation_chain:
+                # Ensure the chain stops here. The English target must not point
+                # to yet another reference.
+                grandchild_node = target_view._target_node
+                if grandchild_node and grandchild_node.get("type") == "ref":
+                    errors.append(
+                        f"* Invalid 3+ level reference chain: {deliv.xml.identifier} -> {target_view.identifier} -> {grandchild_node.get('id')}"
+                    )
+                continue  # Valid translation chain, so we can skip the error
+
+            # For all other cases, nested references are an error.
             errors.append(
-                f"* Nested reference: {deliv.xml.product_docset}/{deliv.xml.lang}:{deliv.xml.deliverableid} "
-                f"points to another reference: {target_id_str}"
+                f"* Nested reference: {deliv.xml.identifier} points to another reference: {target_view.identifier}"
             )
 
     if errors:
