@@ -48,8 +48,11 @@ Example:
 * Use mostly the defaults:
   $SCRIPT_NAME -x --schema custom.rnc docserv-stitch.xml
 
-* Store
+* Store in the user's directory:
   $SCRIPT_NAME -x --dir "~/.config/docbuild/config.d/" docserv-stitch.xml
+
+* Store in a single file:
+  $SCRIPT_NAME --dir /tmp/test/ --output portal-config.xml docserv-stitch.xml
 EOF
     exit 0
 }

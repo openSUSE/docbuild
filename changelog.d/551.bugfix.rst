@@ -1,0 +1,1 @@
+Fixed migration stylesheet to generate valid deliverable IDs for v6→v7 config conversion. Resolved empty ``xml:id`` attributes (XSLT 1.0 syntax error) and ID separator inconsistency that caused ~1940 IDREF validation errors. The stylesheet now generates consistent IDs using dots as separators, matching the portal schema requirements.

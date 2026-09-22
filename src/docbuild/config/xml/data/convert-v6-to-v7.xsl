@@ -390,20 +390,21 @@
             <!-- Retrieve all <language> elements that match the current @lang -->
             <xsl:for-each select="key('langKey', $currentLang)">
                <!-- Create an <language> for each, pulling categoryid from its parent -->
-                <xsl:choose>
-                  <xsl:when test=" starts-with($currentLang, 'en')">
-                    <language xml:id="{concat($cat.prefix, ../@categoryid)}">
-                      <title><xsl:value-of select="@title"/></title>
-                      <xsl:apply-templates select="node()"/>
-                    </language>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <language linkend="{concat($cat.prefix, ../@categoryid)}">
-                      <title><xsl:value-of select="@title"/></title>
-                      <xsl:apply-templates select="node()"/>
-                    </language>
-                  </xsl:otherwise>
-                </xsl:choose>
+               <xsl:variable name="cat-id" select="concat($cat.prefix, ../@categoryid)"/>
+                <language>
+                  <xsl:if test="starts-with($currentLang, 'en')">
+                    <xsl:attribute name="xml:id">
+                      <xsl:value-of select="$cat-id"/>
+                    </xsl:attribute>
+                  </xsl:if>
+                  <xsl:if test="not(starts-with($currentLang, 'en'))">
+                    <xsl:attribute name="linkend">
+                      <xsl:value-of select="$cat-id"/>
+                    </xsl:attribute>
+                  </xsl:if>
+                  <title><xsl:value-of select="@title"/></title>
+                  <xsl:apply-templates select="node()"/>
+                </language>
             </xsl:for-each>
           </category>
         </xsl:variable>
@@ -431,7 +432,7 @@
 
   <xsl:template match="product">
     <xsl:variable name="id" select="@productid" />
-    <xsl:variable name="cnfg" select="$config/product[@id=$id]" />
+    <xsl:variable name="cnfg" select="$config/product[@xml:id=$id]" />
 
     <!-- Capture the product content -->
     <xsl:variable name="content">
@@ -446,7 +447,7 @@
 
   <xsl:template match="product" mode="render">
     <xsl:variable name="id" select="@productid" />
-    <xsl:variable name="cnfg" select="$config/product[@id=$id]" />
+    <xsl:variable name="cnfg" select="$config/product[@xml:id=$id]" />
     <product xmlns:xi="http://www.w3.org/2001/XInclude">
         <xsl:apply-templates select="@*" />
         <!-- Add new attributes based on the transformation map -->
@@ -533,23 +534,22 @@
                             select="$currentCategory/language[@lang = $currentLang][1]"/>
 
               <xsl:if test="$sourceLanguage">
+                <xsl:variable name="cat-id">
+                  <xsl:call-template name="unique-category-id">
+                    <xsl:with-param name="node" select="$currentCategory"/>
+                  </xsl:call-template>
+                </xsl:variable>
                 <language>
-                  <xsl:choose>
-                    <xsl:when test="starts-with($currentLang, 'en')">
-                      <xsl:attribute name="xml:id">
-                        <xsl:call-template name="unique-category-id">
-                          <xsl:with-param name="node" select="$currentCategory"/>
-                        </xsl:call-template>
-                      </xsl:attribute>
-                    </xsl:when>
-                    <xsl:otherwise>
-                      <xsl:attribute name="linkend">
-                        <xsl:call-template name="unique-category-id">
-                          <xsl:with-param name="node" select="$currentCategory"/>
-                        </xsl:call-template>
-                      </xsl:attribute>
-                    </xsl:otherwise>
-                  </xsl:choose>
+                  <xsl:if test="starts-with($currentLang, 'en')">
+                    <xsl:attribute name="xml:id">
+                      <xsl:value-of select="$cat-id"/>
+                    </xsl:attribute>
+                  </xsl:if>
+                  <xsl:if test="not(starts-with($currentLang, 'en'))">
+                    <xsl:attribute name="linkend">
+                      <xsl:value-of select="$cat-id"/>
+                    </xsl:attribute>
+                  </xsl:if>
 
                   <title>
                     <xsl:choose>
@@ -658,7 +658,7 @@
     <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
                                                                and not(starts-with(language/url/@href, 'external-tree'))
                                                                and not(language/url/@format = 'pdf')]"/>
-    
+
     <xsl:if test="$eligible-links">
       <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
@@ -667,7 +667,7 @@
         <!-- Use first link to get list of all unique languages present in any eligible link -->
         <xsl:for-each select="$eligible-links[1]/language">
           <xsl:variable name="currentLang" select="@lang"/>
-          
+
           <!-- Check if this language appears in any eligible link -->
           <xsl:if test="$eligible-links/language[@lang = $currentLang]">
             <locale lang="{$currentLang}">
@@ -745,9 +745,12 @@
       </xsl:call-template>
     </xsl:variable>
 
-    <deliverable xml:id="{$id}" type="prebuilt">
+    <deliverable type="prebuilt">
+      <xsl:attribute name="xml:id">
+        <xsl:value-of select="$id"/>
+      </xsl:attribute>
       <xsl:apply-templates select="@gated|@titleformat|@category"/>
-      
+
       <prebuilt>
         <!-- Title from language element -->
         <xsl:if test="language[@lang = $lang]/@title">
@@ -828,7 +831,7 @@
       </xsl:choose>
     </xsl:variable>
 
-    <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
+    <xsl:variable name="abbrev" select="$config/product[@xml:id=$pid]/@idabbrev"/>
 
     <xsl:variable name="product.idabbrev">
       <xsl:choose>
@@ -980,10 +983,13 @@
          <xsl:with-param name="docset" select="$docset_for_id"/>
          <xsl:with-param name="dc" select="$doc_with_title"/>
        </xsl:call-template>
-    </xsl:variable>
+     </xsl:variable>
 
-    <deliverable xml:id="{$id}" type="prebuilt">
-      <xsl:apply-templates select="@category" mode="builddocs" />
+      <deliverable type="prebuilt">
+        <xsl:attribute name="xml:id">
+          <xsl:value-of select="$id"/>
+        </xsl:attribute>
+        <xsl:apply-templates select="@category" mode="builddocs" />
       <xsl:apply-templates
         select="language[@lang='en-us'][1] | language[1][not(../language[@lang='en-us'])]"
         mode="builddocs" />
@@ -1064,39 +1070,50 @@
     </xsl:comment>
   </xsl:template>
 
+   <!-- builddocs <deliverable> - generate proper ID -->
+   <xsl:template match="builddocs/language[@lang='en-us']/deliverable">
+      <xsl:variable name="pid" select="ancestor::product/@productid"/>
+      <xsl:variable name="abbrev" select="$config/product[@xml:id=$pid]/@idabbrev"/>
+      <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
+     <xsl:variable name="dc_text" select="normalize-space(dc)"/>
+     <xsl:variable name="docset_id" select="ancestor::docset/@setid"/>
 
-  <!-- regular <deliverable> -->
-  <xsl:template match="language[@lang='en-us']/deliverable">
-    <xsl:variable name="pid" select="ancestor::product/@productid"/>
-    <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
-    <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
-    <xsl:variable name="id">
-      <xsl:call-template name="generate.id">
-        <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-        <xsl:with-param name="docset" select="ancestor::docset/@setid"/>
-        <xsl:with-param name="dc" select="dc"/>
-      </xsl:call-template>
-    </xsl:variable>
+     <!-- Inline ID generation for testing -->
+     <xsl:variable name="id_calc">
+       <xsl:value-of select="$product.idabbrev"/>
+       <xsl:if test="normalize-space($docset_id)">
+         <xsl:value-of select="$id.sep"/>
+         <xsl:value-of select="normalize-space($docset_id)"/>
+       </xsl:if>
+       <xsl:if test="normalize-space($dc_text)">
+         <xsl:value-of select="$id.sep"/>
+         <xsl:value-of select="translate(translate(normalize-space($dc_text), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), ' /', '--')"/>
+       </xsl:if>
+     </xsl:variable>
 
-    <deliverable xml:id="{$id}" type="dc">
-      <xsl:apply-templates select="@*"/>
-      <dc file="{normalize-space(dc/text())}">
-        <xsl:apply-templates />
-      </dc>
-    </deliverable>
-  </xsl:template>
+     <deliverable type="dc">
+       <xsl:attribute name="xml:id">
+         <xsl:value-of select="$id_calc"/>
+       </xsl:attribute>
+       <xsl:apply-templates select="@*"/>
+       <dc file="{$dc_text}">
+         <xsl:apply-templates />
+       </dc>
+     </deliverable>
+   </xsl:template>
 
   <xsl:template match="dc|dc/text()" />
+
 
   <xsl:template match="language[@lang='en-us']/deliverable/@category">
     <xsl:call-template name="write-category-attribute"/>
   </xsl:template>
 
 
-  <!-- translated <deliverable> -->
-  <xsl:template match="language[@lang!='en-us']/deliverable">
+   <!-- translated <deliverable> -->
+   <xsl:template match="builddocs/language[@lang!='en-us']/deliverable">
     <xsl:variable name="pid" select="ancestor::product/@productid"/>
-    <xsl:variable name="abbrev" select="$config/product[@id=$pid]/@idabbrev"/>
+    <xsl:variable name="abbrev" select="$config/product[@xml:id=$pid]/@idabbrev"/>
     <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
     <xsl:variable name="id">
       <xsl:call-template name="generate.id">
@@ -1123,7 +1140,7 @@
   <!-- ref  -->
   <xsl:template match="ref[not(@linkend)]">
     <xsl:variable name="pid" select="@product"/>
-    <xsl:variable name="cnfg" select="$config/product[@id=$pid]"/>
+    <xsl:variable name="cnfg" select="$config/product[@xml:id=$pid]"/>
     <xsl:variable name="abbrev" select="$cnfg/@idabbrev"/>
     <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
     <xsl:variable name="ref" >
