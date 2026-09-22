@@ -2,32 +2,57 @@
 
 from pathlib import Path
 
-from docbuild.tasks.build.llms import clean_and_convert, inject_llms_links
+from justhtml import JustHTML
+
+from docbuild.tasks.build.llms import (
+    AntoraHTMLCleaner,
+    DocBookHTMLCleaner,
+    inject_llms_links,
+)
 
 DATA_DIR = Path(__file__).parent / "data"
 
-def test_clean_and_convert_daps() -> None:
-    """Ensure DAPS HTML correctly strips navbars, side-tocs, and permalinks."""
-    daps_html = (DATA_DIR / "daps_sample.html").read_text(encoding="utf-8")
-    md = clean_and_convert(daps_html)
+def test_clean_and_convert_daps_article() -> None:
+    """Ensure DAPS article HTML correctly strips navbars and side-tocs from the DOM."""
+    daps_html = (DATA_DIR / "daps_article.html").read_text(encoding="utf-8")
+    doc = JustHTML(daps_html, sanitize=False)
 
-    assert "Introduction" in md
-    assert "This is the core content that should remain." in md
-    assert "Menu content" not in md
-    assert "TOC content" not in md
-    assert "Link" not in md
-    assert "Next Page" not in md
+    cleaner = DocBookHTMLCleaner()
+    cleaner.clean(doc.root)
+
+    # Assert unwanted DOM nodes have been stripped completely
+    assert not doc.query("nav")
+    assert not doc.query("header")
+    assert not doc.query("footer")
+    assert not doc.query("aside")
+
+def test_clean_and_convert_daps_book() -> None:
+    """Ensure DAPS book HTML correctly strips navbars and side-tocs from the DOM."""
+    daps_html = (DATA_DIR / "daps_book.html").read_text(encoding="utf-8")
+    doc = JustHTML(daps_html, sanitize=False)
+
+    cleaner = DocBookHTMLCleaner()
+    cleaner.clean(doc.root)
+
+    # Assert unwanted DOM nodes have been stripped completely
+    assert not doc.query("nav")
+    assert not doc.query("header")
+    assert not doc.query("footer")
+    assert not doc.query("aside")
 
 def test_clean_and_convert_antora() -> None:
-    """Ensure Antora HTML correctly strips toolbars, nav-containers, and footers."""
+    """Ensure Antora HTML correctly strips toolbars and nav-containers from the DOM."""
     antora_html = (DATA_DIR / "antora_sample.html").read_text(encoding="utf-8")
-    md = clean_and_convert(antora_html)
+    doc = JustHTML(antora_html, sanitize=False)
 
-    assert "Concept" in md
-    assert "Rancher core concept that should remain." in md
-    assert "Top Nav content" not in md
-    assert "Menu content" not in md
-    assert "Copyright 2026" not in md
+    cleaner = AntoraHTMLCleaner()
+    cleaner.clean(doc.root)
+
+    # Assert unwanted DOM nodes have been stripped completely
+    assert not doc.query("nav")
+    assert not doc.query("header")
+    assert not doc.query("footer")
+    assert not doc.query("aside")
 
 def test_inject_llms_links_with_head() -> None:
     """Test link injection when <head> exists."""

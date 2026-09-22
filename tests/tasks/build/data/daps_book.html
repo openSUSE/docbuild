@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><title>Boot parameters | Deployment Guide | SLES 15 SP7</title><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/><link href="static/css/style-new.css" rel="stylesheet" type="text/css"/>
+<link href="http://purl.org/dc/elements/1.1/" rel="schema.dc"/><link href="http://purl.org/dc/terms/" rel="schema.dcterms"/>
+<meta content="2025-03-28" name="dcterms.created"/>
+<meta content="2025-03-28" name="dcterms.modified"/>
+<meta content="2026-09-17" name="dcterms.dateSubmitted"/>
+<meta content="Boot parameters | SLES 15 SP7" name="title"/>
+<meta content="Simplify installation and boot processes by configuring system settings, network connections and installation sources with SLE boot parameters" name="description"/>
+<meta content="SUSE Linux Enterprise Server" name="product-name"/>
+<meta content="15 SP7" name="product-number"/>
+<meta content="Deployment Guide" name="book-title"/>
+<meta content="Chapter 8. Boot parameters" name="chapter-title"/>
+<meta content="https://bugzilla.suse.com/enter_bug.cgi" name="tracker-url"/>
+<meta content="bsc" name="tracker-type"/>
+<meta content="fs@suse.com" name="tracker-bsc-assignee"/>
+<meta content="Documentation" name="tracker-bsc-component"/>
+<meta content="PUBLIC SUSE Linux Enterprise Server 15 SP7" name="tracker-bsc-product"/>
+<meta content="SUSE" name="publisher"/>
+<meta content="https://documentation.suse.com/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" property="og:url"/>
+<meta content="https://documentation.suse.com/sles/15-SP7/html/SLES-all/https://documentation.suse.com/sles/15-SP7/html/SLES-all/document.jpg" property="og:image"/>
+<meta content="DAPS 4.0.beta15 (https://opensuse.github.io/daps) using SUSE XSL Stylesheets 2.95.40 (based on DocBook XSL Stylesheets 1.79.2) - chunked" name="generator"/>
+<meta content="Deployment Guide" property="og:title"/>
+<meta content="Install single or multiple systems" property="og:description"/>
+<meta content="article" property="og:type"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="https://documentation.suse.com/sles/15-SP7/html/SLES-all/document.jpg" name="twitter:image"/>
+<meta content="Deployment Guide" name="twitter:title"/>
+<meta content="Install single or multiple systems" name="twitter:description"/>
+<meta content="@SUSE" name="twitter:site"/>
+<script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": ["TechArticle"],
+    "image": "https://www.suse.com/assets/img/suse-white-logo-green.svg",
+    "name": "Boot parameters | SUSE Linux Enterprise Server 15 SP7",
+    "isPartOf": {
+      "@type": "CreativeWorkSeries",
+      "name": "Products &amp; Solutions"
+    },
+    "inLanguage": "en",
+    "headline": "Boot parameters",
+    "description": "Simplify installation and boot processes by configuring system settings, network connections and installation sources with SLE boot parameters",
+    "author": [
+      {
+        "@type": "Corporation",
+        "name": "SUSE Product &amp; Solution Documentation Team",
+        "url": "https://documentation.suse.com"
+      }
+    ],
+    "dateCreated": "2025-03-28T00:00+02:00",
+    "dateModified": "2025-03-28T00:00+02:00",
+    "datePublished": "2026-09-17T07:07+02:00",
+    "about": [
+
+    ],
+    "mentions": [
+      { "@type": "SoftwareApplication",
+        "name": "SUSE Linux Enterprise Server",
+        "softwareVersion": "15 SP7",
+        "applicationCategory": "Operating System",
+        "operatingSystem": "Linux"
+      }
+    ],
+    "sameAs": [
+          "https://www.facebook.com/SUSEWorldwide/about",
+          "https://www.youtube.com/channel/UCHTfqIzPKz4f_dri36lAQGA",
+          "https://twitter.com/SUSE",
+          "https://www.linkedin.com/company/suse"
+    ],
+    "publisher": {
+      "@type": "Corporation",
+      "name": "SUSE",
+      "url": "https://documentation.suse.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+      }
+    }
+  }</script>
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET--><script defer="defer" src="static/js/qualtrics-feedback.js" type="text/javascript"> </script><div id="ZN_8qZUmklKYbBqAYe"><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div><!--END WEBSITE FEEDBACK SNIPPET-->
+<!--SUVA/AskGeeko start--><!--searchUnifyChatbot ("Ask Geeko") copyright 2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.-->
+<script src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636" type="text/javascript"></script>
+<script src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA==" type="text/javascript"></script>
+<link href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css" rel="stylesheet"/>
+<div id="searchUnifyChatbot"></div>
+<!--SUVA/AskGeeko end--><!--SUSE Header head--><script type="module">
+     import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+     defineCustomElements();
+     setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+   </script>
+<link as="style" href="https://documentation.suse.com/docserv/res/fonts/suse/suse.css" onload="this.rel='stylesheet'" rel="preload" type="text/css"/><script src="static/js/script-purejs.js" type="text/javascript"></script><script src="static/js/highlight.js" type="text/javascript"></script><script>hljs.highlightAll();</script><script src="static/js/ui-modifiers.js" type="text/javascript"></script><script type="text/javascript">
+if (window.location.protocol.toLowerCase() != 'file:') {
+  var externalScript1 = document.createElement("script");
+  externalScript1.src = "/docserv/res/extra.js";
+  document.head.appendChild(externalScript1);
+}
+      </script><meta content="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" name="edit-url"/><link href="https://documentation.suse.com/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" rel="canonical"/><link href="https://documentation.suse.com/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="x-default" rel="alternate"/><link href="https://documentation.suse.com/de-de/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="de-de" rel="alternate"/><link href="https://documentation.suse.com/es-es/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="es-es" rel="alternate"/><link href="https://documentation.suse.com/fr-fr/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="fr-fr" rel="alternate"/><link href="https://documentation.suse.com/ja-jp/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="ja-jp" rel="alternate"/><link href="https://documentation.suse.com/pt-br/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="pt-br" rel="alternate"/><link href="https://documentation.suse.com/zh-cn/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="zh-cn" rel="alternate"/><link href="https://documentation.suse.com/sles/15-SP7/html/SLES-all/cha-boot-parameters.html" hreflang="en-us" rel="alternate"/></head><body class="wide offline js-off"><!-- SUSE Header --><shared-header enable-search="false" language="en" languages='{      "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },      "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },      "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },      "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },      "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },      "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }     }'> </shared-header><div class="crumbs"><div class="growth-inhibitor"><a class="crumb overview-link" href="/" title="documentation.suse.com"></a><span class="sep">|</span><a class="crumb index-page-crumb" href="">Index</a><span class="sep">|</span><a class="crumb" href="index.html">SUSE Linux Enterprise Server Documentation</a><span class="sep">|</span><a class="crumb" href="book-deployment.html">Deployment Guide</a><span class="sep">|</span><a class="crumb" href="part-deployment.html">Installation procedure</a><span class="sep">|</span><a class="crumb" href="cha-boot-parameters.html">Boot parameters</a></div></div><main id="_content"><nav class="side-toc" id="_side-toc-overall" tabindex="0"><button id="_open-document-overview" title="More documents"> </button><div class="side-title">Deployment Guide</div><ol role="list"><li role="listitem"><a class="" href="preface-deployment.html"><span class="title-number"> </span><span class="title-name">Preface</span></a></li><li role="listitem"><a class="has-children" href="part-prep.html"><span class="title-number">I </span><span class="title-name">Installation preparation</span></a><ol role="list"><li role="listitem"><a class="" href="cha-planning.html"><span class="title-number">1 </span><span class="title-name">Planning for <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span></span></a></li><li role="listitem"><a class="" href="cha-x86.html"><span class="title-number">2 </span><span class="title-name">Installation on AMD64 and Intel 64</span></a></li><li role="listitem"><a class="" href="cha-aarch64.html"><span class="title-number">3 </span><span class="title-name">Installation on AArch64</span></a></li><li role="listitem"><a class="" href="cha-power.html"><span class="title-number">4 </span><span class="title-name">Installation on IBM POWER</span></a></li><li role="listitem"><a class="" href="cha-zseries.html"><span class="title-number">5 </span><span class="title-name">Installation on IBM Z and LinuxONE</span></a></li><li role="listitem"><a class="" href="supported-hypervisors.html"><span class="title-number">6 </span><span class="title-name">Installation on virtualization hosts</span></a></li><li role="listitem"><a class="" href="cha-kiso.html"><span class="title-number">7 </span><span class="title-name">Installation on hardware not supported at release</span></a></li></ol></li><li class="active" role="listitem"><a class="has-children you-are-here" href="part-deployment.html"><span class="title-number">II </span><span class="title-name">Installation procedure</span></a><ol role="list"><li role="listitem"><a class="you-are-here" href="cha-boot-parameters.html"><span class="title-number">8 </span><span class="title-name">Boot parameters</span></a></li><li role="listitem"><a class="" href="cha-install.html"><span class="title-number">9 </span><span class="title-name">Installation steps</span></a></li><li role="listitem"><a class="" href="cha-register-sle.html"><span class="title-number">10 </span><span class="title-name">Registering SUSE Linux Enterprise and managing modules/extensions</span></a></li><li role="listitem"><a class="" href="cha-expert-partitioner.html"><span class="title-number">11 </span><span class="title-name"><span class="guimenu">Expert Partitioner</span></span></a></li><li role="listitem"><a class="" href="cha-remote-installation.html"><span class="title-number">12 </span><span class="title-name">Remote installation</span></a></li><li role="listitem"><a class="" href="cha-installation-troubleshooting.html"><span class="title-number">13 </span><span class="title-name">Troubleshooting</span></a></li></ol></li><li role="listitem"><a class="has-children" href="part-customize-media.html"><span class="title-number">III </span><span class="title-name">Customizing installation images</span></a><ol role="list"><li role="listitem"><a class="" href="cha-deployment-clone-cleanup-tool.html"><span class="title-number">14 </span><span class="title-name">Prepare a disk for cloning with the system cleanup tool</span></a></li><li role="listitem"><a class="" href="cha-deployment-prep-mksusecd.html"><span class="title-number">15 </span><span class="title-name">Customizing installation images with mksusecd</span></a></li><li role="listitem"><a class="" href="cha-deployment-prep-customize-installation-images.html"><span class="title-number">16 </span><span class="title-name">Customizing installation images manually</span></a></li></ol></li><li role="listitem"><a class="has-children" href="part-installserver.html"><span class="title-number">IV </span><span class="title-name">Setting up an installation server</span></a><ol role="list"><li role="listitem"><a class="" href="cha-deployment-instserver.html"><span class="title-number">17 </span><span class="title-name">Setting up a network installation source</span></a></li><li role="listitem"><a class="" href="cha-deployment-prep-pxe.html"><span class="title-number">18 </span><span class="title-name">Preparing network boot environment</span></a></li><li role="listitem"><a class="" href="cha-deployment-prep-uefi-httpboot.html"><span class="title-number">19 </span><span class="title-name">Setting up a UEFI HTTP Boot server</span></a></li><li role="listitem"><a class="" href="cha-deployment-firstboot.html"><span class="title-number">20 </span><span class="title-name">Deploying customized preinstallations</span></a></li></ol></li><li role="listitem"><a class="" href="app-create-os-image.html"><span class="title-number">A </span><span class="title-name">Imaging and creating products</span></a></li><li role="listitem"><a class="" href="bk02apb.html"><span class="title-number">B </span><span class="title-name">GNU licenses</span></a></li> </ol><div id="_document-overview"><ol role="list"><li role="listitem"><a href="book-administration.html"><span class="title-name">Administration Guide</span></a></li><li role="listitem"><a href="book-deployment.html"><span class="title-name">Deployment Guide</span></a></li><li role="listitem"><a href="book-upgrade.html"><span class="title-name">Upgrade Guide</span></a></li><li role="listitem"><a href="book-gnome-user.html"><span class="title-name">GNOME User Guide</span></a></li><li role="listitem"><a href="book-autoyast.html"><span class="title-name">AutoYaST Guide</span></a></li><li role="listitem"><a href="book-security.html"><span class="title-name">Security and Hardening Guide</span></a></li><li role="listitem"><a href="book-tuning.html"><span class="title-name">System Analysis and Tuning Guide</span></a></li><li role="listitem"><a href="book-rmt.html"><span class="title-name">RMT Guide</span></a></li><li role="listitem"><a href="book-storage.html"><span class="title-name">Storage Administration Guide</span></a></li><li role="listitem"><a href="book-virtualization.html"><span class="title-name">Virtualization Guide</span></a></li><li role="listitem"><a href="article-installation.html"><span class="title-name">Installation Quick Start</span></a></li><li role="listitem"><a href="article-modules.html"><span class="title-name">Modules and Extensions Quick Start</span></a></li><li role="listitem"><a href="article-virtualization-best-practices.html"><span class="title-name">Virtualization Best Practices</span></a></li><li role="listitem"><a href="article-kubevirt.html"><span class="title-name">Using KubeVirt on SUSE Linux Enterprise</span></a></li><li role="listitem"><a href="article-amd-sev.html"><span class="title-name">AMD Secure Encrypted Virtualization—Encrypyed State (AMD SEV-ES) Guide</span></a></li><li role="listitem"><a href="article-nvidia-vgpu.html"><span class="title-name">NVIDIA Virtual GPU for KVM Guests</span></a></li><li role="listitem"><a href="article-raspberry-pi.html"><span class="title-name">Raspberry Pi Quick Start</span></a></li><li role="listitem"><a href="article-openscap.html"><span class="title-name">Hardening <span class="productname"><span class="phrase">SLES</span></span> with OpenSCAP</span></a></li></ol></div> </nav><button id="_open-side-toc-overall" title="Contents"> </button><article class="documentation"><button id="_unfold-side-toc-page">On this page</button><section class="chapter" data-id-title="Boot parameters" id="cha-boot-parameters"><div class="titlepage"><div><div class="version-info">Applies to  <span class="productname"><span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span></span> <span class="productnumber"><span class="productnumber"><span class="phrase">15 SP7</span></span></span></div><div><div class="title-container"><h1 class="title"><span class="title-number-name"><span class="title-number">8 </span><span class="title-name">Boot parameters</span></span> <a class="permalink" href="cha-boot-parameters.html#" title="Permalink">#</a></h1><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div><div></div><div><div class="abstract"><p>
+<span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> allows setting several parameters during boot, for example
+    choosing the source of the installation data or setting the network
+    configuration.
+   </p></div></div></div></div><p>
+  Using the appropriate set of boot parameters helps simplify your installation
+  procedure. Many parameters can also be configured later using the linuxrc
+  routines, but using the boot parameters is easier. In some automated setups,
+  the boot parameters can be provided with <code class="filename">initrd</code> or an
+  <code class="filename">info</code> file.
+ </p><p>
+  The way the system is started for the installation depends on the
+  architecture—system start-up is different for PC (AMD64/Intel 64) or
+  mainframe, for example. If you install <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> as a VM Guest on a
+  KVM or Xen hypervisor, follow the instructions for the AMD64/Intel 64
+  architecture.
+ </p><div class="admonition note normal" data-id-title="Boot options and boot parameters" id="id-1.4.4.3.5"><img alt="Note" class="symbol" src="static/images/icon-note.svg" title="Note"/><div class="admon-title">Note: Boot options and boot parameters</div><p>
+   The terms <span><em class="emphasis">Boot Parameters</em></span> and <span><em class="emphasis">Boot
+   Options</em></span> are often used interchangeably. In this documentation, we
+   mostly use the term <span><em class="emphasis">Boot Parameters</em></span>.
+  </p></div><section class="sect1" data-id-title="Using the default boot parameters" id="sec-boot-parameters-default"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.1 </span><span class="title-name">Using the default boot parameters</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-default" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   The boot parameters are described in detail in <a class="xref" href="cha-install.html" title="Chapter 9. Installation steps">Chapter 9, <em>Installation steps</em></a>.
+   Generally, selecting <span class="guimenu">Installation</span> starts the installation boot process.
+  </p><p>
+   If problems occur, use <span class="guimenu">Installation—ACPI Disabled</span>
+   or <span class="guimenu">Installation—Safe Settings</span>. For more information
+   about troubleshooting the installation process, refer to
+   <a class="xref" href="cha-installation-troubleshooting.html" title="Chapter 13. Troubleshooting">Chapter 13, <em>Troubleshooting</em></a>.
+  </p><p>
+   The menu bar at the bottom of the screen offers some advanced functionality
+   needed in some setups. Using the function keys (<span class="keycap">F1</span> ...
+   <span class="keycap">F12</span>), you can specify additional options to pass to the
+   installation routines without having to know the detailed syntax of these
+   parameters (see <a class="xref" href="cha-boot-parameters.html" title="Chapter 8. Boot parameters">Chapter 8, <em>Boot parameters</em></a>). A detailed
+   description of the available function keys is available in
+   <a class="xref" href="cha-boot-parameters.html#sec-boot-parameters-screen" title="8.2.1. The boot screen on machines with traditional BIOS">Section 8.2.1, “The boot screen on machines with traditional BIOS”</a>.
+  </p></section><section class="sect1" data-id-title="PC (AMD64/Intel 64/AArch64)" id="sec-boot-parameters-start-x86-64"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.2 </span><span class="title-name">PC (AMD64/Intel 64/AArch64)</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-start-x86-64" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   This section describes changing the boot parameters for AMD64, Intel 64
+   and AArch64.
+  </p><section class="sect2" data-id-title="The boot screen on machines with traditional BIOS" id="sec-boot-parameters-screen"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.2.1 </span><span class="title-name">The boot screen on machines with traditional BIOS</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-screen" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    The boot screen displays several options for the installation procedure.
+    <span class="guimenu">Boot from Hard Disk</span> boots the installed system and is
+    selected by default. Select one of the other options with the arrow keys and
+    press
+    <span class="keycap">Enter</span> to boot it. The relevant options are:
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.7.3.3.1"><span class="term"><span class="guimenu">Installation</span></span></dt><dd><p>
+       The normal installation mode. All modern hardware functions are enabled.
+       In case the installation fails, see
+       <a class="xref" href="cha-boot-parameters.html#vle-boot-parameters-screen-kernel"><span class="keycap">F5</span><span class="guimenu">Kernel</span></a> for boot parameters
+       that disable potentially problematic functions.
+      </p></dd><dt id="id-1.4.4.3.7.3.3.2"><span class="term"><span class="guimenu">Upgrade</span></span></dt><dd><p>
+       Perform a system upgrade. For more information refer to
+       <a class="xref" href="cha-upgrade-paths.html" title="Chapter 2. Upgrade paths and methods">Chapter 2, <em>Upgrade paths and methods</em></a>.
+      </p></dd><dt id="id-1.4.4.3.7.3.3.3"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Rescue System</span></span></dt><dd><p>
+       Starts a minimal Linux system without a graphical user interface.
+       
+       
+      </p></dd><dt id="id-1.4.4.3.7.3.3.4"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Boot Linux System</span></span></dt><dd><p>
+       Boot a Linux system that is already installed. You will be asked from
+       which partition to boot the system.
+      </p></dd><dt id="id-1.4.4.3.7.3.3.5"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Check Installation Media</span></span></dt><dd><p>
+       This option is only available when you install from media created from
+       downloaded ISOs. In this case it is recommended to check the integrity
+       of the installation medium. This option starts the installation system
+       before automatically checking the media. In case the check was
+       successful, the normal installation routine starts. If a corrupt media
+       is detected, the installation routine aborts. Replace the broken medium
+       and restart the installation process.
+      </p></dd><dt id="id-1.4.4.3.7.3.3.6"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Memory Test</span></span></dt><dd><p>
+       Tests your system RAM using repeated read and write cycles. Terminate
+       the test by rebooting. For more information, see
+       <a class="xref" href="cha-installation-troubleshooting.html#sec-installation-troubleshooting-noboot" title="13.4. Boot failure">Section 13.4, “Boot failure”</a>.
+      </p></dd></dl></div><div class="figure" id="id-1.4.4.3.7.3.4"><div class="figure-contents"><div class="mediaobject"><a href="images/install_boot.png"><img alt="The Boot Screen on Machines with a Traditional BIOS" src="images/install_boot.png" title="The Boot Screen on Machines with a Traditional BIOS" width="75%"/></a></div></div><div class="title-container"><div class="figure-title-wrap"><div class="figure-title"><span class="title-number-name"><span class="title-number">Figure 8.1: </span><span class="title-name">The boot screen on machines with a traditional BIOS </span></span><a class="permalink" href="cha-boot-parameters.html#id-1.4.4.3.7.3.4" title="Permalink">#</a></div></div><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div><p>
+    Use the function keys shown at the bottom of the screen to change the
+    language, screen resolution, installation source or to add an additional
+    driver from your hardware vendor:
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.7.3.6.1"><span class="term"><span class="keycap">F1</span><span class="guimenu">Help</span></span></dt><dd><p>
+       Get context-sensitive help for the active element of the boot screen.
+       Use the arrow keys to navigate, <span class="keycap">Enter</span> to follow a
+       link, and <span class="keycap">Esc</span> to leave the help screen.
+      </p></dd><dt id="id-1.4.4.3.7.3.6.2"><span class="term"><span class="keycap">F2</span><span class="guimenu">Language</span></span></dt><dd><p>
+       Select the display language and a corresponding keyboard layout for the
+       installation. The default language is English (US).
+      </p></dd><dt id="id-1.4.4.3.7.3.6.3"><span class="term"><span class="keycap">F3</span><span class="guimenu">Video Mode</span></span></dt><dd><p>
+       Select various graphical display modes for the installation. By
+       <span class="guimenu">Default</span> the video resolution is automatically
+       determined using KMS (<span class="quote">“<span class="quote">Kernel Mode Setting</span>”</span>). If this
+       setting does not work on your system, choose <span class="guimenu">No KMS</span>
+       and, optionally, specify <code class="literal">vga=ask</code> on the boot command
+       line to get prompted for the video resolution. Choose <span class="guimenu">Text
+       Mode</span> if the graphical installation causes problems.
+      </p></dd><dt id="id-1.4.4.3.7.3.6.4"><span class="term"><span class="keycap">F4</span><span class="guimenu">Source</span></span></dt><dd><p>
+       Normally, the installation is performed from the inserted installation
+       medium. Here, select other sources, like FTP or NFS servers, or configure
+       a proxy server.
+       <span class="phrase"> If the installation is deployed on a network
+        with an SLP server, select an installation source available on the
+        server with this option. Find information about setting up an
+        installation server with SLP at <a class="xref" href="cha-deployment-instserver.html" title="Chapter 17. Setting up a network installation source">Chapter 17, <em>Setting up a network installation source</em></a>.
+       </span>
+</p></dd><dt id="vle-boot-parameters-screen-kernel"><span class="term"><span class="keycap">F5</span><span class="guimenu">Kernel</span></span></dt><dd><p>
+       If you encounter problems with the regular installation, this menu
+       offers to disable a few potentially problematic functions. If your
+       hardware does not support ACPI (advanced configuration and power
+       interface) select <span class="guimenu">No ACPI</span> to install without ACPI
+       support. <span class="guimenu">No local APIC</span> disables support for APIC
+       (Advanced Programmable Interrupt Controllers) which may cause problems
+       with some hardware. <span class="guimenu">Safe Settings</span> boots the system
+       with the DMA mode (for CD/DVD-ROM drives) and power management functions
+       disabled.
+      </p><p>
+       If you are not sure, try the following options first:
+       <span class="guimenu">Installation—ACPI Disabled</span> or
+       <span class="guimenu">Installation—Safe Settings</span>. Experts can also
+       use the command line (<span class="guimenu">Boot Options</span>) to enter or
+       change kernel parameters.
+      </p></dd><dt id="id-1.4.4.3.7.3.6.6"><span class="term"><span class="keycap">F6</span><span class="guimenu">Driver</span></span></dt><dd><p>
+       Press this key to notify the system that you have an optional driver
+       update for <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span>. With <span class="guimenu">File</span> or
+       <span class="guimenu">URL</span>, load drivers directly before the installation
+       starts. If you select <span class="guimenu">Yes</span>, you are prompted to insert
+       the update disk at the appropriate point in the installation process.
+      </p><div class="admonition tip normal" data-id-title="Getting driver update disks" id="id-1.4.4.3.7.3.6.6.2.2"><img alt="Tip" class="symbol" src="static/images/icon-tip.svg" title="Tip"/><div class="admon-title">Tip: Getting driver update disks</div><p>
+        Driver updates for SUSE Linux Enterprise are provided at
+        <a class="link" href="https://drivers.suse.com/" target="_blank">https://drivers.suse.com/</a>. These drivers have been
+        created via the SUSE SolidDriver Program.
+       </p></div></dd></dl></div></section><section class="sect2" data-id-title="The boot screen on machines equipped with UEFI" id="sec-boot-parameters-uefi"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.2.2 </span><span class="title-name">The boot screen on machines equipped with UEFI</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-uefi" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    UEFI (Unified Extensible Firmware Interface) is a new industry standard
+    which replaces and extends the traditional BIOS. The latest UEFI
+    implementations contain the <span class="quote">“<span class="quote">Secure Boot</span>”</span> extension, which
+    prevents booting malicious code by only allowing signed boot loaders to be
+    executed.<span class="phrase"> See <a class="xref" href="cha-uefi.html" title="Chapter 17. UEFI (Unified Extensible Firmware Interface)">Chapter 17, <em>UEFI (Unified Extensible Firmware Interface)</em></a> for more
+    information.</span>
+</p><p>
+    The boot manager GRUB 2, used to boot machines with a traditional BIOS,
+    does not support UEFI, therefore GRUB 2 is replaced with GRUB 2 for EFI. If
+    Secure Boot is enabled, YaST will automatically select GRUB 2 for EFI for
+    installation. From an administrative and user perspective, both boot
+    manager implementations behave the same and are called
+    <code class="literal">GRUB 2</code> in the following.
+   </p><div class="admonition tip normal" data-id-title="Using additional drivers with Secure Boot" id="id-1.4.4.3.7.4.4"><img alt="Tip" class="symbol" src="static/images/icon-tip.svg" title="Tip"/><div class="admon-title">Tip: Using additional drivers with Secure Boot</div><p>
+     When installing with Secure Boot enabled, you cannot load drivers that are
+     not shipped with <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span>. This is also true of drivers shipped via
+     SolidDriver, because their signing key is not trusted by default.
+    </p><p>
+     To load drivers not shipped with <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span>, do either of the
+     following:
+    </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+       Before the installation, add the needed keys to the firmware database
+       via firmware/system management tools.
+      </p></li><li class="listitem"><p>
+       Use a bootable ISO that will enroll the needed keys in the MOK list on
+       the first boot.
+      </p></li></ul></div><p>
+     For more information, see <a class="xref" href="cha-uefi.html#sec-uefi-secboot" title="17.1. Secure boot">Section 17.1, “Secure boot”</a>.
+    </p></div><p>
+    The boot screen displays several options for the installation procedure.
+    Change the selected option with the arrow keys and press
+    <span class="keycap">Enter</span> to boot it. The relevant options are:
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.7.4.6.1"><span class="term"><span class="guimenu">Installation</span></span></dt><dd><p>
+       The normal installation mode. All modern hardware functions are enabled.
+       In case the installation fails, see
+       <a class="xref" href="cha-boot-parameters.html#vle-boot-parameters-screen-kernel"><span class="keycap">F5</span><span class="guimenu">Kernel</span></a> for boot
+       parameters that disable potentially problematic functions.
+      </p></dd><dt id="id-1.4.4.3.7.4.6.2"><span class="term"><span class="guimenu">Upgrade</span></span></dt><dd><p>
+       Perform a system upgrade. For more information refer to
+       <a class="xref" href="cha-upgrade-paths.html" title="Chapter 2. Upgrade paths and methods">Chapter 2, <em>Upgrade paths and methods</em></a>.
+      </p></dd><dt id="id-1.4.4.3.7.4.6.3"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Rescue System</span></span></dt><dd><p>
+       Starts a minimal Linux system without a graphical user interface.
+       
+       
+      </p></dd><dt id="id-1.4.4.3.7.4.6.4"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Boot Linux System</span></span></dt><dd><p>
+       Boot a Linux system that is already installed. You will be asked from
+       which partition to boot the system.
+      </p></dd><dt id="id-1.4.4.3.7.4.6.5"><span class="term"><span class="guimenu">More</span> › <span class="guimenu">Check Installation Media</span></span></dt><dd><p>
+       This option is only available when you install from media created from
+       downloaded ISOs. In this case it is recommended to check the integrity
+       of the installation medium. This option starts the installation system
+       before automatically checking the media. In case the check was
+       successful, the normal installation routine starts. If a corrupt media
+       is detected, the installation routine aborts.
+      </p></dd></dl></div><div class="figure" id="id-1.4.4.3.7.4.7"><div class="figure-contents"><div class="mediaobject"><a href="images/install_boot_uefi.png"><img alt="The Boot Screen on Machines with UEFI" src="images/install_boot_uefi.png" title="The Boot Screen on Machines with UEFI" width="75%"/></a></div></div><div class="title-container"><div class="figure-title-wrap"><div class="figure-title"><span class="title-number-name"><span class="title-number">Figure 8.2: </span><span class="title-name">The boot screen on machines with UEFI </span></span><a class="permalink" href="cha-boot-parameters.html#id-1.4.4.3.7.4.7" title="Permalink">#</a></div></div><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div><p>
+    GRUB 2 for EFI on <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> does not support a boot prompt or function keys
+    for adding boot parameters. By default, the installation will be started
+    with American English and the boot media as the installation source. A DHCP
+    lookup will be performed to configure the network. To change these defaults
+    or to add boot parameters you need to edit the respective boot entry.
+    Highlight it using the arrow keys and press <span class="keycap">E</span>. See the
+    on-screen help for editing hints (note that only an English keyboard is
+    available now). The <span class="guimenu">Installation</span> entry will look similar
+    to the following:
+   </p><div class="verbatim-wrap"><pre class="screen">setparams 'Installation'
+
+   set gfxpayload=keep
+   echo 'Loading kernel ...'
+   linuxefi /boot/x86_64/loader/linux splash=silent
+   echo 'Loading initial ramdisk ...'
+   initrdefi /boot/x86_64/loader/initrd</pre></div><p>
+    Add space-separated parameters to the end of the line starting with
+    <code class="literal">linuxefi</code>. To boot the edited entry, press
+    <span class="keycap">F10</span>. If you access the machine via serial console, press
+    <span class="keycap">Esc</span><span class="key-connector">–</span><span class="keycap">0</span>. A
+    complete list of parameters is available at
+    <a class="link" href="https://en.opensuse.org/Linuxrc" target="_blank">https://en.opensuse.org/Linuxrc</a>.
+   </p></section></section><section class="sect1" data-id-title="List of important boot parameters" id="sec-boot-parameters-list"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.3 </span><span class="title-name">List of important boot parameters</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-list" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   This section contains a selection of important boot parameters.
+  </p><section class="sect2" data-id-title="General boot parameters" id="sec-boot-parameters-list-general"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.3.1 </span><span class="title-name">General boot parameters</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-list-general" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.8.3.3.1"><span class="term"><code class="option">autoyast=</code><em class="replaceable">URL</em></span></dt><dd><p>
+       The <code class="envar">autoyast</code> parameter specifies the location of the
+       <code class="filename">autoinst.xml</code> control file for automatic
+       installation.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.2"><span class="term"><code class="option">manual=&lt;0|1&gt;</code></span></dt><dd><p>
+       The <code class="envar">manual</code> parameter controls whether the other
+       parameters are only default values that still must be acknowledged by
+       the user. Set this parameter to <code class="literal">0</code> if all values
+       should be accepted and no questions asked. Setting
+       <code class="envar">autoyast</code> implies setting <code class="envar">manual</code> to
+       <code class="literal">0</code>.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.3"><span class="term"><code class="option">Info=</code><em class="replaceable">URL</em></span></dt><dd><p>
+       Specifies a location for a file from which to read additional options.
+      </p><p><strong class="arch-arrow-start">IBM Z</strong>
+       This helps to overcome the limitations of 10 lines (and 80 characters
+       per line under z/VM) for the parmfile. More
+       documentation on the Info file can be found in
+       <a class="xref" href="Invoking.html#invoking-autoinst-linuxrc" title="9.3.3. Combining the linuxrc info file with the AutoYaST control file">Section 9.3.3, “Combining the <code class="command">linuxrc</code> <code class="filename">info</code> file with the AutoYaST control file”</a>. Since the Info
+       file can typically only be accessed through the network on IBM Z,
+       you cannot use it to specify options required to set up the network
+       (these options are described in
+       <a class="xref" href="cha-boot-parameters.html#sec-boot-parameters-list-network" title="8.3.2. Configuring the network interface">Section 8.3.2, “Configuring the network interface”</a>). Also other linuxrc
+       specific options such as for debugging need to be specified in the
+       parmfile to be effective.
+      <strong class="arch-arrow-end"> </strong></p></dd><dt id="id-1.4.4.3.8.3.3.4"><span class="term"><code class="option">upgrade=&lt;0|1&gt;</code></span></dt><dd><p>
+       To upgrade <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span>, specify <code class="option">Upgrade=1</code>.
+      </p><p><strong class="arch-arrow-start">IBM Z</strong>
+       A custom parmfile is required for upgrading an existing installation of
+       SUSE Linux Enterprise. Without this parameter, the installation provides no upgrade
+       option.
+      <strong class="arch-arrow-end"> </strong></p></dd><dt id="id-1.4.4.3.8.3.3.5"><span class="term"><code class="option">dud=</code><em class="replaceable">URL</em></span></dt><dd><p>
+       Load driver updates from <em class="replaceable">URL</em>.
+      </p><p>
+       Set <code class="literal">dud=ftp://ftp.example.com/PATH_TO_DRIVER</code> or
+       <code class="literal">dud=http://www.example.com/PATH_TO_DRIVER </code> to load
+       drivers from a URL. When <code class="literal">dud=1</code> you will be asked for
+       the URL during boot.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.6"><span class="term"><code class="option">language=</code><em class="replaceable">LANGUAGE</em></span></dt><dd><p>
+       Set the installation language. Some supported values are
+       <code class="literal">cs_CZ</code>, <code class="literal">de_DE</code>,
+       <code class="literal">es_ES</code>, <code class="literal">fr_FR</code>,
+       <code class="literal">ja_JP</code>, <code class="literal">pt_BR</code>,
+       <code class="literal">pt_PT</code>, <code class="literal">ru_RU</code>,
+       <code class="literal">zh_CN</code>, and <code class="literal">zh_TW</code>.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.7"><span class="term"><code class="option">acpi=off</code></span></dt><dd><p>
+       Disable ACPI support.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.8"><span class="term"><code class="option">noapic</code></span></dt><dd><p>
+       No logical APIC.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.9"><span class="term"><code class="option">nomodeset</code></span></dt><dd><p>
+       Disable Kernel Mode Setting (KMS).
+      </p></dd><dt id="id-1.4.4.3.8.3.3.10"><span class="term"><code class="option">textmode=1</code></span></dt><dd><p>
+       Start installer in text mode.
+      </p></dd><dt id="id-1.4.4.3.8.3.3.11"><span class="term"><code class="option">console=</code><em class="replaceable">SERIAL_DEVICE</em>[,<em class="replaceable">MODE</em>]</span></dt><dd><p>
+<em class="replaceable">SERIAL_DEVICE</em> can be an actual serial or
+       parallel device (for example <code class="literal">ttyS0</code>) or a virtual
+       terminal (for example <code class="literal">tty1</code>).
+       <em class="replaceable">MODE</em> is the baud rate, parity and stop bit
+       (for example <code class="literal">9600n8</code>). The default for this setting is
+       set by the mainboard firmware. If you do not see output on your monitor,
+       try setting <code class="literal">console=tty1</code>. It is possible to define
+       multiple devices.
+      </p></dd></dl></div></section><section class="sect2" data-id-title="Configuring the network interface" id="sec-boot-parameters-list-network"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.3.2 </span><span class="title-name">Configuring the network interface</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-list-network" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><div class="admonition important normal" data-id-title="Configuring the network interface" id="id-1.4.4.3.8.4.2"><img alt="Important" class="symbol" src="static/images/icon-important.svg" title="Important"/><div class="admon-title">Important: Configuring the network interface</div><p>
+     The settings discussed in this section apply only to the network interface
+     used during installation.<span class="phrase"> Configure additional network
+     interfaces in the installed system by following the instructions in <a class="xref" href="cha-network.html#sec-network-manconf" title="23.5. Configuring a network connection manually">Section 23.5, “Configuring a network connection manually”</a>.</span>
+</p></div><p>
+    The network will only be configured if it is required during the
+    installation. To force the network to be configured, use the
+    <code class="literal">netsetup</code> or <code class="literal">ifcfg</code> parameters.
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.8.4.4.1"><span class="term"><code class="option">netsetup=<em class="replaceable">VALUE</em></code></span></dt><dd><p>
+<code class="literal">netsetup=dhcp</code> forces a configuration via DHCP. Set
+       <code class="literal">netsetup=-dhcp</code> when configuring the network with the
+       boot parameters <code class="literal">hostip</code>, <code class="literal">gateway</code>
+       and <code class="literal">nameserver</code>. With the option
+       <code class="literal">netsetup=hostip,netmask,gateway,nameserver</code> the
+       installer asks for the network settings during boot.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.2"><span class="term"><code class="option"> ifcfg=<em class="replaceable">INTERFACE</em>[.<em class="replaceable">VLAN</em>]=[.try,]<em class="replaceable">SETTINGS</em> </code></span></dt><dd><p>
+<em class="replaceable">INTERFACE</em> can be <code class="literal">*</code> to
+       match all interfaces or, for example, <code class="literal">eth*</code> to match
+       all interfaces that start with <code class="literal">eth</code>. It is also
+       possible to use MAC addresses as values.
+      </p><p>
+       Optionally, a VLAN can be set behind the interface name, separated by a
+       period.
+      </p><p>
+       If <em class="replaceable">SETTINGS</em> is <code class="literal">dhcp</code>, all
+       matching interfaces will be configured with DHCP. If you add the
+       <code class="literal">try</code> option, configuration will stop when the
+       installation repository can be reached via one of the configured
+       interfaces.
+      </p><p>
+       Alternatively, you can use static configuration. With static parameters,
+       only the first matching interface will be configured, unless you add the
+       <code class="literal">try</code> option. This will configure all interfaces until
+       the repository can be reached.
+      </p><p>
+       The syntax for the static configuration is:
+      </p><div class="verbatim-wrap"><pre class="screen">ifcfg=*="<em class="replaceable">IPS_NETMASK</em>,<em class="replaceable">GATEWAYS</em>,<em class="replaceable">NAMESERVERS</em>,<em class="replaceable">DOMAINS</em>"</pre></div><p>
+       Each comma separated value can in turn contain a list of space character
+       separated values. <em class="replaceable">IPS_NETMASK</em> is in the
+       <span><em class="emphasis">CIDR notation</em></span>, for example
+       <code class="literal">10.0.0.1/24</code>. The quotes are only needed when using
+       space character separated lists. Example with two name servers:
+      </p><div class="verbatim-wrap"><pre class="screen">ifcfg=*="<em class="replaceable">10.0.0.10/24</em>,<em class="replaceable">10.0.0.1</em>,<em class="replaceable">10.0.0.1 10.0.0.2</em>,<em class="replaceable">example.com</em>"</pre></div><div class="admonition tip normal" data-id-title="Other networking parameters" id="id-1.4.4.3.8.4.4.2.2.9"><img alt="Tip" class="symbol" src="static/images/icon-tip.svg" title="Tip"/><div class="admon-title">Tip: Other networking parameters</div><p>
+        The <code class="literal">ifcfg</code> boot parameter is very powerful and allows
+        you to set almost all networking parameters. In addition to the
+        parameters mentioned above, you can set values for all configuration
+        options (comma separated) from
+        <code class="filename">/etc/sysconfig/network/ifcfg.template </code> and
+        <code class="filename">/etc/sysconfig/network/config</code>. The following
+        example sets a custom MTU size on an interface otherwise configured via
+        DHCP:
+       </p><div class="verbatim-wrap"><pre class="screen">ifcfg=eth0=dhcp,MTU=1500</pre></div></div></dd><dt id="id-1.4.4.3.8.4.4.3"><span class="term"><code class="option">hostname=host.example.com</code></span></dt><dd><p>
+       Enter the fully qualified host name.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.4"><span class="term"><code class="option">domain=example.com</code></span></dt><dd><p>
+       Domain search path for DNS. Allows you to use short host names instead
+       of fully qualified ones.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.5"><span class="term"><code class="option">hostip=192.168.1.2[/24]</code></span></dt><dd><p>
+       Enter the IP address of the interface to configure. The IP can contain
+       the subnet mask, for example
+       <code class="literal">hostip=192.168.1.2/24</code>. This setting is only
+       evaluated if the network is required during the installation.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.6"><span class="term"><code class="option">gateway=192.168.1.3</code></span></dt><dd><p>
+       Specify the gateway to use. This setting is only evaluated if the
+       network is required during the installation.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.7"><span class="term"><code class="option">nameserver=192.168.1.4</code></span></dt><dd><p>
+       Specify the DNS server in charge. This setting is only evaluated if the
+       network is required during the installation.
+      </p></dd><dt id="id-1.4.4.3.8.4.4.8"><span class="term"><code class="option">domain=example.com</code></span></dt><dd><p>
+       Domain search path. This setting is only evaluated if the network is
+       required during the installation.
+      </p></dd></dl></div></section><section class="sect2" data-id-title="Specifying the installation source" id="sec-boot-parameters-list-install-source"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.3.3 </span><span class="title-name">Specifying the installation source</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-list-install-source" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    If you are not using DVD or USB flash drive for installation, specify an
+    alternative installation source.
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.8.5.3.1"><span class="term"><code class="option">install=SOURCE</code></span></dt><dd><p>
+       Specify the location of the installation source to use. Possible
+       protocols are <code class="literal">cd</code>, <code class="literal">hd</code>,
+       <code class="literal">slp</code>, <code class="literal">nfs</code>, <code class="literal">smb</code>
+       (Samba/CIFS), <code class="literal">ftp</code>, <code class="literal">tftp</code>,
+       <code class="literal">http</code>, and <code class="literal">https</code>.
+       <span class="phrase">Not all source types are available on all platforms.
+       For example IBM Z does not support <code class="literal">cd</code> and
+       <code class="literal">hd</code>.</span>
+       The default option is <code class="literal">cd</code>.
+      </p><p>
+       To install over an encrypted connection, use an <code class="literal">https</code>
+       URL. If the certificate cannot be verified, disable certificate
+       checking with the <code class="literal">sslcerts=0</code> boot parameter.
+      </p><p>
+       If an <code class="literal">http</code>, <code class="literal">https</code>,
+       <code class="literal">ftp</code>, <code class="literal">tftp</code>, or
+       <code class="literal">smb</code> URL is given, you can authenticate by specifying
+       the user name and password with the URL. Example:
+      </p><div class="verbatim-wrap"><pre class="screen">install=https://<em class="replaceable">USER</em>:<em class="replaceable">PASSWORD</em>@<em class="replaceable">SERVER</em>/<em class="replaceable">DIRECTORY</em>/DVD1/</pre></div><p>
+       In case of a Samba or CIFS installation, you can also specify the domain
+       that should be used:
+      </p><div class="verbatim-wrap"><pre class="screen">install=smb://<em class="replaceable">WORKDOMAIN</em>;<em class="replaceable">USER</em>:<em class="replaceable">PASSWORD</em>@<em class="replaceable">SERVER</em>/<em class="replaceable">DIRECTORY</em>/DVD1/</pre></div><p>
+       To use <code class="literal">cd</code>, <code class="literal">hd</code> or
+       <code class="literal">slp</code>, set them as the following example:
+      </p><div class="verbatim-wrap"><pre class="screen">install=cd:/
+install=hd:/?device=<em class="replaceable">sda/PATH_TO_ISO</em>
+install=slp:/</pre></div></dd></dl></div></section><section class="sect2" data-id-title="Specifying remote access" id="sec-boot-parameters-list-remote-access"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.3.4 </span><span class="title-name">Specifying remote access</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-list-remote-access" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    Only one of the different remote control methods should be specified at a
+    time. The different methods are: SSH, VNC, remote X server.
+    <span class="phrase">For information about how to use the
+    parameters listed in this section, see
+    <a class="xref" href="cha-remote-installation.html" title="Chapter 12. Remote installation">Chapter 12, <em>Remote installation</em></a>.</span>
+</p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.8.6.3.1"><span class="term"><code class="option">display_ip=</code><em class="replaceable">IP_ADDRESS</em></span></dt><dd><p>
+<code class="envar">Display_IP</code> causes the installing system to try to connect
+       to an X server at the given address.
+      </p><div class="admonition important normal" data-id-title="X authentication mechanism" id="id-1.4.4.3.8.6.3.1.2.2"><img alt="Important" class="symbol" src="static/images/icon-important.svg" title="Important"/><div class="admon-title">Important: X authentication mechanism</div><p>
+        The direct installation with the X Window System relies on a primitive
+        authentication mechanism based on host names. This mechanism is
+        disabled on current <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> versions. Installation with SSH or
+        VNC is preferred.
+       </p></div></dd><dt id="id-1.4.4.3.8.6.3.2"><span class="term"><code class="option">vnc=1</code></span></dt><dd><p>
+       Enables a VNC server during the installation.
+      </p></dd><dt id="id-1.4.4.3.8.6.3.3"><span class="term"><code class="option">vncpassword=</code><em class="replaceable">PASSWORD</em></span></dt><dd><p>
+       Sets the password for the VNC server.
+      </p></dd><dt id="id-1.4.4.3.8.6.3.4"><span class="term"><code class="option">ssh=1</code></span></dt><dd><p>
+<code class="envar">ssh</code> enables SSH installation.
+      </p></dd><dt id="id-1.4.4.3.8.6.3.5"><span class="term"><code class="option">ssh.password=</code><em class="replaceable">PASSWORD</em></span></dt><dd><p>
+       Specifies an SSH password for the root user during installation.
+      </p></dd></dl></div></section></section><section class="sect1" data-id-title="Advanced setups" id="sec-boot-parameters-advanced"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.4 </span><span class="title-name">Advanced setups</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   To configure access to a local RMT or <code class="command">supportconfig</code>
+   server for the installation, you can specify boot parameters to set up these
+   services during installation. The same applies if you need IPv6 support
+   during the installation.
+  </p><section class="sect2" data-id-title="Providing data to access a Repository Mirroring Tool server" id="sec-boot-parameters-advanced-smt"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.1 </span><span class="title-name">Providing data to access a Repository Mirroring Tool server</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-smt" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    By default, updates for <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> are delivered by the SUSE Customer Center. If your
+    network provides a Repository Mirroring Tool (RMT) server to provide a local update
+    source, you need to equip the client with the server's URL. Client and
+    server communicate solely via HTTPS protocol, therefore you also need to
+    enter a path to the server's certificate if the certificate was not issued
+    by a certificate authority.
+   </p><div class="admonition note normal" data-id-title="Non-interactive installation only" id="id-1.4.4.3.9.3.3"><img alt="Note" class="symbol" src="static/images/icon-note.svg" title="Note"/><div class="admon-title">Note: Non-interactive installation only</div><p>
+     Providing parameters for accessing an RMT server is only needed for
+     non-interactive installations. During an interactive installation the data
+     can be provided during the installation (see
+     <a class="xref" href="cha-install.html#sec-yast-install-scc-registration" title="9.7. Registration">Section 9.7, “Registration”</a> for details).
+    </p></div><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.9.3.4.1"><span class="term"><code class="option">regurl</code></span></dt><dd><p>
+       URL of the RMT server. This URL has a fixed format of
+       <code class="literal">https://<em class="replaceable">FQN</em>/center/regsvc/</code>.
+       <em class="replaceable">FQN</em> needs to be a fully qualified host name
+       of the RMT server. Example:
+      </p><div class="verbatim-wrap"><pre class="screen">regurl=https://smt.example.com/center/regsvc/</pre></div><p>
+       Make sure the values you enter are correct. If <code class="literal">regurl</code>
+       has not been specified correctly, the registration of the update source
+       will fail.
+      </p></dd><dt id="id-1.4.4.3.9.3.4.2"><span class="term"><code class="option">regcert</code></span></dt><dd><p>
+       Location of the RMT server's certificate. Specify one of the following
+       locations:
+      </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.9.3.4.2.2.2.1"><span class="term">URL</span></dt><dd><p>
+          Remote location (HTTP, HTTPS or FTP) from which the certificate can
+          be downloaded. In case regcert is not specified, it will default to
+          <code class="literal">http://<em class="replaceable">FQN</em>/smt.crt</code> with
+          <code class="literal">FQN</code> being the name of the RMT server. Example:
+         </p><div class="verbatim-wrap"><pre class="screen">regcert=http://rmt.example.com/smt-ca.crt</pre></div></dd><dt id="id-1.4.4.3.9.3.4.2.2.2.2"><span class="term">local path</span></dt><dd><p>
+          Absolute path to the certificate on the local machine. Example:
+         </p><div class="verbatim-wrap"><pre class="screen">regcert=/data/inst/smt/smt-ca.cert</pre></div></dd><dt id="id-1.4.4.3.9.3.4.2.2.2.3"><span class="term">Interactive</span></dt><dd><p>
+          Use <code class="literal">ask</code> to open a pop-up menu during the
+          installation where you can specify the path to the certificate. Do
+          not use this option with AutoYaST. Example
+         </p><div class="verbatim-wrap"><pre class="screen">regcert=ask</pre></div></dd><dt id="id-1.4.4.3.9.3.4.2.2.2.4"><span class="term">Deactivate certificate installation</span></dt><dd><p>
+          Use <code class="literal">done</code> if the certificate will be installed by
+          an add-on product, or if you are using a certificate issued by an
+          official certificate authority. For example:
+         </p><div class="verbatim-wrap"><pre class="screen">regcert=done</pre></div></dd></dl></div></dd></dl></div></section><section class="sect2" data-id-title="Configuring an alternative data server for supportconfig" id="sec-boot-parameters-advanced-supportconfigurl"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.2 </span><span class="title-name">Configuring an alternative data server for <code class="command">supportconfig</code></span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-supportconfigurl" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    The data that supportconfig (see <a class="xref" href="cha-adm-support.html" title="Chapter 47. Gathering system information for support">Chapter 47, <em>Gathering system information for support</em></a> for more
+    information) gathers is sent to the SUSE Customer Center by default. It is also possible
+    to set up a local server to collect this data. If such a server is
+    available on your network, you need to set the server's URL on the client.
+    This information needs to be entered at the boot prompt.
+   </p><p><span class="formalpara-title"><code class="literal">supporturl</code>. </span>
+     URL of the server. The URL has the format
+     <code class="literal">http://<em class="replaceable">FQN</em>/<em class="replaceable">Path</em>/</code>,
+     where <em class="replaceable">FQN</em> is the fully qualified host name of
+     the server and <em class="replaceable">Path</em> is the location on the
+     server. For example:
+    </p><div class="verbatim-wrap"><pre class="screen">supporturl=http://support.example.com/supportconfig/data/</pre></div></section><section class="sect2" data-id-title="Using IPv6 for the installation" id="sec-boot-parameters-advanced-ipv6"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.3 </span><span class="title-name">Using IPv6 for the installation</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-ipv6" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    By default you can only assign IPv4 network addresses to your machine. To
+    enable IPv6 during installation, enter one of the following parameters at
+    the boot prompt:
+   </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.9.5.3.1"><span class="term">Accept IPv4 and IPv6</span></dt><dd><div class="verbatim-wrap"><pre class="screen">ipv6=1</pre></div></dd><dt id="id-1.4.4.3.9.5.3.2"><span class="term">Accept IPv6 only</span></dt><dd><div class="verbatim-wrap"><pre class="screen">ipv6only=1</pre></div></dd></dl></div></section><section class="sect2" data-id-title="Using a proxy for the installation" id="sec-boot-parameters-advanced-proxy"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.4 </span><span class="title-name">Using a proxy for the installation</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-proxy" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    In networks enforcing the usage of a proxy server for accessing remote web
+    sites, registration during installation is only possible when configuring a
+    proxy server.
+   </p><p>
+    On systems with traditional BIOS, press <span class="keycap">F4</span> on the boot
+    screen and set the required parameters in the <span class="guimenu">HTTP Proxy</span>
+    dialog.
+   </p><p>
+    On Systems with UEFI BIOS, provide the boot parameter
+    <code class="literal">proxy</code> at the boot prompt:
+   </p><div class="procedure"><div class="procedure-contents"><ol class="procedure" type="1"><li class="step"><p>
+      On the boot screen, press <span class="keycap">E</span> to edit the boot menu.
+     </p></li><li class="step"><p>
+      Append the <code class="literal">proxy</code> parameter to the
+      <code class="literal">linux</code> line in the following format:
+     </p><div class="verbatim-wrap"><pre class="screen">proxy=https://<em class="replaceable">proxy.example.com</em>:<em class="replaceable">PORT</em></pre></div><p>
+      If the proxy server requires authentication, add the credentials as
+      follows:
+     </p><div class="verbatim-wrap"><pre class="screen">proxy=https://<em class="replaceable">USER</em>:<em class="replaceable">PASSWORD</em>@<em class="replaceable">proxy.example.com</em>:<em class="replaceable">PORT</em></pre></div><p>
+      If the proxy server's SSL certificate cannot be verified, disable
+      certificate checking with the <code class="literal">sslcerts=0</code> boot
+      parameter.
+     </p><p>
+      The outcome will be similar to the following:
+     </p><div class="figure" id="id-1.4.4.3.9.6.5.2.7"><div class="figure-contents"><div class="mediaobject"><a href="images/grub_cmdline_proxy.png"><img alt="GRUB options editor" src="images/grub_cmdline_proxy.png" title="GRUB options editor" width="40%"/></a></div></div><div class="title-container"><div class="figure-title-wrap"><div class="figure-title"><span class="title-number-name"><span class="title-number">Figure 8.3: </span><span class="title-name">GRUB options editor </span></span><a class="permalink" href="cha-boot-parameters.html#id-1.4.4.3.9.6.5.2.7" title="Permalink">#</a></div></div><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></li><li class="step"><p>
+      Press <span class="keycap">F10</span> to boot with the new proxy setting.
+     </p></li></ol></div></div></section><section class="sect2" data-id-title="Enabling SELinux support" id="sec-boot-parameters-advanced-selinux"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.5 </span><span class="title-name">Enabling SELinux support</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-selinux" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    Enabling SELinux upon installation start-up enables you to configure it
+    after the installation has been finished without having to reboot. Use the
+    following parameters:
+   </p><div class="verbatim-wrap"><pre class="screen">security=selinux selinux=1</pre></div></section><section class="sect2" data-id-title="Enabling the installer self-update" id="sec-boot-parameters-advanced-self-update"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.6 </span><span class="title-name">Enabling the installer self-update</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-self-update" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    During installation and upgrade, YaST can update itself as described in
+    <a class="xref" href="cha-install.html#sec-yast-install-self-update" title="9.2. Installer self-update">Section 9.2, “Installer self-update”</a> to solve potential bugs
+    discovered after release. The <code class="literal">self_update</code> parameter can
+    be used to modify the behavior of this feature.
+   </p><p>
+    To enable the installer self-update, set the parameter to
+    <code class="literal">1</code>:
+   </p><div class="verbatim-wrap"><pre class="screen">self_update=1</pre></div><p>
+    To use a user-defined repository, specify a URL:
+   </p><div class="verbatim-wrap"><pre class="screen">self_update=https://updates.example.com/</pre></div></section><section class="sect2" data-id-title="Reusing LVM" id="yast-installer-reuse-lvm"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.7 </span><span class="title-name">Reusing LVM</span></span> <a class="permalink" href="cha-boot-parameters.html#yast-installer-reuse-lvm" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+       As of SUSE Linux Enterprise 15 SP6, the installer no longer reuses pre-existing Logical Volume Manager (LVM)
+       configurations in its <span class="guimenu">Guided Setup</span> for this can be confusing and lead to
+       suboptimal setups. To reuse an existing LVM regardless, use the
+       <code class="literal">YAST_REUSE_LVM</code> parameter or configure it manually in the <span class="guimenu">Expert
+       Partitioner</span> (<a class="xref" href="cha-expert-partitioner.html" title="Chapter 11. Expert Partitioner">Chapter 11, <em><span class="guimenu">Expert Partitioner</span></em></a>).
+     </p></section><section class="sect2" data-id-title="Scale user interface for high DPI" id="sec-boot-parameters-advanced-high-dpi"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.8 </span><span class="title-name">Scale user interface for high DPI</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-high-dpi" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    If your screen uses a very high DPI, use the boot parameter
+    <code class="literal">QT_AUTO_SCREEN_SCALE_FACTOR</code>. This scales font and user
+    interface elements to the screen DPI.
+   </p><div class="verbatim-wrap"><pre class="screen">QT_AUTO_SCREEN_SCALE_FACTOR=1</pre></div></section><section class="sect2" data-id-title="Using CPU mitigations" id="sec-boot-parameters-advanced-cpu-mitigations"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.9 </span><span class="title-name">Using CPU mitigations</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-advanced-cpu-mitigations" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+    The boot parameter <code class="literal">mitigations</code> lets you control
+    mitigation options for side-channel attacks on affected CPUs. Its possible
+    values are:
+   </p><p><span class="formalpara-title"><code class="literal">auto</code>. </span>
+   Enables all mitigations required for your CPU model, but does
+   not protect against cross-CPU thread attacks. This setting may impact
+   performance to some degree, depending on the workload.
+  </p><p><span class="formalpara-title"><code class="literal">nosmt</code>. </span>
+    Provides the full set of available security mitigations. Enables all
+    mitigations required for your CPU model. In addition, it disables
+    Simultaneous Multithreading (SMT) to avoid side-channel attacks across
+    multiple CPU threads. This setting may further impact performance,
+    depending on the workload.
+    </p><p><span class="formalpara-title"><code class="literal">off</code>. </span>
+    Disables all mitigations. Side-channel attacks against your CPU
+    are possible, depending on the CPU model. This setting has no impact
+    on performance.
+   </p><p>
+    Each value comes with a set of specific parameters, depending on the CPU
+    architecture, the kernel version, and on the vulnerabilities that need to
+    be mitigated. Refer to the kernel documentation for details.
+   </p></section><section class="sect2" data-id-title="LUKS 2 support" id="sec-boot-parameters-luks"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">8.4.10 </span><span class="title-name">LUKS 2 support</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-luks" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+       LUKS2 encryption is supported by the YaST installer as of SUSE Linux Enterprise 15 SP4, but needs to be
+       enabled explicitly.
+     </p><div class="verbatim-wrap"><pre class="screen">YAST_LUKS2_AVAILABLE</pre></div><p>
+       Alternatively, you can also enable LUKS2 in the YaST expert console. For more information,
+       refer to <a class="xref" href="cha-expert-partitioner.html#deployment-encryption" title="11.2. Device encryption">Section 11.2, “Device encryption”</a>.
+     </p></section></section><section class="sect1" data-id-title="IBM Z" id="sec-boot-parameters-zseries"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.5 </span><span class="title-name">IBM Z</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-zseries" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   For IBM Z platforms, the system is booted (IPL, Initial Program Load) as
+   described in <a class="xref" href="cha-zseries.html#sec-prep-ipling" title="5.3.4. IPLing the SUSE Linux Enterprise Server installation system">Section 5.3.4, “IPLing the <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> installation system”</a>. <span class="productname"><span class="phrase">SUSE Linux Enterprise Server</span></span> does not show
+   a splash screen on these systems. During the installation, load the kernel,
+   initrd, and parmfile manually. YaST starts with its installation screen
+   when a connection has been established to the installation system via VNC,
+   X, or SSH. Because there is no splash screen, kernel or boot parameters
+   cannot be entered on screen, but must be specified in a parmfile (see
+   <a class="xref" href="cha-zseries.html#sec-appdendix-parm" title="5.5. The parmfile—automating the system configuration">Section 5.5, “The parmfile—automating the system configuration”</a>).
+  </p><div class="variablelist"><dl class="variablelist"><dt id="id-1.4.4.3.10.3.1"><span class="term"><code class="option">InstNetDev=osa</code></span></dt><dd><p>
+      Enter the type of interface to configure. Possible values are
+      <code class="literal">osa</code>, <code class="literal">hsi</code>, <code class="literal">ctc</code>,
+      <code class="literal">escon</code>, and <code class="literal">iucv</code> (CTC, ESCON, and
+      IUCV are no longer supported).
+     </p><p>
+      For the interfaces of type <code class="literal">hsi</code> and
+      <code class="literal">osa</code>, specify an appropriate netmask and an optional
+      broadcast address:
+     </p><div class="verbatim-wrap"><pre class="screen">Netmask=255.255.255.0
+Broadcast=192.168.255.255</pre></div><p>
+      For the interfaces of type <code class="literal">ctc</code>,
+      <code class="literal">escon</code>, and <code class="literal">iucv</code> (CTC, ESCON, and
+      IUCV are no longer supported), enter the IP address of the
+      peer:
+     </p><div class="verbatim-wrap"><pre class="screen">Pointopoint=192.168.55.20</pre></div></dd><dt id="id-1.4.4.3.10.3.2"><span class="term"><code class="option">OsaInterface=&lt;lcs|qdio&gt;</code></span></dt><dd><p>
+      For <code class="literal">osa</code> network devices, specify the host interface
+      (<code class="literal">qdio</code> or <code class="literal">lcs</code>).
+     </p></dd><dt id="id-1.4.4.3.10.3.3"><span class="term"><code class="option">Layer2=&lt;0|1&gt;</code></span></dt><dd><p>
+      For <code class="literal">osa</code> QDIO Ethernet and <code class="literal">hsi</code>
+      devices, specify whether to enable (<code class="literal">1</code>) or disable
+      (<code class="literal">0</code>) OSI Layer 2 support.
+     </p></dd><dt id="id-1.4.4.3.10.3.4"><span class="term"><code class="option">OSAHWAddr=02:00:65:00:01:09</code></span></dt><dd><p>
+      For Layer 2-enabled <code class="literal">osa</code> QDIO Ethernet devices, either
+      specify a MAC address manually or state <code class="literal">OSAHWADDR= </code>
+      (with trailing white space) for the system default.
+     </p></dd><dt id="id-1.4.4.3.10.3.5"><span class="term"><code class="option">PortNo=&lt;0|1&gt;</code></span></dt><dd><p>
+      For <code class="literal">osa</code> network devices, specify the port number
+      (provided the device supports this feature). The default value is 0.
+     </p></dd></dl></div><p>
+   Each of the interfaces requires certain setup options:
+  </p><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+     Interfaces <code class="literal">ctc</code> and <code class="literal">escon</code> (CTC and
+     ESCON are no longer supported):
+    </p><div class="verbatim-wrap"><pre class="screen">ReadChannel=0.0.0600
+WriteChannel=0.0.0601</pre></div><p>
+<code class="envar">ReadChannel</code> specifies the READ channel to use.
+     <code class="envar">WriteChannel</code> specifies the WRITE channel.
+    </p></li><li class="listitem"><p>
+     For the <code class="literal">ctc</code> interface (no longer supported),
+     specify the protocol that should be used for this interface:
+    </p><div class="verbatim-wrap"><pre class="screen">CTCProtocol=&lt;0/1/2&gt;</pre></div><p>
+     Valid entries would be:
+    </p><div class="informaltable"><table style="border-collapse: collapse; border-top: 1px solid ; border-bottom: 1px solid ; border-left: 1px solid ; border-right: 1px solid ; "><colgroup><col/><col/></colgroup><tbody><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">
+<p>
+<code class="literal">0</code>
+</p>
+</td><td style="border-bottom: 1px solid ; ">
+<p>
+          Compatibility mode, also for non-Linux peers other than OS/390 and
+          z/OS (this is the default mode)
+         </p>
+</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">
+<p>
+<code class="literal">1</code>
+</p>
+</td><td style="border-bottom: 1px solid ; ">
+<p>
+          Extended mode
+         </p>
+</td></tr><tr><td style="border-right: 1px solid ; ">
+<p>
+<code class="literal">2</code>
+</p>
+</td><td>
+<p>
+          Compatibility mode with OS/390 and z/OS
+         </p>
+</td></tr></tbody></table></div></li><li class="listitem"><p>
+     Network device type <code class="literal">osa</code> with interface
+     <code class="literal">lcs</code>:
+    </p><div class="verbatim-wrap"><pre class="screen">ReadChannel=0.0.0124</pre></div><p>
+<code class="envar">ReadChannel</code> stands for the channel number used in this
+     setup. A second port number can be derived from this by adding one to
+     <code class="envar">ReadChannel</code>. <code class="envar">Portnumber</code> is used to specify
+     the relative port.
+    </p></li><li class="listitem"><p>
+     Interface <code class="literal">iucv</code>:
+    </p><div class="verbatim-wrap"><pre class="screen">IUCVPeer=PEER</pre></div><p>
+     Enter the name of the peer machine.
+    </p></li><li class="listitem"><p>
+     Network device type <code class="literal">osa</code> with interface
+     <code class="literal">qdio</code> for OSA-Express Gigabit Ethernet:
+    </p><div class="verbatim-wrap"><pre class="screen">ReadChannel=0.0.0700
+WriteChannel=0.0.0701
+DataChannel=0.0.0702</pre></div><p>
+     For <code class="envar">ReadChannel</code>, enter the number of the READ channel. For
+     <code class="envar">WriteChannel</code>, enter the number of the WRITE channel.
+     <code class="envar">DataChannel</code> specifies the DATA channel. Make sure that the
+     READ channel carries an even device number.
+    </p></li><li class="listitem"><p>
+     Interface <code class="literal">hsi</code> for HiperSockets and VM guest LANs:
+    </p><div class="verbatim-wrap"><pre class="screen">ReadChannel=0.0.0800
+WriteChannel=0.0.0801
+DataChannel=0.0.0802</pre></div><p>
+     For <code class="envar">ReadChannel</code>, enter the appropriate number for the READ
+     channel. For <code class="envar">WriteChannel</code> and <code class="envar">DataChannel</code>,
+     enter the WRITE and DATA channel numbers.
+    </p></li></ul></div></section><section class="sect1" data-id-title="More information" id="sec-boot-parameters-more-information"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">8.6 </span><span class="title-name">More information</span></span> <a class="permalink" href="cha-boot-parameters.html#sec-boot-parameters-more-information" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a><a class="icon-editsource" href="https://github.com/SUSE/doc-sle/edit/main/xml/deployment_boot_parameters.xml" target="_blank" title="Edit source document"> </a></div></div></div></div></div><p>
+   You can find more information about boot parameters in the openSUSE wiki
+   at
+   <a class="link" href="https://en.opensuse.org/SDB:Linuxrc#Parameter_Reference" target="_blank">https://en.opensuse.org/SDB:Linuxrc#Parameter_Reference</a>.
+  </p></section></section><nav class="bottom-pagination"><div><a class="pagination-link prev" href="part-deployment.html"><span class="pagination-relation">Previous</span><span class="pagination-label"><span class="title-number">Part II </span>Installation procedure</span></a> </div><div><a class="pagination-link next" href="cha-install.html"><span class="pagination-relation">Next</span><span class="pagination-label"><span class="title-number">Chapter 9 </span>Installation steps</span></a> </div></nav></article><aside class="side-toc" id="_side-toc-page"><div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div><div class="side-title">On this page</div><div class="toc"><ul><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-default"><span class="title-number">8.1 </span><span class="title-name">Using the default boot parameters</span></a></span></li><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-start-x86-64"><span class="title-number">8.2 </span><span class="title-name">PC (AMD64/Intel 64/AArch64)</span></a></span></li><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-list"><span class="title-number">8.3 </span><span class="title-name">List of important boot parameters</span></a></span></li><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-advanced"><span class="title-number">8.4 </span><span class="title-name">Advanced setups</span></a></span></li><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-zseries"><span class="title-number">8.5 </span><span class="title-name">IBM Z</span></a></span></li><li><span class="sect1"><a href="cha-boot-parameters.html#sec-boot-parameters-more-information"><span class="title-number">8.6 </span><span class="title-name">More information</span></a></span></li></ul></div><div class="side-title">Share this page</div><ul class="share"><li><a href="#" id="_share-mail" title="E-Mail"> </a></li><li><a href="#" id="_print-button" title="Print this page"> </a></li></ul><div id="qualtrics_container"></div> </aside></main><footer id="_footer"><div class="growth-inhibitor"><div class="copy"><span class="copy__rights">© SUSE  2026</span></div></div></footer>
+<script src="static/js/language-switcher.js" type="text/javascript"> </script></body></html>

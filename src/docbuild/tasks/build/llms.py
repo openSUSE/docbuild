@@ -14,11 +14,11 @@ class HTMLCleaner:
         "link", "meta", "param", "source", "track", "wbr"
     })
 
-    def __init__(self, tags_to_strip: list[str], ids_to_strip: list[str], classes_to_strip: list[str]) -> None:
+    def __init__(self, tags_to_strip: list[str] | None, ids_to_strip: list[str] | None, classes_to_strip: list[str] | None) -> None:
         """Initialize the HTML stripper with target elements to remove."""
-        self.tags_to_strip = frozenset(tags_to_strip)
-        self.ids_to_strip = frozenset(ids_to_strip)
-        self.classes_to_strip = frozenset(classes_to_strip)
+        self.tags_to_strip = frozenset(tags_to_strip or [])
+        self.ids_to_strip = frozenset(ids_to_strip or [])
+        self.classes_to_strip = frozenset(classes_to_strip or [])
 
     def should_strip(self, node: object) -> bool:
         """Determine if a DOM node should be stripped."""
@@ -120,7 +120,7 @@ def get_cleaner(doc: JustHTML) -> HTMLCleaner:
         case "daps" | "docbook":
             return DocBookHTMLCleaner()
         case _:
-            return HTMLCleaner([], [], [])
+            return HTMLCleaner(None, None, None)
 
 
 def clean_and_convert(html_content: str) -> str:

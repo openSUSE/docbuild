@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import os
 from pathlib import Path
 import shlex
 import tempfile
@@ -19,6 +20,7 @@ from ...utils.sync import rsync
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
 from ..portal import parse_portal_config
+from .llms import clean_and_convert, inject_llms_links
 
 log = logging.getLogger(__name__)
 
@@ -29,13 +31,6 @@ async def generate_llmstxt(deliverable: Deliverable, target_dest: Path, build_ll
         return
 
     try:
-        import asyncio
-        import os
-
-        from aiostream import pipe, stream
-
-        from docbuild.tasks.build.llms import clean_and_convert, inject_llms_links
-
         log.info("Generating LLMs text for %s...", deliverable.full_id)
         llms_dest = target_dest / llmstxt_dir
         llms_dest.mkdir(parents=True, exist_ok=True)
