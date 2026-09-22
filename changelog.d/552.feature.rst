@@ -1,0 +1,1 @@
+Added the ``docbuild llms`` CLI subcommand to retroactively generate Markdown files and the ``llms.txt`` index for existing build directories without requiring a full rebuild.
