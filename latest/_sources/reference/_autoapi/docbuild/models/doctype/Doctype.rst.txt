@@ -183,7 +183,7 @@ docbuild.models.doctype.Doctype
 
       >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath(absolute=True)
       >>> expected = (
-      ...     "//product[@id='sles']/docset[@path='15-SP6']"
+      ...     "//product[@xml:id='sles']/docset[@path='15-SP6']"
       ...     "[@lifecycle='supported']"
       ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
       ...     "/deliverable"
@@ -200,7 +200,7 @@ docbuild.models.doctype.Doctype
 
       Return the XPath segment for the product node.
 
-      Example: "product[@id='sles']" or "product"
+      Example: "product[@xml:id='sles']" or "product"
 
 
 

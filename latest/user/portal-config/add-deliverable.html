@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding Deliverables &#8212; Docbuild Documentation 0.24.1.dev3+g4a0dc4ffe.d20260921</title>
+    <title>Adding Deliverables &#8212; Docbuild Documentation 0.24.1.dev4+ga2b98d516.d20260922</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=b812628a"></script>
+    <script src="../../_static/documentation_options.js?v=96581b72"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -491,7 +491,7 @@ publish on the portal:</p>
 or ADoc source file. It needs a DC file.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-NAS-overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/dc&gt;</span>
@@ -507,7 +507,7 @@ DocBook XML or ADoc format or for documentation that is built
 by a different tool than <strong class="command">daps</strong>:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Example of a Prebuilt Deliverable</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cn.continuous-delivery.latest-en-index.overview&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;prebuilt&quot;</span><span class="w"> </span><span class="na">category=</span><span class="s">&quot;cat.cloudnative.rancher&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;cn.continuous-delivery.latest-en-index.overview&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;prebuilt&quot;</span><span class="w"> </span><span class="na">category=</span><span class="s">&quot;cat.cloudnative.rancher&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;prebuilt&gt;</span>
 <span class="w">    </span><span class="nt">&lt;title&gt;</span>Overview<span class="nt">&lt;/title&gt;</span>
 <span class="w">    </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;/cloudnative/continuous-delivery/latest/en/index.html&quot;</span><span class="nt">/&gt;</span>
@@ -543,7 +543,7 @@ release of the NAS product.</p>
 single HTML output, but not EPUB:</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-NAS-overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/dc&gt;</span>

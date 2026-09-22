@@ -26,7 +26,7 @@ docbuild.models.deliverable.view.DeliverableXMLView
       :type: str
 
 
-      Return the product ID (``<product id=…>``) or None if absent..
+      Return the product ID (``<product xml:id=…>``) or None if absent..
 
 
 
@@ -72,7 +72,7 @@ docbuild.models.deliverable.view.DeliverableXMLView
       :type: str
 
 
-      Return the docset real ID (``<docset id=…>``).
+      Return the docset real ID (``<docset xml:id=…>``).
 
 
 
@@ -118,7 +118,7 @@ docbuild.models.deliverable.view.DeliverableXMLView
       :type: str | None
 
 
-      Return the deliverable ID (``<deliverable id=…>``) or None if absent.
+      Return the deliverable ID (`<deliverable xml:id=…>`) or None if absent.
 
 
 

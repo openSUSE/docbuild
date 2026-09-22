@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.24.1.dev3+g4a0dc4ffe.d20260921</title>
+    <title>docbuild.models.doctype.Doctype &#8212; Docbuild Documentation 0.24.1.dev4+ga2b98d516.d20260922</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../_static/documentation_options.js?v=b812628a"></script>
+    <script src="../../../../../_static/documentation_options.js?v=96581b72"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -796,7 +796,7 @@ are all equivalent and select <em>all</em> languages.</p>
 <dd><p>Return an XPath expression for this Doctype to find all deliverables.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6@supported/en-us,de-de&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">absolute</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-<span class="gp">... </span>    <span class="s2">&quot;//product[@id=&#39;sles&#39;]/docset[@path=&#39;15-SP6&#39;]&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;//product[@xml:id=&#39;sles&#39;]/docset[@path=&#39;15-SP6&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;[@lifecycle=&#39;supported&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;/resources/locale[@lang=&#39;de-de&#39; or @lang=&#39;en-us&#39;]&quot;</span>
 <span class="gp">... </span>    <span class="s2">&quot;/deliverable&quot;</span>
@@ -817,7 +817,7 @@ deliverables that match this Doctype.</p>
 <dt class="sig sig-object py" id="docbuild.models.doctype.Doctype.product_xpath_segment">
 <span class="sig-name descname"><span class="pre">product_xpath_segment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.doctype.Doctype.product_xpath_segment" title="Link to this definition">#</a></dt>
 <dd><p>Return the XPath segment for the product node.</p>
-<p>Example: “product[&#64;id=’sles’]” or “product”</p>
+<p>Example: “product[&#64;xml:id=’sles’]” or “product”</p>
 </dd></dl>
 
 <dl class="py method">
