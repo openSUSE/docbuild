@@ -9,7 +9,7 @@ docbuild.models.config.env.EnvBuild
       :parts: 1
 
 
-   General build configuration.
+   Configuration for docbuild build execution.
 
 
    .. py:attribute:: model_config

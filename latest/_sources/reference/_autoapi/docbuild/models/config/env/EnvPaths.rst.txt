@@ -9,7 +9,7 @@ docbuild.models.config.env.EnvPaths
       :parts: 1
 
 
-   Defines various application paths, including permanent storage and cache.
+   Configuration for file and directory paths.
 
 
    .. py:attribute:: model_config
