@@ -14,6 +14,8 @@ from docbuild.config.xml.checks import (
     check_lang_code_in_desc,
     check_lang_code_in_docset,
     check_lang_code_in_extralinks,
+    check_spotlight,
+    check_spotlight_target,
     check_subdeliverable_in_deliverable,
     check_unsupported_language_code,
     dc_identifier,
@@ -912,4 +914,41 @@ def test_check_format_subdeliverable_no_subdeliverable():
         """
     )
     results = collect_check_results(check_format_subdeliverable(node))
+    assert len(results) == 0
+
+
+@pytest.mark.parametrize(
+    "linkend,expected_error",
+    [
+        ("product1", None),
+        ("docset1", None),
+        ("deli-1", None),
+        ("family1", "points to <item>"),
+        ("series1", "points to <item>"),
+        ("cat.root", "points to <language>"),
+        ("nonexistent", "does not point to a valid target"),
+    ],
+)
+def test_check_spotlight_target(xmlnode, linkend: str, expected_error: str | None):
+    portal = copy.deepcopy(xmlnode)
+    spotlight = etree.Element("spotlight", linkend=linkend)
+    portal.insert(0, spotlight)
+
+    results = collect_check_results(check_spotlight_target(portal))
+    if expected_error is None:
+        assert len(results) == 0
+    else:
+        assert len(results) == 1
+        assert results[0].error_code == "invalid_spotlight_target"
+        assert expected_error in results[0].message
+
+
+def test_check_spotlight_no_spotlight(xmlnode):
+    results = collect_check_results(check_spotlight(xmlnode))
+    assert len(results) == 0
+
+
+def test_check_spotlight_not_in_portal():
+    node = etree.fromstring("<docset><spotlight linkend='p1'/></docset>")
+    results = collect_check_results(check_spotlight(node))
     assert len(results) == 0

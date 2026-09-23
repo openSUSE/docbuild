@@ -12,15 +12,21 @@ To create such cross-reference follow this procedure:
    our ID would be ``nas.1.0.overview``.
 
 #. Find the release (``<docset>``) you want to appear the deliverable.
-   After the ``</resources>`` end tag, add the following structure:
+   After the ``<locale>`` tag, add the following structure:
 
    .. code-block:: xml
       :name: internal-ref-deliverable
       :caption: Links to another Deliverable
 
-      <internal>
-         <ref linkend="nas.1.0.overview" />
-      </internal>
+      <locale lang="en-us">
+         <!-- [... other deliverables ...] -->
+         <deliverable type="xref">
+            <ref linkend="nas.1.0.overview" />
+         </deliverable>
+      </locale>
+
+   Within the list of deliverables, you are free to place the
+   cross-reference anywhere.
 
 #. Optionally, if you want to group the reference under a specific title,
    add a ``category`` attribute to the ``<ref>`` element.

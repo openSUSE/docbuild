@@ -1,3 +1,4 @@
+<?xml-model href="../../../../../src/docbuild/config/xml/data/portal-config.rnc" type="application/relax-ng-compact-syntax"?>
 <docset xml:id="v1" lifecycle="supported">
   <version>1</version>
   <resources>
@@ -13,9 +14,6 @@
     <locale lang="de-de">
       <branch>main</branch>
       <subdir>l10n/de-de</subdir>
-      <deliverable type="ref">
-        <ref linkend="test.1.guide"/>
-      </deliverable>
     </locale>
   </resources>
 </docset>

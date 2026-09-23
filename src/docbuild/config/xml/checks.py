@@ -530,3 +530,75 @@ def check_unsupported_language_code(
                 xpath=semantic_xpath(node),
                 error_code="unsupported_language",
             )
+
+
+VALID_SPOTLIGHT_TARGETS: frozenset[str] = frozenset(
+    {"product", "docset", "deliverable"}
+)
+
+
+@register_check
+def check_spotlight_target(
+    tree: etree._Element | etree._ElementTree,
+) -> Iterator[CheckResult]:
+    """Check that spotlight elements point to a valid target.
+
+    A valid target is a product, a docset, or a deliverable. Elements with
+    an ``xml:id`` that are not one of these types (or non-existent targets)
+    are invalid.
+
+    .. code-block:: xml
+
+        <!-- Valid targets: -->
+        <spotlight linkend="product1"/>
+        <spotlight linkend="docset1"/>
+        <spotlight linkend="deli-1"/>
+
+        <!-- Invalid target: -->
+        <spotlight linkend="family1"/>
+
+    :param tree: The XML tree to check.
+    :yield: CheckResult for each spotlight element with an invalid target.
+    """
+    root = tree.getroot() if hasattr(tree, "getroot") else tree
+    if getattr(root, "tag", None) != "portal":
+        return
+
+    # In /portal/spotlight, spotlight is an optional element (at most one)
+    if (spotlight := root.find("spotlight")) is None:
+        return
+
+    linkend = spotlight.get("linkend", "").strip()
+    targets = tree.xpath("id($linkend)", linkend=linkend)
+    if not targets:
+        message = (
+            f"The <spotlight> element linkend '{linkend}' does not point to a valid target. "
+            "A valid target must be a product, docset, or deliverable."
+        )
+        yield CheckResult(
+            message=message,
+            xpath=semantic_xpath(spotlight),
+            error_code="invalid_spotlight_target",
+        )
+        return
+
+    target = targets[0]
+    tag_name = (
+        etree.QName(target).localname
+        if isinstance(target.tag, str)
+        else str(target.tag)
+    )
+    if tag_name not in VALID_SPOTLIGHT_TARGETS:
+        message = (
+            f"The <spotlight> element linkend '{linkend}' points to <{tag_name}>. "
+            "A valid target must be a product, docset, or deliverable, "
+            "not any other element with an xml:id."
+        )
+        yield CheckResult(
+            message=message,
+            xpath=semantic_xpath(spotlight),
+            error_code="invalid_spotlight_target",
+        )
+
+
+check_spotlight = check_spotlight_target

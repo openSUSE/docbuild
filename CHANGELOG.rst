@@ -513,7 +513,7 @@ Features
 --------
 
 - Added :command:`check files` subcommand to verify that all DC files defined in XML configurations exist in their respective remote repositories. The implementation includes an optimization to group checks by repository, significantly reducing Git network overhead. (:gh:`78`)
-- Implemented a "smart" :class:`~docbuild.models.serverroles.ServerRole` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
+- Implemented a "smart" ``ServerRole`` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
   Refactor CLI error handling to display Pydantic validation failures in a clean, structured format. (:gh:`113`)
 
 

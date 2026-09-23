@@ -1,3 +1,4 @@
+<?xml-model href="../../../../../src/docbuild/config/xml/data/portal-config.rnc" type="application/relax-ng-compact-syntax"?>
 <portal schemaversion="7.0">
   <categories>
     <category lang="en-us">
