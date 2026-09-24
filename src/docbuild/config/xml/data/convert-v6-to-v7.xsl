@@ -63,6 +63,9 @@
   <!-- Should sitemap be generated for translations? -->
   <xsl:param name="sitemap.for.translations">false</xsl:param>
 
+  <!-- Prefix for generated reference deliverable IDs (from <internal> refs) -->
+  <xsl:param name="ref.prefix">ref.</xsl:param>
+
 <!-- ======== Keys -->
   <!-- Define a key to group <language> elements by their @lang attribute -->
   <xsl:key name="langKey" match="category/language[not(ancestor-or-self::product)]" use="@lang" />
@@ -597,7 +600,7 @@
 
           <xsl:choose>
             <xsl:when test="builddocs">
-              <xsl:apply-templates select="@*|node()[not(self::external)]" />
+              <xsl:apply-templates select="@*|node()[not(self::external or self::internal)]" />
             </xsl:when>
             <xsl:otherwise>
               <xsl:apply-templates select="@*|node()[
@@ -609,11 +612,9 @@
                                           and not(language/url/@format = 'pdf')
                                           ]">
                  <xsl:call-template name="docset-without-builddocs" />
-              </xsl:if>
+               </xsl:if>
 
-              <xsl:apply-templates select="internal" />
-
-               <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
+                <xsl:if test="external/link[starts-with(language/url/@href, 'https://')
                               or language/url/@format = 'pdf']">
                   <external>
                      <xsl:apply-templates select="external/link[starts-with(language/url/@href, 'https://')
@@ -672,24 +673,17 @@
           <xsl:if test="$eligible-links/language[@lang = $currentLang]">
             <locale lang="{$currentLang}">
               <branch>main</branch>
-              <xsl:choose>
-                <!-- English: output full deliverable structure -->
-                <xsl:when test="starts-with($currentLang, 'en')">
-                  <xsl:for-each select="$eligible-links[language[@lang = $currentLang]]">
-                    <xsl:apply-templates select="." mode="external-link-deliverable">
-                      <xsl:with-param name="lang" select="$currentLang"/>
-                    </xsl:apply-templates>
-                  </xsl:for-each>
-                </xsl:when>
-                <!-- Non-English: output ref to English deliverable -->
-                <xsl:otherwise>
-                  <xsl:for-each select="$eligible-links[language[@lang = $currentLang]]">
-                    <xsl:apply-templates select="." mode="external-link-ref">
-                      <xsl:with-param name="lang" select="$currentLang"/>
-                    </xsl:apply-templates>
-                  </xsl:for-each>
-                </xsl:otherwise>
-              </xsl:choose>
+              <!-- Only English gets deliverables; translations stay empty.
+                   A ref to the English deliverable would publish English
+                   content under a translated locale. -->
+              <xsl:if test="starts-with($currentLang, 'en')">
+                <xsl:for-each select="$eligible-links[language[@lang = $currentLang]]">
+                  <xsl:apply-templates select="." mode="external-link-deliverable">
+                    <xsl:with-param name="lang" select="$currentLang"/>
+                  </xsl:apply-templates>
+                </xsl:for-each>
+                <xsl:apply-templates select="ancestor::docset/internal"/>
+              </xsl:if>
             </locale>
           </xsl:if>
         </xsl:for-each>
@@ -776,20 +770,6 @@
           </xsl:for-each>
         </descriptions>
       </prebuilt>
-    </deliverable>
-  </xsl:template>
-
-  <xsl:template match="link" mode="external-link-ref">
-    <xsl:param name="lang"/>
-    <xsl:variable name="en-id">
-      <xsl:call-template name="generate-external-link-id">
-        <xsl:with-param name="link" select="."/>
-        <xsl:with-param name="lang" select="'en-us'"/>
-      </xsl:call-template>
-    </xsl:variable>
-
-    <deliverable type="ref">
-      <ref linkend="{$en-id}"/>
     </deliverable>
   </xsl:template>
 
@@ -1033,6 +1013,16 @@
           <xsl:if test="$has.external.prebuilt">
             <xsl:apply-templates select="../../external/link[not(starts-with(language/url/@href, 'https://'))]" mode="builddocs" />
           </xsl:if>
+          <xsl:if test="@lang = 'en-us'">
+            <xsl:apply-templates select="../../internal"/>
+          </xsl:if>
+        </locale>
+      </xsl:when>
+      <xsl:when test="@lang = 'en-us' and ../../internal">
+        <!-- No deliverables of its own, but internal refs still need an English home -->
+        <locale lang="en-us">
+          <branch>main</branch>
+          <xsl:apply-templates select="../../internal"/>
         </locale>
       </xsl:when>
       <xsl:otherwise>
@@ -1110,34 +1100,26 @@
   </xsl:template>
 
 
-   <!-- translated <deliverable> -->
-   <xsl:template match="builddocs/language[@lang!='en-us']/deliverable">
-    <xsl:variable name="pid" select="ancestor::product/@productid"/>
-    <xsl:variable name="abbrev" select="$config/product[@xml:id=$pid]/@idabbrev"/>
-    <xsl:variable name="product.idabbrev" select="$abbrev | $pid[not($abbrev)]"/>
-    <xsl:variable name="id">
-      <xsl:call-template name="generate.id">
-        <xsl:with-param name="product.idabbrev" select="$product.idabbrev"/>
-        <xsl:with-param name="docset" select="ancestor::docset/@setid"/>
-        <xsl:with-param name="dc" select="dc"/>
-      </xsl:call-template>
-    </xsl:variable>
+   <!-- translated <deliverable>: dropped. Translation locales list no
+        deliverables; the English set applies. A ref to the English
+        deliverable would publish English content under a translated locale. -->
+   <xsl:template match="builddocs/language[@lang!='en-us']/deliverable"/>
 
-    <deliverable type="ref">
-      <xsl:apply-templates select="subdir"/>
-      <ref linkend="{$id}" />
-    </deliverable>
-  </xsl:template>
-
-  <xsl:template match="language[@lang!='en-us']/deliverable/@category">
-    <xsl:call-template name="write-category-attribute"/>
-  </xsl:template>
+   <xsl:template match="language[@lang!='en-us']/deliverable/@category"/>
 
   <xsl:template match="subdeliverable/@category">
     <xsl:call-template name="write-category-attribute"/>
   </xsl:template>
 
+  <xsl:template match="internal">
+    <xsl:comment> Internal references converted to deliverables </xsl:comment>
+    <xsl:apply-templates select="ref"/>
+  </xsl:template>
+
   <!-- ref  -->
+  <!-- ponytail: libxslt ignores the more specific match="internal/ref" when
+       match="ref[not(@linkend)]" exists, so the internal wrap lives here
+       behind an ancestor guard instead of in its own template. -->
   <xsl:template match="ref[not(@linkend)]">
     <xsl:variable name="pid" select="@product"/>
     <xsl:variable name="cnfg" select="$config/product[@xml:id=$pid]"/>
@@ -1179,9 +1161,24 @@
       product=<xsl:value-of select="concat(@product, '::', $pid)"/>
       idabbrev=<xsl:value-of select="$abbrev"/>
     </xsl:message>-->
-    <ref linkend="{$ref}">
-      <xsl:apply-templates select="@category|@titleformat"/>
-    </ref>
+    <xsl:variable name="ref-node">
+      <ref linkend="{$ref}">
+        <xsl:apply-templates select="@category|@titleformat"/>
+      </ref>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="ancestor::internal">
+        <deliverable type="xref">
+          <xsl:attribute name="xml:id">
+            <xsl:value-of select="concat($ref.prefix, $ref)"/>
+          </xsl:attribute>
+          <xsl:copy-of select="$ref-node"/>
+        </deliverable>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy-of select="$ref-node"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="ref/@category">
