@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../../../../../src/docbuild/config/xml/data/portal-config.rnc" type="application/relax-ng-compact-syntax"?>
 <categories>
   <category lang="en-us">
     <language xml:id="cat.install">

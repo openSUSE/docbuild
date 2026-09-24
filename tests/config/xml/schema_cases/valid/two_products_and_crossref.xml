@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-model href="../../../../../src/docbuild/config/xml/data/portal-config.rnc" type="application/relax-ng-compact-syntax"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+    <categories>
+        <category lang="en-us">
+            <language xml:id="base">
+                <title>General Documentation</title>
+            </language>
+        </category>
+    </categories>
+
+    <productfamilies>
+        <item xml:id="os">Operating Systems</item>
+    </productfamilies>
+
+    <series>
+        <item xml:id="products">Main Products</item>
+    </series>
+
+    <product xml:id="sles" series="products" family="os">
+        <name>SUSE Linux Enterprise Server</name>
+        <maintainers>
+            <contact>doc-team@example.com</contact>
+        </maintainers>
+        <docset xml:id="sles.v15-sp6" lifecycle="supported">
+            <version>15 SP6</version>
+            <resources>
+                <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable type="dc" xml:id="sles.v15-sp6.helloworld">
+                        <dc file="DC-helloworld">
+                            <format single-html="1" />
+                        </dc>
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+    </product>
+
+    <product xml:id="sles-sap" series="products" family="os">
+        <name>SUSE Linux Enterprise Server for SAP</name>
+        <maintainers>
+            <contact>doc-team@example.com</contact>
+        </maintainers>
+        <docset xml:id="sles-sap.v15-sp6" lifecycle="supported">
+            <version>15 SP6</version>
+            <resources>
+                <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable type="dc" xml:id="sles-sap.v15-sp6.SAP-helloworld">
+                        <dc file="DC-SAP-helloworld">
+                            <format single-html="1" />
+                        </dc>
+                    </deliverable>
+                    <deliverable type="xref">
+                        <ref linkend="sles.v15-sp6.helloworld" />
+                    </deliverable>
+                </locale>
+                <locale lang="de-de">
+                    <branch>main</branch>
+                    <subdir>l10n/de-de</subdir>
+                </locale>
+            </resources>
+        </docset>
+    </product>
+</portal>
