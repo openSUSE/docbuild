@@ -35,6 +35,7 @@ from .cmd_cache import cache
 from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_doctor import doctor
+from .cmd_llms import llms
 from .cmd_metadata import metadata
 from .cmd_portal import portal
 from .cmd_repo import repo
@@ -471,3 +472,4 @@ cli.add_command(portal)
 cli.add_command(cmd_check)
 cli.add_command(doctor)
 cli.add_command(cache)
+cli.add_command(llms)

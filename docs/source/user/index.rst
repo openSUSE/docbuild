@@ -12,6 +12,7 @@
    config/index
    create-metadata
    build
+   llms
    validate
    clone
    metadata
