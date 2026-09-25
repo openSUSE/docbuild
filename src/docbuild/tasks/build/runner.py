@@ -16,7 +16,7 @@ from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
-from ...utils.sync import rsync
+from ...utils.sync import is_remote_path, rsync
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
 from ..portal import parse_portal_config
@@ -25,9 +25,17 @@ from .llms import clean_and_convert, inject_llms_links
 log = logging.getLogger(__name__)
 
 
-async def generate_llmstxt(deliverable: Deliverable, target_dest: Path, build_llmstxt: bool, llmstxt_dir: str) -> None:
-    """Generate LLMs text and inject markdown links into HTML files concurrently."""
+async def generate_llmstxt(deliverable: Deliverable, target_dest: Path | str, build_llmstxt: bool, llmstxt_dir: str) -> None:
+    """Generate LLMs text and inject markdown links into HTML files concurrently.
+
+    Only generates for local targets. Skipped for remote targets since file operations
+    cannot be performed on remote paths.
+    """
     if not build_llmstxt:
+        return
+
+    # Skip LLMS text generation for remote targets
+    if isinstance(target_dest, str):
         return
 
     try:
@@ -170,11 +178,15 @@ async def process_deliverable_build(
                     )
 
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    target_dest = Path(str(target_base_dir)) / target_suffix / fmt
-
-                    # Ensure the target directory structure exists before syncing (local paths only)
-                    if ":" not in str(target_base_dir):
-                        target_dest.mkdir(parents=True, exist_ok=True)
+                    target_base_str = str(target_base_dir)
+                    if is_remote_path(target_base_str):
+                        target_dest: str | Path = (
+                            f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
+                        )
+                    else:
+                        local_target = Path(target_base_dir) / target_suffix / fmt
+                        local_target.mkdir(parents=True, exist_ok=True)
+                        target_dest = local_target
 
                     log.debug("Syncing %s result to %s", fmt, target_dest)
 

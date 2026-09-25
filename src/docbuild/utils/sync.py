@@ -14,21 +14,52 @@ from .shell import run_command
 class RsyncOptions:
     """Configuration options for rsync execution."""
 
-    # Store the CLI flag directly in the field's metadata
-    archive: bool = field(default=True, metadata={"flag": "-a"})
-    compress: bool = field(default=False, metadata={"flag": "-z"})
-    delete: bool = field(default=False, metadata={"flag": "--delete"})
-    dry_run: bool = field(default=False, metadata={"flag": "--dry-run"})
-    verbose: bool = field(default=False, metadata={"flag": "-v"})
-    partial: bool = field(default=False, metadata={"flag": "--partial"})
+    archive: bool = field(
+        default=True,
+        metadata={"flag": "-a"},
+    )
+    """Enable archive mode. Preserves permissions, timestamps, and ownership."""
+
+    compress: bool = field(
+        default=False,
+        metadata={"flag": "-z"},
+    )
+    """Enable compression during transfer. Useful for slow connections but increases CPU usage."""
+
+    delete: bool = field(
+        default=False,
+        metadata={"flag": "--delete"},
+    )
+    """Delete files on the destination that do not exist on the source."""
+
+    dry_run: bool = field(
+        default=False,
+        metadata={"flag": "--dry-run"},
+    )
+    """Perform a trial run showing what would be transferred without actually doing it."""
+
+    verbose: bool = field(
+        default=False,
+        metadata={"flag": "-v"},
+    )
+    """Increase verbosity to see what rsync is doing."""
+
+    partial: bool = field(
+        default=False,
+        metadata={"flag": "--partial"},
+    )
+    """Keep partially transferred files. Useful for resuming interrupted transfers."""
 
     exclude: list[str] | tuple[str, ...] = field(
-        default_factory=list, metadata={"flag": "--exclude"}
+        default_factory=list,
+        metadata={"flag": "--exclude"},
     )
+    """List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag."""
 
-    # Acts as an escape hatch for the 100+ rsync options not explicitly modeled here.
-    # Users can pass arbitrary flags (e.g., ["--exclude=*.tmp", "--bwlimit=1000"]).
     extra_args: list[str] = field(default_factory=list)
+    """Additional arbitrary rsync command-line arguments not modeled as explicit fields.
+    Enables use of 100+ unsupported rsync options (e.g., ["--exclude=*.tmp", "--bwlimit=1000"]).
+    """
 
     def to_args(self) -> list[str]:
         """Convert the configured options into a list of command-line arguments.
@@ -63,11 +94,32 @@ class RsyncOptions:
 
                 # Catch-all for single configuration values like strings or integers
                 # (e.g., timeout=60 -> "--timeout", "60")
-                case _:
+                # This branch enables extensibility for future fields beyond booleans/lists.
+                case _:  # pragma: no cover
                     args.extend([flag, str(value)])
 
         args.extend(self.extra_args)
         return args
+
+
+def is_remote_path(path: str | os.PathLike[str]) -> bool:
+    """Determine whether a path specification refers to a remote location in rsync syntax.
+
+    :param path: The path string or PathLike object to evaluate.
+    :return: True if the path is remote; False otherwise.
+    """
+    path_str = os.fspath(path)
+
+    if path_str.startswith("rsync://"):
+        return True
+
+    if ":" in path_str:
+        colon_idx = path_str.find(":")
+        slash_idx = path_str.find("/")
+        if slash_idx == -1 or colon_idx < slash_idx:
+            return True
+
+    return False
 
 
 async def rsync(
@@ -79,31 +131,75 @@ async def rsync(
 ) -> subprocess.CompletedProcess[str]:
     """Asynchronously execute the rsync command.
 
-    :param source: Path to the source file or directory.
-    :param target: Path to the target destination.
+    Supports both local and remote paths. Remote paths use rsync syntax:
+    SSH (``user@host:/path``), daemon (``host::module``), or URL (``rsync://host/path``).
+
+    :param source: Path to the source file or directory (local or remote).
+    :param target: Path to the target destination (local or remote).
     :param content_only: If True, appends a trailing slash to the source to sync contents.
+                         If False, ensures no trailing slash on the source to sync the directory itself.
                          If None, infers the intent from the raw source string.
     :param options: Configuration object containing the rsync flags.
     :return: Process execution results containing stdout, stderr, and exit code.
+    :raises ValueError: If both source and target are remote paths.
+
+    Example:
+      * Sync from remote to local::
+
+          await rsync("user@remote:/docs", "/local/backup")
+
+      * Sync from local to remote (contents only)::
+
+          await rsync("/local/docs", "remote:/backups", content_only=True)
+
     """
     options = options or RsyncOptions()
 
-    # Inspect the raw string for a trailing slash before pathlib normalizes it
-    source_str = str(source)
-    has_trailing_slash = source_str.endswith(("/", "\\"))
+    source_str = os.fspath(source)
+    target_str = os.fspath(target)
 
-    source_path = Path(source).expanduser()
-    target_path = Path(target).expanduser()
+    source_is_remote = is_remote_path(source_str)
+    target_is_remote = is_remote_path(target_str)
 
-    source_arg = str(source_path)
-    if content_only is True or (content_only is None and has_trailing_slash):
-        source_arg += "/"
+    if source_is_remote and target_is_remote:
+        msg = "Both source and target cannot be remote paths."
+        raise ValueError(msg)
+
+    # Inspect raw string for a trailing slash before normalization
+    has_trailing_slash = source_str.endswith("/")
+    should_have_slash = content_only is True or (
+        content_only is None and has_trailing_slash
+    )
+
+    if source_is_remote:
+        # Avoid stripping root slash in 'host:/' which would turn it into 'host:' ($HOME)
+        if source_str.endswith(":/"):
+            base_source = source_str
+        else:
+            base_source = source_str.rstrip("/")
+    else:
+        expanded = str(Path(source).expanduser())
+        base_source = expanded if expanded == "/" else expanded.rstrip("/")
+
+    if should_have_slash:
+        source_arg = base_source if base_source.endswith("/") else f"{base_source}/"
+    else:
+        source_arg = (
+            base_source.rstrip("/")
+            if base_source != "/" and not base_source.endswith(":/")
+            else base_source
+        )
+
+    if target_is_remote:
+        target_arg = target_str
+    else:
+        target_arg = str(Path(target).expanduser())
 
     command = [
         "rsync",
         *options.to_args(),
         source_arg,
-        str(target_path),
+        target_arg,
     ]
 
     return await run_command(command)
