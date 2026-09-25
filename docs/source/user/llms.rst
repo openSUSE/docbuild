@@ -1,27 +1,32 @@
-.. _docbuild_llms:
+.. _cmd_llms:
 
-Generating LLM Context Files
-============================
+docbuild llms
+=============
 
-The :command:`docbuild llms` subcommand is used to retroactively generate Markdown and ``llms.txt`` files for an existing build directory.
+Synopsis
+--------
 
 .. code-block:: bash
-   :caption: Synopsis of :command:`docbuild llms`
 
    docbuild llms [OPTIONS]
 
-This command is useful when you already have an existing HTML build directory but are missing the associated Markdown files and ``llms.txt`` index. Instead of running a full, time-consuming DAPS or Antora build process, this command directly scans the existing directory, cleans the HTML, converts it to Markdown, and injects the necessary ``<link rel="alternate">`` tags.
+Description
+-----------
+
+This command is useful when you already have an existing HTML build directory but are missing the associated Markdown files and :file:`llms.txt` index. Instead of running a full, time-consuming DAPS or Antora build process, this command directly scans the existing directory, cleans the HTML, converts it to Markdown, and injects the necessary ``<link rel="alternate">`` tags.
 
 Configuration
 -------------
-The command automatically relies on the following settings in your environment configuration (``env.toml``):
 
-* ``paths.prebuilt_dir``: The target directory containing the existing HTML files.
-* ``build.build_llmstxt``: Must be set to ``true`` (the default). If disabled, the command will exit safely.
-* ``paths.llmstxt_dir``: The subdirectory name where the generated Markdown files will be stored (defaults to ``docs``).
+The command automatically relies on the following settings in your environment configuration (:file:`env.toml`):
 
-If you want to run the command while overriding the configuration temporarily, you can use the ``-C`` option:
+* ``paths.target.target_base_dir``: The directory containing built deliverables to be processed.
+* ``build.build_llmstxt``: Boolean flag enabling or disabling LLMs generation.
+* ``paths.llmstxt_dir``: The subdirectory name where the generated Markdown files will be stored (defaults to :file:`docs`).
+
+You can temporarily override any configuration setting using the ``-C`` option:
 
 .. code-block:: bash
 
-   docbuild -C paths.prebuilt_dir=/tmp/my-builds llms
+   docbuild -C paths.target.target_base_dir=/path/to/builds -C build.build_llmstxt=true llms
+

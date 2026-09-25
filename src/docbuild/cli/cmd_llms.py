@@ -18,13 +18,9 @@ log = logging.getLogger(__name__)
 def llms(context: DocBuildContext) -> None:
     """Generate Markdown and llms.txt files for an existing build directory.
 
-    This command scans the prebuilt directory configured in your environment
-    (usually defined as 'paths.prebuilt_dir' in env.toml), cleans the HTML
-    files found within, converts them to Markdown, and generates the root
-    llms.txt index file.
-
-    It also automatically injects the <link rel="alternate"> tags into the
-    existing HTML files pointing to the new Markdown counterparts.
+    This command scans the target base directory configured in your environment
+    (defined as 'paths.target' in env.toml), cleans the HTML files found within,
+    converts them to Markdown, and generates the root llms.txt index file.
     """
     if not context.envconfig:
         msg = "Environment configuration not found."
@@ -32,19 +28,19 @@ def llms(context: DocBuildContext) -> None:
         click.echo(msg, err=True)
         sys.exit(1)
 
-    target_dest = context.envconfig.paths.prebuilt_dir
+    target_dest = Path(context.envconfig.paths.target.target_base_dir)
     build_llmstxt = context.envconfig.build.build_llmstxt
     llmstxt_dir = context.envconfig.paths.llmstxt_dir
 
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
-        log.warning(msg)
+        log.info(msg)
         click.echo(msg)
         click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'.")
         sys.exit(0)
 
     if not target_dest.exists() or not target_dest.is_dir():
-        msg = f"The configured prebuilt directory does not exist or is not a directory: {target_dest}"
+        msg = f"The configured target directory does not exist or is not a directory: {target_dest}"
         log.error(msg)
         click.echo(msg, err=True)
         sys.exit(1)
@@ -57,8 +53,10 @@ def llms(context: DocBuildContext) -> None:
     class DummyDeliverable:
         def __init__(self, target_dest: Path) -> None:
             self.full_id = f"retroactive_build_{target_dest.name}"
+
             class DummyXML:
                 title = f"Documentation Index for {target_dest.name}"
+
             self.xml = DummyXML()
 
     dummy_deliverable = DummyDeliverable(target_dest)

@@ -17,18 +17,18 @@ def test_llms_disabled() -> None:
     assert "LLMs generation is disabled" in result.output
 
 
-def test_llms_missing_prebuilt_dir(tmp_path: Path) -> None:
-    """Test the llms command fails if prebuilt_dir does not exist."""
+def test_llms_missing_target_dir(tmp_path: Path) -> None:
+    """Test the llms command fails if target directory does not exist."""
     runner = CliRunner()
     fake_dir = tmp_path / "does_not_exist"
 
     result = runner.invoke(
         cli,
-        ["-C", "build.build_llmstxt=true", "-C", f"paths.prebuilt_dir={fake_dir}", "llms"],
+        ["-C", "build.build_llmstxt=true", "-C", f"paths.target.target_base_dir={fake_dir}", "llms"],
     )
 
     assert result.exit_code == 1
-    assert "prebuilt directory does not exist" in result.output
+    assert "target directory does not exist" in result.output
 
 
 @patch("docbuild.cli.cmd_llms.generate_llmstxt", new_callable=AsyncMock)
@@ -40,7 +40,7 @@ def test_llms_success_mocked(mock_generate, tmp_path: Path) -> None:
 
     result = runner.invoke(
         cli,
-        ["-C", "build.build_llmstxt=true", "-C", f"paths.prebuilt_dir={valid_dir}", "llms"],
+        ["-C", "build.build_llmstxt=true", "-C", f"paths.target.target_base_dir={valid_dir}", "llms"],
     )
 
     assert result.exit_code == 0
@@ -50,12 +50,12 @@ def test_llms_success_mocked(mock_generate, tmp_path: Path) -> None:
 
 
 def test_llms_end_to_end_execution(tmp_path: Path) -> None:
-    """Test retroactive LLMs generation against real HTML files in prebuilt_dir."""
+    """Test retroactive LLMs generation against real HTML files in target_base_dir."""
     runner = CliRunner()
-    prebuilt_dir = tmp_path / "prebuilt"
-    prebuilt_dir.mkdir()
+    target_dir = tmp_path / "target_base"
+    target_dir.mkdir()
 
-    # Create dummy DAPS and Antora HTML files
+    # Create dummy HTML file
     sample_html = """<!DOCTYPE html>
 <html>
 <head>
@@ -67,24 +67,24 @@ def test_llms_end_to_end_execution(tmp_path: Path) -> None:
     <main><h1>Introduction</h1><p>Core doc content.</p></main>
 </body>
 </html>"""
-    html_file = prebuilt_dir / "index.html"
+    html_file = target_dir / "index.html"
     html_file.write_text(sample_html, encoding="utf-8")
 
     result = runner.invoke(
         cli,
         [
             "-C", "build.build_llmstxt=true",
-            "-C", f"paths.prebuilt_dir={prebuilt_dir}",
+            "-C", f"paths.target.target_base_dir={target_dir}",
             "-C", "paths.llmstxt_dir=docs",
             "llms",
         ],
     )
 
     assert result.exit_code == 0
-    assert (prebuilt_dir / "llms.txt").exists()
-    assert (prebuilt_dir / "docs" / "index.md").exists()
+    assert (target_dir / "llms.txt").exists()
+    assert (target_dir / "docs" / "index.md").exists()
 
-    md_text = (prebuilt_dir / "docs" / "index.md").read_text(encoding="utf-8")
+    md_text = (target_dir / "docs" / "index.md").read_text(encoding="utf-8")
     assert "Introduction" in md_text
     assert "Core doc content." in md_text
 
