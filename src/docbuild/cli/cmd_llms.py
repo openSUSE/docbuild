@@ -19,8 +19,12 @@ def llms(context: DocBuildContext) -> None:
     """Generate Markdown and llms.txt files for an existing build directory.
 
     This command scans the target base directory configured in your environment
-    (defined as 'paths.target' in env.toml), cleans the HTML files found within,
-    converts them to Markdown, and generates the root llms.txt index file.
+    (defined as 'paths.target.target_base_dir' in env.toml), cleans the HTML
+    files found within, converts them to Markdown, and generates the root
+    llms.txt index file.
+
+    It also automatically injects the <link rel="alternate"> tags into the
+    existing HTML files pointing to the new Markdown counterparts.
     """
     if not context.envconfig:
         msg = "Environment configuration not found."
@@ -30,7 +34,10 @@ def llms(context: DocBuildContext) -> None:
 
     target_dest = Path(context.envconfig.paths.target.target_base_dir)
     build_llmstxt = context.envconfig.build.build_llmstxt
-    llmstxt_dir = context.envconfig.paths.llmstxt_dir
+
+    # Resolve llmstxt_dir: if absolute, keep it; if relative, base it on target_dest
+    configured_llms_dir = Path(context.envconfig.paths.llmstxt_dir)
+    llmstxt_dir = configured_llms_dir if configured_llms_dir.is_absolute() else target_dest / configured_llms_dir
 
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
@@ -67,7 +74,7 @@ def llms(context: DocBuildContext) -> None:
                 deliverable=dummy_deliverable,  # type: ignore
                 target_dest=target_dest,
                 build_llmstxt=build_llmstxt,
-                llmstxt_dir=llmstxt_dir,
+                llmstxt_dir=str(llmstxt_dir),
             )
         )
         completion_msg = "Retroactive LLMs generation completed successfully."
