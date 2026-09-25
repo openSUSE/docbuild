@@ -1,0 +1,1 @@
+Added the ``code-style`` skill with guidelines for writing clean, idiomatic Python tailored for the ``docbuild`` project.
