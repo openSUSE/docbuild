@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev7+g140b22904.d20260922</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev8+ga3cb40446.d20260925</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=16cd7de7"></script>
+    <script src="_static/documentation_options.js?v=9b9581dd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -461,6 +461,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added automatic generation of <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code> options in <code class="docutils literal notranslate"><span class="pre">env.toml</span></code>. The generator strips navigation and layout elements using a custom parser, converts the core content using <code class="docutils literal notranslate"><span class="pre">justhtml</span></code>, and safely injects <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tags into the source HTML headers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/365">GH #365</a>)</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">code-style</span></code> skill with guidelines for writing clean, idiomatic Python tailored for the <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> project. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/560">GH #560</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
