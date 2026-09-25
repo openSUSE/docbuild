@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Agentic Workflow &#8212; Docbuild Documentation 0.24.1.dev8+ga3cb40446.d20260925</title>
+    <title>Agentic Workflow &#8212; Docbuild Documentation 0.24.1.dev9+g9f622ec3c.d20260925</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=9b9581dd"></script>
+    <script src="../_static/documentation_options.js?v=ea6842fa"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -488,6 +488,10 @@
                   
   <section id="agentic-workflow">
 <span id="id1"></span><h1>Agentic Workflow<a class="headerlink" href="#agentic-workflow" title="Link to this heading">#</a></h1>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This document mirrors the agent and skill definitions in the <cite>.agents/</cite> directory. If you add, remove, or rename a skill, you <strong>must</strong> update the tables in this document to match.</p>
+</div>
 <p>This document describes the unified agentic workflow for docbuild development. It covers when to use each agent, what they do, and how they work together.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
@@ -672,7 +676,7 @@ Mocking feedback:
 <hr class="docutils" />
 <section id="doc-writer-documentation-completeness">
 <h3>3. Doc Writer (Documentation Completeness)<a class="headerlink" href="#doc-writer-documentation-completeness" title="Link to this heading">#</a></h3>
-<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">doc-writer.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">documentation.skill.md</span></code></p>
+<p><strong>Skills Used:</strong> <code class="file docutils literal notranslate"><span class="pre">doc-writer.skill.md</span></code>, <code class="file docutils literal notranslate"><span class="pre">run-docs.skill.md</span></code></p>
 <p><strong>Role:</strong> Ensures docstrings are complete and guides are updated.</p>
 <p><strong>When to use:</strong></p>
 <ul class="simple">
@@ -847,47 +851,74 @@ Composition opportunity:
 <section id="workflow-1-implement-new-feature">
 <h3>Workflow 1: Implement New Feature<a class="headerlink" href="#workflow-1-implement-new-feature" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
-<li><p><strong>Design phase:</strong>
-*   <strong class="command">&#64;design-review feature-branch</strong>
-*   → Get architecture feedback
-*   → Adjust design based on feedback</p></li>
-<li><p><strong>Implementation:</strong>
-*   Write code…</p></li>
-<li><p><strong>Quality checks:</strong>
-*   <strong class="command">&#64;code-reviewer feature-branch</strong>
-*   → Validate code matches design
-*   → Fix coverage drops
-*   <strong class="command">&#64;test-engineer feature-branch</strong>
-*   → Auto-run tests
-*   → Fill coverage gaps with tests</p></li>
-<li><p><strong>Documentation:</strong>
-*   <strong class="command">&#64;doc-writer feature-branch</strong>
-*   → Complete docstrings
-*   → Update guides</p></li>
-<li><p><strong>Final review:</strong>
-*   <strong class="command">&#64;pr-review feature-branch</strong>
-*   → Independent code quality check
-*   → Catch anything missed</p></li>
+<li><p><strong>Design phase:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;design-review feature-branch</strong>
+* → Get architecture feedback
+* → Adjust design based on feedback</p></li>
+</ul>
+</li>
+<li><p><strong>Implementation:</strong></p>
+<ul class="simple">
+<li><p>Write code…</p></li>
+</ul>
+</li>
+<li><p><strong>Quality checks:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;code-reviewer feature-branch</strong>
+*  → Validate code matches design
+*  → Fix coverage drops</p></li>
+<li><p><strong class="command">&#64;test-engineer feature-branch</strong>
+* → Auto-run tests
+* → Fill coverage gaps with tests</p></li>
+</ul>
+</li>
+<li><p><strong>Documentation:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;doc-writer feature-branch</strong>
+* → Complete docstrings
+* → Update guides</p></li>
+</ul>
+</li>
+<li><p><strong>Final review:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;pr-review feature-branch</strong>
+* → Independent code quality check
+* → Catch anything missed</p></li>
+</ul>
+</li>
 </ol>
 </section>
 <hr class="docutils" />
 <section id="workflow-2-fix-a-bug">
 <h3>Workflow 2: Fix a Bug<a class="headerlink" href="#workflow-2-fix-a-bug" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
-<li><p><strong>Root cause analysis:</strong>
-*   <strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
-*   → Identify logical flaw</p></li>
+<li><p><strong>Root cause analysis:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+* → Identify logical flaw</p></li>
+</ul>
+</li>
 <li><p><strong>Implement fix…</strong></p></li>
-<li><p><strong>Verify fix:</strong>
-*   <strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
-*   → Ensure tests catch the bug
-*   → No coverage regressions</p></li>
-<li><p><strong>Documentation:</strong>
-*   <strong class="command">&#64;doc-writer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
-*   → Update any clarifications in docstrings</p></li>
-<li><p><strong>Independent review:</strong>
-*   <strong class="command">&#64;pr-review bugfix-branch</strong>
-*   → Ensure fix is sound and doesn’t introduce new issues</p></li>
+<li><p><strong>Verify fix:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+* → Ensure tests catch the bug
+* → No coverage regressions</p></li>
+</ul>
+</li>
+<li><p><strong>Documentation:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;doc-writer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/module_with_bug.py</span></code>
+* → Update any clarifications in docstrings</p></li>
+</ul>
+</li>
+<li><p><strong>Independent review:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;pr-review bugfix-branch</strong>
+* → Ensure fix is sound and doesn’t introduce new issues</p></li>
+</ul>
+</li>
 </ol>
 </section>
 <hr class="docutils" />
@@ -895,38 +926,56 @@ Composition opportunity:
 <h3>Workflow 3: Code Review on PR (as Reviewer)<a class="headerlink" href="#workflow-3-code-review-on-pr-as-reviewer" title="Link to this heading">#</a></h3>
 <p>You receive a PR for review:</p>
 <ol class="arabic simple">
-<li><p><strong>Initial analysis:</strong>
-*   <strong class="command">&#64;pr-review https://github.com/opensuse/docbuild/pull/456</strong>
-*   → Get independent code quality assessment
-*   → Identify smells, security issues, coverage gaps</p></li>
-<li><p><strong>Context-aware review:</strong>
-*   <strong class="command">&#64;code-reviewer pr-branch</strong>
-*   → Check if code matches stated feature intent
-*   → Coverage should not drop</p></li>
-<li><p><strong>Summary for PR comment:</strong>
-*   Combine feedback from pr-reviewer (independent) and code-reviewer (context-aware) into a comprehensive review.</p></li>
+<li><p><strong>Initial analysis:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;pr-review https://github.com/opensuse/docbuild/pull/456</strong>
+* → Get independent code quality assessment
+* → Identify smells, security issues, coverage gaps</p></li>
+</ul>
+</li>
+<li><p><strong>Context-aware review:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;code-reviewer pr-branch</strong>
+* → Check if code matches stated feature intent
+* → Coverage should not drop</p></li>
+</ul>
+</li>
+<li><p><strong>Summary for PR comment:</strong></p>
+<ul class="simple">
+<li><p>Combine feedback from pr-reviewer (independent) and code-reviewer (context-aware) into a comprehensive review.</p></li>
+</ul>
+</li>
 </ol>
 </section>
 <hr class="docutils" />
 <section id="workflow-4-refactoring-existing-code">
 <h3>Workflow 4: Refactoring Existing Code<a class="headerlink" href="#workflow-4-refactoring-existing-code" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
-<li><p><strong>Design phase:</strong>
-*   <strong class="command">&#64;design-review</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
-*   → Identify over-engineering, SRP violations
-*   → Plan refactoring</p></li>
+<li><p><strong>Design phase:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;design-review</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+* → Identify over-engineering, SRP violations
+* → Plan refactoring</p></li>
+</ul>
+</li>
 <li><p><strong>Refactor…</strong></p></li>
-<li><p><strong>Quality assurance:</strong>
-*   <strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
-*   → Ensure refactoring matches intent (improved design)
-*   → No logic changes, no coverage drops
-*   <strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
-*   → Verify all tests still pass
-*   → Coverage unchanged or improved</p></li>
-<li><p><strong>Independent review:</strong>
-*   <strong class="command">&#64;pr-review refactor-branch</strong>
-*   → Ensure refactoring doesn’t introduce bugs
-*   → Code is cleaner, not just different</p></li>
+<li><p><strong>Quality assurance:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;code-reviewer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+*  → Ensure refactoring matches intent (improved design)
+*  → No logic changes, no coverage drops</p></li>
+<li><p><strong class="command">&#64;test-engineer</strong> <code class="file docutils literal notranslate"><span class="pre">src/docbuild/legacy_module.py</span></code>
+*  → Verify all tests still pass
+*  → Coverage unchanged or improved</p></li>
+</ul>
+</li>
+<li><p><strong>Independent review:</strong></p>
+<ul class="simple">
+<li><p><strong class="command">&#64;pr-review refactor-branch</strong>
+* → Ensure refactoring doesn’t introduce bugs
+* → Code is cleaner, not just different</p></li>
+</ul>
+</li>
 </ol>
 </section>
 </section>
@@ -963,22 +1012,11 @@ Composition opportunity:
 <h2>Agent vs. Skill: The “What” vs. The “How”<a class="headerlink" href="#agent-vs-skill-the-what-vs-the-how" title="Link to this heading">#</a></h2>
 <p>A key concept in this workflow is the separation of roles between agents and skills:</p>
 <ul class="simple">
-<li><p>An <strong>Agent</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.opencode/agents/name.md</span></code>) describes the agent’s high-level purpose, persona, and goals. It answers the question, “<strong>WHAT</strong> is your job?”</p></li>
+<li><p>An <strong>Agent</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.agents/agents/name.md</span></code>) describes the agent’s high-level purpose, persona, and goals. It answers the question, “<strong>WHAT</strong> is your job?”</p></li>
 <li><p>A <strong>Skill</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.agents/skills/.../SKILL.md</span></code>) provides a detailed, step-by-step procedure for a specific task. It answers the question, “<strong>HOW</strong> do you do your job?”</p></li>
 </ul>
 <p>Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.</p>
 </section>
-<hr class="docutils" />
-<section id="id2">
-<h2>Agent vs. Skill: The “What” vs. The “How”<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<p>A key concept in this workflow is the separation of roles between agents and skills:</p>
-<ul class="simple">
-<li><p>An <strong>Agent</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.opencode/agents/name.md</span></code>) describes the agent’s high-level purpose, persona, and goals. It answers the question, “<strong>WHAT</strong> is your job?”</p></li>
-<li><p>A <strong>Skill</strong> definition (<code class="file docutils literal notranslate"><span class="pre">.agents/skills/.../SKILL.md</span></code>) provides a detailed, step-by-step procedure for a specific task. It answers the question, “<strong>HOW</strong> do you do your job?”</p></li>
-</ul>
-<p>Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.</p>
-</section>
-<hr class="docutils" />
 <section id="skills-what-agents-use">
 <h2>Skills: What Agents Use<a class="headerlink" href="#skills-what-agents-use" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -989,29 +1027,61 @@ Composition opportunity:
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">docbuild-guidelines.skill.md</span></code></p></td>
-<td><p>code-reviewer, pr-reviewer</p></td>
-<td><p>Surgical changes, YAGNI, simplicity</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">code-review.skill.md</span></code></p></td>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">code-review</span></code></p></td>
 <td><p>code-reviewer</p></td>
 <td><p>Context-aware design validation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">code-smell.skill.md</span></code></p></td>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">code-smell</span></code></p></td>
 <td><p>pr-reviewer</p></td>
 <td><p>Context-independent quality checks</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">pytest-expert.skill.md</span></code></p></td>
-<td><p>test-engineer, pr-reviewer</p></td>
-<td><p>Coverage, parametrize, mocking</p></td>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">create-portal-example</span></code></p></td>
+<td><p>doc-writer</p></td>
+<td><p>Generate sample Portal XML config</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">doc-writer.skill.md</span></code></p></td>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">create-pydantic-model</span></code></p></td>
+<td><p>design-reviewer, code-reviewer</p></td>
+<td><p>Best practices for Pydantic models</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">create-towncrier-newsfragment</span></code></p></td>
+<td><p>doc-writer</p></td>
+<td><p>Create changelog entries</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">design-review</span></code></p></td>
+<td><p>design-reviewer</p></td>
+<td><p>Patterns, SRP, over-engineering</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">doc-writer</span></code></p></td>
+<td><p>doc-writer</p></td>
+<td><p>Write and structure narrative documentation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">docbuild-alias</span></code></p></td>
+<td><p>doc-writer, test-engineer</p></td>
+<td><p>How to use repository aliases</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">docbuild-guidelines</span></code></p></td>
+<td><p>code-reviewer, pr-reviewer</p></td>
+<td><p>Surgical changes, YAGNI, simplicity</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">docstrings</span></code></p></td>
 <td><p>doc-writer</p></td>
 <td><p>Docstring completeness, examples</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">design-review.skill.md</span></code></p></td>
-<td><p>design-reviewer</p></td>
-<td><p>Patterns, SRP, over-engineering</p></td>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">portal-config-schema</span></code></p></td>
+<td><p>doc-writer, code-reviewer</p></td>
+<td><p>Modify the Portal XML schema</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">pytest-expert</span></code></p></td>
+<td><p>test-engineer, pr-reviewer</p></td>
+<td><p>Coverage, parametrize, mocking</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="file docutils literal notranslate"><span class="pre">run-docs</span></code></p></td>
+<td><p>doc-writer</p></td>
+<td><p>Build the HTML documentation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="file docutils literal notranslate"><span class="pre">testing</span></code></p></td>
+<td><p>test-engineer</p></td>
+<td><p>Run and interpret tests</p></td>
 </tr>
 </tbody>
 </table>
@@ -1114,7 +1184,7 @@ Composition opportunity:
 │       └── docstrings/
 │           └── SKILL.md
 │
-└── .opencode/
+└── .agents/
     └── agents/      # Agent definitions for OpenCode
         ├── code-reviewer.md
         ├── docbuild.md
@@ -1272,7 +1342,6 @@ Composition opportunity:
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-coverage-reports">Understanding Coverage Reports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#agent-vs-skill-the-what-vs-the-how">Agent vs. Skill: The “What” vs. The “How”</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Agent vs. Skill: The “What” vs. The “How”</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skills-what-agents-use">Skills: What Agents Use</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#skill-file-structure">Skill File Structure</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-yaml-frontmatter-for-metadata">1. A YAML Frontmatter for Metadata</a></li>
