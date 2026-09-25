@@ -28,6 +28,8 @@ jobs:
 
       - name: Check for new fragments in changelog.d
         if: steps.bypass.outputs.skip == 'false'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # Fetch the target branch to compare against
           git fetch origin ${{ github.base_ref }}
@@ -36,9 +38,39 @@ jobs:
           CHANGELOG_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep "^changelog\.d/.*\.rst$" || true)
 
           if [ -z "$CHANGELOG_FILES" ]; then
-            echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one (e.g., 'changelog.d/${{ github.event.pull_request.number }}.feature.rst') or add the 'skip-changelog' label to this PR."
+            echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one or add the 'skip-changelog' label to this PR."
             exit 1
-          else
-            echo "✅ Found newsfragment(s):"
-            echo "$CHANGELOG_FILES"
+          fi
+
+          # Extract valid fragment types from towncrier.toml
+          VALID_TYPES=$(python3 << 'EOF'
+          import tomllib
+          with open('towncrier.toml', 'rb') as f:
+              config = tomllib.load(f)
+          # Extract all fragment type keys from [tool.towncrier.fragment.*]
+          types = config['tool']['towncrier']['fragment'].keys()
+          print('|'.join(sorted(types)))
+          EOF
+          )
+
+          # Validate that the filename matches the PR number or starts with +
+          VALID_FRAGMENT=false
+          for file in $CHANGELOG_FILES; do
+            # Extract the filename without path
+            filename=$(basename "$file")
+
+            # Check if it matches the pattern: PR_NUMBER.TYPE.rst or +description.TYPE.rst
+            if [[ "$filename" =~ ^${PR_NUMBER}\.(${VALID_TYPES})\.rst$ ]] || [[ "$filename" =~ ^\+[a-z0-9\-]+\.(${VALID_TYPES})\.rst$ ]]; then
+              VALID_FRAGMENT=true
+              echo "✅ Valid newsfragment: $file"
+            else
+              echo "❌ Invalid newsfragment: $file"
+              echo "   Expected format: '${PR_NUMBER}.<type>.rst' or '+<description>.<type>.rst'"
+              echo "   Valid types: $VALID_TYPES"
+            fi
+          done
+
+          if [ "$VALID_FRAGMENT" = false ]; then
+            echo "::error title=Invalid Changelog Fragment::The newsfragment filename does not match the PR number #$PR_NUMBER or follow the '+description' format. Valid types: $VALID_TYPES. Or add the 'skip-changelog' label to this PR."
+            exit 1
           fi

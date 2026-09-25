@@ -1,0 +1,3 @@
+Fixed the GitHub Actions workflow for checking newsfragment files.
+The workflow now validates that the newsfragment filename matches the current PR number or follows the ``+description`` format for unrelated changes.
+It also dynamically reads valid fragment types from ``towncrier.toml`` using the standard library ``tomllib`` parser, eliminating hard-coded values.
