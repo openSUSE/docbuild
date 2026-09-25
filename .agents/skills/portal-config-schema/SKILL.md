@@ -1,6 +1,6 @@
 ---
 name: portal-config-schema
-description: Understand and modify the Portal Config schema (RELAX NG compact / RNC as source of truth) and migrate old Docserv (v6) configs to the new Portal (v7) config using the migration XSLT stylesheet.
+description: I need to change the Portal XML schema or migrate an old config file.
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:
@@ -138,9 +138,31 @@ sections in `src/docbuild/config/xml/data/README.md`.
 
 ## Validation
 
-Validate migrated or edited configs with the `validate-portal-config` skill
-(CLI `docbuild portal validate`, or `jing -c` against `portal-config.rnc`
-with `xmllint --xinclude` for split layouts).
+### Preferred: the CLI
+
+The easiest and recommended way to validate a Portal XML config is:
+
+```shell
+docbuild portal validate
+```
+
+This is the **preferred** method because, in addition to the schema checks, it also runs several Portal-specific checks that a generic XML tool cannot perform.
+
+### Manual (Rare Cases)
+
+If you need to validate a file manually against the RELAX NG schema, you can use `jing` and `xmllint`. This is generally not necessary as `docbuild portal validate` handles this internally.
+
+1.  **Resolve XIncludes:** If your config is split across multiple files, resolve the XIncludes first:
+
+    ```shell
+    xmllint --xinclude --noout CONFIG.xml
+    ```
+
+2.  **Validate against the RNC schema:**
+
+    ```shell
+    jing -c src/docbuild/config/xml/data/portal-config.rnc CONFIG.xml
+    ```
 
 ## Reference files
 

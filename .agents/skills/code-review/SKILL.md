@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: A skill for context-aware code review to validate implementation against design intent.
+description: Does this code do what it's supposed to do?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 dependencies:

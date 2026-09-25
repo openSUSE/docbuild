@@ -4,6 +4,9 @@
 Agentic Workflow
 ##################
 
+.. ATTENTION::
+   This document mirrors the agent and skill definitions in the `.agents/` directory. If you add, remove, or rename a skill, you **must** update the tables in this document to match.
+
 This document describes the unified agentic workflow for docbuild development. It covers when to use each agent, what they do, and how they work together.
 
 Overview
@@ -203,7 +206,7 @@ The Sub-Agents
 3. Doc Writer (Documentation Completeness)
 -------------------------------------------
 
-**Skills Used:** :file:`doc-writer.skill.md`, :file:`documentation.skill.md`
+**Skills Used:** :file:`doc-writer.skill.md`, :file:`run-docs.skill.md`
 
 **Role:** Ensures docstrings are complete and guides are updated.
 
@@ -397,30 +400,35 @@ Workflow 1: Implement New Feature
 ---------------------------------
 
 1.  **Design phase:**
-    *   :command:`@design-review feature-branch`
-    *   → Get architecture feedback
-    *   → Adjust design based on feedback
+
+    * :command:`@design-review feature-branch`
+      * → Get architecture feedback
+      * → Adjust design based on feedback
 
 2.  **Implementation:**
-    *   Write code...
+
+    * Write code...
 
 3.  **Quality checks:**
-    *   :command:`@code-reviewer feature-branch`
-    *   → Validate code matches design
-    *   → Fix coverage drops
-    *   :command:`@test-engineer feature-branch`
-    *   → Auto-run tests
-    *   → Fill coverage gaps with tests
+
+    * :command:`@code-reviewer feature-branch`
+      *  → Validate code matches design
+      *  → Fix coverage drops
+    * :command:`@test-engineer feature-branch`
+      * → Auto-run tests
+      * → Fill coverage gaps with tests
 
 4.  **Documentation:**
-    *   :command:`@doc-writer feature-branch`
-    *   → Complete docstrings
-    *   → Update guides
+
+    * :command:`@doc-writer feature-branch`
+      * → Complete docstrings
+      * → Update guides
 
 5.  **Final review:**
-    *   :command:`@pr-review feature-branch`
-    *   → Independent code quality check
-    *   → Catch anything missed
+
+    * :command:`@pr-review feature-branch`
+      * → Independent code quality check
+      * → Catch anything missed
 
 ----
 
@@ -428,23 +436,27 @@ Workflow 2: Fix a Bug
 ---------------------
 
 1.  **Root cause analysis:**
-    *   :command:`@code-reviewer` :file:`src/docbuild/module_with_bug.py`
-    *   → Identify logical flaw
+
+    * :command:`@code-reviewer` :file:`src/docbuild/module_with_bug.py`
+      * → Identify logical flaw
 
 2.  **Implement fix...**
 
 3.  **Verify fix:**
-    *   :command:`@test-engineer` :file:`src/docbuild/module_with_bug.py`
-    *   → Ensure tests catch the bug
-    *   → No coverage regressions
+
+    * :command:`@test-engineer` :file:`src/docbuild/module_with_bug.py`
+      * → Ensure tests catch the bug
+      * → No coverage regressions
 
 4.  **Documentation:**
-    *   :command:`@doc-writer` :file:`src/docbuild/module_with_bug.py`
-    *   → Update any clarifications in docstrings
+
+    * :command:`@doc-writer` :file:`src/docbuild/module_with_bug.py`
+      * → Update any clarifications in docstrings
 
 5.  **Independent review:**
-    *   :command:`@pr-review bugfix-branch`
-    *   → Ensure fix is sound and doesn't introduce new issues
+
+    * :command:`@pr-review bugfix-branch`
+      * → Ensure fix is sound and doesn't introduce new issues
 
 ----
 
@@ -454,17 +466,20 @@ Workflow 3: Code Review on PR (as Reviewer)
 You receive a PR for review:
 
 1.  **Initial analysis:**
-    *   :command:`@pr-review https://github.com/opensuse/docbuild/pull/456`
-    *   → Get independent code quality assessment
-    *   → Identify smells, security issues, coverage gaps
+
+    * :command:`@pr-review https://github.com/opensuse/docbuild/pull/456`
+      * → Get independent code quality assessment
+      * → Identify smells, security issues, coverage gaps
 
 2.  **Context-aware review:**
-    *   :command:`@code-reviewer pr-branch`
-    *   → Check if code matches stated feature intent
-    *   → Coverage should not drop
+
+    * :command:`@code-reviewer pr-branch`
+      * → Check if code matches stated feature intent
+      * → Coverage should not drop
 
 3.  **Summary for PR comment:**
-    *   Combine feedback from pr-reviewer (independent) and code-reviewer (context-aware) into a comprehensive review.
+
+    * Combine feedback from pr-reviewer (independent) and code-reviewer (context-aware) into a comprehensive review.
 
 ----
 
@@ -472,24 +487,27 @@ Workflow 4: Refactoring Existing Code
 -------------------------------------
 
 1.  **Design phase:**
-    *   :command:`@design-review` :file:`src/docbuild/legacy_module.py`
-    *   → Identify over-engineering, SRP violations
-    *   → Plan refactoring
+
+    * :command:`@design-review` :file:`src/docbuild/legacy_module.py`
+      * → Identify over-engineering, SRP violations
+      * → Plan refactoring
 
 2.  **Refactor...**
 
 3.  **Quality assurance:**
-    *   :command:`@code-reviewer` :file:`src/docbuild/legacy_module.py`
-    *   → Ensure refactoring matches intent (improved design)
-    *   → No logic changes, no coverage drops
-    *   :command:`@test-engineer` :file:`src/docbuild/legacy_module.py`
-    *   → Verify all tests still pass
-    *   → Coverage unchanged or improved
+
+    * :command:`@code-reviewer` :file:`src/docbuild/legacy_module.py`
+      *  → Ensure refactoring matches intent (improved design)
+      *  → No logic changes, no coverage drops
+    * :command:`@test-engineer` :file:`src/docbuild/legacy_module.py`
+      *  → Verify all tests still pass
+      *  → Coverage unchanged or improved
 
 4.  **Independent review:**
-    *   :command:`@pr-review refactor-branch`
-    *   → Ensure refactoring doesn't introduce bugs
-    *   → Code is cleaner, not just different
+
+    * :command:`@pr-review refactor-branch`
+      * → Ensure refactoring doesn't introduce bugs
+      * → Code is cleaner, not just different
 
 ----
 
@@ -529,26 +547,12 @@ Agent vs. Skill: The "What" vs. The "How"
 
 A key concept in this workflow is the separation of roles between agents and skills:
 
-*   An **Agent** definition (:file:`.opencode/agents/name.md`) describes the agent's high-level purpose, persona, and goals. It answers the question, "**WHAT** is your job?"
+*   An **Agent** definition (:file:`.agents/agents/name.md`) describes the agent's high-level purpose, persona, and goals. It answers the question, "**WHAT** is your job?"
 
 *   A **Skill** definition (:file:`.agents/skills/.../SKILL.md`) provides a detailed, step-by-step procedure for a specific task. It answers the question, "**HOW** do you do your job?"
 
 Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.
 
-----
-
-Agent vs. Skill: The "What" vs. The "How"
-===========================================
-
-A key concept in this workflow is the separation of roles between agents and skills:
-
-*   An **Agent** definition (:file:`.opencode/agents/name.md`) describes the agent's high-level purpose, persona, and goals. It answers the question, "**WHAT** is your job?"
-
-*   A **Skill** definition (:file:`.agents/skills/.../SKILL.md`) provides a detailed, step-by-step procedure for a specific task. It answers the question, "**HOW** do you do your job?"
-
-Agents are guided by their core instructions, and they consume skills to execute specific, complex procedures correctly and consistently.
-
-----
 
 Skills: What Agents Use
 =======================
@@ -559,24 +563,48 @@ Skills: What Agents Use
    * - Skill
      - Used By
      - Purpose
-   * - :file:`docbuild-guidelines.skill.md`
-     - code-reviewer, pr-reviewer
-     - Surgical changes, YAGNI, simplicity
-   * - :file:`code-review.skill.md`
+   * - :file:`code-review`
      - code-reviewer
      - Context-aware design validation
-   * - :file:`code-smell.skill.md`
+   * - :file:`code-smell`
      - pr-reviewer
      - Context-independent quality checks
-   * - :file:`pytest-expert.skill.md`
-     - test-engineer, pr-reviewer
-     - Coverage, parametrize, mocking
-   * - :file:`doc-writer.skill.md`
+   * - :file:`create-portal-example`
      - doc-writer
-     - Docstring completeness, examples
-   * - :file:`design-review.skill.md`
+     - Generate sample Portal XML config
+   * - :file:`create-pydantic-model`
+     - design-reviewer, code-reviewer
+     - Best practices for Pydantic models
+   * - :file:`create-towncrier-newsfragment`
+     - doc-writer
+     - Create changelog entries
+   * - :file:`design-review`
      - design-reviewer
      - Patterns, SRP, over-engineering
+   * - :file:`doc-writer`
+     - doc-writer
+     - Write and structure narrative documentation
+   * - :file:`docbuild-alias`
+     - doc-writer, test-engineer
+     - How to use repository aliases
+   * - :file:`docbuild-guidelines`
+     - code-reviewer, pr-reviewer
+     - Surgical changes, YAGNI, simplicity
+   * - :file:`docstrings`
+     - doc-writer
+     - Docstring completeness, examples
+   * - :file:`portal-config-schema`
+     - doc-writer, code-reviewer
+     - Modify the Portal XML schema
+   * - :file:`pytest-expert`
+     - test-engineer, pr-reviewer
+     - Coverage, parametrize, mocking
+   * - :file:`run-docs`
+     - doc-writer
+     - Build the HTML documentation
+   * - :file:`testing`
+     - test-engineer
+     - Run and interpret tests
 
 ----
 
@@ -680,7 +708,7 @@ Directory Structure
     │       └── docstrings/
     │           └── SKILL.md
     │
-    └── .opencode/
+    └── .agents/
         └── agents/      # Agent definitions for OpenCode
             ├── code-reviewer.md
             ├── docbuild.md

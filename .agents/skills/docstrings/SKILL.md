@@ -1,6 +1,6 @@
 ---
 name: docstrings
-description: A skill for writing complete and correctly formatted Python docstrings in RST/Sphinx style.
+description: How do I write docstrings for my Python code?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:

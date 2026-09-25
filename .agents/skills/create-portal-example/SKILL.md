@@ -1,6 +1,11 @@
 ---
 name: create-portal-example
-description: Create example Portal XML configuration
+description: I need an example of a Portal XML config.
+license: GPL-3.0-or-later
+compatibility: [opencode, github_copilot, claude]
+metadata:
+  category: configuration
+  audience: [developers]
 ---
 
 # Create Example Portal XML Configuration

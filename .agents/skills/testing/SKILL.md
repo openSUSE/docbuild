@@ -1,6 +1,6 @@
 ---
 name: testing
-description: A skill for running and interpreting tests in the repository using pytest and custom aliases.
+description: How do I run the tests in this project?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:

@@ -1,4 +1,18 @@
+---
+name: docbuild-alias
+description: How do I run the tools in this repository?
+license: GPL-3.0-or-later
+compatibility: [opencode, github_copilot, claude]
+metadata:
+  category: development
+  audience: [developers]
+---
+
 # Skill - Running the docbuild tool via Custom Aliases
+
+## When to use this skill
+
+Use this skill when you need to run any of the custom commands provided by the repository, such as `docbuild`, `upytest`, or `makedocs`.
 
 ## Context
 

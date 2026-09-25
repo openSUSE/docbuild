@@ -1,6 +1,6 @@
 ---
 name: code-smell
-description: A skill for context-independent code review to find technical flaws and quality issues.
+description: Is this code well-written?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:

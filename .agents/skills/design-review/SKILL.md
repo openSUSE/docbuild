@@ -1,6 +1,6 @@
 ---
 name: design-review
-description: A skill for providing feedback on software architecture and design patterns.
+description: Is this a good design for my feature?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:
