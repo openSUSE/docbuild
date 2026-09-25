@@ -1,6 +1,11 @@
 ---
 name: create-pydantic-model
-description: Create meaningful Pydantic models with clear naming, field metadata, defaults, and validation.
+description: I need to model some structured data, what is the best way to do it?
+license: GPL-3.0-or-later
+compatibility: [opencode, github_copilot, claude]
+metadata:
+  category: code-quality
+  audience: [developers]
 ---
 
 # Create Meaningful Pydantic Models Skill

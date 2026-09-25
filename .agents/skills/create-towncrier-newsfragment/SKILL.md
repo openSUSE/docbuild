@@ -1,6 +1,11 @@
 ---
 name: create-towncrier-newsfragment
-description: Create a valid Towncrier newsfragment for this repository.
+description: My work is done, now I need to add a changelog entry.
+license: GPL-3.0-or-later
+compatibility: [opencode, github_copilot, claude]
+metadata:
+  category: documentation
+  audience: [developers]
 ---
 
 # Create Towncrier Newsfragment Skill

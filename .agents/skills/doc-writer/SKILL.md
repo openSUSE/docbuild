@@ -1,6 +1,6 @@
 ---
 name: doc-writer
-description: Write and structure the User, Developer, and Reference guides (Sphinx RST prose). Defines guide placement and the project's prose writing style, including procedures as numbered steps. For Python docstrings, use the `docstrings` skill instead.
+description: I need to write or update the project's documentation.
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:

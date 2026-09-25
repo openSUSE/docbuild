@@ -1,6 +1,6 @@
 ---
 name: pytest-expert
-description: A skill for advanced pytest usage, covering parametrization, fixtures, mocking, and coverage analysis.
+description: How do I write better tests with pytest?
 license: GPL-3.0-or-later
 compatibility: [opencode, github_copilot, claude]
 metadata:
