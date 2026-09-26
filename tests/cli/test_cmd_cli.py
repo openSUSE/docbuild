@@ -10,6 +10,7 @@ import pytest
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
+from docbuild.constants import DOCBUILD_BANNER
 from docbuild.models.config.app import AppConfig
 from docbuild.models.config.env import EnvConfig
 from docbuild.utils.pidlock import LockAcquisitionError
@@ -89,8 +90,16 @@ def test_cli_no_subcommand_shows_help(runner):
     """
     result = runner.invoke(cli)
     assert result.exit_code == 0
-    assert "Main CLI tool for document operations" in result.output
-    assert "----------" in result.output
+    assert cli.help in result.output
+    assert DOCBUILD_BANNER in result.output
+
+
+def test_cli_banner_not_on_version(runner):
+    """Test that the banner is NOT displayed when just checking the version."""
+    result = runner.invoke(cli, ["--version"])
+
+    assert result.exit_code == 0
+    assert DOCBUILD_BANNER not in result.output
 
 
 def test_cli_defaults(
