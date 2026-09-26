@@ -21,6 +21,7 @@ from ..constants import (
     APP_NAME,
     CONFIG_PATHS,
     DEFAULT_ENV_CONFIG_FILENAME,
+    DOCBUILD_BANNER,
     PROJECT_DIR,
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
@@ -280,8 +281,22 @@ def load_env_config(
             raise e
 
 
+class BannerGroup(click.Group):
+    """Custom Click Group that displays a banner before help messages."""
+
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+        """Format and print help output with banner prefix.
+
+        :param ctx: The Click context.
+        :param formatter: Click help formatter instance.
+        """
+        click.echo(DOCBUILD_BANNER)
+        super().format_help(ctx, formatter)
+
+
 @click.group(
     name=APP_NAME,
+    cls=BannerGroup,
     context_settings={"show_default": True, "help_option_names": ["-h", "--help"]},
     help="Main CLI tool for document operations.",
     invoke_without_command=True,
