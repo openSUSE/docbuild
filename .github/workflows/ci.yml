@@ -83,6 +83,7 @@ jobs:
         uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       - name: Install uv
         id: setup-uv
@@ -198,6 +199,7 @@ jobs:
         uses: actions/setup-python@v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       # Install uv and project dependencies inside a virtual environment
       - name: Install uv and dependencies
@@ -240,12 +242,12 @@ jobs:
         run: |
           # 1. Show the first line with invisible characters
           head -n 1 "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" | cat -e
-          
+
           # 2. Check file type and line endings
           file "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing"
-          
+
           # 3. Try running it explicitly with bash to bypass the shebang
-          bash "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" || true 
+          bash "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" || true
 
       - name: Verify Jing wrapper
         env:
