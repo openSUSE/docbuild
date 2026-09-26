@@ -37,7 +37,7 @@ env:
   DEFAULT_JING_VERSION: "20241231"
 
 jobs:
-  test-ubuntu:
+  test-opensuse:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -79,12 +79,6 @@ jobs:
           rpm -q --whatprovides --queryformat="%{NAME}: %{VERSION}\n" \
             "rubygem(asciidoctor)" || true
 
-      - name: Setup Python
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
-
       - name: Install uv
         id: setup-uv
         uses: astral-sh/setup-uv@v10.1.0
@@ -92,8 +86,11 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
+      - name: Install Python via uv
+        run: uv python install ${{ matrix.python-version }}
+
       - name: Install dependencies and Coverage Tools
-        run: uv sync --group ${{ env.PYPROJECT_GROUP }}
+        run: uv sync --python ${{ matrix.python-version }} --group ${{ env.PYPROJECT_GROUP }}
 
       - name: Run tests and Report Coverage
         env:
@@ -194,22 +191,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      # Set up Python on macOS environment
-      - name: Setup Python
-        uses: actions/setup-python@v7.0.0
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v10.1.0
         with:
-          python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      # Install uv and project dependencies inside a virtual environment
-      - name: Install uv and dependencies
+      - name: Install Python and dependencies
         env:
           UV_NO_SYNC: "1"  # Disable uv sync during test runs
         run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install uv
-          uv pip install --editable . --group ${{ env.PYPROJECT_GROUP }}
+          uv python install ${{ matrix.python-version }}
+          uv sync --python ${{ matrix.python-version }} --group ${{ env.PYPROJECT_GROUP }}
 
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
