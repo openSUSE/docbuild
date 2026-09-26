@@ -37,16 +37,18 @@ env:
   DEFAULT_JING_VERSION: "20241231"
 
 jobs:
-  test-ubuntu:
+  test-opensuse:
     name: ubuntu-python-${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    continue-on-error: ${{ matrix.python-version == '3.15' }}
     strategy:
       matrix:
         python-version: &python-matrix
           - '3.12'
           - '3.13'
           - '3.14'
+          - '3.15'
     container:
       # image: registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest
       image: ghcr.io/opensuse/doc-container:latest
@@ -78,11 +80,6 @@ jobs:
           rpm -q --whatprovides --queryformat="%{NAME}: %{VERSION}\n" \
             "rubygem(asciidoctor)" || true
 
-      - name: Setup Python
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - name: Install uv
         id: setup-uv
         uses: astral-sh/setup-uv@v10.1.0
@@ -90,8 +87,11 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
+      - name: Install Python via uv
+        run: uv python install ${{ matrix.python-version }}
+
       - name: Install dependencies and Coverage Tools
-        run: uv sync --group ${{ env.PYPROJECT_GROUP }}
+        run: uv sync --python ${{ matrix.python-version }} --group ${{ env.PYPROJECT_GROUP }}
 
       - name: Run tests and Report Coverage
         env:
@@ -184,6 +184,7 @@ jobs:
   test-macos:
     name: macos-python-${{ matrix.python-version }}
     runs-on: macos-latest
+    continue-on-error: ${{ matrix.python-version == '3.15' }}
     strategy:
       matrix:
         python-version: *python-matrix
@@ -192,21 +193,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      # Set up Python on macOS environment
-      - name: Setup Python
-        uses: actions/setup-python@v7.0.0
+      - name: Install uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v10.1.0
         with:
-          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      # Install uv and project dependencies inside a virtual environment
-      - name: Install uv and dependencies
+      - name: Install Python and dependencies
         env:
           UV_NO_SYNC: "1"  # Disable uv sync during test runs
         run: |
-          python3 -m venv .venv
-          source .venv/bin/activate
-          pip install uv
-          uv pip install --editable . --group ${{ env.PYPROJECT_GROUP }}
+          uv python install ${{ matrix.python-version }}
+          uv sync --python ${{ matrix.python-version }} --group ${{ env.PYPROJECT_GROUP }}
 
       # Install macOS-specific external tools (such as XML parsers and Java)
       - name: Install external tools (macOS)
@@ -239,12 +238,12 @@ jobs:
         run: |
           # 1. Show the first line with invisible characters
           head -n 1 "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" | cat -e
-          
+
           # 2. Check file type and line endings
           file "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing"
-          
+
           # 3. Try running it explicitly with bash to bypass the shebang
-          bash "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" || true 
+          bash "${GITHUB_WORKSPACE}/.github/workflows/MacOS/bin/jing" || true
 
       - name: Verify Jing wrapper
         env:
