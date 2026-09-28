@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.sync &#8212; Docbuild Documentation 0.24.1.dev11+g8b8f6729d.d20260928</title>
+    <title>docbuild.utils.sync &#8212; Docbuild Documentation 0.24.1.dev12+gd91d5aeed.d20260928</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../../../_static/documentation_options.js?v=54b5496e"></script>
+    <script src="../../../../../_static/documentation_options.js?v=6431c76e"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -649,7 +649,10 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.sync.rsync" title="docbuild.utils.sync.rsync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsync</span></code></a>(→ subprocess.CompletedProcess[str])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.sync.is_remote_path" title="docbuild.utils.sync.is_remote_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_remote_path</span></code></a>(→ bool)</p></td>
+<td><p>Determine whether a path specification refers to a remote location in rsync syntax.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.sync.rsync" title="docbuild.utils.sync.rsync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rsync</span></code></a>(→ subprocess.CompletedProcess[str])</p></td>
 <td><p>Asynchronously execute the rsync command.</p></td>
 </tr>
 </tbody>
@@ -659,21 +662,56 @@
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.sync.is_remote_path">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.sync.</span></span><span class="sig-name descname"><span class="pre">is_remote_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.14)"><span class="pre">os.PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.utils.sync.is_remote_path" title="Link to this definition">#</a></dt>
+<dd><p>Determine whether a path specification refers to a remote location in rsync syntax.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> – The path string or PathLike object to evaluate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the path is remote; False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="docbuild.utils.sync.rsync">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.utils.sync.</span></span><span class="sig-name descname"><span class="pre">rsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.14)"><span class="pre">os.PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/os.html#os.PathLike" title="(in Python v3.14)"><span class="pre">os.PathLike</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="RsyncOptions.html#docbuild.utils.sync.RsyncOptions" title="docbuild.utils.sync.RsyncOptions"><span class="pre">RsyncOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/subprocess.html#subprocess.CompletedProcess" title="(in Python v3.14)"><span class="pre">subprocess.CompletedProcess</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.sync.rsync" title="Link to this definition">#</a></dt>
 <dd><p>Asynchronously execute the rsync command.</p>
+<p>Supports both local and remote paths. Remote paths use rsync syntax:
+SSH (<code class="docutils literal notranslate"><span class="pre">user&#64;host:/path</span></code>), daemon (<code class="docutils literal notranslate"><span class="pre">host::module</span></code>), or URL (<code class="docutils literal notranslate"><span class="pre">rsync://host/path</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source</strong> – Path to the source file or directory.</p></li>
-<li><p><strong>target</strong> – Path to the target destination.</p></li>
+<li><p><strong>source</strong> – Path to the source file or directory (local or remote).</p></li>
+<li><p><strong>target</strong> – Path to the target destination (local or remote).</p></li>
 <li><p><strong>content_only</strong> – If True, appends a trailing slash to the source to sync contents.
+If False, ensures no trailing slash on the source to sync the directory itself.
 If None, infers the intent from the raw source string.</p></li>
 <li><p><strong>options</strong> – Configuration object containing the rsync flags.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Process execution results containing stdout, stderr, and exit code.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If both source and target are remote paths.</p>
+</dd>
+</dl>
+<dl>
+<dt>Example:</dt><dd><ul>
+<li><p>Sync from remote to local:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">rsync</span><span class="p">(</span><span class="s2">&quot;user@remote:/docs&quot;</span><span class="p">,</span> <span class="s2">&quot;/local/backup&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Sync from local to remote (contents only):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">rsync</span><span class="p">(</span><span class="s2">&quot;/local/docs&quot;</span><span class="p">,</span> <span class="s2">&quot;remote:/backups&quot;</span><span class="p">,</span> <span class="n">content_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -731,6 +769,7 @@ If None, infers the intent from the raw source string.</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.is_remote_path"><code class="docutils literal notranslate"><span class="pre">is_remote_path()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.sync.rsync"><code class="docutils literal notranslate"><span class="pre">rsync()</span></code></a></li>
 </ul>
 </li>

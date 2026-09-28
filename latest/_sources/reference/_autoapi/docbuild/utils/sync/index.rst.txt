@@ -27,11 +27,20 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.utils.sync.is_remote_path
    docbuild.utils.sync.rsync
 
 
 Module Contents
 ---------------
+
+.. py:function:: is_remote_path(path: str | os.PathLike[str]) -> bool
+
+   Determine whether a path specification refers to a remote location in rsync syntax.
+
+   :param path: The path string or PathLike object to evaluate.
+   :return: True if the path is remote; False otherwise.
+
 
 .. py:function:: rsync(source: str | os.PathLike[str], target: str | os.PathLike[str], *, content_only: bool | None = None, options: RsyncOptions | None = None) -> subprocess.CompletedProcess[str]
    :async:
@@ -39,11 +48,26 @@ Module Contents
 
    Asynchronously execute the rsync command.
 
-   :param source: Path to the source file or directory.
-   :param target: Path to the target destination.
+   Supports both local and remote paths. Remote paths use rsync syntax:
+   SSH (``user@host:/path``), daemon (``host::module``), or URL (``rsync://host/path``).
+
+   :param source: Path to the source file or directory (local or remote).
+   :param target: Path to the target destination (local or remote).
    :param content_only: If True, appends a trailing slash to the source to sync contents.
+                        If False, ensures no trailing slash on the source to sync the directory itself.
                         If None, infers the intent from the raw source string.
    :param options: Configuration object containing the rsync flags.
    :return: Process execution results containing stdout, stderr, and exit code.
+   :raises ValueError: If both source and target are remote paths.
+
+   Example:
+     * Sync from remote to local::
+
+         await rsync("user@remote:/docs", "/local/backup")
+
+     * Sync from local to remote (contents only)::
+
+         await rsync("/local/docs", "remote:/backups", content_only=True)
+
 
 

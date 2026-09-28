@@ -6,6 +6,79 @@ docbuild.utils.sync.RsyncOptions
    Configuration options for rsync execution.
 
 
+   .. py:attribute:: archive
+      :type:  bool
+      :value: True
+
+
+      Enable archive mode. Preserves permissions, timestamps, and ownership.
+
+
+
+   .. py:attribute:: compress
+      :type:  bool
+      :value: False
+
+
+      Enable compression during transfer. Useful for slow connections but increases CPU usage.
+
+
+
+   .. py:attribute:: delete
+      :type:  bool
+      :value: False
+
+
+      Delete files on the destination that do not exist on the source.
+
+
+
+   .. py:attribute:: dry_run
+      :type:  bool
+      :value: False
+
+
+      Perform a trial run showing what would be transferred without actually doing it.
+
+
+
+   .. py:attribute:: verbose
+      :type:  bool
+      :value: False
+
+
+      Increase verbosity to see what rsync is doing.
+
+
+
+   .. py:attribute:: partial
+      :type:  bool
+      :value: False
+
+
+      Keep partially transferred files. Useful for resuming interrupted transfers.
+
+
+
+   .. py:attribute:: exclude
+      :type:  list[str] | tuple[str, ...]
+      :value: []
+
+
+      List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag.
+
+
+
+   .. py:attribute:: extra_args
+      :type:  list[str]
+      :value: []
+
+
+      Additional arbitrary rsync command-line arguments not modeled as explicit fields.
+      Enables use of 100+ unsupported rsync options (e.g., ["--exclude=*.tmp", "--bwlimit=1000"]).
+
+
+
    .. py:method:: to_args() -> list[str]
 
       Convert the configured options into a list of command-line arguments.
