@@ -1,0 +1,1 @@
+Introduced ``PortalConfig`` to separate XML extraction and XPath traversal logic from Pydantic data models.

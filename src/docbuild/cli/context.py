@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from ..config.xml.portal import PortalConfig
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
 from ..models.doctype import Doctype
@@ -51,3 +52,6 @@ class DocBuildContext:
 
     validation_method: str = "jing"
     """Method used to validate XML files: 'jing' (default) or 'lxml'"""
+
+    portalconfig: PortalConfig | None = None
+    """The parsed and extracted Portal XML configuration, if loaded"""

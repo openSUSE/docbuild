@@ -6,6 +6,7 @@ from pathlib import Path
 from lxml import etree  # type: ignore
 import pytest
 
+from docbuild.config.xml.portal import PortalConfig
 from docbuild.models.homepage import Homepage, ProductItem
 
 
@@ -70,7 +71,8 @@ def sample_portal_xml() -> etree._ElementTree:
 
 def test_homepage_from_portal_extraction(sample_portal_xml: etree._ElementTree):
     """Test that Homepage model extracts data perfectly from Portal XML."""
-    hp = Homepage.from_portal(sample_portal_xml)
+    portal_config = PortalConfig(tree=sample_portal_xml)
+    hp = Homepage.from_portal(portal_config)
 
     # 1. Test rank enumeration
     assert len(hp.product_families) == 1
