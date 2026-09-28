@@ -9,6 +9,19 @@ docbuild.cli.cmd_cli
 
 
 
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/cmd_cli/BannerGroup
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_cli.BannerGroup
+
+
 Functions
 ---------
 
