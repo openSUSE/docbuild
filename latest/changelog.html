@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev12+gd91d5aeed.d20260928</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev13+g62afd3ce5.d20260928</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=6431c76e"></script>
+    <script src="_static/documentation_options.js?v=82eb37e4"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -477,6 +477,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Reorganized the Portal config developer tooling. Renamed and moved the migration wrapper script to <code class="docutils literal notranslate"><span class="pre">tools/migrate-config.sh</span></code> (now expanding a leading <code class="docutils literal notranslate"><span class="pre">~</span></code> in <code class="docutils literal notranslate"><span class="pre">--dir</span></code> and requiring the Docserv stitchfile argument), and removed the redundant <code class="docutils literal notranslate"><span class="pre">validate.sh</span></code> in favor of <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">portal</span> <span class="pre">validate</span></code>. Added agent skills for the Portal config schema, config migration, and config validation. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/542">GH #542</a>)</p></li>
+<li><p>Refactor CI pipeline to prepare for 3.15. Dropped <code class="docutils literal notranslate"><span class="pre">setup-python</span></code> completely in favor of <strong class="command">uv python install</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/564">GH #564</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
