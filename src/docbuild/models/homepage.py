@@ -78,26 +78,25 @@ class Homepage(BaseModel):
         """Extract homepage data from the PortalConfig."""
         hp = cls()
 
-        # Load standard properties mapping dictionary lists to Pydantic objects
         hp.product_families = [
             ProductFamily(**pf) for pf in portal_config.productfamilies
         ]
 
         hp.sbp_category_list = [
-            CategoryItem(**c) for c in portal_config.get_categories("sbp", "/sbp/")
+            CategoryItem(**c) for c in portal_config.get_categories("sbp")
         ]
         hp.trd_partner_list = [
-            CategoryItem(**c) for c in portal_config.get_categories("trd", "/trd/")
+            CategoryItem(**c) for c in portal_config.get_categories("trd")
         ]
         hp.smart_doc_category_list = [
-            CategoryItem(**c) for c in portal_config.get_categories("smart", "/smart/")
+            CategoryItem(**c) for c in portal_config.get_categories("smart")
         ]
 
         hp.products_list = [ProductItem(**p) for p in portal_config.products]
 
         spotlight = portal_config.spotlight
-        hp.spotlight_text = spotlight["spotlightText"]
-        hp.spotlight_link = spotlight["spotlightLink"]
+        hp.spotlight_text = spotlight.get("spotlightText", "")
+        hp.spotlight_link = spotlight.get("spotlightLink", "")
 
         return hp
 

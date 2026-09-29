@@ -1,6 +1,6 @@
 """Abstraction layer for Portal XML configuration."""
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +9,9 @@ from lxml import etree  # type: ignore
 from ...constants import XML_NS
 from ...models.deliverable import Deliverable
 from .xinclude import parse_xml_with_xinclude_base
+
+XML_ID = etree.QName(XML_NS, "id")
+SPECIAL_IDS = {"sbp", "trd", "smart"}
 
 
 class PortalConfig:
@@ -20,70 +23,45 @@ class PortalConfig:
 
     def __init__(
         self,
-        filepath: Path | str | None = None,
-        tree: etree._ElementTree | None = None,
+        source: Path | str | etree._Element | etree._ElementTree,
     ) -> None:
         """Initialize with either a filepath to parse or an existing etree."""
-        if tree is not None:
-            self.tree = tree
-        elif filepath is not None:
-            self.tree = parse_xml_with_xinclude_base(filepath)
-        else:
-            msg = "Must provide either filepath or tree"
-            raise ValueError(msg)
-
-        self.root = self.tree.getroot() if hasattr(self.tree, "getroot") else self.tree
+        tree = parse_xml_with_xinclude_base(source) if isinstance(source, (str, Path)) else source
+        self.root = tree.getroot() if hasattr(tree, "getroot") else tree
 
     def _resolve_spotlight_target(
         self, target: etree._Element, linkend: str, text: str
     ) -> tuple[str, str]:
         """Resolve the tag-specific logic for a spotlight target."""
-        if target.tag == "product":
-            prod_id = target.get(f"{{{XML_NS}}}id") or ""
-            link = f"/{prod_id}/"
-            if not text:
-                text = target.xpath("string(name)").strip()
-            return text, link
-
-        if target.tag == "docset":
-            prod_node = target.getparent()
-            prod_id = (
-                prod_node.get(f"{{{XML_NS}}}id") or "" if prod_node is not None else ""
-            )
-            ds_path = target.get("path", "")
-
-            link = f"/{prod_id}/{ds_path}".replace("//", "/")
-            if not link.endswith("/"):
-                link += "/"
-
-            if not text:
-                prod_name = (
-                    prod_node.xpath("string(name)").strip()
-                    if prod_node is not None
-                    else ""
-                )
-                ds_version = target.xpath("string(./version)").strip()
-                text = f"{prod_name} {ds_version}".strip()
-            return text, link
-
-        if target.tag == "deliverable":
-            try:
-                target_d = Deliverable(target)
-                link = f"/{target_d.xml.product_docset}/"
+        match target.tag:
+            case "product":
+                link = f"/{target.get(XML_ID) or ''}/"
                 if not text:
-                    prod_name = target_d.xml.productname or ""
-                    ds_node = target_d.xml.docset_node
-                    ds_version = (
-                        ds_node.xpath("string(./version)").strip()
-                        if ds_node is not None
-                        else ""
-                    )
-                    text = f"{prod_name} {ds_version}".strip()
-                return text, link
-            except Exception:
-                pass
+                    text = target.xpath("string(name)").strip()
 
-        return text, f"/{linkend}/"
+            case "docset":
+                prod = target.getparent()
+                prod_id = (prod.get(XML_ID) if prod is not None else "") or ""
+                ds_path = target.get("path", "").strip("/")
+                link = f"/{prod_id}/{ds_path}/"
+                if not text:
+                    prod_name = prod.xpath("string(name)").strip() if prod is not None else ""
+                    ds_version = target.xpath("string(version)").strip()
+                    text = f"{prod_name} {ds_version}".strip()
+
+            case "deliverable":
+                d = Deliverable(target)
+                link = f"/{d.xml.product_docset}/"
+                if not text:
+                    prod_name = d.xml.productname or ""
+                    ds_node = d.xml.docset_node
+                    ds_version = ds_node.xpath("string(version)").strip() if ds_node is not None else ""
+                    text = f"{prod_name} {ds_version}".strip()
+
+            case _:
+                link = f"/{linkend}/"
+
+        return text, link
 
     @property
     def spotlight(self) -> dict[str, str]:
@@ -91,134 +69,103 @@ class PortalConfig:
 
         :return: A dictionary containing 'spotlightText' and 'spotlightLink'.
         """
-        spotlights = self.root.xpath("/portal/spotlight")
-        if not spotlights:
-            return {"spotlightText": "", "spotlightLink": ""}
+        # Fix: use relative path "spotlight" instead of absolute "/portal/spotlight" for .find()
+        if (spotlight := self.root.find("spotlight")) is None:
+            return {}
 
-        s_node = spotlights[0]
-        linkend = s_node.get("linkend", "")
-        text = " ".join(s_node.xpath("string()").split())
-
-        if not linkend:
+        if not (linkend := spotlight.get("linkend", "")):
+            text = " ".join(spotlight.xpath("string()").split())
             return {"spotlightText": text, "spotlightLink": ""}
 
-        target_nodes = self.root.xpath("id($linkend)", linkend=linkend)
-        if not target_nodes:
-            return {"spotlightText": text, "spotlightLink": linkend}
+        linkend = spotlight.attrib["linkend"]
+        text = " ".join(spotlight.xpath("string()").split())
+        target = self.root.xpath("id($linkend)", linkend=linkend)[0]
 
-        final_text, final_link = self._resolve_spotlight_target(
-            target_nodes[0], linkend, text
-        )
+        final_text, final_link = self._resolve_spotlight_target(target, linkend, text)
         return {"spotlightText": final_text, "spotlightLink": final_link}
 
     @property
-    def productfamilies(self) -> list[dict[str, str]]:
+    def productfamilies(self) -> Iterator[dict[str, str]]:
         """Extract product families.
 
-        :return: A list of dictionaries representing product families.
+        :return: An iterator of dictionaries representing product families.
         """
-        families = []
-        for rank_idx, pf in enumerate(
-            self.root.xpath("/portal/productfamilies/item"), start=1
-        ):
-            item_id = pf.get(f"{{{XML_NS}}}id") or ""
+        for rank, pf in enumerate(self.root.xpath("/portal/productfamilies/item"), start=1):
+            item_id = pf.get(XML_ID) or ""
             item_text = pf.xpath("string()").strip()
-            families.append(
-                {
-                    "id": item_id,
-                    "name": item_text,
-                    "rank": pf.get("rank", "").strip() or str(rank_idx),
-                    "path": pf.get("path", ""),
-                }
-            )
-        return families
+            yield {
+                "id": item_id,
+                "name": item_text,
+                "rank": pf.get("rank", "").strip() or str(rank),
+                "path": pf.get("path", ""),
+            }
 
-    def get_categories(self, prod_id: str, prefix: str) -> list[dict[str, str]]:
+    def get_categories(self, prod_id: str) -> Iterator[dict[str, str]]:
         """Extract specialized docset categories (sbp, trd, smart).
 
         :param prod_id: The ID of the product containing the docsets.
-        :param prefix: The path prefix to prepend to the docset path.
         """
-        items = []
         for ds in self.root.xpath("id($prod_id)/docset", prod_id=prod_id):
-            name = ds.xpath("string(./version)").strip()
-            if name.startswith("Smart Docs: "):
-                name = name.replace("Smart Docs: ", "")
-            path = ds.get("path", "").lstrip("/")
-            items.append({"name": name, "path": f"{prefix}{path}"})
-        return items
+            parent = ds.getparent()
+            prod_path = (
+                (parent.get("path") if parent is not None else "") or prod_id
+            ).strip("/")
+            name = (
+                ds.xpath("string(./listingversion)").strip()
+                or ds.xpath("string(./version)").strip()
+            )
+            path = ds.get("path", "").strip("/")
+            yield {"name": name, "path": f"/{prod_path}/{path}/"}
 
     @property
-    def products(self) -> list[dict[str, Any]]:
-        """Extract the main product list.
+    def products(self) -> Iterator[dict[str, Any]]:
+        """Yield extracted products from the Portal configuration.
 
-        :return: A list of dictionaries representing individual products.
+        :yield: A dictionary representing an individual product.
         """
-        # Create a mapping of family IDs to their names
         family_map = {f["id"]: f["name"] for f in self.productfamilies if f["id"]}
-
-        items = []
-        special_ids = {"sbp", "trd", "smart"}
         for prod in self.root.xpath("/portal/product"):
-            prod_id = prod.get(f"{{{XML_NS}}}id") or ""
-            if prod_id in special_ids:
+            if (prod_id := prod.get(XML_ID) or "") in SPECIAL_IDS:
                 continue
 
-            name = prod.xpath("string(name)").strip()
-
-            # Map the ID back to the human-readable string
-            family_id = str(prod.get("family") or "").strip()
-            family = str(family_map.get(family_id, family_id) or "")
-
-            rank = prod.get("rank", "").strip()
-
-            descriptions = []
-            for d in prod.xpath("descriptions/desc"):
-                lang = d.get("lang", "en-us")
-                desc_text = " ".join(d.xpath("string(./title)").split())
-                if desc_text:
-                    descriptions.append(
-                        {
-                            "lang": lang,
-                            "default": (lang == "en-us"),
-                            "description": desc_text,
-                        }
-                    )
-
-            supported, unsupported = [], []
-            for ds in prod.xpath("docset"):
-                ds_name = (
-                    ds.xpath("string(./version)").strip()
-                    or ds.get(f"{{{XML_NS}}}id")
-                    or ""
-                )
-                ds_path = ds.get("path", "")
-
-                if not ds_path.startswith("/"):
-                    ds_path = f"/{prod_id}/{ds_path}"
-                if not ds_path.endswith("/"):
-                    ds_path += "/"
-
-                link = {"name": ds_name, "path": ds_path}
-
-                if ds.get("lifecycle", "supported") in ("supported", "beta"):
-                    supported.append(link)
-                else:
-                    unsupported.append(link)
-
-            items.append(
+            # Optimize descriptions: one-pass comprehension with walrus operator
+            descriptions = [
                 {
-                    "name": name,
-                    "acronym": prod_id,
-                    "product_family": family,
-                    "productFamily": family,
-                    "description": descriptions,
-                    "rank": rank,
-                    "supported": supported,
-                    "unsupported": unsupported,
+                    "lang": d.get("lang", "en-us"),
+                    "default": d.get("lang", "en-us") == "en-us",
+                    "description": title,
                 }
-            )
-        return items
+                for d in prod.xpath("descriptions/desc")
+                if (title := " ".join(d.xpath("string(title)").split()))
+            ]
+
+            # Optimize docsets: single-pass partition without duplicated dict creation
+            supported: list[dict[str, str]] = []
+            unsupported: list[dict[str, str]] = []
+            for ds in prod.xpath("docset"):
+                target = (
+                    supported
+                    if ds.get("lifecycle", "supported") in ("supported", "beta")
+                    else unsupported
+                )
+                target.append(
+                    {
+                        "name": ds.xpath("string(version)").strip() or ds.get(XML_ID, ""),
+                        "path": f"/{prod_id}/{ds.get('path', '').strip('/')}/",
+                    }
+                )
+
+            family = family_map.get(prod.get("family", ""), prod.get("family", ""))
+
+            yield {
+                "name": prod.xpath("string(name)").strip(),
+                "acronym": prod_id,
+                "product_family": family,
+                "description": descriptions,
+                "rank": prod.get("rank", "").strip(),
+                "supported": supported,
+                "unsupported": unsupported,
+            }
 
     def iter_deliverables(self) -> Generator[Deliverable, None, None]:
         """Yield all deliverables defined in the portal XML."""

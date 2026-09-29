@@ -37,7 +37,8 @@ def sample_portal_xml() -> etree._ElementTree:
 
       <product xml:id="smart">
         <docset xml:id="smart.container" path="container/">
-          <!-- Test Smart Docs prefix stripping -->
+          <!-- Test listingversion for homepage extraction -->
+          <listingversion>Containerization</listingversion>
           <version>Smart Docs: Containerization</version>
         </docset>
       </product>
@@ -71,7 +72,7 @@ def sample_portal_xml() -> etree._ElementTree:
 
 def test_homepage_from_portal_extraction(sample_portal_xml: etree._ElementTree):
     """Test that Homepage model extracts data perfectly from Portal XML."""
-    portal_config = PortalConfig(tree=sample_portal_xml)
+    portal_config = PortalConfig(source=sample_portal_xml)
     hp = Homepage.from_portal(portal_config)
 
     # 1. Test rank enumeration
@@ -81,7 +82,7 @@ def test_homepage_from_portal_extraction(sample_portal_xml: etree._ElementTree):
 
     # 2. Test specialized categories
     assert len(hp.sbp_category_list) == 1
-    assert hp.sbp_category_list[0].path == "/sbp/cloud"
+    assert hp.sbp_category_list[0].path == "/sbp/cloud/"
 
     assert len(hp.trd_partner_list) == 1
     assert hp.trd_partner_list[0].path == "/trd/amd/"
@@ -95,16 +96,13 @@ def test_homepage_from_portal_extraction(sample_portal_xml: etree._ElementTree):
 
     assert prod.name == "Appliance Building"
     assert prod.acronym == "app-building"
-    # Proves family 'f.linux' was mapped perfectly back to 'Linux'
     assert prod.product_family == "Linux"
 
-    # Proves only <title> was extracted and structured as a dict
     assert len(prod.description) == 1
     assert prod.description[0].lang == "en-us"
     assert prod.description[0].default is True
     assert prod.description[0].description == "A short description with bold text."
 
-    # Proves we got the correct docset version, avoiding the nested 'Keg' deliverable
     assert len(prod.supported) == 2
     assert prod.supported[0].name == "App Builder 1.0"
     assert prod.supported[0].path == "/app-building/1.0/"

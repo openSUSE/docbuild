@@ -39,13 +39,13 @@ def portal_tree() -> etree._ElementTree:
 
 def test_portal_config_initialization(portal_tree: etree._ElementTree) -> None:
     """Test that PortalConfig initializes correctly with an etree."""
-    config = PortalConfig(tree=portal_tree)
+    config = PortalConfig(source=portal_tree)
     assert config.root is not None
 
 
 def test_portal_config_spotlight(portal_tree: etree._ElementTree) -> None:
     """Test spotlight extraction and reference resolution."""
-    config = PortalConfig(tree=portal_tree)
+    config = PortalConfig(source=portal_tree)
     spotlight = config.spotlight
     assert spotlight["spotlightLink"] == "/prod1/"
     assert spotlight["spotlightText"] == "Product One"
@@ -53,8 +53,8 @@ def test_portal_config_spotlight(portal_tree: etree._ElementTree) -> None:
 
 def test_portal_config_productfamilies(portal_tree: etree._ElementTree) -> None:
     """Test product family extraction."""
-    config = PortalConfig(tree=portal_tree)
-    families = config.productfamilies
+    config = PortalConfig(source=portal_tree)
+    families = list(config.productfamilies)
     assert len(families) == 1
     assert families[0]["id"] == "fam1"
     assert families[0]["name"] == "Family One"
@@ -63,23 +63,22 @@ def test_portal_config_productfamilies(portal_tree: etree._ElementTree) -> None:
 
 def test_portal_config_categories(portal_tree: etree._ElementTree) -> None:
     """Test category extraction for specialized docsets."""
-    config = PortalConfig(tree=portal_tree)
-    categories = config.get_categories("sbp", "/sbp/")
+    config = PortalConfig(source=portal_tree)
+    categories = list(config.get_categories("sbp"))
     assert len(categories) == 1
     assert categories[0]["name"] == "SBP One"
-    assert categories[0]["path"] == "/sbp/sbp1"
+    assert categories[0]["path"] == "/sbp/sbp1/"
 
 
 def test_portal_config_products(portal_tree: etree._ElementTree) -> None:
     """Test main product list extraction and mapping."""
-    config = PortalConfig(tree=portal_tree)
-    products = config.products
+    config = PortalConfig(source=portal_tree)
+    products = list(config.products)
 
     assert len(products) == 1
     prod = products[0]
     assert prod["name"] == "Product One"
     assert prod["acronym"] == "prod1"
-    # Proves family mapping works
     assert prod["product_family"] == "Family One"
     assert prod["rank"] == "100"
 
