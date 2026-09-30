@@ -11,6 +11,8 @@ from .models.lifecycle import LifecycleFlag
 APP_NAME: str = "docbuild"
 """The name of the application, used in paths and config files."""
 
+DOCBUILD_BANNER = ""
+
 DEFAULT_ENV_NAME = "default-env"
 """The default server name used in the application configuration."""
 
