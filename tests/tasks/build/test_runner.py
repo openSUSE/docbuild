@@ -107,6 +107,56 @@ async def test_process_deliverable_build_success(
 
 
 @pytest.mark.asyncio
+@patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
+async def test_process_deliverable_build_remote_target(
+    mock_mgr_class: Mock, tmp_path: Path
+) -> None:
+    """Test build execution with a remote target destination."""
+    mock_deliverable = Mock(
+        spec=Deliverable,
+        full_id="sles/15:TEST",
+        subdir="subdir",
+        format={"html": True},
+        branch="main",
+    )
+    mock_deliverable.xml.dcfile = "DC-test"
+    mock_deliverable.xml.product_id = "sles"
+    mock_deliverable.xml.docset_path = "15"
+    mock_deliverable.xml.lang = "en-us"
+    mock_deliverable.git.url = "https://git.test"
+    mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"
+
+    mock_mgr_instance = mock_mgr_class.return_value
+    mock_mgr_instance.create_worktree = AsyncMock()
+
+    daps_tmpls = {"html": "daps -d {{dcfile}} --builddir {{builddir}} html"}
+
+    with (
+        patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run,
+        patch.object(build_runner, "rsync", new_callable=AsyncMock) as mock_rsync,
+    ):
+        mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
+        mock_rsync.return_value = Mock(returncode=0, stdout="Sync OK", stderr="")
+
+        success, deliverable = await process_deliverable_build(
+            mock_deliverable,
+            tmp_path,
+            tmp_path,
+            tmp_path,
+            "user@host:/srv/docs",
+            "{product}/{docset}/{lang}",
+            daps_tmpls,
+        )
+
+        assert success is True
+        assert deliverable == mock_deliverable
+        mock_rsync.assert_called_once()
+        call_args, _ = mock_rsync.call_args
+        # target_dest should be string joined without calling mkdir
+        assert call_args[1] == "user@host:/srv/docs/sles/15/en-us/html"
+
+
+@pytest.mark.asyncio
 async def test_process_doctype_build(
     empty_xml_root: etree._ElementTree, tmp_path: Path
 ) -> None:

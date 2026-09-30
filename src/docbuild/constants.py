@@ -2,11 +2,20 @@
 
 from pathlib import Path
 import re
+from typing import Final
 
 import platformdirs
 
 from .models.envroles import EnvRole
 from .models.lifecycle import LifecycleFlag
+
+# ---------------------------------------------------------------
+DOCBUILD_BANNER: Final[str] = """
+       █          █         ▀ █     █
+    █▀▀█ █▀▀█ █▀▀ █▀▀█ █  █ █ █  █▀▀█
+    █  █ █  █ █   █  █ █  █ █ █  █  █
+    ▀▀▀▀ ▀▀▀▀ ▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀ ▀▀ ▀▀▀▀
+"""
 
 APP_NAME: str = "docbuild"
 """The name of the application, used in paths and config files."""
