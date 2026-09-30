@@ -18,11 +18,11 @@ docbuild.models.homepage.Homepage
 
 
 
-   .. py:method:: from_portal(portal: object) -> Self
+   .. py:method:: from_portal(portal_config: docbuild.config.xml.portal.PortalConfig) -> Self
       :classmethod:
 
 
-      Extract homepage data from the Portal configuration.
+      Extract homepage data from the PortalConfig.
 
 
 

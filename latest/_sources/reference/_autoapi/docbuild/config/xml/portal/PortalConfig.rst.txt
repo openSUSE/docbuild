@@ -1,0 +1,54 @@
+docbuild.config.xml.portal.PortalConfig
+=======================================
+
+.. py:class:: docbuild.config.xml.portal.PortalConfig(source: pathlib.Path | str | lxml.etree._Element | lxml.etree._ElementTree)
+
+   Wrapper class for parsing and extracting data from the Portal XML.
+
+   This class handles all XPath evaluations and XML traversal, acting as a clean
+   abstraction layer for Pydantic models and CLI commands.
+
+
+   .. py:property:: spotlight
+      :type: dict[str, str]
+
+
+      Extract spotlight text and link.
+
+      :return: A dictionary containing 'spotlightText' and 'spotlightLink'.
+
+
+
+   .. py:property:: productfamilies
+      :type: collections.abc.Iterator[dict[str, str]]
+
+
+      Extract product families.
+
+      :return: An iterator of dictionaries representing product families.
+
+
+
+   .. py:method:: get_categories(prod_id: str) -> collections.abc.Iterator[dict[str, str]]
+
+      Extract specialized docset categories (sbp, trd, smart).
+
+      :param prod_id: The ID of the product containing the docsets.
+
+
+
+   .. py:property:: products
+      :type: collections.abc.Iterator[dict[str, Any]]
+
+
+      Yield extracted products from the Portal configuration.
+
+      :yield: A dictionary representing an individual product.
+
+
+
+   .. py:method:: iter_deliverables() -> collections.abc.Generator[docbuild.models.deliverable.Deliverable, None, None]
+
+      Yield all deliverables defined in the portal XML.
+
+

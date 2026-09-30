@@ -122,3 +122,12 @@ docbuild.cli.context.DocBuildContext
       Method used to validate XML files: 'jing' (default) or 'lxml'
 
 
+
+   .. py:attribute:: portalconfig
+      :type:  docbuild.config.xml.portal.PortalConfig | None
+      :value: None
+
+
+      The parsed and extracted Portal XML configuration, if loaded
+
+
