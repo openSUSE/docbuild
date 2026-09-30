@@ -50,11 +50,18 @@ class PortalConfig:
                     text = f"{prod_name} {ds_version}".strip()
 
             case "deliverable":
-                d = Deliverable(target)
-                link = f"/{d.xml.product_docset}/"
+                # Safely extract names/paths without instantiating a strict Deliverable object
+                prod_matches = target.xpath("ancestor::product[1]")
+                ds_matches = target.xpath("ancestor::docset[1]")
+                prod_node = prod_matches[0] if prod_matches else None
+                ds_node = ds_matches[0] if ds_matches else None
+
+                prod_id = (prod_node.get(XML_ID) if prod_node is not None else "") or ""
+                ds_path = ds_node.get("path", "").strip("/") if ds_node is not None else ""
+                link = f"/{prod_id}/{ds_path}/"
+
                 if not text:
-                    prod_name = d.xml.productname or ""
-                    ds_node = d.xml.docset_node
+                    prod_name = prod_node.xpath("string(name)").strip() if prod_node is not None else ""
                     ds_version = ds_node.xpath("string(version)").strip() if ds_node is not None else ""
                     text = f"{prod_name} {ds_version}".strip()
 
@@ -69,7 +76,6 @@ class PortalConfig:
 
         :return: A dictionary containing 'spotlightText' and 'spotlightLink'.
         """
-        # Fix: use relative path "spotlight" instead of absolute "/portal/spotlight" for .find()
         if (spotlight := self.root.find("spotlight")) is None:
             return {}
 
@@ -77,11 +83,14 @@ class PortalConfig:
             text = " ".join(spotlight.xpath("string()").split())
             return {"spotlightText": text, "spotlightLink": ""}
 
-        linkend = spotlight.attrib["linkend"]
         text = " ".join(spotlight.xpath("string()").split())
-        target = self.root.xpath("id($linkend)", linkend=linkend)[0]
+        target_nodes = self.root.xpath("id($linkend)", linkend=linkend)
 
-        final_text, final_link = self._resolve_spotlight_target(target, linkend, text)
+        if not target_nodes:
+            # Fallback if the target ID doesn't exist
+            return {"spotlightText": text, "spotlightLink": f"/{linkend}/"}
+
+        final_text, final_link = self._resolve_spotlight_target(target_nodes[0], linkend, text)
         return {"spotlightText": final_text, "spotlightLink": final_link}
 
     @property
@@ -169,5 +178,7 @@ class PortalConfig:
 
     def iter_deliverables(self) -> Generator[Deliverable, None, None]:
         """Yield all deliverables defined in the portal XML."""
-        for deliv_node in self.root.xpath("//deliverable"):
-            yield Deliverable(deliv_node)
+        yield from (
+            Deliverable(deliv_node)
+            for deliv_node in self.root.xpath("//deliverable")
+        )

@@ -16,6 +16,7 @@ from rich.traceback import install as install_traceback
 
 from ..__about__ import __version__
 from ..config.load import handle_config
+from ..config.xml.portal import PortalConfig
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
@@ -280,6 +281,30 @@ def load_env_config(
             raise e
 
 
+def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
+    """Extract logging configuration from context and set it up."""
+    if context.appconfig and context.envconfig:
+        logging_config = context.appconfig.logging.model_dump(
+            by_alias=True, exclude_none=True
+        )
+        log_dir = context.envconfig.paths.tmp.log_dir
+    else:
+        # Fall back to a safe, console-only configuration
+        logging_config = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "handlers": {
+                "console": {"class_name": "logging.StreamHandler", "level": "INFO"}
+            },
+            "root": {"level": "INFO", "handlers": ["console"]}
+        }
+        log_dir = Path(tempfile.gettempdir())
+
+    setup_logging(
+        cliverbosity=verbose, log_dir=log_dir, user_config={"logging": logging_config}
+    )
+
+
 @click.group(
     name=APP_NAME,
     context_settings={"show_default": True, "help_option_names": ["-h", "--help"]},
@@ -409,37 +434,17 @@ def cli(
         current_files = (env_config,) if env_config else None
         load_env_config(ctx, env_config, env_overrides, skip_validation)
 
-        # Setup logging safely
-        if context.appconfig and context.envconfig:
-            logging_config = context.appconfig.logging.model_dump(
-                by_alias=True, exclude_none=True
-            )
-            log_dir = context.envconfig.paths.tmp.log_dir
-        else:
-            # We bypassed validation (e.g., to list a broken config).
-            # Fall back to a safe, console-only configuration to avoid filesystem errors
-            # from unresolved placeholders or missing directory permissions.
-            logging_config = {
-                "version": 1,
-                "disable_existing_loggers": False,
-                "handlers": {
-                    "console": {
-                        "class_name": "logging.StreamHandler",
-                        "level": "INFO",
-                    }
-                },
-                "root": {
-                    "level": "INFO",
-                    "handlers": ["console"]
-                }
-            }
-            log_dir = Path(tempfile.gettempdir())
+        # --- PHASE 3: Logging & Portal Config ---
+        _setup_logging_from_context(context, verbose)
 
-        setup_logging(
-            cliverbosity=verbose,
-            log_dir=log_dir,
-            user_config={"logging": logging_config}
-        )
+        # Initialize the Portal configuration if the XML file exists
+        if (
+            context.envconfig
+            and hasattr(context.envconfig, "paths")
+            and hasattr(context.envconfig.paths, "portal_xml")
+            and context.envconfig.paths.portal_xml.exists()
+        ):
+            context.portalconfig = PortalConfig(source=context.envconfig.paths.portal_xml)
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
         handle_validation_error(e, current_model, current_files, verbose, ctx)

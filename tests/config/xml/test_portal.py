@@ -43,12 +43,43 @@ def test_portal_config_initialization(portal_tree: etree._ElementTree) -> None:
     assert config.root is not None
 
 
-def test_portal_config_spotlight(portal_tree: etree._ElementTree) -> None:
-    """Test spotlight extraction and reference resolution."""
-    config = PortalConfig(source=portal_tree)
+@pytest.mark.parametrize(
+    "spotlight_xml, expected_link, expected_text",
+    [
+        # a) Product target
+        ('<spotlight linkend="prod1" />', "/prod1/", "Product One"),
+        # b) Docset target
+        ('<spotlight linkend="doc1" />', "/prod1/1.0/", "Product One 1.0"),
+        # c) Deliverable target
+        ('<spotlight linkend="deliv1" />', "/prod1/1.0/", "Product One 1.0"),
+        # d) Invalid/Unknown target
+        ('<spotlight linkend="unknown_target" />', "/unknown_target/", ""),
+    ]
+)
+def test_portal_config_spotlight_targets(spotlight_xml: str, expected_link: str, expected_text: str) -> None:
+    """Test spotlight extraction and reference resolution for all target types."""
+    # We must provide a fully structured product/docset so Deliverable() can resolve parents
+    xml_content = f"""
+    <portal schemaversion="7.0">
+      {spotlight_xml}
+      <product xml:id="prod1">
+        <name>Product One</name>
+        <docset xml:id="doc1" path="1.0">
+          <version>1.0</version>
+          <deliverables>
+            <deliverable xml:id="deliv1" type="dc" format="html">
+              <title>Deliv One</title>
+            </deliverable>
+          </deliverables>
+        </docset>
+      </product>
+    </portal>
+    """
+    tree = etree.fromstring(xml_content.encode("utf-8"))
+    config = PortalConfig(source=tree)
     spotlight = config.spotlight
-    assert spotlight["spotlightLink"] == "/prod1/"
-    assert spotlight["spotlightText"] == "Product One"
+    assert spotlight.get("spotlightLink") == expected_link
+    assert spotlight.get("spotlightText") == expected_text
 
 
 def test_portal_config_productfamilies(portal_tree: etree._ElementTree) -> None:

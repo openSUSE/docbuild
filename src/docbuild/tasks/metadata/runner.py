@@ -10,6 +10,7 @@ from aiostream import pipe, stream
 from lxml import etree  # type: ignore
 from rich.console import Console
 
+from docbuild.config.xml.portal import PortalConfig
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
@@ -225,7 +226,8 @@ async def process(
     # Generate and save homepage.json
     try:
         log.info("Generating homepage.json...")
-        homepage = Homepage.from_portal(stitchnode)
+        portal_config = PortalConfig(source=stitchnode)
+        homepage = Homepage.from_portal(portal_config)
         homepage_path = json_cache_dir / "homepage.json"
         # Run the file save in a thread to avoid blocking the asyncio event loop
         await asyncio.to_thread(homepage.save, homepage_path)
