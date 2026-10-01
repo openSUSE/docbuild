@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding Translations &#8212; Docbuild Documentation 0.24.1.dev15+gac917c51f.d20260930</title>
+    <title>Adding Translations &#8212; Docbuild Documentation 0.24.1.dev17+g8c6d79060.d20261001</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=99d3d358"></script>
+    <script src="../../_static/documentation_options.js?v=b1e2fd1c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -498,11 +498,11 @@ add the translation for.</p>
 <p>For example, to add a translation for German , add a
 <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element with the <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute set to <code class="docutils literal notranslate"><span class="pre">de-de</span></code>:</p>
 <div class="literal-block-wrapper docutils container" id="locale">
-<div class="code-block-caption"><span class="caption-text">Adding a Locale Element for German</span><a class="headerlink" href="#locale" title="Link to this code">#</a></div>
+<div class="code-block-caption"><span class="caption-text">Adding a <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> Element for German</span><a class="headerlink" href="#locale" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;de-de&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;branch&gt;</span>translations<span class="nt">&lt;/branch&gt;</span>
 <span class="w">  </span><span class="nt">&lt;subdir&gt;</span>l10n/de-de<span class="nt">&lt;/subdir&gt;</span>
-<span class="w">  </span><span class="cm">&lt;!-- ... translated deliverables ... --&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- NO deliverables! --&gt;</span>
 <span class="nt">&lt;/locale&gt;</span>
 </pre></div>
 </div>
@@ -511,21 +511,16 @@ add the translation for.</p>
 perhaps also in a different directory, the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element
 provides an optional <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;subdir&gt;</span></code> element.</p>
 </li>
-<li><p>Add translated deliverables.</p>
-<p>For translated deliverables, use a <code class="docutils literal notranslate"><span class="pre">&lt;deliverable&gt;</span></code> element
-with <code class="docutils literal notranslate"><span class="pre">type=&quot;ref&quot;</span></code> and a <code class="docutils literal notranslate"><span class="pre">&lt;ref&gt;</span></code> element like this:</p>
-<div class="literal-block-wrapper docutils container" id="translated-deliverable">
-<div class="code-block-caption"><span class="caption-text">Adding a Translated Deliverable</span><a class="headerlink" href="#translated-deliverable" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;ref&quot;</span><span class="nt">&gt;</span>
-<span class="w">  </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/deliverable&gt;</span>
-</pre></div>
-</div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">linkend</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">&lt;ref&gt;</span></code> element
-points to the ID of the original deliverable.</p>
-</li>
+<li><p>Done.</p></li>
 </ol>
+<p>Translations are derived from the default language (English) and act
+as a <em>blueprint</em>. The Docbuild tool automatically
+retrieves the list of deliverables from the default language and
+tries to find them as in the translation. No need to explicitly add
+deliverables. This will work for the most part of our products.</p>
+<p>In case you have to deviate from the default language, you can still
+add deliverables manually. In such a case, it will <em>overwrite</em> the
+list of deliverables in the default language.</p>
 </section>
 
 

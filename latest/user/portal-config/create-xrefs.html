@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Cross-References &#8212; Docbuild Documentation 0.24.1.dev15+gac917c51f.d20260930</title>
+    <title>Creating Cross-References &#8212; Docbuild Documentation 0.24.1.dev17+g8c6d79060.d20261001</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=99d3d358"></script>
+    <script src="../../_static/documentation_options.js?v=b1e2fd1c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -490,15 +490,20 @@ deliverables. To avoid replication, use a cross-reference.</p>
 <li><p>Find the deliverable you want to link to and copy the ID. For example,
 our ID would be <code class="docutils literal notranslate"><span class="pre">nas.1.0.overview</span></code>.</p></li>
 <li><p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) you want to appear the deliverable.
-After the <code class="docutils literal notranslate"><span class="pre">&lt;/resources&gt;</span></code> end tag, add the following structure:</p>
+After the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> tag, add the following structure:</p>
 <div class="literal-block-wrapper docutils container" id="internal-ref-deliverable">
 <div class="code-block-caption"><span class="caption-text">Links to another Deliverable</span><a class="headerlink" href="#internal-ref-deliverable" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;internal&gt;</span>
-<span class="w">   </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/internal&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
+<span class="w">   </span><span class="cm">&lt;!-- [... other deliverables ...] --&gt;</span>
+<span class="w">   </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/deliverable&gt;</span>
+<span class="nt">&lt;/locale&gt;</span>
 </pre></div>
 </div>
 </div>
+<p>Within the list of deliverables, you are free to place the
+cross-reference anywhere.</p>
 </li>
 <li><p>Optionally, if you want to group the reference under a specific title,
 add a <code class="docutils literal notranslate"><span class="pre">category</span></code> attribute to the <code class="docutils literal notranslate"><span class="pre">&lt;ref&gt;</span></code> element.</p></li>

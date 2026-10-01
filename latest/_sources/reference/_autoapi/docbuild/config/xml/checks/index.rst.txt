@@ -40,6 +40,7 @@ Functions
    docbuild.config.xml.checks.check_subdeliverable_in_deliverable
    docbuild.config.xml.checks.check_git_remote_for_dc_deliverables
    docbuild.config.xml.checks.check_unsupported_language_code
+   docbuild.config.xml.checks.check_spotlight_target
 
 
 Module Contents
@@ -252,5 +253,27 @@ Module Contents
 
    :param tree: The XML tree to check.
    :yield: CheckResult for each unsupported language found.
+
+
+.. py:function:: check_spotlight_target(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]
+
+   Check that spotlight elements point to a valid target.
+
+   A valid target is a product, a docset, or a deliverable. Elements with
+   an ``xml:id`` that are not one of these types (or non-existent targets)
+   are invalid.
+
+   .. code-block:: xml
+
+       <!-- Valid targets: -->
+       <spotlight linkend="product1"/>
+       <spotlight linkend="docset1"/>
+       <spotlight linkend="deli-1"/>
+
+       <!-- Invalid target: -->
+       <spotlight linkend="family1"/>
+
+   :param tree: The XML tree to check.
+   :yield: CheckResult for each spotlight element with an invalid target.
 
 

@@ -22,32 +22,28 @@ To add translations for a product, proceed as follows:
    ``<locale>`` element with the ``lang`` attribute set to ``de-de``:
 
    .. code-block:: xml
-      :caption: Adding a Locale Element for German
+      :caption: Adding a ``<locale>`` Element for German
       :name: locale
 
       <locale lang="de-de">
         <branch>translations</branch>
         <subdir>l10n/de-de</subdir>
-        <!-- ... translated deliverables ... -->
+        <!-- NO deliverables! -->
       </locale>
 
    As translations are usually stored in a separate Git branch and
    perhaps also in a different directory, the ``<locale>`` element
    provides an optional ``<branch>`` and ``<subdir>`` element.
 
+#. Done.
 
-#. Add translated deliverables.
 
-   For translated deliverables, use a ``<deliverable>`` element
-   with ``type="ref"`` and a ``<ref>`` element like this:
+Translations are derived from the default language (English) and act
+as a *blueprint*. The Docbuild tool automatically
+retrieves the list of deliverables from the default language and
+tries to find them as in the translation. No need to explicitly add
+deliverables. This will work for the most part of our products.
 
-   .. code-block:: xml
-      :caption: Adding a Translated Deliverable
-      :name: translated-deliverable
-
-      <deliverable type="ref">
-        <ref linkend="nas.1.0.overview"/>
-      </deliverable>
-
-   The ``linkend`` attribute of the ``<ref>`` element
-   points to the ID of the original deliverable.
+In case you have to deviate from the default language, you can still
+add deliverables manually. In such a case, it will *overwrite* the
+list of deliverables in the default language.

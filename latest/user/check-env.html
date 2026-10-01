@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Checking your Environment &#8212; Docbuild Documentation 0.24.1.dev15+gac917c51f.d20260930</title>
+    <title>Checking your Environment &#8212; Docbuild Documentation 0.24.1.dev17+g8c6d79060.d20261001</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=99d3d358"></script>
+    <script src="../_static/documentation_options.js?v=b1e2fd1c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -484,10 +484,10 @@
 <span id="check-dc-files"></span><h2>Checking DC Files<a class="headerlink" href="#checking-dc-files" title="Link to this heading">#</a></h2>
 <p>From time to time it makes sense to check if the DC files referred in
 the Docbuild XML configuration exist in the repos.</p>
-<p>To check all DC files in all repositories, use the following command:</p>
+<p>To check <em>all</em> DC files in <em>all</em> repositories, use the following command:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Checking DC files in all repositories</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>ENV_CONFIG_FILE<span class="w"> </span>check<span class="w"> </span>dc-files
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>ENV_CONFIG_FILE<span class="w"> </span>check<span class="w"> </span>files
 </pre></div>
 </div>
 </div>
@@ -495,7 +495,7 @@ the Docbuild XML configuration exist in the repos.</p>
 syntax:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">Checking DC files for SLES 16.0 in English only</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>ENV_CONFIG_FILE<span class="w"> </span>check<span class="w"> </span>dc-files<span class="w"> </span><span class="s1">&#39;sles/16.0/en-us&#39;</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>ENV_CONFIG_FILE<span class="w"> </span>check<span class="w"> </span>files<span class="w"> </span><span class="s1">&#39;sles/16.0/en-us&#39;</span>
 </pre></div>
 </div>
 </div>
