@@ -11,11 +11,11 @@ Use ``key=value`` syntax, and use dot notation for nested options:
 
      $ docbuild -C "general.canonical_url_domain=https://doc.example.net" -C paths.root_config_dir=/etc/docbuild config list --env
 
-Options passed via ``-C`` or ``--set-env`` have the highest priority and will strictly overwrite the corresponding settings loaded from your default, system, or local configuration files.
+Options passed via ``-C`` or ``--set-env`` have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected environment configuration file.
 
 .. important::
 
-   Values passed via ``-C`` or ``--set-env`` are subject to the same validation rules as configuration files. If a value does not comply with the :term:`Pydantic` model (for example, an invalid enum value or incorrect data type), the command will fail with a clear validation error describing what is required.
+   Values passed via ``-C`` or ``--set-env`` are subject to the same validation rules as configuration files when validation runs. The ``config list`` command skips validation unless you pass ``--validate``.
 
 
 Handling Keys with Dots
@@ -53,7 +53,7 @@ Values are automatically converted to their appropriate types:
 
   .. code-block:: shell-session
 
-     $ docbuild -C "general.enabled_mail=true" config list --env
+     $ docbuild -C "general.enable_mail=true" config list --env
 
 * **Strings**: Quoted strings or values that don't match the above patterns
 
