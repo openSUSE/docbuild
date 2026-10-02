@@ -127,14 +127,18 @@ def load_app_config(
             raise e
 
 
+KEY_DELIMITERS: dict[str, str] = {"'": "'", '"': '"', "[": "]"}
+
+
 def parse_key(key: str) -> list[str]:
-    """Parse dot-separated key path, respecting quoted/bracketed segments.
+    r"""Parse dot-separated key path, respecting quoted/bracketed/escaped segments.
 
-    Parses a key string that may contain dots as separators or within quoted
-    or bracketed segments. This enables setting configuration values where keys
-    themselves contain dots (e.g., XSLT parameters).
+    Parses a key string that may contain dots as separators or within quoted,
+    bracketed, or backslash-escaped segments. This enables setting configuration
+    values where keys themselves contain dots (e.g., XSLT parameters).
 
-    Supported delimiters:
+    Supported delimiters and escapes:
+    - Backslash: ``segment\.with\.dots``
     - Single quotes: ``'segment.with.dots'``
     - Double quotes: ``"segment.with.dots"``
     - Square brackets: ``[segment.with.dots]``
@@ -143,45 +147,55 @@ def parse_key(key: str) -> list[str]:
         >>> parse_key('server.host')
         ['server', 'host']
 
+        >>> parse_key(r'xslt.html.show\.edit\.link')
+        ['xslt', 'html', 'show.edit.link']
+
         >>> parse_key("server.'db.connection'")
         ['server', 'db.connection']
 
         >>> parse_key('xslt.html.[show.edit.link]')
         ['xslt', 'html', 'show.edit.link']
 
-    :param key: A dot-separated key path with optional quoted/bracketed segments.
+    :param key: A dot-separated key path with optional quoted/bracketed/escaped segments.
     :return: A list of key segments suitable for nested dictionary access.
     :raises click.BadParameter: If the key contains misplaced delimiters, unmatched
-        quotes/brackets, or invalid syntax (e.g., characters after closing delimiter).
+        quotes/brackets, backslashes inside delimiters, trailing backslash, or invalid
+        syntax (e.g., characters after closing delimiter).
 
     """
     parts = []
     current = ""
     i = 0
-    delims = {"'": "'", '"': '"', "[": "]"}
 
     while i < len(key):
-        if key[i] == '.':
+        c = key[i]
+        if c == "\\":
+            if i + 1 >= len(key):
+                raise click.BadParameter(f"Trailing backslash in key: {key!r}")
+            current += key[i + 1]
+            i += 2
+        elif c == '.':
             parts.append(current)
             current = ""
             i += 1
-        elif key[i] in delims:
+        elif c in KEY_DELIMITERS:
             if current:
                 raise click.BadParameter(f"Misplaced delimiter in key: {key!r}")
-            start_delim = key[i]
-            end_delim = delims[start_delim]
-            i += 1
-            start = i
-            while i < len(key) and key[i] != end_delim:
-                i += 1
-            if i >= len(key):
+            start_delim = c
+            end_delim = KEY_DELIMITERS[start_delim]
+            end_pos = key.find(end_delim, i + 1)
+            if end_pos == -1:
                 raise click.BadParameter(f"Unmatched '{start_delim}' in key: {key!r}")
-            current = key[start:i]
-            i += 1
+            current = key[i + 1 : end_pos]
+            if "\\" in current:
+                raise click.BadParameter(
+                    f"Backslash not allowed inside delimiters in key: {key!r}"
+                )
+            i = end_pos + 1
             if i < len(key) and key[i] != '.':
                 raise click.BadParameter(f"Invalid syntax after delimiter in key: {key!r}")
         else:
-            current += key[i]
+            current += c
             i += 1
 
     parts.append(current)
@@ -382,9 +396,9 @@ class BannerGroup(click.Group):
     multiple=True,
     help=(
         "Override an environment config value (e.g., 'paths.tmp_dir=/new/path'). "
-        "For keys that contains dots, use quotes or brackets. "
-        " xslt.html.[show.edit.link]=true and "
-        " xslt.html.'show.edit.link'=true are equivalent."
+        "For keys that contain dots, use backslashes, quotes, or brackets. "
+        "xslt.html.show\\.edit\\.link=true, xslt.html.[show.edit.link]=true, and "
+        "xslt.html.'show.edit.link'=true are equivalent."
     ),
 )
 @click.pass_context

@@ -3,10 +3,11 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import click
 import pytest
 
 import docbuild.cli.cmd_cli as cmd_cli_module
-from docbuild.cli.cmd_cli import cli, load_env_config
+from docbuild.cli.cmd_cli import cli, load_env_config, parse_key
 from docbuild.cli.context import DocBuildContext
 
 
@@ -136,6 +137,7 @@ class TestSetEnvWithLoadEnvConfig:
     @pytest.mark.parametrize(
         "override",
         [
+            r"xslt.html.show\.edit\.link=1",
             "xslt.html.'show.edit.link'=1",
             "xslt.html.[show.edit.link]=2",
             'xslt.html."show.edit.link"=3',
@@ -144,7 +146,7 @@ class TestSetEnvWithLoadEnvConfig:
     def test_set_env_dotted_keys_with_all_delimiters(
         self, fake_handle_config, override
     ):
-        """Test that all three delimiter syntaxes produce correct config values."""
+        """Test that all delimiter and escape syntaxes produce correct config values."""
         fake_handle_config(
             lambda *a, **k: ((Path("env.toml"),), {"xslt": {"html": {}}}, False)
         )
@@ -157,7 +159,7 @@ class TestSetEnvWithLoadEnvConfig:
         )
 
         raw = mock_ctx.obj.raw_envconfig
-        # All three syntaxes should create: xslt.html.show.edit.link
+        # All syntaxes should create: xslt.html.show.edit.link
         expected_value = int(override.rsplit("=", 1)[1])
         assert raw["xslt"]["html"]["show.edit.link"] == expected_value
 
@@ -203,6 +205,7 @@ class TestSetEnvWithConfigCommands:
     @pytest.mark.parametrize(
         "override",
         [
+            r"xslt.html.show\.edit\.link=1",
             "xslt.html.'show.edit.link'=1",
             "xslt.html.[show.edit.link]=1",
             'xslt.html."show.edit.link"=1',
@@ -211,7 +214,7 @@ class TestSetEnvWithConfigCommands:
     def test_set_env_dotted_keys_with_delimiters(
         self, mock_logging, mock_env, mock_app, runner, override
     ):
-        """Test that dotted keys work with all three delimiter syntaxes."""
+        """Test that dotted keys work with all delimiter and escape syntaxes."""
         mock_ctx = MagicMock()
         mock_ctx.appconfigfiles = [Path("app.toml")]
         mock_ctx.envconfigfiles = [Path("env.toml")]
@@ -223,6 +226,72 @@ class TestSetEnvWithConfigCommands:
             obj=mock_ctx,
         )
 
-        # All three syntax variants should be accepted
+        # All syntax variants should be accepted
         assert result.exit_code == 0
         assert "Configuration is valid" in result.output
+
+
+class TestParseKey:
+    """Unit tests for parse_key function."""
+
+    @pytest.mark.parametrize(
+        "key,expected",
+        [
+            ("server.host", ["server", "host"]),
+            (r"xslt.html.show\.edit\.link", ["xslt", "html", "show.edit.link"]),
+            (r"a\.b\.c", ["a.b.c"]),
+            (r"a\.b.c", ["a.b", "c"]),
+            (r"a.b\.c", ["a", "b.c"]),
+            (r"\.a", [".a"]),
+            (r"a\.", ["a."]),
+            (r"a\\b.c", ["a\\b", "c"]),
+            (r"a\\.b", ["a\\", "b"]),
+            (r"a\\\.b", ["a\\.b"]),
+            (r"a\[b\].c", ["a[b]", "c"]),
+            ("server.'db.connection'", ["server", "db.connection"]),
+            ('server."db.connection"', ["server", "db.connection"]),
+            ("server.[db.connection]", ["server", "db.connection"]),
+        ],
+    )
+    def test_parse_key_valid(self, key, expected):
+        """Test parsing valid keys with various delimiters and escapes."""
+        assert parse_key(key) == expected
+
+    def test_parse_key_trailing_backslash_raises(self):
+        """Test that a trailing unescaped backslash raises BadParameter."""
+        with pytest.raises(click.BadParameter, match="Trailing backslash"):
+            parse_key("server.host\\")
+
+    @pytest.mark.parametrize(
+        "key",
+        [
+            r"xslt.html.[show\.edit.link]",
+            r"xslt.html.'show\.edit.link'",
+            r'xslt.html."show\.edit.link"',
+            r"server.[db\\host]",
+        ],
+    )
+    def test_parse_key_backslash_inside_delimiters_raises(self, key):
+        """Test that backslashes inside delimiters raise BadParameter."""
+        with pytest.raises(
+            click.BadParameter, match="Backslash not allowed inside delimiters"
+        ):
+            parse_key(key)
+
+    @pytest.mark.parametrize(
+        "key,expected_error",
+        [
+            ("foo[bar]", "Misplaced delimiter"),
+            ("server.foo'bar'", "Misplaced delimiter"),
+            ("server.[db.connection", "Unmatched '\\['"),
+            ("server.'db.connection", "Unmatched '\\''"),
+            ('server."db.connection', 'Unmatched \'"\''),
+            ("[foo]bar", "Invalid syntax after delimiter"),
+            ("server.[foo]bar", "Invalid syntax after delimiter"),
+            ("[foo][bar]", "Invalid syntax after delimiter"),
+        ],
+    )
+    def test_parse_key_syntax_errors_raise(self, key, expected_error):
+        """Test that syntax errors in key delimiters raise BadParameter."""
+        with pytest.raises(click.BadParameter, match=expected_error):
+            parse_key(key)
