@@ -1,28 +1,29 @@
 .. _user-config:
+.. _config-docbuild:
 
-Viewing and Validating Configuration
-====================================
+Configuring Docbuild
+====================
 
-You can Use the :command:`config` subcommand to list or validate your current settings.
 
-Listing Configuration
----------------------
+.. toctree::
+   :maxdepth: 1
+   :caption: Knowing about the Configuration
 
-To see the current merged configuration:
+   naming-conventions
+   placeholders
 
-.. code-block:: shell
+.. toctree::
+   :maxdepth: 1
+   :caption: Configuration Options
 
-   docbuild config list
 
-Use the ``--flat`` flag to see the dotted-path format, or filter by ``--app`` or ``--env``.
+   config-file
+   config-cli
 
-Validating Configuration
-------------------------
+.. toctree::
+   :caption: Working with the Configuration
+   :maxdepth: 1
 
-To ensure your TOML files match the required schema:
-
-.. code-block:: shell
-
-   docbuild config validate
-
-This checks both application and environment files. You can also validate them individually using the ``--app`` or ``--env`` flags.
+   view
+   validate
+   multi-configs
