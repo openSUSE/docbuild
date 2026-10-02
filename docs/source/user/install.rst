@@ -88,17 +88,17 @@ Installing docbuild
 
    .. code-block:: shell-session
 
-      $ uv venv --prompt "venv313" .venv
+      $ uv venv --python 3.13 --prompt "venv313"
 
    This will create a virtual environment in the directory :file:`.venv`.
 
-4. **Install dependencies**
+3. **Install dependencies**
 
    Ensure you have Python 3.12 or higher installed, then install the required dependencies:
 
    .. code-block:: shell-session
 
-      $ uv sync --frozen
+      $ uv sync --dev --frozen
       Resolved 29 packages in 586ms
       Built docbuild @ file:///.../docbuild
       Installed 15 packages in 2.11s

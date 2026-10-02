@@ -6,10 +6,10 @@
    :caption: Contents
 
    install
-   config
+   config/index
    portal-config/index
    run-docbuild
-   config/index
+
    create-metadata
    build
    llms
