@@ -909,11 +909,8 @@ ds.docset =
     ds.descriptions?,
     (
       (ds.resources,
-       ds.internal?,
        ds.external?)
        |
-      (ds.internal,
-       ds.external?) |
       ds.external
     )
   }
@@ -1277,19 +1274,6 @@ ds.subdeliverable =
       ds.titleformat.attr?
     ),
     ds.type.id
-  }
-}
-
-
-[
-  db:refname [ "internal" ]
-  db:refpurpose [ "Wrapper for internal references" ]
-]
-div {
-ds.internal =
-  ## Wrapper for internal references
-  element internal {
-    ds.ref+
   }
 }
 

@@ -74,6 +74,37 @@ Make sure each DC appears only once within a language.
        </deliverable>
    </locale>
 
+.. rubric:: check_deliverable_reference
+
+Validate deliverable cross-references (``<deliverable type="xref">``).
+
+The check ensures that:
+
+* The target ID in ``ref/@linkend`` exists in the configuration (error: ``broken_deliverable_reference``).
+* A deliverable does not reference itself (error: ``circular_deliverable_reference``).
+* The target element is a ``<deliverable>``, ``<docset>``, or ``<product>``, rather than another XML element with an ``xml:id`` (error: ``invalid_deliverable_reference_target``).
+* English reference deliverables do not point to other reference deliverables (error: ``nested_deliverable_reference``).
+* Translated deliverables point to at most 1 level of reference indirection (pointing to an English reference deliverable). Chains of 3 or more reference deliverables are prohibited (error: ``invalid_reference_chain``).
+
+.. code-block:: xml
+
+   <locale lang="en-us">
+       <!-- Error: broken linkend -->
+       <deliverable type="xref">
+           <ref linkend="non-existent-id"/>
+       </deliverable>
+
+       <!-- Error: circular reference -->
+       <deliverable type="xref" xml:id="deliv-self">
+           <ref linkend="deliv-self"/>
+       </deliverable>
+
+       <!-- Error: target is <item> rather than deliverable/docset/product -->
+       <deliverable type="xref">
+           <ref linkend="cat.storage"/>
+       </deliverable>
+   </locale>
+
 .. rubric:: check_duplicated_format_in_extralinks
 
 Check that format attributes in extralinks are unique.

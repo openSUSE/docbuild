@@ -6,6 +6,7 @@ import pytest
 
 from docbuild.config.xml.checks import (
     check_dc_in_language,
+    check_deliverable_reference,
     check_duplicated_format_in_extralinks,
     check_duplicated_url_in_extralinks,
     check_enabled_format,
@@ -22,7 +23,7 @@ from docbuild.config.xml.checks import (
     docset_id,
     register_check,
 )
-from docbuild.constants import XML_NS
+from docbuild.constants import XML_ID, XML_NS
 
 # This is a non-namespace ElementMaker for creating XML elements.
 E = objectify.ElementMaker(annotate=False, namespace=None, nsmap=None)
@@ -952,3 +953,88 @@ def test_check_spotlight_not_in_portal():
     node = etree.fromstring("<docset><spotlight linkend='p1'/></docset>")
     results = collect_check_results(check_spotlight(node))
     assert len(results) == 0
+
+
+@pytest.mark.parametrize(
+    "linkend,expected_error",
+    [
+        ("product1", None),
+        ("docset1", None),
+        ("deli-1", None),
+        ("family1", "points to <item>"),
+        ("series1", "points to <item>"),
+        ("cat.root", "points to <language>"),
+        ("nonexistent", "does not point to a valid target"),
+    ],
+)
+def test_check_deliverable_reference_target(xmlnode, linkend: str, expected_error: str | None):
+    portal = copy.deepcopy(xmlnode)
+    locale = portal.xpath("//locale[@lang='en-us']")[0]
+    deliv = etree.SubElement(locale, "deliverable", type="xref")
+    etree.SubElement(deliv, "ref", linkend=linkend)
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    if expected_error is None:
+        assert len(results) == 0
+    else:
+        assert len(results) == 1
+        assert expected_error in results[0].message
+
+
+def test_check_deliverable_reference_circular(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    locale = portal.xpath("//locale[@lang='en-us']")[0]
+    deliv = etree.SubElement(locale, "deliverable", type="xref", attrib={XML_ID: "self-ref"})
+    etree.SubElement(deliv, "ref", linkend="self-ref")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert len(results) == 1
+    assert results[0].error_code == "circular_deliverable_reference"
+
+
+def test_check_deliverable_reference_valid_translation_chain(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref"})
+    etree.SubElement(en_ref, "ref", linkend="deli-1")
+
+    de_locale = etree.SubElement(resources, "locale", lang="de-de")
+    de_ref = etree.SubElement(de_locale, "deliverable", type="xref")
+    etree.SubElement(de_ref, "ref", linkend="en-ref")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert len(results) == 0
+
+
+def test_check_deliverable_reference_invalid_3plus_chain(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref1 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref1"})
+    etree.SubElement(en_ref1, "ref", linkend="deli-1")
+
+    en_ref2 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref2"})
+    etree.SubElement(en_ref2, "ref", linkend="en-ref1")
+
+    de_locale = etree.SubElement(resources, "locale", lang="de-de")
+    de_ref = etree.SubElement(de_locale, "deliverable", type="xref")
+    etree.SubElement(de_ref, "ref", linkend="en-ref2")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    error_codes = [r.error_code for r in results]
+    assert "invalid_reference_chain" in error_codes
+
+
+def test_check_deliverable_reference_nested_in_english(xmlnode):
+    portal = copy.deepcopy(xmlnode)
+    resources = portal.xpath("//resources")[0]
+    en_locale = resources.find("locale[@lang='en-us']")
+    en_ref1 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref1"})
+    etree.SubElement(en_ref1, "ref", linkend="deli-1")
+
+    en_ref2 = etree.SubElement(en_locale, "deliverable", type="xref", attrib={XML_ID: "en-ref2"})
+    etree.SubElement(en_ref2, "ref", linkend="en-ref1")
+
+    results = collect_check_results(check_deliverable_reference(portal))
+    assert any(r.error_code == "nested_deliverable_reference" for r in results)

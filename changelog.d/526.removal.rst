@@ -1,0 +1,1 @@
+Remove ``<internal>`` from the Portal Config schema. References to other products, docsets, or deliverables are added inside the ``<locale>`` lement.

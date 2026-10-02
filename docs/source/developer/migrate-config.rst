@@ -213,6 +213,31 @@ To create a single configuration file, , do the following:
    use the variable :literal:`paths.config_dir` and :literal:`paths.main_portal_config`.
 
 
+.. _migrate-internal-references:
+
+Migration of Internal References
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In version 6 of the Portal Schema, internal cross-references were grouped in an
+``<internal>`` element under ``<docset>``:
+
+.. code-block:: xml
+
+   <docset lifecycle="supported" setid="ai">
+     <version>Artificial Intelligence</version>
+     <internal>
+       <ref product="trd" docset="clearml" dc="DC-rc_suse-ai_clearml" titleformat="title subtitle"/>
+     </internal>
+   </docset>
+
+In version 7, ``<internal>`` is removed. The migration stylesheet converts these
+references as follows:
+
+* Every ``<internal>/ref`` is transformed into a ``<deliverable type="xref">`` inside ``<locale>``.
+* Docsets that contain only internal references (no DAPS ``builddocs`` and no ``external`` links) now generate a ``<resources>`` block containing a default ``<locale lang="en-us">`` with ``<branch>main</branch>``.
+* Multi-part legacy references (``product``, ``docset``, ``dc``) are joined into a single dot-separated identifier in ``ref/@linkend`` (for example, ``trd.clearml.dc-rc_suse-ai_clearml``).
+
+
 Validating with Jing
 ~~~~~~~~~~~~~~~~~~~~
 

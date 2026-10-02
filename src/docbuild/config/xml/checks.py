@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from lxml import etree
 
-from ...constants import ALLOWED_LANGUAGES, XML_NS
+from ...constants import ALLOWED_LANGUAGES, XML_ID
 from ...utils.convert import convert2bool
 from ...utils.decorators import factory_registry
 from .semantic_xpath import semantic_xpath
@@ -41,14 +41,14 @@ def dc_identifier(deliverable: etree._Element) -> str:
     """Return a DC identifier from legacy or current schema representation."""
     dc_node = deliverable.find("dc")
     if dc_node is None:
-        return deliverable.get(f"{{{XML_NS}}}id", "n/a")
+        return deliverable.get(XML_ID, "n/a")
 
     file_attr = dc_node.get("file")
     if file_attr:
         return file_attr
 
     text = (dc_node.text or "").strip()
-    return text if text else deliverable.get(f"{{{XML_NS}}}id", "n/a")
+    return text if text else deliverable.get(XML_ID, "n/a")
 
 
 @register_check
@@ -364,7 +364,7 @@ def check_lang_code_in_docset(
         duplicates = [item for item, count in Counter(langs).items() if count > 1]
 
         if duplicates:
-            setid = docset.get("setid") or docset.get(f"{{{XML_NS}}}id", "n/a")
+            setid = docset.get("setid") or docset.get(XML_ID, "n/a")
             message = (
                 "Some language elements within a set have non-unique lang attributes "
                 f"In docset={setid}, check for duplicate resources/locale. "
@@ -571,6 +571,8 @@ def check_spotlight_target(
     linkend = spotlight.get("linkend", "").strip()
     targets = tree.xpath("id($linkend)", linkend=linkend)
     if not targets:
+        targets = tree.xpath("//*[@xml:id=$linkend]", linkend=linkend)
+    if not targets:
         message = (
             f"The <spotlight> element linkend '{linkend}' does not point to a valid target. "
             "A valid target must be a product, docset, or deliverable."
@@ -602,3 +604,122 @@ def check_spotlight_target(
 
 
 check_spotlight = check_spotlight_target
+
+VALID_DELIVERABLE_REF_TARGETS: frozenset[str] = frozenset(
+    {"deliverable", "product", "docset"}
+)
+
+
+def build_id_map(tree: etree._Element | etree._ElementTree) -> dict[str, etree._Element]:
+    """Map all elements in the tree by their ``xml:id``.
+
+    :param tree: The XML tree or element to index.
+    :returns: A dictionary mapping element IDs to their corresponding elements.
+    """
+    return {
+        elem_id: el
+        for el in tree.iter()
+        if (elem_id := el.get(XML_ID))
+    }
+
+
+@register_check
+def check_deliverable_reference(
+    tree: etree._Element | etree._ElementTree,
+) -> Iterator[CheckResult]:
+    """Check deliverable reference targets and nesting constraints.
+
+    Validates that cross-reference deliverables point to existing targets,
+    that targets are valid element types (deliverable, docset, product),
+    that no self-referencing cycles exist, and that nesting rules
+    (max 1 level of indirection for translations, no English nesting) are
+    satisfied.
+
+    .. code-block:: xml
+
+        <locale lang="en-us">
+            <deliverable type="xref">
+                <ref linkend="target-deliverable-id"/>
+            </deliverable>
+        </locale>
+
+    :param tree: The XML tree to check.
+    :yield: CheckResult for each broken, circular, or invalid reference.
+    """
+    id_map = build_id_map(tree)
+
+    for deliv in tree.iter("deliverable"):
+        if (ref_node := deliv.find("ref")) is None:
+            continue
+
+        linkend = ref_node.attrib["linkend"]
+        target = id_map.get(linkend)
+
+        if target is None:
+            yield CheckResult(
+                message=(
+                    f"The deliverable reference '{linkend}' does not point to a valid target. "
+                    "A valid target must be a deliverable, docset, or product."
+                ),
+                xpath=semantic_xpath(deliv),
+                error_code="broken_deliverable_reference",
+            )
+            continue
+
+        if target is deliv:
+            yield CheckResult(
+                message=f"Circular reference in deliverable: points to itself via '{linkend}'.",
+                xpath=semantic_xpath(deliv),
+                error_code="circular_deliverable_reference",
+            )
+            continue
+
+        target_tag = etree.QName(target).localname
+        if target_tag not in VALID_DELIVERABLE_REF_TARGETS:
+            yield CheckResult(
+                message=(
+                    f"The deliverable reference '{linkend}' points to <{target_tag}>. "
+                    "A valid target must be a deliverable, docset, or product, "
+                    "not any other element with an xml:id."
+                ),
+                xpath=semantic_xpath(deliv),
+                error_code="invalid_deliverable_reference_target",
+            )
+            continue
+
+        # If pointing to a deliverable that is also a reference
+        if target_tag == "deliverable" and target.find("ref") is not None:
+            src_is_en = any(lng.startswith("en") for lng in deliv.xpath("ancestor::locale/@lang"))
+            target_is_en = any(lng.startswith("en") for lng in target.xpath("ancestor::locale/@lang"))
+
+            if not src_is_en and target_is_en:
+                # Valid 1-level translation chain: ensure target doesn't chain further
+                grandchild_linkend = target.find("ref").attrib["linkend"]
+                grandchild = id_map.get(grandchild_linkend)
+                if (
+                    grandchild is not None
+                    and grandchild.tag == "deliverable"
+                    and grandchild.find("ref") is not None
+                ):
+                    deliv_id = deliv.get(XML_ID) or linkend
+                    yield CheckResult(
+                        message=(
+                            f"Invalid 3+ level reference chain in deliverable '{deliv_id}': "
+                            f"points to reference '{linkend}' which points to another reference '{grandchild_linkend}'."
+                        ),
+                        xpath=semantic_xpath(deliv),
+                        error_code="invalid_reference_chain",
+                    )
+            else:
+                deliv_id = deliv.get(XML_ID) or "n/a"
+                yield CheckResult(
+                    message=(
+                        f"Nested reference in deliverable '{deliv_id}': points to reference deliverable '{linkend}'. "
+                        "Only translated deliverables may reference English reference deliverables."
+                    ),
+                    xpath=semantic_xpath(deliv),
+                    error_code="nested_deliverable_reference",
+                )
+
+
+check_deliverable_references = check_deliverable_reference

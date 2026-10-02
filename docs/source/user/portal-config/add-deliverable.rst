@@ -38,29 +38,6 @@ another deliverable, and publish on the portal:
        </prebuilt>
      </deliverable>
 
-* **Internal Cross Reference**
-
-  A deliverable that points to another deliverable (type ``prebuilt`` or ``dc``),
-  product, or docset within the same portal configuration. This is typically used
-  to reference other documentation from other products.
-
-  .. code-block:: xml
-     :caption: Example of an Internal Reference
-
-     <local lang="en-us">
-       <!-- ... -->
-       <deliverable type="xref">
-         <ref linkend="sle-hpc.15-SP6.hpc-guide" />
-       </deliverable>
-     </locale>
-
-  This indirection is necessary to keep the configuration "DRY" (Don't Repeat Yourself).
-  By having the translated deliverables point to the English reference deliverable,
-  the ``linkend`` to the final target document is defined only once.
-  If the target ever changes, the ``linkend`` only needs to be updated in the
-  single ``en-us`` deliverable, not in every translation.
-
-
 To add a deliverable, proceed as follows:
 
 #. Identify the release you want to add the deliverable to.
