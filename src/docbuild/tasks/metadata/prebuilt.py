@@ -46,7 +46,7 @@ def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str)
     return None
 
 
-def _read_json_ld(html_path: Path | None) -> dict[str, Any]:
+def read_json_ld(html_path: Path | None) -> dict[str, Any]:
     """Read and parse the JSON-LD block from the given HTML file path."""
     if not html_path:
         return {}
@@ -103,7 +103,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
 
     # Pass deliverable so it can search translated directories
     html_path = _find_html_path(prebuilt_dir, deliverable, html_url)
-    json_ld = _read_json_ld(html_path)
+    json_ld = read_json_ld(html_path)
 
     in_language = json_ld.get("inLanguage", str(deliverable.xml.lang))
     lang_code = LanguageCode(language=in_language).language
