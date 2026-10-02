@@ -1,3 +1,4 @@
+.. _user-config:
 .. _config-docbuild:
 
 Configuring Docbuild

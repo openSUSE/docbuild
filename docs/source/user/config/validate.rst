@@ -3,8 +3,9 @@
 Validating Configuration
 ========================
 
-Before ``docbuild`` executes any commands, it validates the provided configuration
-file against a predefined :term:`Pydantic` model.
+Before ``docbuild`` executes commands that consume configuration, it validates
+the provided configuration files against predefined :term:`Pydantic` models.
+The ``config list`` command skips validation unless you pass ``--validate``.
 
 The validation checks for different aspects of the configuration, such as:
 
@@ -32,7 +33,7 @@ To ensure your TOML files match the required schema:
    │ All TOML files match the required schema. │
    ╰───────────────────────────────────────────╯
 
-This checks both application and environment files. You can also validate them individually using the ``--app`` or ``--env`` flags.
+This checks both application and environment files.
 
 
 Detailed Validation Feedback

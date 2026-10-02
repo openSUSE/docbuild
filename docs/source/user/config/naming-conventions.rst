@@ -12,6 +12,6 @@ The keys follow specific naming conventions to indicate their purpose and expect
 
 * ``*_dyn``: Denotes a dynamic value that is expected to be resolved at runtime.
 
-Directories are created automatically when the script runs. Additionally,
-the script checks if the specified paths are readable, writeable and belongs
-to the user running the script.
+Directories configured as writable paths are created automatically during
+configuration validation. Docbuild checks that these directories are readable,
+writable, and executable.

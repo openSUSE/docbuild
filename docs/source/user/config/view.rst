@@ -9,4 +9,4 @@ To see the current merged configuration:
 
    docbuild config list
 
-Use the ``--flat`` flag to see the dotted-path format, or filter by ``--app`` or ``--env`` to either either of the configuration files.
+Use the ``--flat`` flag to see the dotted-path format, or use ``--app`` or ``--env`` to view only that configuration.

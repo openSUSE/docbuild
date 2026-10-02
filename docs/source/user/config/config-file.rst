@@ -12,22 +12,12 @@ Using a TOML Configuration File
 Configuration Places
 --------------------
 
-By default, Docbuild will read configuration options from multiple places:
+By default, Docbuild starts with its built-in values and looks for
+:file:`env.production.toml` in the current working directory. If that file
+exists, its values override the built-ins. To use a different file or role,
+pass its path with the global ``--env-config`` option.
 
-* Hard-coded values inside Docbuild. These are the minimum values.
-* :file:`/etc/docbuild/env.<ROLE>.toml`: System-wide configuration file.
-* :file:`~/.config/docbuild/env.<ROLE>.toml`: User-specific configuration files.
-* :file:`env.<ROLE>.toml`: Repository specific configuration file.
-
-The placeholder ``<ROLE>`` is explained in :ref:`config-env-role`.
-
-The following rules apply when reading configuration files:
-
-* Docbuild starts with the hard-coded values.
-* If a configuration file is missing or unreadable they will be ignored.
-* The files are read in the order given above, with last value found taking precedence over values read earlier.
-
-You do not require a configuration file. If the hard-coded values are fine for you task, go for it! If you only need to set one or two values, it may be easier to :ref:`overwrite config options <config-overwriting-cli>`.
+You do not require a configuration file. If the hard-coded values are fine for your task, go for it! If you only need to set one or two values, it may be easier to :ref:`overwrite config options <config-overwriting-cli>`.
 
 To get an overview of the hard-coded values, refer to section :ref:`config-viewing-docbuild-config-env`.
 
@@ -37,11 +27,11 @@ To get an overview of the hard-coded values, refer to section :ref:`config-viewi
 Separating Environment Roles
 ----------------------------
 
-Docbuild distinguish a "role" of a configuration file. It can have these values:
+Docbuild distinguishes a "role" of a configuration file. It can have these values:
 
 * ``production``, ``prod``, or ``p``.
 * ``staging``, ``stage`` or ``s``.
-* ``testing``, ``t``, ``test``, ``d``, ``dev``, or ``devel``.
+* ``testing``, ``t``, ``test``, ``dev``, or ``devel``.
 
 Use separate TOML files to define the configuration for each of your environments. To avoid confusion, name each file according to its specific purpose. For instance, use :file:`env.devel.toml` for development, :file:`env.staging.toml` for staging, and :file:`env.production.toml` for production.
 
