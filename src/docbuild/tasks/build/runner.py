@@ -1,12 +1,9 @@
 """Runner for the build task."""
 
 import asyncio
-import datetime
-import json
 import logging
 import os
 from pathlib import Path
-import re
 import shlex
 import tempfile
 from typing import Any, Literal
@@ -29,74 +26,34 @@ from .llms import clean_and_convert, inject_llms_links
 
 log = logging.getLogger(__name__)
 
-# Pre-compile the regex for finding the JSON-LD script block
-_JSON_LD_PATTERN = re.compile(
-    r'<script\s+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
-    re.IGNORECASE | re.DOTALL,
-)
-
-
-def extract_json_ld_metadata(
-    html_content: str, default_title: str, default_date: str
-) -> tuple[str, str, str]:
-    """Extract dynamic title, description, and modified date from HTML JSON-LD script block."""
-    dynamic_title = default_title
-    dynamic_desc = ""
-    dynamic_date = default_date
-
-    # Only search the first 5000 characters (the <head>)
-    search_area = html_content[:5000]
-    json_ld_match = _JSON_LD_PATTERN.search(search_area)
-
-    if json_ld_match:
-        try:
-            ld_data = json.loads(json_ld_match.group(1).strip())
-            if isinstance(ld_data, dict):
-                dynamic_title = ld_data.get("name", dynamic_title)
-                dynamic_desc = ld_data.get("description", dynamic_desc)
-
-                # DAPS dateModified is usually ISO format: "2024-03-12T10:00:00Z"
-                raw_date = ld_data.get("dateModified", "")
-                if raw_date:
-                    dynamic_date = raw_date.split("T")[0]
-        except Exception as parse_e:
-            log.debug("Failed to parse JSON-LD: %s", parse_e)
-
-    return dynamic_title, dynamic_desc, dynamic_date
-
 
 async def _process_single_html_file(
     html_file: Path,
     target_dest: Path,
     llms_dest: Path,
     llmstxt_dir: str,
-    static_title: str,
-    today_date: str,
-    frontmatter_base: dict[str, Any],
+    domain: str,
     url_product: str,
     url_docset: str,
+    static_title: str,
+    frontmatter_base: dict[str, Any],
 ) -> str | None:
-    """Process a single HTML file: parse metadata, convert to Markdown, and inject links."""
+    """Process a single HTML file: extract metadata, write Markdown with frontmatter, and inject links."""
     if llmstxt_dir in html_file.parts:
         return None
     try:
+        # 1. Read HTML content once
         html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
         md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
-        # Use shared read_json_ld helper from prebuilt module
-        ld_data = await asyncio.to_thread(read_json_ld, html_file)
+        # 2. Extract JSON-LD from already loaded string content (no double disk read)
+        ld_data = read_json_ld(html_content)
 
         dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
-        dynamic_date = today_date
-
-        if ld_data and "dateModified" in ld_data:
-            raw_date = ld_data["dateModified"]
-            if raw_date:
-                dynamic_date = raw_date.split("T")[0]
 
         rel_path = html_file.relative_to(target_dest)
-        base_url = f"https://documentation.suse.com/{url_product}/{url_docset}/html/{html_file.name}"
+        base_url = f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
 
         frontmatter = {"title": dynamic_title}
         if dynamic_desc:
@@ -104,9 +61,17 @@ async def _process_single_html_file(
 
         frontmatter.update(frontmatter_base)
         frontmatter["source_url"] = base_url
-        frontmatter["build_date"] = dynamic_date
 
-        yaml_block = yaml.dump(frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True)
+        # Only inject build_date if dateModified is present in JSON-LD
+        if ld_data and "dateModified" in ld_data:
+            raw_date = ld_data["dateModified"]
+            if raw_date:
+                frontmatter["build_date"] = raw_date.split("T")[0]
+
+        # Use yaml.safe_dump for secure serialization
+        yaml_block = yaml.safe_dump(
+            frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True
+        )
         final_md_content = f"---\n{yaml_block}---\n\n{md_content}"
 
         md_file = llms_dest / rel_path.with_suffix(".md")
@@ -116,7 +81,9 @@ async def _process_single_html_file(
         md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
         llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
 
-        new_html = await asyncio.to_thread(inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html)
+        new_html = await asyncio.to_thread(
+            inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
+        )
         await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
 
         index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
@@ -131,6 +98,7 @@ async def generate_llmstxt(
     target_dest: Path | str,
     build_llmstxt: bool,
     llmstxt_dir: str,
+    canonical_domain: str = "https://documentation.suse.com",
 ) -> None:
     """Generate LLMs text and inject markdown links into HTML files concurrently."""
     if not build_llmstxt or isinstance(target_dest, str):
@@ -144,8 +112,6 @@ async def generate_llmstxt(
         d_xml = getattr(deliverable, "xml", None)
         static_title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
         index_lines = [f"# {static_title}", ""]
-
-        today_date = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d")
 
         categories = getattr(d_xml, "categories", []) if d_xml else []
         product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
@@ -168,23 +134,24 @@ async def generate_llmstxt(
             url_product = url_product_id.replace("/", "_")
 
         url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
+        domain = canonical_domain.rstrip("/")
 
         html_files = list(target_dest.rglob("*.html"))
 
-        async def process_wrapper(html_file: Path) -> str | None:
+        async def process_file(html_file: Path) -> str | None:
             return await _process_single_html_file(
-                html_file,
-                target_dest,
-                llms_dest,
-                llmstxt_dir,
-                static_title,
-                today_date,
-                frontmatter_base,
-                url_product,
-                url_docset,
+                html_file=html_file,
+                target_dest=target_dest,
+                llms_dest=llms_dest,
+                llmstxt_dir=llmstxt_dir,
+                domain=domain,
+                url_product=url_product,
+                url_docset=url_docset,
+                static_title=static_title,
+                frontmatter_base=frontmatter_base,
             )
 
-        pipeline = stream.iterate(html_files) | pipe.map(process_wrapper, ordered=False, task_limit=10)
+        pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
 
         async with pipeline.stream() as streamer:
             async for result in streamer:
@@ -267,15 +234,15 @@ async def process_deliverable_build(
                 tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
 
                 # Persist the output directory instead of auto-deleting it
-                deliverable_build_dir = Path(tempfile.mkdtemp(
-                    dir=tmp_build_base_dir,
-                    prefix=f"build_{safe_id}_",
-                    suffix=f"_{fmt}",
-                ))
-
-                fmt_success, _ = await build_format(
-                    deliverable, fmt, cwd, deliverable_build_dir, tmpl
+                deliverable_build_dir = Path(
+                    tempfile.mkdtemp(
+                        dir=tmp_build_base_dir,
+                        prefix=f"build_{safe_id}_",
+                        suffix=f"_{fmt}",
+                    )
                 )
+
+                fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
 
                 if not fmt_success:
                     success = False
@@ -290,9 +257,7 @@ async def process_deliverable_build(
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
                     target_base_str = str(target_base_dir)
                     if is_remote_path(target_base_str):
-                        target_dest: str | Path = (
-                            f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
-                        )
+                        target_dest: str | Path = f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
                     else:
                         local_target = Path(target_base_dir) / target_suffix / fmt
                         local_target.mkdir(parents=True, exist_ok=True)
@@ -303,14 +268,17 @@ async def process_deliverable_build(
                     try:
                         # Sync contents of the build directory to the target destination
                         sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
-                        if fmt == 'html':
+                        if fmt == "html":
                             await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
                         if sync_result.returncode == 0:
                             log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                         else:
                             log.error(
                                 "Failed to sync %s for %s to %s:\n%s",
-                                fmt, deliverable.full_id, target_dest, sync_result.stderr
+                                fmt,
+                                deliverable.full_id,
+                                target_dest,
+                                sync_result.stderr,
                             )
                             success = False
                     except Exception as e:
@@ -336,9 +304,7 @@ async def process_doctype(
     llmstxt_dir: str = "docs",
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using aiostream."""
-    deliverables: list[Deliverable] = await asyncio.to_thread(
-        get_deliverable_from_doctype, root, doctype
-    )
+    deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
@@ -354,7 +320,15 @@ async def process_doctype(
         try:
             return await asyncio.create_task(
                 process_deliverable_build(
-                    d, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, daps_tmpls, build_llmstxt, llmstxt_dir
+                    d,
+                    repo_dir,
+                    tmp_repo_dir,
+                    tmp_build_base_dir,
+                    target_base_dir,
+                    target_dir_dyn,
+                    daps_tmpls,
+                    build_llmstxt,
+                    llmstxt_dir,
                 ),
                 name=f"build:{d.full_id}",
             )
@@ -399,7 +373,18 @@ async def process(
     tasks = [
         asyncio.create_task(
             process_doctype(
-                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn, max_workers, daps_tmpls, skip_repo_update=skip_repo_update, build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir
+                root,
+                dt,
+                repo_dir,
+                tmp_repo_dir,
+                tmp_build_base_dir,
+                target_base_dir,
+                target_dir_dyn,
+                max_workers,
+                daps_tmpls,
+                skip_repo_update=skip_repo_update,
+                build_llmstxt=build_llmstxt,
+                llmstxt_dir=llmstxt_dir,
             ),
             name=f"build:{dt}",
         )

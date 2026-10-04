@@ -46,14 +46,17 @@ def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str)
     return None
 
 
-def read_json_ld(html_path: Path | None) -> dict[str, Any]:
-    """Read and parse the JSON-LD block from the given HTML file path."""
-    if not html_path:
+def read_json_ld(html_source: Path | str | None) -> dict[str, Any]:
+    """Read and parse the JSON-LD block from an HTML file path or raw HTML string."""
+    if not html_source:
         return {}
 
     try:
-        with open(html_path, encoding="utf-8") as f:
-            content = f.read(5000)
+        if isinstance(html_source, Path):
+            with open(html_source, encoding="utf-8") as f:
+                content = f.read(5000)
+        else:
+            content = html_source[:5000]
 
         match = re.search(
             r'<script\s+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
@@ -63,9 +66,9 @@ def read_json_ld(html_path: Path | None) -> dict[str, Any]:
 
         if match:
             return json.loads(match.group(1))
-        log.warning("No JSON-LD block found in %s", html_path)
+        log.debug("No JSON-LD block found in %s", html_source if isinstance(html_source, Path) else "HTML content")
     except Exception as e:
-        log.error("Failed to parse JSON-LD from %s: %s", html_path, e)
+        log.debug("Failed to parse JSON-LD from %s: %s", html_source if isinstance(html_source, Path) else "HTML content", e)
 
     return {}
 

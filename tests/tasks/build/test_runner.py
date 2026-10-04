@@ -5,12 +5,14 @@ from unittest.mock import AsyncMock, Mock, patch
 
 from lxml import etree  # type: ignore
 import pytest
+import yaml
 
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
 from docbuild.tasks.build.runner import (
     build_format,
+    generate_llmstxt,
     process,
     process_deliverable_build,
     process_doctype,
@@ -221,3 +223,97 @@ async def test_process_entry_point(tmp_path: Path) -> None:
             1, [doctype], daps_tmpls
         )
         assert result == 1
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> None:
+    """Test YAML frontmatter extraction, relative path URL building, and date handling."""
+    target_dir = tmp_path / "target"
+    target_dir.mkdir()
+
+    # Create nested HTML file to verify rel_path.as_posix() in URL
+    html_file = target_dir / "books" / "chapter.html"
+    html_file.parent.mkdir(parents=True)
+
+    html_content = """<!DOCTYPE html>
+    <html>
+    <head>
+        <script type="application/ld+json">
+        {
+            "name": "Dynamic Chapter Title",
+            "description": "Dynamic chapter description.",
+            "dateModified": "2026-02-15T12:00:00Z"
+        }
+        </script>
+    </head>
+    <body><h1>Test Content</h1><p>Some text</p></body>
+    </html>"""
+    html_file.write_text(html_content, encoding="utf-8")
+
+    class DummyDeliverable:
+        full_id = "test_deliverable"
+        xml = None
+
+    await generate_llmstxt(
+        deliverable=DummyDeliverable(),
+        target_dest=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+        canonical_domain="https://doc.example.com",
+    )
+
+    md_file = target_dir / "docs" / "books" / "chapter.md"
+    assert md_file.exists()
+
+    content = md_file.read_text(encoding="utf-8")
+    assert content.startswith("---")
+
+    frontmatter_raw = content.split("---")[1]
+    data = yaml.safe_load(frontmatter_raw)
+
+    assert data["title"] == "Dynamic Chapter Title"
+    assert data["description"] == "Dynamic chapter description."
+    assert data["source_url"] == "https://doc.example.com/unknown/unknown/html/books/chapter.html"
+    assert data["build_date"] == "2026-02-15"
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -> None:
+    """Test that build_date is omitted from frontmatter if dateModified is absent."""
+    target_dir = tmp_path / "target"
+    target_dir.mkdir()
+
+    html_file = target_dir / "index.html"
+    html_content = """<!DOCTYPE html>
+    <html>
+    <head>
+        <script type="application/ld+json">
+        {
+            "name": "Title Without Date"
+        }
+        </script>
+    </head>
+    <body><h1>Index</h1></body>
+    </html>"""
+    html_file.write_text(html_content, encoding="utf-8")
+
+    class DummyDeliverable:
+        full_id = "test_deliverable"
+        xml = None
+
+    await generate_llmstxt(
+        deliverable=DummyDeliverable(),
+        target_dest=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+    )
+
+    md_file = target_dir / "docs" / "index.md"
+    assert md_file.exists()
+
+    content = md_file.read_text(encoding="utf-8")
+    frontmatter_raw = content.split("---")[1]
+    data = yaml.safe_load(frontmatter_raw)
+
+    assert data["title"] == "Title Without Date"
+    assert "build_date" not in data
