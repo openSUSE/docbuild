@@ -8,29 +8,31 @@ import sys
 import tomllib
 
 
-def main() -> None:
-    """To validate towncrier newsfragment filenames."""
+def parse_cli(cliargs: list[str] | None = None) -> argparse.Namespace:
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Validate towncrier newsfragments.")
     parser.add_argument(
         "files", nargs="+", type=pathlib.Path, help="List of newsfragment files to validate"
     )
-    args = parser.parse_args()
+    parser.add_argument(
+        "-c",
+        "--config",
+        type=pathlib.Path,
+        default=pathlib.Path("towncrier.toml"),
+        help="Path to towncrier configuration file (default: towncrier.toml)",
+    )
+    return parser.parse_args(cliargs)
 
-    # Load valid types from towncrier.toml
-    toml_path = pathlib.Path("towncrier.toml")
-    if not toml_path.exists():
-        print(f"::error title=Missing Config::Configuration file {toml_path} not found.")
-        sys.exit(1)
 
-    with toml_path.open("rb") as f:
+def extract_types_from_toml(config_path: pathlib.Path) -> list[str]:
+    """Extract valid fragment types from the towncrier configuration."""
+    with config_path.open("rb") as f:
         config = tomllib.load(f)
+    return list(config["tool"]["towncrier"]["fragment"].keys())
 
-    try:
-        valid_types = list(config["tool"]["towncrier"]["fragment"].keys())
-    except KeyError:
-        print("::error title=Invalid Config::Could not find [tool.towncrier.fragment] in towncrier.toml.")
-        sys.exit(1)
 
+def validate_newsfragment(files: list[pathlib.Path], valid_types: list[str]) -> bool:
+    """Validate a list of files against the allowed types pattern."""
     types_pattern = "|".join(re.escape(t) for t in valid_types)
 
     # Regex:
@@ -40,7 +42,7 @@ def main() -> None:
     pattern = re.compile(rf"^(?:\d+|\+[\w-]+)\.({types_pattern})\.rst$")
 
     all_valid = True
-    for file_path in args.files:
+    for file_path in files:
         filename = file_path.name
         if not pattern.match(filename):
             all_valid = False
@@ -50,15 +52,41 @@ def main() -> None:
         else:
             print(f"✅ Valid newsfragment: {file_path}")
 
-    if not all_valid:
-        print(
-            "::error title=Invalid Changelog Fragment::One or more newsfragment filenames "
-            "are invalid. They must use digits (e.g. issue/PR number) or a '+description' prefix. "
-            "Please check the logs."
-        )
-        sys.exit(1)
+    return all_valid
+
+
+def main(cliargs: list[str] | None = None) -> int:
+    """Entry point for the application script.
+
+    :param cliargs: Arguments to parse or None (=use :class:`sys.argv`)
+    :return: error code
+    """
+    try:
+        args = parse_cli(cliargs)
+        valid_types = extract_types_from_toml(args.config)
+        is_valid = validate_newsfragment(args.files, valid_types)
+
+        if not is_valid:
+            print(
+                "::error title=Invalid Changelog Fragment::One or more newsfragment filenames "
+                "are invalid. They must use digits (e.g. issue/PR number) or a '+description' prefix. "
+                "Please check the logs.",
+                file=sys.stderr
+            )
+            return 1
+
+        return 0
+
+    except FileNotFoundError as error:
+        print(f"::error title=Missing Config::Configuration file not found: {error}", file=sys.stderr)
+        return 2
+    except KeyError as error:
+        print(f"::error title=Invalid Config::Could not find expected keys in towncrier configuration: {error}", file=sys.stderr)
+        return 3
+    except tomllib.TOMLDecodeError as error:
+        print(f"::error title=Invalid TOML::Failed to parse towncrier configuration: {error}", file=sys.stderr)
+        return 4
 
 
 if __name__ == "__main__":
-    """Entry point for the script."""
-    main()
+    sys.exit(main())
