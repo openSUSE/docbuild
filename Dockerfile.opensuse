@@ -1,0 +1,83 @@
+# Source: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
+#
+# Based on openSUSE Tumbleweed
+#
+# Build it with:
+# $ docker build -t docbuild:latest .
+#  -- or --
+# $ docker buildx build --file Dockerfile.opensuse -t docbuild:latest .
+#
+# If you want to skip the jing installation step, use:
+# $ docker build --file Dockerfile.opensuse \
+#    --build-arg WITH_JING=false -t docbuild:latest .
+
+ARG CONTAINER=opensuse/tumbleweed
+
+# ------- Stage 1: Build the environment ----------------
+FROM ${CONTAINER} AS builder
+
+# Disable recommended packages to save space
+RUN echo "rpm.install.recommended = false" >> /etc/zypp/zypp.conf
+
+# Update the package repository and clean up
+RUN zypper ref && zypper -n dup && zypper clean -a
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Change the working directory
+WORKDIR /app
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+  --mount=type=bind,source=uv.lock,target=uv.lock \
+  --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+  uv sync --frozen --no-install-project --no-editable
+
+# Copy the project into the intermediate image
+ADD --chown=app:app . /app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+  uv sync --frozen --no-editable
+
+# Create a non-root user
+RUN useradd -m app
+USER app
+
+
+# ------- Stage 2: Build/provide the application --------
+FROM ${CONTAINER}
+
+# Allow conditional installation of jing for XML validation
+ARG WITH_JING=true
+
+# Add repos
+RUN rpm --import https://download.opensuse.org/repositories/Documentation:/Tools/openSUSE_Tumbleweed/repodata/repomd.xml.key || true
+
+RUN zypper addrepo --no-gpgcheck https://download.opensuse.org/repositories/Documentation:/Tools/openSUSE_Tumbleweed/Documentation:Tools.repo
+
+# Install dependencies
+RUN zypper ref && zypper -n install -y --no-recommends daps
+
+RUN [ "$WITH_JING" = "true" ] && zypper -n install -y --no-recommends jing
+
+RUN zypper clean -a
+
+# Create a non-root user to match the builder stage
+RUN useradd -m app
+
+# Copy the environment, but not the source code
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
+# Set the working directory
+WORKDIR /app
+
+# Add the virtual environment's bin directory to the PATH
+ENV PATH="/app/.venv/bin:${PATH}"
+
+# Switch to the non-root user for security
+USER app
+
+# Run the application
+CMD ["docbuild"]
