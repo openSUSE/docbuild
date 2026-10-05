@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev25+g63ed251ca.d20261005</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev26+g4db550de1.d20261005</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=026ad1a3"></script>
+    <script src="_static/documentation_options.js?v=60da5980"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -484,6 +484,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 The workflow now validates that the newsfragment filename matches the current PR number or follows the <code class="docutils literal notranslate"><span class="pre">+description</span></code> format for unrelated changes.
 It also dynamically reads valid fragment types from <code class="docutils literal notranslate"><span class="pre">towncrier.toml</span></code> using the standard library <code class="docutils literal notranslate"><span class="pre">tomllib</span></code> parser, eliminating hard-coded values. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/563">GH #563</a>)</p></li>
 <li><p>Refactor CI pipeline to prepare for 3.15. Dropped <code class="docutils literal notranslate"><span class="pre">setup-python</span></code> completely in favor of <strong class="command">uv python install</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/564">GH #564</a>)</p></li>
+<li><p>Update check-changelog workflow to validate newsfragment filenames using regex patterns based on towncrier config instead of strict PR numbers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/570">GH #570</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
