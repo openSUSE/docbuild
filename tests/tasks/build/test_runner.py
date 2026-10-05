@@ -225,7 +225,6 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         assert result == 1
 
 
-@pytest.mark.asyncio
 async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> None:
     """Test YAML frontmatter extraction, relative path URL building, and date handling."""
     target_dir = tmp_path / "target"
@@ -277,7 +276,6 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> N
     assert data["build_date"] == "2026-02-15"
 
 
-@pytest.mark.asyncio
 async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -> None:
     """Test that build_date is omitted from frontmatter if dateModified is absent."""
     target_dir = tmp_path / "target"

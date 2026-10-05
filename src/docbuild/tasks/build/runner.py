@@ -116,16 +116,21 @@ async def generate_llmstxt(
         categories = getattr(d_xml, "categories", []) if d_xml else []
         product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
         version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
-        language = getattr(d_xml, "lang", "") if d_xml else ""
+        language = str(getattr(d_xml, "lang", "")) if d_xml else ""
 
-        frontmatter_base = {
-            "deliverable_id": deliverable.full_id,
+        # Use dictionary comprehension to filter empty keys (reduces C901 complexity)
+        raw_attrs = {
             "product": product,
             "version": version,
             "language": language,
             "categories": categories,
-            "generator": "daps",
         }
+        frontmatter_base: dict[str, Any] = {"deliverable_id": deliverable.full_id}
+        frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
+
+        # Only inject 'generator: daps' if this is an actual DAPS build (not a prebuilt)
+        if not getattr(deliverable, "is_prebuilt", False):
+            frontmatter_base["generator"] = "daps"
 
         url_product_id = getattr(d_xml, "product_id", "unknown") if d_xml else "unknown"
         if hasattr(deliverable, "make_safe_name"):
