@@ -2,6 +2,7 @@
 
 import asyncio
 from collections import defaultdict
+from dataclasses import dataclass
 
 import click
 from lxml import etree  # type: ignore
@@ -16,24 +17,33 @@ from ...models.product import Product
 from ...tasks.portal import parse_portal_config
 
 
+@dataclass
+class DisplayDeliverable:
+    """Wrapper for a Deliverable to project its inherited translations."""
+
+    model: Deliverable
+    lang: str
+    is_inherited: bool
+
+
 def build_hierarchy(
-    deliverables: list[Deliverable],
-) -> dict[str, dict[str, dict[str, list[Deliverable]]]]:
+    deliverables: list[DisplayDeliverable],
+) -> dict[str, dict[str, dict[str, list[DisplayDeliverable]]]]:
     """Group Deliverables into a hierarchy.
 
-    :param deliverables: A list of Deliverable models to organize.
+    :param deliverables: A list of DisplayDeliverable models to organize.
     :return: A hierarchy_dict mapping lang -> product -> docset -> deliverables.
     """
-    hierarchy: dict[str, dict[str, dict[str, list[Deliverable]]]] = defaultdict(
+    hierarchy: dict[str, dict[str, dict[str, list[DisplayDeliverable]]]] = defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))
     )
 
-    for deliv in deliverables:
-        lang = str(deliv.xml.lang)
-        product = deliv.xml.product_id or "unknown-product"
-        docset = deliv.xml.docset_path or "unknown-docset"
+    for dd in deliverables:
+        lang = dd.lang
+        product = dd.model.xml.product_id or "unknown-product"
+        docset = dd.model.xml.docset_path or "unknown-docset"
 
-        hierarchy[lang][product][docset].append(deliv)
+        hierarchy[lang][product][docset].append(dd)
 
     return hierarchy
 
@@ -61,15 +71,19 @@ def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype]
     return parsed_doctypes
 
 
-def get_display_name(deliv: Deliverable, d_id: str) -> str:
+def get_display_name(dd: DisplayDeliverable, d_id: str) -> str:
     """Determine the main display name for a deliverable."""
-    if deliv.xml.is_prebuilt:
-        title_node = deliv.xml.node.find("title")
+    if dd.model.xml.is_prebuilt:
+        title_node = dd.model.xml.node.find("title")
         title = title_node.text if title_node is not None else d_id
-        return f"{title} (Prebuilt)"
+        base = f"{title} (Prebuilt)"
+    else:
+        dc_file = dd.model.xml.dcfile
+        base = f"{d_id} ({dc_file})" if dc_file else d_id
 
-    dc_file = deliv.xml.dcfile
-    return f"{d_id} ({dc_file})" if dc_file else d_id
+    if dd.is_inherited:
+        return f"{base} [en-us blueprint]"
+    return base
 
 
 def append_translations(deliv_branch: Tree, deliv: Deliverable, lang: str) -> None:
@@ -108,18 +122,18 @@ def append_repo(deliv_branch: Tree, deliv: Deliverable, repo_format: str) -> Non
 
 def build_deliverable_branch(
     docset_branch: Tree,
-    deliv: Deliverable,
-    lang: str,
+    dd: DisplayDeliverable,
     show_trans: bool,
     show_formats: bool,
     show_categories: bool,
     repo_format: str | None,
 ) -> None:
     """Format and append a single deliverable node to the Rich Tree."""
+    deliv = dd.model
     d_id = deliv.xml.deliverableid or "unnamed-deliverable"
 
     # 1. Format the main display name
-    display_name = get_display_name(deliv, d_id)
+    display_name = get_display_name(dd, d_id)
     deliv_branch = docset_branch.add(display_name)
 
     # 2a. Automatically show URLs for prebuilt deliverables
@@ -130,7 +144,7 @@ def build_deliverable_branch(
 
     # 3. Add Optional Metadata based on CLI Flags
     if show_trans:
-        append_translations(deliv_branch, deliv, lang)
+        append_translations(deliv_branch, deliv, dd.lang)
     if show_formats:
         append_formats(deliv_branch, deliv)
     if show_categories:
@@ -140,7 +154,7 @@ def build_deliverable_branch(
 
 
 def print_hierarchy(
-    hierarchy: dict[str, dict[str, dict[str, list[Deliverable]]]],
+    hierarchy: dict[str, dict[str, dict[str, list[DisplayDeliverable]]]],
     console: Console,
     show_trans: bool,
     show_formats: bool,
@@ -158,11 +172,10 @@ def print_hierarchy(
                 docset_branch = prod_branch.add(f"[cyan]{docset}[/cyan]")
 
                 # Sort deliverables by ID for stable output
-                for deliv in sorted(delivs, key=lambda d: d.xml.node.get("id", "")):
+                for dd in sorted(delivs, key=lambda d: d.model.xml.node.get("id", "")):
                     build_deliverable_branch(
                         docset_branch,
-                        deliv,
-                        lang,
+                        dd,
                         show_trans,
                         show_formats,
                         show_categories,
@@ -174,7 +187,7 @@ def print_hierarchy(
 
 
 def print_flat(
-    deliverables: list[Deliverable],
+    deliverables: list[DisplayDeliverable],
     console: Console,
     show_trans: bool,
     show_formats: bool,
@@ -185,21 +198,22 @@ def print_flat(
     # Sort logically: lang -> product -> docset -> id
     sorted_deliverables = sorted(
         deliverables,
-        key=lambda d: (
-            str(d.xml.lang),
-            d.xml.product_id or "",
-            d.xml.docset_path or "",
-            d.xml.node.get("id", ""),
+        key=lambda dd: (
+            dd.lang,
+            dd.model.xml.product_id or "",
+            dd.model.xml.docset_path or "",
+            dd.model.xml.node.get("id", ""),
         )
     )
 
-    for deliv in sorted_deliverables:
-        lang = str(deliv.xml.lang)
+    for dd in sorted_deliverables:
+        deliv = dd.model
+        lang = dd.lang
         product = deliv.xml.product_id or "unknown-product"
         docset = deliv.xml.docset_path or "unknown-docset"
         d_id = deliv.xml.deliverableid or "unnamed-deliverable"
 
-        display_name = get_display_name(deliv, d_id)
+        display_name = get_display_name(dd, d_id)
 
         # Build the flat root string with colors matching the hierarchy
         flat_title = f"[bold blue]{lang}[/bold blue]/[bold]{product}[/bold]/[cyan]{docset}[/cyan]:{display_name}"
@@ -263,6 +277,61 @@ def validate_docsets_against_xml(
         raise click.Abort()
 
 
+def _matches_query(dd: DisplayDeliverable, doctypes: tuple[str, ...]) -> bool:
+    """Check if a deliverable matches any of the provided doctype queries."""
+    prod = dd.model.xml.product_id or ""
+    doc = dd.model.xml.docset_path or ""
+    lang = dd.lang
+
+    for q in doctypes:
+        parts = q.split("/")
+        q_prod = parts[0]
+        q_doc = parts[1] if len(parts) > 1 else "*"
+        q_lang = parts[2] if len(parts) > 2 else "*"
+
+        if (q_prod in ("*", prod)) and (q_doc in ("*", doc)) and (q_lang in ("*", lang)):
+            return True
+    return False
+
+
+def expand_and_filter_deliverables(
+    base_deliverables: list[Deliverable], doctypes: tuple[str, ...]
+) -> list[DisplayDeliverable]:
+    """Project English blueprints to translated locales and filter by user query."""
+    expanded_dict: dict[tuple[str, str, str, str], DisplayDeliverable] = {}
+
+    # Pass 1: Project en-us blueprints FIRST
+    for d in base_deliverables:
+        native_lang = str(d.xml.lang)
+        prod = d.xml.product_id or ""
+        doc = d.xml.docset_path or ""
+        d_id = d.xml.deliverableid or ""
+
+        if native_lang == "en-us" and d.xml.translations:
+            for t_lang in d.xml.translations:
+                t_key = (prod, doc, t_lang, d_id)
+                if t_key not in expanded_dict:
+                    expanded_dict[t_key] = DisplayDeliverable(d, t_lang, True)
+
+    # Pass 2: Add native deliverables (overriding blueprints if they explicitly collide)
+    for d in base_deliverables:
+        native_lang = str(d.xml.lang)
+        prod = d.xml.product_id or ""
+        doc = d.xml.docset_path or ""
+        d_id = d.xml.deliverableid or ""
+
+        key = (prod, doc, native_lang, d_id)
+        expanded_dict[key] = DisplayDeliverable(d, native_lang, False)
+
+    expanded_deliverables = list(expanded_dict.values())
+
+    # Pass 3: Filter to EXACT user query
+    if not doctypes:
+        return expanded_deliverables
+
+    return [dd for dd in expanded_deliverables if _matches_query(dd, doctypes)]
+
+
 async def async_list_cmd(
     ctx: DocBuildContext,
     doctypes: tuple[str, ...],
@@ -277,11 +346,7 @@ async def async_list_cmd(
     parsed_doctypes = parse_doctypes(doctypes, console)
 
     # 2. Get XML Tree
-    # The application framework guarantees envconfig is loaded before command execution.
-    # We use assert to satisfy the type checker without redundant runtime error handling.
     assert ctx.envconfig is not None
-
-    # We rely on the Pydantic env model to handle existence and path validations natively
     portal_xml_path = ctx.envconfig.paths.main_portal_config.expanduser()
 
     try:
@@ -293,36 +358,33 @@ async def async_list_cmd(
     if parsed_doctypes:
         validate_docsets_against_xml(parsed_doctypes, tree, console)
 
-    # 3. Fetch and wrap Deliverables into Domain Objects
-    # Consuming the generator directly saves memory over converting to an intermediate list
-    deliverables = [
-        Deliverable(_node=node)
-        for node in list_all_deliverables(tree, parsed_doctypes)
-    ]
+    # --- 3. Fetch Broad Deliverables ---
+    if doctypes:
+        broad_strs = []
+        for dt_str in doctypes:
+            parts = dt_str.split("/")
+            prod = parts[0]
+            doc = parts[1] if len(parts) > 1 else "*"
+            broad_strs.append(f"{prod}/{doc}/*")
+        broad_doctypes = parse_doctypes(tuple(broad_strs), console)
+        all_nodes = list_all_deliverables(tree, broad_doctypes)
+    else:
+        all_nodes = tree.xpath("//deliverable")
 
-    if not deliverables:
+    base_deliverables = [Deliverable(_node=node) for node in all_nodes]
+
+    # --- 4. Expand Inherited Deliverables & Filter ---
+    final_deliverables = expand_and_filter_deliverables(base_deliverables, doctypes)
+
+    if not final_deliverables:
         console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
         return
 
     if flat:
-        print_flat(
-            deliverables,
-            console,
-            show_trans,
-            show_formats,
-            show_categories,
-            repo_format
-        )
+        print_flat(final_deliverables, console, show_trans, show_formats, show_categories, repo_format)
     else:
-        hierarchy = build_hierarchy(deliverables)
-        print_hierarchy(
-            hierarchy,
-            console,
-            show_trans,
-            show_formats,
-            show_categories,
-            repo_format
-        )
+        hierarchy = build_hierarchy(final_deliverables)
+        print_hierarchy(hierarchy, console, show_trans, show_formats, show_categories, repo_format)
 
 
 @click.command(name="list")
@@ -363,7 +425,7 @@ def list_cmd(
     :param trans: Show translation metadata.
     :param formats: Show output formats metadata.
     :param categories: Show categories metadata.
-    :param repo: Show repository metadata (short or long).
+    :param repo: Show repository origin (short or long).
     :param flat: Display a flat list instead of a hierarchy tree.
 
     """ # noqa: D301
