@@ -23,6 +23,13 @@ if ! command -v xsltproc >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! command -v realpath >/dev/null 2>&1; then
+    echo "Error: 'realpath' is required but not installed." >&2
+    exit 1
+fi
+
+
+CREATE_LINK=0
 
 # --- Help Function ---
 usage() {
@@ -39,6 +46,8 @@ Options:
                          otherwise it's just a prefix and it might get
                          unexpected results!
   -x, --xinclude         Enable xinclude processing
+  -L, --with-link        Create a symlink to the portal-config.rnc in OUTDIR
+      --without-link     Do not create a symlink (Default)
   -h, --help             Show this help message
 
 Arguments:
@@ -81,6 +90,14 @@ while [ $# -gt 0 ]; do
             USE_XINCLUDE=1
             shift
             ;;
+        -L|--with-link)
+            CREATE_LINK=1
+            shift
+            ;;
+        --without-link)
+            CREATE_LINK=0
+            shift
+            ;;
         -h|--help)
             usage
             ;;
@@ -103,8 +120,17 @@ fi
 
 # --- Execution ---
 # Note: Administrative privileges (sudo) may be required if writing to system-protected directories.
+mkdir -p "$OUTDIR"
 xsltproc ${USE_XINCLUDE:+--stringparam use.xincludes 1} \
          --stringparam schemafile "$SCHEMAFILE" \
          --stringparam outputfile "$OUTPUT" \
          --stringparam outputdir "$OUTDIR" \
          "$XSLT" "$INPUT"
+
+# --- Create Symlink ---
+if [ "$CREATE_LINK" -eq 1 ]; then
+    # The -r option creates a relative symlink
+    # The -f option removes any existing destination file
+    RNC_PATH=$(realpath "$SCRIPT_DIR/../src/docbuild/config/xml/data/portal-config.rnc")
+    ln -srf "$RNC_PATH" "$OUTDIR"
+fi
