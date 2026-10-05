@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -28,8 +28,6 @@ jobs:
 
       - name: Check for new fragments in changelog.d
         if: steps.bypass.outputs.skip == 'false'
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           # Fetch the target branch to compare against
           git fetch origin ${{ github.base_ref }}
@@ -42,35 +40,5 @@ jobs:
             exit 1
           fi
 
-          # Extract valid fragment types from towncrier.toml
-          VALID_TYPES=$(python3 << 'EOF'
-          import tomllib
-          with open('towncrier.toml', 'rb') as f:
-              config = tomllib.load(f)
-          # Extract all fragment type keys from [tool.towncrier.fragment.*]
-          types = config['tool']['towncrier']['fragment'].keys()
-          print('|'.join(sorted(types)))
-          EOF
-          )
-
-          # Validate that the filename matches the PR number or starts with +
-          VALID_FRAGMENT=false
-          for file in $CHANGELOG_FILES; do
-            # Extract the filename without path
-            filename=$(basename "$file")
-
-            # Check if it matches the pattern: PR_NUMBER.TYPE.rst or +description.TYPE.rst
-            if [[ "$filename" =~ ^${PR_NUMBER}\.(${VALID_TYPES})\.rst$ ]] || [[ "$filename" =~ ^\+[a-z0-9\-]+\.(${VALID_TYPES})\.rst$ ]]; then
-              VALID_FRAGMENT=true
-              echo "✅ Valid newsfragment: $file"
-            else
-              echo "❌ Invalid newsfragment: $file"
-              echo "   Expected format: '${PR_NUMBER}.<type>.rst' or '+<description>.<type>.rst'"
-              echo "   Valid types: $VALID_TYPES"
-            fi
-          done
-
-          if [ "$VALID_FRAGMENT" = false ]; then
-            echo "::error title=Invalid Changelog Fragment::The newsfragment filename does not match the PR number #$PR_NUMBER or follow the '+description' format. Valid types: $VALID_TYPES. Or add the 'skip-changelog' label to this PR."
-            exit 1
-          fi
+          # Validate the fragments using the Python script
+          python3 .github/scripts/validate_changelog.py $CHANGELOG_FILES

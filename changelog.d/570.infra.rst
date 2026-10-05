@@ -1,0 +1,1 @@
+Update check-changelog workflow to validate newsfragment filenames using regex patterns based on towncrier config instead of strict PR numbers.
