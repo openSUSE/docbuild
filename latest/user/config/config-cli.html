@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overwriting Config Options on the Command Line &#8212; Docbuild Documentation 0.24.1.dev23+g0eb8b5fc5.d20261002</title>
+    <title>Overwriting Config Options on the Command Line &#8212; Docbuild Documentation 0.24.1.dev24+g9cba44c63.d20261005</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=462daa71"></script>
+    <script src="../../_static/documentation_options.js?v=74eff39e"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -496,8 +496,13 @@
 </div>
 <section id="handling-keys-with-dots">
 <h2>Handling Keys with Dots<a class="headerlink" href="#handling-keys-with-dots" title="Link to this heading">#</a></h2>
-<p>If your configuration keys contain dots, use quotes or brackets to prevent them from being treated as nested separators:</p>
+<p>If your configuration keys contain dots, use a backslash, quotes, or brackets to prevent them from being treated as nested separators:</p>
 <ul>
+<li><p><strong>Backslash</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">key\.with\.dots</span></code>)</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.show\.edit\.link=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+</pre></div>
+</div>
+</li>
 <li><p><strong>Single quotes</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">'key.with.dots'</span></code>)</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.&#39;show.edit.link&#39;=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
@@ -514,7 +519,7 @@
 </div>
 </li>
 </ul>
-<p>All three syntaxes are equivalent. Choose whichever is most convenient for your shell environment.</p>
+<p>All four syntaxes are equivalent. Choose whichever is most convenient for your shell environment.</p>
 </section>
 <section id="type-conversion">
 <h2>Type Conversion<a class="headerlink" href="#type-conversion" title="Link to this heading">#</a></h2>

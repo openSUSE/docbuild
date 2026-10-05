@@ -21,7 +21,13 @@ Options passed via ``-C`` or ``--set-env`` have the highest priority and overwri
 Handling Keys with Dots
 -----------------------
 
-If your configuration keys contain dots, use quotes or brackets to prevent them from being treated as nested separators:
+If your configuration keys contain dots, use a backslash, quotes, or brackets to prevent them from being treated as nested separators:
+
+* **Backslash** (Syntax ``key\.with\.dots``)
+
+  .. code-block:: shell-session
+
+     $ docbuild -C "xslt.html.show\.edit\.link=1" config list --env
 
 * **Single quotes** (Syntax ``'key.with.dots'``)
 
@@ -41,7 +47,7 @@ If your configuration keys contain dots, use quotes or brackets to prevent them 
 
      $ docbuild -C "xslt.html.[show.edit.link]=1" config list --env
 
-All three syntaxes are equivalent. Choose whichever is most convenient for your shell environment.
+All four syntaxes are equivalent. Choose whichever is most convenient for your shell environment.
 
 
 Type Conversion

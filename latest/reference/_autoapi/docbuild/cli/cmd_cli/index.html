@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.24.1.dev23+g0eb8b5fc5.d20261002</title>
+    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.24.1.dev24+g9cba44c63.d20261005</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../../_static/documentation_options.js?v=462daa71"></script>
+    <script src="../../../../../_static/documentation_options.js?v=74eff39e"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -656,7 +656,7 @@
 <td><p>Load and validate Application configuration.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(→ list[str])</p></td>
-<td><p>Parse dot-separated key path, respecting quoted/bracketed segments.</p></td>
+<td><p>Parse dot-separated key path, respecting quoted/bracketed/escaped segments.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(→ None)</p></td>
 <td><p>Parse and apply a single KEY=VALUE override to the configuration dictionary.</p></td>
@@ -705,17 +705,22 @@ status code after handling the error.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cli.parse_key">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">parse_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.parse_key" title="Link to this definition">#</a></dt>
-<dd><p>Parse dot-separated key path, respecting quoted/bracketed segments.</p>
-<p>Parses a key string that may contain dots as separators or within quoted
-or bracketed segments. This enables setting configuration values where keys
-themselves contain dots (e.g., XSLT parameters).</p>
-<p>Supported delimiters:
+<dd><p>Parse dot-separated key path, respecting quoted/bracketed/escaped segments.</p>
+<p>Parses a key string that may contain dots as separators or within quoted,
+bracketed, or backslash-escaped segments. This enables setting configuration
+values where keys themselves contain dots (e.g., XSLT parameters).</p>
+<p>Supported delimiters and escapes:
+- Backslash: <code class="docutils literal notranslate"><span class="pre">segment\.with\.dots</span></code>
 - Single quotes: <code class="docutils literal notranslate"><span class="pre">'segment.with.dots'</span></code>
 - Double quotes: <code class="docutils literal notranslate"><span class="pre">&quot;segment.with.dots&quot;</span></code>
 - Square brackets: <code class="docutils literal notranslate"><span class="pre">[segment.with.dots]</span></code></p>
 <dl>
 <dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="s1">&#39;server.host&#39;</span><span class="p">)</span>
 <span class="go">[&#39;server&#39;, &#39;host&#39;]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;xslt.html.show\.edit\.link&#39;</span><span class="p">)</span>
+<span class="go">[&#39;xslt&#39;, &#39;html&#39;, &#39;show.edit.link&#39;]</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_key</span><span class="p">(</span><span class="s2">&quot;server.&#39;db.connection&#39;&quot;</span><span class="p">)</span>
@@ -730,14 +735,15 @@ themselves contain dots (e.g., XSLT parameters).</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> – A dot-separated key path with optional quoted/bracketed segments.</p>
+<dd class="field-odd"><p><strong>key</strong> – A dot-separated key path with optional quoted/bracketed/escaped segments.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of key segments suitable for nested dictionary access.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.BadParameter" title="(in Click v8.6.x)"><strong>click.BadParameter</strong></a> – If the key contains misplaced delimiters, unmatched
-quotes/brackets, or invalid syntax (e.g., characters after closing delimiter).</p>
+quotes/brackets, backslashes inside delimiters, trailing backslash, or invalid
+syntax (e.g., characters after closing delimiter).</p>
 </dd>
 </dl>
 </dd></dl>
