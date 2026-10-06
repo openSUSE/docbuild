@@ -106,7 +106,7 @@ If you pass an invalid value via ``-C`` or ``--set-env``, the command will fail 
 .. code-block:: shell-session
 
       $ docbuild -C "general.role=invalid_role" build
-      1 Validation error in config file 'unknown':
+      1 Validation error in config file 'defaults':
 
       (1) In 'general.role':
          Input should be 'production', 'staging', 'testing' or other valid values
@@ -118,7 +118,7 @@ To find the valid values for a field, check the error message or consult the con
 .. code-block:: shell-session
 
       $ docbuild -C "general.role=invalid_role" config validate
-      1 Validation error in config file 'unknown':
+      1 Validation error in config file 'defaults':
       (1) In 'general.role': Input should be 'production', 'staging', 'testing' ...
 
       $ docbuild -C "general.role=production" config validate

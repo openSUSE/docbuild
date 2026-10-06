@@ -59,14 +59,14 @@ def _setup_console() -> None:
 def handle_validation_error(
     e: Exception,
     model_class: type[BaseModel],
-    config_files: Sequence[Path] | None,
+    config_files: Sequence[Path | str] | None,
     verbose: int,
     ctx: click.Context,
 ) -> None:
     """Format validation errors and exit the CLI.
 
     Outsourced logic to avoid code duplication between App and Env config phases.
-    Using Sequence[Path] ensures compatibility with both lists and tuples.
+    Using Sequence[Path | str] ensures compatibility with both lists and tuples.
 
     :param e: The exception that was raised during validation.
     :param model_class: The Pydantic model class that was being validated
@@ -79,7 +79,7 @@ def handle_validation_error(
        status code after handling the error.
     """
     # Determine which file we were working on
-    config_file = str((config_files or ["unknown"])[0])
+    config_file = str((config_files or ["defaults"])[0])
 
     if isinstance(e, tomllib.TOMLDecodeError):
         format_toml_error(e, config_file, console=CONSOLE)
@@ -446,7 +446,7 @@ def cli(
 
     # State tracking for centralized error handling
     current_model: type[BaseModel] = AppConfig
-    current_files: Sequence[Path] | None = None
+    current_files: Sequence[Path | str] | None = None
 
     # Determine if we should skip validation
     is_config_list = (ctx.invoked_subcommand == "config") and ("list" in sys.argv)
@@ -476,7 +476,14 @@ def cli(
             context.portalconfig = PortalConfig(source=context.envconfig.paths.portal_xml)
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
-        handle_validation_error(e, current_model, current_files, verbose, ctx)
+        files = (
+            context.appconfigfiles
+            if current_model == AppConfig and context.appconfigfiles
+            else context.envconfigfiles
+            if current_model == EnvConfig and context.envconfigfiles
+            else current_files
+        )
+        handle_validation_error(e, current_model, files, verbose, ctx)
 
     # --- PHASE 3: Setup Concurrency Lock ---
     # (Remains outside the try block as it has its own specialized error handling)

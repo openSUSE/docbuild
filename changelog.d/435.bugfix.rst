@@ -1,0 +1,1 @@
+Report ``'defaults'`` instead of ``'unknown'`` when configuration validation fails and no configuration file is used.

@@ -186,6 +186,54 @@ def test_cli_config_validation_failure(
     assert result.exit_code == 1
     assert "Validation error" in result.output
     assert "server.port" in result.output
+    assert "'test.toml'" in result.output
+
+
+@pytest.mark.parametrize("is_app_config_failure", [True, False])
+def test_cli_config_validation_failure_from_defaults(
+    runner,
+    fake_handle_config,
+    mock_config_models,
+    is_app_config_failure,
+):
+    """Verify that CLI validation errors with no config file report 'defaults' instead of 'unknown'."""
+    mock_validation_error = ValidationError.from_exception_data(
+        "TestModel",
+        [{"type": "int_parsing", "loc": ("server", "port"), "input": "x"}]
+    )
+
+    if is_app_config_failure:
+        mock_config_models["app_from_dict"].side_effect = mock_validation_error
+    else:
+        mock_config_models["env_from_dict"].side_effect = mock_validation_error
+
+    fake_handle_config(lambda *a, **k: (None, {"x": 1}, True))
+
+    result = runner.invoke(cli, ["capture"])
+    assert result.exit_code == 1
+    assert "Validation error" in result.output
+    assert "'defaults'" in result.output
+    assert "'unknown'" not in result.output
+
+
+def test_cli_config_list_validate_invalid_override_reports_defaults(
+    runner, tmp_path, monkeypatch
+):
+    """Test issue #435: 'config list --validate' with invalid override reports 'defaults'."""
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(
+        cli,
+        [
+            "-C",
+            "configx.canonical_url_domain=https://doc.example.net",
+            "config",
+            "list",
+            "--validate",
+        ],
+    )
+    assert result.exit_code == 1
+    assert "Validation error in config file 'defaults':" in result.output
+    assert "'unknown'" not in result.output
 
 
 @pytest.mark.parametrize("model_target", ["AppConfig", "EnvConfig"])

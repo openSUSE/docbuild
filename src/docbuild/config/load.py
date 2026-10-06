@@ -1,6 +1,7 @@
 """Load and process configuration files."""
 
 from collections.abc import Iterable
+from copy import deepcopy
 from pathlib import Path
 import tomllib as toml
 from typing import Any
@@ -70,7 +71,7 @@ def handle_config(
 
     # 2. Check if we found anything at all
     if not found_files:
-        return None, default_config, True
+        return None, deepcopy(default_config), True
 
     # 3. Deep merge everything, starting with the defaults as the base!
     base = [default_config] if isinstance(default_config, dict) else []
