@@ -41,6 +41,8 @@ Functions
    docbuild.config.xml.checks.check_git_remote_for_dc_deliverables
    docbuild.config.xml.checks.check_unsupported_language_code
    docbuild.config.xml.checks.check_spotlight_target
+   docbuild.config.xml.checks.build_id_map
+   docbuild.config.xml.checks.check_deliverable_reference
 
 
 Module Contents
@@ -275,5 +277,35 @@ Module Contents
 
    :param tree: The XML tree to check.
    :yield: CheckResult for each spotlight element with an invalid target.
+
+
+.. py:function:: build_id_map(tree: lxml.etree._Element | lxml.etree._ElementTree) -> dict[str, lxml.etree._Element]
+
+   Map all elements in the tree by their ``xml:id``.
+
+   :param tree: The XML tree or element to index.
+   :returns: A dictionary mapping element IDs to their corresponding elements.
+
+
+.. py:function:: check_deliverable_reference(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]
+
+   Check deliverable reference targets and nesting constraints.
+
+   Validates that cross-reference deliverables point to existing targets,
+   that targets are valid element types (deliverable, docset, product),
+   that no self-referencing cycles exist, and that nesting rules
+   (max 1 level of indirection for translations, no English nesting) are
+   satisfied.
+
+   .. code-block:: xml
+
+       <locale lang="en-us">
+           <deliverable type="xref">
+               <xref linkend="target-deliverable-id"/>
+           </deliverable>
+       </locale>
+
+   :param tree: The XML tree to check.
+   :yield: CheckResult for each broken, circular, or invalid reference.
 
 

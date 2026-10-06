@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.24.1.dev28+g8b7e3532e.d20261006</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../_static/documentation_options.js?v=b7df1870"></script>
+    <script src="../../../../_static/documentation_options.js?v=b7ce489b"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -741,13 +741,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XML_NS" title="docbuild.constants.XML_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XML_NS</span></code></a></p></td>
 <td><p>The XML namespace URI for XML elements.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XINCLUDE_NS" title="docbuild.constants.XINCLUDE_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XML_ID" title="docbuild.constants.XML_ID"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XML_ID</span></code></a></p></td>
+<td><p>The QName for the xml:id attribute.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XINCLUDE_NS" title="docbuild.constants.XINCLUDE_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></p></td>
 <td><p>The XML namespace URI for XInclude elements.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.DOCBOOK_NS" title="docbuild.constants.DOCBOOK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.DOCBOOK_NS" title="docbuild.constants.DOCBOOK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></p></td>
 <td><p>The XML namespace URI for DocBook elements.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XLINK_NS" title="docbuild.constants.XLINK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.XLINK_NS" title="docbuild.constants.XLINK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></p></td>
 <td><p>The XML namespace URI for XLink attributes.</p></td>
 </tr>
 </tbody>
@@ -973,25 +976,31 @@ per XDG Base Directory Specification.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.XML_NS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XML_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/XML/1998/namespace'</span></span><a class="headerlink" href="#docbuild.constants.XML_NS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XML_NS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/XML/1998/namespace'</span></span><a class="headerlink" href="#docbuild.constants.XML_NS" title="Link to this definition">#</a></dt>
 <dd><p>The XML namespace URI for XML elements.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.XML_ID">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XML_ID</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">lxml.etree.QName</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.XML_ID" title="Link to this definition">#</a></dt>
+<dd><p>The QName for the xml:id attribute.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.XINCLUDE_NS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XINCLUDE_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/2001/XInclude'</span></span><a class="headerlink" href="#docbuild.constants.XINCLUDE_NS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XINCLUDE_NS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/2001/XInclude'</span></span><a class="headerlink" href="#docbuild.constants.XINCLUDE_NS" title="Link to this definition">#</a></dt>
 <dd><p>The XML namespace URI for XInclude elements.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.DOCBOOK_NS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DOCBOOK_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://docbook.org/ns/docbook'</span></span><a class="headerlink" href="#docbuild.constants.DOCBOOK_NS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DOCBOOK_NS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://docbook.org/ns/docbook'</span></span><a class="headerlink" href="#docbuild.constants.DOCBOOK_NS" title="Link to this definition">#</a></dt>
 <dd><p>The XML namespace URI for DocBook elements.</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.XLINK_NS">
-<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XLINK_NS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/1999/xlink'</span></span><a class="headerlink" href="#docbuild.constants.XLINK_NS" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">XLINK_NS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.w3.org/1999/xlink'</span></span><a class="headerlink" href="#docbuild.constants.XLINK_NS" title="Link to this definition">#</a></dt>
 <dd><p>The XML namespace URI for XLink attributes.</p>
 </dd></dl>
 
@@ -1083,6 +1092,7 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XMLDATADIR"><code class="docutils literal notranslate"><span class="pre">XMLDATADIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DEFAULT_ERROR_LIMIT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_ERROR_LIMIT</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XML_NS"><code class="docutils literal notranslate"><span class="pre">XML_NS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XML_ID"><code class="docutils literal notranslate"><span class="pre">XML_ID</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XINCLUDE_NS"><code class="docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DOCBOOK_NS"><code class="docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XLINK_NS"><code class="docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></li>

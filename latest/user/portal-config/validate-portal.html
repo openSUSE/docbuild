@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Validating the Portal Configuration &#8212; Docbuild Documentation 0.24.1.dev28+g8b7e3532e.d20261006</title>
+    <title>Validating the Portal Configuration &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=b7df1870"></script>
+    <script src="../../_static/documentation_options.js?v=b7ce489b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -540,6 +540,34 @@ of portal validation (except where noted).</p>
 <span class="w">        </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-foo&quot;</span><span class="nt">&gt;</span>
 <span class="w">            </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
 <span class="w">        </span><span class="nt">&lt;/dc&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
+<span class="nt">&lt;/locale&gt;</span>
+</pre></div>
+</div>
+<p class="rubric">check_deliverable_reference</p>
+<p>Validate deliverable cross-references (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;</span></code>).</p>
+<p>The check ensures that:</p>
+<ul class="simple">
+<li><p>The target ID in <code class="docutils literal notranslate"><span class="pre">xref/&#64;linkend</span></code> exists in the configuration (error: <code class="docutils literal notranslate"><span class="pre">broken_deliverable_reference</span></code>).</p></li>
+<li><p>A deliverable does not reference itself (error: <code class="docutils literal notranslate"><span class="pre">circular_deliverable_reference</span></code>).</p></li>
+<li><p>The target element is a <code class="docutils literal notranslate"><span class="pre">&lt;deliverable&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code>, rather than another XML element with an <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> (error: <code class="docutils literal notranslate"><span class="pre">invalid_deliverable_reference_target</span></code>).</p></li>
+<li><p>English reference deliverables do not point to other reference deliverables (error: <code class="docutils literal notranslate"><span class="pre">nested_deliverable_reference</span></code>).</p></li>
+<li><p>Translated deliverables point to at most 1 level of reference indirection (pointing to an English reference deliverable). Chains of 3 or more reference deliverables are prohibited (error: <code class="docutils literal notranslate"><span class="pre">invalid_reference_chain</span></code>).</p></li>
+</ul>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="cm">&lt;!-- Error: broken linkend --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;xref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;non-existent-id&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Error: circular reference --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deliv-self&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;xref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;deliv-self&quot;</span><span class="nt">/&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- Error: target is &lt;item&gt; rather than deliverable/docset/product --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;xref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;cat.storage&quot;</span><span class="nt">/&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
 <span class="nt">&lt;/locale&gt;</span>
 </pre></div>

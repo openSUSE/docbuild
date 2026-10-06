@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding Deliverables &#8212; Docbuild Documentation 0.24.1.dev28+g8b7e3532e.d20261006</title>
+    <title>Adding Deliverables &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=b7df1870"></script>
+    <script src="../../_static/documentation_options.js?v=b7ce489b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -519,26 +519,9 @@ by a different tool than <strong class="command">daps</strong>:</p>
 </div>
 </div>
 </li>
-<li><p><strong>Internal Cross Reference</strong></p>
-<p>A deliverable that points to another deliverable (type <code class="docutils literal notranslate"><span class="pre">prebuilt</span></code> or <code class="docutils literal notranslate"><span class="pre">dc</span></code>),
-product, or docset within the same portal configuration. This is typically used
-to reference other documentation from other products.</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Example of an Internal Reference</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;local</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">  </span><span class="cm">&lt;!-- ... --&gt;</span>
-<span class="w">  </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;sle-hpc.15-SP6.hpc-guide&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="nt">&lt;/locale&gt;</span>
-</pre></div>
-</div>
-</div>
-<p>This indirection is necessary to keep the configuration “DRY” (Don’t Repeat Yourself).
-By having the translated deliverables point to the English reference deliverable,
-the <code class="docutils literal notranslate"><span class="pre">linkend</span></code> to the final target document is defined only once.
-If the target ever changes, the <code class="docutils literal notranslate"><span class="pre">linkend</span></code> only needs to be updated in the
-single <code class="docutils literal notranslate"><span class="pre">en-us</span></code> deliverable, not in every translation.</p>
+<li><p><strong>Cross-Reference</strong></p>
+<p>A deliverable that points to another deliverable, product, or release
+within the portal configuration. See <a class="reference internal" href="create-xrefs.html#create-xrefs"><span class="std std-ref">Creating Cross-References</span></a>.</p>
 </li>
 </ul>
 <p>To add a deliverable, proceed as follows:</p>
@@ -552,8 +535,8 @@ release of the NAS product.</p>
 <li><p>Create a deliverable.</p>
 <p>In our example, we have a DocBook XML source and a DC file <code class="file docutils literal notranslate"><span class="pre">DC-NAS-overview</span></code>. We want to build HTML, PDF, and
 single HTML output, but not EPUB:</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-NAS-overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>

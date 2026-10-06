@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev28+g8b7e3532e.d20261006</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=b7df1870"></script>
+    <script src="_static/documentation_options.js?v=b7ce489b"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -468,6 +468,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <ul class="simple">
 <li><p>Added automatic generation of <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code> options in <code class="docutils literal notranslate"><span class="pre">env.toml</span></code>. The generator strips navigation and layout elements using a custom parser, converts the core content using <code class="docutils literal notranslate"><span class="pre">justhtml</span></code>, and safely injects <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tags into the source HTML headers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/365">GH #365</a>)</p></li>
 <li><p>Added support for remote source and destination paths in rsync utility and build runner. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/492">GH #492</a>)</p></li>
+<li><p>Added support for deliverable cross-references (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;&lt;xref</span> <span class="pre">.../&gt;</span></code>) with recursive target resolution and semantic validation in <strong class="command">docbuild portal validate</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/526">GH #526</a>)</p></li>
 <li><p>Introduced <code class="docutils literal notranslate"><span class="pre">PortalConfig</span></code> to separate XML extraction and XPath traversal logic from Pydantic data models. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/546">GH #546</a>)</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">llms</span></code> CLI subcommand to retroactively generate Markdown files and the <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> index for existing build directories without requiring a full rebuild. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/552">GH #552</a>)</p></li>
 <li><p>Inject standard YAML frontmatter metadata into generated Markdown files for LLM/RAG pipelines. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/556">GH #556</a>)</p></li>
@@ -494,6 +495,12 @@ It also dynamically reads valid fragment types from <code class="docutils litera
 <li><p>Moved the <code class="docutils literal notranslate"><span class="pre">title</span></code> attribute in <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> elements to a <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> tag for consistency. Affected files are the Portal schema, migration stylesheet, models, and configuration files. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/519">GH #519</a>)</p></li>
 <li><p>Rename the directory <code class="file docutils literal notranslate"><span class="pre">tests/models/deliverables</span></code> (plural) to <code class="file docutils literal notranslate"><span class="pre">tests/models/deliverable</span></code> (singular). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/553">GH #553</a>)</p></li>
 <li><p>Adjust content model of <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element for translations. Allow deliverables of all types. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/559">GH #559</a>)</p></li>
+</ul>
+</section>
+<section id="removed-features">
+<h3>Removed Features<a class="headerlink" href="#removed-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Remove <code class="docutils literal notranslate"><span class="pre">&lt;internal&gt;</span></code> from the Portal Config schema. References to other products, docsets, or deliverables are added inside the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/526">GH #526</a>)</p></li>
 </ul>
 </section>
 </section>
@@ -1415,8 +1422,8 @@ these are renamed:</p>
 <li><p>Update <code class="file docutils literal notranslate"><span class="pre">.gitignore</span></code> for <code class="file docutils literal notranslate"><span class="pre">.ipython</span></code></p></li>
 </ul>
 </section>
-<section id="removed-features">
-<h3>Removed Features<a class="headerlink" href="#removed-features" title="Link to this heading">#</a></h3>
+<section id="id77">
+<h3>Removed Features<a class="headerlink" href="#id77" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Remove tool.setuptools.packages.find</p></li>
 </ul>
@@ -1477,6 +1484,7 @@ these are renamed:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#infrastructure">Infrastructure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-refactoring">Code Refactoring</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-24-0">Version 0.24.0</a><ul class="nav section-nav flex-column">
@@ -1605,7 +1613,7 @@ these are renamed:</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id74">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id75">Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id76">Infrastructure</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#removed-features">Removed Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id77">Removed Features</a></li>
 </ul>
 </li>
 </ul>

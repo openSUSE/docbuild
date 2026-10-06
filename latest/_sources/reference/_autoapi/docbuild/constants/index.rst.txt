@@ -50,6 +50,7 @@ Attributes
    docbuild.constants.XMLDATADIR
    docbuild.constants.DEFAULT_ERROR_LIMIT
    docbuild.constants.XML_NS
+   docbuild.constants.XML_ID
    docbuild.constants.XINCLUDE_NS
    docbuild.constants.DOCBOOK_NS
    docbuild.constants.XLINK_NS
@@ -303,13 +304,21 @@ Module Contents
 
 
 .. py:data:: XML_NS
+   :type:  Final[str]
    :value: 'http://www.w3.org/XML/1998/namespace'
 
 
    The XML namespace URI for XML elements.
 
 
+.. py:data:: XML_ID
+   :type:  Final[lxml.etree.QName]
+
+   The QName for the xml:id attribute.
+
+
 .. py:data:: XINCLUDE_NS
+   :type:  Final[str]
    :value: 'http://www.w3.org/2001/XInclude'
 
 
@@ -317,6 +326,7 @@ Module Contents
 
 
 .. py:data:: DOCBOOK_NS
+   :type:  Final[str]
    :value: 'http://docbook.org/ns/docbook'
 
 
@@ -324,6 +334,7 @@ Module Contents
 
 
 .. py:data:: XLINK_NS
+   :type:  Final[str]
    :value: 'http://www.w3.org/1999/xlink'
 
 

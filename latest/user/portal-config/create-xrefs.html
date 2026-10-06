@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Cross-References &#8212; Docbuild Documentation 0.24.1.dev28+g8b7e3532e.d20261006</title>
+    <title>Creating Cross-References &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=b7df1870"></script>
+    <script src="../../_static/documentation_options.js?v=b7ce489b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -484,20 +484,20 @@
                   
   <section id="creating-cross-references">
 <span id="create-xrefs"></span><h1>Creating Cross-References<a class="headerlink" href="#creating-cross-references" title="Link to this heading">#</a></h1>
-<p>Some products may be related to another resources: products, releases, or other
+<p>Some products may be related to other resources: products, releases, or other
 deliverables. To avoid replication, use a cross-reference.</p>
 <p>To create such cross-reference follow this procedure:</p>
 <ol class="arabic">
 <li><p>Find the deliverable you want to link to and copy the ID. For example,
 our ID would be <code class="docutils literal notranslate"><span class="pre">nas.1.0.overview</span></code>.</p></li>
-<li><p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) you want to appear the deliverable.
-After the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> tag, add the following structure:</p>
-<div class="literal-block-wrapper docutils container" id="internal-ref-deliverable">
-<div class="code-block-caption"><span class="caption-text">Links to another Deliverable</span><a class="headerlink" href="#internal-ref-deliverable" title="Link to this code">#</a></div>
+<li><p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) where you want the deliverable to appear.
+Inside the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> tag, add the following structure:</p>
+<div class="literal-block-wrapper docutils container" id="xref-deliverable">
+<div class="code-block-caption"><span class="caption-text">Links to another Deliverable</span><a class="headerlink" href="#xref-deliverable" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
 <span class="w">   </span><span class="cm">&lt;!-- [... other deliverables ...] --&gt;</span>
 <span class="w">   </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;xref&quot;</span><span class="nt">&gt;</span>
-<span class="w">      </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;xref</span><span class="w"> </span><span class="na">linkend=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="w">   </span><span class="nt">&lt;/deliverable&gt;</span>
 <span class="nt">&lt;/locale&gt;</span>
 </pre></div>
@@ -507,11 +507,32 @@ After the <code class="docutils literal notranslate"><span class="pre">&lt;local
 cross-reference anywhere.</p>
 </li>
 <li><p>Optionally, if you want to group the reference under a specific title,
-add a <code class="docutils literal notranslate"><span class="pre">category</span></code> attribute to the <code class="docutils literal notranslate"><span class="pre">&lt;ref&gt;</span></code> element.</p></li>
+add a <code class="docutils literal notranslate"><span class="pre">category</span></code> attribute to the <code class="docutils literal notranslate"><span class="pre">&lt;xref&gt;</span></code> element.</p></li>
 </ol>
-<p>The previous procedure showed how to refer to a deliverable. However, it’s
-not limited to just deliverables. As products and releases have also IDs,
-you can use them as target as well.</p>
+<section id="valid-target-types">
+<h2>Valid Target Types<a class="headerlink" href="#valid-target-types" title="Link to this heading">#</a></h2>
+<p>A cross-reference can point to:</p>
+<ul class="simple">
+<li><p>A <strong>deliverable</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable&gt;</span></code>)</p></li>
+<li><p>A <strong>docset / release</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>)</p></li>
+<li><p>A <strong>product</strong> (<code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code>)</p></li>
+</ul>
+<p>Referencing any other element with an <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> (such as a category
+<code class="docutils literal notranslate"><span class="pre">&lt;item&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code>) is invalid and rejected during validation.</p>
+</section>
+<section id="reference-constraints-and-nesting-rules">
+<h2>Reference Constraints and Nesting Rules<a class="headerlink" href="#reference-constraints-and-nesting-rules" title="Link to this heading">#</a></h2>
+<p>When defining cross-references, the following rules apply:</p>
+<ul class="simple">
+<li><p><strong>Target existence:</strong> The target ID specified in <code class="docutils literal notranslate"><span class="pre">linkend</span></code> must exist.</p></li>
+<li><p><strong>No circular references:</strong> A deliverable cannot reference its own ID.</p></li>
+<li><p><strong>No nested references in English:</strong> An English deliverable cannot
+reference another reference deliverable.</p></li>
+<li><p><strong>Translation indirection (DRY):</strong> A translated deliverable (non-English)
+can reference an English reference deliverable. This allows defining the
+final target <code class="docutils literal notranslate"><span class="pre">linkend</span></code> once in English.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -552,6 +573,19 @@ you can use them as target as well.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#valid-target-types">Valid Target Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-constraints-and-nesting-rules">Reference Constraints and Nesting Rules</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

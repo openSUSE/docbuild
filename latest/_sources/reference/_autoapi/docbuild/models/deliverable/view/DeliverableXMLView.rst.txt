@@ -122,11 +122,19 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: identifier
+      :type: str
+
+
+      Return the fully qualified deliverable identifier string.
+
+
+
    .. py:property:: target_id
       :type: str | None
 
 
-      Return the target deliverable ID (linkend for refs, else deliverableid).
+      Return the target deliverable ID (linkend for xrefs, else deliverableid).
 
 
 
@@ -178,11 +186,19 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
-   .. py:property:: is_ref
+   .. py:property:: xref_node
+      :type: lxml.etree._Element | None
+
+
+      Return the child <xref> element if present.
+
+
+
+   .. py:property:: is_xref
       :type: bool
 
 
-      Return True if the deliverable is marked as a reference.
+      Return True if the deliverable is marked as a cross-reference.
 
 
 
@@ -272,6 +288,47 @@ docbuild.models.deliverable.view.DeliverableXMLView
    .. py:method:: __repr__() -> str
 
       Return a concise string representation of the deliverable.
+
+
+
+   .. py:property:: target_node
+      :type: lxml.etree._Element | None
+
+
+      Return the direct target element of a reference deliverable.
+
+      For a ``<deliverable><xref linkend="foo">``, this will return the
+      element with ``xml:id="foo"``. If the reference is broken or the
+      deliverable is not a reference, it returns ``None``.
+
+      :returns: The target ``etree._Element`` or ``None``.
+
+
+
+   .. py:property:: xml_id
+      :type: str | None
+
+
+      Return the xml:id of the deliverable.
+
+
+
+   .. py:property:: final_target_node
+      :type: lxml.etree._Element | None
+
+
+      Recursively resolve reference chains to find the terminal node.
+
+      This property follows a chain of ``<deliverable><xref linkend="..."/>``
+      until it finds a node that is not a reference deliverable.
+
+      - If the deliverable is not a reference, it returns the node itself.
+      - It detects and stops on circular dependencies, returning the first
+        node that is part of the cycle.
+      - It stops when it encounters a non-deliverable element (e.g., ``<product>``).
+      - If a reference is broken (points to a non-existent ID), it returns ``None``.
+
+      :returns: The terminal ``etree._Element`` in a reference chain, or ``None``.
 
 
 
