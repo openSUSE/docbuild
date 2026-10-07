@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overwriting Config Options on the Command Line &#8212; Docbuild Documentation 0.24.1.dev29+g62bab1bfe.d20261006</title>
+    <title>Overwriting Config Options on the Command Line &#8212; Docbuild Documentation 0.24.1.dev30+g4c3e6b9b2.d20261007</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=b7ce489b"></script>
+    <script src="../../_static/documentation_options.js?v=72dc29a5"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -566,7 +566,7 @@
 <h2>Example: Invalid Enum Value<a class="headerlink" href="#example-invalid-enum-value" title="Link to this heading">#</a></h2>
 <p>If you pass an invalid value via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code>, the command will fail with a clear validation error:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>build
-<span class="go">1 Validation error in config file &#39;unknown&#39;:</span>
+<span class="go">1 Validation error in config file &#39;defaults&#39;:</span>
 
 <span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;:</span>
 <span class="go">   Input should be &#39;production&#39;, &#39;staging&#39;, &#39;testing&#39; or other valid values</span>
@@ -576,7 +576,7 @@
 </div>
 <p>To find the valid values for a field, check the error message or consult the configuration reference documentation. You can also validate the config explicitly with <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">validate</span></code>:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>config<span class="w"> </span>validate
-<span class="go">1 Validation error in config file &#39;unknown&#39;:</span>
+<span class="go">1 Validation error in config file &#39;defaults&#39;:</span>
 <span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;: Input should be &#39;production&#39;, &#39;staging&#39;, &#39;testing&#39; ...</span>
 
 <span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=production&quot;</span><span class="w"> </span>config<span class="w"> </span>validate

@@ -38,12 +38,12 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: handle_validation_error(e: Exception, model_class: type[pydantic.BaseModel], config_files: collections.abc.Sequence[pathlib.Path] | None, verbose: int, ctx: click.Context) -> None
+.. py:function:: handle_validation_error(e: Exception, model_class: type[pydantic.BaseModel], config_files: collections.abc.Sequence[pathlib.Path | str] | None, verbose: int, ctx: click.Context) -> None
 
    Format validation errors and exit the CLI.
 
    Outsourced logic to avoid code duplication between App and Env config phases.
-   Using Sequence[Path] ensures compatibility with both lists and tuples.
+   Using Sequence[Path | str] ensures compatibility with both lists and tuples.
 
    :param e: The exception that was raised during validation.
    :param model_class: The Pydantic model class that was being validated
