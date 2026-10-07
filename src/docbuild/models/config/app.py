@@ -6,7 +6,15 @@ import os
 from typing import Any, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from rich.errors import StyleSyntaxError
+from rich.style import Style
 
+from docbuild.cli.theme import (
+    DARK_THEME_STYLES,
+    DEFAULT_STYLES,
+    LIGHT_THEME_STYLES,
+    ThemeTag,
+)
 from docbuild.config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
@@ -196,7 +204,62 @@ class AppConfig(BaseModel):
         description="Max concurrent workers. Supports integers or 'all', 'all2'/'half'.",
     )
 
+    theme: dict[ThemeTag, str] = Field(
+        default_factory=lambda: dict(DEFAULT_STYLES),
+        description="Configuration for Rich console theme styles.",
+    )
+
     model_config = ConfigDict(extra="allow")
+
+    @field_validator("theme", mode="before")
+    @classmethod
+    def merge_theme_defaults(cls, v: object) -> object:
+        """Merge user overrides on top of default theme styles.
+
+        Supports theme presets ('dark' or 'light'), string style specifications
+        (e.g., 'bold red on black'), and structured dictionaries (e.g.,
+        {'color': 'red', 'bold': True}).
+        """
+        if not isinstance(v, dict):
+            return v
+        raw = dict(v)
+        preset_raw = raw.pop("preset", raw.pop("mode", "dark"))
+        preset = str(preset_raw).lower()
+        if preset == "dark":
+            base = DARK_THEME_STYLES
+        elif preset == "light":
+            base = LIGHT_THEME_STYLES
+        else:
+            raise ValueError(
+                f"Invalid theme preset '{preset_raw}'. "
+                "Supported presets are 'dark' and 'light'."
+            )
+
+        normalized: dict[object, object] = {}
+        for k, val in raw.items():
+            if isinstance(val, dict):
+                try:
+                    normalized[k] = str(Style(**val))
+                except Exception as e:
+                    raise ValueError(
+                        f"Invalid style table for '{k}': {e}"
+                    ) from e
+            else:
+                normalized[k] = val
+        return dict(base) | normalized
+
+    @field_validator("theme")
+    @classmethod
+    def validate_theme(cls, v: dict[ThemeTag, str]) -> dict[ThemeTag, str]:
+        """Validate that all defined styles are valid Rich style syntax."""
+        for tag, style_str in v.items():
+            try:
+                Style.parse(style_str)
+            except StyleSyntaxError as e:
+                raise ValueError(
+                    f"Invalid Rich style syntax for '{tag}': {e}"
+                ) from e
+        return v
 
     @field_validator("max_workers", mode="before")
     @classmethod

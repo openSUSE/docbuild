@@ -4,11 +4,11 @@ from typing import Any
 
 import click
 from rich import print_json
-from rich.console import Console
 
 from ...utils.flatten import flatten_dict
+from ..console import console
+from ..theme import ThemeTag
 
-console = Console()
 
 def print_section(title: str, data: dict[str, Any], prefix: str, flat: bool, color: str) -> None:
     """Print a configuration section in either flat or JSON format."""
@@ -17,7 +17,7 @@ def print_section(title: str, data: dict[str, Any], prefix: str, flat: bool, col
             # Using repr(v) ensures strings are quoted and types like Paths are clear
             console.print(f"[bold {color}]{k}[/bold {color}] = [green]{v!r}[/green]")
     else:
-        console.print(f"\n# {title}", style="blue")
+        console.print(f"\n# {title}", style=ThemeTag.HEADER.value)
         print_json(data=data)
 
 

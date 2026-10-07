@@ -19,6 +19,7 @@ Configuring Docbuild
 
    config-file
    config-cli
+   theme
 
 .. toctree::
    :caption: Working with the Configuration

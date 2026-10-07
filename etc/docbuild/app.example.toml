@@ -6,3 +6,32 @@ logging = {}
 
 # max_workers(str): Configure the maximum number of worker processes for parallel tasks. Use "half" to set it to half of the available CPU cores.
 max_workers = "half"
+
+# theme(table): Configure Rich terminal output styling and color palettes.
+[theme]
+# preset(str): Base palette optimized for your terminal background.
+# Supported values: "dark" (default, for dark terminals) or "light" (for light terminals).
+preset = "dark"
+
+# Individual style overrides:
+# Styles can be defined as string expressions (e.g., "bold cyan", "italic green on black",
+# "#30ba78") or as structured sub-tables with attributes (color, bgcolor, bold, italic).
+# Any omitted style inherits the active preset default.
+
+# header = "bold sky_blue2"        # Section titles and major table headers
+# error = "bold red"               # Error messages and failure indicators
+# warning = "bold yellow"          # Warnings and caution notices
+# info = "bright_blue"             # Informational messages
+# success = "bold green"           # Successful operations and checks
+# hint = "dim italic cyan"         # Tips, hints, and suggestions
+# muted = "dim white"              # Dimmed secondary details and footers
+# lang = "orchid"                  # Language codes and locale tags
+# product = "steel_blue3"          # Product names and acronyms
+# docset = "violet"                # Document set identifiers
+
+# Example: Defining a style using a structured sub-table
+# [theme.error]
+# color = "red"
+# bold = true
+# bgcolor = "black"
+

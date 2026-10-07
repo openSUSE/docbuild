@@ -1,0 +1,1 @@
+Added a centralized Rich theme with semantic styles and configuration support for custom theme overrides in application config.

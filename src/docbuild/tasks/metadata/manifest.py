@@ -9,8 +9,8 @@ from typing import Literal
 
 from lxml import etree  # type: ignore
 from pydantic import ValidationError
-from rich.console import Console
 
+from ...cli.console import console as stdout
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
@@ -18,7 +18,6 @@ from ...models.manifest import Archive, Category, Description, Document, Manifes
 from .deliverables import get_deliverable_from_doctype
 
 log = logging.getLogger(__name__)
-stdout = Console()
 
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:

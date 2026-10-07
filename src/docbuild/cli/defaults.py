@@ -32,6 +32,7 @@ DEFAULT_APP_CONFIG = {
         "tmp_base_dir": f"/tmp/{APP_NAME}",
         "tmp_dir": "{tmp_base_dir}/doc-example-com",
     },
+    "theme": {},
 }
 """Default configuration for the application."""
 

@@ -7,9 +7,9 @@ from pathlib import Path
 from subprocess import CompletedProcess
 
 from lxml import etree  # type: ignore
-from rich.console import Console
 from rich.markup import escape
 
+from ..cli.console import console_err, console_out
 from ..config.xml.checks import CheckResult, register_check
 from ..config.xml.xinclude import parse_xml_with_xinclude_base
 from ..constants import XML_NS
@@ -21,10 +21,6 @@ registry: RegistryDecorator = register_check  # type: ignore[assignment]
 
 # Set up logging
 log = logging.getLogger(__name__)
-
-# Set up rich consoles for output
-console_out = Console()
-console_err = Console(stderr=True)
 
 
 XINCLUDE_PROP = (
@@ -83,7 +79,7 @@ def display_results(
     for idx, (check_name, result) in enumerate(check_results, start=1):
         if idx > 1:
             console_err.print("")
-        console_err.print(f"[bold red]{idx}. ✗ {check_name}:[/bold red]")
+        console_err.print(f"[error]{idx}. ✗ {check_name}:[/]")
         console_err.print(result.message)
         if result.xpath:
             console_err.print(f"  XPath: {escape(result.xpath)}")
@@ -233,11 +229,11 @@ async def run_checks_and_display(
         check_count = len(check_results)
         check_label = "check" if check_count == 1 else "checks"
         stage2_prefix = (
-            f"[bold]Stage 2 (Python checks, {check_count} {check_label} found):[/]"
+            f"[info]Stage 2 (Python checks, {check_count} {check_label} found):[/]"
         )
-        status = "[red]failed[/]"
+        status = "[error]failed[/]"
         if verbose > 1:
-            dots = "[red]F[/red]" * check_count
+            dots = "[error]F[/]" * check_count
             summary_line = f"{stage2_prefix} {dots} => {status}"
         elif verbose >= 1 or check_results:
             # Always show Stage 2 status when checks fail, even in quiet mode.
@@ -289,7 +285,7 @@ async def validate_portal_config(
     """
     log.debug("Starting validation process for Portal XML config %s", main_portal_config)
     console_out.print(
-        "[bold]Validating[/]\n"
+        "[header]Validating[/]\n"
         f" - Portal XML config: [cyan]{main_portal_config}[/cyan]\n"
         f" - Portal schema:     [cyan]{portal_schema}[/cyan]"
     )
@@ -297,15 +293,15 @@ async def validate_portal_config(
     validation_result = await run_validation(main_portal_config, portal_schema)
     if not validation_result.success:
         console_err.print("")
-        console_err.print("[bold]Stage 1 (RNG schema via jing):[/] [red]failed[/red]")
-        console_err.print("[bold red]ERROR:[/][red] RNG validation failed[/]")
+        console_err.print("[header]Stage 1 (RNG schema via jing):[/] [error]failed[/]")
+        console_err.print("[error]ERROR: RNG validation failed[/]")
         for idx, line in enumerate(validation_result.message.splitlines(), start=1):
             console_err.print(f"{idx:3d}: {line}")
-        console_err.print("[bold]Stage 2 (Python checks):[/] [yellow]skipped[/yellow]")
+        console_err.print("[header]Stage 2 (Python checks):[/] [warning]skipped[/]")
         return validation_result.exit_code
 
     console_out.print("")
-    console_out.print("[bold]Stage 1 (RNG schema via jing):[/] [green]success[/green]")
+    console_out.print("[header]Stage 1 (RNG schema via jing):[/] [success]success[/]")
 
     # Parse after RNG succeeds so syntax and file errors map to process-specific
     # exit codes expected by callers and tests.
@@ -313,9 +309,9 @@ async def validate_portal_config(
         tree: etree._ElementTree = await parse_portal_config(main_portal_config)
 
     except etree.XMLSyntaxError as err:
-        console_err.print("[bold]Stage 2 (Python checks):[/] [yellow]skipped[/yellow]")
-        console_err.print("XML Syntax Error => [red]failed[/red]")
-        console_err.print(f"  [bold red]Error:[/] {err}")
+        console_err.print("[header]Stage 2 (Python checks):[/] [warning]skipped[/]")
+        console_err.print("XML Syntax Error => [error]failed[/]")
+        console_err.print(f"  [error]Error:[/] {err}")
         return 200
 
     # Run custom Python checks only after RNG validation and XML parsing succeeded.
@@ -323,10 +319,10 @@ async def validate_portal_config(
 
     if verbose > 0:  # pragma: no cover
         status = "successfully validated" if checks_passed else "failed validation"
-        color = "green" if checks_passed else "red"
+        color = "success" if checks_passed else "error"
         console_out.print(f"Result: [{color}]Portal XML {status}[/{color}]")
 
     if checks_passed:
-        console_out.print("[green]Portal XML validation successful.[/green]")
+        console_out.print("[success]Portal XML validation successful.[/]")
 
     return 0 if checks_passed else 1

@@ -7,6 +7,7 @@ from pydantic import BaseModel, ValidationError
 from rich.console import Console
 from rich.text import Text
 
+from ..cli.console import console_err
 from ..constants import DEFAULT_ERROR_LIMIT
 
 
@@ -26,14 +27,14 @@ def format_pydantic_error(
     :param console: Optional Rich console object. If None, creates a stderr console.
     """
     # Use provided console or fall back to default (Dependency Injection)
-    con = console or Console(stderr=True)
+    con = console or console_err
 
     errors = error.errors()
     error_count = len(errors)
 
     # Header
     header = Text.assemble(
-        (f"{error_count} Validation error{'s' if error_count > 1 else ''} ", "bold red"),
+        (f"{error_count} Validation error{'s' if error_count > 1 else ''} ", "error"),
         ("in config file ", "white"),
         (f"'{config_file}'", "bold cyan"),
         (":", "white")
@@ -83,23 +84,23 @@ def format_pydantic_error(
         # 3. Build the Display
         error_panel = Text()
         error_panel.append(f"({i}) In '", style="white")
-        error_panel.append(loc_path, style="bold yellow")
+        error_panel.append(loc_path, style="warning")
         error_panel.append("':\n", style="white")
 
         # Error detail
-        error_panel.append(f"    {msg}\n", style="red")
+        error_panel.append(f"    {msg}\n", style="error")
 
         # Helpful context from Field metadata
         if field_info:
             if field_info.title:
-                error_panel.append("    Expected: ", style="dim")
+                error_panel.append("    Expected: ", style="muted")
                 error_panel.append(f"{field_info.title}\n", style="italic green")
             if verbose > 0 and field_info.description:
-                error_panel.append("    Description: ", style="dim")
+                error_panel.append("    Description: ", style="muted")
                 error_panel.append(f"{field_info.description}\n", style="dim italic")
 
         # Documentation Link
-        error_panel.append("    See: ", style="dim")
+        error_panel.append("    See: ", style="muted")
         error_panel.append(
             f"https://opensuse.github.io/docbuild/latest/errors/{err_type}.html",
             style="link underline blue"
@@ -111,8 +112,8 @@ def format_pydantic_error(
     # Footer for Truncation
     if error_count > max_display:
         con.print(
-            f"[dim]... and {error_count - max_display} more errors. "
-            "Use '-vv' to see all errors.[/dim]\n"
+            f"[muted]... and {error_count - max_display} more errors. "
+            "Use '-vv' to see all errors.[/]\n"
         )
 
 def format_toml_error(
@@ -126,10 +127,10 @@ def format_toml_error(
     :param config_file: The name/path of the config file with the syntax error.
     :param console: Optional Rich console object.
     """
-    con = console or Console(stderr=True)
+    con = console or console_err
 
     header = Text.assemble(
-        ("Syntax error ", "bold red"),
+        ("Syntax error ", "error"),
         ("in config file ", "white"),
         (f"'{config_file}'", "bold cyan"),
         (":", "white")
@@ -137,7 +138,7 @@ def format_toml_error(
     con.print(header)
 
     # tomllib error messages include the line and column info naturally
-    con.print(f"    [red]{error}[/red]")
+    con.print(f"    [error]{error}[/]")
     con.print()
-    con.print("    [dim]Please verify that the file is a valid TOML file.[/dim]")
-    con.print("    [dim]Note: Booleans must be lowercase (true/false) in TOML.[/dim]")
+    con.print("    [muted]Please verify that the file is a valid TOML file.[/]")
+    con.print("    [muted]Note: Booleans must be lowercase (true/false) in TOML.[/]")

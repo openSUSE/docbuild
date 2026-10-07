@@ -1,8 +1,9 @@
 """CLI interface to validate the configuration files."""
 
 import click
-from rich.console import Console
 from rich.panel import Panel
+
+from ..console import console
 
 
 @click.command(name="validate")
@@ -15,28 +16,27 @@ def validate(ctx: click.Context) -> None:
     :param ctx: The Click context object, which should already have loaded configurations.
     """
     context = ctx.obj
-    console = Console()
 
-    console.print("[bold blue]Running Configuration Validation...[/bold blue]\n")
+    console.print("[header]Running Configuration Validation...[/]\n")
 
     if context.appconfig:
-        console.print("✅ [bold]Application Configuration:[/bold] Valid")
+        console.print("✅ [info]Application Configuration:[/] [success]Valid[/]")
         for f in (context.appconfigfiles or []):
-            console.print(f"   [dim]- {f}[/dim]")
+            console.print(f"   [muted]- {f}[/]")
 
     if context.envconfig:
-        console.print("\n✅ [bold]Environment Configuration:[/bold] Valid")
+        console.print("\n✅ [info]Environment Configuration:[/] [success]Valid[/]")
         if context.envconfigfiles:
             for f in context.envconfigfiles:
-                console.print(f"   [dim]- {f}[/dim]")
+                console.print(f"   [muted]- {f}[/]")
         elif context.envconfig_from_defaults:
-            console.print("   [dim]- Using internal defaults[/dim]")
+            console.print("   [muted]- Using internal defaults[/]")
 
     console.print(
         Panel(
-            "[bold green]Configuration is valid![/bold green]\n"
+            "[success]Configuration is valid![/]\n"
             "All TOML files match the required schema.",
-            border_style="green",
-            expand=False
+            border_style="success",
+            expand=False,
         )
     )
