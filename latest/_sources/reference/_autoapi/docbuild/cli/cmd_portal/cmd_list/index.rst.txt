@@ -14,14 +14,14 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.cmd_portal.cmd_list.build_hierarchy
+   docbuild.cli.cmd_portal.cmd_list.expand_deliverables
    docbuild.cli.cmd_portal.cmd_list.parse_doctypes
    docbuild.cli.cmd_portal.cmd_list.get_display_name
    docbuild.cli.cmd_portal.cmd_list.append_translations
    docbuild.cli.cmd_portal.cmd_list.append_formats
    docbuild.cli.cmd_portal.cmd_list.append_categories
    docbuild.cli.cmd_portal.cmd_list.append_repo
-   docbuild.cli.cmd_portal.cmd_list.build_deliverable_branch
+   docbuild.cli.cmd_portal.cmd_list.build_deliverable_tree
    docbuild.cli.cmd_portal.cmd_list.print_hierarchy
    docbuild.cli.cmd_portal.cmd_list.print_flat
    docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml
@@ -32,12 +32,9 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: build_hierarchy(deliverables: list[docbuild.models.deliverable.Deliverable]) -> dict[str, dict[str, dict[str, list[docbuild.models.deliverable.Deliverable]]]]
+.. py:function:: expand_deliverables(deliverables: list[docbuild.models.deliverable.Deliverable], doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None = None) -> list[tuple[str, docbuild.models.deliverable.Deliverable]]
 
-   Group Deliverables into a hierarchy.
-
-   :param deliverables: A list of Deliverable models to organize.
-   :return: A hierarchy_dict mapping lang -> product -> docset -> deliverables.
+   Project English blueprints to translated locales and filter by doctype.
 
 
 .. py:function:: parse_doctypes(doctypes: tuple[str, ...], console: rich.console.Console) -> list[docbuild.models.doctype.Doctype] | None
@@ -45,7 +42,7 @@ Module Contents
    Parse raw CLI arguments into Doctype objects with default fallbacks.
 
 
-.. py:function:: get_display_name(deliv: docbuild.models.deliverable.Deliverable, d_id: str) -> str
+.. py:function:: get_display_name(deliv: docbuild.models.deliverable.Deliverable, lang: str) -> str
 
    Determine the main display name for a deliverable.
 
@@ -70,17 +67,17 @@ Module Contents
    Append repository metadata to the deliverable branch.
 
 
-.. py:function:: build_deliverable_branch(docset_branch: rich.tree.Tree, deliv: docbuild.models.deliverable.Deliverable, lang: str, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
+.. py:function:: build_deliverable_tree(title: str, deliv: docbuild.models.deliverable.Deliverable, lang: str, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> rich.tree.Tree
 
-   Format and append a single deliverable node to the Rich Tree.
+   Build a Tree node for a deliverable and append requested metadata.
 
 
-.. py:function:: print_hierarchy(hierarchy: dict[str, dict[str, dict[str, list[docbuild.models.deliverable.Deliverable]]]], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
+.. py:function:: print_hierarchy(items: list[tuple[str, docbuild.models.deliverable.Deliverable]], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
 
    Render and print the nested hierarchy as a Rich Tree.
 
 
-.. py:function:: print_flat(deliverables: list[docbuild.models.deliverable.Deliverable], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
+.. py:function:: print_flat(items: list[tuple[str, docbuild.models.deliverable.Deliverable]], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None
 
    Render and print the deliverables as a flat list.
 
@@ -115,7 +112,7 @@ Module Contents
    :param trans: Show translation metadata.
    :param formats: Show output formats metadata.
    :param categories: Show categories metadata.
-   :param repo: Show repository metadata (short or long).
+   :param repo: Show repository origin (short or long).
    :param flat: Display a flat list instead of a hierarchy tree.
 
 
