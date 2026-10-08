@@ -1,0 +1,49 @@
+docbuild.cli.cmd_cache
+======================
+
+.. py:module:: docbuild.cli.cmd_cache
+
+.. autoapi-nested-parse::
+
+   Manage docbuild caches.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_cache.cache
+   docbuild.cli.cmd_cache.cache_dir
+   docbuild.cli.cmd_cache.cache_list
+   docbuild.cli.cmd_cache.cache_prune
+
+
+Package Contents
+----------------
+
+.. py:function:: cache() -> None
+
+   Subcommand group for cache management.
+
+
+.. py:function:: cache_dir(ctx: click.Context) -> None
+
+   Display the path of the cache directories.
+
+
+.. py:function:: cache_list(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], cache_type: str) -> None
+
+   List cache files.
+
+   Optionally pass DOCTYPEs (e.g., sles/15-SP5/en-us) to filter the list.
+
+
+.. py:function:: cache_prune(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], cache_type: str, yes: bool) -> None
+
+   Remove cache files.
+
+   Removes all caches by default. Pass DOCTYPEs to remove specific caches.
+
+

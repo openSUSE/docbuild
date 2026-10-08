@@ -1,0 +1,5 @@
+<map id="inheritanced41f5eda2a" name="inheritanced41f5eda2a">
+<area shape="rect" id="node1" href="#docbuild.cli.cmd_cli.BannerGroup" target="_top" title="Custom Click Group that displays a banner before help messages." alt="" coords="263,5,369,31"/>
+<area shape="rect" id="node2" title="A group is a command that nests other commands (or more groups)." alt="" coords="143,5,215,31"/>
+<area shape="rect" id="node3" title="Commands are the basic building block of command line interfaces in" alt="" coords="5,5,95,31"/>
+</map>

@@ -1,0 +1,90 @@
+docbuild.cli.theme
+==================
+
+.. py:module:: docbuild.cli.theme
+
+.. autoapi-nested-parse::
+
+   Rich theme definitions and styling tokens for docbuild.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   docbuild.cli.theme.THEME_STYLES
+   docbuild.cli.theme.DARK_THEME_STYLES
+   docbuild.cli.theme.LIGHT_THEME_STYLES
+   docbuild.cli.theme.DEFAULT_STYLES
+   docbuild.cli.theme.DOCBUILD_THEME
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/theme/ThemeTag
+   /reference/_autoapi/docbuild/cli/theme/ModeStyle
+
+.. autoapisummary::
+
+   docbuild.cli.theme.ThemeTag
+   docbuild.cli.theme.ModeStyle
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.theme.get_theme
+
+
+Module Contents
+---------------
+
+.. py:data:: THEME_STYLES
+   :type:  dict[ThemeTag, ModeStyle]
+
+   Centralized mapping of semantic tags to their dark and light mode styles.
+
+
+.. py:data:: DARK_THEME_STYLES
+   :type:  dict[ThemeTag, str]
+
+   Theme styles optimized for dark terminal backgrounds.
+
+
+.. py:data:: LIGHT_THEME_STYLES
+   :type:  dict[ThemeTag, str]
+
+   Theme styles optimized for light terminal backgrounds.
+
+
+.. py:data:: DEFAULT_STYLES
+   :type:  dict[ThemeTag, str]
+
+   Default semantic styles for docbuild CLI output (defaults to dark theme).
+
+
+.. py:function:: get_theme(custom_styles: collections.abc.Mapping[str | ThemeTag, str] | None = None, preset: str = 'dark') -> rich.theme.Theme
+
+   Create a Rich Theme merging preset styles with any custom overrides.
+
+   :param custom_styles: Optional dictionary or mapping of style names to Rich
+       style specifications.
+   :param preset: Base theme preset to start from ('dark' or 'light').
+   :returns: A configured Rich Theme instance.
+   :raises ValueError: If an unsupported preset name is provided.
+
+
+.. py:data:: DOCBUILD_THEME
+   :type:  rich.theme.Theme
+
+   Pre-instantiated default Rich Theme for docbuild.
+
+

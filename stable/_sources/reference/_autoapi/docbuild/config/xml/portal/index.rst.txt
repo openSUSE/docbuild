@@ -1,0 +1,24 @@
+docbuild.config.xml.portal
+==========================
+
+.. py:module:: docbuild.config.xml.portal
+
+.. autoapi-nested-parse::
+
+   Abstraction layer for Portal XML configuration.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/config/xml/portal/PortalConfig
+
+.. autoapisummary::
+
+   docbuild.config.xml.portal.PortalConfig
+
+
