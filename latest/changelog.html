@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev32+gac2d5cb57.d20261008</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev33+g853e273a2</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=be9aa6ec"></script>
+    <script src="_static/documentation_options.js?v=d3aab4fd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@
     <link rel="prev" title="Env TOML Configuration" href="reference/env-toml/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.24.0" />
+  <meta name="docsearch:version" content="0.25.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -446,8 +446,8 @@
 and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
 <a class="reference external" href="https://github.com/openSUSE/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
-<section id="version-latest">
-<h2>Version latest<a class="headerlink" href="#version-latest" title="Link to this heading">#</a></h2>
+<section id="version-0-25-0">
+<h2>Version 0.25.0<a class="headerlink" href="#version-0-25-0" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -468,26 +468,26 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added a centralized Rich theme with semantic styles and configuration support for custom theme overrides in application config. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/280">GH #280</a>)</p></li>
-<li><p>Added automatic generation of <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code> options in <code class="docutils literal notranslate"><span class="pre">env.toml</span></code>. The generator strips navigation and layout elements using a custom parser, converts the core content using <code class="docutils literal notranslate"><span class="pre">justhtml</span></code>, and safely injects <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tags into the source HTML headers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/365">GH #365</a>)</p></li>
+<li><p>Added automatic generation of <code class="file docutils literal notranslate"><span class="pre">llms.txt</span></code> and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code> options in <code class="file docutils literal notranslate"><span class="pre">env.toml</span></code>. The generator strips navigation and layout elements using a custom parser, converts the core content using <code class="docutils literal notranslate"><span class="pre">justhtml</span></code>, and safely injects <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tags into the source HTML headers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/365">GH #365</a>)</p></li>
 <li><p>Added support for remote source and destination paths in rsync utility and build runner. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/492">GH #492</a>)</p></li>
 <li><p>Added support for deliverable cross-references (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;&lt;xref</span> <span class="pre">.../&gt;</span></code>) with recursive target resolution and semantic validation in <strong class="command">docbuild portal validate</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/526">GH #526</a>)</p></li>
 <li><p>Introduced <code class="docutils literal notranslate"><span class="pre">PortalConfig</span></code> to separate XML extraction and XPath traversal logic from Pydantic data models. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/546">GH #546</a>)</p></li>
-<li><p>Added the <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">llms</span></code> CLI subcommand to retroactively generate Markdown files and the <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> index for existing build directories without requiring a full rebuild. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/552">GH #552</a>)</p></li>
+<li><p>Added the <strong class="command">docbuild llms</strong> CLI subcommand to retroactively generate Markdown files and the <code class="file docutils literal notranslate"><span class="pre">llms.txt</span></code> index for existing build directories without requiring a full rebuild. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/552">GH #552</a>)</p></li>
 <li><p>Inject standard YAML frontmatter metadata into generated Markdown files for LLM/RAG pipelines. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/556">GH #556</a>)</p></li>
-<li><p>The <cite>portal list</cite> command now dynamically projects deliverables from the canonical <cite>en-us</cite> blueprint into translated locales, marking them with an <cite>[en-us blueprint]</cite> indicator. This restores visibility of translated deliverables following the removal of explicit locale XML configurations. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/558">GH #558</a>)</p></li>
-<li><p>Added the <code class="docutils literal notranslate"><span class="pre">code-style</span></code> skill with guidelines for writing clean, idiomatic Python tailored for the <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> project. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/560">GH #560</a>)</p></li>
+<li><p>The <strong class="command">portal list</strong> command now dynamically projects deliverables from the canonical <code class="docutils literal notranslate"><span class="pre">en-us</span></code> blueprint into translated locales, marking them with an <code class="docutils literal notranslate"><span class="pre">[en-us</span> <span class="pre">blueprint]</span></code> indicator. This restores visibility of translated deliverables following the removal of explicit locale XML configurations. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/558">GH #558</a>)</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">code-style</span></code> skill with guidelines for writing clean, idiomatic Python tailored for the this project. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/560">GH #560</a>)</p></li>
 <li><p>Added “docbuild” ASCII art banner when running <strong class="command">docbuild --help</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/565">GH #565</a>)</p></li>
 <li><p>Added support for escaping dots with backslashes in <code class="docutils literal notranslate"><span class="pre">-C</span></code>/<code class="docutils literal notranslate"><span class="pre">--set-env</span></code> configuration keys (e.g., <code class="docutils literal notranslate"><span class="pre">xslt.html.show\.edit\.link=1</span></code>). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/576">GH #576</a>)</p></li>
-<li><p>The <cite>tools/migrate-config.sh</cite> script now has a <cite>–with-link</cite> flag to create a symbolic link to the <cite>portal-config.rnc</cite> file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/581">GH #581</a>)</p></li>
+<li><p>The <strong class="command">tools/migrate-config.sh</strong> script now has a <code class="docutils literal notranslate"><span class="pre">--with-link</span></code> flag to create a symbolic link to the <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code> file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/581">GH #581</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
 <h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Reorganized the Portal config developer tooling. Renamed and moved the migration wrapper script to <code class="docutils literal notranslate"><span class="pre">tools/migrate-config.sh</span></code> (now expanding a leading <code class="docutils literal notranslate"><span class="pre">~</span></code> in <code class="docutils literal notranslate"><span class="pre">--dir</span></code> and requiring the Docserv stitchfile argument), and removed the redundant <code class="docutils literal notranslate"><span class="pre">validate.sh</span></code> in favor of <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">portal</span> <span class="pre">validate</span></code>. Added agent skills for the Portal config schema, config migration, and config validation. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/542">GH #542</a>)</p></li>
+<li><p>Reorganized the Portal config developer tooling. Renamed and moved the migration wrapper script to <strong class="command">tools/migrate-config.sh</strong> (now expanding a leading <code class="docutils literal notranslate"><span class="pre">~</span></code> in <code class="docutils literal notranslate"><span class="pre">--dir</span></code> and requiring the Docserv stitchfile argument), and removed the redundant <strong class="command">validate.sh</strong> in favor of <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">portal</span> <span class="pre">validate</span></code>. Added agent skills for the Portal config schema, config migration, and config validation. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/542">GH #542</a>)</p></li>
 <li><p>Fixed the GitHub Actions workflow for checking newsfragment files.
 The workflow now validates that the newsfragment filename matches the current PR number or follows the <code class="docutils literal notranslate"><span class="pre">+description</span></code> format for unrelated changes.
-It also dynamically reads valid fragment types from <code class="docutils literal notranslate"><span class="pre">towncrier.toml</span></code> using the standard library <code class="docutils literal notranslate"><span class="pre">tomllib</span></code> parser, eliminating hard-coded values. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/563">GH #563</a>)</p></li>
+It also dynamically reads valid fragment types from <code class="file docutils literal notranslate"><span class="pre">towncrier.toml</span></code> using the standard library <a class="reference external" href="https://docs.python.org/3/library/tomllib.html#module-tomllib" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tomllib</span></code></a> parser, eliminating hard-coded values. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/563">GH #563</a>)</p></li>
 <li><p>Refactor CI pipeline to prepare for 3.15. Dropped <code class="docutils literal notranslate"><span class="pre">setup-python</span></code> completely in favor of <strong class="command">uv python install</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/564">GH #564</a>)</p></li>
 <li><p>Update check-changelog workflow to validate newsfragment filenames using regex patterns based on towncrier config instead of strict PR numbers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/570">GH #570</a>)</p></li>
 </ul>
@@ -1481,7 +1481,7 @@ these are renamed:</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-latest">Version latest</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-25-0">Version 0.25.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-documentation">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
