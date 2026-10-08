@@ -13,7 +13,6 @@ Two types of placeholders are supported:
 
   This allows you to maintain consistency and avoid repeating the same path multiple times in your configuration file.
 
-
 * **Dynamic placeholders** (Syntax ``{{placeholder}}``)
 
   These types of placeholder cannot and must not be replaced. They are meant to be used as *templates* for values that will be resolved at runtime. For example, you might have a placeholder like ``{{product}}`` that is intended to be replaced with the actual product name when the docbuild tool runs.
@@ -58,3 +57,9 @@ Static placeholders follow a specific syntax:
   key ``name`` in the ``general`` section.
 
   If you have nested sections, use dot notation to reference the keys (for example, ``section.subsection.key``).
+
+
+Debugging Placeholders
+----------------------
+
+To inspect the configuration with placeholders left unresolved, use the ``-U`` or ``--unresolved`` flag with :command:`docbuild config list`. See :ref:`config-viewing-unresolved-placeholders`.

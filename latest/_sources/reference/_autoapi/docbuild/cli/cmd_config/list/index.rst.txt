@@ -26,8 +26,15 @@ Module Contents
    Print a configuration section in either flat or JSON format.
 
 
-.. py:function:: list_config(ctx: click.Context, app: bool, env: bool, flat: bool, validate: bool) -> None
+.. py:function:: list_config(ctx: click.Context, app: bool, env: bool, flat: bool, validate: bool, unresolved: bool) -> None
 
    List the configuration as JSON or flat text.
+
+   :param ctx: The Click context object holding DocBuildContext.
+   :param app: Show only application configuration.
+   :param env: Show only environment configuration.
+   :param flat: Output in flat dotted format (git-style).
+   :param validate: Validate configuration before listing.
+   :param unresolved: Display configuration with unresolved placeholders.
 
 

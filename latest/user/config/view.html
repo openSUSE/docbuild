@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Viewing the Environment Configuration &#8212; Docbuild Documentation 0.25.1.dev1+gaff2d5b9c.d20261008</title>
+    <title>Viewing the Environment Configuration &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=bdf74696"></script>
+    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -491,6 +491,18 @@
 </div>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">--flat</span></code> flag to see the dotted-path format, or use <code class="docutils literal notranslate"><span class="pre">--app</span></code> or <code class="docutils literal notranslate"><span class="pre">--env</span></code> to view only that configuration.
 For details on customizing output styling and colors, see <a class="reference internal" href="theme.html#config-theme"><span class="std std-ref">Configuring the Terminal Theme</span></a>.</p>
+<section id="viewing-unresolved-placeholders">
+<span id="config-viewing-unresolved-placeholders"></span><h2>Viewing Unresolved Placeholders<a class="headerlink" href="#viewing-unresolved-placeholders" title="Link to this heading">#</a></h2>
+<p>By default, <strong class="command">docbuild config list</strong> displays the configuration with all placeholders resolved. To display placeholders without resolving them (useful for debugging), pass the <code class="docutils literal notranslate"><span class="pre">-U</span></code> or <code class="docutils literal notranslate"><span class="pre">--unresolved</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>-U
+</pre></div>
+</div>
+<p>You can combine <code class="docutils literal notranslate"><span class="pre">-U</span></code> / <code class="docutils literal notranslate"><span class="pre">--unresolved</span></code> with other flags such as <code class="docutils literal notranslate"><span class="pre">--flat</span></code>, <code class="docutils literal notranslate"><span class="pre">--app</span></code>, or <code class="docutils literal notranslate"><span class="pre">--env</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>-U<span class="w"> </span>--flat
+docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>-U<span class="w"> </span>--env
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -531,6 +543,18 @@ For details on customizing output styling and colors, see <a class="reference in
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#viewing-unresolved-placeholders">Viewing Unresolved Placeholders</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
