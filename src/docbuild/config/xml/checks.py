@@ -61,12 +61,12 @@ def check_dc_in_language(
 
         <locale lang="en-us">
             <branch>main</branch>
-            <deliverable id="deli-1" type="dc">
+            <deliverable xml:id="deli-1" type="dc">
                 <dc file="DC-foo">
                     <format html="1" pdf="0" single-html="0" epub="0"/>
                 </dc>
             </deliverable>
-            <deliverable id="deli-2" type="dc">
+            <deliverable xml:id="deli-2" type="dc">
                 <dc file="DC-foo">
                     <format html="1" pdf="0" single-html="0" epub="0"/>
                 </dc>
@@ -209,7 +209,7 @@ def check_enabled_format(
 
     .. code-block:: xml
 
-       <deliverable id="deli-1" type="dc">
+       <deliverable xml:id="deli-1" type="dc">
          <dc file="DC-fake-doc">
             <!-- All formats here are disabled: -->
             <format epub="0" html="0" pdf="0" single-html="0"/>
@@ -249,7 +249,7 @@ def check_format_subdeliverable(
 
     .. code-block:: xml
 
-       <deliverable id="deli-1" type="dc">
+       <deliverable xml:id="deli-1" type="dc">
           <dc file="DC-fake-all">
              <!-- PDF enabled, but subdeliverables present: -->
              <format epub="0" html="1" pdf="1" single-html="1"/>
@@ -344,7 +344,7 @@ def check_lang_code_in_docset(
 
     .. code-block:: xml
 
-       <docset id="docset1" lifecycle="supported">
+       <docset xml:id="docset1" lifecycle="supported">
            <resources>
                 <git remote="https://example.invalid/repo.git"/>
                 <locale lang="en-us"><branch>main</branch></locale>
@@ -426,7 +426,7 @@ def check_subdeliverable_in_deliverable(
 
     .. code-block:: xml
 
-        <deliverable id="deli-1" type="dc">
+        <deliverable xml:id="deli-1" type="dc">
             <dc file="DC-fake-doc">
                 <subdeliverable>sub-1</subdeliverable>
                 <subdeliverable>sub-2</subdeliverable>

@@ -153,7 +153,7 @@ class Category(BaseModel):
 
             <categories>
               <category lang="en-us">
-                <language id="cat.about">
+                <language xml:id="cat.about">
                   <title>About</title>
                 </language>
               </category>
@@ -165,7 +165,7 @@ class Category(BaseModel):
             </categories>
 
         The ``lang`` attribute lives on ``<category>``; each ``<language>``
-        carries either ``id`` (canonical entry) or ``linkend`` (translation)
+        carries either ``xml:id`` (canonical entry) or ``linkend`` (translation)
         as the category identifier.
 
         :param node: a node pointing to ``<product>``

@@ -17,7 +17,7 @@ these steps:
    #. Add the new element definition to the appropriate section of the RNG schema, ensuring it follows the structure and naming conventions of existing elements.
 
    #. Use the ``db:refname`` element to define the name of the new element.
-      Add a description with the ``db.refpurpose`` element:
+      Add a description with the ``db:refpurpose`` element:
 
       .. code-block:: rnc
          :caption: Example of adding a new element to the RNG schema
@@ -41,7 +41,7 @@ these steps:
          }
 
       Remember that the two hashes (``##``) are used as a RELAX NG comment
-      to provide a brief description. This will be used for a XML editor.
+      to provide a brief description. This will be used for an XML editor.
 
    #. Use ``ds.new-element`` to refer to your new element definition somewhere
       else.

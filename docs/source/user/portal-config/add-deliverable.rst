@@ -35,13 +35,27 @@ another deliverable, and publish on the portal:
        <prebuilt>
          <title>Overview</title>
          <url format="html" href="/cloudnative/continuous-delivery/latest/en/index.html"/>
+         <descriptions>
+           <desc lang="en-us">
+             <p>Overview of continuous delivery concepts and practices.</p>
+           </desc>
+         </descriptions>
        </prebuilt>
      </deliverable>
 
 * **Cross-Reference**
 
   A deliverable that points to another deliverable, product, or release
-  within the portal configuration. See :ref:`create-xrefs`.
+  within the portal configuration:
+
+  .. code-block:: xml
+     :caption: Example of a Cross-Reference Deliverable
+
+     <deliverable type="xref">
+       <xref linkend="nas.1.0.overview" category="cat.nas" />
+     </deliverable>
+
+  See :ref:`create-xrefs` for full details.
 
 To add a deliverable, proceed as follows:
 

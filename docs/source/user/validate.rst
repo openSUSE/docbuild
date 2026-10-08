@@ -21,4 +21,4 @@ Options
 * ``--all``: Validate everything (default).
 
 .. note::
-   Deep XML/Portal validation is currently handled as part of the build process or via external tools. Modular XML validation will be reintroduced in a future update.
+   For validating Portal XML configuration files, use :ref:`validate-portal` (:command:`docbuild portal validate`).
