@@ -21,6 +21,67 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.25.0
+==============
+
+Bug Fixes
+---------
+
+- Report ``'defaults'`` instead of ``'unknown'`` when configuration validation fails and no configuration file is used. (:gh:`435`)
+- Fix an infinite recursion issue in the migration stylesheet. (:gh:`547`)
+- Changed all element identifiers from ``id`` to ``xml:id`` throughout the Portal schema and configuration system. This aligns with XML standards and allows proper namespace handling. Affected elements: ``<product>``, ``<docset>``, ``<deliverable>``, ``<language>``, ``<item>``, and ``<category>``. (:gh:`548`)
+- Fixed migration stylesheet to generate valid deliverable IDs for v6→v7 config conversion. Resolved empty ``xml:id`` attributes (XSLT 1.0 syntax error) and ID separator inconsistency that caused ~1940 IDREF validation errors. The stylesheet now generates consistent IDs using dots as separators, matching the portal schema requirements. (:gh:`551`)
+
+
+Improved Documentation
+----------------------
+
+- Standardized and consolidated developer skill documentation for consistency and clarity. (:gh:`561`)
+- Restructure the "Configuring Docbuild" section (:gh:`570`)
+
+
+Features
+--------
+
+- Added a centralized Rich theme with semantic styles and configuration support for custom theme overrides in application config. (:gh:`280`)
+- Added automatic generation of :file:`llms.txt` and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new ``build.build_llmstxt`` and ``paths.llmstxt_dir`` options in :file:`env.toml`. The generator strips navigation and layout elements using a custom parser, converts the core content using ``justhtml``, and safely injects ``<link rel="alternate" type="text/markdown">`` tags into the source HTML headers. (:gh:`365`)
+- Added support for remote source and destination paths in rsync utility and build runner. (:gh:`492`)
+- Added support for deliverable cross-references (``<deliverable type="xref"><xref .../>``) with recursive target resolution and semantic validation in :command:`docbuild portal validate`. (:gh:`526`)
+- Introduced ``PortalConfig`` to separate XML extraction and XPath traversal logic from Pydantic data models. (:gh:`546`)
+- Added the :command:`docbuild llms` CLI subcommand to retroactively generate Markdown files and the :file:`llms.txt` index for existing build directories without requiring a full rebuild. (:gh:`552`)
+- Inject standard YAML frontmatter metadata into generated Markdown files for LLM/RAG pipelines. (:gh:`556`)
+- The :command:`portal list` command now dynamically projects deliverables from the canonical ``en-us`` blueprint into translated locales, marking them with an ``[en-us blueprint]`` indicator. This restores visibility of translated deliverables following the removal of explicit locale XML configurations. (:gh:`558`)
+- Added the ``code-style`` skill with guidelines for writing clean, idiomatic Python tailored for the this project. (:gh:`560`)
+- Added "docbuild" ASCII art banner when running :command:`docbuild --help`. (:gh:`565`)
+- Added support for escaping dots with backslashes in ``-C``/``--set-env`` configuration keys (e.g., ``xslt.html.show\.edit\.link=1``). (:gh:`576`)
+- The :command:`tools/migrate-config.sh` script now has a ``--with-link`` flag to create a symbolic link to the :file:`portal-config.rnc` file. (:gh:`581`)
+
+
+Infrastructure
+--------------
+
+- Reorganized the Portal config developer tooling. Renamed and moved the migration wrapper script to :command:`tools/migrate-config.sh` (now expanding a leading ``~`` in ``--dir`` and requiring the Docserv stitchfile argument), and removed the redundant :command:`validate.sh` in favor of ``docbuild portal validate``. Added agent skills for the Portal config schema, config migration, and config validation. (:gh:`542`)
+- Fixed the GitHub Actions workflow for checking newsfragment files.
+  The workflow now validates that the newsfragment filename matches the current PR number or follows the ``+description`` format for unrelated changes.
+  It also dynamically reads valid fragment types from :file:`towncrier.toml` using the standard library :mod:`tomllib` parser, eliminating hard-coded values. (:gh:`563`)
+- Refactor CI pipeline to prepare for 3.15. Dropped ``setup-python`` completely in favor of :command:`uv python install`. (:gh:`564`)
+- Update check-changelog workflow to validate newsfragment filenames using regex patterns based on towncrier config instead of strict PR numbers. (:gh:`570`)
+
+
+Code Refactoring
+----------------
+
+- Moved the ``title`` attribute in ``<language>`` elements to a ``<title>`` tag for consistency. Affected files are the Portal schema, migration stylesheet, models, and configuration files. (:gh:`519`)
+- Rename the directory :file:`tests/models/deliverables` (plural) to :file:`tests/models/deliverable` (singular). (:gh:`553`)
+- Adjust content model of ``<locale>`` element for translations. Allow deliverables of all types. (:gh:`559`)
+
+
+Removed Features
+----------------
+
+- Remove ``<internal>`` from the Portal Config schema. References to other products, docsets, or deliverables are added inside the ``<locale>`` element. (:gh:`526`)
+
+
 Version 0.24.0
 ==============
 

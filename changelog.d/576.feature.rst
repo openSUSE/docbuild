@@ -1,1 +1,0 @@
-Added support for escaping dots with backslashes in ``-C``/``--set-env`` configuration keys (e.g., ``xslt.html.show\.edit\.link=1``).

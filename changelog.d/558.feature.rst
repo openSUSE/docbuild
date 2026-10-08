@@ -1,1 +1,0 @@
-The `portal list` command now dynamically projects deliverables from the canonical `en-us` blueprint into translated locales, marking them with an `[en-us blueprint]` indicator. This restores visibility of translated deliverables following the removal of explicit locale XML configurations.
