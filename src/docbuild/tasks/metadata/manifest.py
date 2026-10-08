@@ -9,8 +9,8 @@ from typing import Literal
 
 from lxml import etree  # type: ignore
 from pydantic import ValidationError
-from rich.console import Console
 
+from ...cli.console import console as stdout
 from ...constants import XML_ID
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
@@ -27,7 +27,6 @@ from ...models.manifest import (
 from .deliverables import get_deliverable_from_doctype
 
 log = logging.getLogger(__name__)
-stdout = Console()
 
 
 def _create_synthetic_document(d: Deliverable, target_node: etree._Element) -> Document:
