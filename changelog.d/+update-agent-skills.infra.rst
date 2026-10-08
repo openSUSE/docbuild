@@ -1,0 +1,1 @@
+Updated agent skills for coding guidelines and pytest: clarified that Python function names should avoid leading underscores, and updated mocking recommendations to prefer the ``@patch.object`` decorator.

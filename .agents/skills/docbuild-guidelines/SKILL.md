@@ -33,7 +33,7 @@ Core contribution principles for the docbuild project, prioritizing maintainabil
 ## 4. Naming Conventions
 
 *   **Constants:** `SCREAMING_SNAKE_CASE`.
-*   **Internal/Private:** Use a leading underscore (`_`) for internal helper functions and methods.
+*   **Function Names:** Avoid leading underscores (`_`) in function names. Keep helper and internal function names clean, descriptive, and public unless strictly required by a framework or dunder protocol.
 *   **Clarity:** Prefer descriptive, concise names over single-letter variables.
 
 ## 5. Control Flow and Error Handling
@@ -63,6 +63,7 @@ When running shell commands, use the project's helpers in this order of preferen
 *   **Test coverage must not decrease** and should aim for >95% on new code.
 *   **Tests should be specific and readable.**
 *   **Use `pytest.mark.parametrize`** to reduce test boilerplate.
+*   **Prefer `@patch.object`** for mocks (see the `pytest-expert` skill).
 *   See the `pytest-expert` skill for more advanced patterns.
 
 ## 9. Documentation

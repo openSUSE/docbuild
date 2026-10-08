@@ -64,9 +64,9 @@ def test_read_file(temp_file):
 
 ## 3. Mocking
 
-*   **Use `pytest-mock`** (via the `mocker` fixture) for all mocking.
-*   **Be specific.** Mock the smallest possible unit. Instead of mocking `requests.get`, mock the specific function in your own code that calls it.
-*   **Don't mock everything.** Only mock external services, functions that are slow, or functions with non-deterministic behavior (like `datetime.now()`). Do not mock your own application's internal logic.
+*   **Prefer `@patch.object`:** When writing mocks, prefer using the `@patch.object` decorator over string-based `patch()` or fixtures. This ensures safe object/symbol references that refactor cleanly.
+*   **Be specific.** Mock the smallest possible unit. Instead of mocking an entire library or high-level caller, mock the specific object/method in your own module that calls it.
+*   **Don't mock everything.** Only mock external services, network/filesystem operations, functions that are slow, or functions with non-deterministic behavior (like `datetime.now()`). Do not mock your own application's internal domain logic.
 
 ## 4. Coverage Analysis
 
