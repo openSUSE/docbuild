@@ -71,9 +71,8 @@ LIFECYCLES_STR: str = "|".join(ALLOWED_LIFECYCLES)
 PROJECT_DIR: Path = Path.cwd()
 """The current working directory, used as the project directory."""
 
-USER_CONFIG_DIR: Path = Path.home() / ".config" / APP_NAME
-"""The user-specific configuration directory, typically located
-at ~/.config/docbuild."""
+CONFIG_HOME: Path = platformdirs.user_config_path(APP_NAME)
+"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
 
 SYSTEM_CONFIG_DIR: Path = Path("/etc") / APP_NAME
 """The system-wide configuration directory, typically located
@@ -83,7 +82,7 @@ CONFIG_PATHS: tuple[Path, ...] = (
     # The system-wide config path:
     SYSTEM_CONFIG_DIR,
     # The user config path:
-    USER_CONFIG_DIR,
+    CONFIG_HOME,
     # The current working/project directory:
     PROJECT_DIR,
 )
@@ -92,9 +91,6 @@ CONFIG_PATHS: tuple[Path, ...] = (
 # --- XDG Base Directory Setup ---
 STATE_HOME: Path = platformdirs.user_state_path(APP_NAME)
 """The base directory for application state, logs, and locks, per XDG Base Directory Specification."""
-
-CONFIG_HOME: Path = platformdirs.user_config_path(APP_NAME)
-"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
 
 DATA_HOME: Path = platformdirs.user_data_path(APP_NAME)
 """The user-specific data directory, typically located at ~/.local/share/docbuild."""

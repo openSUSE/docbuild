@@ -24,7 +24,6 @@ from ..constants import (
     CONFIG_PATHS,
     DEFAULT_ENV_CONFIG_FILENAME,
     DOCBUILD_BANNER,
-    PROJECT_DIR,
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
@@ -300,7 +299,7 @@ def load_env_config(
     context = ctx.obj
     result = handle_config(
         env_config,
-        (PROJECT_DIR,),
+        CONFIG_PATHS,
         None,
         DEFAULT_ENV_CONFIG_FILENAME,
         DEFAULT_ENV_CONFIG,

@@ -1,0 +1,1 @@
+Document search locations and file names for application and environment configuration in the User Guide.
