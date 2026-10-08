@@ -18,6 +18,26 @@ docbuild.models.config.app.AppConfig
 
 
 
+   .. py:method:: merge_theme_defaults(v: object) -> object
+      :classmethod:
+
+
+      Merge user overrides on top of default theme styles.
+
+      Supports theme presets ('dark' or 'light'), string style specifications
+      (e.g., 'bold red on black'), and structured dictionaries (e.g.,
+      {'color': 'red', 'bold': True}).
+
+
+
+   .. py:method:: validate_theme(v: dict[docbuild.cli.theme.ThemeTag, str]) -> dict[docbuild.cli.theme.ThemeTag, str]
+      :classmethod:
+
+
+      Validate that all defined styles are valid Rich style syntax.
+
+
+
    .. py:method:: from_dict(data: dict[str, Any]) -> Self
       :classmethod:
 

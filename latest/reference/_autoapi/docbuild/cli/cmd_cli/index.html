@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.24.1.dev31+g95dca6c57.d20261007</title>
+    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.24.1.dev32+gac2d5cb57.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../../_static/documentation_options.js?v=183a1139"></script>
+    <script src="../../../../../_static/documentation_options.js?v=be9aa6ec"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -400,6 +400,7 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cmd_config/theme/index.html">docbuild.cli.cmd_config.theme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
 </ul>
 </details></li>
@@ -417,11 +418,17 @@
 <li class="toctree-l4"><a class="reference internal" href="../cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../console/index.html">docbuild.cli.console</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../theme/index.html">docbuild.cli.theme</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../theme/ThemeTag.html">docbuild.cli.theme.ThemeTag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../theme/ModeStyle.html">docbuild.cli.theme.ModeStyle</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -649,22 +656,25 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.handle_validation_error" title="docbuild.cli.cmd_cli.handle_validation_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_validation_error</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_theme_overrides" title="docbuild.cli.cmd_cli.apply_theme_overrides"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_theme_overrides</span></code></a>(→ None)</p></td>
+<td><p>Apply theme overrides from application config to the rich console.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.handle_validation_error" title="docbuild.cli.cmd_cli.handle_validation_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_validation_error</span></code></a>(→ None)</p></td>
 <td><p>Format validation errors and exit the CLI.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_app_config" title="docbuild.cli.cmd_cli.load_app_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_app_config</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_app_config" title="docbuild.cli.cmd_cli.load_app_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_app_config</span></code></a>(→ None)</p></td>
 <td><p>Load and validate Application configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(→ list[str])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(→ list[str])</p></td>
 <td><p>Parse dot-separated key path, respecting quoted/bracketed/escaped segments.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(→ None)</p></td>
 <td><p>Parse and apply a single KEY=VALUE override to the configuration dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_env_config" title="docbuild.cli.cmd_cli.load_env_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_env_config</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_env_config" title="docbuild.cli.cmd_cli.load_env_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_env_config</span></code></a>(→ None)</p></td>
 <td><p>Load and validate Environment configuration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.cli" title="docbuild.cli.cmd_cli.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.cli" title="docbuild.cli.cmd_cli.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli</span></code></a>(→ None)</p></td>
 <td><p>Acts as a main entry point for CLI tool.</p></td>
 </tr>
 </tbody>
@@ -673,6 +683,18 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_cli.apply_theme_overrides">
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">apply_theme_overrides</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../context/DocBuildContext.html#docbuild.cli.context.DocBuildContext" title="docbuild.cli.context.DocBuildContext"><span class="pre">docbuild.cli.context.DocBuildContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.apply_theme_overrides" title="Link to this definition">#</a></dt>
+<dd><p>Apply theme overrides from application config to the rich console.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The CLI context containing the loaded application
+configuration, or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cli.handle_validation_error">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cli.</span></span><span class="sig-name descname"><span class="pre">handle_validation_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.14)"><span class="pre">Exception</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic/base_model/#pydantic.BaseModel" title="(in Pydantic v0.0.0)"><span class="pre">pydantic.BaseModel</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cli.handle_validation_error" title="Link to this definition">#</a></dt>
@@ -871,6 +893,7 @@ or if the key syntax is invalid (see <a class="reference internal" href="#docbui
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.apply_theme_overrides"><code class="docutils literal notranslate"><span class="pre">apply_theme_overrides()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.handle_validation_error"><code class="docutils literal notranslate"><span class="pre">handle_validation_error()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.load_app_config"><code class="docutils literal notranslate"><span class="pre">load_app_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_cli.parse_key"><code class="docutils literal notranslate"><span class="pre">parse_key()</span></code></a></li>

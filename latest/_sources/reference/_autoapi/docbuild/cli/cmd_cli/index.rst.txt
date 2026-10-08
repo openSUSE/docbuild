@@ -27,6 +27,7 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_cli.apply_theme_overrides
    docbuild.cli.cmd_cli.handle_validation_error
    docbuild.cli.cmd_cli.load_app_config
    docbuild.cli.cmd_cli.parse_key
@@ -37,6 +38,14 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:function:: apply_theme_overrides(context: docbuild.cli.context.DocBuildContext | None) -> None
+
+   Apply theme overrides from application config to the rich console.
+
+   :param context: The CLI context containing the loaded application
+       configuration, or None.
+
 
 .. py:function:: handle_validation_error(e: Exception, model_class: type[pydantic.BaseModel], config_files: collections.abc.Sequence[pathlib.Path | str] | None, verbose: int, ctx: click.Context) -> None
 

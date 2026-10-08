@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev31+g95dca6c57.d20261007</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.24.1.dev32+gac2d5cb57.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=183a1139"></script>
+    <script src="_static/documentation_options.js?v=be9aa6ec"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -467,6 +467,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Added a centralized Rich theme with semantic styles and configuration support for custom theme overrides in application config. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/280">GH #280</a>)</p></li>
 <li><p>Added automatic generation of <code class="docutils literal notranslate"><span class="pre">llms.txt</span></code> and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code> options in <code class="docutils literal notranslate"><span class="pre">env.toml</span></code>. The generator strips navigation and layout elements using a custom parser, converts the core content using <code class="docutils literal notranslate"><span class="pre">justhtml</span></code>, and safely injects <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tags into the source HTML headers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/365">GH #365</a>)</p></li>
 <li><p>Added support for remote source and destination paths in rsync utility and build runner. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/492">GH #492</a>)</p></li>
 <li><p>Added support for deliverable cross-references (<code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;&lt;xref</span> <span class="pre">.../&gt;</span></code>) with recursive target resolution and semantic validation in <strong class="command">docbuild portal validate</strong>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/526">GH #526</a>)</p></li>

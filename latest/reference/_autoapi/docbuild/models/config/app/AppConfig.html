@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.config.app.AppConfig &#8212; Docbuild Documentation 0.24.1.dev31+g95dca6c57.d20261007</title>
+    <title>docbuild.models.config.app.AppConfig &#8212; Docbuild Documentation 0.24.1.dev32+gac2d5cb57.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=183a1139"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=be9aa6ec"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -400,6 +400,7 @@
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_config/theme/index.html">docbuild.cli.cmd_config.theme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
 </ul>
 </details></li>
@@ -417,11 +418,17 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/console/index.html">docbuild.cli.console</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../cli/defaults/index.html">docbuild.cli.defaults</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../cli/theme/index.html">docbuild.cli.theme</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/theme/ThemeTag.html">docbuild.cli.theme.ThemeTag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/theme/ModeStyle.html">docbuild.cli.theme.ModeStyle</a></li>
+</ul>
+</details></li>
 </ul>
 </details></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../config/index.html">docbuild.config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -652,6 +659,21 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.config.app.AppConfig.merge_theme_defaults">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">merge_theme_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#docbuild.models.config.app.AppConfig.merge_theme_defaults" title="Link to this definition">#</a></dt>
+<dd><p>Merge user overrides on top of default theme styles.</p>
+<p>Supports theme presets (‘dark’ or ‘light’), string style specifications
+(e.g., ‘bold red on black’), and structured dictionaries (e.g.,
+{‘color’: ‘red’, ‘bold’: True}).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docbuild.models.config.app.AppConfig.validate_theme">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../cli/theme/ThemeTag.html#docbuild.cli.theme.ThemeTag" title="docbuild.cli.theme.ThemeTag"><span class="pre">docbuild.cli.theme.ThemeTag</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../cli/theme/ThemeTag.html#docbuild.cli.theme.ThemeTag" title="docbuild.cli.theme.ThemeTag"><span class="pre">docbuild.cli.theme.ThemeTag</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.models.config.app.AppConfig.validate_theme" title="Link to this definition">#</a></dt>
+<dd><p>Validate that all defined styles are valid Rich style syntax.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.config.app.AppConfig.from_dict">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.config.app.AppConfig.from_dict" title="Link to this definition">#</a></dt>
 <dd><p>Create an AppConfig instance from a dictionary.</p>
@@ -710,6 +732,8 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.app.AppConfig"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.app.AppConfig</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.app.AppConfig.model_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.app.AppConfig.model_config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.app.AppConfig.merge_theme_defaults"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.app.AppConfig.merge_theme_defaults()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.app.AppConfig.validate_theme"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.app.AppConfig.validate_theme()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.app.AppConfig.from_dict"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.app.AppConfig.from_dict()</span></code></a></li>
 </ul>
 </li>
