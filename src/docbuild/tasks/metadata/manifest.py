@@ -11,14 +11,80 @@ from lxml import etree  # type: ignore
 from pydantic import ValidationError
 from rich.console import Console
 
+from ...constants import XML_ID
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
-from ...models.manifest import Archive, Category, Description, Document, Manifest
+from ...models.manifest import (
+    Archive,
+    Category,
+    Description,
+    Document,
+    DocumentFormat,
+    Manifest,
+    SingleDocument,
+)
 from .deliverables import get_deliverable_from_doctype
 
 log = logging.getLogger(__name__)
 stdout = Console()
+
+
+def _create_synthetic_document(d: Deliverable, target_node: etree._Element) -> Document:
+    """Phase 3: Create a synthetic Navigational Link for docset/product xrefs."""
+    tag_name = etree.QName(target_node).localname
+    if tag_name == "product":
+        p_path = target_node.get("path") or target_node.get(XML_ID) or ""
+        title = target_node.findtext("name") or p_path
+        url = f"/{p_path}/"
+    else:
+        prod_node = target_node.getparent().getparent()
+        p_path = prod_node.get("path") or prod_node.get(XML_ID) or ""
+        ds_path = target_node.get("path") or target_node.get(XML_ID) or ""
+        title = target_node.findtext("title") or ds_path
+        url = f"/{p_path}/{ds_path}/"
+
+    sdoc = SingleDocument(
+        lang=str(d.xml.lang),
+        title=title.strip(),
+        format=DocumentFormat(html=url),
+        dcfile="",
+    )
+
+    cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
+    if not cat:
+        cat = target_node.get("category")
+
+    return Document(docs=[sdoc], category=cat)
+
+
+def _read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
+    """Read JSON from disk and project into the referencing language if needed."""
+    try:
+        with actual_file.open(encoding="utf-8") as fh:
+            loaded_doc_data = json.load(fh)
+
+        if not loaded_doc_data:
+            log.error("Empty metadata file %s", actual_file)
+            return None
+
+        # 3. If this was an xref, project the JSON metadata into the referencing language
+        if d.xml.is_xref:
+            if "docs" in loaded_doc_data and len(loaded_doc_data["docs"]) > 0:
+                loaded_doc_data["docs"][0]["lang"] = str(d.xml.lang)
+                loaded_doc_data["docs"][0]["default"] = str(d.xml.lang) == "en-us"
+
+            # Override category if the xref node explicitly sets one
+            xref_cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
+            if xref_cat:
+                loaded_doc_data["category"] = xref_cat
+
+        # This yields a Document model with a single translation in its .docs list
+        return Document.model_validate(loaded_doc_data)
+
+    except (json.JSONDecodeError, ValidationError, OSError) as e:
+        log.error("Error processing metadata file %s: %s", actual_file, e)
+        return None
 
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:
@@ -95,47 +161,42 @@ def load_documents_from_deliverables(
     deliverables: list[Deliverable],
     meta_cache_dir: Path,
 ) -> list[Document]:
-    """Load JSON metadata and return validated Document models from deliverables.
-
-    This function iterates through a list of :class:`~docbuild.models.deliverable.Deliverable`
-    objects, finds their corresponding JSON metadata files in the cache, loads the JSON,
-    and validates it into a :class:`~docbuild.models.manifest.Document` model.
-
-    :param deliverables: A list of Deliverable objects to process.
-    :param meta_cache_dir: The base path to the metadata cache directory.
-    :return: A list of validated Document models.
-    """
+    """Load JSON metadata and return validated Document models from deliverables."""
     loaded_docs = []
     for d in deliverables:
         actual_file = None
+        target_d = d
 
-        # 1. Determine the expected JSON filename
-        if d.xml.dcfile:
-            # Legacy DAPS behavior
-            actual_file = meta_cache_dir / d.paths.relpath / d.xml.dcfile
-        elif d.xml.resolved_prebuilt_html_url:
-            # Prebuilts and translated refs are saved using their HTML stem
-            stem = Path(d.xml.resolved_prebuilt_html_url).stem
-            actual_file = meta_cache_dir / d.paths.relpath / f"{stem}.json"
+        if d.xml.is_xref:
+            target_node = d.xml.final_target_node
+            if target_node is None:
+                continue  # Broken reference
+
+            tag_name = etree.QName(target_node).localname
+            if tag_name in ("product", "docset"):
+                loaded_docs.append(_create_synthetic_document(d, target_node))
+                continue
+            elif tag_name == "deliverable":
+                # For concrete targets, read the metadata from the TARGET's cache path
+                target_d = Deliverable(_node=target_node)
+
+        # 1. Determine the expected JSON filename using the target deliverable
+        if target_d.xml.dcfile:
+            actual_file = meta_cache_dir / target_d.paths.relpath / target_d.xml.dcfile
+        elif target_d.xml.resolved_prebuilt_html_url:
+            stem = Path(target_d.xml.resolved_prebuilt_html_url).stem
+            actual_file = meta_cache_dir / target_d.paths.relpath / f"{stem}.json"
 
         # 2. Skip if we couldn't resolve a file name or if it doesn't exist
         if not actual_file or not actual_file.is_file():
             continue
 
         stdout.print(f"  | {actual_file.stem} [{d.xml.lang}]", markup=False)
-        try:
-            with actual_file.open(encoding="utf-8") as fh:
-                loaded_doc_data = json.load(fh)
 
-            if not loaded_doc_data:
-                log.error("Empty metadata file %s", actual_file)
-                continue
-
-            # This yields a Document model with a single translation in its .docs list
-            loaded_docs.append(Document.model_validate(loaded_doc_data))
-
-        except (json.JSONDecodeError, ValidationError, OSError) as e:
-            log.error("Error processing metadata file %s: %s", actual_file, e)
+        # 3. Read and project the JSON data
+        doc_model = _read_and_project_json(actual_file, d)
+        if doc_model:
+            loaded_docs.append(doc_model)
 
     return loaded_docs
 

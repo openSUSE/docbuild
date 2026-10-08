@@ -42,51 +42,70 @@ def get_deliverable_worker_limit(
     return max(1, min(max_workers, deliverable_count))
 
 
-async def process_doctype(
-    root: etree._ElementTree,
-    doctype: Doctype,
+async def process_doctype(*args: object, **kwargs: object) -> list[Deliverable]:
+    """Return an empty list as tasks are now partitioned globally across doctypes."""
+    return []
+
+
+def _gather_build_tasks(
+    stitchnode: etree._ElementTree, doctypes: Sequence[Doctype]
+) -> list[Deliverable]:
+    """Phase 1: Partition tasks and discover dependencies."""
+    resolved_doctypes = [dt for doctype in doctypes for dt in doctype.iter_doctypes(stitchnode.getroot())]
+
+    initial_deliverables: list[Deliverable] = []
+    for dt in resolved_doctypes:
+        initial_deliverables.extend(get_deliverable_from_doctype(stitchnode, dt))
+
+    build_tasks: dict[str, Deliverable] = {}
+
+    for d in initial_deliverables:
+        if not d.xml.is_xref:
+            build_tasks[d.full_id] = d
+        else:
+            target = d.xml.final_target_node
+            if target is not None and etree.QName(target).localname == "deliverable":
+                target_d = Deliverable(_node=target)
+                build_tasks[target_d.full_id] = target_d
+
+    return sorted(build_tasks.values())
+
+
+def _generate_homepage(stitchnode: etree._ElementTree, json_cache_dir: Path) -> None:
+    """Generate and save the homepage.json manifest."""
+    try:
+        log.info("Generating homepage.json...")
+        portal_config = PortalConfig(source=stitchnode)
+        homepage = Homepage.from_portal(portal_config)
+        homepage_path = json_cache_dir / "homepage.json"
+        homepage.save(homepage_path)
+        log.info("Successfully generated %s", homepage_path)
+    except Exception as e:
+        log.error("Failed to generate homepage.json: %s", e)
+
+
+async def _execute_build_pipeline(
+    deliverables_to_build: list[Deliverable],
     repo_dir: Path,
     tmp_repo_dir: Path,
     meta_cache_dir: Path,
     prebuilt_dir: Path,
     dapsmetatmpl: str,
     daps_list_srcfiles_tmpl: str,
+    skip_repo_update: bool,
+    env_config_hash: str,
     max_workers: int,
-    *,
-    exitfirst: bool = False,
-    skip_repo_update: bool = False,
-    env_config_hash: str = "",
+    exitfirst: bool,
 ) -> list[Deliverable]:
-    """Process the doctypes and create metadata files using an aiostream pipeline.
-
-    :param root: The stitched XML node containing configuration.
-    :param doctype: The Doctype object to process.
-    :param repo_dir: Path to the repository directory.
-    :param tmp_repo_dir: Path to the temporary repositories directory.
-    :param meta_cache_dir: Path to the metadata cache output directory.
-    :param dapsmetatmpl: Template string for the DAPS command.
-    :param max_workers: Maximum number of concurrent workers allowed.
-    :param exitfirst: If True, stop processing on the first failure.
-    :param skip_repo_update: If True, do not fetch updates for the git repositories.
-    :return: A list of failed Deliverables.
-    """
-    deliverables: list[Deliverable] = await asyncio.to_thread(
-        get_deliverable_from_doctype, root, doctype
-    )
-
-    # Sort deliverables alphabetically for predictable processing order
-    deliverables.sort()
-
+    """Phase 2: Build Task Pipeline (aiostream)."""
     if skip_repo_update:
-        log.info("Skipping repository %s updates as requested.", repo_dir)
+        log.info("Skipping repository updates as requested.")
     else:
-        # Filter out prebuilt deliverables that don't have a Git remote configured
-        git_deliverables = [d for d in deliverables if d.xml.git_remote() is not None]
+        git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
         await update_repositories(git_deliverables, repo_dir)
 
-    worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
+    worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables_to_build))
 
-    # Wrapper to catch exceptions safely and match the MapCallable signature
     async def process_deliverable_wrapper(
         deliverable: Deliverable, *args: object
     ) -> tuple[bool, Deliverable]:
@@ -111,25 +130,24 @@ async def process_doctype(
             log.error("Error in task for %s: %s", deliverable.full_id, e)
             return False, deliverable
 
-    # The elegant aiostream pipeline!
-    pipeline = stream.iterate(deliverables) | pipe.map(
+    pipeline = stream.iterate(deliverables_to_build) | pipe.map(
         process_deliverable_wrapper, task_limit=worker_limit, ordered=True
     )
 
-    failed: list[Deliverable] = []
+    all_failed_deliverables: list[Deliverable] = []
 
     try:
         # Evaluate the pipeline and collect results
         async with pipeline.stream() as streamer:
             async for success, deliverable in streamer:
                 if not success:
-                    failed.append(deliverable)
+                    all_failed_deliverables.append(deliverable)
                     if exitfirst:
-                        break  # Breaking automatically safely cancels pending tasks!
+                        break
     except Exception as e:
         log.error("Task failed unexpectedly: %s", e)
 
-    return failed
+    return all_failed_deliverables
 
 
 async def process(
@@ -149,21 +167,7 @@ async def process(
     skip_repo_update: bool = False,
     full_categories: bool = False,
 ) -> int:
-    """Asynchronous entry point for metadata retrieval.
-
-    :param main_portal_config: Path to the main portal XML configuration file.
-    :param tmp_metadata_dir: Path to the temporary metadata directory.
-    :param repo_dir: Path to the local repository directory.
-    :param tmp_repo_dir: Path to the temporary worktree repository directory.
-    :param meta_cache_dir: Path to metadata output cache.
-    :param json_cache_dir: Path to JSON output cache.
-    :param dapsmetatmpl: Template string for the DAPS metadata command.
-    :param max_workers: Maximum number of concurrent deliverable workers.
-    :param doctypes: A sequence of Doctype objects to process.
-    :param exitfirst: If True, stop processing on the first failure.
-    :param skip_repo_update: If True, skip updating Git repositories before processing.
-    :return: 0 if all files passed validation, 1 if any failures occurred.
-    """
+    """Asynchronous entry point for metadata retrieval."""
     stitchnode: etree._ElementTree = await parse_portal_config(
         Path(main_portal_config).expanduser()
     )
@@ -172,11 +176,8 @@ async def process(
 
     stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
 
-    # Generate the XML string once
     stitch_xml_str = etree.tostring(
-        stitchnode,
-        pretty_print=True,
-        encoding="unicode",
+        stitchnode, pretty_print=True, encoding="unicode"
     )
     stitchfilename.write_text(stitch_xml_str)
 
@@ -188,32 +189,25 @@ async def process(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES, default_lang="*")]
 
-    tasks = [
-        asyncio.create_task(
-            process_doctype(
-                stitchnode,
-                dt,
-                repo_dir,
-                tmp_repo_dir,
-                meta_cache_dir,
-                prebuilt_dir,
-                dapsmetatmpl,
-                daps_list_srcfiles_tmpl,
-                max_workers,
-                exitfirst=exitfirst,
-                skip_repo_update=skip_repo_update,
-                env_config_hash=env_config_hash,
-            ),
-            name=f"metadata:{dt!s}",
-        )
-        for dt in doctypes
-    ]
-    results_per_doctype = await asyncio.gather(*tasks)
+    # --- Phase 1: Task Partitioning & Dependency Discovery ---
+    deliverables_to_build = _gather_build_tasks(stitchnode, doctypes)
 
-    all_failed_deliverables = [
-        d for failed_list in results_per_doctype for d in failed_list
-    ]
+    # --- Phase 2: Build Task Pipeline (aiostream) ---
+    all_failed_deliverables = await _execute_build_pipeline(
+        deliverables_to_build,
+        repo_dir,
+        tmp_repo_dir,
+        meta_cache_dir,
+        prebuilt_dir,
+        dapsmetatmpl,
+        daps_list_srcfiles_tmpl,
+        skip_repo_update,
+        env_config_hash,
+        max_workers,
+        exitfirst,
+    )
 
+    # --- Phase 3: Reference Resolution & Manifest Assembly ---
     await asyncio.to_thread(
         store_productdocset_json,
         doctypes,
@@ -223,17 +217,7 @@ async def process(
         full_categories=full_categories,
     )
 
-    # Generate and save homepage.json
-    try:
-        log.info("Generating homepage.json...")
-        portal_config = PortalConfig(source=stitchnode)
-        homepage = Homepage.from_portal(portal_config)
-        homepage_path = json_cache_dir / "homepage.json"
-        # Run the file save in a thread to avoid blocking the asyncio event loop
-        await asyncio.to_thread(homepage.save, homepage_path)
-        log.info("Successfully generated %s", homepage_path)
-    except Exception as e:
-        log.error("Failed to generate homepage.json: %s", e)
+    await asyncio.to_thread(_generate_homepage, stitchnode, json_cache_dir)
 
     if all_failed_deliverables:
         console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
