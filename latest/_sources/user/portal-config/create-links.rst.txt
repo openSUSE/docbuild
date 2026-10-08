@@ -31,12 +31,19 @@ the ``<external>`` element. Follow this procedure:
 
 #. Change the link in the ``<url href="...">`` element.
 
-   Depending on the target format, you may need to change the ``format``
-   attribute too. Currently, only ``html`` and ``pdf`` are supported.
+   Depending on the target format, you can set the ``format``
+   attribute. The allowed formats are ``html``, ``single-html``, ``pdf``,
+   ``epub``, ``zip``, ``tar``, and ``other``.
 
-#. Add your descripiton in the ``<desc>`` element.
+   The ``<link>`` element also accepts optional attributes:
 
-   The child elements are limited set of HTML.
+   * ``category``: assign a category ID to group the link under a specific section.
+   * ``gated``: set to ``true`` if the target resource requires authentication.
+   * ``titleformat``: specify how titles are displayed.
+
+#. Add your description in the ``<desc>`` element.
+
+   The child elements are a limited set of HTML.
 
 #. Optionally, add additional translations for the link.
 

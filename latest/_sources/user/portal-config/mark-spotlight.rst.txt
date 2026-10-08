@@ -25,7 +25,7 @@ You have two options:
 
 * An empty element (``<spotlight linkend="..." />``)
 
-  Use this if you the title is retrieved from the linked object. This is the recommended way, because it is more maintainable.
+  Use this if the title is retrieved from the linked object. This is the recommended way, because it is more maintainable.
   If you change the title of the linked object, the spotlight title will be updated automatically.
 
 * An element with text content (``<spotlight linkend="...">the text</spotlight>``)

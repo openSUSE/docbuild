@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building Blocks &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Building Blocks &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -485,7 +485,7 @@
                   
   <section id="building-blocks">
 <h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Link to this heading">#</a></h1>
-<p>The portal schema consists the following main parts:</p>
+<p>The portal schema consists of the following main parts:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code>: The root element of the portal configuration.</p></li>
 <li><p>Global settings like a spotlight, categories, product families and series.</p></li>
@@ -502,16 +502,27 @@ free to deviate from them if it suits your needs better.</p>
 <section id="portal-definition">
 <h2>Portal Definition<a class="headerlink" href="#portal-definition" title="Link to this heading">#</a></h2>
 <p>The portal configuration is defined with the <code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code> root element.
-It contains the following child elements:</p>
+It has a required <code class="docutils literal notranslate"><span class="pre">schemaversion=&quot;7.0&quot;</span></code> attribute and contains the following child elements:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;spotlight&gt;</span></code> (optional)</p>
 <p>A spotlight section that can be used to highlight important information
 on the portal. See section <a class="reference internal" href="mark-spotlight.html#create-spotlight"><span class="std std-ref">Create a Notice (“Spotlight”)</span></a> for more information.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;products&gt;</span></code> (required)</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;categories&gt;</span></code> (required)</p>
+<p>The global category definitions for the portal. See section
+<a class="reference internal" href="#global-settings"><span class="std std-ref">Global Settings</span></a>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;productfamilies&gt;</span></code> (required)</p>
+<p>The global product family definitions. See section
+<a class="reference internal" href="#global-settings"><span class="std std-ref">Global Settings</span></a>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;series&gt;</span></code> (required)</p>
+<p>The global series definitions. See section <a class="reference internal" href="#global-settings"><span class="std std-ref">Global Settings</span></a>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> (one or more required)</p>
 <p>The products of the portal. Each product is defined with a
-<code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element. A portal must have at least one product.
-See next section <a class="reference internal" href="#product-definition"><span class="std std-ref">Product Definition</span></a> for more information about products.</p>
+<code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element (or included with <code class="docutils literal notranslate"><span class="pre">&lt;xi:include&gt;</span></code>). A portal must have at least one product.
+See section <a class="reference internal" href="#product-definition"><span class="std std-ref">Product Definition</span></a> for more information about products.</p>
 </li>
 </ul>
 </section>
@@ -536,7 +547,7 @@ German (Germany).</p></li>
 <li><p>One or more <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> elements. Each <code class="docutils literal notranslate"><span class="pre">&lt;language&gt;</span></code> element
 contains:</p>
 <ul class="simple">
-<li><p>A required <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute, which is used to reference the category
+<li><p>A required <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> attribute, which is used to reference the category
 from deliverables. Per convention, each category ID should start with
 the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix.</p></li>
 <li><p>A required <code class="docutils literal notranslate"><span class="pre">&lt;title&gt;</span></code> element, which defines the title of the
@@ -550,10 +561,10 @@ the product index page.</p></li>
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code> Configuration</span><a class="headerlink" href="#global-categories" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;categories&gt;</span>
 <span class="w">   </span><span class="nt">&lt;category</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.about&quot;</span><span class="nt">&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;cat.about&quot;</span><span class="nt">&gt;</span>
 <span class="w">       </span><span class="nt">&lt;title&gt;</span>About<span class="nt">&lt;/title&gt;</span>
 <span class="w">     </span><span class="nt">&lt;/language&gt;</span>
-<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;cat.deployment&quot;</span><span class="nt">&gt;</span>
+<span class="w">     </span><span class="nt">&lt;language</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;cat.deployment&quot;</span><span class="nt">&gt;</span>
 <span class="w">       </span><span class="nt">&lt;title&gt;</span>Deployment<span class="nt">&lt;/title&gt;</span>
 <span class="w">     </span><span class="nt">&lt;/language&gt;</span>
 <span class="w">     </span><span class="cm">&lt;!-- ... --&gt;</span>
@@ -587,10 +598,10 @@ lists all product families:</p>
 <div class="literal-block-wrapper docutils container" id="global-productfamilies">
 <div class="code-block-caption"><span class="caption-text">Example global_productfamilies.xml Configuration</span><a class="headerlink" href="#global-productfamilies" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;productfamilies&gt;</span>
-<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.linux&quot;</span><span class="nt">&gt;</span>Linux<span class="nt">&lt;/item&gt;</span>
-<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.cn&quot;</span><span class="nt">&gt;</span>Cloud<span class="w"> </span>Native<span class="nt">&lt;/item&gt;</span>
-<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.suse-edge&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Edge<span class="nt">&lt;/item&gt;</span>
-<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;f.suse-ai&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>AI<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;f.linux&quot;</span><span class="nt">&gt;</span>Linux<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;f.cn&quot;</span><span class="nt">&gt;</span>Cloud<span class="w"> </span>Native<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;f.suse-edge&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Edge<span class="nt">&lt;/item&gt;</span>
+<span class="w">  </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;f.suse-ai&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>AI<span class="nt">&lt;/item&gt;</span>
 <span class="nt">&lt;/productfamilies&gt;</span>
 </pre></div>
 </div>
@@ -603,10 +614,10 @@ can be assigned to only one series.</p>
 <div class="literal-block-wrapper docutils container" id="global-series">
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code> Configuration</span><a class="headerlink" href="#global-series" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;series&gt;</span>
-<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.pas&quot;</span><span class="nt">&gt;</span>Products<span class="w"> </span><span class="ni">&amp;amp;</span><span class="w"> </span>Solutions<span class="nt">&lt;/item&gt;</span>
-<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.sbp&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Best<span class="w"> </span>Practices<span class="nt">&lt;/item&gt;</span>
-<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.trd&quot;</span><span class="nt">&gt;</span>Technical<span class="w"> </span>References<span class="nt">&lt;/item&gt;</span>
-<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;s.rn&quot;</span><span class="nt">&gt;</span>Release<span class="w"> </span>Notes<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;s.pas&quot;</span><span class="nt">&gt;</span>Products<span class="w"> </span><span class="ni">&amp;amp;</span><span class="w"> </span>Solutions<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;s.sbp&quot;</span><span class="nt">&gt;</span>SUSE<span class="w"> </span>Best<span class="w"> </span>Practices<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;s.trd&quot;</span><span class="nt">&gt;</span>Technical<span class="w"> </span>References<span class="nt">&lt;/item&gt;</span>
+<span class="w"> </span><span class="nt">&lt;item</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;s.rn&quot;</span><span class="nt">&gt;</span>Release<span class="w"> </span>Notes<span class="nt">&lt;/item&gt;</span>
 <span class="nt">&lt;/series&gt;</span>
 </pre></div>
 </div>
@@ -618,7 +629,7 @@ can be assigned to only one series.</p>
 <p>A product is defined with the <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element.
 It contains the following attributes:</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (required)</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">xml:id</span></code> (required)</p>
 <p>The unique identifier for the product.
 It must not start with a number and must be unique across
 the whole portal configuration.
@@ -626,13 +637,13 @@ The product ID should be short and descriptive.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> (optional)</p>
 <p>A relative directory name for the product, used for building
-the output path. If not specified, the <code class="docutils literal notranslate"><span class="pre">id</span></code> is used as the
+the output path. If not specified, the <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> is used as the
 fallback.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">family</span></code> (required)</p>
 <p>The product family this product belongs to.
 It must match an existing product family ID that is defined
-in the <code class="docutils literal notranslate"><span class="pre">&lt;productfamily&gt;</span></code> element.</p>
+in the <code class="docutils literal notranslate"><span class="pre">&lt;productfamilies&gt;</span></code> element.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">series</span></code> (required)</p>
 <p>The series this product belongs to.
@@ -650,17 +661,31 @@ By default, all products are included in the sitemap.
 Set this attribute to “false” to exclude the product
 and all of its releases and deliverables from the sitemap.</p>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code> (optional)</p>
+<p>Whether the product is enabled on the portal. Defaults to “true”.
+Set to “false” to disable the product without removing it.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code> (optional)</p>
 <p>Whether the product is behind a login.
 A gated product cannot be accessed without logging in.
 By default, products are public. Set this attribute to “true”
 to make the product gated.</p>
 </li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docset-sort</span></code> (optional)</p>
+<p>The sort order for the product’s docsets (releases).
+Allowed values are <code class="docutils literal notranslate"><span class="pre">descending</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">ascending</span></code>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schemaversion</span></code> (optional)</p>
+<p>The schema version string (e.g. <code class="docutils literal notranslate"><span class="pre">7.0</span></code>).</p>
+</li>
 </ul>
 <p>Furthermore, a product contains the following child elements:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> (required)</p>
 <p>The name of the product.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;sortname&gt;</span></code> (optional)</p>
+<p>An alternative name used for sorting products alphabetically.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;acronym&gt;</span></code> (optional)</p>
 <p>An optional acronym for the product.</p>
@@ -756,7 +781,7 @@ For example:</p>
 <li><p><code class="file docutils literal notranslate"><span class="pre">productA/productA.xml</span></code> is the main product configuration
 file, which contains the <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element.
 It includes all releases of this product with XInclude.
-By convention, this file should be named the same than the directory
+By convention, this file should be named the same as the directory
 with the <code class="file docutils literal notranslate"><span class="pre">.xml</span></code> suffix.</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">product/release-1.xml</span></code> for release 1</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">product/release-2.xml</span></code> for release 2</p></li>
@@ -794,7 +819,7 @@ different parts:</p>
 <p>IDs are used for products, releases, deliverables, categories, product families, and series.
 It must not start with a number and must be unique across the
 whole portal configuration.
-It is defined with the <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute.
+It is defined with the <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> attribute.
 The value of the ID can be freely chosen, but it is recommended to
 use a clear naming convention.</p>
 </li>

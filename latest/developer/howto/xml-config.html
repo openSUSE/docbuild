@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>XML Config Changes &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>XML Config Changes &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -500,7 +500,7 @@ these steps:</p>
 <ol class="arabic">
 <li><p>Add the new element definition to the appropriate section of the RNG schema, ensuring it follows the structure and naming conventions of existing elements.</p></li>
 <li><p>Use the <code class="docutils literal notranslate"><span class="pre">db:refname</span></code> element to define the name of the new element.
-Add a description with the <code class="docutils literal notranslate"><span class="pre">db.refpurpose</span></code> element:</p>
+Add a description with the <code class="docutils literal notranslate"><span class="pre">db:refpurpose</span></code> element:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Example of adding a new element to the RNG schema</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-rnc notranslate"><div class="highlight"><pre><span></span>[
@@ -525,7 +525,7 @@ Add a description with the <code class="docutils literal notranslate"><span clas
 </div>
 </div>
 <p>Remember that the two hashes (<code class="docutils literal notranslate"><span class="pre">##</span></code>) are used as a RELAX NG comment
-to provide a brief description. This will be used for a XML editor.</p>
+to provide a brief description. This will be used for an XML editor.</p>
 </li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ds.new-element</span></code> to refer to your new element definition somewhere
 else.</p></li>

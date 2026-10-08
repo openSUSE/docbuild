@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Grouping Deliverables with Categories &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Grouping Deliverables with Categories &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -487,16 +487,16 @@
 <span id="group-deliverables"></span><h1>Grouping Deliverables with Categories<a class="headerlink" href="#grouping-deliverables-with-categories" title="Link to this heading">#</a></h1>
 <p>To group related deliverables together, assign them to a category.
 A “category” is a title that is displayed on the release index page.</p>
-<p>Categories are definied on different levels:</p>
+<p>Categories are defined on different levels:</p>
 <ul>
 <li><p>Global categories</p>
 <p>Global categories are defined under the <code class="docutils literal notranslate"><span class="pre">&lt;portal&gt;</span></code> element.
-By conventions, their IDs start with the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix.</p>
+By convention, their IDs start with the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix.</p>
 </li>
 <li><p>Product-specific categories</p>
 <p>“Local” categories that are specific for a product are
 defined under the <code class="docutils literal notranslate"><span class="pre">&lt;product&gt;</span></code> element.
-By conventions, their IDs start with the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix,
+By convention, their IDs start with the <code class="docutils literal notranslate"><span class="pre">cat.</span></code> prefix,
 followed by the product ID.
 For example, <code class="docutils literal notranslate"><span class="pre">cat.nas</span></code> for the NAS product.</p>
 </li>
@@ -507,7 +507,11 @@ for a single product, use product-specific categories.</p>
 <p>To use a category, regardless of its scope, assign the category ID to the <code class="docutils literal notranslate"><span class="pre">category</span></code> attribute of the deliverable:</p>
 <div class="literal-block-wrapper docutils container" id="category">
 <div class="code-block-caption"><span class="caption-text">Example of a Deliverable with a Category</span><a class="headerlink" href="#category" title="Link to this code">#</a></div>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">category=</span><span class="s">&quot;cat.nas&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">category=</span><span class="s">&quot;cat.nas&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-NAS-overview&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dc&gt;</span>
+<span class="nt">&lt;/deliverable&gt;</span>
 </pre></div>
 </div>
 </div>

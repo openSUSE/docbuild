@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating external Links &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Creating external Links &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -510,11 +510,18 @@ After the <code class="docutils literal notranslate"><span class="pre">&lt;/reso
 </div>
 </li>
 <li><p>Change the link in the <code class="docutils literal notranslate"><span class="pre">&lt;url</span> <span class="pre">href=&quot;...&quot;&gt;</span></code> element.</p>
-<p>Depending on the target format, you may need to change the <code class="docutils literal notranslate"><span class="pre">format</span></code>
-attribute too. Currently, only <code class="docutils literal notranslate"><span class="pre">html</span></code> and <code class="docutils literal notranslate"><span class="pre">pdf</span></code> are supported.</p>
+<p>Depending on the target format, you can set the <code class="docutils literal notranslate"><span class="pre">format</span></code>
+attribute. The allowed formats are <code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">single-html</span></code>, <code class="docutils literal notranslate"><span class="pre">pdf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">epub</span></code>, <code class="docutils literal notranslate"><span class="pre">zip</span></code>, <code class="docutils literal notranslate"><span class="pre">tar</span></code>, and <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;link&gt;</span></code> element also accepts optional attributes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">category</span></code>: assign a category ID to group the link under a specific section.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code>: set to <code class="docutils literal notranslate"><span class="pre">true</span></code> if the target resource requires authentication.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">titleformat</span></code>: specify how titles are displayed.</p></li>
+</ul>
 </li>
-<li><p>Add your descripiton in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
-<p>The child elements are limited set of HTML.</p>
+<li><p>Add your description in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
+<p>The child elements are a limited set of HTML.</p>
 </li>
 <li><p>Optionally, add additional translations for the link.</p>
 <p>Use an <code class="docutils literal notranslate"><span class="pre">&lt;desc</span> <span class="pre">lang=&quot;...&quot;&gt;</span></code> element for each language. Change the

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Validating the Portal Configuration &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Validating the Portal Configuration &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -532,12 +532,12 @@ of portal validation (except where noted).</p>
 <p>Make sure each DC appears only once within a language.</p>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
 <span class="w">        </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-foo&quot;</span><span class="nt">&gt;</span>
 <span class="w">            </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
 <span class="w">        </span><span class="nt">&lt;/dc&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/deliverable&gt;</span>
-<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-2&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deli-2&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
 <span class="w">        </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-foo&quot;</span><span class="nt">&gt;</span>
 <span class="w">            </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
 <span class="w">        </span><span class="nt">&lt;/dc&gt;</span>
@@ -603,7 +603,7 @@ of portal validation (except where noted).</p>
 </div>
 <p class="rubric">check_enabled_format</p>
 <p>Check if at least one format is enabled.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-doc&quot;</span><span class="nt">&gt;</span>
 <span class="w">     </span><span class="cm">&lt;!-- All formats here are disabled: --&gt;</span>
 <span class="w">     </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;0&quot;</span><span class="nt">/&gt;</span>
@@ -613,7 +613,7 @@ of portal validation (except where noted).</p>
 </div>
 <p class="rubric">check_format_subdeliverable</p>
 <p>Make sure that deliverables with subdeliverables have only HTML formats enabled.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
 <span class="w">   </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-all&quot;</span><span class="nt">&gt;</span>
 <span class="w">      </span><span class="cm">&lt;!-- PDF enabled, but subdeliverables present: --&gt;</span>
 <span class="w">      </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="nt">/&gt;</span>
@@ -632,7 +632,7 @@ of portal validation (except where noted).</p>
 </div>
 <p class="rubric">check_lang_code_in_docset</p>
 <p>Ensure that each language code appears only once within <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;docset1&quot;</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;supported&quot;</span><span class="nt">&gt;</span>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;docset1&quot;</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;supported&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;resources&gt;</span>
 <span class="w">         </span><span class="nt">&lt;git</span><span class="w"> </span><span class="na">remote=</span><span class="s">&quot;https://example.invalid/repo.git&quot;</span><span class="nt">/&gt;</span>
 <span class="w">         </span><span class="nt">&lt;locale</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;&lt;branch&gt;</span>main<span class="nt">&lt;/branch&gt;&lt;/locale&gt;</span>
@@ -660,8 +660,8 @@ of portal validation (except where noted).</p>
 </pre></div>
 </div>
 <p class="rubric">check_subdeliverable_in_deliverable</p>
-<p>Check that site section is present in the XML tree.</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
+<p>Check that subdeliverables within a deliverable are unique.</p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;deli-1&quot;</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="nt">&gt;</span>
 <span class="w">    </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-fake-doc&quot;</span><span class="nt">&gt;</span>
 <span class="w">        </span><span class="nt">&lt;subdeliverable&gt;</span>sub-1<span class="nt">&lt;/subdeliverable&gt;</span>
 <span class="w">        </span><span class="nt">&lt;subdeliverable&gt;</span>sub-2<span class="nt">&lt;/subdeliverable&gt;</span>

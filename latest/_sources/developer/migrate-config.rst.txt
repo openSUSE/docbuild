@@ -194,7 +194,7 @@ To create a directory with multiple files, do the following:
 Creating a Single File
 ~~~~~~~~~~~~~~~~~~~~~~
 
-To create a single configuration file, , do the following:
+To create a single configuration file, do the following:
 
 #. Run the XSLT transformation with the following command:
 

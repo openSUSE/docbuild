@@ -18,7 +18,7 @@ To add translations for a product, proceed as follows:
 #. Add a ``<locale>`` element for the language you want to
    add the translation for.
 
-   For example, to add a translation for German , add a
+   For example, to add a translation for German, add a
    ``<locale>`` element with the ``lang`` attribute set to ``de-de``:
 
    .. code-block:: xml
@@ -33,7 +33,7 @@ To add translations for a product, proceed as follows:
 
    As translations are usually stored in a separate Git branch and
    perhaps also in a different directory, the ``<locale>`` element
-   provides an optional ``<branch>`` and ``<subdir>`` element.
+   requires a ``<branch>`` element and provides an optional ``<subdir>`` element.
 
 #. Done.
 

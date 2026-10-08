@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -513,11 +513,18 @@ and add the following content:</p>
 <code class="file docutils literal notranslate"><span class="pre">global_productfamilies.xml</span></code>, and <code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code>
 with the appropriate content for your portal.
 See section <a class="reference internal" href="building-blocks.html#global-settings"><span class="std std-ref">Global Settings</span></a> for details on the expected structure.</p></li>
-<li><p>Create a directory for the the first product (in this example, it’s
+<li><p>Create a directory for the first product (in this example, it’s
 <code class="file docutils literal notranslate"><span class="pre">productA</span></code>) and add a product definition file with the name
 <code class="file docutils literal notranslate"><span class="pre">productA/productA.xml</span></code>.
 See section <a class="reference internal" href="building-blocks.html#product-definition"><span class="std std-ref">Product Definition</span></a> for details on the expected structure.</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When configuration files are split with XInclude, <strong class="command">docbuild portal validate</strong>
+automatically resolves all inclusions before validating against the schema.
+If validating manually with <strong class="command">jing</strong>, resolve the XIncludes first using
+<strong class="command">xmllint --xinclude</strong>.</p>
+</div>
 </section>
 
 

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changing the Lifecycle of a Release &#8212; Docbuild Documentation 0.25.1.dev2+g7db543edc.d20261008</title>
+    <title>Changing the Lifecycle of a Release &#8212; Docbuild Documentation 0.25.1.dev4+ge0dd8e0ef.d20261008</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=6975b73c"></script>
+    <script src="../../_static/documentation_options.js?v=7944e7d4"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -488,6 +488,10 @@
 <p>Every product has a lifecycle that defines the stages it goes
 through from initial development to end-of-life:</p>
 <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">unpublished</span></code></p>
+<p>The release is not published on public portal instances and can only be
+viewed on internal staging instances.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">beta</span></code></p>
 <p>The release is in the beta stage, meaning it is still
 under development and may contain bugs.
@@ -509,7 +513,7 @@ of the product versions are available for download.</p>
 </li>
 </ul>
 <p>The lifecycle of a release is defined in the <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>
-element in the .</p>
+element in the <code class="docutils literal notranslate"><span class="pre">lifecycle</span></code> attribute.</p>
 <p>To change the lifecycle of a release, change the <code class="docutils literal notranslate"><span class="pre">lifecycle</span></code>
 attribute to the desired value.</p>
 </section>
