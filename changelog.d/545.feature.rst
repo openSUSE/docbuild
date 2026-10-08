@@ -1,0 +1,1 @@
+Added ``-U``/``--unresolved`` option to ``docbuild config list`` to display the configuration with unresolved placeholders for debugging purposes.
