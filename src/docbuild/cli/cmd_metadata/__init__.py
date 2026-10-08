@@ -5,17 +5,13 @@ import math
 from pathlib import Path
 
 import click
-from rich.console import Console
 
 from docbuild.cli.callback import validate_doctypes
+from docbuild.cli.console import console as stdout, console_err
 from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
 from docbuild.tasks.metadata.runner import process
 from docbuild.utils.contextmgr import make_timer
-
-# Set up rich consoles for output
-stdout = Console()
-console_err = Console(stderr=True, style="red")
 
 
 @click.command(help=__doc__)
@@ -54,7 +50,7 @@ def metadata(
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:
-        console_err.print("Environment configuration is missing.")
+        console_err.print("[error]Environment configuration is missing.[/]")
         ctx.exit(1)
 
     timer = make_timer("metadata")

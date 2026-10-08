@@ -4,14 +4,12 @@ import itertools
 from pathlib import Path
 
 import click
-from rich.console import Console
 
 from docbuild.cli.callback import validate_doctypes
+from docbuild.cli.console import console
 from docbuild.cli.context import DocBuildContext
 from docbuild.constants import CACHE_FILE_EXT
 from docbuild.models.doctype import Doctype
-
-stdout = Console()
 
 
 def _expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
@@ -56,13 +54,13 @@ def _delete_cache_files(targets: list[Path], extension: str) -> int:
     return deleted_count
 
 
-def _print_cache_listing(directory: Path, title: str, color: str, target_paths: list[Path], extension: str) -> None:
+def _print_cache_listing(directory: Path, title: str, target_paths: list[Path], extension: str) -> None:
     """Print cache files for a specific cache type."""
     if not directory.exists():
-        stdout.print(f"[yellow]{title} directory does not exist yet: {directory}[/yellow]")
+        console.print(f"[warning]{title} directory does not exist yet: {directory}[/]")
         return
 
-    stdout.print(f"\n[bold {color}]{title}:[/bold {color}] {directory}")
+    console.print(f"\n[header]{title}:[/] {directory}")
     cache_files: list[Path] = []
     for tp in target_paths:
         if tp.exists():
@@ -70,10 +68,10 @@ def _print_cache_listing(directory: Path, title: str, color: str, target_paths: 
 
     if cache_files:
         for p in sorted(cache_files):
-            stdout.print(f"- {p.relative_to(directory).as_posix()}")
+            console.print(f"- {p.relative_to(directory).as_posix()}")
     else:
         name = "meta" if "Meta" in title else "json"
-        stdout.print(f"[yellow]No {name} cache files found.[/yellow]")
+        console.print(f"[warning]No {name} cache files found.[/]")
 
 
 def _gather_prune_targets(cache_type: str, doctypes: tuple[Doctype], meta_dir: Path, json_dir: Path) -> tuple[list[Path], list[Path]]:
@@ -113,9 +111,9 @@ def cache_dir(ctx: click.Context) -> None:
 
     paths = context.envconfig.paths
 
-    stdout.print(f"[bold]Base Cache Dir:[/bold] {paths.base_cache_dir}")
-    stdout.print(f"[bold]Meta Cache Dir:[/bold] {paths.meta_cache_dir}")
-    stdout.print(f"[bold]JSON Cache Dir:[/bold] {paths.json_cache_dir}")
+    console.print(f"[header]Base Cache Dir:[/] {paths.base_cache_dir}")
+    console.print(f"[header]Meta Cache Dir:[/] {paths.meta_cache_dir}")
+    console.print(f"[header]JSON Cache Dir:[/] {paths.json_cache_dir}")
 
 
 @cache.command(name="list")
@@ -141,7 +139,6 @@ def cache_list(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str) ->
         _print_cache_listing(
             meta_dir,
             "Meta Cache",
-            "blue",
             _expand_meta_paths(meta_dir, doctypes),
             f"*{CACHE_FILE_EXT}"
         )
@@ -150,7 +147,6 @@ def cache_list(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str) ->
         _print_cache_listing(
             json_dir,
             "JSON Cache",
-            "green",
             _expand_json_paths(json_dir, doctypes),
             "*.json"
         )
@@ -175,7 +171,7 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
     targets_meta, targets_json = _gather_prune_targets(cache_type, doctypes, meta_dir, json_dir)
 
     if not targets_meta and not targets_json:
-        stdout.print("[yellow]No cache files found to prune.[/yellow]")
+        console.print("[warning]No cache files found to prune.[/]")
         return
 
     # Ask for confirmation
@@ -189,4 +185,4 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
     if targets_json:
         deleted_count += _delete_cache_files(targets_json, "*.json")
 
-    stdout.print(f"[bold green]Successfully pruned {deleted_count} cache file(s).[/bold green]")
+    console.print(f"[success]Successfully pruned {deleted_count} cache file(s).[/]")

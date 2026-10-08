@@ -10,3 +10,4 @@ To see the current merged configuration:
    docbuild config list
 
 Use the ``--flat`` flag to see the dotted-path format, or use ``--app`` or ``--env`` to view only that configuration.
+For details on customizing output styling and colors, see :ref:`config-theme`.

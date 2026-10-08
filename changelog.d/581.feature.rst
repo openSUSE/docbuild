@@ -1,1 +1,0 @@
-The `tools/migrate-config.sh` script now has a `--with-link` flag to create a symbolic link to the `portal-config.rnc` file.

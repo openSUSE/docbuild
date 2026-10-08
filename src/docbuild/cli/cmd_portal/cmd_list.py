@@ -8,6 +8,7 @@ from lxml import etree  # type: ignore
 from rich.console import Console
 from rich.tree import Tree
 
+from ...cli.console import console as shared_console
 from ...cli.context import DocBuildContext
 from ...config.xml.list import list_all_deliverables
 from ...models.deliverable import Deliverable
@@ -75,7 +76,7 @@ def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype]
         try:
             parsed_doctypes.append(Doctype.from_str(dt))
         except ValueError as e:
-            console.print(f"[red]Error parsing doctype:[/red] {e}")
+            console.print(f"[error]Error parsing doctype:[/error] {e}")
             raise click.Abort() from e
 
     return parsed_doctypes
@@ -198,13 +199,13 @@ def print_hierarchy(
     hierarchy = _group_into_hierarchy(items)
 
     for lang, products in sorted(hierarchy.items()):
-        root_tree = Tree(f"[bold blue]{lang}/[/bold blue]")
+        root_tree = Tree(f"[lang]{lang}/[/]")
 
         for product, docsets in sorted(products.items()):
-            prod_branch = root_tree.add(f"[bold]{product}[/bold]")
+            prod_branch = root_tree.add(f"[product]{product}[/]")
 
             for docset, delivs in sorted(docsets.items()):
-                docset_branch = prod_branch.add(f"[cyan]{docset}[/cyan]")
+                docset_branch = prod_branch.add(f"[docset]{docset}[/]")
 
                 # Iterate directly in XML sequence (NO alphabetical sorting!)
                 for deliv in delivs:
@@ -242,7 +243,7 @@ def print_flat(
                 # Iterate directly in XML sequence (No alphabetical sorting)
                 for deliv in delivs:
                     display_name = get_display_name(deliv, lang)
-                    flat_title = f"[bold blue]{lang}[/bold blue]/[bold]{product}[/bold]/[cyan]{docset}[/cyan]:{display_name}"
+                    flat_title = f"[lang]{lang}[/]/[product]{product}[/]/[docset]{docset}[/]:{display_name}"
 
                     deliv_tree = build_deliverable_tree(
                         flat_title,
@@ -286,7 +287,7 @@ def validate_docsets_against_xml(
     if errors:
         err_count = len(errors)
         noun = "error" if err_count == 1 else "errors"
-        console.print(f"[red]Error parsing doctype:[/red] {err_count} validation {noun} for Doctype:\n")
+        console.print(f"[error]Error parsing doctype:[/error] {err_count} validation {noun} for Doctype:\n")
         for err in errors:
             console.print(err)
         raise click.Abort()
@@ -312,7 +313,7 @@ async def async_list_cmd(
     try:
         tree = await parse_portal_config(portal_xml_path)
     except (OSError, etree.XMLSyntaxError, etree.XIncludeError) as e:
-        console.print(f"[red]Error loading XML schema:[/red] {e}")
+        console.print(f"[error]Error loading XML schema:[/error] {e}")
         raise click.Abort() from e
 
     if parsed_doctypes:
@@ -339,7 +340,7 @@ async def async_list_cmd(
     final_deliverables = expand_deliverables(base_deliverables, parsed_doctypes)
 
     if not final_deliverables:
-        console.print("[yellow]No deliverables found matching the criteria.[/yellow]")
+        console.print("[warning]No deliverables found matching the criteria.[/warning]")
         return
 
     if flat:
@@ -390,7 +391,7 @@ def list_cmd(
     :param flat: Display a flat list instead of a hierarchy tree.
 
     """ # noqa: D301
-    console = Console()
+    console = shared_console
 
     async def main() -> None:
         await asyncio.create_task(

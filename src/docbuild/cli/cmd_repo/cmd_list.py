@@ -2,12 +2,9 @@
 
 
 import click
-from rich.console import Console
 
+from ...cli.console import console, console_err
 from ...cli.context import DocBuildContext
-
-console = Console()
-console_err = Console(stderr=True)
 
 
 @click.command(help=__doc__, name="list")
@@ -29,7 +26,7 @@ def cmd_list(ctx: click.Context) -> None:
     repo_dir = env.paths.repo_dir.resolve()
     if not repo_dir.exists():
         console_err.print(
-            f"[red]ERROR:[/] No permanent repositories found in {repo_dir}.",
+            f"[error]ERROR:[/] No permanent repositories found in {repo_dir}.",
         )
         ctx.exit(1)
 

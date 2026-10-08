@@ -8,8 +8,8 @@ from pathlib import Path
 
 from aiostream import pipe, stream
 from lxml import etree  # type: ignore
-from rich.console import Console
 
+from docbuild.cli.console import console, console_err
 from docbuild.config.xml.portal import PortalConfig
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
@@ -23,8 +23,7 @@ from .manifest import store_productdocset_json
 from .repos import update_repositories
 
 log = logging.getLogger(__name__)
-stdout = Console()
-console_err = Console(stderr=True, style="red")
+stdout = console
 
 
 def get_deliverable_worker_limit(
@@ -220,7 +219,7 @@ async def process(
     await asyncio.to_thread(_generate_homepage, stitchnode, json_cache_dir)
 
     if all_failed_deliverables:
-        console_err.print(f"Found {len(all_failed_deliverables)} failed deliverables:")
+        console_err.print(f"[error]Found {len(all_failed_deliverables)} failed deliverables:[/]")
         for d in all_failed_deliverables:
             console_err.print(f"- {d.full_id}")
         return 1

@@ -11,7 +11,6 @@ from lxml import etree  # type: ignore
 from pydantic import ValidationError
 
 from ...cli.console import console as stdout
-from ...constants import XML_ID
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
@@ -27,63 +26,6 @@ from ...models.manifest import (
 from .deliverables import get_deliverable_from_doctype
 
 log = logging.getLogger(__name__)
-
-
-def _create_synthetic_document(d: Deliverable, target_node: etree._Element) -> Document:
-    """Phase 3: Create a synthetic Navigational Link for docset/product xrefs."""
-    tag_name = etree.QName(target_node).localname
-    if tag_name == "product":
-        p_path = target_node.get("path") or target_node.get(XML_ID) or ""
-        title = target_node.findtext("name") or p_path
-        url = f"/{p_path}/"
-    else:
-        prod_node = target_node.getparent().getparent()
-        p_path = prod_node.get("path") or prod_node.get(XML_ID) or ""
-        ds_path = target_node.get("path") or target_node.get(XML_ID) or ""
-        title = target_node.findtext("title") or ds_path
-        url = f"/{p_path}/{ds_path}/"
-
-    sdoc = SingleDocument(
-        lang=str(d.xml.lang),
-        title=title.strip(),
-        format=DocumentFormat(html=url),
-        dcfile="",
-    )
-
-    cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
-    if not cat:
-        cat = target_node.get("category")
-
-    return Document(docs=[sdoc], category=cat)
-
-
-def _read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
-    """Read JSON from disk and project into the referencing language if needed."""
-    try:
-        with actual_file.open(encoding="utf-8") as fh:
-            loaded_doc_data = json.load(fh)
-
-        if not loaded_doc_data:
-            log.error("Empty metadata file %s", actual_file)
-            return None
-
-        # 3. If this was an xref, project the JSON metadata into the referencing language
-        if d.xml.is_xref:
-            if "docs" in loaded_doc_data and len(loaded_doc_data["docs"]) > 0:
-                loaded_doc_data["docs"][0]["lang"] = str(d.xml.lang)
-                loaded_doc_data["docs"][0]["default"] = str(d.xml.lang) == "en-us"
-
-            # Override category if the xref node explicitly sets one
-            xref_cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
-            if xref_cat:
-                loaded_doc_data["category"] = xref_cat
-
-        # This yields a Document model with a single translation in its .docs list
-        return Document.model_validate(loaded_doc_data)
-
-    except (json.JSONDecodeError, ValidationError, OSError) as e:
-        log.error("Error processing metadata file %s: %s", actual_file, e)
-        return None
 
 
 def apply_parity_fixes(descriptions: list, categories: list) -> None:

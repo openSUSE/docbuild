@@ -11,7 +11,8 @@ from typing import Any, cast
 
 import click
 from pydantic import BaseModel, ValidationError
-import rich.console
+from rich.errors import StyleSyntaxError
+from rich.theme import Theme
 from rich.traceback import install as install_traceback
 
 from ..__about__ import __version__
@@ -41,19 +42,48 @@ from .cmd_llms import llms
 from .cmd_metadata import metadata
 from .cmd_portal import portal
 from .cmd_repo import repo
+from .console import console, console_err
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
+from .theme import DEFAULT_STYLES
 
 PYTHON_VERSION = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
 log = logging.getLogger(__name__)
-CONSOLE = rich.console.Console(stderr=True, highlight=False)
+CONSOLE = console_err
 
 
 def _setup_console() -> None:
     """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
+
+
+def apply_theme_overrides(context: DocBuildContext | None) -> None:
+    """Apply theme overrides from application config to the rich console.
+
+    :param context: The CLI context containing the loaded application
+        configuration, or None.
+    """
+    for con in (console, console_err):
+        while len(con._theme_stack._entries) > 1:
+            con.pop_theme()
+
+    if (
+        context
+        and context.appconfig
+        and hasattr(context.appconfig, "theme")
+        and isinstance(context.appconfig.theme, dict)
+        and context.appconfig.theme != DEFAULT_STYLES
+    ):
+        theme_dict = {str(k): v for k, v in context.appconfig.theme.items()}
+        try:
+            new_theme = Theme(theme_dict)
+        except StyleSyntaxError as e:
+            sys.stderr.write(f"Error in theme: {e}\n")
+            sys.exit(1)
+        console.push_theme(new_theme)
+        console_err.push_theme(new_theme)
 
 
 def handle_validation_error(
@@ -457,6 +487,7 @@ def cli(
         current_model = AppConfig
         current_files = (app_config,) if app_config else None
         load_app_config(ctx, app_config, max_workers, skip_validation)
+        apply_theme_overrides(context)
 
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig

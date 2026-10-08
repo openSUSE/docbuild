@@ -1,1 +1,0 @@
-Rename the directory :file:`tests/models/deliverables` (plural) to :file:`tests/models/deliverable` (singular).

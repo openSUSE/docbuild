@@ -1,1 +1,0 @@
-Inject standard YAML frontmatter metadata into generated Markdown files for LLM/RAG pipelines.

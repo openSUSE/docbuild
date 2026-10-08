@@ -40,7 +40,6 @@ import math
 from pathlib import Path
 
 import click
-from rich.console import Console
 
 from ...models.doctype import Doctype
 from ...tasks.build.runner import process as build_process
@@ -48,11 +47,8 @@ from ...tasks.metadata.runner import process as metadata_process
 from ...utils.contextmgr import make_timer
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
+from ..console import console, console_err
 from ..context import DocBuildContext
-
-# Set up rich consoles for output
-stdout = Console()
-console_err = Console(stderr=True, style="red")
 
 
 @click.command(
@@ -80,7 +76,7 @@ def build(
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:
-        console_err.print("Environment configuration is missing.")
+        console_err.print("[error]Environment configuration is missing.[/]")
         ctx.exit(1)
 
     assert context.envconfig is not None
@@ -109,13 +105,13 @@ def build(
     }
 
     max_workers = context.appconfig.max_workers if context.appconfig else 1
-    stdout.print(f"Config path: {env.paths.config_dir}")
+    console.print(f"Config path: {env.paths.config_dir}")
 
     async def run_pipeline() -> int:
         build_skip_repo = skip_repo_update
 
         if not skip_metadata:
-            stdout.print("[bold blue]Running metadata generation (fail-fast validation)...[/bold blue]")
+            console.print("[header]Running metadata generation (fail-fast validation)...[/]")
             meta_result = await asyncio.create_task(
                 metadata_process(
                     main_portal_config=main_portal_config,
@@ -134,12 +130,12 @@ def build(
             )
 
             if meta_result != 0:
-                console_err.print("Metadata generation failed. Aborting build.")
+                console_err.print("[error]Metadata generation failed. Aborting build.[/]")
                 return meta_result
 
             build_skip_repo = True
 
-        stdout.print(f"[bold blue]Starting async build pipeline with {max_workers} workers...[/bold blue]")
+        console.print(f"[header]Starting async build pipeline with {max_workers} workers...[/]")
         return await asyncio.create_task(
             build_process(
                 main_portal_config=main_portal_config,
@@ -168,6 +164,6 @@ def build(
             result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
-            stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
+            console.print(f"Elapsed time {t.elapsed:0.2f}s")
 
     ctx.exit(result)
