@@ -377,3 +377,27 @@ docbuild.models.deliverable.view.DeliverableXMLView
       Return the docset version.
 
 
+
+   .. py:property:: target_type
+      :type: Literal['product', 'docset', 'deliverable'] | None
+
+
+      Return the local element name of the target node, if this is an xref.
+
+
+
+   .. py:property:: target_url
+      :type: str | None
+
+
+      Return the web URL for the xref target (product, docset, or deliverable).
+
+
+
+   .. py:property:: target_title
+      :type: str
+
+
+      Return the display title of the target node.
+
+
