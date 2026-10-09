@@ -26,7 +26,7 @@ from docbuild.models.config.app import AppConfig
 
 def test_theme_tags_enum():
     """Verify ThemeTag enum members match expected semantic tokens."""
-    expected = {"header", "error", "warning", "info", "success", "hint", "muted", "lang", "product", "docset"}
+    expected = {"header", "error", "warning", "info", "success", "hint", "muted", "lang", "product", "docset", "repo"}
     assert {tag.value for tag in ThemeTag} == expected
 
 
@@ -43,6 +43,7 @@ def test_default_styles_keys():
         ThemeTag.LANG,
         ThemeTag.PRODUCT,
         ThemeTag.DOCSET,
+        ThemeTag.REPO,
     }
     assert expected_keys == set(DEFAULT_STYLES.keys())
     assert expected_keys == set(DARK_THEME_STYLES.keys())

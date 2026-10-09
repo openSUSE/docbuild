@@ -23,6 +23,7 @@ class ThemeTag(StrEnum):
     LANG = "lang"
     PRODUCT = "product"
     DOCSET = "docset"
+    REPO = "repo"
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,6 +54,7 @@ THEME_STYLES: dict[ThemeTag, ModeStyle] = {
     ThemeTag.LANG: ModeStyle(dark="orchid", light="orchid"),
     ThemeTag.PRODUCT: ModeStyle(dark="steel_blue3", light="slate_blue3"),
     ThemeTag.DOCSET: ModeStyle(dark="violet", light="dark_violet"),
+    ThemeTag.REPO: ModeStyle(dark="bright_cyan", light="dark_cyan"),
 }
 """Centralized mapping of semantic tags to their dark and light mode styles."""
 

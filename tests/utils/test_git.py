@@ -357,7 +357,7 @@ async def test_ls_tree_success_recursive(
         "ls-tree",
         "--name-only",
         "-r",
-        "main",
+        "refs/heads/main",
         cwd=repo.bare_repo_path,
         gitconfig=None,
     )
@@ -379,7 +379,7 @@ async def test_ls_tree_success_non_recursive(
     mock_execute_git.assert_awaited_once_with(
         "ls-tree",
         "--name-only",
-        "main",
+        "refs/heads/main",
         cwd=repo.bare_repo_path,
         gitconfig=None,
     )

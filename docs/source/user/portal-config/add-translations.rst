@@ -34,6 +34,8 @@ To add translations for a product, proceed as follows:
    As translations are usually stored in a separate Git branch and
    perhaps also in a different directory, the ``<locale>`` element
    requires a ``<branch>`` element and provides an optional ``<subdir>`` element.
+   The ``<subdir>`` of the English deliverable is not used for translations;
+   only the ``<subdir>`` of the translated ``<locale>`` applies.
 
 #. Done.
 
