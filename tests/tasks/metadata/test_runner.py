@@ -8,6 +8,7 @@ import pytest
 
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+import docbuild.tasks.metadata.runner as runner_pkg
 from docbuild.tasks.metadata.runner import (
     _execute_build_pipeline,
     _gather_build_tasks,
@@ -45,7 +46,7 @@ def empty_xml_root() -> etree._ElementTree:
 class TestGatherBuildTasks:
     """Tests for the _gather_build_tasks phase."""
 
-    @patch("docbuild.tasks.metadata.runner.get_deliverable_from_doctype")
+    @patch.object(runner_pkg, "get_deliverable_from_doctype")
     def test_gathers_and_deduplicates_deliverables(
         self, mock_get_deliverables: Mock, empty_xml_root: etree._ElementTree
     ) -> None:
@@ -67,7 +68,7 @@ class TestGatherBuildTasks:
         mock_get_deliverables.return_value = [d1, d2]
 
         # Patch Deliverable instantiation inside the xref block
-        with patch("docbuild.tasks.metadata.runner.Deliverable") as mock_deliverable:
+        with patch.object(runner_pkg, "Deliverable") as mock_deliverable:
             d_target = SortableMock(spec=Deliverable)
             d_target.full_id = "target"
             mock_deliverable.return_value = d_target
@@ -85,9 +86,8 @@ class TestGatherBuildTasks:
 class TestExecuteBuildPipeline:
     """Tests for the _execute_build_pipeline phase."""
 
-    @patch("docbuild.tasks.metadata.runner.update_repositories", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner.process_deliverable", new_callable=AsyncMock)
-    @pytest.mark.asyncio
+    @patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     async def test_success_with_deliverables(
         self, mock_process_deliverable: AsyncMock, mock_update_repositories: AsyncMock, tmp_path: Path
     ) -> None:
@@ -120,9 +120,8 @@ class TestExecuteBuildPipeline:
         assert mock_process_deliverable.await_count == 2
         assert result == []
 
-    @patch("docbuild.tasks.metadata.runner.update_repositories", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner.process_deliverable", new_callable=AsyncMock)
-    @pytest.mark.asyncio
+    @patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock)
+    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     async def test_exitfirst_stops_on_first_failure(
         self, mock_process_deliverable: AsyncMock, mock_update_repositories: AsyncMock, tmp_path: Path
     ) -> None:
@@ -149,8 +148,7 @@ class TestExecuteBuildPipeline:
 
         assert failed == [d1]
 
-    @patch("docbuild.tasks.metadata.runner.process_deliverable", new_callable=AsyncMock)
-    @pytest.mark.asyncio
+    @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     async def test_exception_in_process_deliverable_caught(
         self, mock_process_deliverable: AsyncMock, tmp_path: Path
     ) -> None:
@@ -195,103 +193,125 @@ class TestProcess:
             "doctypes": None,
         }
 
-    @patch("docbuild.tasks.metadata.runner.store_productdocset_json")
-    @patch("docbuild.tasks.metadata.runner._generate_homepage")
-    @patch("docbuild.tasks.metadata.runner.parse_portal_config", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner._gather_build_tasks")
-    @patch("docbuild.tasks.metadata.runner._execute_build_pipeline", new_callable=AsyncMock)
-    @pytest.mark.asyncio
     async def test_empty_doctypes_uses_default(
         self,
-        mock_execute: AsyncMock,
-        mock_gather: Mock,
-        mock_parse_portal_config: AsyncMock,
-        mock_homepage: Mock,
-        mock_store_json: Mock,
         runner_kwargs: dict[str, object],
+        tmp_path: Path,
     ) -> None:
-        """Verify omitting doctypes uses wildcard default."""
+        """Verify omitting doctypes runs default deliverables via actual data flow."""
         xml_string = """
-        <docservconfig>
-            <product id="sles">
+        <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+            <product xml:id="sles">
               <name>SUSE Linux Enterprise Server</name>
-              <docset id="sles.15-sp6" path="15-SP6"/>
+              <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+                <resources>
+                  <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable xml:id="test-doc"><dc file="DC-test"/></deliverable>
+                  </locale>
+                </resources>
+              </docset>
             </product>
-        </docservconfig>
+        </portal>
         """
-        mock_parse_portal_config.return_value = etree.ElementTree(
-            etree.fromstring(xml_string)
-        )
-        mock_gather.return_value = []
-        mock_execute.return_value = []
+        (tmp_path / "portal.xml").write_text(xml_string)
 
-        result = await process(**runner_kwargs) # type: ignore
+        import docbuild.tasks.metadata.runner as runner_pkg
+        with patch.object(runner_pkg, "store_productdocset_json"), \
+             patch.object(runner_pkg, "_generate_homepage"), \
+             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
+             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
 
-        assert result == 0
-        # Ensure gather was called with the default broad doctype
-        args, _ = mock_gather.call_args
-        assert len(args[1]) == 1
-        assert str(args[1][0]) == "*/*@supported/en-us"
+            mock_pd.return_value = (True, Mock())
 
-    @patch("docbuild.tasks.metadata.runner.store_productdocset_json")
-    @patch("docbuild.tasks.metadata.runner._generate_homepage")
-    @patch("docbuild.tasks.metadata.runner.parse_portal_config", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner._gather_build_tasks")
-    @patch("docbuild.tasks.metadata.runner._execute_build_pipeline", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner.console_err")
-    @pytest.mark.asyncio
+            result = await process(**runner_kwargs)  # type: ignore
+
+            assert result == 0
+            mock_pd.assert_awaited_once()
+            args, _ = mock_pd.call_args
+            assert args[0].xml.deliverableid == "test-doc"
+
     async def test_failed_deliverables_returns_one(
         self,
-        mock_console_err: Mock,
-        mock_execute: AsyncMock,
-        mock_gather: Mock,
-        mock_parse_portal_config: AsyncMock,
-        mock_homepage: Mock,
-        mock_store_json: Mock,
         runner_kwargs: dict[str, object],
+        tmp_path: Path,
     ) -> None:
-        """Verify failures map to exit code 1."""
-        mock_parse_portal_config.return_value = etree.ElementTree(
-            etree.Element("portal")
-        )
-        failed_d = Mock(spec=Deliverable)
-        failed_d.full_id = "sles/15:test"
+        """Verify failures correctly surface exit code 1."""
+        xml_string = """
+        <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+            <product xml:id="sles">
+              <name>SUSE Linux Enterprise Server</name>
+              <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+                <resources>
+                  <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable xml:id="fail-doc"><dc file="DC-fail"/></deliverable>
+                  </locale>
+                </resources>
+              </docset>
+            </product>
+        </portal>
+        """
+        (tmp_path / "portal.xml").write_text(xml_string)
 
-        mock_gather.return_value = [failed_d]
-        mock_execute.return_value = [failed_d]
+        import docbuild.tasks.metadata.runner as runner_pkg
+        with patch.object(runner_pkg, "store_productdocset_json"), \
+             patch.object(runner_pkg, "_generate_homepage"), \
+             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
+             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd, \
+             patch.object(runner_pkg, "console_err") as mock_cerr:
 
-        result = await process(**runner_kwargs) # type: ignore
+            failed_d = Mock()
+            failed_d.full_id = "fail-doc"
+            mock_pd.return_value = (False, failed_d)
 
-        assert result == 1
-        assert mock_console_err.print.called
+            result = await process(**runner_kwargs)  # type: ignore
 
-    @patch("docbuild.tasks.metadata.runner.store_productdocset_json")
-    @patch("docbuild.tasks.metadata.runner._generate_homepage")
-    @patch("docbuild.tasks.metadata.runner.parse_portal_config", new_callable=AsyncMock)
-    @patch("docbuild.tasks.metadata.runner._gather_build_tasks")
-    @patch("docbuild.tasks.metadata.runner._execute_build_pipeline", new_callable=AsyncMock)
-    @pytest.mark.asyncio
+            assert result == 1
+            assert mock_cerr.print.called
+
     async def test_provided_doctypes_skips_default(
         self,
-        mock_execute: AsyncMock,
-        mock_gather: Mock,
-        mock_parse_portal_config: AsyncMock,
-        mock_homepage: Mock,
-        mock_store_json: Mock,
         runner_kwargs: dict[str, object],
+        tmp_path: Path,
     ) -> None:
-        """Verify targeted execution isolates requested doctypes."""
-        mock_parse_portal_config.return_value = etree.ElementTree(
-            etree.Element("portal")
-        )
-        mock_gather.return_value = []
-        mock_execute.return_value = []
+        """Verify targeted execution isolates requested doctypes without mocking pipeline."""
+        xml_string = """
+        <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+            <product xml:id="sles">
+              <name>SUSE Linux Enterprise Server</name>
+              <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+                <resources>
+                  <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable xml:id="doc1"><dc file="DC-1"/></deliverable>
+                  </locale>
+                  <locale lang="de-de">
+                    <branch>main</branch>
+                    <deliverable xml:id="doc2"><dc file="DC-2"/></deliverable>
+                  </locale>
+                </resources>
+              </docset>
+            </product>
+        </portal>
+        """
+        (tmp_path / "portal.xml").write_text(xml_string)
 
-        provided_doctype = Doctype.from_str("sles/15/en-us")
+        provided_doctype = Doctype.from_str("sles/15-SP6/de-de")
         runner_kwargs["doctypes"] = [provided_doctype]
 
-        result = await process(**runner_kwargs) # type: ignore
+        import docbuild.tasks.metadata.runner as runner_pkg
+        with patch.object(runner_pkg, "store_productdocset_json"), \
+             patch.object(runner_pkg, "_generate_homepage"), \
+             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
+             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
 
-        assert result == 0
-        args, _ = mock_gather.call_args
-        assert args[1] == [provided_doctype]
+            mock_pd.return_value = (True, Mock())
+
+            result = await process(**runner_kwargs)  # type: ignore
+
+            assert result == 0
+            # Only the de-de deliverable should be processed
+            mock_pd.assert_awaited_once()
+            args, _ = mock_pd.call_args
+            assert args[0].xml.deliverableid == "doc2"

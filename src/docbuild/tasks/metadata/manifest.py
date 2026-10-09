@@ -11,7 +11,6 @@ from lxml import etree  # type: ignore
 from pydantic import ValidationError
 
 from ...cli.console import console as stdout
-from ...constants import XML_ID
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
@@ -29,32 +28,16 @@ from .deliverables import get_deliverable_from_doctype
 log = logging.getLogger(__name__)
 
 
-def _create_synthetic_document(d: Deliverable, target_node: etree._Element) -> Document:
+def _create_synthetic_document(d: Deliverable) -> Document:
     """Phase 3: Create a synthetic Navigational Link for docset/product xrefs."""
-    tag_name = etree.QName(target_node).localname
-    if tag_name == "product":
-        p_path = target_node.get("path") or target_node.get(XML_ID) or ""
-        title = target_node.findtext("name") or p_path
-        url = f"/{p_path}/"
-    else:
-        prod_node = target_node.getparent().getparent()
-        p_path = prod_node.get("path") or prod_node.get(XML_ID) or ""
-        ds_path = target_node.get("path") or target_node.get(XML_ID) or ""
-        title = target_node.findtext("title") or ds_path
-        url = f"/{p_path}/{ds_path}/"
-
+    url = d.xml.target_url or "/"
     sdoc = SingleDocument(
         lang=str(d.xml.lang),
-        title=title.strip(),
+        title=d.xml.target_title.strip(),
         format=DocumentFormat(html=url),
-        dcfile="",
+        dcfile=f"xref:{url}",  # avoids collision in merge_documents_by_dcfile
     )
-
-    cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
-    if not cat:
-        cat = target_node.get("category")
-
-    return Document(docs=[sdoc], category=cat)
+    return Document(docs=[sdoc], category=d.xml.categoryid)
 
 
 def _read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
@@ -171,9 +154,9 @@ def load_documents_from_deliverables(
             if target_node is None:
                 continue  # Broken reference
 
-            tag_name = etree.QName(target_node).localname
+            tag_name = d.xml.target_type
             if tag_name in ("product", "docset"):
-                loaded_docs.append(_create_synthetic_document(d, target_node))
+                loaded_docs.append(_create_synthetic_document(d))
                 continue
             elif tag_name == "deliverable":
                 # For concrete targets, read the metadata from the TARGET's cache path

@@ -495,6 +495,7 @@ class DeliverableXMLView:
         if (target := self.final_target_node) is not None:
             return str(target.get("gated", "false")).lower() == "true"
         return False
+
     @cached_property
     def docset_version(self) -> str:
         """Return the docset version."""
@@ -502,3 +503,45 @@ class DeliverableXMLView:
             node = self.docset_node.findtext("version", default="")
             return node.strip() if node else ""
         return ""
+
+    @cached_property
+    def target_type(self) -> Literal["product", "docset", "deliverable"] | None:
+        """Return the local element name of the target node, if this is an xref."""
+        if not self.is_xref or self.final_target_node is None:
+            return None
+        return etree.QName(self.final_target_node).localname  # type: ignore
+
+    @cached_property
+    def target_url(self) -> str | None:
+        """Return the web URL for the xref target (product, docset, or deliverable)."""
+        target = self.final_target_node
+        if target is None:
+            return None
+
+        tag = self.target_type
+        if tag == "product":
+            p_path = target.get("path") or target.get(XML_ID) or ""
+            return f"/{p_path}/"
+
+        if tag == "docset":
+            prod = target.getparent()
+            p_path = (prod.get("path") or prod.get(XML_ID) or "") if prod is not None else ""
+            ds_path = target.get("path") or target.get(XML_ID) or ""
+            return f"/{p_path}/{ds_path}/" if p_path else f"/{ds_path}/"
+
+        return self.resolved_prebuilt_html_url
+
+    @cached_property
+    def target_title(self) -> str:
+        """Return the display title of the target node."""
+        target = self.final_target_node
+        if target is None:
+            return ""
+
+        tag = self.target_type
+        if tag == "product":
+            return target.findtext("name") or target.get("path") or target.get(XML_ID) or ""
+        if tag == "docset":
+            return target.findtext("name") or target.findtext("version") or target.get("path") or target.get(XML_ID) or ""
+
+        return target.findtext("title") or ""

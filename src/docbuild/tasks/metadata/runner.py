@@ -109,21 +109,19 @@ async def _execute_build_pipeline(
         deliverable: Deliverable, *args: object
     ) -> tuple[bool, Deliverable]:
         try:
-            # The task name will be inherited by all child tasks and logs.
-            # This helps to distinguish logs for different deliverables.
-            return await asyncio.create_task(
-                process_deliverable(
-                    deliverable,
-                    repo_dir,
-                    tmp_repo_dir,
-                    meta_cache_dir,
-                    prebuilt_dir=prebuilt_dir,
-                    dapstmpl=dapsmetatmpl,
-                    daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
-                    skip_repo_update=skip_repo_update,
-                    env_config_hash=env_config_hash,
-                ),
-                name=f"metadata:{deliverable.full_id}",
+            if current_task := asyncio.current_task():
+                current_task.set_name(f"metadata:{deliverable.full_id}")
+
+            return await process_deliverable(
+                deliverable,
+                repo_dir,
+                tmp_repo_dir,
+                meta_cache_dir,
+                prebuilt_dir=prebuilt_dir,
+                dapstmpl=dapsmetatmpl,
+                daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+                skip_repo_update=skip_repo_update,
+                env_config_hash=env_config_hash,
             )
         except Exception as e:
             log.error("Error in task for %s: %s", deliverable.full_id, e)
@@ -205,6 +203,10 @@ async def process(
         max_workers,
         exitfirst,
     )
+
+    if exitfirst and all_failed_deliverables:
+        console_err.print(f"[error]Exiting early due to failed deliverable:[/] {all_failed_deliverables[0].full_id}")
+        return 1
 
     # --- Phase 3: Reference Resolution & Manifest Assembly ---
     await asyncio.to_thread(
