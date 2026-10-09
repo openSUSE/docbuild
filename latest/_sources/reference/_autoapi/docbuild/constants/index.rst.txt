@@ -27,11 +27,10 @@ Attributes
    docbuild.constants.MULTIPLE_LANG_REGEX
    docbuild.constants.LIFECYCLES_STR
    docbuild.constants.PROJECT_DIR
-   docbuild.constants.USER_CONFIG_DIR
+   docbuild.constants.CONFIG_HOME
    docbuild.constants.SYSTEM_CONFIG_DIR
    docbuild.constants.CONFIG_PATHS
    docbuild.constants.STATE_HOME
-   docbuild.constants.CONFIG_HOME
    docbuild.constants.DATA_HOME
    docbuild.constants.CACHE_HOME
    docbuild.constants.CACHE_FILE_EXT
@@ -150,11 +149,10 @@ Module Contents
    The current working directory, used as the project directory.
 
 
-.. py:data:: USER_CONFIG_DIR
+.. py:data:: CONFIG_HOME
    :type:  pathlib.Path
 
-   The user-specific configuration directory, typically located
-   at ~/.config/docbuild.
+   The user-specific configuration directory, typically located at ~/.config/docbuild.
 
 
 .. py:data:: SYSTEM_CONFIG_DIR
@@ -174,12 +172,6 @@ Module Contents
    :type:  pathlib.Path
 
    The base directory for application state, logs, and locks, per XDG Base Directory Specification.
-
-
-.. py:data:: CONFIG_HOME
-   :type:  pathlib.Path
-
-   The user-specific configuration directory, typically located at ~/.config/docbuild.
 
 
 .. py:data:: DATA_HOME
