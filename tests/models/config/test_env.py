@@ -267,3 +267,47 @@ def test_get_default_config_unresolved():
     assert isinstance(unresolved_config, dict)
     # Check for a known placeholder
     assert "{base_cache_dir}" in unresolved_config["paths"]["base_server_cache_dir"]
+
+
+def test_env_remote_section_omitted_loads_with_empty_defaults(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that omitting the [remote] section loads with empty server and path defaults."""
+    config = EnvConfig.from_dict(mock_valid_raw_env_data)
+    assert config.remote.server == ""
+    assert config.remote.path == ""
+
+
+def test_env_remote_section_loads_exact_values(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that a [remote] section with server and path loads exactly."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"server": "doc@example.com", "path": "/srv/docs"}
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server == "doc@example.com"
+    assert config.remote.path == "/srv/docs"
+
+
+def test_env_remote_unknown_key_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that an unknown key inside [remote] raises a ValidationError."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"rsync_options": []}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("remote", "rsync_options") == tuple(locs)
+
+
+def test_env_remote_wrong_type_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that a non-string server value inside [remote] raises a ValidationError."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"server": 123}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("remote", "server") == tuple(locs)

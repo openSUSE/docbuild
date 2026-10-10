@@ -86,6 +86,12 @@ runtime during the build process.
             "common": {},
             "html": {},
             "pdf": {}
+        },
+        // Remote destination for publishing built documentation.
+        // Corresponds to the EnvRemote model.
+        "remote": {
+            "server": "",
+            "path": ""
         }
     }
 """
@@ -585,6 +591,31 @@ class EnvXslt(BaseModel):
     pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
 
 
+class EnvRemote(BaseModel):
+    """Defines the remote destination for publishing built documentation."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    server: str = Field(
+        default="",
+        title="Remote Server",
+        description="The remote server that receives the built documentation.",
+        examples=["doc@example.com"],
+    )
+    "The SSH-style server address (for example user@host) used by publish."
+
+    path: str = Field(
+        default="",
+        title="Remote Directory",
+        description=(
+            "The absolute directory on the remote server where documentation "
+            "is published."
+        ),
+        examples=["/srv/docs"],
+    )
+    "The remote directory used by publish."
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -618,6 +649,13 @@ class EnvConfig(BaseModel):
         description="Custom XSLT parameters passed directly to DAPS.",
     )
     "XSLT processing parameters."
+
+    remote: EnvRemote = Field(
+        default_factory=EnvRemote,
+        title="Remote Configuration",
+        description="Settings for the remote destination used by publish.",
+    )
+    "Remote publish destination."
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")
