@@ -58,7 +58,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
                 "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_base_dir": "doc@10.100.100.100:/srv/docs",
+                "target_base_dir": str(base / "target"),
                 "target_dir_dyn": "{{product}}",
                 "backup_dir": str(base / "backups"),
             },
@@ -311,3 +311,15 @@ def test_env_remote_wrong_type_rejected(
         EnvConfig.from_dict(data)
     locs = excinfo.value.errors()[0]["loc"]
     assert ("remote", "server") == tuple(locs)
+
+
+def test_envconfig_example_file_contents() -> None:
+    """Test that the example env config defines a local target and the [remote] section."""
+    from docbuild.config.load import load_single_config
+
+    example = Path(__file__).resolve().parents[3] / "etc/docbuild/env.example.toml"
+    raw_config = load_single_config(example)
+
+    assert raw_config["remote"]["server"] == "doc@example.com"
+    assert raw_config["remote"]["path"] == "/srv/docs"
+    assert raw_config["paths"]["target"]["target_base_dir"] == "~/Documents/docbuild/target"
