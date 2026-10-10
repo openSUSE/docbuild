@@ -58,7 +58,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
                 "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_base_dir": str(base / "target"),
+                "target_base_dir": "/srv/docs",
                 "target_dir_dyn": "{{product}}",
                 "backup_dir": str(base / "backups"),
             },
@@ -323,3 +323,79 @@ def test_envconfig_example_file_contents() -> None:
     assert raw_config["remote"]["server"] == "doc@example.com"
     assert raw_config["remote"]["path"] == "/srv/docs"
     assert raw_config["paths"]["target"]["target_base_dir"] == "~/Documents/docbuild/target"
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "user@host:/srv/docs",
+        "host:/srv/docs",
+        "rsync://host/module",
+        "host::module",
+    ],
+)
+def test_envconfig_remote_target_base_dir_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+    value: str,
+) -> None:
+    """Test that remote-looking target_base_dir values are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = value
+
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("paths", "target", "target_base_dir") == tuple(locs)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("/srv/docs", "/srv/docs"),
+        ("relative/dir", "relative/dir"),
+        ("~/Documents/docbuild/target", "~/Documents/docbuild/target"),
+        ("/path/with{{lang}}", "/path/with{lang}"),
+    ],
+)
+def test_envconfig_local_target_base_dir_accepted(
+    mock_valid_raw_env_data: dict[str, Any],
+    value: str,
+    expected: str,
+) -> None:
+    """Test that local target_base_dir values are accepted."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = value
+
+    config = EnvConfig.from_dict(data)
+
+    assert config.paths.target.target_base_dir == expected
+
+
+def test_envconfig_remote_target_base_dir_error_message(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that the rejection message mentions [remote] and the offending value."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = "doc@example.com:/srv/docs"
+
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+
+    message = str(excinfo.value)
+    assert "[remote]" in message
+    assert "doc@example.com:/srv/docs" in message
+
+
+def test_envconfig_target_base_dir_default_is_local(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that omitting target_base_dir keeps a local, non-remote default."""
+    from docbuild.utils.sync import is_remote_path
+
+    data = mock_valid_raw_env_data.copy()
+    del data["paths"]["target"]["target_base_dir"]
+
+    config = EnvConfig.from_dict(data)
+
+    assert not is_remote_path(config.paths.target.target_base_dir)

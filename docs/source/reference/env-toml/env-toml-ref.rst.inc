@@ -287,7 +287,7 @@ Defines target paths
     :Type: :code:`str`
     :Default: ``{{product}}``
 
-    A dynamic template for the final target directory on the remote server.
+    A dynamic template for the subdirectory under target_base_dir.
 
 .. _envtoml-paths-target-backup-dir:
 

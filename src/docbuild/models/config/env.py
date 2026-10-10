@@ -106,6 +106,7 @@ from pydantic import (
     Field,
     HttpUrl,
     field_serializer,
+    field_validator,
     model_validator,
 )
 
@@ -125,6 +126,7 @@ from ...constants import (
     RUNTIME_DIR,
     STATE_HOME,
 )
+from ...utils.sync import is_remote_path
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import WritablePath
@@ -392,23 +394,29 @@ class EnvTargetPaths(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    # SPLIT: static base directory or remote destination
+    # SPLIT: static local base directory
     target_base_dir: str = Field(
         default=f"{Path.home()}/Documents/{APP_NAME}/target",
-        title="Target Server Base Directory",
-        description="The static remote destination or base path for built documentation.",
-        examples=["doc@10.100.100.100:/srv/docs"],
+        title="Target Base Directory",
+        description=(
+            "The local base directory where build writes its deliverables. "
+            "The remote destination is configured in the [remote] section."
+        ),
+        examples=["~/Documents/docbuild/target"],
     )
-    "The base destination for final built documentation."
+    "The local base directory where build writes its deliverables."
 
     # SPLIT: dynamic suffix
     target_dir_dyn: str = Field(
         default="{{lang}}/{{product}}/{{docset}}",
         title="Target Directory Suffix",
-        description="The dynamic suffix of the remote path containing runtime placeholders.",
+        description=(
+            "The dynamic suffix of the path under the local target_base_dir "
+            "where build writes its deliverables."
+        ),
         examples=["{{lang}}/{{product}}/{{docset}}"],
     )
-    "Dynamic suffix for final remote destination."
+    "Dynamic suffix for the target directory under target_base_dir."
 
     backup_dir: Path = Field(
         default=f"{STATE_HOME}/{{general.name}}/backup",
@@ -417,6 +425,25 @@ class EnvTargetPaths(BaseModel):
         examples=["/var/lib/docbuild/backups"],
     )
     "Local directory for storing build backups before deployment."
+
+    @field_validator("target_base_dir")
+    @classmethod
+    def _reject_remote_target_base_dir(cls, value: str) -> str:
+        """Reject remote-looking destination strings.
+
+        Remote destinations are configured in the ``[remote]`` section instead.
+
+        :param value: The configured ``target_base_dir`` value.
+        :return: The unchanged value.
+        :raises ValueError: If the value looks like a remote path.
+        """
+        if is_remote_path(value):
+            raise ValueError(
+                f"target_base_dir must be a local directory, but {value!r} looks like a "
+                "remote destination. Configure the remote destination in the [remote] "
+                "section instead."
+            )
+        return value
 
 
 class EnvPaths(BaseModel):
