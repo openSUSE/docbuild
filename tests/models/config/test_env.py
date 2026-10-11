@@ -350,6 +350,105 @@ def test_env_remote_invalid_server_rejected(
         EnvConfig.from_dict(data)
 
 
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_dict_user(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the dict ``user`` field are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": f"doc{character}", "host": "docs.example.com"},
+        "path": str(tmp_path / "remote"),
+    }
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_dict_host(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the dict ``host`` field are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": f"docs.example.com{character}"},
+        "path": str(tmp_path / "remote"),
+    }
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_shorthand_user(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the shorthand ``user`` are rejected."""
+    data = _with_remote(
+        mock_valid_raw_env_data, f"doc{character}@docs.example.com", tmp_path / "remote"
+    )
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_shorthand_host(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the shorthand ``host`` are rejected."""
+    data = _with_remote(
+        mock_valid_raw_env_data, f"doc@docs.example.com{character}", tmp_path / "remote"
+    )
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "host",
+    ["192.0.2.10", "2001:db8::1"],
+    ids=["ipv4", "ipv6"],
+)
+def test_env_remote_dict_host_ip_address_passes(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    host: str,
+) -> None:
+    """Test that valid IP address hosts still pass (str() conversion in the validator)."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": host},
+        "path": str(tmp_path / "remote"),
+    }
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert str(config.remote.server.host) == host
+    assert config.remote.path == (tmp_path / "remote")
+
+
 def test_env_remote_relative_path_rejected(
     mock_valid_raw_env_data: dict[str, Any],
 ) -> None:

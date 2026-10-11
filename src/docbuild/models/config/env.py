@@ -704,6 +704,26 @@ class SSHEndpoint(BaseModel):
             )
         return {"user": user, "host": host}
 
+    @model_validator(mode="after")
+    def _reject_control_characters(self) -> Self:
+        r"""Reject whitespace and control characters in user and host.
+
+        The python-re engine matches ``$`` before a trailing newline, so a
+        pattern alone would accept ``user``/``host`` values that carry a
+        trailing ``\\n``. This validator rejects any whitespace or control
+        character (space, tab, ``\\n``, ``\\r``, ``\\x00``-``\\x1f``, ``\\x7f``)
+        in the string fields. ``host`` may be an IP address object; it is
+        converted to its string form before the check.
+        """
+        for name, value in (("user", self.user), ("host", str(self.host))):
+            if value is not None and any(
+                ord(char) < 0x20 or ord(char) == 0x7F or char.isspace() for char in value
+            ):
+                raise ValueError(
+                    f"{name} must not contain whitespace or control characters"
+                )
+        return self
+
 
 class EnvRemote(BaseModel):
     """Defines the remote destination for publishing built documentation."""
