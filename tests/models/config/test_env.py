@@ -454,6 +454,7 @@ def test_envconfig_example_file_contents() -> None:
         "host:/srv/docs",
         "rsync://host/module",
         "host::module",
+        "ssh://host/x",
     ],
 )
 def test_envconfig_remote_target_base_dir_rejected(
@@ -477,7 +478,8 @@ def test_envconfig_remote_target_base_dir_rejected(
         ("/srv/docs", "/srv/docs"),
         ("relative/dir", "relative/dir"),
         ("~/Documents/docbuild/target", "~/Documents/docbuild/target"),
-        ("/path/with{{lang}}", "/path/with{lang}"),
+        ("my:dir", "my:dir"),
+        ("a:b/c", "a:b/c"),
     ],
 )
 def test_envconfig_local_target_base_dir_accepted(

@@ -96,6 +96,7 @@ runtime during the build process.
 
 from copy import deepcopy
 from pathlib import Path
+import re
 from typing import Annotated, Any, Self
 
 from pydantic import (
@@ -127,7 +128,6 @@ from ...constants import (
     SSH_USERNAME_PATTERN,
     STATE_HOME,
 )
-from ...utils.sync import is_remote_path
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import AbsolutePath, WritablePath
@@ -144,6 +144,35 @@ DomainName = Annotated[
         examples=["example.com", "sub.domain.net"],
     ),
 ]
+
+
+# Patterns identifying rsync-style remote destinations in a path string.
+_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://")
+_SCP_RE = re.compile(r"^[^/\s@:]+@[^/\s:]+:")
+_RSYNC_RE = re.compile(r"^[^/\s@:]+::")
+_SSH_RE = re.compile(r"^[^/\s@:]+:/")
+
+
+def _target_is_remote(value: str) -> bool:
+    """Check whether *value* looks like an rsync-style remote destination.
+
+    A value is remote if it matches one of the following forms:
+
+    * ``scheme://`` (for example ``rsync://host/module`` or ``ssh://host/x``)
+    * ``user@host:`` (for example ``user@host:/srv/docs``)
+    * ``host::`` (for example ``host::module``)
+    * ``host:/`` (for example ``host:/srv/docs``)
+
+    Everything else is treated as local, including relative paths,
+    ``my:dir`` and ``a:b/c`` (no drive-letter special cases are needed).
+
+    :param value: The path string to inspect.
+    :return: True if the value looks like a remote destination; False otherwise.
+    """
+    return any(
+        pattern.match(value)
+        for pattern in (_SCHEME_RE, _SCP_RE, _RSYNC_RE, _SSH_RE)
+    )
 
 
 # --- Build Sub-Models (To allow extra sections in env.toml) ---
@@ -432,17 +461,18 @@ class EnvTargetPaths(BaseModel):
     def _reject_remote_target_base_dir(cls, value: str) -> str:
         """Reject remote-looking destination strings.
 
-        Remote destinations are configured in the ``[remote]`` section instead.
+        Remote destinations are configured in the ``[remote]`` section instead
+        of as rsync-style ``target_base_dir`` values.
 
         :param value: The configured ``target_base_dir`` value.
         :return: The unchanged value.
         :raises ValueError: If the value looks like a remote path.
         """
-        if is_remote_path(value):
+        if _target_is_remote(value):
             raise ValueError(
-                f"target_base_dir must be a local directory, but {value!r} looks like a "
-                "remote destination. Configure the remote destination in the [remote] "
-                "section instead."
+                f"target_base_dir must be a local directory, but {value!r} looks like "
+                "a remote destination. Migrate the remote destination to the [remote] "
+                "section and keep target_base_dir local."
             )
         return value
 
