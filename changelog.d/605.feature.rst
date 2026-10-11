@@ -1,0 +1,1 @@
+Added an optional ``[remote]`` section (``server``, ``path``) to the environment configuration for the remote publish destination. **Breaking change:** ``paths.target.target_base_dir`` must now be a local directory. Configurations that set a remote value such as ``user@host:/srv/docs`` are rejected, so move that destination into the ``[remote]`` section.
