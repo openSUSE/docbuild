@@ -623,7 +623,7 @@ class EnvRemote(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    server: str = Field(
+    server: SSHEndpoint = Field(
         default="",
         title="Remote Server",
         description="The remote server that receives the built documentation.",
