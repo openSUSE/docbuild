@@ -269,24 +269,112 @@ def test_get_default_config_unresolved():
     assert "{base_cache_dir}" in unresolved_config["paths"]["base_server_cache_dir"]
 
 
-def test_env_remote_section_omitted_loads_with_empty_defaults(
+def _with_remote(data: dict[str, Any], server: Any, path: str | Path) -> dict[str, Any]:
+    """Return a copy of *data* with the given ``[remote]`` section."""
+    result = data.copy()
+    result["remote"] = {"server": server, "path": str(path)}
+    return result
+
+
+def test_env_remote_section_omitted_gives_no_remote(
     mock_valid_raw_env_data: dict[str, Any],
 ) -> None:
-    """Test that omitting the [remote] section loads with empty server and path defaults."""
+    """Test that omitting the [remote] section leaves server and path as None."""
     config = EnvConfig.from_dict(mock_valid_raw_env_data)
-    assert config.remote.server == ""
-    assert config.remote.path == ""
+    assert config.remote.server is None
+    assert config.remote.path is None
 
 
-def test_env_remote_section_loads_exact_values(
+@pytest.mark.parametrize(
+    ("server", "expected_user", "expected_host"),
+    [
+        ("doc@example.com", "doc", "example.com"),
+        ("docs.example.com", None, "docs.example.com"),
+        ("192.0.2.10", None, "192.0.2.10"),
+        ("2001:db8::1", None, "2001:db8::1"),
+    ],
+    ids=["user_and_host", "hostname_only", "ipv4", "ipv6"],
+)
+def test_env_remote_server_string_shorthand(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    server: str,
+    expected_user: str | None,
+    expected_host: str,
+) -> None:
+    """Test that the ``user@host`` string shorthand parses correctly."""
+    data = _with_remote(mock_valid_raw_env_data, server, tmp_path / "remote")
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == expected_user
+    assert str(config.remote.server.host) == expected_host
+    assert config.remote.path == (tmp_path / "remote")
+
+
+def test_env_remote_table_form(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """Test that the [remote] section accepts the structured table form."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": "docs.example.com"},
+        "path": str(tmp_path / "remote"),
+    }
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert config.remote.server.host == "docs.example.com"
+    assert config.remote.path == (tmp_path / "remote")
+
+
+@pytest.mark.parametrize(
+    "server",
+    [
+        "-bad",
+        "Doc@x.example.com",
+        "a@b@host",
+        "@example.com",
+        " ",
+    ],
+    ids=["dash_bad_host", "uppercase_user", "double_at", "empty_user", "only_whitespace"],
+)
+def test_env_remote_invalid_server_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    server: str,
+) -> None:
+    """Test that invalid server values are rejected."""
+    data = _with_remote(mock_valid_raw_env_data, server, tmp_path / "remote")
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+def test_env_remote_relative_path_rejected(
     mock_valid_raw_env_data: dict[str, Any],
 ) -> None:
-    """Test that a [remote] section with server and path loads exactly."""
+    """Test that a relative remote path is rejected."""
+    data = _with_remote(mock_valid_raw_env_data, "doc@example.com", "srv/docs")
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+def test_env_remote_requires_both_or_neither(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """Test that [remote] with only server or only path is rejected."""
     data = mock_valid_raw_env_data.copy()
-    data["remote"] = {"server": "doc@example.com", "path": "/srv/docs"}
-    config = EnvConfig.from_dict(data)
-    assert config.remote.server == "doc@example.com"
-    assert config.remote.path == "/srv/docs"
+    data["remote"] = {"server": "doc@example.com"}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    assert "both 'server' and 'path'" in str(excinfo.value)
+
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"path": str(tmp_path / "remote")}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    assert "both 'server' and 'path'" in str(excinfo.value)
 
 
 def test_env_remote_unknown_key_rejected(
@@ -304,13 +392,47 @@ def test_env_remote_unknown_key_rejected(
 def test_env_remote_wrong_type_rejected(
     mock_valid_raw_env_data: dict[str, Any],
 ) -> None:
-    """Test that a non-string server value inside [remote] raises a ValidationError."""
+    """Test that a non-dict, non-string server value inside [remote] raises a ValidationError."""
     data = mock_valid_raw_env_data.copy()
     data["remote"] = {"server": 123}
     with pytest.raises(ValidationError) as excinfo:
         EnvConfig.from_dict(data)
     locs = excinfo.value.errors()[0]["loc"]
     assert ("remote", "server") == tuple(locs)
+
+
+def test_envconfig_remote_round_trip() -> None:
+    """Test that the default config round-trips through model_dump and from_dict.
+
+    ``resolve_placeholders=False`` is required here: the default daps templates
+    intentionally keep *runtime* placeholders in escaped form (``{{builddir}}``).
+    ``get_default_config()`` (with resolution enabled) unescapes them to
+    ``{builddir}``, and feeding that output back through ``from_dict`` tries to
+    resolve ``{builddir}`` a second time and fails before any model validation.
+    This is pre-existing placeholder behaviour in ``docbuild.config.app``,
+    unrelated to the new ``[remote]`` section.
+    """
+    dumped = EnvConfig.get_default_config(resolve_placeholders=False)
+    config = EnvConfig.from_dict(dumped)
+    assert config.remote.server is None
+    assert config.remote.path is None
+
+
+def test_envconfig_remote_none_config_list_smoke(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Smoke-test the 'docbuild config list' serialization path with None values."""
+    from docbuild.cli.cmd_config.list import print_section
+
+    config = EnvConfig.from_dict(mock_valid_raw_env_data)
+    assert config.remote.server is None
+    assert config.remote.path is None
+
+    data = config.model_dump(mode="json")
+    assert data["remote"] == {"server": None, "path": None}
+
+    # This is exactly the code path 'docbuild config list --env' uses.
+    print_section("Environment Configuration", data, "env", False, "yellow")
 
 
 def test_envconfig_example_file_contents() -> None:

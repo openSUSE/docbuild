@@ -71,3 +71,25 @@ WritablePath = Annotated[Path, AfterValidator(ensure_writeable_directory)]
 """A Pydantic custom type that ensures a directory exists and is writable.
 The final validated type is a :py:class:`pathlib.Path` object.
 """
+
+
+def must_be_absolute(value: Path) -> Path:
+    """Validate that a path is absolute.
+
+    Note: this validator performs no filesystem access.
+
+    :param value: The path to validate.
+    :type value: pathlib.Path
+    :return: The unchanged path object.
+    :rtype: pathlib.Path
+    :raises ValueError: If the path is not absolute.
+    """
+    if not value.is_absolute():
+        raise ValueError(f"must be an absolute path, got {str(value)!r}")
+    return value
+
+
+AbsolutePath = Annotated[Path, AfterValidator(must_be_absolute)]
+"""A Pydantic custom type that requires an absolute path.
+The final validated type is a :py:class:`pathlib.Path` object.
+"""

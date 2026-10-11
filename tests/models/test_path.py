@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 import pytest
 
 # Import the custom type under test
-from docbuild.models.path import WritablePath
+from docbuild.models.path import AbsolutePath, WritablePath
 
 # --- Test Setup ---
 
@@ -17,6 +17,13 @@ class PathTestModel(BaseModel):
     """Model using the custom path type for testing validation."""
 
     writable_dir: WritablePath
+
+
+# Define a simple Pydantic model to test the custom absolute path type
+class AbsolutePathTestModel(BaseModel):
+    """Model using the absolute path type for testing validation."""
+
+    absolute_path: AbsolutePath
 
 
 # --- Test Cases ---
@@ -166,3 +173,29 @@ def test_writable_directory_permission_failures(
     error_msg = excinfo.value.errors()[0]["msg"]
     assert "Insufficient permissions for directory" in error_msg
     assert f"Missing: {expected_missing_perm}" in error_msg
+
+
+def test_absolute_path_accepts_absolute(tmp_path: Path):
+    """Test that an absolute path derived from tmp_path is accepted on all platforms."""
+    abs_dir = tmp_path / "remote"
+    model = AbsolutePathTestModel(absolute_path=abs_dir)  # type: ignore
+    assert model.absolute_path == abs_dir
+    assert model.absolute_path.is_absolute()
+
+
+def test_absolute_path_rejects_relative():
+    """Test that a relative path is rejected."""
+    with pytest.raises(ValidationError) as excinfo:
+        AbsolutePathTestModel(absolute_path=Path("srv/docs"))  # type: ignore
+    assert "must be an absolute path" in excinfo.value.errors()[0]["msg"]
+
+
+def test_absolute_path_no_filesystem_access(tmp_path: Path):
+    """Test that AbsolutePath neither creates nor checks the filesystem."""
+    missing = tmp_path / "does" / "not" / "exist"
+    assert not missing.exists()
+
+    model = AbsolutePathTestModel(absolute_path=missing)  # type: ignore
+
+    assert model.absolute_path == missing
+    assert not missing.exists()

@@ -88,23 +88,24 @@ runtime during the build process.
             "pdf": {}
         },
         // Remote destination for publishing built documentation.
+        // Not configured by default: publish is disabled unless [remote] is set.
         // Corresponds to the EnvRemote model.
-        "remote": {
-            "server": "",
-            "path": ""
-        }
+        "remote": null
     }
 """
 
 from copy import deepcopy
 from pathlib import Path
+import re
 from typing import Annotated, Any, Self
 
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
     HttpUrl,
+    IPvAnyAddress,
     field_serializer,
     field_validator,
     model_validator,
@@ -123,13 +124,15 @@ from ...constants import (
     CONFIG_HOME,
     DATA_HOME,
     DEFAULT_ENV_NAME,
+    HOSTNAME_PATTERN,
     RUNTIME_DIR,
+    SSH_USERNAME_PATTERN,
     STATE_HOME,
 )
 from ...utils.sync import is_remote_path
 from ..envroles import EnvRole
 from ..language import LanguageCode
-from ..path import WritablePath
+from ..path import AbsolutePath, WritablePath
 
 # --- Custom Types and Utilities ---
 
@@ -618,29 +621,114 @@ class EnvXslt(BaseModel):
     pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
 
 
+def _validate_hostname(value: str) -> str:
+    """Validate a host name against :data:`HOSTNAME_PATTERN`.
+
+    Note: :data:`HOSTNAME_PATTERN` uses a look-ahead assertion which the Rust
+    regex engine used by pydantic-core cannot compile. It is therefore applied
+    here with Python's :mod:`re` module instead of ``Field(pattern=...)``.
+
+    :param value: The host name to validate.
+    :return: The unchanged host name.
+    :raises ValueError: If the host name does not match the pattern.
+    """
+    if not re.fullmatch(HOSTNAME_PATTERN, value):
+        raise ValueError(f"invalid host name {value!r}")
+    return value
+
+
+class SSHEndpoint(BaseModel):
+    """SSH connection details for the host that receives published docs."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    user: Annotated[
+        str | None,
+        Field(
+            default=None,
+            pattern=SSH_USERNAME_PATTERN,
+            description="SSH login name. If unset, the ssh config or current user is used.",
+            examples=["doc"],
+        ),
+    ] = None
+    host: Annotated[
+        IPvAnyAddress | Annotated[str, AfterValidator(_validate_hostname)],
+        Field(
+            description="IP address or DNS name of the server.",
+            examples=["192.0.2.10", "docs.example.com"],
+        ),
+    ]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _split_user_host(cls, data: object) -> object:
+        """Parse the ``user@host`` string shorthand before field validation.
+
+        A single string is split on the last ``@``: the part before is the
+        user, the part after is the host. Without ``@`` the whole string is
+        the host. Dictionaries and SSHEndpoint instances pass through
+        unchanged. Port syntax (``host:port``) is not supported.
+
+        :param data: The raw value from the configuration.
+        :return: A dictionary with ``user``/``host`` keys for string input,
+            or the unchanged input otherwise.
+        :raises ValueError: If the string is empty or has surrounding
+            whitespace (both "do not guess" cases that must be rejected).
+        """
+        if not isinstance(data, str):
+            return data
+        user: str | None = None
+        host = data
+        if "@" in data:
+            user, host = data.rsplit("@", 1)
+            if user == "":
+                raise ValueError(f"invalid SSH endpoint {data!r}: empty user")
+        if not host or host != host.strip():
+            raise ValueError(
+                f"invalid SSH endpoint {data!r}: "
+                "the host must be non-empty and must not have surrounding whitespace"
+            )
+        return {"user": user, "host": host}
+
+
 class EnvRemote(BaseModel):
     """Defines the remote destination for publishing built documentation."""
 
     model_config = ConfigDict(extra="forbid")
 
-    server: SSHEndpoint = Field(
-        default="",
+    server: SSHEndpoint | None = Field(
+        default=None,
         title="Remote Server",
-        description="The remote server that receives the built documentation.",
+        description=(
+            "The remote server that receives the built documentation. "
+            "The default is 'no remote' (None); publish is disabled."
+        ),
         examples=["doc@example.com"],
     )
-    "The SSH-style server address (for example user@host) used by publish."
+    "The SSH server endpoint (``user@host`` or ``host``) used by publish, or None."
 
-    path: str = Field(
-        default="",
+    path: AbsolutePath | None = Field(
+        default=None,
         title="Remote Directory",
         description=(
             "The absolute directory on the remote server where documentation "
-            "is published."
+            "is published. The default is 'no remote' (None); publish is disabled."
         ),
         examples=["/srv/docs"],
     )
-    "The remote directory used by publish."
+    "The absolute remote directory used by publish, or None."
+
+    @model_validator(mode="after")
+    def _both_or_neither(self) -> Self:
+        """Require both 'server' and 'path', or neither.
+
+        :return: The unchanged model instance.
+        :raises ValueError: If exactly one of ``server`` or ``path`` is set.
+        """
+        if (self.server is None) != (self.path is None):
+            msg = "The [remote] section needs both 'server' and 'path', or neither."
+            raise ValueError(msg)
+        return self
 
 
 class EnvConfig(BaseModel):

@@ -66,6 +66,15 @@ MULTIPLE_LANG_REGEX: re.Pattern = re.compile(
 LIFECYCLES_STR: str = "|".join(ALLOWED_LIFECYCLES)
 """Regex for lifecycle states, separated by pipe (|)."""
 
+HOSTNAME_PATTERN = (
+    r"^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+    r"(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$"
+)
+"""Regex for a fully qualified host name (DNS name), similar to an FQDN."""
+
+SSH_USERNAME_PATTERN = r"^[a-z_][a-z0-9_-]{0,31}$"
+"""Regex for an SSH login name. Must start lowercase or underscore."""
+
 
 # --- PATHS AND CONFIGURATION CONSTANTS ---
 PROJECT_DIR: Path = Path.cwd()
