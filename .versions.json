@@ -8,10 +8,5 @@
     "name": "stable",
     "version": "stable",
     "url": "https://opensuse.github.io/docbuild/stable/"
-  },
-  {
-    "name": "v0.18.0",
-    "version": "v0.18.0",
-    "url": "https://opensuse.github.io/docbuild/v0.18.0/"
   }
 ]

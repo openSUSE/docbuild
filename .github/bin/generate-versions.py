@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 
 #
 BASE = (
@@ -59,6 +60,24 @@ def parsecli(cli: Iterable[str] | None = None) -> argparse.Namespace:
     return args
 
 
+def cleanup_old_versions(deploy: Path, tags_to_remove: list[str]) -> None:
+    """Clean older directories beyond the keep limit, protecting stable symlink."""
+    stable_target = None
+    stable_path = deploy / "stable"
+    if stable_path.is_symlink():
+        try:
+            stable_target = Path(os.readlink(stable_path)).name
+        except OSError:
+            pass
+
+    for tag in tags_to_remove:
+        if tag == stable_target:
+            continue
+        old_dir = deploy / tag
+        if old_dir.is_dir() and not old_dir.is_symlink():
+            shutil.rmtree(old_dir)
+
+
 def main() -> None:
     """Generate version switcher JSON."""
     args = parsecli()
@@ -75,6 +94,16 @@ def main() -> None:
             print(f"Loaded base versions from {args.input}")
         except Exception as e:
             print(f"Warning: Could not parse {args.input}: {e}")
+
+    # Exclude historical semver entries from input to manage them dynamically
+    versions = [
+        v
+        for v in versions
+        if not (
+            isinstance(v, dict)
+            and re.match(r"^v?\d+\.\d+\.\d+$", str(v.get("version", "")))
+        )
+    ]
 
     # Track existing versions to prevent duplicating them
     existing_versions = {v.get("version") for v in versions if isinstance(v, dict)}
@@ -104,7 +133,9 @@ def main() -> None:
             p.name
             for p in deploy.iterdir()
             # Strict SemVer match: optional 'v' followed by exactly X.Y.Z
-            if p.is_dir() and re.match(r"^v?\d+\.\d+\.\d+$", p.name)
+            if p.is_dir()
+            and not p.is_symlink()
+            and re.match(r"^v?\d+\.\d+\.\d+$", p.name)
         ],
         key=lambda s: [int(u) for u in re.findall(r"\d+", s)],
         reverse=True,
@@ -120,6 +151,9 @@ def main() -> None:
                     "url": f"{BASE}/{tag}/",
                 }
             )
+
+    # 5. Clean older directories beyond the keep limit
+    cleanup_old_versions(deploy, tags[args.keep :])
 
     # Ensure output directory exists and write final JSON
     if args.dry_run:
