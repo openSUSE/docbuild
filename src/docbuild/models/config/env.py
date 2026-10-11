@@ -96,11 +96,9 @@ runtime during the build process.
 
 from copy import deepcopy
 from pathlib import Path
-import re
 from typing import Annotated, Any, Self
 
 from pydantic import (
-    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
@@ -621,26 +619,12 @@ class EnvXslt(BaseModel):
     pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
 
 
-def _validate_hostname(value: str) -> str:
-    """Validate a host name against :data:`HOSTNAME_PATTERN`.
-
-    Note: :data:`HOSTNAME_PATTERN` uses a look-ahead assertion which the Rust
-    regex engine used by pydantic-core cannot compile. It is therefore applied
-    here with Python's :mod:`re` module instead of ``Field(pattern=...)``.
-
-    :param value: The host name to validate.
-    :return: The unchanged host name.
-    :raises ValueError: If the host name does not match the pattern.
-    """
-    if not re.fullmatch(HOSTNAME_PATTERN, value):
-        raise ValueError(f"invalid host name {value!r}")
-    return value
-
-
 class SSHEndpoint(BaseModel):
     """SSH connection details for the host that receives published docs."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    # HOSTNAME_PATTERN uses a look-ahead assertion which the Rust regex engine
+    # used by pydantic-core cannot compile; the python-re engine is required.
+    model_config = ConfigDict(extra="forbid", frozen=True, regex_engine="python-re")
 
     user: Annotated[
         str | None,
@@ -652,7 +636,7 @@ class SSHEndpoint(BaseModel):
         ),
     ] = None
     host: Annotated[
-        IPvAnyAddress | Annotated[str, AfterValidator(_validate_hostname)],
+        IPvAnyAddress | Annotated[str, Field(pattern=HOSTNAME_PATTERN)],
         Field(
             description="IP address or DNS name of the server.",
             examples=["192.0.2.10", "docs.example.com"],
