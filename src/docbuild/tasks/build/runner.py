@@ -17,7 +17,7 @@ from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
-from ...utils.sync import is_remote_path, rsync
+from ...utils.sync import rsync
 from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
@@ -260,13 +260,9 @@ async def process_deliverable_build(
                     )
 
                     # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    target_base_str = str(target_base_dir)
-                    if is_remote_path(target_base_str):
-                        target_dest: str | Path = f"{target_base_str.rstrip('/')}/{target_suffix}/{fmt}"
-                    else:
-                        local_target = Path(target_base_dir) / target_suffix / fmt
-                        local_target.mkdir(parents=True, exist_ok=True)
-                        target_dest = local_target
+                    local_target = Path(target_base_dir) / target_suffix / fmt
+                    local_target.mkdir(parents=True, exist_ok=True)
+                    target_dest = local_target
 
                     log.debug("Syncing %s result to %s", fmt, target_dest)
 
