@@ -303,7 +303,9 @@ Defines target paths
 --------
 
 The remote destination where built documentation is published.
-Both keys are optional; leave them empty when publishing is not used.
+
+This section is optional: there is no remote destination unless it is set.
+When set, both keys below must be given together.
 
 .. _envtoml-remote-server:
 
@@ -311,7 +313,7 @@ Both keys are optional; leave them empty when publishing is not used.
     :Type: :code:`str`
     :Default: ``doc@example.com``
 
-    The remote server in SSH syntax (user@host). Can be empty.
+    The SSH server as "user@host" or "host" (an IP address or DNS name).
 
 .. _envtoml-remote-path:
 
@@ -319,7 +321,8 @@ Both keys are optional; leave them empty when publishing is not used.
     :Type: :code:`str`
     :Default: ``/srv/docs``
 
-    The absolute directory on the remote server. Can be empty.
+    The absolute directory on the remote server where documentation is published.
+    The path must be absolute, for example: "/srv/docs".
 
 .. _envtoml-section-build:
 

@@ -534,16 +534,53 @@ def test_envconfig_remote_none_config_list_smoke(
     print_section("Environment Configuration", data, "env", False, "yellow")
 
 
-def test_envconfig_example_file_contents() -> None:
-    """Test that the example env config defines a local target and the [remote] section."""
+def test_envconfig_example_file_validates_and_enables_remote(
+    example_env_toml: Path,
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """The shipped example must validate and enable [remote] with local paths.
+
+    The example's own [paths] use home-directory locations, so it is replaced
+    with the tmp_path-based [paths] from the fixture. The [remote] section stays
+    as shipped. On Windows this test fails because ``path = "/srv/docs"`` is not
+    absolute there; Linux CI decides.
+    """
     from docbuild.config.load import load_single_config
 
-    example = Path(__file__).resolve().parents[3] / "etc/docbuild/env.example.toml"
-    raw_config = load_single_config(example)
+    raw_config = load_single_config(example_env_toml)
+    raw_config["paths"] = mock_valid_raw_env_data["paths"]
 
-    assert raw_config["remote"]["server"] == "doc@example.com"
-    assert raw_config["remote"]["path"] == "/srv/docs"
-    assert raw_config["paths"]["target"]["target_base_dir"] == "~/Documents/docbuild/target"
+    config = EnvConfig.from_dict(raw_config)
+
+    assert config.remote.server is not None
+    assert config.remote.path is not None
+
+
+def test_envconfig_remote_section_from_file_loads_tmp_path(
+    example_env_toml: Path,
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """A [remote] section written to tmp_path loads into EnvConfig."""
+    from docbuild.config.load import load_single_config
+
+    config_file = tmp_path / "remote.toml"
+    config_file.write_text(
+        "[remote]\n"
+        'server = "doc@example.com"\n'
+        f'path = "{(tmp_path / "remote").as_posix()}"\n'
+    )
+
+    raw_config = mock_valid_raw_env_data.copy()
+    raw_config["remote"] = load_single_config(config_file)["remote"]
+
+    config = EnvConfig.from_dict(raw_config)
+
+    assert config.remote is not None
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert str(config.remote.server.host) == "example.com"
+    assert config.remote.path == (tmp_path / "remote")
 
 
 @pytest.mark.parametrize(

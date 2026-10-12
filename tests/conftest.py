@@ -71,6 +71,12 @@ def ctx() -> type[DummyCtx]:
     return DummyCtx
 
 
+@pytest.fixture(scope="session")
+def example_env_toml() -> Path:
+    """Return the path to the shipped example environment configuration."""
+    return Path(__file__).resolve().parents[1] / "etc/docbuild/env.example.toml"
+
+
 @pytest.fixture
 def context() -> DocBuildContext:
     """Provide a DocBuildContext instance for testing."""
