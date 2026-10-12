@@ -311,7 +311,7 @@ When set, both keys below must be given together.
 
 ``server``
     :Type: :code:`str`
-    :Default: ``doc@example.com``
+    :Default: ``n/a``
 
     The SSH server as "user@host" or "host" (an IP address or DNS name).
 
@@ -319,7 +319,7 @@ When set, both keys below must be given together.
 
 ``path``
     :Type: :code:`str`
-    :Default: ``/srv/docs``
+    :Default: ``n/a``
 
     The absolute directory on the remote server where documentation is published.
     The path must be absolute, for example: "/srv/docs".

@@ -28,6 +28,10 @@ Supported Comment Syntax:
         # Use 0 for infinite timeout.
         timeout = 30
 
+    Default Override:
+        A `# default: <value>` comment forces the displayed default, e.g.
+        "n/a" for optional keys without a default.
+
 Key Features:
 - Supports bracketed section headers and complex keys (dots/dashes).
 - Extracts data types and multi-line descriptions from comments.
@@ -81,6 +85,9 @@ COMMENT_METADATA_REGEX = re.compile(
     """,
     re.VERBOSE,
 )
+# A "# default: <value>" comment overrides the displayed default value. It is
+# used to show "n/a" for optional keys (matching get_default_value()).
+DEFAULT_OVERRIDE_REGEX = re.compile(r"^\s*#\s*default:\s*(?P<value>.*)$")
 TOML_KEY_VALUE_REGEX = re.compile(
     fr"""
         ^\s*                                    # Leading whitespace
@@ -142,18 +149,21 @@ def get_default_value(raw_data: dict[str, Any], section_name: str, key: str) -> 
         return "n/a"
 
 
-def extract_metadata(buffer: list[str]) -> tuple[str, list[str]]:
-    """Extract data type and clean description from a comment buffer."""
+def extract_metadata(buffer: list[str]) -> tuple[str, list[str], str | None]:
+    """Extract data type, clean description and default override from a comment buffer."""
     v_type = "unknown"
     v_desc = []
+    v_default: str | None = None
     for line in buffer:
-        if meta := COMMENT_METADATA_REGEX.match(line):
+        if default_match := DEFAULT_OVERRIDE_REGEX.match(line):
+            v_default = default_match.group("value")
+        elif meta := COMMENT_METADATA_REGEX.match(line):
             v_type = meta.group("type")
             if desc_text := meta.group("description"):
                 v_desc.append(desc_text.strip())
         else:
             v_desc.append(line.strip("# ").rstrip())
-    return v_type, v_desc
+    return v_type, v_desc, v_default
 
 
 def split_buffer_for_section(buffer: list[str]) -> tuple[list[str], list[str]]:
@@ -203,16 +213,16 @@ def parse_toml_contents(
                 )
                 waiting_for_first_key = False
 
-            v_type, v_desc = extract_metadata(comment_buffer)
+            v_type, v_desc, v_default = extract_metadata(comment_buffer)
 
             current_section.entries.append(
                 ConfigEntry(
                     key=key,
                     data_type=v_type,
                     description=v_desc,
-                    default_value=get_default_value(
-                        raw_toml_data, current_section.name, key
-                    ),
+                    default_value=v_default
+                    if v_default is not None
+                    else get_default_value(raw_toml_data, current_section.name, key),
                 )
             )
             comment_buffer = []
