@@ -58,7 +58,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
                 "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_base_dir": "/srv/docs",
+                "target_base_dir": str(base / "target"),
                 "target_dir_dyn": "{{product}}",
                 "backup_dir": str(base / "backups"),
             },
