@@ -170,8 +170,7 @@ def _target_is_remote(value: str) -> bool:
     :return: True if the value looks like a remote destination; False otherwise.
     """
     return any(
-        pattern.match(value)
-        for pattern in (_SCHEME_RE, _SCP_RE, _RSYNC_RE, _SSH_RE)
+        pattern.match(value) for pattern in (_SCHEME_RE, _SCP_RE, _RSYNC_RE, _SSH_RE)
     )
 
 
@@ -717,7 +716,8 @@ class SSHEndpoint(BaseModel):
         """
         for name, value in (("user", self.user), ("host", str(self.host))):
             if value is not None and any(
-                ord(char) < 0x20 or ord(char) == 0x7F or char.isspace() for char in value
+                ord(char) < 0x20 or ord(char) == 0x7F or char.isspace()
+                for char in value
             ):
                 raise ValueError(
                     f"{name} must not contain whitespace or control characters"
