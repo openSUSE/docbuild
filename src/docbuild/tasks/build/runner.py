@@ -268,9 +268,7 @@ async def process_deliverable_build(
 
                     try:
                         # Sync contents of the build directory to the target destination
-                        sync_result = await rsync(
-                            deliverable_build_dir, target_dest, content_only=True
-                        )
+                        sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
                         if fmt == "html":
                             await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
                         if sync_result.returncode == 0:
