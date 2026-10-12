@@ -1,10 +1,11 @@
 """Deliverable collection helpers for metadata processing."""
 
+from collections.abc import Iterator
 import logging
 
 from lxml import etree
 
-from docbuild.constants import XML_ID
+from docbuild.constants import DEFAULT_LANGS, XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 
@@ -14,8 +15,13 @@ log = logging.getLogger(__name__)
 def get_deliverable_from_doctype(
     root: etree._ElementTree,
     doctype: Doctype,
-) -> list[Deliverable]:
+) -> Iterator[Deliverable]:
     """Get deliverable from doctype.
+
+    Each locale that defines ``<deliverable>`` elements uses its own list. A
+    non-default locale without any inherits the default-language blueprint
+    instead. Inherited entries are added to the locale element in ``root`` as
+    synthetic ``<deliverable>`` nodes, which is a side effect on ``root``.
 
     :param root: The stitched XML node containing configuration.
     :param doctype: The Doctype object to process.
@@ -23,38 +29,48 @@ def get_deliverable_from_doctype(
     """
     languages = root.getroot().xpath(f"./{doctype.xpath()}")
 
-    deliverables = []
     for language in languages:
         nodes = language.findall("deliverable")
-
-        # 1. If a translation has any `<deliverable>`, it fully replaces the English list.
         if nodes:
-            deliverables.extend(Deliverable(node) for node in nodes)
-        else:
-            # 2. Virtual Translation Inheritance for empty locales
-            lang_code = language.attrib.get("lang", "")
-            if lang_code == "en-us":
-                continue
+            yield from (Deliverable(node) for node in nodes)
+        elif not is_default_lang(language):
+            yield from inherit_default_blueprint(language)
 
-            en_locale = language.getparent().find("locale[@lang='en-us']")
-            if en_locale is not None:
-                for en_node in en_locale.findall("deliverable"):
-                    en_id = en_node.get(XML_ID)
-                    if not en_id:
-                        continue
 
-                    # Create a synthetic xref deliverable pointing to the English blueprint
-                    synth_node = etree.Element("deliverable")
-                    synth_xref = etree.Element("xref", linkend=en_id)
-                    synth_node.append(synth_xref)
+def is_default_lang(language: etree._Element) -> bool:
+    """Return True if the locale element is for a default language."""
+    return language.attrib.get("lang") in DEFAULT_LANGS
 
-                    # Append to the current locale to inherit docset/product ancestors
-                    language.append(synth_node)
 
-                    log.info(
-                        "Inherited blueprint deliverable '%s' for empty locale '%s'",
-                        en_id, lang_code
-                    )
-                    deliverables.append(Deliverable(synth_node))
+def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]:
+    """Create deliverables for ``language`` from the default-language blueprint.
 
-    return deliverables
+    Each blueprint deliverable becomes a synthetic ``<deliverable>`` with an
+    ``<xref>`` to it, appended to ``language`` so that the docset and product
+    ancestors resolve.
+
+    :param language: The non-default locale element with no deliverables.
+    :return: The synthetic deliverables, or an empty list if there is no blueprint.
+    """
+    lang_code = language.get("lang")
+    default_lang = DEFAULT_LANGS[0]
+    default_locale = language.getparent().find(f"locale[@lang='{default_lang}']")
+    if default_locale is None:
+        return
+
+    for blueprint in default_locale.findall("deliverable"):
+        blueprint_id = blueprint.get(XML_ID)
+        if not blueprint_id:
+            log.warning("Skipping blueprint deliverable without %s", XML_ID)
+            continue
+
+        synth_node = etree.Element("deliverable")
+        synth_node.append(etree.Element("xref", linkend=blueprint_id))
+        language.append(synth_node)
+
+        log.info(
+            "Inherited blueprint deliverable '%s' for empty locale '%s'",
+            blueprint_id,
+            lang_code,
+        )
+        yield Deliverable(synth_node)

@@ -123,27 +123,54 @@ def test_get_deliverable_from_doctype(xmlconfig, doctype_str, expected_count, ex
         return
 
     doctype = Doctype.from_str(doctype_str)
-    deliverables = get_deliverable_from_doctype(xmlconfig, doctype)
+    deliverables = list(get_deliverable_from_doctype(xmlconfig, doctype))
 
     assert len(deliverables) == expected_count
     if expected_ids:
         assert {d.docsuite for d in deliverables} == expected_ids
 
 
-def test_get_deliverable_empty_locale_inherits_en_blueprint():
-    """Verify empty locales inherit synthetic xrefs pointing to English deliverables."""
+def test_empty_locale_inherits_multiple_blueprints():
+    """Verify empty locales inherit all blueprint deliverables in order."""
     xml_content = """
     <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
       <product xml:id="sles">
-        <name>SUSE Linux Enterprise Server</name>
-        <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+        <docset xml:id="sles.15-sp6" path="15-SP6">
           <resources>
             <locale lang="en-us">
-              <branch>main</branch>
-              <deliverable xml:id="sec-guide"><dc file="DC-sec"/></deliverable>
+              <deliverable xml:id="doc1"><dc file="DC-1"/></deliverable>
+              <deliverable xml:id="doc2"><dc file="DC-2"/></deliverable>
+            </locale>
+            <locale lang="de-de"></locale>
+          </resources>
+        </docset>
+      </product>
+    </portal>
+    """
+    root = etree.ElementTree(etree.fromstring(xml_content))
+    doctype = Doctype.from_str("sles/15-SP6/de-de")
+
+    deliverables = list(get_deliverable_from_doctype(root, doctype))
+
+    assert len(deliverables) == 2
+    assert deliverables[0].xml.is_xref is True
+    assert deliverables[0].xml.target_id == "doc1"
+    assert deliverables[1].xml.is_xref is True
+    assert deliverables[1].xml.target_id == "doc2"
+
+
+def test_explicit_locale_ignores_blueprint():
+    """Verify locales with explicit deliverables do not inherit from the blueprint."""
+    xml_content = """
+    <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+      <product xml:id="sles">
+        <docset xml:id="sles.15-sp6" path="15-SP6">
+          <resources>
+            <locale lang="en-us">
+              <deliverable xml:id="doc1"><dc file="DC-1"/></deliverable>
             </locale>
             <locale lang="de-de">
-              <branch>main</branch>
+              <deliverable xml:id="de-doc"><dc file="DC-de"/></deliverable>
             </locale>
           </resources>
         </docset>
@@ -153,9 +180,47 @@ def test_get_deliverable_empty_locale_inherits_en_blueprint():
     root = etree.ElementTree(etree.fromstring(xml_content))
     doctype = Doctype.from_str("sles/15-SP6/de-de")
 
-    deliverables = get_deliverable_from_doctype(root, doctype)
+    deliverables = list(get_deliverable_from_doctype(root, doctype))
 
     assert len(deliverables) == 1
-    d = deliverables[0]
-    assert d.xml.is_xref is True
-    assert d.xml.target_id == "sec-guide"
+    assert deliverables[0].xml.is_xref is False
+    assert deliverables[0].xml.deliverableid == "de-doc"
+
+
+def test_independent_locale_handling():
+    """Verify explicit and empty locales are handled independently in the same docset."""
+    xml_content = """
+    <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+      <product xml:id="sles">
+        <docset xml:id="sles.15-sp6" path="15-SP6">
+          <resources>
+            <locale lang="en-us">
+              <deliverable xml:id="doc1"><dc file="DC-1"/></deliverable>
+            </locale>
+            <locale lang="de-de"></locale>
+            <locale lang="ja-jp">
+              <deliverable xml:id="ja-doc"><dc file="DC-ja"/></deliverable>
+            </locale>
+          </resources>
+        </docset>
+      </product>
+    </portal>
+    """
+    root = etree.ElementTree(etree.fromstring(xml_content))
+    doctype = Doctype.from_str("sles/15-SP6/*")
+
+    deliverables = list(get_deliverable_from_doctype(root, doctype))
+
+    # We expect 3 deliverables total: en-us (explicit), de-de (inherited xref), ja-jp (explicit)
+    assert len(deliverables) == 3
+
+    # Check en-us
+    assert deliverables[0].xml.deliverableid == "doc1"
+
+    # Check de-de (synthetic xref)
+    assert deliverables[1].xml.is_xref is True
+    assert deliverables[1].xml.target_id == "doc1"
+
+    # Check ja-jp (explicit)
+    assert deliverables[2].xml.deliverableid == "ja-doc"
+    assert deliverables[2].xml.is_xref is False
