@@ -88,6 +88,12 @@ a new docset, proceed as follows:
    * ``<subdir>`` (optional): contains the directory where to look for the
      DC files. For prebuilt deliverables, omit this tag.
 
+     A ``<subdir>`` can also be added to a ``<deliverable>``. Both values are
+     appended, the locale's directory first. For example, a locale with
+     ``<subdir>l10n/sles/de-de</subdir>`` and a deliverable with
+     ``<subdir>guide</subdir>`` looks for the DC file in
+     ``l10n/sles/de-de/guide``. Empty ``<subdir>`` elements are ignored.
+
 #. Optionally add translations in a ``<locale lang="...">`` element.
 
    The structure looks slightly different than for English.

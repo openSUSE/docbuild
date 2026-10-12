@@ -209,6 +209,25 @@ class ManagedGitRepo:
             log.error("Failed to fetch updates for '%s': %s", self.slug, e)
             return False
 
+    async def has_branch(self: Self, branch: str) -> bool:
+        """Check whether the bare repository has the given branch.
+
+        :param branch: The branch name to look for.
+        :return: True if the branch exists, False otherwise.
+        """
+        try:
+            await execute_git_command(
+                "rev-parse",
+                "--verify",
+                "--quiet",
+                f"refs/heads/{branch}",
+                cwd=self.bare_repo_path,
+                gitconfig=self._gitconfig,
+            )
+            return True
+        except RuntimeError:
+            return False
+
     async def ls_tree(self: Self, branch: str, recursive: bool = True) -> list[str]:
         """List all files in a specific branch of the bare repository.
 
@@ -226,7 +245,7 @@ class ManagedGitRepo:
         args = ["ls-tree", "--name-only"]
         if recursive:
             args.append("-r")
-        args.append(branch)
+        args.append(f"refs/heads/{branch}")
 
         try:
             # We use execute_git_command which already handles the 'git' prefix

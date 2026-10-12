@@ -35,6 +35,14 @@ ALLOWED_LANGUAGES: frozenset[str] = frozenset(
 DEFAULT_DELIVERABLES: str = "*/@supported/en-us"
 """The default deliverables when no specific doctype is provided."""
 
+STATUS_ICONS: Final[dict[str, str]] = {
+    "found": "[success]✅[/]",
+    "skipped": "⏸️",
+    "missing": "[error]❌[/]",
+    "linked": "🔗",
+}
+"""Rich-markup icons for the status of a checked DC file."""
+
 # The primary, unique values of the Enum ('production', 'staging', 'testing')
 ENV_ROLES: tuple[str, ...] = tuple(
     [role.value for role in EnvRole]

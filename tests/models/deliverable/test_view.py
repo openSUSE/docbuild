@@ -6,6 +6,7 @@ import pytest
 from docbuild.constants import XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.deliverable.view import DeliverableXMLView
+from docbuild.models.language import LanguageCode
 
 
 def test_branch(first_deliverable: Deliverable) -> None:
@@ -441,3 +442,91 @@ def test_xref_to_prebuilt_formats_and_category() -> None:
     override_deliv = Deliverable(override_node)
     assert override_deliv.xml.categoryid == "cat2"
     assert override_deliv.xml.category_title == "Category Two"
+
+
+_LOCALE_XML = """
+<product xml:id="sles">
+  <docset path="16.0">
+    <branch>docset-branch</branch>
+    <resources>
+      <locale lang="en-us">
+        <branch>main</branch>
+        <deliverable><dc file="DC-SLE"/></deliverable>
+      </locale>
+      <locale lang="de-de">
+        <branch>translations</branch>
+        <subdir>l10n/de-de</subdir>
+      </locale>
+    </resources>
+  </docset>
+</product>
+"""
+
+
+@pytest.fixture
+def docset_view() -> DeliverableXMLView:
+    """Return a view on the English deliverable of the sample docset."""
+    root = etree.fromstring(_LOCALE_XML)
+    return DeliverableXMLView(root.xpath("//locale[@lang='en-us']/deliverable")[0])
+
+
+def test_locale_accepts_str_and_language_code(docset_view):
+    """locale() finds a locale by plain string or LanguageCode."""
+    by_str = docset_view.locale("de-de")
+    by_code = docset_view.locale(LanguageCode(language="de-de"))
+    assert by_str is not None
+    assert by_str is by_code
+
+
+def test_locale_missing_returns_none(docset_view):
+    """locale() returns None for an unknown language."""
+    assert docset_view.locale("fr-fr") is None
+
+
+def test_branch_by_language_nearest_and_farthest(docset_view):
+    """branch(lang) prefers the nearest branch and can return the farthest one."""
+    assert docset_view.branch("de-de") == "translations"
+    assert docset_view.branch(LanguageCode(language="de-de")) == "translations"
+    assert docset_view.branch("de-de", farthest=True) == "docset-branch"
+
+
+def test_branch_default_is_own_deliverable(docset_view):
+    """Without a language, branch() returns the deliverable's own branch."""
+    assert docset_view.branch() == "main"
+
+
+def test_branch_unknown_language_returns_none(docset_view):
+    """branch(lang) returns None when the docset has no such locale."""
+    assert docset_view.branch("fr-fr") is None
+
+
+def test_branch_missing_returns_none():
+    """branch() returns None when no ancestor has a branch."""
+    root = etree.fromstring("<portal><product><docset/></product></portal>")
+    view = DeliverableXMLView(root.xpath("//docset")[0])
+    assert view.branch() is None
+
+
+def test_subdir_by_language(docset_view):
+    """subdir(lang) returns the locale's subdir, or an empty string if missing."""
+    assert docset_view.subdir("de-de") == "l10n/de-de"
+    assert docset_view.subdir("en-us") == ""
+    assert docset_view.subdir("fr-fr") == ""
+    assert docset_view.subdir("de-de", farthest=True) == "l10n/de-de"
+
+
+def test_subdir_appends_deliverable_to_locale(first_ref_deliverable_with_subdir) -> None:
+    """Locale and deliverable subdirs are appended in that order."""
+    assert first_ref_deliverable_with_subdir.xml.subdir() == "l10n/sles/de-de/guide"
+
+
+def test_subdir_skips_empty_parts() -> None:
+    """Empty <subdir> elements do not add separators to the path."""
+    root = etree.fromstring(
+        """<docset><resources><locale lang="de-de">
+             <subdir/>
+             <deliverable><subdir>guide</subdir></deliverable>
+           </locale></resources></docset>"""
+    )
+    view = DeliverableXMLView(root.xpath("//deliverable")[0])
+    assert view.subdir() == "guide"

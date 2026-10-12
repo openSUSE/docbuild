@@ -1,6 +1,6 @@
 """XML facade for deliverable node access."""
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from dataclasses import dataclass, field
 from functools import cached_property
 import logging
@@ -14,6 +14,19 @@ from ...utils.convert import convert2bool
 from ..repo import Repo
 
 log = logging.getLogger(__name__)
+
+
+def non_empty_texts(values: Iterable[str]) -> list[str]:
+    """Return the stripped, non-empty values."""
+    return [value.strip() for value in values if value.strip()]
+
+
+def find_text(start: etree._Element, tag: str, farthest: bool) -> str | None:
+    """Return the nearest (or farthest) ``<tag>`` text from ``start`` upwards."""
+    texts = non_empty_texts(start.xpath(f"(self::*|ancestor::*)/{tag}/text()"))
+    if not texts:
+        return None
+    return texts[0] if farthest else texts[-1]
 
 
 @dataclass
@@ -89,7 +102,13 @@ class DeliverableXMLView:
     @cached_property
     def locale_en(self) -> etree._Element | None:
         """Return the English locale node (``<locale lang="en-us">``) or None if absent."""
-        return self.docset_node.find("resources/locale[@lang='en-us']")
+        return self.locale("en-us")
+
+    def locale(self, lang: str | LanguageCode) -> etree._Element | None:
+        """Return the ``<locale>`` node for ``lang`` in this docset or None if absent."""
+        code = lang.language if isinstance(lang, LanguageCode) else lang
+        nodes = self.docset_node.xpath("resources/locale[@lang=$lang]", lang=code)
+        return nodes[0] if nodes else None
 
     @cached_property
     def lang(self) -> LanguageCode:
@@ -269,10 +288,30 @@ class DeliverableXMLView:
         yield from self.product_node.xpath("descriptions/desc")
 
     # -- Location and repository
-    def branch(self) -> str | None:
-        """Return branch from current language or ``None`` if missing."""
-        node = self.node.getparent().findtext("branch", default=None)
-        return node.strip() if node is not None else None
+    def branch(
+        self,
+        lang: str | LanguageCode | None = None,
+        *,
+        farthest: bool = False,
+    ) -> str | None:
+        """Return the nearest or farthest ``<branch>`` for this deliverable.
+
+        Without ``lang``, the search starts at this deliverable and walks up
+        its ancestors. With ``lang``, it starts at the ``<locale>`` of that
+        language in the docset. The nearest ``<branch>`` wins unless
+        ``farthest`` is set.
+
+        :param lang: Language whose locale is
+            searched. If None, search this deliverable instead.
+        :param farthest: Return the outermost ``<branch>`` instead of
+            the nearest one.
+        :returns: The branch name, or None if no branch or
+            locale is found.
+        """
+        start = self.node if lang is None else self.locale(lang)
+        if start is None:
+            return None
+        return find_text(start, "branch", farthest)
 
     def branch_from_fallback_locale(self) -> str | None:
         """Return branch from fallback locale lookup or ``None`` if missing."""
@@ -283,10 +322,38 @@ class DeliverableXMLView:
             return node[0].text.strip()
         return None
 
-    def subdir(self) -> str:
-        """Return combined subdirectory (locale-level + deliverable-level) or empty string."""
-        parts = self.node.xpath("parent::*/subdir/text() | subdir/text()")
-        return "/".join(p.strip() for p in parts)
+    def subdir(
+        self,
+        lang: str | LanguageCode | None = None,
+        *,
+        farthest: bool = False,
+    ) -> str:
+        """Return the subdirectory that applies to this deliverable or a language.
+
+        Without ``lang``, the ``<subdir>`` of the ``<locale>`` comes first,
+        followed by the ``<subdir>`` of this deliverable, joined with ``/``.
+        Empty values are skipped. For example, a locale ``<subdir>`` of
+        ``l10n/sles/de-de`` and a deliverable ``<subdir>`` of ``guide``
+        give ``l10n/sles/de-de/guide``.
+
+        With ``lang``, only the ``<subdir>`` of that language's ``<locale>``
+        is used. The nearest one wins unless ``farthest`` is set.
+
+        :param lang: Language whose locale is
+            used. If None, combine the locale and deliverable subdirs.
+        :param farthest: Return the outermost ``<subdir>`` instead of
+            the nearest one. Only used when ``lang`` is given.
+        :returns: The subdirectory path. An empty string means the
+            repository root or a missing ``<subdir>``.
+        """
+        if lang is None:
+            locale_parts = non_empty_texts(self.node.xpath("parent::*/subdir/text()"))
+            deliverable_parts = non_empty_texts(self.node.xpath("subdir/text()"))
+            return "/".join([*locale_parts, *deliverable_parts])
+        locale = self.locale(lang)
+        if locale is None:
+            return ""
+        return find_text(locale, "subdir", farthest) or ""
 
     def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""
