@@ -28,10 +28,6 @@ Supported Comment Syntax:
         # Use 0 for infinite timeout.
         timeout = 30
 
-    Default Override:
-        A `# default: <value>` comment forces the displayed default, e.g.
-        "n/a" for optional keys without a default.
-
 Key Features:
 - Supports bracketed section headers and complex keys (dots/dashes).
 - Extracts data types and multi-line descriptions from comments.
@@ -85,8 +81,7 @@ COMMENT_METADATA_REGEX = re.compile(
     """,
     re.VERBOSE,
 )
-# A "# default: <value>" comment overrides the displayed default value. It is
-# used to show "n/a" for optional keys (matching get_default_value()).
+# A "# default: <value>" comment overrides the displayed default (e.g. "n/a").
 DEFAULT_OVERRIDE_REGEX = re.compile(r"^\s*#\s*default:\s*(?P<value>.*)$")
 TOML_KEY_VALUE_REGEX = re.compile(
     fr"""
@@ -150,7 +145,7 @@ def get_default_value(raw_data: dict[str, Any], section_name: str, key: str) -> 
 
 
 def extract_metadata(buffer: list[str]) -> tuple[str, list[str], str | None]:
-    """Extract data type, clean description and default override from a comment buffer."""
+    """Extract data type and clean description from a comment buffer."""
     v_type = "unknown"
     v_desc = []
     v_default: str | None = None
