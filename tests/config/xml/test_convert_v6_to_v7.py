@@ -7,8 +7,8 @@ import pytest
 
 from docbuild.constants import XML_ID
 
-XSLT_RESOURCE = resources.files("docbuild.config.xml").joinpath(
-    "data", "convert-v6-to-v7.xsl"
+XSLT_RESOURCE = resources.files("docbuild.config.xml.data").joinpath(
+    "convert-v6-to-v7.xsl"
 )
 
 
@@ -408,3 +408,73 @@ def test_docset_with_only_internal_refs_gets_resources(xslt_transformer):
         assert "trd.clearml.dc-rc_suse-ai_clearml" in linkends
         assert "trd.contributors.dc-suse-trd_contrib-guide" in linkends
 
+
+
+def test_releasenotes_external_link_becomes_xref(xslt_transformer):
+    """Test that /releasenotes/ links become xref deliverables, not prebuilts (#604)."""
+    v6_xml = etree.XML("""<docservconfig>
+      <product productid="sle-ha" schemaversion="6.0">
+        <docset lifecycle="supported" setid="16.0">
+          <version>16.0</version>
+          <external>
+            <link category="release-notes">
+              <language lang="en-us" default="1" title="Release Notes">
+                <url format="html" href="/releasenotes/sle-ha/16.0/"/>
+              </language>
+            </link>
+          </external>
+        </docset>
+      </product>
+    </docservconfig>""")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outdir = str(Path(tmpdir)) + "/"
+        _ = xslt_transformer(
+            v6_xml,
+            outputdir=etree.XSLT.strparam(outdir),
+            outputfile=etree.XSLT.strparam("portal.xml"),
+        )
+        result_tree = etree.parse(str(Path(tmpdir) / "portal.xml"))
+
+        assert result_tree.xpath("//deliverable[@type='prebuilt']") == []
+        xrefs = result_tree.xpath(
+            "//resources/locale[@lang='en-us']/deliverable[@type='xref']/xref"
+        )
+        assert len(xrefs) == 1
+        assert xrefs[0].get("linkend") == "rn.sle-ha.dc-releasenotes_sle-ha_16.0"
+
+
+@pytest.mark.parametrize("href", ["/releasenotes/sle-ha/16.0/", "releasenotes/sle-ha/16.0/"])
+def test_releasenotes_href_with_or_without_leading_slash(xslt_transformer, href):
+    """Test that release notes hrefs with or without a leading slash become xrefs."""
+    v6_xml = etree.XML(f"""<docservconfig>
+      <product productid="sle-ha" schemaversion="6.0">
+        <docset lifecycle="supported" setid="16.0">
+          <version>16.0</version>
+          <external>
+            <link category="release-notes">
+              <language lang="en-us" default="1" title="Release Notes">
+                <url format="html" href="{href}"/>
+              </language>
+            </link>
+          </external>
+        </docset>
+      </product>
+    </docservconfig>""")
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        outdir = str(Path(tmpdir)) + "/"
+        _ = xslt_transformer(
+            v6_xml,
+            outputdir=etree.XSLT.strparam(outdir),
+            outputfile=etree.XSLT.strparam("portal.xml"),
+        )
+        result_tree = etree.parse(str(Path(tmpdir) / "portal.xml"))
+
+        assert result_tree.xpath("//deliverable[@type='prebuilt']") == []
+        xrefs = result_tree.xpath(
+            "//resources/locale[@lang='en-us']/deliverable[@type='xref']/xref"
+        )
+        assert [x.get("linkend") for x in xrefs] == [
+            "rn.sle-ha.dc-releasenotes_sle-ha_16.0"
+        ]
