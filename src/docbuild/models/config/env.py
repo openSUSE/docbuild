@@ -97,7 +97,7 @@ runtime during the build process.
 from copy import deepcopy
 from pathlib import Path
 import re
-from typing import Annotated, Any, Self
+from typing import Annotated, Any, Final, Self
 
 from pydantic import (
     BaseModel,
@@ -147,13 +147,19 @@ DomainName = Annotated[
 
 
 # Patterns identifying rsync-style remote destinations in a path string.
-_SCHEME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://")
-_SCP_RE = re.compile(r"^[^/\s@:]+@[^/\s:]+:")
-_RSYNC_RE = re.compile(r"^[^/\s@:]+::")
-_SSH_RE = re.compile(r"^[^/\s@:]+:/")
+REMOTE_URL_PATTERNS: Final[tuple[re.Pattern[str], ...]] = (
+    # Standard URI scheme (e.g., "https://", "git://", "ssh://")
+    re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://"),
+    # SCP-style remote location (e.g., "user@host:path/to/repo")
+    re.compile(r"^[^/\s@:]+@[^/\s:]+:"),
+    # Rsync daemon module access (e.g., "host::module/path")
+    re.compile(r"^[^/\s@:]+::"),
+    # Short SSH remote path without user (e.g., "host:/path/to/repo")
+    re.compile(r"^[^/\s@:]+:/"),
+)
 
 
-def _target_is_remote(value: str) -> bool:
+def target_is_remote(value: str) -> bool:
     """Check whether *value* looks like an rsync-style remote destination.
 
     A value is remote if it matches one of the following forms:
@@ -169,9 +175,7 @@ def _target_is_remote(value: str) -> bool:
     :param value: The path string to inspect.
     :return: True if the value looks like a remote destination; False otherwise.
     """
-    return any(
-        pattern.match(value) for pattern in (_SCHEME_RE, _SCP_RE, _RSYNC_RE, _SSH_RE)
-    )
+    return any(pattern.match(value) for pattern in REMOTE_URL_PATTERNS)
 
 
 # --- Build Sub-Models (To allow extra sections in env.toml) ---
@@ -467,7 +471,7 @@ class EnvTargetPaths(BaseModel):
         :return: The unchanged value.
         :raises ValueError: If the value looks like a remote path.
         """
-        if _target_is_remote(value):
+        if target_is_remote(value):
             raise ValueError(
                 f"target_base_dir must be a local directory, but {value!r} looks like "
                 "a remote destination. Migrate the remote destination to the [remote] "
@@ -723,6 +727,15 @@ class SSHEndpoint(BaseModel):
                     f"{name} must not contain whitespace or control characters"
                 )
         return self
+
+    def __str__(self) -> str:
+        """Return the human-readable string representation (e.g., 'user@host').
+
+        :return: Formatted SSH target string.
+        """
+        if self.user:
+            return f"{self.user}@{self.host}"
+        return str(self.host)
 
 
 class EnvRemote(BaseModel):

@@ -329,6 +329,38 @@ def test_env_remote_table_form(
 
 
 @pytest.mark.parametrize(
+    ("endpoint_data", "expected"),
+    [
+        ({"user": "doc", "host": "example.com"}, "doc@example.com"),
+        ({"host": "example.com"}, "example.com"),
+        ({"host": "192.0.2.1"}, "192.0.2.1"),
+        ({"host": "2001:db8::1"}, "2001:db8::1"),
+    ],
+    ids=["user_and_hostname", "hostname_only", "ipv4", "ipv6_without_user"],
+)
+def test_sshendpoint_str(endpoint_data: dict[str, str], expected: str) -> None:
+    """Test that SSHEndpoint renders its string form (e.g., 'user@host')."""
+    endpoint = env_mod.SSHEndpoint.model_validate(endpoint_data)
+    assert str(endpoint) == expected
+
+
+@pytest.mark.parametrize(
+    "endpoint_data",
+    [
+        {"user": "doc", "host": "example.com"},
+        {"host": "example.com"},
+        {"host": "192.0.2.1"},
+        {"host": "2001:db8::1"},
+    ],
+    ids=["user_and_hostname", "hostname_only", "ipv4", "ipv6_without_user"],
+)
+def test_sshendpoint_str_round_trip(endpoint_data: dict[str, str]) -> None:
+    """Test that SSHEndpoint parses its own string form back to the same model."""
+    endpoint = env_mod.SSHEndpoint.model_validate(endpoint_data)
+    assert env_mod.SSHEndpoint.model_validate(str(endpoint)) == endpoint
+
+
+@pytest.mark.parametrize(
     "server",
     [
         "-bad",
