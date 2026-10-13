@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.25.1.dev8+gef19971bc.d20261013</title>
+    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.25.1.dev9+g9ddd84a10.d20261013</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../_static/documentation_options.js?v=b816741e"></script>
+    <script src="../../_static/documentation_options.js?v=aaad27bd"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1012,10 +1012,11 @@ Paths can hold placeholders in brackets.</p>
 <dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Default<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">doc&#64;10.100.60.1:/srv/docs</span></code></p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">~/Documents/docbuild/target</span></code></p>
 </dd>
 </dl>
-<p>The base path for the deployment target, including server and directory.</p>
+<p>The LOCAL base directory for built documentation.
+Remote destinations are configured in the [remote] section instead.</p>
 </dd>
 </dl>
 <dl id="envtoml-paths-target-target-dir-dyn">
@@ -1027,7 +1028,7 @@ Paths can hold placeholders in brackets.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{{product}}</span></code></p>
 </dd>
 </dl>
-<p>A dynamic template for the final target directory on the remote server.</p>
+<p>A dynamic template for the subdirectory under target_base_dir.</p>
 </dd>
 </dl>
 <dl id="envtoml-paths-target-backup-dir">
@@ -1040,6 +1041,37 @@ Paths can hold placeholders in brackets.</p>
 </dd>
 </dl>
 <p>The directory where backups of external builds are stored.</p>
+</dd>
+</dl>
+</section>
+<section id="remote">
+<span id="envtoml-section-remote"></span><h2>[remote]<a class="headerlink" href="#remote" title="Link to this heading">#</a></h2>
+<p>The remote destination where built documentation is published.</p>
+<p>This section is optional: there is no remote destination unless it is set.
+When set, both keys below must be given together.</p>
+<dl id="envtoml-remote-server">
+<dt><code class="docutils literal notranslate"><span class="pre">server</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>The SSH server as “<a class="reference external" href="mailto:user&#37;&#52;&#48;host">user<span>&#64;</span>host</a>” or “host” (an IP address or DNS name).</p>
+</dd>
+</dl>
+<dl id="envtoml-remote-path">
+<dt><code class="docutils literal notranslate"><span class="pre">path</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">n/a</span></code></p>
+</dd>
+</dl>
+<p>The absolute directory on the remote server where documentation is published.
+The path must be absolute, for example: “/srv/docs”.</p>
 </dd>
 </dl>
 </section>
@@ -1262,6 +1294,7 @@ to the transformation process for ALL output formats</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths">[paths]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-tmp">[paths.tmp]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-target">[paths.target]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remote">[remote]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build">[build]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-daps">[build.daps]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-container">[build.container]</a></li>

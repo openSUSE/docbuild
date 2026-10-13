@@ -26,6 +26,8 @@ Attributes
    docbuild.constants.SINGLE_LANG_REGEX
    docbuild.constants.MULTIPLE_LANG_REGEX
    docbuild.constants.LIFECYCLES_STR
+   docbuild.constants.HOSTNAME_REGEX
+   docbuild.constants.SSH_USERNAME_REGEX
    docbuild.constants.PROJECT_DIR
    docbuild.constants.CONFIG_HOME
    docbuild.constants.SYSTEM_CONFIG_DIR
@@ -141,6 +143,18 @@ Module Contents
 
 
    Regex for lifecycle states, separated by pipe (|).
+
+
+.. py:data:: HOSTNAME_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex for a fully qualified host name (DNS name), similar to an FQDN.
+
+
+.. py:data:: SSH_USERNAME_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex for an SSH login name. Must start lowercase or underscore.
 
 
 .. py:data:: PROJECT_DIR

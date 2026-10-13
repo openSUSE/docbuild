@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.path &#8212; Docbuild Documentation 0.25.1.dev8+gef19971bc.d20261013</title>
+    <title>docbuild.models.path &#8212; Docbuild Documentation 0.25.1.dev9+g9ddd84a10.d20261013</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../../_static/documentation_options.js?v=b816741e"></script>
+    <script src="../../../../../_static/documentation_options.js?v=aaad27bd"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -646,6 +646,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.models.path.WritablePath" title="docbuild.models.path.WritablePath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WritablePath</span></code></a></p></td>
 <td><p>A Pydantic custom type that ensures a directory exists and is writable.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.models.path.AbsolutePath" title="docbuild.models.path.AbsolutePath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbsolutePath</span></code></a></p></td>
+<td><p>A Pydantic custom type that requires an absolute path.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -656,6 +659,9 @@
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.models.path.ensure_writeable_directory" title="docbuild.models.path.ensure_writeable_directory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ensure_writeable_directory</span></code></a>(→ pathlib.Path)</p></td>
 <td><p>Validate a path is a writable directory, creating it if needed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.models.path.must_be_absolute" title="docbuild.models.path.must_be_absolute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">must_be_absolute</span></code></a>(→ pathlib.Path)</p></td>
+<td><p>Validate that a path is absolute.</p></td>
 </tr>
 </tbody>
 </table>
@@ -695,6 +701,34 @@ directory and has R/W/X permissions.</p></li>
 <dt class="sig sig-object py" id="docbuild.models.path.WritablePath">
 <span class="sig-prename descclassname"><span class="pre">docbuild.models.path.</span></span><span class="sig-name descname"><span class="pre">WritablePath</span></span><a class="headerlink" href="#docbuild.models.path.WritablePath" title="Link to this definition">#</a></dt>
 <dd><p>A Pydantic custom type that ensures a directory exists and is writable.
+The final validated type is a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.models.path.must_be_absolute">
+<span class="sig-prename descclassname"><span class="pre">docbuild.models.path.</span></span><span class="sig-name descname"><span class="pre">must_be_absolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.models.path.must_be_absolute" title="Link to this definition">#</a></dt>
+<dd><p>Validate that a path is absolute.</p>
+<p>Note: this validator performs no filesystem access.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><em>pathlib.Path</em></a>) – The path to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The unchanged path object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)">pathlib.Path</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the path is not absolute.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.models.path.AbsolutePath">
+<span class="sig-prename descclassname"><span class="pre">docbuild.models.path.</span></span><span class="sig-name descname"><span class="pre">AbsolutePath</span></span><a class="headerlink" href="#docbuild.models.path.AbsolutePath" title="Link to this definition">#</a></dt>
+<dd><p>A Pydantic custom type that requires an absolute path.
 The final validated type is a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> object.</p>
 </dd></dl>
 
@@ -753,6 +787,8 @@ The final validated type is a <a class="reference external" href="https://docs.p
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.ensure_writeable_directory"><code class="docutils literal notranslate"><span class="pre">ensure_writeable_directory()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.WritablePath"><code class="docutils literal notranslate"><span class="pre">WritablePath</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.must_be_absolute"><code class="docutils literal notranslate"><span class="pre">must_be_absolute()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.path.AbsolutePath"><code class="docutils literal notranslate"><span class="pre">AbsolutePath</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.25.1.dev8+gef19971bc.d20261013</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.25.1.dev9+g9ddd84a10.d20261013</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../_static/documentation_options.js?v=b816741e"></script>
+    <script src="../../../../_static/documentation_options.js?v=aaad27bd"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -676,6 +676,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.LIFECYCLES_STR" title="docbuild.constants.LIFECYCLES_STR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIFECYCLES_STR</span></code></a></p></td>
 <td><p>Regex for lifecycle states, separated by pipe (|).</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.HOSTNAME_REGEX" title="docbuild.constants.HOSTNAME_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HOSTNAME_REGEX</span></code></a></p></td>
+<td><p>Regex for a fully qualified host name (DNS name), similar to an FQDN.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SSH_USERNAME_REGEX" title="docbuild.constants.SSH_USERNAME_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SSH_USERNAME_REGEX</span></code></a></p></td>
+<td><p>Regex for an SSH login name. Must start lowercase or underscore.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.PROJECT_DIR" title="docbuild.constants.PROJECT_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code></a></p></td>
 <td><p>The current working directory, used as the project directory.</p></td>
 </tr>
@@ -833,6 +839,18 @@
 <dt class="sig sig-object py" id="docbuild.constants.LIFECYCLES_STR">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">LIFECYCLES_STR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#docbuild.constants.LIFECYCLES_STR" title="Link to this definition">#</a></dt>
 <dd><p>Regex for lifecycle states, separated by pipe (|).</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.HOSTNAME_REGEX">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">HOSTNAME_REGEX</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.15)"><span class="pre">re.Pattern</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.HOSTNAME_REGEX" title="Link to this definition">#</a></dt>
+<dd><p>Regex for a fully qualified host name (DNS name), similar to an FQDN.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.SSH_USERNAME_REGEX">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SSH_USERNAME_REGEX</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/re.html#re.Pattern" title="(in Python v3.15)"><span class="pre">re.Pattern</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.SSH_USERNAME_REGEX" title="Link to this definition">#</a></dt>
+<dd><p>Regex for an SSH login name. Must start lowercase or underscore.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -1065,6 +1083,8 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SINGLE_LANG_REGEX"><code class="docutils literal notranslate"><span class="pre">SINGLE_LANG_REGEX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.MULTIPLE_LANG_REGEX"><code class="docutils literal notranslate"><span class="pre">MULTIPLE_LANG_REGEX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.LIFECYCLES_STR"><code class="docutils literal notranslate"><span class="pre">LIFECYCLES_STR</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.HOSTNAME_REGEX"><code class="docutils literal notranslate"><span class="pre">HOSTNAME_REGEX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SSH_USERNAME_REGEX"><code class="docutils literal notranslate"><span class="pre">SSH_USERNAME_REGEX</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.PROJECT_DIR"><code class="docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.CONFIG_HOME"><code class="docutils literal notranslate"><span class="pre">CONFIG_HOME</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SYSTEM_CONFIG_DIR"><code class="docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_DIR</span></code></a></li>

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.25.1.dev8+gef19971bc.d20261013</title>
+    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.25.1.dev9+g9ddd84a10.d20261013</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=b816741e"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=aaad27bd"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -724,7 +724,11 @@ runtime during the build process.</p>
 <span class="w">        </span><span class="s2">&quot;common&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="s2">&quot;html&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{},</span>
 <span class="w">        </span><span class="s2">&quot;pdf&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{}</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// Remote destination for publishing built documentation.</span>
+<span class="w">    </span><span class="c1">// Both keys are unset by default, so publish is disabled unless</span>
+<span class="w">    </span><span class="c1">// [remote] is configured. Corresponds to the EnvRemote model.</span>
+<span class="w">    </span><span class="s2">&quot;remote&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;server&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;path&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -758,12 +762,55 @@ runtime during the build process.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="EnvXslt.html#docbuild.models.config.env.EnvXslt" title="docbuild.models.config.env.EnvXslt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvXslt</span></code></a></p></td>
 <td><p>Defines XSLT parameters separated by target format.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="SSHEndpoint.html#docbuild.models.config.env.SSHEndpoint" title="docbuild.models.config.env.SSHEndpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SSHEndpoint</span></code></a></p></td>
+<td><p>SSH connection details for the host that receives published docs.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="EnvRemote.html#docbuild.models.config.env.EnvRemote" title="docbuild.models.config.env.EnvRemote"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvRemote</span></code></a></p></td>
+<td><p>Defines the remote destination for publishing built documentation.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="EnvConfig.html#docbuild.models.config.env.EnvConfig" title="docbuild.models.config.env.EnvConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvConfig</span></code></a></p></td>
 <td><p>Root model for the environment configuration (env.toml).</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.models.config.env.target_is_remote" title="docbuild.models.config.env.target_is_remote"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target_is_remote</span></code></a>(→ bool)</p></td>
+<td><p>Check whether <em>value</em> looks like an rsync-style remote destination.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.models.config.env.target_is_remote">
+<span class="sig-prename descclassname"><span class="pre">docbuild.models.config.env.</span></span><span class="sig-name descname"><span class="pre">target_is_remote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.config.env.target_is_remote" title="Link to this definition">#</a></dt>
+<dd><p>Check whether <em>value</em> looks like an rsync-style remote destination.</p>
+<p>A value is remote if it matches one of the following forms:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">scheme://</span></code> (for example <code class="docutils literal notranslate"><span class="pre">rsync://host/module</span></code> or <code class="docutils literal notranslate"><span class="pre">ssh://host/x</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">user&#64;host:</span></code> (for example <code class="docutils literal notranslate"><span class="pre">user&#64;host:/srv/docs</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host::</span></code> (for example <code class="docutils literal notranslate"><span class="pre">host::module</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host:/</span></code> (for example <code class="docutils literal notranslate"><span class="pre">host:/srv/docs</span></code>)</p></li>
+</ul>
+<p>Everything else is treated as local, including relative paths,
+<code class="docutils literal notranslate"><span class="pre">my:dir</span></code> and <code class="docutils literal notranslate"><span class="pre">a:b/c</span></code> (no drive-letter special cases are needed).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The path string to inspect.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the value looks like a remote destination; False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -815,6 +862,11 @@ runtime during the build process.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.target_is_remote"><code class="docutils literal notranslate"><span class="pre">target_is_remote()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
