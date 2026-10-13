@@ -61,7 +61,7 @@ def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]
     for blueprint in default_locale.findall("deliverable"):
         blueprint_id = blueprint.get(XML_ID)
         if not blueprint_id:
-            log.warning("Skipping blueprint deliverable without %s", XML_ID)
+            log.warning("Skipping blueprint deliverable without xml:id")
             continue
 
         synth_node = etree.Element("deliverable")
