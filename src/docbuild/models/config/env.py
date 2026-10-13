@@ -123,9 +123,9 @@ from ...constants import (
     CONFIG_HOME,
     DATA_HOME,
     DEFAULT_ENV_NAME,
-    HOSTNAME_PATTERN,
+    HOSTNAME_REGEX,
     RUNTIME_DIR,
-    SSH_USERNAME_PATTERN,
+    SSH_USERNAME_REGEX,
     STATE_HOME,
 )
 from ..envroles import EnvRole
@@ -655,7 +655,7 @@ class EnvXslt(BaseModel):
 class SSHEndpoint(BaseModel):
     """SSH connection details for the host that receives published docs."""
 
-    # HOSTNAME_PATTERN uses a look-ahead assertion which the Rust regex engine
+    # HOSTNAME_REGEX uses a look-ahead assertion which the Rust regex engine
     # used by pydantic-core cannot compile; the python-re engine is required.
     model_config = ConfigDict(extra="forbid", frozen=True, regex_engine="python-re")
 
@@ -663,13 +663,13 @@ class SSHEndpoint(BaseModel):
         str | None,
         Field(
             default=None,
-            pattern=SSH_USERNAME_PATTERN,
+            pattern=SSH_USERNAME_REGEX.pattern,
             description="SSH login name. If unset, the ssh config or current user is used.",
             examples=["doc"],
         ),
     ] = None
     host: Annotated[
-        IPvAnyAddress | Annotated[str, Field(pattern=HOSTNAME_PATTERN)],
+        IPvAnyAddress | Annotated[str, Field(pattern=HOSTNAME_REGEX.pattern)],
         Field(
             description="IP address or DNS name of the server.",
             examples=["192.0.2.10", "docs.example.com"],
