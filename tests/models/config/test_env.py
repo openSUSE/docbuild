@@ -569,23 +569,29 @@ def test_envconfig_remote_none_config_list_smoke(
 def test_envconfig_example_file_validates_and_enables_remote(
     example_env_toml: Path,
     mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
 ) -> None:
-    """The shipped example must validate and enable [remote] with local paths.
+    """The shipped example must validate and enable [remote].
 
-    The example's own [paths] use home-directory locations, so it is replaced
-    with the tmp_path-based [paths] from the fixture. The [remote] section stays
-    as shipped. On Windows this test fails because ``path = "/srv/docs"`` is not
-    absolute there; Linux CI decides.
+    The example's [paths] use home-directory locations, and its remote path
+    lives on the Linux server. Both are replaced with tmp_path-based values
+    before validation. The shipped remote path is checked separately as a
+    POSIX absolute path.
     """
+    from pathlib import PurePosixPath
+
     from docbuild.config.load import load_single_config
 
     raw_config = load_single_config(example_env_toml)
+    assert PurePosixPath(raw_config["remote"]["path"]).is_absolute()
+
     raw_config["paths"] = mock_valid_raw_env_data["paths"]
+    raw_config["remote"]["path"] = str(tmp_path / "remote")
 
     config = EnvConfig.from_dict(raw_config)
 
     assert config.remote.server is not None
-    assert config.remote.path is not None
+    assert config.remote.path == tmp_path / "remote"
 
 
 def test_envconfig_remote_section_from_file_loads_tmp_path(
