@@ -535,13 +535,7 @@ def test_env_remote_wrong_type_rejected(
 def test_envconfig_remote_round_trip() -> None:
     """Test that the default config round-trips through model_dump and from_dict.
 
-    ``resolve_placeholders=False`` is required here: the default daps templates
-    intentionally keep *runtime* placeholders in escaped form (``{{builddir}}``).
-    ``get_default_config()`` (with resolution enabled) unescapes them to
-    ``{builddir}``, and feeding that output back through ``from_dict`` tries to
-    resolve ``{builddir}`` a second time and fails before any model validation.
-    This is pre-existing placeholder behaviour in ``docbuild.config.app``,
-    unrelated to the new ``[remote]`` section.
+    ``resolve_placeholders=False`` keeps runtime placeholders escaped.
     """
     dumped = EnvConfig.get_default_config(resolve_placeholders=False)
     config = EnvConfig.from_dict(dumped)
@@ -595,7 +589,6 @@ def test_envconfig_example_file_validates_and_enables_remote(
 
 
 def test_envconfig_remote_section_from_file_loads_tmp_path(
-    example_env_toml: Path,
     mock_valid_raw_env_data: dict[str, Any],
     tmp_path: Path,
 ) -> None:
@@ -606,7 +599,8 @@ def test_envconfig_remote_section_from_file_loads_tmp_path(
     config_file.write_text(
         "[remote]\n"
         'server = "doc@example.com"\n'
-        f'path = "{(tmp_path / "remote").as_posix()}"\n'
+        f'path = "{(tmp_path / "remote").as_posix()}"\n',
+        encoding="utf-8",
     )
 
     raw_config = mock_valid_raw_env_data.copy()
@@ -614,7 +608,6 @@ def test_envconfig_remote_section_from_file_loads_tmp_path(
 
     config = EnvConfig.from_dict(raw_config)
 
-    assert config.remote is not None
     assert config.remote.server is not None
     assert config.remote.server.user == "doc"
     assert str(config.remote.server.host) == "example.com"
@@ -689,11 +682,11 @@ def test_envconfig_target_base_dir_default_is_local(
     mock_valid_raw_env_data: dict[str, Any],
 ) -> None:
     """Test that omitting target_base_dir keeps a local, non-remote default."""
-    from docbuild.utils.sync import is_remote_path
+    from docbuild.models.config.env import target_is_remote
 
     data = mock_valid_raw_env_data.copy()
     del data["paths"]["target"]["target_base_dir"]
 
     config = EnvConfig.from_dict(data)
 
-    assert not is_remote_path(config.paths.target.target_base_dir)
+    assert not target_is_remote(config.paths.target.target_base_dir)

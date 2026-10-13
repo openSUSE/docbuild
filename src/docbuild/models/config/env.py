@@ -88,9 +88,9 @@ runtime during the build process.
             "pdf": {}
         },
         // Remote destination for publishing built documentation.
-        // Not configured by default: publish is disabled unless [remote] is set.
-        // Corresponds to the EnvRemote model.
-        "remote": null
+        // Both keys are unset by default, so publish is disabled unless
+        // [remote] is configured. Corresponds to the EnvRemote model.
+        "remote": {"server": null, "path": null}
     }
 """
 
