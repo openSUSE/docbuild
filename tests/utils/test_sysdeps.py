@@ -1,9 +1,11 @@
 """Tests for system dependency validation and version checking."""
 
+from pathlib import Path
 import subprocess
 from unittest.mock import MagicMock, patch
 
 from click.testing import CliRunner
+import pytest
 
 from docbuild.utils import sysdeps
 
@@ -166,7 +168,10 @@ def test_check_dependencies_comparison_failure_warns() -> None:
     assert jing["message"] == "Warning: Version comparison failed"
 
 
-def test_requires_system_tools_defaults_to_all_tools() -> None:
+def test_requires_system_tools_defaults_to_all_tools(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Without arguments, all system dependencies are required."""
     statuses = [
         {
@@ -188,8 +193,8 @@ def test_requires_system_tools_defaults_to_all_tools() -> None:
         def command():
             pass
 
-        with CliRunner().isolated_filesystem():
-            command()
+        monkeypatch.chdir(tmp_path)
+        command()
 
         context.exit.assert_called_once_with(1)
 
