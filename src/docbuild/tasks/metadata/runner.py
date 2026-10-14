@@ -42,17 +42,6 @@ async def process_doctype(*args: object, **kwargs: object) -> list[Deliverable]:
     return []
 
 
-def _is_deliverable_node(node: etree._Element | object) -> bool:
-    """Safe check for deliverable nodes that degrades gracefully with test Mocks."""
-    if node is None:
-        return False
-    try:
-        return etree.QName(node).localname == "deliverable"
-    except (ValueError, TypeError):
-        # Gracefully handle MagicMocks in the test suite
-        return True
-
-
 def _gather_build_tasks(
     stitchnode: etree._ElementTree, doctypes: Sequence[Doctype]
 ) -> list[Deliverable]:
@@ -70,12 +59,11 @@ def _gather_build_tasks(
             build_tasks[d.full_id] = d
         else:
             # Include translation xrefs so Phase 2 can check them against Git
-            is_mock = "Mock" in type(d.xml.lang).__name__
-            if not is_mock and d.xml.lang not in DEFAULT_LANGS:
+            if d.xml.lang not in DEFAULT_LANGS:
                 build_tasks[d.full_id] = d
 
             target = d.xml.final_target_node
-            if _is_deliverable_node(target):
+            if target is not None and etree.QName(target).localname == "deliverable":
                 target_d = Deliverable(_node=target)
                 build_tasks[target_d.full_id] = target_d
 
@@ -95,14 +83,13 @@ def _generate_homepage(stitchnode: etree._ElementTree, json_cache_dir: Path) -> 
         log.error("Failed to generate homepage.json: %s", e)
 
 
-def _get_expected_dcfile(d: Deliverable) -> str | None:
+def resolve_effective_dcfile(d: Deliverable) -> str | None:
     """Extract the target DC filename, resolving xrefs if necessary."""
-    # Determine expected DC file (either explicit, or pointing to the English target)
     if not d.xml.is_xref:
         return d.xml.dcfile
 
     target = d.xml.final_target_node
-    if _is_deliverable_node(target):
+    if target is not None and etree.QName(target).localname == "deliverable":
         return Deliverable(_node=target).xml.dcfile
     return None
 
@@ -114,49 +101,47 @@ def _fallback_to_english_xref(d: Deliverable, dcfile: str, dcpath: str) -> None:
     if dc_node is not None:
         d.xml.node.remove(dc_node)
 
-    en_locale = d.xml.node.getparent().getparent().find(f"locale[@lang='{DEFAULT_LANGS[0]}']")
+    en_locale = d.xml.locale_en
     if en_locale is not None:
-        target_id = None
         for en_d in en_locale.findall("deliverable"):
             en_dc = en_d.find("dc")
             if en_dc is not None and en_dc.get("file") == dcfile:
-                target_id = en_d.get(XML_ID)
-                break
-        if target_id:
-            d.xml.node.append(etree.Element("xref", linkend=target_id))
-            d = Deliverable(_node=d.xml.node)
-            log.info("Missing translated DC file %s for %s. Falling back to English blueprint (skipped).", dcpath, d.full_id)
-        else:
-            log.warning("Missing translated DC file %s for %s, but no English blueprint found.", dcpath, d.full_id)
+                if target_id := en_d.get(XML_ID):
+                    d.xml.node.append(etree.Element("xref", linkend=target_id))
+                    log.info("Missing translated DC file %s for %s. Falling back to English blueprint (skipped).", dcpath, d.full_id)
+                    return
+
+    log.warning("Missing translated DC file %s for %s, but no English blueprint found.", dcpath, d.full_id)
 
 
-async def _resolve_single_translation(d: Deliverable, repo_dir: Path) -> Deliverable | None:
+async def _resolve_single_translation(
+    d: Deliverable,
+    repo_dir: Path,
+    tree_cache: dict[tuple[str, str], list[str]],
+) -> Deliverable | None:
     """Check Git for a translated DC file and return the Deliverable to build (if any)."""
-    # Test mock safety check so pytest doesn't crash on mocked attributes
-    if "Mock" in type(d.xml.lang).__name__:
-        return d
+    fallback_return = None if d.xml.is_xref else d
 
     if d.xml.lang in DEFAULT_LANGS:
-        return None if d.xml.is_xref else d
+        return fallback_return
 
     repo_url = d.git.url if d.git else None
     branch = d.branch
 
     if not repo_url or not branch:
-        return None if d.xml.is_xref else d
+        return fallback_return
 
-    dcfile = _get_expected_dcfile(d)
+    dcfile = resolve_effective_dcfile(d)
     if not dcfile:
-        return None if d.xml.is_xref else d
+        return fallback_return
 
-    # Check if DC file exists in the cloned repository
-    repo_handler = ManagedGitRepo(repo_url, repo_dir)
-    try:
-        available_files = await repo_handler.ls_tree(branch)
-    except Exception:
-        available_files = []
+    # Check if DC file exists in the cloned repository (cached per URL+Branch)
+    cache_key = (repo_url, branch)
+    if cache_key not in tree_cache:
+        tree_cache[cache_key] = await ManagedGitRepo(repo_url, repo_dir).ls_tree(branch)
 
-    dcpath = "/".join(part for part in (d.subdir(), dcfile) if part)
+    available_files = tree_cache[cache_key]
+    dcpath = "/".join(part for part in (d.subdir, dcfile) if part)
 
     if dcpath in available_files:
         if d.xml.is_xref:
@@ -168,12 +153,14 @@ async def _resolve_single_translation(d: Deliverable, repo_dir: Path) -> Deliver
             d = Deliverable(_node=d.xml.node)
             log.info("Found translated DC file %s for %s. Dropped xref to extract localized metadata.", dcpath, d.full_id)
         return d
+
+    # Missing localized DC file path:
+    if not d.xml.is_xref:
+        _fallback_to_english_xref(d, dcfile, dcpath)
     else:
-        if not d.xml.is_xref:
-            _fallback_to_english_xref(d, dcfile, dcpath)
-        else:
-            log.info("Missing translated DC file %s for %s. Inheriting English blueprint (skipped).", dcpath, d.full_id)
-        return None
+        log.info("Missing translated DC file %s for %s. Inheriting English blueprint (skipped).", dcpath, d.full_id)
+
+    return fallback_return
 
 
 async def _resolve_translation_metadata(
@@ -182,10 +169,13 @@ async def _resolve_translation_metadata(
 ) -> list[Deliverable]:
     """Verify translation DC files in Git and dynamically rewrite the XML if found."""
     final_deliverables = []
+    tree_cache: dict[tuple[str, str], list[str]] = {}
+
     for d in deliverables:
-        resolved = await _resolve_single_translation(d, repo_dir)
+        resolved = await _resolve_single_translation(d, repo_dir, tree_cache)
         if resolved is not None:
             final_deliverables.append(resolved)
+
     return final_deliverables
 
 
