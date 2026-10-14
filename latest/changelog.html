@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.25.1.dev9+g9ddd84a10.d20261013</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.25.1.dev10+g09e2b5c2e.d20261014</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=aaad27bd"></script>
+    <script src="_static/documentation_options.js?v=c27bf2dd"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -467,6 +467,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">-U</span></code>/<code class="docutils literal notranslate"><span class="pre">--unresolved</span></code> option to <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">list</span></code> to display the configuration with unresolved placeholders for debugging purposes. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/545">GH #545</a>)</p></li>
 <li><p>Added virtual translation inheritance for empty locales in the metadata runner. Empty non-English locales now automatically generate synthetic cross-references pointing to the canonical <code class="docutils literal notranslate"><span class="pre">en-us</span></code> blueprint deliverables, ensuring all translation targets are included in aggregated JSON manifests. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/595">GH #595</a>)</p></li>
 <li><p>Added an optional <code class="docutils literal notranslate"><span class="pre">[remote]</span></code> section (<code class="docutils literal notranslate"><span class="pre">server</span></code>, <code class="docutils literal notranslate"><span class="pre">path</span></code>) to the environment configuration for the remote publish destination. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/605">GH #605</a>)</p></li>
+<li><p>Implemented Git file existence checks for translated deliverables in the metadata pipeline. The pipeline now verifies if a localized DC file exists in the repository before processing. If found, it correctly extracts true localized metadata (such as translated titles). If the file is missing, it safely falls back to the English blueprint cross-reference. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/611">GH #611</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
