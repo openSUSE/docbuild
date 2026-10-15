@@ -12,6 +12,7 @@
 
    create-metadata
    build
+   publishing
    validate
    clone
    metadata

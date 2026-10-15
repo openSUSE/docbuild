@@ -1,12 +1,22 @@
 """Unit tests for docbuild.utils.sync."""
 
 from pathlib import Path
+import shutil
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
 import docbuild.utils.sync as sync_mod
-from docbuild.utils.sync import RsyncOptions, is_remote_path, rsync
+from docbuild.utils.sync import (
+    DEFAULT_RSYNC_EXCLUDES,
+    RsyncOptions,
+    is_remote_path,
+    rsync,
+)
+
+DEFAULT_EXCLUDE_ARGS = [
+    arg for pattern in DEFAULT_RSYNC_EXCLUDES for arg in ("--exclude", pattern)
+]
 
 
 @pytest.mark.parametrize(
@@ -54,7 +64,7 @@ def test_is_remote_path(path: str | Path, expected: bool) -> None:
     [
         (
             RsyncOptions(),
-            ["-a"],
+            ["-a", *DEFAULT_EXCLUDE_ARGS],
         ),
         (
             RsyncOptions(
@@ -66,7 +76,15 @@ def test_is_remote_path(path: str | Path, expected: bool) -> None:
                 partial=True,
                 extra_args=["--exclude=*.tmp"],
             ),
-            ["-z", "--delete", "--dry-run", "-v", "--partial", "--exclude=*.tmp"],
+            [
+                "-z",
+                "--delete",
+                "--dry-run",
+                "-v",
+                "--partial",
+                *DEFAULT_EXCLUDE_ARGS,
+                "--exclude=*.tmp",
+            ],
         ),
         (
             RsyncOptions(exclude=["*.log", ".git"]),
@@ -80,13 +98,101 @@ def test_rsync_options_to_args(options: RsyncOptions, expected: list[str]) -> No
     assert options.to_args() == expected
 
 
+def test_default_rsync_exclusions() -> None:
+    """Keep the default publishing policy explicit."""
+    assert RsyncOptions().exclude == (
+        ".git/",
+        ".svn/",
+        ".hg/",
+        ".bzr/",
+        "*~",
+        "*.old",
+        "*.bak",
+        "*.BAK",
+        "*.orig",
+        "*.rej",
+        "*.html.new",
+    )
+
+
+@pytest.mark.parametrize("exclude", [[], ()])
+def test_rsync_exclusions_can_be_disabled(exclude: list[str] | tuple[str, ...]) -> None:
+    """An explicit empty collection disables the default exclusions."""
+    assert RsyncOptions(exclude=exclude).to_args() == ["-a"]
+
+
+@pytest.mark.asyncio
+@patch.object(sync_mod, "run_command", new_callable=AsyncMock)
+async def test_rsync_custom_exclusions(mock_run_command: AsyncMock) -> None:
+    """Pass user patterns literally, without shell expansion or default merging."""
+    await rsync(
+        "source_dir",
+        "target_dir",
+        options=RsyncOptions(exclude=["draft files/", "*.tmp"]),
+    )
+    mock_run_command.assert_called_once_with(
+        [
+            "rsync",
+            "-a",
+            "--exclude",
+            "draft files/",
+            "--exclude",
+            "*.tmp",
+            "source_dir",
+            "target_dir",
+        ]
+    )
+
+
+@pytest.mark.skipif(shutil.which("rsync") is None, reason="rsync is not installed")
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("options", "excluded"),
+    [
+        (None, True),
+        (RsyncOptions(exclude=[]), False),
+    ],
+)
+async def test_rsync_default_exclusions_transfer(tmp_path, options, excluded):
+    """Real transfers omit temporary/VCS files while preserving deliverables."""
+    source = tmp_path / "source"
+    target = tmp_path / "target"
+    unwanted = [
+        ".git/config",
+        "nested/.svn/entries",
+        ".hg/store",
+        ".bzr/branch",
+        "chapter~",
+        "chapter.old",
+        "chapter.bak",
+        "chapter.BAK",
+        "chapter.orig",
+        "chapter.rej",
+        "chapter.html.new",
+    ]
+    wanted = ["index.html", "book.pdf", ".gitignore", "nested/chapter.html"]
+    for name in [*unwanted, *wanted]:
+        path = source / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("content", encoding="utf-8")
+    target.mkdir()
+    result = await rsync(source, target, content_only=True, options=options)
+    assert result.returncode == 0, result.stderr
+    for name in wanted:
+        assert (target / name).read_text(encoding="utf-8") == "content"
+    for name in unwanted:
+        assert (target / name).exists() is not excluded
+
+
 @pytest.mark.asyncio
 @patch.object(sync_mod, "run_command", new_callable=AsyncMock)
 async def test_rsync_basic(mock_run_command: AsyncMock) -> None:
     """Test rsync execution with basic paths."""
     await rsync("source_dir", "target_dir")
 
-    mock_run_command.assert_called_once_with(["rsync", "-a", "source_dir", "target_dir"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "source_dir", "target_dir"]
+    )
 
 
 @pytest.mark.asyncio
@@ -95,7 +201,9 @@ async def test_rsync_content_only_inferred(mock_run_command: AsyncMock) -> None:
     """Test trailing slash inference."""
     await rsync("source_dir/", "target_dir")
 
-    mock_run_command.assert_called_once_with(["rsync", "-a", "source_dir/", "target_dir"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "source_dir/", "target_dir"]
+    )
 
 
 @pytest.mark.asyncio
@@ -104,19 +212,25 @@ async def test_rsync_content_only_explicit(mock_run_command: AsyncMock) -> None:
     """Test explicit content_only override."""
     # Even without trailing slash in input, it should be appended
     await rsync("source_dir", "target_dir", content_only=True)
-    mock_run_command.assert_called_once_with(["rsync", "-a", "source_dir/", "target_dir"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "source_dir/", "target_dir"]
+    )
 
     mock_run_command.reset_mock()
 
     # Even with trailing slash in input, if False, it should NOT append
     await rsync("source_dir/", "target_dir", content_only=False)
-    mock_run_command.assert_called_once_with(["rsync", "-a", "source_dir", "target_dir"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "source_dir", "target_dir"]
+    )
 
     mock_run_command.reset_mock()
 
     # Root directory / should not be stripped to empty string
     await rsync("/", "target_dir", content_only=False)
-    mock_run_command.assert_called_once_with(["rsync", "-a", "/", "target_dir"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, str(Path("/")), "target_dir"]
+    )
 
 
 @pytest.mark.asyncio
@@ -125,7 +239,9 @@ async def test_rsync_with_pathlib(mock_run_command: AsyncMock) -> None:
     """Test execution using Path objects."""
     await rsync(Path("src"), Path("dest"), content_only=True)
 
-    mock_run_command.assert_called_once_with(["rsync", "-a", "src/", "dest"])
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "src/", "dest"]
+    )
 
 
 @pytest.mark.asyncio
@@ -164,7 +280,7 @@ async def test_rsync_remote_source(
     """Test rsync with remote source under various content_only settings."""
     await rsync(source, "local_dest", content_only=content_only)
     mock_run_command.assert_called_once_with(
-        ["rsync", "-a", expected_source_arg, "local_dest"]
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, expected_source_arg, "local_dest"]
     )
 
 
@@ -187,7 +303,7 @@ async def test_rsync_remote_target(
     """Test rsync execution with remote target."""
     await rsync("source_dir", target, content_only=True)
     mock_run_command.assert_called_once_with(
-        ["rsync", "-a", "source_dir/", expected_target_arg]
+        ["rsync", "-a", *DEFAULT_EXCLUDE_ARGS, "source_dir/", expected_target_arg]
     )
 
 
@@ -198,4 +314,3 @@ async def test_rsync_both_remote_raises() -> None:
         ValueError, match=r"Both source and target cannot be remote paths\."
     ):
         await rsync("user@host1:/src", "user@host2:/dest")
-

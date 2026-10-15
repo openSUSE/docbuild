@@ -90,7 +90,13 @@ runtime during the build process.
         // Remote destination for publishing built documentation.
         // Both keys are unset by default, so publish is disabled unless
         // [remote] is configured. Corresponds to the EnvRemote model.
-        "remote": {"server": null, "path": null}
+        "remote": {"server": null, "path": null},
+        // Transfer exclusions. Corresponds to the EnvRsync model.
+        "rsync": {
+            "exclude": [".git/", ".svn/", ".hg/", ".bzr/", "*~", "*.old",
+                        "*.bak", "*.BAK", "*.orig", "*.rej", "*.html.new"],
+            "exclude_extra": []
+        }
     }
 """
 
@@ -128,6 +134,7 @@ from ...constants import (
     SSH_USERNAME_REGEX,
     STATE_HOME,
 )
+from ...utils.sync import DEFAULT_RSYNC_EXCLUDES, RsyncOptions
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import AbsolutePath, WritablePath
@@ -778,6 +785,36 @@ class EnvRemote(BaseModel):
         return self
 
 
+class EnvRsync(BaseModel):
+    """Configure exclusions for syncing built deliverables."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    exclude: list[str] = Field(
+        default_factory=lambda: list(DEFAULT_RSYNC_EXCLUDES),
+        description=(
+            "Rsync exclusion patterns. An explicit list replaces the defaults; "
+            "[] disables them."
+        ),
+        examples=[[".git/", "*.bak"]],
+    )
+    """Base exclusion patterns, replacing the built-in defaults when supplied."""
+
+    exclude_extra: list[str] = Field(
+        default_factory=list,
+        description="Additional rsync patterns appended to the base exclusion list.",
+        examples=[["*.tmp", "drafts/"]],
+    )
+    """Additional patterns that extend the selected base exclusion list."""
+
+    def to_options(self) -> RsyncOptions:
+        """Create rsync options with the combined exclusions.
+
+        :return: Options ready to pass to the rsync utility.
+        """
+        return RsyncOptions(exclude=[*self.exclude, *self.exclude_extra])
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -818,6 +855,13 @@ class EnvConfig(BaseModel):
         description="Settings for the remote destination used by publish.",
     )
     "Remote publish destination."
+
+    rsync: EnvRsync = Field(
+        default_factory=EnvRsync,
+        title="Rsync Configuration",
+        description="Exclusions applied when syncing built deliverables to the target.",
+    )
+    """Transfer exclusions for built deliverables."""
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")

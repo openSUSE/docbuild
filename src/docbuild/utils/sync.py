@@ -9,6 +9,21 @@ import subprocess
 
 from .shell import run_command
 
+DEFAULT_RSYNC_EXCLUDES: tuple[str, ...] = (
+    ".git/",
+    ".svn/",
+    ".hg/",
+    ".bzr/",
+    "*~",
+    "*.old",
+    "*.bak",
+    "*.BAK",
+    "*.orig",
+    "*.rej",
+    "*.html.new",
+)
+"""Version-control directories and temporary files omitted from transfers."""
+
 
 @dataclass(frozen=True, slots=True)
 class RsyncOptions:
@@ -51,10 +66,14 @@ class RsyncOptions:
     """Keep partially transferred files. Useful for resuming interrupted transfers."""
 
     exclude: list[str] | tuple[str, ...] = field(
-        default_factory=list,
+        default=DEFAULT_RSYNC_EXCLUDES,
         metadata={"flag": "--exclude"},
     )
-    """List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag."""
+    """Patterns excluded from transfer, replacing the defaults when supplied.
+
+    Pass an empty list or tuple to disable exclusions. Each pattern becomes a
+    separate ``--exclude`` flag.
+    """
 
     extra_args: list[str] = field(default_factory=list)
     """Additional arbitrary rsync command-line arguments not modeled as explicit fields.
