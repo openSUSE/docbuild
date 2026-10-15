@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.25.1.dev10+g09e2b5c2e.d20261014</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.25.1.dev11+g36beeb260.d20261015</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="_static/documentation_options.js?v=c27bf2dd"></script>
+    <script src="_static/documentation_options.js?v=69042d15"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -481,6 +481,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Redesigned the metadata processing pipeline to support cross-references (<code class="docutils literal notranslate"><span class="pre">&lt;xref&gt;</span></code>) to other deliverables, docsets, and products. The new three-phase architecture globally partitions build tasks from reference tasks, correctly discovers out-of-scope dependencies, avoids redundant execution, and injects reference metadata dynamically during manifest assembly without causing Git checkout or DAPS execution failures. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/585">GH #585</a>)</p></li>
+<li><p>Fixed a Click DeprecationWarning (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/613">GH #613</a>)</p></li>
 </ul>
 </section>
 </section>
