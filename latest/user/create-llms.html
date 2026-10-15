@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild llms &#8212; Docbuild Documentation 0.25.1.dev11+g36beeb260.d20261015</title>
+    <title>Creating Markdown for AI Tools &#8212; Docbuild Documentation 0.25.1.dev12+g3a6ca8ff0.d20261015</title>
   
   
   
@@ -41,13 +41,13 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
-    <script src="../_static/documentation_options.js?v=69042d15"></script>
+    <script src="../_static/documentation_options.js?v=8417173c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user/llms';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/create-llms';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.22.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -59,8 +59,8 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Validating Configuration" href="validate.html" />
-    <link rel="prev" title="Building Deliverables" href="build.html" />
+    <link rel="next" title="Checking your Environment" href="check-env.html" />
+    <link rel="prev" title="Creating Metadata" href="metadata.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.25.0" />
@@ -415,10 +415,10 @@
 <li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build.html">Building Deliverables</a></li>
-<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">docbuild llms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validate.html">Validating Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metadata.html">Creating Metadata</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Creating Markdown for AI Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="check-env.html">Checking your Environment</a></li>
 </ul>
 </div>
@@ -463,7 +463,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">docbuild llms</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Creating Markdown for AI Tools</span></li>
   </ul>
 </nav>
 </div>
@@ -480,29 +480,76 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="docbuild-llms">
-<span id="cmd-llms"></span><h1>docbuild llms<a class="headerlink" href="#docbuild-llms" title="Link to this heading">#</a></h1>
-<section id="synopsis">
-<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>llms<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+  <section id="creating-markdown-for-ai-tools">
+<span id="cmd-llms"></span><h1>Creating Markdown for AI Tools<a class="headerlink" href="#creating-markdown-for-ai-tools" title="Link to this heading">#</a></h1>
+<p>AI assistants and LLM crawlers often read web pages poorly.
+Pages full of navigation menus, scripts, and layout markup waste their limited context on noise.
+<code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">llms</span></code> gives them a cleaner version of your documentation.</p>
+<section id="why-build-markdown-files">
+<h2>Why build Markdown files?<a class="headerlink" href="#why-build-markdown-files" title="Link to this heading">#</a></h2>
+<p>The command converts each built HTML page into a plain Markdown file that keeps only the content.
+It also writes an <code class="file docutils literal notranslate"><span class="pre">llms.txt</span></code> file, which is an index that points AI tools to all of these Markdown files.
+Each HTML page gets a <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;</span> <span class="pre">type=&quot;text/markdown&quot;&gt;</span></code> tag, so tools that read the HTML can find the Markdown version.</p>
+<p>Use this command when you want AI tools to answer questions about your documentation accurately.
+Readers and human visitors still see the normal HTML site.</p>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h2>
+<p>Before you run the command, make sure you have the following:</p>
+<ul class="simple">
+<li><p>A working <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> installation.
+See <a class="reference internal" href="install.html"><span class="doc">Installing docbuild</span></a> for details.</p></li>
+<li><p>A completed documentation build in the target directory.
+The command reads the existing HTML output and does not rebuild the documentation.</p></li>
+<li><p>The following settings, which you can provide either in an ENV config file or with <code class="docutils literal notranslate"><span class="pre">-C</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">paths.target.target_base_dir</span></code>: The directory that contains your built deliverables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code>: Must be <code class="docutils literal notranslate"><span class="pre">true</span></code> to enable generation.
+The command exits without doing anything when this option is <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code>: The subdirectory for the Markdown files and the index.
+The default is <code class="file docutils literal notranslate"><span class="pre">docs</span></code>.
+A relative path is resolved against <code class="docutils literal notranslate"><span class="pre">target_base_dir</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="running-the-command">
+<h2>Running the command<a class="headerlink" href="#running-the-command" title="Link to this heading">#</a></h2>
+<p>To generate the Markdown files for an existing build, do the following:</p>
+<ol class="arabic">
+<li><p>Provide the settings in the way you prefer:</p>
+<ul>
+<li><p>In an arbitrary file (like <code class="file docutils literal notranslate"><span class="pre">env.toml</span></code>), set the options listed in the section above. docbuild does not search for this name by default, so pass it with <code class="docutils literal notranslate"><span class="pre">--env-config</span> <span class="pre">env.toml</span></code> and run:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Pass a custom ENV config file</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild --env-config env.toml llms</span>
 </pre></div>
 </div>
-</section>
-<section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
-<p>To expose your documentation to AI systems and LLM crawlers, this command generates lightweight Markdown equivalents and an <code class="file docutils literal notranslate"><span class="pre">llms.txt</span></code> index from your pre-built HTML output. This command directly scans the existing directory, cleans the HTML, converts it to Markdown, and injects the necessary <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;&gt;</span></code> tags.</p>
-</section>
-<section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<p>The command automatically relies on the following settings in your environment configuration (<code class="file docutils literal notranslate"><span class="pre">env.toml</span></code>):</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">paths.target.target_base_dir</span></code>: The directory containing built deliverables to be processed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code>: Boolean flag enabling or disabling LLMs generation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">paths.llmstxt_dir</span></code>: The subdirectory name where the generated Markdown files will be stored (defaults to <code class="file docutils literal notranslate"><span class="pre">docs</span></code>). If given as a relative path, it resolves relative to <code class="docutils literal notranslate"><span class="pre">target_base_dir</span></code>.</p></li>
-</ul>
-<p>To temporarily override any configuration setting use the <code class="docutils literal notranslate"><span class="pre">-C</span></code> option:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>-C<span class="w"> </span>paths.target.target_base_dir<span class="o">=</span>/path/to/builds<span class="w"> </span>-C<span class="w"> </span>build.build_llmstxt<span class="o">=</span><span class="nb">true</span><span class="w"> </span>llms
+</div>
+</li>
+<li><p>In <code class="file docutils literal notranslate"><span class="pre">env.</span><em><span class="pre">role</span></em><span class="pre">.toml</span></code>, where <code class="docutils literal notranslate"><span class="pre">{role}</span></code> is the environment role such as <code class="docutils literal notranslate"><span class="pre">devel</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code>, set the options listed in the section above. Store the file in a standard location.
+Run <strong class="command">docbuild llms</strong> from the directory that contains the file. The default role is <code class="docutils literal notranslate"><span class="pre">production</span></code>, so the default file name is <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code>.</p></li>
+<li><p>On the command line, pass each setting with <code class="docutils literal notranslate"><span class="pre">-C</span></code>/ <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> as a <code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code> pair.
+You do not need an ENV config file for this.
+If you also have an env config file, the <code class="docutils literal notranslate"><span class="pre">-C</span></code> values override it for that run.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Pass the settings on the command line</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild -C paths.target.target_base_dir=/path/to/builds \</span>
+<span class="go">         -C build.build_llmstxt=true \</span>
+<span class="go">         llms</span>
 </pre></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Check the output directory.
+It contains the Markdown files and <code class="file docutils literal notranslate"><span class="pre">llms.txt</span></code> in the <code class="docutils literal notranslate"><span class="pre">llmstxt_dir</span></code> subdirectory.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Run the command again after each new build to update the Markdown files.
+If you enable <code class="docutils literal notranslate"><span class="pre">build.build_llmstxt</span></code> for your normal builds, the Markdown files are generated during the build and you do not need this command.</p>
 </div>
 </section>
 </section>
@@ -518,20 +565,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="build.html"
+       href="metadata.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Building Deliverables</p>
+        <p class="prev-next-title">Creating Metadata</p>
       </div>
     </a>
     <a class="right-next"
-       href="validate.html"
+       href="check-env.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Validating Configuration</p>
+        <p class="prev-next-title">Checking your Environment</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -554,9 +601,9 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#synopsis">Synopsis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-build-markdown-files">Why build Markdown files?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-command">Running the command</a></li>
 </ul>
   </nav></div>
 
@@ -564,7 +611,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/llms.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/create-llms.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -579,7 +626,7 @@
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../_sources/user/llms.rst.txt">
+    <a href="../_sources/user/create-llms.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
