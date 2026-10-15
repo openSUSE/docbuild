@@ -12,8 +12,8 @@
 
    create-metadata
    build
-   llms
    validate
    clone
    metadata
+   create-llms
    check-env
