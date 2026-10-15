@@ -81,7 +81,9 @@ PROJECT_DIR: Path = Path.cwd()
 """The current working directory, used as the project directory."""
 
 CONFIG_HOME: Path = platformdirs.user_config_path(APP_NAME)
-"""The user-specific configuration directory, typically located at ~/.config/docbuild."""
+"""The user-specific configuration directory, typically located at ~/.config/docbuild.
+
+Overridden by the :envvar:`XDG_CONFIG_HOME` environment variable (``$XDG_CONFIG_HOME/docbuild``)."""
 
 SYSTEM_CONFIG_DIR: Path = Path("/etc") / APP_NAME
 """The system-wide configuration directory, typically located
@@ -99,19 +101,28 @@ CONFIG_PATHS: tuple[Path, ...] = (
 
 # --- XDG Base Directory Setup ---
 STATE_HOME: Path = platformdirs.user_state_path(APP_NAME)
-"""The base directory for application state, logs, and locks, per XDG Base Directory Specification."""
+"""The base directory for application state, logs, and locks, per XDG Base Directory Specification.
+
+Overridden by the :envvar:`XDG_STATE_HOME` environment variable (``$XDG_STATE_HOME/docbuild``)."""
 
 DATA_HOME: Path = platformdirs.user_data_path(APP_NAME)
-"""The user-specific data directory, typically located at ~/.local/share/docbuild."""
+"""The user-specific data directory, typically located at ~/.local/share/docbuild.
+
+Overridden by the :envvar:`XDG_DATA_HOME` environment variable (``$XDG_DATA_HOME/docbuild``)."""
 
 CACHE_HOME: Path = platformdirs.user_cache_path(APP_NAME)
-"""The user-specific cache directory, typically located at ~/.cache/docbuild."""
+"""The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+Overridden by the :envvar:`XDG_CACHE_HOME` environment variable (``$XDG_CACHE_HOME/docbuild``)."""
 
 CACHE_FILE_EXT: str = ".cache.json"
 """The standard file extension used for docbuild cache files."""
 
 RUNTIME_DIR: Path = platformdirs.user_runtime_path(APP_NAME)
-"""The user-specific runtime directory, typically located at /run/user/1000/docbuild."""
+"""The user-specific runtime directory, typically located at /run/user/1000/docbuild.
+
+Overridden by the :envvar:`XDG_RUNTIME_DIR` environment variable (``$XDG_RUNTIME_DIR/docbuild``).
+Unlike the other directories, this variable has no default and is set by the login session."""
 
 
 # --- Config files ---

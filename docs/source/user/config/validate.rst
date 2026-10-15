@@ -3,9 +3,11 @@
 Validating Configuration
 ========================
 
+.. note::
+   For validating Portal Config XML configuration files, use :ref:`validate-portal` (:command:`docbuild portal validate`).
+
 Before ``docbuild`` executes commands that consume configuration, it validates
 the provided configuration files against predefined :term:`Pydantic` models.
-The ``config list`` command skips validation unless you pass ``--validate``.
 
 The validation checks for different aspects of the configuration, such as:
 
@@ -18,7 +20,7 @@ The validation checks for different aspects of the configuration, such as:
 
 To ensure your TOML files match the required schema:
 
-.. code-block:: shell
+.. code-block:: console
 
    $ docbuild config validate
    Running Configuration Validation...
@@ -33,7 +35,9 @@ To ensure your TOML files match the required schema:
    │ All TOML files match the required schema. │
    ╰───────────────────────────────────────────╯
 
-This checks both application and environment files.
+
+This checks both application and environment files. If you only need to
+validate the Env config, use ``--env`` and for the App config use ``--app`.
 
 
 Detailed Validation Feedback
@@ -68,9 +72,8 @@ Fixing Common Issues
 If you encounter validation errors, check the following common causes:
 
 * **Missing Keys**: Ensure all mandatory fields (like ``paths.root_config_dir``) are defined.
-* **Typing Errors**: Ensure booleans (``true``/``false``) and integers are not enclosed
-  in quotes.
+* **Typing Errors**: Ensure booleans (``true``/``false``) and integers are not enclosed in quotes.
 * **Permission Issues**: If a path error occurs, verify that the user running
   ``docbuild`` has the necessary read/write permissions for the specified directory.
 * **Circular Placeholders**: Ensure that your static placeholders do not point
-  to each other in a loop (e.g., Key A referencing Key B, which references Key A).
+  to each other in a loop (e.g., key A referencing key B, which references key A).

@@ -1,7 +1,7 @@
 .. _config-overwriting-cli:
 
-Overwriting Config Options on the Command Line
-==============================================
+Setting Env Keys on the Command Line
+====================================
 
 To temporarily override environment configuration options directly from the command line use the ``-C`` or ``--set-env`` option. This avoids having to create or modify TOML files for quick adjustments.
 

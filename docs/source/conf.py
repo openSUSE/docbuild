@@ -118,6 +118,11 @@ exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "__pycache__"]
 
 language = "en"
 
+# -- Options for copybutton
+copybutton_selector = "div.highlight-console pre"
+copybutton_prompt_text = "$ "
+copybutton_line_continuation_character = "\\"
+
 # -- Options for autoapi extension
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
 autoapi_modules = {

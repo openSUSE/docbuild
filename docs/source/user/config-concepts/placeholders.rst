@@ -1,7 +1,7 @@
 .. _config-placeholders:
 
-Using Placeholders
-==================
+Placeholders
+============
 
 Docbuild supports the use of placeholders in the configuration file.
 Two types of placeholders are supported:
@@ -57,9 +57,3 @@ Static placeholders follow a specific syntax:
   key ``name`` in the ``general`` section.
 
   If you have nested sections, use dot notation to reference the keys (for example, ``section.subsection.key``).
-
-
-Debugging Placeholders
-----------------------
-
-To inspect the configuration with placeholders left unresolved, use the ``-U`` or ``--unresolved`` flag with :command:`docbuild config list`. See :ref:`config-viewing-unresolved-placeholders`.
