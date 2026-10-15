@@ -826,7 +826,7 @@ class EnvConfig(BaseModel):
         """Resolve placeholders before any other validation."""
         if isinstance(data, dict):
             try:
-                return replace_placeholders(deepcopy(data))
+                return replace_placeholders(deepcopy(data), keep_runtime=True)
             except (
                 PlaceholderResolutionError,
                 CircularReferenceError,
@@ -856,21 +856,6 @@ class EnvConfig(BaseModel):
             return raw_dict
 
         # 3. Resolve placeholders
-        resolved_dict = replace_placeholders(raw_dict)
+        resolved_dict = replace_placeholders(raw_dict, keep_runtime=True)
 
-        # 4. Restore runtime placeholders that were stripped by string.format
-        # (e.g. {builddir} back to {{builddir}}) so the output can be re-loaded safely.
-        def _restore_braces(obj: object) -> object:
-            if isinstance(obj, str):
-                for var in ("builddir", "dcfile", "output", "product", "docset", "lang"):
-                    pattern = r"(?<!\{)\{" + var + r"\}(?!\})"
-                    replacement = "{{" + var + "}}"
-                    obj = re.sub(pattern, replacement, obj)
-                return obj
-            elif isinstance(obj, dict):
-                return {k: _restore_braces(v) for k, v in obj.items()}
-            elif isinstance(obj, list):
-                return [_restore_braces(item) for item in obj]
-            return obj
-
-        return _restore_braces(resolved_dict) or {}
+        return resolved_dict or {}

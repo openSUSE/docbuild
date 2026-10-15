@@ -119,7 +119,7 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
-    monkeypatch.setattr(env_mod, "replace_placeholders", lambda data: data)
+    monkeypatch.setattr(env_mod, "replace_placeholders", lambda data, **kwargs: data)
 
     paths_to_create = [
         tmp_path,
