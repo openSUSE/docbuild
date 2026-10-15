@@ -13,3 +13,12 @@ In case you have installed different Python versions using :command:`uv python i
 .. code-block:: shell-session
 
    $ uv run --python 3.14 docbuild --help
+
+Command aliases
+---------------
+
+Use ``ls`` as a shortcut for ``list`` in the ``cache``, ``config``,
+``portal``, and ``repo`` command groups. For example,
+``docbuild cache ls --type json`` lists JSON cache files. All arguments and
+options work as with ``list``. Like ``config list``, ``config ls`` displays
+configuration without requiring validation; add ``--validate`` to validate it.

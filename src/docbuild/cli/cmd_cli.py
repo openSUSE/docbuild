@@ -352,6 +352,12 @@ def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
 class BannerGroup(click.Group):
     """Custom Click Group that displays a banner before help messages."""
 
+    def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]:
+        """Keep parsed subcommand arguments available during CLI initialization."""
+        remaining = super().parse_args(ctx, args)
+        ctx.meta["subcommand_args"] = tuple(remaining)
+        return remaining
+
     def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Format and print help output with banner prefix.
 
@@ -478,8 +484,13 @@ def cli(
     current_files: Sequence[Path | str] | None = None
 
     # Determine if we should skip validation
-    is_config_list = (ctx.invoked_subcommand == "config") and ("list" in sys.argv)
-    skip_validation = is_config_list and "--validate" not in sys.argv
+    subcommand_args = ctx.meta.get("subcommand_args", ())
+    is_config_list = (
+        ctx.invoked_subcommand == "config"
+        and bool(subcommand_args)
+        and subcommand_args[0] in ("list", "ls")
+    )
+    skip_validation = is_config_list and "--validate" not in subcommand_args[1:]
 
     try:
         # --- PHASE 1: Load Application Config ---

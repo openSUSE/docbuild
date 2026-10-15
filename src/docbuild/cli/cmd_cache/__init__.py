@@ -4,6 +4,7 @@ import itertools
 from pathlib import Path
 
 import click
+from click_aliases import ClickAliasedGroup
 
 from docbuild.cli.callback import validate_doctypes
 from docbuild.cli.console import console
@@ -96,7 +97,7 @@ def _get_prune_confirmation_msg(cache_type: str, doctypes: tuple[Doctype]) -> st
     return f"Are you sure you want to delete {target_str}?"
 
 
-@click.group(help=__doc__)
+@click.group(cls=ClickAliasedGroup, help=__doc__)
 def cache() -> None:
     """Subcommand group for cache management."""
     pass
@@ -116,7 +117,7 @@ def cache_dir(ctx: click.Context) -> None:
     console.print(f"[header]JSON Cache Dir:[/] {paths.json_cache_dir}")
 
 
-@cache.command(name="list")
+@cache.command(name="list", aliases=["ls"])
 @click.argument("doctypes", nargs=-1, callback=validate_doctypes)
 @click.option("-t", "--type", "cache_type",
     type=click.Choice(["meta", "json", "all"]),
