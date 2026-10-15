@@ -19,6 +19,6 @@ Command aliases
 
 Use ``ls`` as a shortcut for ``list`` in the ``cache``, ``config``,
 ``portal``, and ``repo`` command groups. For example,
-``docbuild cache ls --type json`` lists JSON cache files. All arguments and
+:command:`docbuild cache ls --type json` lists JSON cache files. All arguments and
 options work as with ``list``. Like ``config list``, ``config ls`` displays
 configuration without requiring validation; add ``--validate`` to validate it.

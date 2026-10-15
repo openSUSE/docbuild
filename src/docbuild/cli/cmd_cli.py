@@ -354,6 +354,12 @@ class BannerGroup(click.Group):
 
     def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]:
         """Keep parsed subcommand arguments available during CLI initialization."""
+        # After the top-level options and group name are parsed, remaining
+        # contains e.g. ["list", "--app"] for "config list --app".
+        # Click clears ctx.args before invoking cli(), so save a snapshot for
+        # its config-list validation bypass. Using sys.argv instead would
+        # mistake option values (such as a file named "ls") for subcommands.
+        # Regression coverage: tests/cli/test_list_aliases.py.
         remaining = super().parse_args(ctx, args)
         ctx.meta["subcommand_args"] = tuple(remaining)
         return remaining

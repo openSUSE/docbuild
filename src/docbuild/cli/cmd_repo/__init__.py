@@ -1,14 +1,15 @@
 """Manage repositories."""
 
 import click
-from click_aliases import ClickAliasedGroup
+
+from docbuild.cli.alias import AliasGroup
 
 from .cmd_clone import clone
 from .cmd_dir import cmd_dir
 from .cmd_list import cmd_list
 
 
-@click.group(cls=ClickAliasedGroup, help=__doc__)
+@click.group(cls=AliasGroup, help=__doc__)
 @click.pass_context
 def repo(ctx: click.Context) -> None:
     """Subcommand to repo management.

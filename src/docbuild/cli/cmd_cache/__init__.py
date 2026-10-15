@@ -4,8 +4,8 @@ import itertools
 from pathlib import Path
 
 import click
-from click_aliases import ClickAliasedGroup
 
+from docbuild.cli.alias import AliasGroup
 from docbuild.cli.callback import validate_doctypes
 from docbuild.cli.console import console
 from docbuild.cli.context import DocBuildContext
@@ -97,7 +97,7 @@ def _get_prune_confirmation_msg(cache_type: str, doctypes: tuple[Doctype]) -> st
     return f"Are you sure you want to delete {target_str}?"
 
 
-@click.group(cls=ClickAliasedGroup, help=__doc__)
+@click.group(cls=AliasGroup, help=__doc__)
 def cache() -> None:
     """Subcommand group for cache management."""
     pass
