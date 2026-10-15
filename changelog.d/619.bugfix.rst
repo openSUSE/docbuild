@@ -1,0 +1,1 @@
+Fixed a validation crash where ``EnvConfig.from_dict()`` would fail on default configurations because DAPS runtime placeholders (like ``{{builddir}}``) were mistakenly evaluated as environment configuration variables.
