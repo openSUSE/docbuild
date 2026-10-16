@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_repo.cmd_clone &#8212; Docbuild Documentation 0.25.1.dev22+g856a98299.d20261016</title>
+    <title>docbuild.cli.cmd_repo.cmd_clone &#8212; Docbuild Documentation 0.25.1.dev23+g419bc3d2e.d20261016</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=c697f52b"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=77009972"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -643,6 +643,8 @@
   <section id="module-docbuild.cli.cmd_repo.cmd_clone">
 <span id="docbuild-cli-cmd-repo-cmd-clone"></span><h1>docbuild.cli.cmd_repo.cmd_clone<a class="headerlink" href="#module-docbuild.cli.cmd_repo.cmd_clone" title="Link to this heading">#</a></h1>
 <p>Clone repositories.</p>
+<p>Choose exactly one mode: provide one or more REPOS repository arguments,
+or use –all to clone all configured repositories. Do not combine them.</p>
 <p>Pass any of the following URLs to clone:</p>
 <p>
 * HTTPS URLs like <code class="docutils literal notranslate"><span class="pre">https://github.com/org/repo.git</span></code>
@@ -663,14 +665,19 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_repo.cmd_clone.clone">
-<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_repo.cmd_clone.</span></span><span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_repo.cmd_clone.clone" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_repo.cmd_clone.</span></span><span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_repos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_repo.cmd_clone.clone" title="Link to this definition">#</a></dt>
 <dd><p>Clone repositories into permanent directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>repos</strong> – A tuple of repository selectors. If empty, all repos are cloned.</p></li>
+<li><p><strong>repos</strong> – A tuple of repository selectors, mutually exclusive with
+all_repos.</p></li>
+<li><p><strong>all_repos</strong> – Clone all configured repositories when True.</p></li>
 <li><p><strong>ctx</strong> – The Click context object.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.UsageError" title="(in Click v8.6.x)"><strong>click.UsageError</strong></a> – If neither or both selection modes are provided.</p>
 </dd>
 </dl>
 </dd></dl>
