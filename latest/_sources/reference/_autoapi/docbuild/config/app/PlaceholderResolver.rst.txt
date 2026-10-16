@@ -1,7 +1,7 @@
 docbuild.config.app.PlaceholderResolver
 =======================================
 
-.. py:class:: docbuild.config.app.PlaceholderResolver(config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH)
+.. py:class:: docbuild.config.app.PlaceholderResolver(config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH, *, keep_runtime: bool = False)
 
    Handles placeholder resolution in configuration data.
 

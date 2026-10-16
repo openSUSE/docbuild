@@ -55,6 +55,8 @@ Attributes
    docbuild.constants.XINCLUDE_NS
    docbuild.constants.DOCBOOK_NS
    docbuild.constants.XLINK_NS
+   docbuild.constants.RUNTIME_PLACEHOLDERS
+   docbuild.constants.ESCAPE_REGEX
 
 
 Module Contents
@@ -345,5 +347,17 @@ Module Contents
 
 
    The XML namespace URI for XLink attributes.
+
+
+.. py:data:: RUNTIME_PLACEHOLDERS
+   :type:  frozenset[str]
+
+   Set of placeholder names that are resolved at runtime by the build system.
+
+
+.. py:data:: ESCAPE_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex to identify escape sequences and runtime placeholders.
 
 
