@@ -37,7 +37,7 @@ To ensure your TOML files match the required schema:
 
 
 This checks both application and environment files. If you only need to
-validate the Env config, use ``--env`` and for the App config use ``--app`.
+validate the Env config, use ``--env`` and for the App config use ``--app``.
 
 
 Detailed Validation Feedback
