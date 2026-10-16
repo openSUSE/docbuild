@@ -48,17 +48,17 @@ def test_get_binary_version_returns_none_on_error() -> None:
 
 def test_coerce_semver_pure_integer() -> None:
     """A plain integer version is treated as a single major version."""
-    assert sysdeps._coerce_semver("4") == sysdeps.semver.Version(4)
+    assert sysdeps.coerce_semver("4") == sysdeps.semver.Version(4)
 
 
 def test_coerce_semver_pads_incomplete_parts() -> None:
     """Short versions are zero-padded to strict SemVer."""
-    assert str(sysdeps._coerce_semver("3.4")) == "3.4.0"
+    assert str(sysdeps.coerce_semver("3.4")) == "3.4.0"
 
 
 def test_coerce_semver_truncates_extra_parts() -> None:
     """Extra version parts are dropped to keep three segments."""
-    assert str(sysdeps._coerce_semver("1.2.3.4")) == "1.2.3"
+    assert str(sysdeps.coerce_semver("1.2.3.4")) == "1.2.3"
 
 
 def test_check_dependencies_returns_missing_when_not_installed() -> None:

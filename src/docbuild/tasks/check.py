@@ -14,7 +14,7 @@ from docbuild.utils.git import ManagedGitRepo
 log = logging.getLogger(__name__)
 
 
-async def _verify_repository_files(
+async def verify_repository_files(
     repo_url: str,
     branch: str,
     deliverables: list[Deliverable],
@@ -83,7 +83,7 @@ async def check_repository_files(
     # 5. Verification Loop
     missing_files: list[str] = []
     for (url, branch), deli_list in groups.items():
-        results = await _verify_repository_files(url, branch, deli_list, repo_root)
+        results = await verify_repository_files(url, branch, deli_list, repo_root)
         missing_files.extend(results)
 
     # Final success message if no files were missing

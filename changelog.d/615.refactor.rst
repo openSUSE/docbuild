@@ -1,0 +1,1 @@
+Removed the leading underscore from 26 module-level helper functions, making them part of the public API. The affected functions cover cache handling, CLI setup, portal listing, XML reference checks, logging, build and metadata tasks, and the ``merge`` and ``sysdeps`` utilities. This is a pure rename with no behavioral change.

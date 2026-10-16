@@ -12,7 +12,7 @@ from docbuild.constants import CACHE_FILE_EXT
 from docbuild.models.doctype import Doctype
 
 
-def _expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
+def expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
     """Expand doctypes into concrete metadata cache directory paths."""
     if not doctypes:
         return [meta_dir]
@@ -30,7 +30,7 @@ def _expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
     return paths
 
 
-def _expand_json_paths(json_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
+def expand_json_paths(json_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
     """Expand doctypes into concrete json cache directory paths."""
     if not doctypes:
         return [json_dir]
@@ -44,7 +44,7 @@ def _expand_json_paths(json_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
     return paths
 
 
-def _delete_cache_files(targets: list[Path], extension: str) -> int:
+def delete_cache_files(targets: list[Path], extension: str) -> int:
     """Delete cache files in the given target directories."""
     deleted_count = 0
     for target in targets:
@@ -54,7 +54,7 @@ def _delete_cache_files(targets: list[Path], extension: str) -> int:
     return deleted_count
 
 
-def _print_cache_listing(directory: Path, title: str, target_paths: list[Path], extension: str) -> None:
+def print_cache_listing(directory: Path, title: str, target_paths: list[Path], extension: str) -> None:
     """Print cache files for a specific cache type."""
     if not directory.exists():
         console.print(f"[warning]{title} directory does not exist yet: {directory}[/]")
@@ -74,21 +74,21 @@ def _print_cache_listing(directory: Path, title: str, target_paths: list[Path], 
         console.print(f"[warning]No {name} cache files found.[/]")
 
 
-def _gather_prune_targets(cache_type: str, doctypes: tuple[Doctype], meta_dir: Path, json_dir: Path) -> tuple[list[Path], list[Path]]:
+def gather_prune_targets(cache_type: str, doctypes: tuple[Doctype], meta_dir: Path, json_dir: Path) -> tuple[list[Path], list[Path]]:
     """Gather directories to prune for meta and json caches."""
     targets_meta: list[Path] = []
     targets_json: list[Path] = []
 
     if cache_type in ("meta", "all") and meta_dir.exists():
-        targets_meta = [tp for tp in _expand_meta_paths(meta_dir, doctypes) if tp.exists()]
+        targets_meta = [tp for tp in expand_meta_paths(meta_dir, doctypes) if tp.exists()]
 
     if cache_type in ("json", "all") and json_dir.exists():
-        targets_json = [tp for tp in _expand_json_paths(json_dir, doctypes) if tp.exists()]
+        targets_json = [tp for tp in expand_json_paths(json_dir, doctypes) if tp.exists()]
 
     return targets_meta, targets_json
 
 
-def _get_prune_confirmation_msg(cache_type: str, doctypes: tuple[Doctype]) -> str:
+def get_prune_confirmation_msg(cache_type: str, doctypes: tuple[Doctype]) -> str:
     """Format the confirmation message for pruning."""
     target_str = "ALL cache files" if not doctypes else f"cache files for {len(doctypes)} doctype(s)"
     if cache_type != "all":
@@ -136,18 +136,18 @@ def cache_list(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str) ->
     json_dir = context.envconfig.paths.json_cache_dir
 
     if cache_type in ("meta", "all"):
-        _print_cache_listing(
+        print_cache_listing(
             meta_dir,
             "Meta Cache",
-            _expand_meta_paths(meta_dir, doctypes),
+            expand_meta_paths(meta_dir, doctypes),
             f"*{CACHE_FILE_EXT}"
         )
 
     if cache_type in ("json", "all"):
-        _print_cache_listing(
+        print_cache_listing(
             json_dir,
             "JSON Cache",
-            _expand_json_paths(json_dir, doctypes),
+            expand_json_paths(json_dir, doctypes),
             "*.json"
         )
 
@@ -168,7 +168,7 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
     meta_dir = context.envconfig.paths.meta_cache_dir
     json_dir = context.envconfig.paths.json_cache_dir
 
-    targets_meta, targets_json = _gather_prune_targets(cache_type, doctypes, meta_dir, json_dir)
+    targets_meta, targets_json = gather_prune_targets(cache_type, doctypes, meta_dir, json_dir)
 
     if not targets_meta and not targets_json:
         console.print("[warning]No cache files found to prune.[/]")
@@ -176,13 +176,13 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
 
     # Ask for confirmation
     if not yes:
-        msg = _get_prune_confirmation_msg(cache_type, doctypes)
+        msg = get_prune_confirmation_msg(cache_type, doctypes)
         click.confirm(msg, abort=True)
 
     deleted_count = 0
     if targets_meta:
-        deleted_count += _delete_cache_files(targets_meta, f"*{CACHE_FILE_EXT}")
+        deleted_count += delete_cache_files(targets_meta, f"*{CACHE_FILE_EXT}")
     if targets_json:
-        deleted_count += _delete_cache_files(targets_json, "*.json")
+        deleted_count += delete_cache_files(targets_json, "*.json")
 
     console.print(f"[success]Successfully pruned {deleted_count} cache file(s).[/]")

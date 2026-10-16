@@ -13,7 +13,7 @@ from docbuild.models.language import LanguageCode
 log = logging.getLogger(__name__)
 
 
-def _find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str) -> Path | None:
+def find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str) -> Path | None:
     """Attempt to find the prebuilt HTML file in multiple candidate paths."""
     if not html_url:
         return None
@@ -73,7 +73,7 @@ def read_json_ld(html_source: Path | str | None) -> dict[str, Any]:
     return {}
 
 
-def _extract_entities(json_ld: dict[str, Any], prod_title: str) -> tuple[list[str], list[dict[str, Any]]]:
+def extract_entities(json_ld: dict[str, Any], prod_title: str) -> tuple[list[str], list[dict[str, Any]]]:
     """Extract tasks and products from the JSON-LD entities."""
     entities = json_ld.get("about", json_ld.get("mentions", []))
     if isinstance(entities, dict):
@@ -105,7 +105,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
     html_url = deliverable.xml.prebuilt_html_url
 
     # Pass deliverable so it can search translated directories
-    html_path = _find_html_path(prebuilt_dir, deliverable, html_url)
+    html_path = find_html_path(prebuilt_dir, deliverable, html_url)
     json_ld = read_json_ld(html_path)
 
     in_language = json_ld.get("inLanguage", str(deliverable.xml.lang))
@@ -128,7 +128,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             )
             date_modified = ""
 
-    tasks, products = _extract_entities(json_ld, deliverable.xml.prebuilt_title)
+    tasks, products = extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
     # Extract text from the first valid local description
     desc_text = next(

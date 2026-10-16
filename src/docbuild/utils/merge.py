@@ -7,7 +7,7 @@ from ..models.doctype import Doctype
 from ..models.language import LanguageCode
 
 
-def _merge_docsets(ds1: Sequence[str], ds2: Sequence[str]) -> list[str]:
+def merge_docsets(ds1: Sequence[str], ds2: Sequence[str]) -> list[str]:
     """Merge two docset lists, ensuring no duplicates and sorted order.
 
     :param ds1: First list of docsets.
@@ -17,7 +17,7 @@ def _merge_docsets(ds1: Sequence[str], ds2: Sequence[str]) -> list[str]:
     return sorted(set(chain(ds1, ds2)))  # sorted(set(ds1 + ds2))
 
 
-def _merge_langs(
+def merge_langs(
     langs1: Sequence[LanguageCode],
     langs2: Sequence[LanguageCode],
 ) -> list[LanguageCode]:
@@ -34,7 +34,7 @@ def _merge_langs(
     return sorted(set(chain(langs1, langs2)))  # sorted(set(langs1 + langs2))
 
 
-def _dedup_doctypes(doctypes: Sequence[Doctype]) -> list[Doctype]:
+def dedup_doctypes(doctypes: Sequence[Doctype]) -> list[Doctype]:
     """Remove duplicate Doctype objects from a list, preserving order.
 
     :param doctypes: List of Doctype objects to deduplicate.
@@ -50,7 +50,7 @@ def _dedup_doctypes(doctypes: Sequence[Doctype]) -> list[Doctype]:
     return deduped
 
 
-def _split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
+def split_wildcard_docset(dt1: Doctype, dt2: Doctype) -> list[Doctype] | None:
     """Merge a wildcard docset with a specific docset if product and lifecycle match.
 
     Returns a list of merged Doctypes if applicable, otherwise None.
@@ -116,7 +116,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
         for existing in result:
             if dt.product == existing.product and dt.lifecycle == existing.lifecycle:
                 # Use helper for wildcard/specific docset split
-                split = _split_wildcard_docset(existing, dt)
+                split = split_wildcard_docset(existing, dt)
                 if split is not None:
                     new_result.extend(split)
                     merged = True
@@ -129,8 +129,8 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
 
                 elif dt in existing:  # existing.__contains__(dt)
                     # existing absorbs dt, merge docset/langs
-                    docset = _merge_docsets(existing.docset, dt.docset)
-                    langs = _merge_langs(existing.langs, dt.langs)
+                    docset = merge_docsets(existing.docset, dt.docset)
+                    langs = merge_langs(existing.langs, dt.langs)
                     merged_doctype = Doctype(
                         product=existing.product,
                         docset=docset,
@@ -142,8 +142,8 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
 
                 elif existing in dt:  # dt.__contains__(existing)
                     # dt absorbs existing, merge docset/langs
-                    docset = _merge_docsets(existing.docset, dt.docset)
-                    langs = _merge_langs(existing.langs, dt.langs)
+                    docset = merge_docsets(existing.docset, dt.docset)
+                    langs = merge_langs(existing.langs, dt.langs)
                     merged_doctype = Doctype(
                         product=dt.product,
                         docset=docset,
@@ -155,7 +155,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
 
                 elif existing.docset == dt.docset:
                     # Same docset, merge langs
-                    langs = _merge_langs(existing.langs, dt.langs)
+                    langs = merge_langs(existing.langs, dt.langs)
                     merged_doctype = Doctype(
                         product=existing.product,
                         docset=existing.docset,
@@ -167,7 +167,7 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
 
                 elif existing.langs == dt.langs:
                     # Same langs, merge docset
-                    docset = _merge_docsets(existing.docset, dt.docset)
+                    docset = merge_docsets(existing.docset, dt.docset)
                     merged_doctype = Doctype(
                         product=existing.product,
                         docset=docset,
@@ -185,6 +185,6 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
 
         if not merged:
             new_result.append(dt)
-        result = _dedup_doctypes(new_result)
+        result = dedup_doctypes(new_result)
 
-    return _dedup_doctypes(result)
+    return dedup_doctypes(result)

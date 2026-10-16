@@ -53,7 +53,7 @@ log = logging.getLogger(__name__)
 CONSOLE = console_err
 
 
-def _setup_console() -> None:
+def setup_console() -> None:
     """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
 
@@ -325,7 +325,7 @@ def load_env_config(
             raise e
 
 
-def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
+def setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
     """Extract logging configuration from context and set it up."""
     if context.appconfig and context.envconfig:
         logging_config = context.appconfig.logging.model_dump(
@@ -494,7 +494,7 @@ def cli(
         load_env_config(ctx, env_config, env_overrides, skip_validation)
 
         # --- PHASE 3: Logging & Portal Config ---
-        _setup_logging_from_context(context, verbose)
+        setup_logging_from_context(context, verbose)
 
         # Initialize the Portal configuration if the XML file exists
         if (

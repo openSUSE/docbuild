@@ -46,7 +46,7 @@ def get_binary_version(name: str) -> str | None:
     return None
 
 
-def _coerce_semver(version_str: str) -> semver.Version:
+def coerce_semver(version_str: str) -> semver.Version:
     """Convert loose version strings to strict SemVer objects."""
     # Handle pure integers (e.g., "4") via the native class constructor
     if version_str.isdigit():
@@ -124,10 +124,10 @@ def check_dependencies() -> list[DependencyStatus]:
 
         # Compare semantic versions using semver's match expression
         try:
-            v_found = _coerce_semver(found_version)
+            v_found = coerce_semver(found_version)
 
             # The right side of the expression also needs to be strictly formatted
-            v_min_strict = str(_coerce_semver(min_v))
+            v_min_strict = str(coerce_semver(min_v))
 
             # Evaluate using semver's match engine (e.g., v_found.match(">=4.0.0"))
             is_valid = v_found.match(f"{op}{v_min_strict}")

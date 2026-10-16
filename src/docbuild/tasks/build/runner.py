@@ -27,7 +27,7 @@ from .llms import clean_and_convert, inject_llms_links
 log = logging.getLogger(__name__)
 
 
-async def _process_single_html_file(
+async def process_single_html_file(
     html_file: Path,
     target_dest: Path,
     llms_dest: Path,
@@ -144,7 +144,7 @@ async def generate_llmstxt(
         html_files = list(target_dest.rglob("*.html"))
 
         async def process_file(html_file: Path) -> str | None:
-            return await _process_single_html_file(
+            return await process_single_html_file(
                 html_file=html_file,
                 target_dest=target_dest,
                 llms_dest=llms_dest,

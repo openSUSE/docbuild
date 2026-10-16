@@ -20,13 +20,17 @@ logging.raiseExceptions = False  # Suppress internal logging exception traceback
 _original_emit = logging.StreamHandler.emit
 
 
-def _safe_emit(self: Self, record: logging.LogRecord) -> None:  # pyright: ignore[reportGeneralTypeIssues]
-    # Happens if a background thread logs after sys.stdout/stderr closed.
+def safe_emit(self: Self, record: logging.LogRecord) -> None:  # pyright: ignore[reportGeneralTypeIssues]
+    """Emit a log record, ignoring errors if the output stream is closed.
+
+    This happens if a background thread logs after ``sys.stdout`` or
+    ``sys.stderr`` is closed.
+    """
     with suppress(ValueError):
         _original_emit(self, record)
 
 
-logging.StreamHandler.emit = _safe_emit
+logging.StreamHandler.emit = safe_emit
 
 # --- Default Logging Configuration ---
 DEFAULT_LOGGING_CONFIG = {
@@ -85,7 +89,7 @@ _LOGGING_STATE: dict[str, contextvars.ContextVar] = {
 }
 
 
-def _shutdown_logging() -> None:
+def shutdown_logging() -> None:
     """Ensure all logging threads and handlers shut down cleanly."""
     listener = _LOGGING_STATE["listener"].get()
     handlers: list[logging.Handler] | None = _LOGGING_STATE["handlers"].get()
@@ -138,7 +142,7 @@ def register_background_thread(thread: threading.Thread) -> None:
 #     return log_dir
 
 
-def _resolve_class(path: str) -> type:
+def resolve_class(path: str) -> type:
     """Dynamically imports and returns a class from a string path."""
     module_name, class_name = path.rsplit(".", 1)
     module = importlib.import_module(module_name)
@@ -158,7 +162,7 @@ def build_handlers_from_config(config: dict[str, Any]) -> list[logging.Handler]:
     formatter_keys = ("class", "formatter", "level", "class_name", "validate")
 
     for _, hconf in config.get("handlers", {}).items():
-        cls = _resolve_class(hconf["class"])
+        cls = resolve_class(hconf["class"])
         handler_args = {k: v for k, v in hconf.items() if k not in handler_keys}
         handler = cls(**handler_args)
         handler.setLevel(hconf.get("level", "NOTSET"))
@@ -177,7 +181,7 @@ def build_handlers_from_config(config: dict[str, Any]) -> list[logging.Handler]:
             formatter_kwargs = {
                 k: v for k, v in formatter_kwargs.items() if v is not None
             }
-            fmt_cls = _resolve_class(fmt_conf.get("class", "logging.Formatter"))
+            fmt_cls = resolve_class(fmt_conf.get("class", "logging.Formatter"))
             handler.setFormatter(fmt_cls(**formatter_kwargs))
 
         built_handlers.append(handler)
@@ -235,4 +239,4 @@ def setup_logging(
     # --- Register graceful shutdown ---
     _LOGGING_STATE["listener"].set(listener)
     _LOGGING_STATE["handlers"].set(handlers)
-    atexit.register(_shutdown_logging)
+    atexit.register(shutdown_logging)
