@@ -352,6 +352,19 @@ def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
 class BannerGroup(click.Group):
     """Custom Click Group that displays a banner before help messages."""
 
+    def resolve_command(
+        self, ctx: click.Context, args: list[str]
+    ) -> tuple[str | None, click.Command | None, list[str]]:
+        """Identify configuration bootstrapping before loading configuration.
+
+        :param ctx: The root command context.
+        :param args: Arguments remaining after parsing global options.
+        :return: The resolved command name, command and remaining arguments.
+        """
+        name, command, remaining = super().resolve_command(ctx, args)
+        ctx.meta["config_init"] = name == "config" and remaining[:1] == ["init"]
+        return name, command, remaining
+
     def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Format and print help output with banner prefix.
 
@@ -453,8 +466,8 @@ def cli(
     :param env_overrides: A tuple of key-value strings to override env config.
     :param kwargs: Additional keyword arguments.
     """
-    # 1. Click's internal guard for completion/resilient parsing
-    if ctx.resilient_parsing:
+    # Bootstrapping must also work without loading existing configuration.
+    if ctx.resilient_parsing or ctx.meta.get("config_init"):
         return
 
     # 2. Check if the user is asking for help ANYWHERE in the command
