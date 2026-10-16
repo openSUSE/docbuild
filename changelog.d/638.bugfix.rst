@@ -1,0 +1,3 @@
+``docbuild repo clone`` now requires repository arguments or ``--all`` to prevent
+accidental cloning of all configured repositories.
+Combining repository arguments with ``--all`` produces a usage error.
