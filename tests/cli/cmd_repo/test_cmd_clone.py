@@ -57,3 +57,41 @@ def test_clone_command_fails_missing_envconfig(runner):
 
     assert result.exit_code != 0
     assert "Environment configuration is missing" in result.output
+
+
+@pytest.fixture
+def clone_context(tmp_path) -> DocBuildContext:
+    """Fixture for a context whose envconfig points into a temporary directory."""
+    mock_env = MagicMock()
+    mock_env.paths.main_portal_config = tmp_path / "portal.xml"
+    mock_env.paths.repo_dir = tmp_path / "repos"
+
+    context = DocBuildContext()
+    context.envconfig = mock_env
+    return context
+
+
+def test_clone_command_requires_repos_or_all(runner, clone_context, mock_clone_repositories):
+    """Test that the clone command does not clone anything without a selection."""
+    result = runner.invoke(clone, [], obj=clone_context)
+
+    assert result.exit_code == 2
+    assert "--all" in result.output
+    mock_clone_repositories.assert_not_awaited()
+
+
+def test_clone_command_all_clones_every_repo(runner, clone_context, tmp_path, mock_clone_repositories):
+    """Test that --all passes an empty selection, which clones all repos."""
+    result = runner.invoke(clone, ["--all"], obj=clone_context)
+
+    assert result.exit_code == 0
+    mock_clone_repositories.assert_awaited_once_with(tmp_path / "portal.xml", tmp_path / "repos", ())
+
+
+def test_clone_command_rejects_repos_with_all(runner, clone_context, mock_clone_repositories):
+    """Test that repositories and --all cannot be combined."""
+    result = runner.invoke(clone, ["--all", "org/repo1"], obj=clone_context)
+
+    assert result.exit_code == 2
+    assert "--all" in result.output
+    mock_clone_repositories.assert_not_awaited()
