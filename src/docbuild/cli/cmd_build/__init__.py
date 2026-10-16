@@ -10,8 +10,10 @@ from .cmd_run import run
 def build(ctx: click.Context) -> None:
     """Subcommand group for build operations.
 
+    \f
+
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
     pass  # pragma: no cover
 
 

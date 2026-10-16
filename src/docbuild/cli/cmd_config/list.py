@@ -45,13 +45,15 @@ def list_config(
 ) -> None:
     """List the configuration as JSON or flat text.
 
+    \f
+
     :param ctx: The Click context object holding DocBuildContext.
     :param app: Show only application configuration.
     :param env: Show only environment configuration.
     :param flat: Output in flat dotted format (git-style).
     :param validate: Validate configuration before listing.
     :param unresolved: Display configuration with unresolved placeholders.
-    """
+    """  # noqa: D301
     context = ctx.obj
     # If no specific flags are provided, show everything
     show_all = not (app or env)

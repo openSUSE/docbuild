@@ -12,13 +12,15 @@ from .cmd_validate import validate
 log = logging.getLogger(__name__)
 
 
-@click.group(help=__doc__)
+@click.group(name="portal")
 @click.pass_context
 def portal(ctx: click.Context) -> None:
-    """Subcommand to Portal XML management.
+    """Manage Portal XML configuration.
+
+    \f
 
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
     pass  # pragma: no cover
 
 
