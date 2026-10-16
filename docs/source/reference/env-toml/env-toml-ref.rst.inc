@@ -324,6 +324,28 @@ When set, both keys below must be given together.
     The absolute directory on the remote server where documentation is published.
     The path must be absolute, for example: "/srv/docs".
 
+.. _envtoml-section-rsync:
+
+[rsync]
+-------
+
+.. _envtoml-rsync-exclude:
+
+``exclude``
+    :Type: :code:`list[str]`
+    :Default: ``['.git/', '.svn/', '.hg/', '.bzr/', '*~', '*.old', '*.bak', '*.BAK', '*.orig', '*.rej', '*.html.new']``
+
+    Replace the built-in exclusion list. Omit to keep defaults.
+    Set exclude = [] to disable the base exclusions.
+
+.. _envtoml-rsync-exclude-extra:
+
+``exclude_extra``
+    :Type: :code:`list[str]`
+    :Default: ``[]``
+
+    Extend the selected base exclusions.
+
 .. _envtoml-section-build:
 
 [build]

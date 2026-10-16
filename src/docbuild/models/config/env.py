@@ -90,7 +90,12 @@ runtime during the build process.
         // Remote destination for publishing built documentation.
         // Both keys are unset by default, so publish is disabled unless
         // [remote] is configured. Corresponds to the EnvRemote model.
-        "remote": {"server": null, "path": null}
+        "remote": {"server": null, "path": null},
+        // Transfer exclusions. Corresponds to the EnvRsync model.
+        "rsync": {
+            "exclude": DEFAULT_RSYNC_EXCLUDES,
+            "exclude_extra": []
+        }
     }
 """
 
@@ -123,11 +128,13 @@ from ...constants import (
     CONFIG_HOME,
     DATA_HOME,
     DEFAULT_ENV_NAME,
+    DEFAULT_RSYNC_EXCLUDES,
     HOSTNAME_REGEX,
     RUNTIME_DIR,
     SSH_USERNAME_REGEX,
     STATE_HOME,
 )
+from ...utils.sync import RsyncOptions
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import AbsolutePath, WritablePath
@@ -778,6 +785,65 @@ class EnvRemote(BaseModel):
         return self
 
 
+class EnvRsync(BaseModel):
+    """Configure exclusions for syncing built deliverables."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    exclude: list[str] = Field(
+        default_factory=lambda: list(DEFAULT_RSYNC_EXCLUDES),
+        description=(
+            "Rsync exclusion patterns. An explicit list replaces the defaults; "
+            "[] disables them."
+        ),
+        examples=[[".git/", "*.bak"]],
+    )
+    """Base exclusion patterns, replacing the built-in defaults when supplied."""
+
+    exclude_extra: list[str] = Field(
+        default_factory=list,
+        description="Additional rsync patterns appended to the base exclusion list.",
+        examples=[["*.tmp", "drafts/"]],
+    )
+    """Additional patterns that extend the selected base exclusion list."""
+
+    @field_validator("exclude", "exclude_extra")
+    @classmethod
+    def validate_patterns(cls, patterns: list[str]) -> list[str]:
+        """Reject blank or repeated patterns without rewriting rsync syntax.
+
+        :param patterns: User-supplied exclusion patterns.
+        :return: The unchanged patterns.
+        :raises ValueError: If a pattern is blank or occurs more than once.
+        """
+        if any(not pattern.strip() for pattern in patterns):
+            msg = "Rsync exclusion patterns must not be empty or whitespace-only."
+            raise ValueError(msg)
+        if len(patterns) != len(set(patterns)):
+            msg = "Rsync exclusion patterns must not contain duplicates."
+            raise ValueError(msg)
+        return patterns
+
+    @model_validator(mode="after")
+    def validate_combined_patterns(self) -> Self:
+        """Reject additional patterns already present in the base list.
+
+        :return: The unchanged configuration.
+        :raises ValueError: If the two lists contain the same pattern.
+        """
+        if set(self.exclude).intersection(self.exclude_extra):
+            msg = "Rsync exclude_extra patterns must not duplicate exclude patterns."
+            raise ValueError(msg)
+        return self
+
+    def to_options(self) -> RsyncOptions:
+        """Create rsync options with the combined exclusions.
+
+        :return: Options ready to pass to the rsync utility.
+        """
+        return RsyncOptions(exclude=[*self.exclude, *self.exclude_extra])
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -818,6 +884,13 @@ class EnvConfig(BaseModel):
         description="Settings for the remote destination used by publish.",
     )
     "Remote publish destination."
+
+    rsync: EnvRsync = Field(
+        default_factory=EnvRsync,
+        title="Rsync Configuration",
+        description="Exclusions applied when syncing built deliverables to the target.",
+    )
+    """Transfer exclusions for built deliverables."""
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")

@@ -150,6 +150,7 @@ def build(
                 skip_repo_update=build_skip_repo,
                 build_llmstxt=env.build.build_llmstxt,
                 llmstxt_dir=env.paths.llmstxt_dir,
+                rsync_options=env.rsync.to_options(),
             ),
             name="build:build",
         )

@@ -13,6 +13,7 @@
 
    create-metadata
    build
+   publishing
    clone
    metadata
    create-llms

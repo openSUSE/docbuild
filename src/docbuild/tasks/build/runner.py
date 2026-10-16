@@ -17,7 +17,7 @@ from ...models.doctype import Doctype
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
-from ...utils.sync import rsync
+from ...utils.sync import RsyncOptions, rsync
 from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
@@ -214,6 +214,7 @@ async def process_deliverable_build(
     daps_tmpls: dict[str, str],
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
+    rsync_options: RsyncOptions | None = None,
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable: checkout worktree, build formats, and sync."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
@@ -268,7 +269,12 @@ async def process_deliverable_build(
 
                     try:
                         # Sync contents of the build directory to the target destination
-                        sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
+                        sync_result = await rsync(
+                            deliverable_build_dir,
+                            target_dest,
+                            content_only=True,
+                            options=rsync_options,
+                        )
                         if fmt == "html":
                             await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
                         if sync_result.returncode == 0:
@@ -303,6 +309,7 @@ async def process_doctype(
     skip_repo_update: bool = False,
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
+    rsync_options: RsyncOptions | None = None,
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using aiostream."""
     deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
@@ -330,6 +337,7 @@ async def process_doctype(
                     daps_tmpls,
                     build_llmstxt,
                     llmstxt_dir,
+                    rsync_options=rsync_options,
                 ),
                 name=f"build:{d.full_id}",
             )
@@ -367,6 +375,7 @@ async def process(
     skip_repo_update: bool = False,
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
+    rsync_options: RsyncOptions | None = None,
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
@@ -386,6 +395,7 @@ async def process(
                 skip_repo_update=skip_repo_update,
                 build_llmstxt=build_llmstxt,
                 llmstxt_dir=llmstxt_dir,
+                rsync_options=rsync_options,
             ),
             name=f"build:{dt}",
         )
