@@ -899,7 +899,7 @@ class EnvConfig(BaseModel):
         """Resolve placeholders before any other validation."""
         if isinstance(data, dict):
             try:
-                return replace_placeholders(deepcopy(data))
+                return replace_placeholders(deepcopy(data), keep_runtime=True)
             except (
                 PlaceholderResolutionError,
                 CircularReferenceError,
@@ -929,5 +929,6 @@ class EnvConfig(BaseModel):
             return raw_dict
 
         # 3. Resolve placeholders
-        resolved_dict = replace_placeholders(raw_dict)
+        resolved_dict = replace_placeholders(raw_dict, keep_runtime=True)
+
         return resolved_dict or {}

@@ -353,3 +353,19 @@ def test_placeholder_syntax_swapped_escapes():
     resolver = PlaceholderResolver({"key": "}} hello {{"})
     with pytest.raises(PlaceholderSyntaxError, match="Invalid placeholder syntax"):
         resolver.replace()
+
+
+def test_replace_placeholders_keep_runtime() -> None:
+    """Verify that keep_runtime=True preserves known runtime placeholders but unescapes others."""
+    config = {
+        "daps": "daps --builddir={{builddir}} -d {{dcfile}}",
+        "other": "Escaped {{value}} goes here",
+        "ref": "{daps}"
+    }
+
+
+    resolved = replace_placeholders(config, keep_runtime=True)
+    assert resolved is not None
+    assert resolved["daps"] == "daps --builddir={{builddir}} -d {{dcfile}}"
+    assert resolved["other"] == "Escaped {value} goes here"
+    assert resolved["ref"] == "daps --builddir={{builddir}} -d {{dcfile}}"

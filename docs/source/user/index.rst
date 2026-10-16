@@ -6,6 +6,7 @@
    :caption: Contents
 
    install
+   config-concepts/index
    config/index
    portal-config/index
    run-docbuild
@@ -13,7 +14,6 @@
    create-metadata
    build
    publishing
-   validate
    clone
    metadata
    create-llms

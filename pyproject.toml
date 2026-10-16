@@ -29,7 +29,7 @@ dependencies = [
     "jinja2>=3.1.6,<4.0.0",
     "justhtml>=3.13.0",
     "lxml>=6.1.3",
-    "platformdirs>=4.12.1",
+    "platformdirs>=4.13.0",
     "pydantic>=2.13.4",
     "rich>=15.0.0",
     "semver>=3.1.0",
@@ -68,7 +68,7 @@ typing = [
 ]
 formatting = [
     "docformatter>=1.7.8",
-    "ruff>=0.16.7",
+    "ruff>=0.17.0",
 ]
 tests = [
     "pytest>=9.1.1",
@@ -80,7 +80,7 @@ changelog = [
 ]
 docs = [
     "myst-parser>=5.1.0",
-    "pydata-sphinx-theme>=0.22.0",
+    "pydata-sphinx-theme>=0.23.0",
     "setuptools-scm>=10.3.4",
     "sphinx>=9.1.0",
     "sphinx-autoapi>=3.8.1",

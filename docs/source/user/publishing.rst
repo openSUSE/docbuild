@@ -47,7 +47,7 @@ already present in the target.
 Customize the exclusions
 ------------------------
 
-Configure ``[rsync]`` in your ENV TOML file (see :ref:`config-tomlfile`).
+Configure ``[rsync]`` in your ENV TOML file (see :ref:`user-config-files`).
 To keep the defaults and add more patterns:
 
 .. code-block:: toml

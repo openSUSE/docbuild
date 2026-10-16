@@ -3,6 +3,8 @@
 import re
 from typing import Any
 
+from ..constants import ESCAPE_REGEX
+
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
@@ -29,6 +31,15 @@ class PlaceholderSyntaxError(ValueError):
 
     pass
 
+def unescape(text: str, keep_runtime: bool) -> str:
+    """Unescape double curly braces, optionally preserving runtime placeholders."""
+    if not keep_runtime:
+        return text.replace("{{", "{").replace("}}", "}")
+
+    return ESCAPE_REGEX.sub(
+        lambda m: m.group(0) if m.group("runtime") else m.group(0)[0], text
+    )
+
 
 class PlaceholderResolver:
     """Handles placeholder resolution in configuration data."""
@@ -38,10 +49,11 @@ class PlaceholderResolver:
        files (like ``{placeholder}``)."""
 
     def __init__(
-        self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH
+        self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH, *, keep_runtime: bool = False
     ) -> None:
         self.config = config
         self.max_recursion_depth = max_recursion_depth
+        self.keep_runtime: bool = keep_runtime
         self._current_container: dict[str, Any] | list[Any] | None = None
         self._current_key: str | int | None = None
 
@@ -142,7 +154,7 @@ class PlaceholderResolver:
         self.validate_brace_syntax(text, original_text)
 
         # 3. Final cleanup of escapes
-        return text.replace("{{", "{").replace("}}", "}")
+        return unescape(text, self.keep_runtime)
 
     def _get_container_name(self) -> str:
         """Get a human-readable name for the current container/key being processed."""
@@ -207,6 +219,8 @@ class PlaceholderResolver:
 def replace_placeholders(
     config: dict[str, Any] | None,
     max_recursion_depth: int = MAX_RECURSION_DEPTH,
+    *,
+    keep_runtime: bool = False,
 ) -> dict[str, Any] | None:
     """Replace placeholder values in a nested dictionary structure.
 
@@ -224,5 +238,5 @@ def replace_placeholders(
     if not isinstance(config, dict):
         return config
 
-    resolver = PlaceholderResolver(config, max_recursion_depth)
+    resolver = PlaceholderResolver(config, max_recursion_depth, keep_runtime=keep_runtime)
     return resolver.replace()
