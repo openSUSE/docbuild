@@ -13,8 +13,11 @@ def validate(ctx: click.Context) -> None:
 
     This checks the syntax and schema of application and environment files.
 
-    :param ctx: The Click context object, which should already have loaded configurations.
-    """
+    \f
+
+    :param ctx: The Click context object, which should already have loaded
+        configurations.
+    """  # noqa: D301
     context = ctx.obj
 
     console.print("[header]Running Configuration Validation...[/]\n")

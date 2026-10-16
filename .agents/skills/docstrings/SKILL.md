@@ -9,21 +9,29 @@ metadata:
 ---
 # Docstring Formatting Skill
 
-This skill provides a detailed procedure for writing a complete and syntactically correct Python docstring using reStructuredText (RST) for Sphinx.
+Write complete Sphinx reStructuredText (RST) Python docstrings wrapped at 80 characters.
 
 ## Procedure: Writing a Docstring
 
-A complete docstring must be formatted according to these rules:
+1. **One-Line Summary:** Complete sentence summarizing the purpose.
+2. **Blank Line:** Follow the summary with a single blank line.
+3. **Detailed Explanation (Optional):** Paragraphs detailing behavior or design rationale.
+4. **Click Commands (`\f`):** For Click (sub-)commands only, insert `\f` on its own line before developer RST fields to truncate `--help`. Use standard `"""` (not `r"""`) and add `# noqa: D301` to the closing quotes.
+5. **RST Sections:** Document fields with types and descriptions:
+   * `:param name: (type) Description.`
+   * `:returns: (type) Description.`
+   * `:raises ExceptionName: Explanation.`
+6. **Usage Example (Optional):** In a `.. code-block:: python` directive.
+7. **Line Width:** Keep all lines under 80 characters (including indentation).
 
-1.  **One-Line Summary:** Start with a brief, one-line summary of the function/class's purpose. This line should be a complete sentence.
-2.  **Blank Line:** The summary line must be followed by a single blank line.
-3.  **Detailed Explanation (Optional):** If the function's purpose is not obvious from the summary, add more detailed paragraphs explaining its behavior, algorithms, or design rationale.
-4.  **RST Sections:** Use the following RST field lists to document parameters, return values, and exceptions. Each entry should include the type and a clear description.
-    *   `:param name: (type) Description of the parameter.`
-    *   `:returns: (type) Description of the return value.`
-    *   `:raises ExceptionName: Explanation of when the exception is raised.`
-5.  **Usage Example:** If the function is complex or part of a public API, include a usage example within a `.. code-block:: python` directive.
-6.  **Line Width:** All lines within the docstring, including code examples, must be wrapped to keep the total line length (including the indentation of the docstring) under 80 characters.
+```python
+"""User-facing CLI description.
+
+\f
+
+:param ctx: Developer-only documentation.
+"""  # noqa: D301
+```
 
 ## Validation Checklist
 
@@ -36,3 +44,4 @@ Before finishing, ensure the docstring meets these criteria:
 *   [ ] Is the RST syntax valid and clean?
 *   [ ] Is there a code example if one is needed?
 *   [ ] Does the docstring respect the 80-character line width limit?
+*   [ ] For Click (sub-)commands only: is `\f` used to separate user help from developer RST fields, followed by `"""  # noqa: D301`?
