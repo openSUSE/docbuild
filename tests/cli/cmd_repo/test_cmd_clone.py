@@ -24,6 +24,7 @@ def mock_clone_repositories(monkeypatch) -> AsyncMock:
         (["org/repo1", "org/repo2"], ("org/repo1", "org/repo2")),
         (["--all"], ()),
     ],
+    ids=["single_repo", "multiple_repos", "all_flag"],
 )
 @pytest.mark.parametrize("exit_code", [0, 1])
 def test_clone_command_delegates_to_task(
@@ -77,6 +78,7 @@ def test_clone_command_delegates_to_task(
             "Repository arguments and --all are mutually exclusive.",
         ),
     ],
+    ids=["missing_all", "repo_then_all", "all_then_repo", "multi_repos_with_all"],
 )
 @pytest.mark.parametrize("has_envconfig", [False, True])
 def test_clone_command_rejects_invalid_selection(
@@ -108,12 +110,20 @@ def test_clone_command_help(runner, mock_clone_repositories):
     mock_clone_repositories.assert_not_called()
 
 
-def test_clone_command_fails_missing_envconfig(runner):
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["org/repo1"],
+        ["--all"],
+    ],
+    ids=["explicit_repo", "all_flag"],
+)
+def test_clone_command_fails_missing_envconfig(runner, args):
     """Test that the clone command aborts cleanly if envconfig is None."""
     context = DocBuildContext()
     context.envconfig = None
 
-    result = runner.invoke(clone, ["org/repo1"], obj=context)
+    result = runner.invoke(clone, args, obj=context)
 
     assert result.exit_code != 0
     assert "Environment configuration is missing" in result.output

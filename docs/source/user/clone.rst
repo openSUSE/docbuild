@@ -50,7 +50,7 @@ To explicitly clone all configured repositories, run:
 .. code-block:: console
    :caption: Clone all configured repositories
 
-   docbuild repo clone --all
+   $ docbuild repo clone --all
 
 You can find the exact path by running:
 

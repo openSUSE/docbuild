@@ -48,7 +48,7 @@ def clone(ctx: click.Context, repos: tuple[str, ...], all_repos: bool) -> None:
     """
     if repos and all_repos:
         raise click.UsageError("Repository arguments and --all are mutually exclusive.")
-    if not repos and not all_repos:
+    if not (repos or all_repos):
         raise click.UsageError("Provide at least one repository argument or --all.")
 
     context: DocBuildContext = ctx.obj
