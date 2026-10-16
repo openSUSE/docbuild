@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.merge &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
+    <title>docbuild.utils.merge &#8212; Docbuild Documentation 0.25.1.dev18+g39fe5c324.d20261016</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=eccce51c"></script>
+    <script src="../../../../../_static/documentation_options.js?v=2577563d"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -644,6 +644,18 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.merge.merge_docsets" title="docbuild.utils.merge.merge_docsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_docsets</span></code></a>(→ list[str])</p></td>
+<td><p>Merge two docset lists, ensuring no duplicates and sorted order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.merge.merge_langs" title="docbuild.utils.merge.merge_langs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_langs</span></code></a>(→ list[docbuild.models.language.LanguageCode])</p></td>
+<td><p>Merge two lists of LanguageCode objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.merge.dedup_doctypes" title="docbuild.utils.merge.dedup_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dedup_doctypes</span></code></a>(→ list[docbuild.models.doctype.Doctype])</p></td>
+<td><p>Remove duplicate Doctype objects from a list, preserving order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.merge.split_wildcard_docset" title="docbuild.utils.merge.split_wildcard_docset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_wildcard_docset</span></code></a>(...)</p></td>
+<td><p>Merge a wildcard docset with a specific docset if product and lifecycle match.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.merge.merge_doctypes" title="docbuild.utils.merge.merge_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_doctypes</span></code></a>(→ list[docbuild.models.doctype.Doctype])</p></td>
 <td><p>Merge a list of Doctype instances into a minimal set of non-redundant entries.</p></td>
 </tr>
@@ -653,6 +665,73 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.merge.merge_docsets">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">merge_docsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.merge.merge_docsets" title="Link to this definition">#</a></dt>
+<dd><p>Merge two docset lists, ensuring no duplicates and sorted order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ds1</strong> – First list of docsets.</p></li>
+<li><p><strong>ds2</strong> – Second list of docsets.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Merged list of docsets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.merge.merge_langs">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">merge_langs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">langs1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">langs2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/language/LanguageCode.html#docbuild.models.language.LanguageCode" title="docbuild.models.language.LanguageCode"><span class="pre">docbuild.models.language.LanguageCode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.merge.merge_langs" title="Link to this definition">#</a></dt>
+<dd><p>Merge two lists of LanguageCode objects.</p>
+<p>Ensuring no duplicates and sorted order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>langs1</strong> – First list of LanguageCode objects.</p></li>
+<li><p><strong>langs2</strong> – Second list of LanguageCode objects.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Merged sorted list of LanguageCode objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.merge.dedup_doctypes">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">dedup_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.merge.dedup_doctypes" title="Link to this definition">#</a></dt>
+<dd><p>Remove duplicate Doctype objects from a list, preserving order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>doctypes</strong> – List of Doctype objects to deduplicate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Deduplicated list of Doctype objects or an empty list if input is empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.merge.split_wildcard_docset">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">split_wildcard_docset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.merge.split_wildcard_docset" title="Link to this definition">#</a></dt>
+<dd><p>Merge a wildcard docset with a specific docset if product and lifecycle match.</p>
+<p>Returns a list of merged Doctypes if applicable, otherwise None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dt1</strong> – First Doctype instance.</p></li>
+<li><p><strong>dt2</strong> – Second Doctype instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of merged Doctypes or None if no merging is possible.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.utils.merge.merge_doctypes">
 <span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">merge_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.merge.merge_doctypes" title="Link to this definition">#</a></dt>
@@ -731,6 +810,10 @@ if overlap exists.</p></li>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.merge_docsets"><code class="docutils literal notranslate"><span class="pre">merge_docsets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.merge_langs"><code class="docutils literal notranslate"><span class="pre">merge_langs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.dedup_doctypes"><code class="docutils literal notranslate"><span class="pre">dedup_doctypes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.split_wildcard_docset"><code class="docutils literal notranslate"><span class="pre">split_wildcard_docset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.merge_doctypes"><code class="docutils literal notranslate"><span class="pre">merge_doctypes()</span></code></a></li>
 </ul>
 </li>

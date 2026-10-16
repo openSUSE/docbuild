@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.logging &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
+    <title>docbuild.logging &#8212; Docbuild Documentation 0.25.1.dev18+g39fe5c324.d20261016</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../_static/documentation_options.js?v=eccce51c"></script>
+    <script src="../../../../_static/documentation_options.js?v=2577563d"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -641,13 +641,22 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.safe_emit" title="docbuild.logging.safe_emit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">safe_emit</span></code></a>(→ None)</p></td>
+<td><p>Emit a log record, ignoring errors if the output stream is closed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.shutdown_logging" title="docbuild.logging.shutdown_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shutdown_logging</span></code></a>(→ None)</p></td>
+<td><p>Ensure all logging threads and handlers shut down cleanly.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.register_background_thread" title="docbuild.logging.register_background_thread"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_background_thread</span></code></a>(→ None)</p></td>
 <td><p>Register a thread to be joined on logging shutdown.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.build_handlers_from_config" title="docbuild.logging.build_handlers_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_handlers_from_config</span></code></a>(→ list[logging.Handler])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.resolve_class" title="docbuild.logging.resolve_class"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resolve_class</span></code></a>(→ type)</p></td>
+<td><p>Dynamically imports and returns a class from a string path.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.build_handlers_from_config" title="docbuild.logging.build_handlers_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_handlers_from_config</span></code></a>(→ list[logging.Handler])</p></td>
 <td><p>Build handler instances from a logging config dict without starting listeners.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.logging.setup_logging" title="docbuild.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.logging.setup_logging" title="docbuild.logging.setup_logging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging</span></code></a>(→ None)</p></td>
 <td><p>Set up a non-blocking, configurable logging system.</p></td>
 </tr>
 </tbody>
@@ -657,9 +666,29 @@
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="docbuild.logging.safe_emit">
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">safe_emit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.LogRecord" title="(in Python v3.15)"><span class="pre">logging.LogRecord</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.safe_emit" title="Link to this definition">#</a></dt>
+<dd><p>Emit a log record, ignoring errors if the output stream is closed.</p>
+<p>This happens if a background thread logs after <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> or
+<code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> is closed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.logging.shutdown_logging">
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">shutdown_logging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.shutdown_logging" title="Link to this definition">#</a></dt>
+<dd><p>Ensure all logging threads and handlers shut down cleanly.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="docbuild.logging.register_background_thread">
 <span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">register_background_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.15)"><span class="pre">threading.Thread</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.logging.register_background_thread" title="Link to this definition">#</a></dt>
 <dd><p>Register a thread to be joined on logging shutdown.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.logging.resolve_class">
+<span class="sig-prename descclassname"><span class="pre">docbuild.logging.</span></span><span class="sig-name descname"><span class="pre">resolve_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a></span></span><a class="headerlink" href="#docbuild.logging.resolve_class" title="Link to this definition">#</a></dt>
+<dd><p>Dynamically imports and returns a class from a string path.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -729,7 +758,10 @@ but does not start any background listener or register global state.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.safe_emit"><code class="docutils literal notranslate"><span class="pre">safe_emit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.shutdown_logging"><code class="docutils literal notranslate"><span class="pre">shutdown_logging()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.register_background_thread"><code class="docutils literal notranslate"><span class="pre">register_background_thread()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.resolve_class"><code class="docutils literal notranslate"><span class="pre">resolve_class()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.build_handlers_from_config"><code class="docutils literal notranslate"><span class="pre">build_handlers_from_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.logging.setup_logging"><code class="docutils literal notranslate"><span class="pre">setup_logging()</span></code></a></li>
 </ul>

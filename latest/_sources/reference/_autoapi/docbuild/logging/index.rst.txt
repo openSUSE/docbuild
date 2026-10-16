@@ -14,7 +14,10 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.logging.safe_emit
+   docbuild.logging.shutdown_logging
    docbuild.logging.register_background_thread
+   docbuild.logging.resolve_class
    docbuild.logging.build_handlers_from_config
    docbuild.logging.setup_logging
 
@@ -22,9 +25,27 @@ Functions
 Module Contents
 ---------------
 
+.. py:function:: safe_emit(self: Self, record: logging.LogRecord) -> None
+
+   Emit a log record, ignoring errors if the output stream is closed.
+
+   This happens if a background thread logs after ``sys.stdout`` or
+   ``sys.stderr`` is closed.
+
+
+.. py:function:: shutdown_logging() -> None
+
+   Ensure all logging threads and handlers shut down cleanly.
+
+
 .. py:function:: register_background_thread(thread: threading.Thread) -> None
 
    Register a thread to be joined on logging shutdown.
+
+
+.. py:function:: resolve_class(path: str) -> type
+
+   Dynamically imports and returns a class from a string path.
 
 
 .. py:function:: build_handlers_from_config(config: dict[str, Any]) -> list[logging.Handler]

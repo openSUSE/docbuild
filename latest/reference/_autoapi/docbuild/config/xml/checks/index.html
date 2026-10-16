@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
+    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.25.1.dev18+g39fe5c324.d20261016</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=eccce51c"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=2577563d"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -705,6 +705,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.build_id_map" title="docbuild.config.xml.checks.build_id_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_id_map</span></code></a>(→ dict[str, lxml.etree._Element])</p></td>
 <td><p>Map all elements in the tree by their <code class="docutils literal notranslate"><span class="pre">xml:id</span></code>.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.has_circular_reference" title="docbuild.config.xml.checks.has_circular_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_circular_reference</span></code></a>(→ bool)</p></td>
+<td><p>Return True if deliv's reference to target forms a circular dependency.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_reference_nesting" title="docbuild.config.xml.checks.check_reference_nesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_reference_nesting</span></code></a>(...)</p></td>
+<td><p>Validate nesting constraints when pointing to another reference deliverable.</p></td>
+</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_deliverable_reference" title="docbuild.config.xml.checks.check_deliverable_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_deliverable_reference</span></code></a>(...)</p></td>
 <td><p>Check deliverable reference targets and nesting constraints.</p></td>
 </tr>
@@ -1020,6 +1026,18 @@ are invalid.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.has_circular_reference">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">has_circular_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.config.xml.checks.has_circular_reference" title="Link to this definition">#</a></dt>
+<dd><p>Return True if deliv’s reference to target forms a circular dependency.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.xml.checks.check_reference_nesting">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_reference_nesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.15)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_reference_nesting" title="Link to this definition">#</a></dt>
+<dd><p>Validate nesting constraints when pointing to another reference deliverable.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="docbuild.config.xml.checks.check_deliverable_reference">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.xml.checks.</span></span><span class="sig-name descname"><span class="pre">check_deliverable_reference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._Element</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._ElementTree</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.15)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="CheckResult.html#docbuild.config.xml.checks.CheckResult" title="docbuild.config.xml.checks.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.config.xml.checks.check_deliverable_reference" title="Link to this definition">#</a></dt>
 <dd><p>Check deliverable reference targets and nesting constraints.</p>
@@ -1113,6 +1131,8 @@ satisfied.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_unsupported_language_code"><code class="docutils literal notranslate"><span class="pre">check_unsupported_language_code()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_spotlight_target"><code class="docutils literal notranslate"><span class="pre">check_spotlight_target()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.build_id_map"><code class="docutils literal notranslate"><span class="pre">build_id_map()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.has_circular_reference"><code class="docutils literal notranslate"><span class="pre">has_circular_reference()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_reference_nesting"><code class="docutils literal notranslate"><span class="pre">check_reference_nesting()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.xml.checks.check_deliverable_reference"><code class="docutils literal notranslate"><span class="pre">check_deliverable_reference()</span></code></a></li>
 </ul>
 </li>

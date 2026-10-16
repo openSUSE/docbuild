@@ -42,6 +42,8 @@ Functions
    docbuild.config.xml.checks.check_unsupported_language_code
    docbuild.config.xml.checks.check_spotlight_target
    docbuild.config.xml.checks.build_id_map
+   docbuild.config.xml.checks.has_circular_reference
+   docbuild.config.xml.checks.check_reference_nesting
    docbuild.config.xml.checks.check_deliverable_reference
 
 
@@ -285,6 +287,16 @@ Module Contents
 
    :param tree: The XML tree or element to index.
    :returns: A dictionary mapping element IDs to their corresponding elements.
+
+
+.. py:function:: has_circular_reference(deliv: lxml.etree._Element, target: lxml.etree._Element, id_map: dict[str, lxml.etree._Element]) -> bool
+
+   Return True if deliv's reference to target forms a circular dependency.
+
+
+.. py:function:: check_reference_nesting(deliv: lxml.etree._Element, target: lxml.etree._Element, linkend: str, id_map: dict[str, lxml.etree._Element]) -> collections.abc.Iterator[CheckResult]
+
+   Validate nesting constraints when pointing to another reference deliverable.
 
 
 .. py:function:: check_deliverable_reference(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]

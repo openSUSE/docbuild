@@ -27,17 +27,24 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_cli.setup_console
    docbuild.cli.cmd_cli.apply_theme_overrides
    docbuild.cli.cmd_cli.handle_validation_error
    docbuild.cli.cmd_cli.load_app_config
    docbuild.cli.cmd_cli.parse_key
    docbuild.cli.cmd_cli.apply_override
    docbuild.cli.cmd_cli.load_env_config
+   docbuild.cli.cmd_cli.setup_logging_from_context
    docbuild.cli.cmd_cli.cli
 
 
 Module Contents
 ---------------
+
+.. py:function:: setup_console() -> None
+
+   Configure the rich console.
+
 
 .. py:function:: apply_theme_overrides(context: docbuild.cli.context.DocBuildContext | None) -> None
 
@@ -143,6 +150,11 @@ Module Contents
 .. py:function:: load_env_config(ctx: click.Context, env_config: pathlib.Path, env_overrides: tuple[str, ...], skip_validation: bool = False) -> None
 
    Load and validate Environment configuration.
+
+
+.. py:function:: setup_logging_from_context(context: docbuild.cli.context.DocBuildContext, verbose: int) -> None
+
+   Extract logging configuration from context and set it up.
 
 
 .. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, max_workers: str | None, env_overrides: tuple[str, ...], **kwargs: dict) -> None

@@ -14,6 +14,7 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_portal.cmd_list.matches_doctype
    docbuild.cli.cmd_portal.cmd_list.expand_deliverables
    docbuild.cli.cmd_portal.cmd_list.parse_doctypes
    docbuild.cli.cmd_portal.cmd_list.get_display_name
@@ -22,6 +23,7 @@ Functions
    docbuild.cli.cmd_portal.cmd_list.append_categories
    docbuild.cli.cmd_portal.cmd_list.append_repo
    docbuild.cli.cmd_portal.cmd_list.build_deliverable_tree
+   docbuild.cli.cmd_portal.cmd_list.group_into_hierarchy
    docbuild.cli.cmd_portal.cmd_list.print_hierarchy
    docbuild.cli.cmd_portal.cmd_list.print_flat
    docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml
@@ -31,6 +33,11 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:function:: matches_doctype(prod: str, doc: str, lang: str, doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None) -> bool
+
+   Check if a generated deliverable matches the requested doctype queries.
+
 
 .. py:function:: expand_deliverables(deliverables: list[docbuild.models.deliverable.Deliverable], doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype] | None = None) -> list[tuple[str, docbuild.models.deliverable.Deliverable]]
 
@@ -70,6 +77,11 @@ Module Contents
 .. py:function:: build_deliverable_tree(title: str, deliv: docbuild.models.deliverable.Deliverable, lang: str, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> rich.tree.Tree
 
    Build a Tree node for a deliverable and append requested metadata.
+
+
+.. py:function:: group_into_hierarchy(items: list[tuple[str, docbuild.models.deliverable.Deliverable]]) -> dict[str, dict[str, dict[str, list[docbuild.models.deliverable.Deliverable]]]]
+
+   Group deliverables into a nested dictionary while preserving insertion order.
 
 
 .. py:function:: print_hierarchy(items: list[tuple[str, docbuild.models.deliverable.Deliverable]], console: rich.console.Console, show_trans: bool, show_formats: bool, show_categories: bool, repo_format: str | None) -> None

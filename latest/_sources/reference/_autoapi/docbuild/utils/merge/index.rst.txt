@@ -14,11 +14,54 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.utils.merge.merge_docsets
+   docbuild.utils.merge.merge_langs
+   docbuild.utils.merge.dedup_doctypes
+   docbuild.utils.merge.split_wildcard_docset
    docbuild.utils.merge.merge_doctypes
 
 
 Module Contents
 ---------------
+
+.. py:function:: merge_docsets(ds1: collections.abc.Sequence[str], ds2: collections.abc.Sequence[str]) -> list[str]
+
+   Merge two docset lists, ensuring no duplicates and sorted order.
+
+   :param ds1: First list of docsets.
+   :param ds2: Second list of docsets.
+   :return: Merged list of docsets.
+
+
+.. py:function:: merge_langs(langs1: collections.abc.Sequence[docbuild.models.language.LanguageCode], langs2: collections.abc.Sequence[docbuild.models.language.LanguageCode]) -> list[docbuild.models.language.LanguageCode]
+
+   Merge two lists of LanguageCode objects.
+
+   Ensuring no duplicates and sorted order.
+
+   :param langs1: First list of LanguageCode objects.
+   :param langs2: Second list of LanguageCode objects.
+   :return: Merged sorted list of LanguageCode objects.
+
+
+.. py:function:: dedup_doctypes(doctypes: collections.abc.Sequence[docbuild.models.doctype.Doctype]) -> list[docbuild.models.doctype.Doctype]
+
+   Remove duplicate Doctype objects from a list, preserving order.
+
+   :param doctypes: List of Doctype objects to deduplicate.
+   :return: Deduplicated list of Doctype objects or an empty list if input is empty.
+
+
+.. py:function:: split_wildcard_docset(dt1: docbuild.models.doctype.Doctype, dt2: docbuild.models.doctype.Doctype) -> list[docbuild.models.doctype.Doctype] | None
+
+   Merge a wildcard docset with a specific docset if product and lifecycle match.
+
+   Returns a list of merged Doctypes if applicable, otherwise None.
+
+   :param dt1: First Doctype instance.
+   :param dt2: Second Doctype instance.
+   :return: List of merged Doctypes or None if no merging is possible.
+
 
 .. py:function:: merge_doctypes(*doctypes: docbuild.models.doctype.Doctype) -> list[docbuild.models.doctype.Doctype]
 
