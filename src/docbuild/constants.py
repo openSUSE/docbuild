@@ -201,7 +201,7 @@ RUNTIME_PLACEHOLDERS: frozenset[str] = frozenset(
 )
 """Set of placeholder names that are resolved at runtime by the build system."""
 
-ESCAPE_RE: Final[re.Pattern[str]] = re.compile(
+ESCAPE_REGEX: Final[re.Pattern[str]] = re.compile(
     r"\{\{(?P<runtime>" + "|".join(sorted(RUNTIME_PLACEHOLDERS)) + r")\}\}|\{\{|\}\}"
 )
 """Regex to identify escape sequences and runtime placeholders."""

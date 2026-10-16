@@ -3,7 +3,7 @@
 import re
 from typing import Any
 
-from ..constants import ESCAPE_RE
+from ..constants import ESCAPE_REGEX
 
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
@@ -36,7 +36,7 @@ def unescape(text: str, keep_runtime: bool) -> str:
     if not keep_runtime:
         return text.replace("{{", "{").replace("}}", "}")
 
-    return ESCAPE_RE.sub(
+    return ESCAPE_REGEX.sub(
         lambda m: m.group(0) if m.group("runtime") else m.group(0)[0], text
     )
 
