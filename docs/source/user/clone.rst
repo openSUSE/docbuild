@@ -9,6 +9,9 @@ During the process of building documentation, the script clones Git repositores 
    :caption: Synopsis of :command:`docbuild repo clone`
 
    docbuild repo clone [OPTIONS] REPO [REPO ...]
+   docbuild repo clone [OPTIONS] --all
+
+Pass one or more ``REPO`` arguments, or ``--all`` to clone every repository from the portal configuration. Without either, the command exits with an error instead of cloning anything.
 
 The ``REPO`` argument can be specified in various formats, such as:
 
