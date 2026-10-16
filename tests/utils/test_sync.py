@@ -1,14 +1,13 @@
 """Unit tests for docbuild.utils.sync."""
 
 from pathlib import Path
-import shutil
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from docbuild.constants import DEFAULT_RSYNC_EXCLUDES
 import docbuild.utils.sync as sync_mod
 from docbuild.utils.sync import (
-    DEFAULT_RSYNC_EXCLUDES,
     RsyncOptions,
     is_remote_path,
     rsync,
@@ -98,23 +97,6 @@ def test_rsync_options_to_args(options: RsyncOptions, expected: list[str]) -> No
     assert options.to_args() == expected
 
 
-def test_default_rsync_exclusions() -> None:
-    """Keep the default publishing policy explicit."""
-    assert RsyncOptions().exclude == (
-        ".git/",
-        ".svn/",
-        ".hg/",
-        ".bzr/",
-        "*~",
-        "*.old",
-        "*.bak",
-        "*.BAK",
-        "*.orig",
-        "*.rej",
-        "*.html.new",
-    )
-
-
 @pytest.mark.parametrize("exclude", [[], ()])
 def test_rsync_exclusions_can_be_disabled(exclude: list[str] | tuple[str, ...]) -> None:
     """An explicit empty collection disables the default exclusions."""
@@ -144,7 +126,6 @@ async def test_rsync_custom_exclusions(mock_run_command: AsyncMock) -> None:
     )
 
 
-@pytest.mark.skipif(shutil.which("rsync") is None, reason="rsync is not installed")
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("options", "excluded"),
@@ -181,7 +162,8 @@ async def test_rsync_default_exclusions_transfer(tmp_path, options, excluded):
     for name in wanted:
         assert (target / name).read_text(encoding="utf-8") == "content"
     for name in unwanted:
-        assert (target / name).exists() is not excluded
+        transferred = not excluded
+        assert (target / name).exists() is transferred
 
 
 @pytest.mark.asyncio

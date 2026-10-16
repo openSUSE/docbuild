@@ -7,22 +7,8 @@ import os
 from pathlib import Path
 import subprocess
 
+from ..constants import DEFAULT_RSYNC_EXCLUDES
 from .shell import run_command
-
-DEFAULT_RSYNC_EXCLUDES: tuple[str, ...] = (
-    ".git/",
-    ".svn/",
-    ".hg/",
-    ".bzr/",
-    "*~",
-    "*.old",
-    "*.bak",
-    "*.BAK",
-    "*.orig",
-    "*.rej",
-    "*.html.new",
-)
-"""Version-control directories and temporary files omitted from transfers."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -152,6 +138,11 @@ async def rsync(
 
     Supports both local and remote paths. Remote paths use rsync syntax:
     SSH (``user@host:/path``), daemon (``host::module``), or URL (``rsync://host/path``).
+
+    When options are omitted, :class:`RsyncOptions` applies
+    :data:`~docbuild.constants.DEFAULT_RSYNC_EXCLUDES` to every transfer,
+    including remote-source pulls. Pass ``RsyncOptions(exclude=[])`` to
+    transfer matching files too, or supply a replacement list explicitly.
 
     :param source: Path to the source file or directory (local or remote).
     :param target: Path to the target destination (local or remote).

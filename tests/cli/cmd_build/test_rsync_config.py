@@ -7,9 +7,9 @@ import pytest
 
 import docbuild.cli.cmd_build as cmd_build
 from docbuild.cli.context import DocBuildContext
+from docbuild.constants import DEFAULT_RSYNC_EXCLUDES
 from docbuild.models.config.env import EnvConfig
 from docbuild.utils import sysdeps
-from docbuild.utils.sync import DEFAULT_RSYNC_EXCLUDES
 
 
 @pytest.mark.parametrize(

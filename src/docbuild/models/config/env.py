@@ -93,8 +93,7 @@ runtime during the build process.
         "remote": {"server": null, "path": null},
         // Transfer exclusions. Corresponds to the EnvRsync model.
         "rsync": {
-            "exclude": [".git/", ".svn/", ".hg/", ".bzr/", "*~", "*.old",
-                        "*.bak", "*.BAK", "*.orig", "*.rej", "*.html.new"],
+            "exclude": DEFAULT_RSYNC_EXCLUDES,
             "exclude_extra": []
         }
     }
@@ -129,12 +128,13 @@ from ...constants import (
     CONFIG_HOME,
     DATA_HOME,
     DEFAULT_ENV_NAME,
+    DEFAULT_RSYNC_EXCLUDES,
     HOSTNAME_REGEX,
     RUNTIME_DIR,
     SSH_USERNAME_REGEX,
     STATE_HOME,
 )
-from ...utils.sync import DEFAULT_RSYNC_EXCLUDES, RsyncOptions
+from ...utils.sync import RsyncOptions
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import AbsolutePath, WritablePath
@@ -806,6 +806,35 @@ class EnvRsync(BaseModel):
         examples=[["*.tmp", "drafts/"]],
     )
     """Additional patterns that extend the selected base exclusion list."""
+
+    @field_validator("exclude", "exclude_extra")
+    @classmethod
+    def validate_patterns(cls, patterns: list[str]) -> list[str]:
+        """Reject blank or repeated patterns without rewriting rsync syntax.
+
+        :param patterns: User-supplied exclusion patterns.
+        :return: The unchanged patterns.
+        :raises ValueError: If a pattern is blank or occurs more than once.
+        """
+        if any(not pattern.strip() for pattern in patterns):
+            msg = "Rsync exclusion patterns must not be empty or whitespace-only."
+            raise ValueError(msg)
+        if len(patterns) != len(set(patterns)):
+            msg = "Rsync exclusion patterns must not contain duplicates."
+            raise ValueError(msg)
+        return patterns
+
+    @model_validator(mode="after")
+    def validate_combined_patterns(self) -> Self:
+        """Reject additional patterns already present in the base list.
+
+        :return: The unchanged configuration.
+        :raises ValueError: If the two lists contain the same pattern.
+        """
+        if set(self.exclude).intersection(self.exclude_extra):
+            msg = "Rsync exclude_extra patterns must not duplicate exclude patterns."
+            raise ValueError(msg)
+        return self
 
     def to_options(self) -> RsyncOptions:
         """Create rsync options with the combined exclusions.
