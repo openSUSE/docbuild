@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 git_logger = logging.getLogger(GITLOGGER_NAME)
 
 
-@click.command(help=__doc__)
+@click.command()
 @click.argument(
     "repos",
     nargs=-1,
@@ -31,9 +31,19 @@ git_logger = logging.getLogger(GITLOGGER_NAME)
 def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
     """Clone repositories into permanent directory.
 
-    :param repos: A tuple of repository selectors. If empty, all repos are cloned.
+    Pass any of the following URLs to clone:
+
+    \b
+    * HTTPS URLs like ``https://github.com/org/repo.git``
+    * SSH URLS like git@github.com:org/repo.git
+    * Abbreviated URLs like 'org/repo'
+
+    \f
+
+    :param repos: A tuple of repository selectors. If empty, all repos
+        are cloned.
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
 
     # Type guard: Ensure envconfig is loaded before accessing its attributes

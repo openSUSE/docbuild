@@ -444,15 +444,19 @@ def cli(
 ) -> None:
     """Acts as a main entry point for CLI tool.
 
+    \f
+
     :param ctx: The Click context object.
     :param verbose: The verbosity level.
-    :param dry_run: If set, just pretend to run the command without making any changes.
+    :param dry_run: If set, just pretend to run the command without making
+        any changes.
     :param debug: If set, enable debug mode.
     :param app_config: Filename to the application TOML config file.
     :param env_config: Filename to a environment's TOML config file.
-    :param env_overrides: A tuple of key-value strings to override env config.
+    :param env_overrides: A tuple of key-value strings to override env
+        config.
     :param kwargs: Additional keyword arguments.
-    """
+    """  # noqa: D301
     # 1. Click's internal guard for completion/resilient parsing
     if ctx.resilient_parsing:
         return

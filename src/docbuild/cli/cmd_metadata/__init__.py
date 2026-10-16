@@ -14,7 +14,7 @@ from docbuild.tasks.metadata.runner import process
 from docbuild.utils.contextmgr import make_timer
 
 
-@click.command(help=__doc__)
+@click.command(name="metadata")
 @click.argument(
     "doctypes",
     nargs=-1,
@@ -43,10 +43,15 @@ def metadata(
     exitfirst: bool,
     skip_repo_update: bool,
 ) -> None:
-    """Subcommand to create metadata files.
+    """Extract metadata from deliverables.
+
+    \f
 
     :param ctx: The Click context object.
-    """
+    :param doctypes: Target doctypes to extract metadata for.
+    :param exitfirst: Whether to exit on the first failed deliverable.
+    :param skip_repo_update: Whether to skip repository updates.
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:
