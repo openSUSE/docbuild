@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using a TOML Configuration File &#8212; Docbuild Documentation 0.25.1.dev16+g14f19b72d.d20261016</title>
+    <title>Key Naming Conventions &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
   
   
   
@@ -41,13 +41,13 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=95b93478"></script>
+    <script src="../../_static/documentation_options.js?v=eccce51c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/copybutton.js?v=6f874712"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user/config/config-file';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user/config-concepts/naming-conventions';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
@@ -59,8 +59,8 @@
     <link rel="icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Overwriting Config Options on the Command Line" href="config-cli.html" />
-    <link rel="prev" title="Using Placeholders" href="placeholders.html" />
+    <link rel="next" title="Placeholders" href="placeholders.html" />
+    <link rel="prev" title="Configuration Files" href="config-files.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -387,15 +387,19 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing docbuild</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Configuring Docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="naming-conventions.html">Key Naming Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="placeholders.html">Using Placeholders</a></li>
-<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Using a TOML Configuration File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config-cli.html">Overwriting Config Options on the Command Line</a></li>
-<li class="toctree-l2"><a class="reference internal" href="theme.html">Configuring the Terminal Theme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="view.html">Viewing the Environment Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="validate.html">Validating Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="multi-configs.html">Using Multiple Environment Configurations</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Docbuild Configuration Concepts</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config-concepts.html">Understanding Docbuild Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config-files.html">Configuration Files</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Key Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="placeholders.html">Placeholders</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../config/index.html">Working with Docbuild configs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config/view.html">Viewing the Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/validate.html">Validating Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/config-cli.html">Setting Env Keys on the Command Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/theme.html">Configuring the Terminal Theme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config/multi-configs.html">Using Multiple Environment Configurations</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../portal-config/index.html">Managing Portal Configuration</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -416,7 +420,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../create-metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../build.html">Building Deliverables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validate.html">Validating Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../create-llms.html">Creating Markdown for AI Tools</a></li>
@@ -465,9 +468,9 @@
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Configuring Docbuild</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Docbuild Configuration Concepts</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Using a TOML Configuration File</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Key Naming Conventions</span></li>
   </ul>
 </nav>
 </div>
@@ -484,102 +487,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="using-a-toml-configuration-file">
-<span id="config-tomlfile"></span><h1>Using a TOML Configuration File<a class="headerlink" href="#using-a-toml-configuration-file" title="Link to this heading">#</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To prevent accidental commits of sensitive information, all configuration files matching the <code class="file docutils literal notranslate"><span class="pre">env.*.toml</span></code> pattern in the root directory are ignored by Git. However, this rule does not apply to files within the <code class="file docutils literal notranslate"><span class="pre">etc/</span></code> directory.</p>
-</div>
-<section id="configuration-search-locations-and-file-names">
-<span id="config-places"></span><span id="config-search-locations"></span><h2>Configuration Search Locations and File Names<a class="headerlink" href="#configuration-search-locations-and-file-names" title="Link to this heading">#</a></h2>
-<p>Docbuild uses two types of TOML configuration files:</p>
+  <section id="key-naming-conventions">
+<span id="config-key-naming-conventions"></span><h1>Key Naming Conventions<a class="headerlink" href="#key-naming-conventions" title="Link to this heading">#</a></h1>
+<p>The keys follow specific naming conventions to indicate their purpose and expected value types. Here are some common patterns whereas the asterisk
+(<code class="docutils literal notranslate"><span class="pre">*</span></code>) represents a variable part of the key:</p>
 <ul class="simple">
-<li><p><strong>Application configuration</strong> (<code class="docutils literal notranslate"><span class="pre">app</span></code>): Controls tool-wide settings such as logging, themes, and concurrency limits.</p></li>
-<li><p><strong>Environment configuration</strong> (<code class="docutils literal notranslate"><span class="pre">env</span></code>): Controls environment-specific settings such as paths, repositories, products, and build targets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_dir</span></code>: Contains a directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tmp_*</span></code>: Indicates a temporary path.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_dyn</span></code>: Denotes a dynamic value that is expected to be resolved at runtime.</p></li>
 </ul>
-<p>Both configuration types follow the same search hierarchy and precedence order.
-The only difference is the file naming.</p>
-<section id="built-in-defaults-as-foundation">
-<h3>Built-in Defaults as Foundation<a class="headerlink" href="#built-in-defaults-as-foundation" title="Link to this heading">#</a></h3>
-<p>Docbuild ships with built-in, hard-coded default values for both application and environment configurations.
-These defaults form the base layer for all operations.</p>
-<p>You do not need to create any configuration file if the built-in defaults satisfy your requirements.
-When configuration files are present, their values overlay and merge with the built-in defaults.</p>
-<p>To inspect the current configuration and its defaults, use the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">list</span></code> subcommand:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>list
-</pre></div>
-</div>
-<p>Use the <code class="docutils literal notranslate"><span class="pre">--app</span></code> or <code class="docutils literal notranslate"><span class="pre">--env</span></code> flags to inspect a specific configuration type (see <a class="reference internal" href="view.html#config-viewing-docbuild-config-env"><span class="std std-ref">Viewing the Environment Configuration</span></a>).</p>
-</section>
-<section id="search-and-precedence-order">
-<h3>Search and Precedence Order<a class="headerlink" href="#search-and-precedence-order" title="Link to this heading">#</a></h3>
-<p>Docbuild resolves configuration by evaluating sources in order of increasing priority.
-Settings from higher-priority levels overlay and overwrite settings from lower-priority levels:</p>
-<ol class="arabic simple">
-<li><p><strong>Built-in defaults:</strong> Hard-coded base values (lowest priority).</p></li>
-<li><p><strong>System directory:</strong> <code class="file docutils literal notranslate"><span class="pre">/etc/docbuild/</span></code></p></li>
-<li><p><strong>User directory:</strong> OS-specific user configuration directory resolved via <a class="reference external" href="https://platformdirs.readthedocs.io/">platformdirs</a>.
-On Linux, this adheres to the XDG Base Directory Specification using <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_CONFIG_HOME</span></code> (defaults to <code class="file docutils literal notranslate"><span class="pre">~/.config/docbuild/</span></code> when unset).
-On macOS, it defaults to <code class="file docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/docbuild/</span></code>.</p></li>
-<li><p><strong>Project directory:</strong> Current working directory.</p></li>
-<li><p><strong>Command-line overwrites:</strong> Specified with <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> take precedence over all files (see <a class="reference internal" href="config-cli.html#config-overwriting-cli"><span class="std std-ref">Overwriting Config Options on the Command Line</span></a>). This values have the highest priority.</p></li>
-</ol>
-</section>
-<section id="configuration-file-names">
-<h3>Configuration File Names<a class="headerlink" href="#configuration-file-names" title="Link to this heading">#</a></h3>
-<p>While the search order is identical, application and environment configurations use different file names.</p>
-<dl>
-<dt>Application configuration</dt><dd><p>In each search directory, Docbuild searches for the first existing file from the following list:</p>
-<ol class="arabic simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">.config.toml</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">config.toml</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">.docbuild.config.toml</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">docbuild.config.toml</span></code></p></li>
-</ol>
-<p>To bypass the automatic search and use an explicit file, pass the global <code class="docutils literal notranslate"><span class="pre">--app-config</span></code> option:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--app-config<span class="w"> </span>/path/to/my-config.toml<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--app
-</pre></div>
-</div>
-</dd>
-<dt>Environment configuration</dt><dd><p>Environment configuration files follow the pattern <code class="file docutils literal notranslate"><span class="pre">env.&lt;role&gt;.toml</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;role&gt;</span></code> corresponds to an environment role such as <code class="docutils literal notranslate"><span class="pre">production</span></code>, <code class="docutils literal notranslate"><span class="pre">staging</span></code>, or <code class="docutils literal notranslate"><span class="pre">devel</span></code> (see <a class="reference internal" href="#config-env-role"><span class="std std-ref">Separating Environment Roles</span></a>).</p>
-<ul class="simple">
-<li><p><strong>Default file name:</strong> <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> (loaded automatically when present in the search paths).</p></li>
-<li><p><strong>Role-based file names:</strong> <code class="file docutils literal notranslate"><span class="pre">env.&lt;role&gt;.toml</span></code> (for example, <code class="file docutils literal notranslate"><span class="pre">env.staging.toml</span></code> or <code class="file docutils literal notranslate"><span class="pre">env.devel.toml</span></code>).</p></li>
-</ul>
-<p>To select a specific environment configuration file, pass its path with the global <code class="docutils literal notranslate"><span class="pre">--env-config</span></code> option:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>env.devel.toml<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
-</pre></div>
-</div>
-</dd>
-</dl>
-</section>
-</section>
-<section id="separating-environment-roles">
-<span id="config-env-role"></span><h2>Separating Environment Roles<a class="headerlink" href="#separating-environment-roles" title="Link to this heading">#</a></h2>
-<p>Docbuild distinguishes a “role” of a configuration file. It can have these values:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">production</span></code>, <code class="docutils literal notranslate"><span class="pre">prod</span></code>, or <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">staging</span></code>, <code class="docutils literal notranslate"><span class="pre">stage</span></code> or <code class="docutils literal notranslate"><span class="pre">s</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">testing</span></code>, <code class="docutils literal notranslate"><span class="pre">t</span></code>, <code class="docutils literal notranslate"><span class="pre">test</span></code>, <code class="docutils literal notranslate"><span class="pre">dev</span></code>, or <code class="docutils literal notranslate"><span class="pre">devel</span></code>.</p></li>
-</ul>
-<p>Use separate TOML files to define the configuration for each of your environments. To avoid confusion, name each file according to its specific purpose. For instance, use <code class="file docutils literal notranslate"><span class="pre">env.devel.toml</span></code> for development, <code class="file docutils literal notranslate"><span class="pre">env.staging.toml</span></code> for staging, and <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> for production.</p>
-<p>An example configuration file is provided in the repository at <a class="extlink-gh_tree reference external" href="https://github.com/openSUSE/docbuild/tree/main/etc/docbuild/env.example.toml">etc/docbuild/env.example.toml</a>.</p>
-</section>
-<section id="creating-a-new-configuration-file">
-<h2>Creating a new Configuration File<a class="headerlink" href="#creating-a-new-configuration-file" title="Link to this heading">#</a></h2>
-<p>To create a new configuration file, follow these steps one time:</p>
-<ol class="arabic">
-<li><p>In your cloned GitHub repository, copy the example file <code class="file docutils literal notranslate"><span class="pre">etc/docbuild/env.example.toml</span></code> to the root directory of this project. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">etc</span><span class="o">/</span><span class="n">docbuild</span><span class="o">/</span><span class="n">env</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">toml</span> <span class="n">env</span><span class="o">.</span><span class="n">devel</span><span class="o">.</span><span class="n">toml</span>
-</pre></div>
-</div>
-</li>
-<li><p>Open your TOML file.</p></li>
-<li><p>Adjust the path <code class="docutils literal notranslate"><span class="pre">paths.root_config_dir</span></code>. Use the path from <a class="reference internal" href="../install.html#get-xml-config"><span class="std std-ref">Getting the XML configuration</span></a>. Maybe adjust the key <code class="docutils literal notranslate"><span class="pre">general.role</span></code>. The rest can stay as it is.</p></li>
-<li><p>Specify this configuration file with the global option <code class="docutils literal notranslate"><span class="pre">--env-config</span></code>.</p></li>
-</ol>
-<p>Different ENV configuration files are important when you need to separate testing from production. To ease handling of different roles, refer to section <a class="reference internal" href="multi-configs.html#config-use-multiple-env-configs"><span class="std std-ref">Using Multiple Environment Configurations</span></a>.</p>
-</section>
+<p>Directories configured as writable paths are created automatically during
+configuration validation. Docbuild checks that these directories are readable,
+writable, and executable.</p>
 </section>
 
 
@@ -593,20 +512,20 @@ On macOS, it defaults to <code class="file docutils literal notranslate"><span c
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="placeholders.html"
+       href="config-files.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Using Placeholders</p>
+        <p class="prev-next-title">Configuration Files</p>
       </div>
     </a>
     <a class="right-next"
-       href="config-cli.html"
+       href="placeholders.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Overwriting Config Options on the Command Line</p>
+        <p class="prev-next-title">Placeholders</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -622,29 +541,10 @@ On macOS, it defaults to <code class="file docutils literal notranslate"><span c
 
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-search-locations-and-file-names">Configuration Search Locations and File Names</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#built-in-defaults-as-foundation">Built-in Defaults as Foundation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#search-and-precedence-order">Search and Precedence Order</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-file-names">Configuration File Names</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#separating-environment-roles">Separating Environment Roles</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-new-configuration-file">Creating a new Configuration File</a></li>
-</ul>
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/config/config-file.rst">
+    <a href="https://github.com/openSUSE/docbuild/edit/main/docs/source/user/config-concepts/naming-conventions.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -659,7 +559,7 @@ On macOS, it defaults to <code class="file docutils literal notranslate"><span c
   <div class="sidebar-secondary-item">
 
   <div class="tocsection sourcelink">
-    <a href="../../_sources/user/config/config-file.rst.txt">
+    <a href="../../_sources/user/config-concepts/naming-conventions.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

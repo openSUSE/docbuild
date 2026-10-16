@@ -170,6 +170,8 @@ Module Contents
 
    The user-specific configuration directory, typically located at ~/.config/docbuild.
 
+   Overridden by the :envvar:`XDG_CONFIG_HOME` environment variable (``$XDG_CONFIG_HOME/docbuild``).
+
 
 .. py:data:: SYSTEM_CONFIG_DIR
    :type:  pathlib.Path
@@ -189,17 +191,23 @@ Module Contents
 
    The base directory for application state, logs, and locks, per XDG Base Directory Specification.
 
+   Overridden by the :envvar:`XDG_STATE_HOME` environment variable (``$XDG_STATE_HOME/docbuild``).
+
 
 .. py:data:: DATA_HOME
    :type:  pathlib.Path
 
    The user-specific data directory, typically located at ~/.local/share/docbuild.
 
+   Overridden by the :envvar:`XDG_DATA_HOME` environment variable (``$XDG_DATA_HOME/docbuild``).
+
 
 .. py:data:: CACHE_HOME
    :type:  pathlib.Path
 
    The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+   Overridden by the :envvar:`XDG_CACHE_HOME` environment variable (``$XDG_CACHE_HOME/docbuild``).
 
 
 .. py:data:: CACHE_FILE_EXT
@@ -214,6 +222,9 @@ Module Contents
    :type:  pathlib.Path
 
    The user-specific runtime directory, typically located at /run/user/1000/docbuild.
+
+   Overridden by the :envvar:`XDG_RUNTIME_DIR` environment variable (``$XDG_RUNTIME_DIR/docbuild``).
+   Unlike the other directories, this variable has no default and is set by the login session.
 
 
 .. py:data:: APP_CONFIG_BASENAMES

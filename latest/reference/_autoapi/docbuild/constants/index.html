@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.25.1.dev16+g14f19b72d.d20261016</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
   
   
   
@@ -41,11 +41,11 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../_static/documentation_options.js?v=95b93478"></script>
+    <script src="../../../../_static/documentation_options.js?v=eccce51c"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/copybutton.js?v=6f874712"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/constants/index';</script>
     <script>
@@ -870,6 +870,7 @@
 <dt class="sig sig-object py" id="docbuild.constants.CONFIG_HOME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">CONFIG_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.CONFIG_HOME" title="Link to this definition">#</a></dt>
 <dd><p>The user-specific configuration directory, typically located at ~/.config/docbuild.</p>
+<p>Overridden by the <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_CONFIG_HOME</span></code> environment variable (<code class="docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/docbuild</span></code>).</p>
 </dd></dl>
 
 <dl class="py data">
@@ -889,18 +890,21 @@ at /etc/docbuild.</p>
 <dt class="sig sig-object py" id="docbuild.constants.STATE_HOME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">STATE_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.STATE_HOME" title="Link to this definition">#</a></dt>
 <dd><p>The base directory for application state, logs, and locks, per XDG Base Directory Specification.</p>
+<p>Overridden by the <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_STATE_HOME</span></code> environment variable (<code class="docutils literal notranslate"><span class="pre">$XDG_STATE_HOME/docbuild</span></code>).</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.DATA_HOME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">DATA_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.DATA_HOME" title="Link to this definition">#</a></dt>
 <dd><p>The user-specific data directory, typically located at ~/.local/share/docbuild.</p>
+<p>Overridden by the <span class="target" id="index-2"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_DATA_HOME</span></code> environment variable (<code class="docutils literal notranslate"><span class="pre">$XDG_DATA_HOME/docbuild</span></code>).</p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.CACHE_HOME">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">CACHE_HOME</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.CACHE_HOME" title="Link to this definition">#</a></dt>
 <dd><p>The user-specific cache directory, typically located at ~/.cache/docbuild.</p>
+<p>Overridden by the <span class="target" id="index-3"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_CACHE_HOME</span></code> environment variable (<code class="docutils literal notranslate"><span class="pre">$XDG_CACHE_HOME/docbuild</span></code>).</p>
 </dd></dl>
 
 <dl class="py data">
@@ -913,6 +917,8 @@ at /etc/docbuild.</p>
 <dt class="sig sig-object py" id="docbuild.constants.RUNTIME_DIR">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">RUNTIME_DIR</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.constants.RUNTIME_DIR" title="Link to this definition">#</a></dt>
 <dd><p>The user-specific runtime directory, typically located at /run/user/1000/docbuild.</p>
+<p>Overridden by the <span class="target" id="index-4"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">XDG_RUNTIME_DIR</span></code> environment variable (<code class="docutils literal notranslate"><span class="pre">$XDG_RUNTIME_DIR/docbuild</span></code>).
+Unlike the other directories, this variable has no default and is set by the login session.</p>
 </dd></dl>
 
 <dl class="py data">

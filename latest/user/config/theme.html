@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.25.1.dev16+g14f19b72d.d20261016</title>
+    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.25.1.dev17+g58e191f22.d20261016</title>
   
   
   
@@ -41,11 +41,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=95b93478"></script>
+    <script src="../../_static/documentation_options.js?v=eccce51c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/copybutton.js?v=6f874712"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/config/theme';</script>
     <script>
@@ -59,8 +59,8 @@
     <link rel="icon" href="../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Viewing the Environment Configuration" href="view.html" />
-    <link rel="prev" title="Overwriting Config Options on the Command Line" href="config-cli.html" />
+    <link rel="next" title="Using Multiple Environment Configurations" href="multi-configs.html" />
+    <link rel="prev" title="Setting Env Keys on the Command Line" href="config-cli.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -387,14 +387,18 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing docbuild</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Configuring Docbuild</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="naming-conventions.html">Key Naming Conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="placeholders.html">Using Placeholders</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config-file.html">Using a TOML Configuration File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config-cli.html">Overwriting Config Options on the Command Line</a></li>
-<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Configuring the Terminal Theme</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../config-concepts/index.html">Docbuild Configuration Concepts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config-concepts/config-concepts.html">Understanding Docbuild Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-concepts/config-files.html">Configuration Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-concepts/naming-conventions.html">Key Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-concepts/placeholders.html">Placeholders</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Working with Docbuild configs</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="view.html">Viewing the Environment Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validate.html">Validating Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config-cli.html">Setting Env Keys on the Command Line</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi-configs.html">Using Multiple Environment Configurations</a></li>
 </ul>
 </details></li>
@@ -416,7 +420,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../create-metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../build.html">Building Deliverables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../validate.html">Validating Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../create-llms.html">Creating Markdown for AI Tools</a></li>
@@ -465,7 +468,7 @@
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-person" viewBox="0 0 16 16" aria-hidden="true"><path d="M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg> User Guide</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Configuring Docbuild</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Working with Docbuild configs</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Configuring the Terminal Theme</span></li>
   </ul>
@@ -708,15 +711,15 @@ app.theme.muted = &#39;dim white&#39;
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Overwriting Config Options on the Command Line</p>
+        <p class="prev-next-title">Setting Env Keys on the Command Line</p>
       </div>
     </a>
     <a class="right-next"
-       href="view.html"
+       href="multi-configs.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Viewing the Environment Configuration</p>
+        <p class="prev-next-title">Using Multiple Environment Configurations</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
