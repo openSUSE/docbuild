@@ -1,13 +1,14 @@
+.. _config-viewing:
 .. _config-viewing-docbuild-config-env:
 
-Viewing the Environment Configuration
-=====================================
+Viewing the Configuration
+=========================
 
 To see the current merged configuration:
 
-.. code-block:: shell
+.. code-block:: console
 
-   docbuild config list
+   $ docbuild config list
 
 Use ``--app`` or ``--env`` to view only the specific configuration.
 For details on customizing output styling and colors, see :ref:`config-theme`.
@@ -23,11 +24,12 @@ Pass the ``--flat`` flag to print one setting per line, with its full dotted key
 
 .. code-block:: console
 
-   docbuild config list --flat --env
+   $ docbuild config list --flat --env
 
 Each line has the form ``<dotted.key> = <value>``.
 
-The flat format is useful for searching for a key with :command:`grep` or comparing two configurations with :command:`diff`. For example, to search for "tmp":
+The flat format is useful for searching for a key with :command:`grep` or comparing two configurations with :command:`diff`.
+For example, to search for "tmp":
 
 .. code-block:: console
 
@@ -57,9 +59,9 @@ If a file is invalid, the command still lists the raw values from the file, and 
 
 Pass the ``--validate`` flag to validate the configuration before listing it:
 
-.. code-block:: shell
+.. code-block:: console
 
-   docbuild config list --validate
+   $ docbuild config list --validate
 
 With ``--validate``, docbuild reports any validation error and stops without listing the configuration.
 Use this flag to check a new or edited configuration file before you rely on it.
@@ -71,21 +73,44 @@ To check a file without listing it, use :command:`docbuild config validate` inst
 Viewing Unresolved Placeholders
 -------------------------------
 
-By default, :command:`docbuild config list` displays the configuration with all placeholders resolved. To display placeholders without resolving them (useful for debugging), pass the ``-U`` or ``--unresolved`` option:
+By default, :command:`docbuild config list` displays the configuration with all placeholders resolved.
+To display placeholders without resolving them (useful for debugging), pass the ``-U`` or ``--unresolved`` option:
 
-.. code-block:: shell
+.. code-block:: console
 
-   docbuild config list -U
+   $ docbuild config list -U
 
 You can combine ``-U`` / ``--unresolved`` with other flags such as ``--flat``, ``--app``, or ``--env``:
 
-.. code-block:: shell
+.. code-block:: console
 
-   docbuild config list -U --flat
-   docbuild config list -U --env
+   $ docbuild config list -U --flat
+   $ docbuild config list -U --env
 
 
-Debugging Placeholders
-----------------------
+.. _config-viewing-custom-file:
 
-To inspect the configuration with placeholders left unresolved, use the ``-U`` or ``--unresolved`` flag with :command:`docbuild config list`. See :ref:`config-viewing-unresolved-placeholders`.
+Using a Custom Configuration File
+---------------------------------
+
+To inspect a custom environment configuration file, pass the global ``--env-config`` option:
+
+.. code-block:: console
+   :caption: Using a custom environment configuration
+
+   $ docbuild --env-config my-env.toml config list --env
+
+Similarly, to inspect a custom application configuration file, pass the global ``--app-config`` option:
+
+.. code-block:: console
+   :caption: Using a custom application configuration
+
+   $ docbuild --app-config my-app.toml config list --app
+
+You can also combine both options to inspect merged custom configurations:
+
+.. code-block:: console
+   :caption: Inspecting merged custom configurations
+
+   $ docbuild --app-config my-app.toml --env-config my-env.toml config list
+
