@@ -21,9 +21,9 @@ async def verify_repository_files(
     repo_root: Path,
 ) -> list[str]:
     """Clone a repository and check for the existence of specific DC files."""
-    missing = []
+    missing: list[str] = []
     # Use the first deliverable to get the repo's abbreviated name (surl)
-    repo_surl = deliverables[0].git.surl
+    repo_surl = deliverables[0].git.surl if deliverables and deliverables[0].git else repo_url
     log.info(f"Checking Repo: {repo_surl} [{branch}]")
 
     repo_handler = ManagedGitRepo(repo_url, repo_root)
@@ -77,6 +77,8 @@ async def check_repository_files(
     # 4. Group by repository and branch to optimize network calls
     groups: dict[tuple[str, str], list[Deliverable]] = {}
     for d in all_deliverables:
+        if not d.git:
+            continue
         key = (d.git.url, d.branch or "main")
         groups.setdefault(key, []).append(d)
 

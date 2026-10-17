@@ -55,3 +55,6 @@ class DocBuildContext:
 
     portalconfig: PortalConfig | None = None
     """The parsed and extracted Portal XML configuration, if loaded"""
+
+    env_lock: Any | None = None
+    """PID lock for the environment config file"""

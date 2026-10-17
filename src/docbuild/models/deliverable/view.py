@@ -288,16 +288,17 @@ class DeliverableXMLView:
         parts = self.node.xpath("parent::*/subdir/text() | subdir/text()")
         return "/".join(p.strip() for p in parts)
 
-    def git_remote(self) -> Repo | str | None:
+    def git_remote(self) -> Repo | None:
         """Return git remote URL from sibling ``<git>`` node."""
-        # TODO: Use Repo as return object?
         node = self.node.getparent().getparent().find("git")
         if node is not None:
             remote_str = node.attrib.get("remote")
-            try:
-                return Repo(remote_str)
-            except ValueError:
-                return remote_str
+            if remote_str:
+                try:
+                    return Repo(remote_str)
+                except ValueError:
+                    log.warning("Invalid Git remote URL: %s", remote_str)
+                    return None
         return None
 
     # -- Output formats
