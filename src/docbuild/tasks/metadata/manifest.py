@@ -69,7 +69,9 @@ def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
         return None
 
 
-def apply_parity_fixes(descriptions: list, categories: list) -> None:
+def apply_parity_fixes(
+    descriptions: list[Description], categories: list[Category]
+) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency.
 
     :param descriptions: List of Description objects to patch.
@@ -221,7 +223,7 @@ def merge_descriptions_with_treatment(
                 text = f"{p_desc.description}{d_desc.description}"
             merged.append(
                 Description(
-                    lang=lang,
+                    lang=p_desc.lang,
                     default=p_desc.default or d_desc.default,
                     description=text,
                 )
@@ -347,7 +349,7 @@ def store_productdocset_json(
             ]
         configured_languages = configured_languages_from_docset(docsetnode)
         archives = [
-            Archive(lang=lang, product=product_id, docset=docset_id)
+            Archive.model_validate({"lang": str(lang), "product": product_id, "docset": docset_id})
             for lang in configured_languages
         ]
 

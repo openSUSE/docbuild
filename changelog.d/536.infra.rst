@@ -1,0 +1,1 @@
+Enforce static type checking stability with Pyright, resolve typing issues across core modules, introduce domain type aliases in ``docbuild.types``, and add a dedicated typing CI workflow.

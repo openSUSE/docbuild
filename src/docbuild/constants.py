@@ -149,24 +149,24 @@ Unlike the other directories, this variable has no default and is set by the log
 
 
 # --- Config files ---
-APP_CONFIG_BASENAMES: tuple[str|Path, ...] = (".config.toml", "config.toml")
+APP_CONFIG_BASENAMES: tuple[str, ...] = (".config.toml", "config.toml")
 """The base filenames for the application configuration files, in
 order of priority."""
 
-PROJECT_LEVEL_APP_CONFIG_FILENAMES: tuple[str|Path, ...] = (
+PROJECT_LEVEL_APP_CONFIG_FILENAMES: tuple[str, ...] = (
     f".{APP_NAME}.config.toml",
     f"{APP_NAME}.config.toml",
     # 'app.config.toml',
 )
 """Additional configuration filenames at the project level."""
 
-APP_CONFIG_FILENAME: str|Path = "config.toml"
+APP_CONFIG_FILENAME: str = "config.toml"
 """The filename of the application's config file without any paths."""
 
-ENV_CONFIG_FILENAME: str|Path = "env.{role}.toml"
+ENV_CONFIG_FILENAME: str = "env.{role}.toml"
 """The filename of the environment's config file without any paths."""
 
-DEFAULT_ENV_CONFIG_FILENAME: str|Path = ENV_CONFIG_FILENAME.format(role="production")
+DEFAULT_ENV_CONFIG_FILENAME: str = ENV_CONFIG_FILENAME.format(role="production")
 """The default filename for the environment's config file, typically
 used in production."""
 

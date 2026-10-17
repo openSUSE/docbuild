@@ -192,7 +192,7 @@ def parse_key(key: str) -> list[str]:
         syntax (e.g., characters after closing delimiter).
 
     """
-    parts = []
+    parts: list[str] = []
     current = ""
     i = 0
 
@@ -453,7 +453,7 @@ def cli(
     env_config: Path,
     max_workers: str | None,
     env_overrides: tuple[str, ...],
-    **kwargs: dict,
+    **kwargs: Any,
 ) -> None:
     """Acts as a main entry point for CLI tool.
 
@@ -485,7 +485,7 @@ def cli(
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
-    context = ctx.obj
+    context: DocBuildContext = cast(DocBuildContext, ctx.obj)
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
     # State tracking for centralized error handling
@@ -515,10 +515,10 @@ def cli(
         if (
             context.envconfig
             and hasattr(context.envconfig, "paths")
-            and hasattr(context.envconfig.paths, "portal_xml")
-            and context.envconfig.paths.portal_xml.exists()
+            and hasattr(context.envconfig.paths, "main_portal_config")
+            and context.envconfig.paths.main_portal_config.exists()
         ):
-            context.portalconfig = PortalConfig(source=context.envconfig.paths.portal_xml)
+            context.portalconfig = PortalConfig(source=context.envconfig.paths.main_portal_config)
 
     except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
         files = (
@@ -532,13 +532,14 @@ def cli(
 
     # --- PHASE 3: Setup Concurrency Lock ---
     # (Remains outside the try block as it has its own specialized error handling)
-    env_config_path = (context.envconfigfiles or [None])[0]
-    if env_config_path:
-        ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
+    raw_env_path = (context.envconfigfiles or [None])[0]
+    if raw_env_path:
+        env_config_path = Path(raw_env_path)
+        context.env_lock = PidFileLock(resource_path=env_config_path)
         try:
-            ctx.obj.env_lock.__enter__()
+            context.env_lock.__enter__()
             log.info("Acquired lock for environment config: %r", env_config_path.name)
-            ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
+            ctx.call_on_close(lambda: context.env_lock.__exit__(None, None, None) if context.env_lock else None)
         except LockAcquisitionError as e:
             log.error(str(e))
             ctx.exit(1)

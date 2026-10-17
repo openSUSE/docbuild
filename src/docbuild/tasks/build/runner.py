@@ -219,6 +219,10 @@ async def process_deliverable_build(
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
 
+    if not deliverable.git:
+        log.error("Deliverable %s has no git repository configured.", deliverable.full_id)
+        return False, deliverable
+
     # 1. Create temporary worktree (cleaned up automatically)
     async with PersistentOnErrorTemporaryDirectory(
         dir=tmp_repo_dir,
@@ -305,7 +309,9 @@ async def process_doctype(
     llmstxt_dir: str = "docs",
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using aiostream."""
-    deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
+    deliverables: list[Deliverable] = list(
+        await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
+    )
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
