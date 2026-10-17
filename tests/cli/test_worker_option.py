@@ -20,7 +20,7 @@ def test_workers_option_invalid_value():
     runner = CliRunner()
 
     # Test an invalid string that should trigger our Pydantic ValueError
-    result = runner.invoke(cli, ["-j", "not-a-number", "config", "list"])
+    result = runner.invoke(cli, ["-j", "not-a-number", "config", "list", "--validate"])
 
     # This should trigger our 'handle_validation_error' logic
     assert result.exit_code == 1
