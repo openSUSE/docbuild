@@ -312,3 +312,17 @@ class AppConfig(BaseModel):
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """Create an AppConfig instance from a dictionary."""
         return cls.model_validate(data)
+
+    @classmethod
+    def get_default_config(cls) -> dict[str, Any]:
+        """Generate application defaults without loading user configuration.
+
+        :return: JSON-compatible defaults, including logging aliases and
+            the portable worker-count keyword.
+        """
+        workers = cls.model_fields["max_workers"].default
+        defaults = cls.model_validate({"max_workers": workers}).model_dump(
+            mode="json", by_alias=True
+        )
+        defaults["max_workers"] = workers
+        return defaults
