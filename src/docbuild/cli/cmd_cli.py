@@ -192,7 +192,7 @@ def parse_key(key: str) -> list[str]:
         syntax (e.g., characters after closing delimiter).
 
     """
-    parts = []
+    parts: list[str] = []
     current = ""
     i = 0
 
@@ -470,7 +470,7 @@ def cli(
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
-    context = ctx.obj
+    context: DocBuildContext = cast(DocBuildContext, ctx.obj)
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
     # State tracking for centralized error handling

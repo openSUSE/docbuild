@@ -21,7 +21,7 @@ async def verify_repository_files(
     repo_root: Path,
 ) -> list[str]:
     """Clone a repository and check for the existence of specific DC files."""
-    missing = []
+    missing: list[str] = []
     # Use the first deliverable to get the repo's abbreviated name (surl)
     repo_surl = deliverables[0].git.surl
     log.info(f"Checking Repo: {repo_surl} [{branch}]")

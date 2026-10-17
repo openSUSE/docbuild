@@ -78,13 +78,13 @@ def check_dc_in_language(
     """
     language_nodes = list(tree.findall(".//docset/resources/locale", namespaces=None))
     for language in language_nodes:
-        dc_values = []
+        dc_values: list[str] = []
         for deliverable in language.findall("deliverable"):
             dc_node = deliverable.find("dc")
             if dc_node is None:
                 continue
-            dc_value = dc_node.get("file").strip()
-            dc_values.append(dc_value)
+            file_attr = dc_node.get("file")
+            dc_values.append(file_attr.strip())
 
         if len(dc_values) != len(set(dc_values)):
             duplicates = [

@@ -18,7 +18,7 @@ from collections.abc import (
 from contextlib import suppress
 import functools
 import logging
-from typing import Concatenate
+from typing import Concatenate, cast
 
 log = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class TaskFailedError[T](Exception):
 
 async def producer[T](
     items: Iterable[T] | AsyncIterableABC[T],
-    input_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | object],
     num_workers: int,
 ) -> None:
     """Feed items into the input queue, then send one sentinel per worker.
@@ -75,8 +75,8 @@ async def producer[T](
 
 async def worker[T, R](
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue,
-    result_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | object],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | object],
 ) -> None:
     """Pull items from the input queue, process them, push results out.
 
@@ -95,12 +95,12 @@ async def worker[T, R](
             if item is SENTINEL:
                 return
 
-            result = await worker_fn(item)
+            result = await worker_fn(cast(T, item))
             await result_queue.put(result)
         except Exception as exc:
             # If putting an error fails (queue full), don't deadlock.
             with suppress(asyncio.QueueFull, Exception):
-                result_queue.put_nowait(TaskFailedError(item, exc))
+                result_queue.put_nowait(TaskFailedError(cast(T, item), exc))
 
         finally:
             input_queue.task_done()
@@ -109,8 +109,8 @@ async def worker[T, R](
 async def run_all[T, R](
     items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue,
-    result_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | object],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | object],
     limit: int,
     *,
     name: str | None = None,
