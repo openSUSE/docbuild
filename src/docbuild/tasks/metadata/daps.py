@@ -157,10 +157,6 @@ async def process_deliverable(    # noqa: C901
             log.error("Failed to extract metadata for prebuilt deliverable %s: %s", deliverable.full_id, e)
             return False, deliverable
 
-    if not deliverable.git:
-        log.error("Deliverable %s has no git repository configured.", deliverable.full_id)
-        return False, deliverable
-
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
         log.error(

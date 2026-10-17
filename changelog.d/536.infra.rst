@@ -1,1 +1,1 @@
-Enforce static type checking stability with Pyright, resolve typing issues across core modules, introduce domain type aliases in ``docbuild.types``, and add a dedicated typing CI workflow.
+Configure Pyright diagnostic settings in ``pyrightconfig.json`` for static type checking.

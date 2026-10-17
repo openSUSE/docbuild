@@ -72,7 +72,7 @@ def make_timer(
     return wrapper
 
 
-class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory[Any]):
+class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory[str]):
     """A temporary directory that supports both sync and async usage.
 
     It deletes the temporary directory only if no exception occurs within the
@@ -139,9 +139,7 @@ class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory[Any]):
         # CRITICAL: We must always detach the finalizer. If we don't,
         # and an error occurred, the directory would still be deleted
         # upon garbage collection, which is not what we want.
-        finalizer = getattr(self, "_finalizer", None)
-        if finalizer is not None and hasattr(finalizer, "detach"):
-            finalizer.detach()
+        self._finalizer.detach()
 
         if exc_type is None:
             # No exception occurred in the `with` block, so we clean up.

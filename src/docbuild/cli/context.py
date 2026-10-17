@@ -2,7 +2,10 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from ..utils.pidlock import PidFileLock
 
 from ..config.xml.portal import PortalConfig
 from ..models.config.app import AppConfig
@@ -56,5 +59,5 @@ class DocBuildContext:
     portalconfig: PortalConfig | None = None
     """The parsed and extracted Portal XML configuration, if loaded"""
 
-    env_lock: Any | None = None
+    env_lock: PidFileLock | None = None
     """PID lock for the environment config file"""
