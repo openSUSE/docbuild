@@ -147,8 +147,8 @@ async def run_parallel[T, R, **P](
     items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[Concatenate[T, P], Awaitable[R]],
     limit: int,
-    name: str | None = None,
     *worker_args: P.args,
+    name: str | None = None,
     **worker_kwargs: P.kwargs,
 ) -> AsyncIterator[R | TaskFailedError[T]]:
     """Process items concurrently with bounded parallelism.

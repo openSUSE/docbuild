@@ -83,10 +83,8 @@ def check_dc_in_language(
             dc_node = deliverable.find("dc")
             if dc_node is None:
                 continue
-            file_attr = dc_node.get("file")
-            if not file_attr:
-                continue
-            dc_values.append(file_attr.strip())
+            dc_value = dc_node.get("file").strip()
+            dc_values.append(dc_value)
 
         if len(dc_values) != len(set(dc_values)):
             duplicates = [

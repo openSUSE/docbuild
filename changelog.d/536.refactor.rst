@@ -1,0 +1,1 @@
+Improve static type annotations and stability across models, tasks, and CLI modules, and introduce domain type aliases in ``docbuild.types``.
