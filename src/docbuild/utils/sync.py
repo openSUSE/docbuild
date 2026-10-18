@@ -56,6 +56,14 @@ class RsyncOptions:
     )
     """List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag."""
 
+    files_from: Path | None = field(default=None, metadata={"flag": "--files-from"})
+    """Path to a file that lists what to transfer (``--files-from``).
+
+    Each path in the file is relative to the source path. Setting this option also
+    adds ``-r``, because rsync turns off the recursion implied by ``-a`` when a
+    file list is used. The file is not read or validated by ``rsync()``.
+    """
+
     extra_args: list[str] = field(default_factory=list)
     """Additional arbitrary rsync command-line arguments not modeled as explicit fields.
     Enables use of 100+ unsupported rsync options (e.g., ["--exclude=*.tmp", "--bwlimit=1000"]).
@@ -95,8 +103,11 @@ class RsyncOptions:
                 # Catch-all for single configuration values like strings or integers
                 # (e.g., timeout=60 -> "--timeout", "60")
                 # This branch enables extensibility for future fields beyond booleans/lists.
-                case _:  # pragma: no cover
+                case _:
                     args.extend([flag, str(value)])
+
+        if self.files_from is not None:
+            args.append("-r")
 
         args.extend(self.extra_args)
         return args
