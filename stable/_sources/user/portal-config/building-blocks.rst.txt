@@ -1,7 +1,7 @@
 Building Blocks
 ===============
 
-The portal schema consists the following main parts:
+The portal schema consists of the following main parts:
 
 * ``<portal>``: The root element of the portal configuration.
 * Global settings like a spotlight, categories, product families and series.
@@ -21,20 +21,32 @@ Portal Definition
 -----------------
 
 The portal configuration is defined with the ``<portal>`` root element.
-It contains the following child elements:
+It has a required ``schemaversion="7.0"`` attribute and contains the following child elements:
 
 * ``<spotlight>`` (optional)
 
   A spotlight section that can be used to highlight important information
   on the portal. See section :ref:`create-spotlight` for more information.
 
+* ``<categories>`` (required)
 
+  The global category definitions for the portal. See section
+  :ref:`global-settings`.
 
-* ``<products>`` (required)
+* ``<productfamilies>`` (required)
+
+  The global product family definitions. See section
+  :ref:`global-settings`.
+
+* ``<series>`` (required)
+
+  The global series definitions. See section :ref:`global-settings`.
+
+* ``<product>`` (one or more required)
 
   The products of the portal. Each product is defined with a
-  ``<product>`` element. A portal must have at least one product.
-  See next section :ref:`product-definition` for more information about products.
+  ``<product>`` element (or included with ``<xi:include>``). A portal must have at least one product.
+  See section :ref:`product-definition` for more information about products.
 
 
 .. _global-settings:
@@ -66,7 +78,7 @@ A ``<category>`` element consists of the following structure:
 * One or more ``<language>`` elements. Each ``<language>`` element
   contains:
 
-  * A required ``id`` attribute, which is used to reference the category
+  * A required ``xml:id`` attribute, which is used to reference the category
     from deliverables. Per convention, each category ID should start with
     the ``cat.`` prefix.
 
@@ -82,10 +94,10 @@ A ``<category>`` element consists of the following structure:
 
    <categories>
       <category lang="en-us">
-        <language id="cat.about">
+        <language xml:id="cat.about">
           <title>About</title>
         </language>
-        <language id="cat.deployment">
+        <language xml:id="cat.deployment">
           <title>Deployment</title>
         </language>
         <!-- ... -->
@@ -124,10 +136,10 @@ lists all product families:
    :name: global_productfamilies
 
    <productfamilies>
-     <item id="f.linux">Linux</item>
-     <item id="f.cn">Cloud Native</item>
-     <item id="f.suse-edge">SUSE Edge</item>
-     <item id="f.suse-ai">SUSE AI</item>
+     <item xml:id="f.linux">Linux</item>
+     <item xml:id="f.cn">Cloud Native</item>
+     <item xml:id="f.suse-edge">SUSE Edge</item>
+     <item xml:id="f.suse-ai">SUSE AI</item>
    </productfamilies>
 
 
@@ -142,10 +154,10 @@ can be assigned to only one series.
    :name: global_series
 
    <series>
-    <item id="s.pas">Products &amp; Solutions</item>
-    <item id="s.sbp">SUSE Best Practices</item>
-    <item id="s.trd">Technical References</item>
-    <item id="s.rn">Release Notes</item>
+    <item xml:id="s.pas">Products &amp; Solutions</item>
+    <item xml:id="s.sbp">SUSE Best Practices</item>
+    <item xml:id="s.trd">Technical References</item>
+    <item xml:id="s.rn">Release Notes</item>
    </series>
 
 
@@ -158,7 +170,7 @@ Product Definition
 A product is defined with the ``<product>`` element.
 It contains the following attributes:
 
-* ``id`` (required)
+* ``xml:id`` (required)
 
   The unique identifier for the product.
   It must not start with a number and must be unique across
@@ -168,14 +180,14 @@ It contains the following attributes:
 * ``path`` (optional)
 
   A relative directory name for the product, used for building
-  the output path. If not specified, the ``id`` is used as the
+  the output path. If not specified, the ``xml:id`` is used as the
   fallback.
 
 * ``family`` (required)
 
   The product family this product belongs to.
   It must match an existing product family ID that is defined
-  in the ``<productfamily>`` element.
+  in the ``<productfamilies>`` element.
 
 * ``series`` (required)
 
@@ -196,6 +208,11 @@ It contains the following attributes:
   Set this attribute to "false" to exclude the product
   and all of its releases and deliverables from the sitemap.
 
+* ``enabled`` (optional)
+
+  Whether the product is enabled on the portal. Defaults to "true".
+  Set to "false" to disable the product without removing it.
+
 * ``gated`` (optional)
 
   Whether the product is behind a login.
@@ -203,11 +220,24 @@ It contains the following attributes:
   By default, products are public. Set this attribute to "true"
   to make the product gated.
 
+* ``docset-sort`` (optional)
+
+  The sort order for the product's docsets (releases).
+  Allowed values are ``descending`` (default) or ``ascending``.
+
+* ``schemaversion`` (optional)
+
+  The schema version string (e.g. ``7.0``).
+
 Furthermore, a product contains the following child elements:
 
 * ``<name>`` (required)
 
   The name of the product.
+
+* ``<sortname>`` (optional)
+
+  An alternative name used for sorting products alphabetically.
 
 * ``<acronym>`` (optional)
 
@@ -319,7 +349,7 @@ When splitting the configuration into multiple files, it is recommended to follo
   * :file:`productA/productA.xml` is the main product configuration
     file, which contains the ``<product>`` element.
     It includes all releases of this product with XInclude.
-    By convention, this file should be named the same than the directory
+    By convention, this file should be named the same as the directory
     with the :file:`.xml` suffix.
   * :file:`product/release-1.xml` for release 1
   * :file:`product/release-2.xml` for release 2
@@ -356,7 +386,7 @@ different parts:
   IDs are used for products, releases, deliverables, categories, product families, and series.
   It must not start with a number and must be unique across the
   whole portal configuration.
-  It is defined with the ``id`` attribute.
+  It is defined with the ``xml:id`` attribute.
   The value of the ID can be freely chosen, but it is recommended to
   use a clear naming convention.
 

@@ -1,0 +1,22 @@
+docbuild.cli.cmd_cli.BannerGroup
+================================
+
+.. py:class:: docbuild.cli.cmd_cli.BannerGroup(name: str | None = None, commands: collections.abc.MutableMapping[str, Command] | collections.abc.Sequence[Command] | None = None, invoke_without_command: bool = False, no_args_is_help: bool | None = None, subcommand_metavar: str | None = None, chain: bool = False, result_callback: Callable[..., Any] | None = None, **kwargs: Any)
+
+   Bases: :py:obj:`click.Group`
+
+   .. autoapi-inheritance-diagram:: docbuild.cli.cmd_cli.BannerGroup
+      :parts: 1
+
+
+   Custom Click Group that displays a banner before help messages.
+
+
+   .. py:method:: format_help(ctx: click.Context, formatter: click.HelpFormatter) -> None
+
+      Format and print help output with banner prefix.
+
+      :param ctx: The Click context.
+      :param formatter: Click help formatter instance.
+
+

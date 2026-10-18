@@ -26,12 +26,13 @@ Attributes
    docbuild.constants.SINGLE_LANG_REGEX
    docbuild.constants.MULTIPLE_LANG_REGEX
    docbuild.constants.LIFECYCLES_STR
+   docbuild.constants.HOSTNAME_REGEX
+   docbuild.constants.SSH_USERNAME_REGEX
    docbuild.constants.PROJECT_DIR
-   docbuild.constants.USER_CONFIG_DIR
+   docbuild.constants.CONFIG_HOME
    docbuild.constants.SYSTEM_CONFIG_DIR
    docbuild.constants.CONFIG_PATHS
    docbuild.constants.STATE_HOME
-   docbuild.constants.CONFIG_HOME
    docbuild.constants.DATA_HOME
    docbuild.constants.CACHE_HOME
    docbuild.constants.CACHE_FILE_EXT
@@ -54,6 +55,8 @@ Attributes
    docbuild.constants.XINCLUDE_NS
    docbuild.constants.DOCBOOK_NS
    docbuild.constants.XLINK_NS
+   docbuild.constants.RUNTIME_PLACEHOLDERS
+   docbuild.constants.ESCAPE_REGEX
 
 
 Module Contents
@@ -144,17 +147,30 @@ Module Contents
    Regex for lifecycle states, separated by pipe (|).
 
 
+.. py:data:: HOSTNAME_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex for a fully qualified host name (DNS name), similar to an FQDN.
+
+
+.. py:data:: SSH_USERNAME_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex for an SSH login name. Must start lowercase or underscore.
+
+
 .. py:data:: PROJECT_DIR
    :type:  pathlib.Path
 
    The current working directory, used as the project directory.
 
 
-.. py:data:: USER_CONFIG_DIR
+.. py:data:: CONFIG_HOME
    :type:  pathlib.Path
 
-   The user-specific configuration directory, typically located
-   at ~/.config/docbuild.
+   The user-specific configuration directory, typically located at ~/.config/docbuild.
+
+   Overridden by the :envvar:`XDG_CONFIG_HOME` environment variable (``$XDG_CONFIG_HOME/docbuild``).
 
 
 .. py:data:: SYSTEM_CONFIG_DIR
@@ -175,11 +191,7 @@ Module Contents
 
    The base directory for application state, logs, and locks, per XDG Base Directory Specification.
 
-
-.. py:data:: CONFIG_HOME
-   :type:  pathlib.Path
-
-   The user-specific configuration directory, typically located at ~/.config/docbuild.
+   Overridden by the :envvar:`XDG_STATE_HOME` environment variable (``$XDG_STATE_HOME/docbuild``).
 
 
 .. py:data:: DATA_HOME
@@ -187,11 +199,15 @@ Module Contents
 
    The user-specific data directory, typically located at ~/.local/share/docbuild.
 
+   Overridden by the :envvar:`XDG_DATA_HOME` environment variable (``$XDG_DATA_HOME/docbuild``).
+
 
 .. py:data:: CACHE_HOME
    :type:  pathlib.Path
 
    The user-specific cache directory, typically located at ~/.cache/docbuild.
+
+   Overridden by the :envvar:`XDG_CACHE_HOME` environment variable (``$XDG_CACHE_HOME/docbuild``).
 
 
 .. py:data:: CACHE_FILE_EXT
@@ -206,6 +222,9 @@ Module Contents
    :type:  pathlib.Path
 
    The user-specific runtime directory, typically located at /run/user/1000/docbuild.
+
+   Overridden by the :envvar:`XDG_RUNTIME_DIR` environment variable (``$XDG_RUNTIME_DIR/docbuild``).
+   Unlike the other directories, this variable has no default and is set by the login session.
 
 
 .. py:data:: APP_CONFIG_BASENAMES
@@ -339,5 +358,17 @@ Module Contents
 
 
    The XML namespace URI for XLink attributes.
+
+
+.. py:data:: RUNTIME_PLACEHOLDERS
+   :type:  frozenset[str]
+
+   Set of placeholder names that are resolved at runtime by the build system.
+
+
+.. py:data:: ESCAPE_REGEX
+   :type:  Final[re.Pattern[str]]
+
+   Regex to identify escape sequences and runtime placeholders.
 
 

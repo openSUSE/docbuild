@@ -6,18 +6,18 @@ Grouping Deliverables with Categories
 To group related deliverables together, assign them to a category.
 A "category" is a title that is displayed on the release index page.
 
-Categories are definied on different levels:
+Categories are defined on different levels:
 
 * Global categories
 
   Global categories are defined under the ``<portal>`` element.
-  By conventions, their IDs start with the ``cat.`` prefix.
+  By convention, their IDs start with the ``cat.`` prefix.
 
 * Product-specific categories
 
   "Local" categories that are specific for a product are
   defined under the ``<product>`` element.
-  By conventions, their IDs start with the ``cat.`` prefix,
+  By convention, their IDs start with the ``cat.`` prefix,
   followed by the product ID.
   For example, ``cat.nas`` for the NAS product.
 
@@ -31,4 +31,8 @@ To use a category, regardless of its scope, assign the category ID to the ``cate
    :caption: Example of a Deliverable with a Category
    :name: category
 
-   <deliverable id="nas.1.0.overview" type="dc" category="cat.nas">
+   <deliverable xml:id="nas.1.0.overview" type="dc" category="cat.nas">
+     <dc file="DC-NAS-overview">
+       <format html="1" pdf="1" single-html="1" epub="0"/>
+     </dc>
+   </deliverable>

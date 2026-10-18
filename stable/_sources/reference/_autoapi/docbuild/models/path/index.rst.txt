@@ -15,6 +15,7 @@ Attributes
 .. autoapisummary::
 
    docbuild.models.path.WritablePath
+   docbuild.models.path.AbsolutePath
 
 
 Functions
@@ -23,6 +24,7 @@ Functions
 .. autoapisummary::
 
    docbuild.models.path.ensure_writeable_directory
+   docbuild.models.path.must_be_absolute
 
 
 Module Contents
@@ -50,6 +52,25 @@ Module Contents
 .. py:data:: WritablePath
 
    A Pydantic custom type that ensures a directory exists and is writable.
+   The final validated type is a :py:class:`pathlib.Path` object.
+
+
+.. py:function:: must_be_absolute(value: pathlib.Path) -> pathlib.Path
+
+   Validate that a path is absolute.
+
+   Note: this validator performs no filesystem access.
+
+   :param value: The path to validate.
+   :type value: pathlib.Path
+   :return: The unchanged path object.
+   :rtype: pathlib.Path
+   :raises ValueError: If the path is not absolute.
+
+
+.. py:data:: AbsolutePath
+
+   A Pydantic custom type that requires an absolute path.
    The final validated type is a :py:class:`pathlib.Path` object.
 
 

@@ -28,7 +28,7 @@ a new product, proceed as follows:
       :caption: Example :file:`nas.xml` Configuration
       :name: nas.xml
 
-      <product id="nas" family="f.linux" series="s.pas" rank="...">
+      <product xml:id="nas" family="f.linux" series="s.pas" rank="10">
          <name>Network Attached Storage</name>
          <acronym>nas</acronym>
          <maintainers>

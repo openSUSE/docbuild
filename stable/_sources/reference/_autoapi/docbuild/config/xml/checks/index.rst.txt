@@ -42,6 +42,8 @@ Functions
    docbuild.config.xml.checks.check_unsupported_language_code
    docbuild.config.xml.checks.check_spotlight_target
    docbuild.config.xml.checks.build_id_map
+   docbuild.config.xml.checks.has_circular_reference
+   docbuild.config.xml.checks.check_reference_nesting
    docbuild.config.xml.checks.check_deliverable_reference
 
 
@@ -66,12 +68,12 @@ Module Contents
 
        <locale lang="en-us">
            <branch>main</branch>
-           <deliverable id="deli-1" type="dc">
+           <deliverable xml:id="deli-1" type="dc">
                <dc file="DC-foo">
                    <format html="1" pdf="0" single-html="0" epub="0"/>
                </dc>
            </deliverable>
-           <deliverable id="deli-2" type="dc">
+           <deliverable xml:id="deli-2" type="dc">
                <dc file="DC-foo">
                    <format html="1" pdf="0" single-html="0" epub="0"/>
                </dc>
@@ -133,7 +135,7 @@ Module Contents
 
    .. code-block:: xml
 
-      <deliverable id="deli-1" type="dc">
+      <deliverable xml:id="deli-1" type="dc">
         <dc file="DC-fake-doc">
            <!-- All formats here are disabled: -->
            <format epub="0" html="0" pdf="0" single-html="0"/>
@@ -150,7 +152,7 @@ Module Contents
 
    .. code-block:: xml
 
-      <deliverable id="deli-1" type="dc">
+      <deliverable xml:id="deli-1" type="dc">
          <dc file="DC-fake-all">
             <!-- PDF enabled, but subdeliverables present: -->
             <format epub="0" html="1" pdf="1" single-html="1"/>
@@ -183,7 +185,7 @@ Module Contents
 
    .. code-block:: xml
 
-      <docset id="docset1" lifecycle="supported">
+      <docset xml:id="docset1" lifecycle="supported">
           <resources>
                <git remote="https://example.invalid/repo.git"/>
                <locale lang="en-us"><branch>main</branch></locale>
@@ -221,7 +223,7 @@ Module Contents
 
    .. code-block:: xml
 
-       <deliverable id="deli-1" type="dc">
+       <deliverable xml:id="deli-1" type="dc">
            <dc file="DC-fake-doc">
                <subdeliverable>sub-1</subdeliverable>
                <subdeliverable>sub-2</subdeliverable>
@@ -285,6 +287,16 @@ Module Contents
 
    :param tree: The XML tree or element to index.
    :returns: A dictionary mapping element IDs to their corresponding elements.
+
+
+.. py:function:: has_circular_reference(deliv: lxml.etree._Element, target: lxml.etree._Element, id_map: dict[str, lxml.etree._Element]) -> bool
+
+   Return True if deliv's reference to target forms a circular dependency.
+
+
+.. py:function:: check_reference_nesting(deliv: lxml.etree._Element, target: lxml.etree._Element, linkend: str, id_map: dict[str, lxml.etree._Element]) -> collections.abc.Iterator[CheckResult]
+
+   Validate nesting constraints when pointing to another reference deliverable.
 
 
 .. py:function:: check_deliverable_reference(tree: lxml.etree._Element | lxml.etree._ElementTree) -> collections.abc.Iterator[CheckResult]

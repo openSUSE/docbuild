@@ -62,12 +62,12 @@ Make sure each DC appears only once within a language.
 
    <locale lang="en-us">
        <branch>main</branch>
-       <deliverable id="deli-1" type="dc">
+       <deliverable xml:id="deli-1" type="dc">
            <dc file="DC-foo">
                <format html="1" pdf="0" single-html="0" epub="0"/>
            </dc>
        </deliverable>
-       <deliverable id="deli-2" type="dc">
+       <deliverable xml:id="deli-2" type="dc">
            <dc file="DC-foo">
                <format html="1" pdf="0" single-html="0" epub="0"/>
            </dc>
@@ -145,7 +145,7 @@ Check if at least one format is enabled.
 
 .. code-block:: xml
 
-   <deliverable id="deli-1" type="dc">
+   <deliverable xml:id="deli-1" type="dc">
      <dc file="DC-fake-doc">
         <!-- All formats here are disabled: -->
         <format epub="0" html="0" pdf="0" single-html="0"/>
@@ -158,7 +158,7 @@ Make sure that deliverables with subdeliverables have only HTML formats enabled.
 
 .. code-block:: xml
 
-   <deliverable id="deli-1" type="dc">
+   <deliverable xml:id="deli-1" type="dc">
       <dc file="DC-fake-all">
          <!-- PDF enabled, but subdeliverables present: -->
          <format epub="0" html="1" pdf="1" single-html="1"/>
@@ -183,7 +183,7 @@ Ensure that each language code appears only once within ``<docset>``.
 
 .. code-block:: xml
 
-   <docset id="docset1" lifecycle="supported">
+   <docset xml:id="docset1" lifecycle="supported">
        <resources>
             <git remote="https://example.invalid/repo.git"/>
             <locale lang="en-us"><branch>main</branch></locale>
@@ -214,11 +214,11 @@ Ensure that each language code appears only once within
 
 .. rubric:: check_subdeliverable_in_deliverable
 
-Check that site section is present in the XML tree.
+Check that subdeliverables within a deliverable are unique.
 
 .. code-block:: xml
 
-   <deliverable id="deli-1" type="dc">
+   <deliverable xml:id="deli-1" type="dc">
        <dc file="DC-fake-doc">
            <subdeliverable>sub-1</subdeliverable>
            <subdeliverable>sub-2</subdeliverable>

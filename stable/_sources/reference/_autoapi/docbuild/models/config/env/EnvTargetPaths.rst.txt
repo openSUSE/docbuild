@@ -23,7 +23,7 @@ docbuild.models.config.env.EnvTargetPaths
       :value: None
 
 
-      The base destination for final built documentation.
+      The local base directory where build writes its deliverables.
 
 
 
@@ -32,7 +32,7 @@ docbuild.models.config.env.EnvTargetPaths
       :value: None
 
 
-      Dynamic suffix for final remote destination.
+      Dynamic suffix for the target directory under target_base_dir.
 
 
 

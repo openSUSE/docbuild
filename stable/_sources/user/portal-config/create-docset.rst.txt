@@ -6,7 +6,7 @@ Creating Docsets
 A "docset" is usually a specific "release" of a product. To define
 a new docset, proceed as follows:
 
-#. Determine the the "name" of a docset.
+#. Determine the "name" of a docset.
 
    This attribute acts as an identifier. The value should be short and
    descriptive. It is used in the doctype syntax, when you request a build, and
@@ -15,7 +15,7 @@ a new docset, proceed as follows:
    Let's assume, we want to create ``1.0`` release, hence you
    would set the value to ``1.0``.
 
-#. Determine the docset ID.
+#. Determine the docset ID (the ``xml:id`` attribute).
 
    This unique ID is used in several places in the configuration.
    It is not used outside the Portal configuration.
@@ -53,7 +53,7 @@ a new docset, proceed as follows:
       :caption: The 1.0 release of the NAS product :file:`1.0.xml`
       :name: nas.docset
 
-      <docset id="nas.1.0" path="1.0" lifecycle="supported">
+      <docset xml:id="nas.1.0" path="1.0" lifecycle="supported">
         <version>1.0</version>
         <resources>
           <git remote="https://github.com/example/nas.git"/>
@@ -66,9 +66,10 @@ a new docset, proceed as follows:
 
 #. Add a ``<resources>`` child element.
 
-   Possible child elements are:
+   A docset contains a ``<resources>`` element, an ``<external>`` element (for
+   external links), or both. Within ``<resources>``:
 
-   * An optional ``<git>`` element to define the Git repository for
+   * An optional ``<git>`` element defines the Git repository for
      the sources of this release.
      This is only needed if your product is built via DAPS.
      For other build systems like Antora, the deliverables are built
@@ -79,13 +80,13 @@ a new docset, proceed as follows:
    This is the minimal element you need and holds all English
    deliverables.
 
-   Possible child elements are:
+   Child elements are:
 
-   * ``<branch>`` (required): contains the branch from the Git repository.
-     This is only useful when you defined a Git repository. For prebuilt
-     deliverables, it's not needed.
+   * ``<branch>`` (required): contains the branch name from the Git repository
+     (for prebuilt deliverables, specify the active branch, e.g. ``main``).
+     The schema requires this element in every ``<locale>``.
    * ``<subdir>`` (optional): contains the directory where to look for the
-     DC files. For prebuilt deliverables, it's not needed.
+     DC files. For prebuilt deliverables, omit this tag.
 
 #. Optionally add translations in a ``<locale lang="...">`` element.
 

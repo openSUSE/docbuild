@@ -54,6 +54,15 @@ docbuild.models.config.env.EnvConfig
 
 
 
+   .. py:attribute:: remote
+      :type:  EnvRemote
+      :value: None
+
+
+      Remote publish destination.
+
+
+
    .. py:method:: from_dict(data: dict[str, Any]) -> Self
       :classmethod:
 

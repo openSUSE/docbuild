@@ -93,7 +93,11 @@ docbuild.models.config.env
                "common": {},
                "html": {},
                "pdf": {}
-           }
+           },
+           // Remote destination for publishing built documentation.
+           // Both keys are unset by default, so publish is disabled unless
+           // [remote] is configured. Corresponds to the EnvRemote model.
+           "remote": {"server": null, "path": null}
        }
 
 
@@ -112,6 +116,8 @@ Classes
    /reference/_autoapi/docbuild/models/config/env/EnvTargetPaths
    /reference/_autoapi/docbuild/models/config/env/EnvPaths
    /reference/_autoapi/docbuild/models/config/env/EnvXslt
+   /reference/_autoapi/docbuild/models/config/env/SSHEndpoint
+   /reference/_autoapi/docbuild/models/config/env/EnvRemote
    /reference/_autoapi/docbuild/models/config/env/EnvConfig
 
 .. autoapisummary::
@@ -124,6 +130,37 @@ Classes
    docbuild.models.config.env.EnvTargetPaths
    docbuild.models.config.env.EnvPaths
    docbuild.models.config.env.EnvXslt
+   docbuild.models.config.env.SSHEndpoint
+   docbuild.models.config.env.EnvRemote
    docbuild.models.config.env.EnvConfig
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.models.config.env.target_is_remote
+
+
+Module Contents
+---------------
+
+.. py:function:: target_is_remote(value: str) -> bool
+
+   Check whether *value* looks like an rsync-style remote destination.
+
+   A value is remote if it matches one of the following forms:
+
+   * ``scheme://`` (for example ``rsync://host/module`` or ``ssh://host/x``)
+   * ``user@host:`` (for example ``user@host:/srv/docs``)
+   * ``host::`` (for example ``host::module``)
+   * ``host:/`` (for example ``host:/srv/docs``)
+
+   Everything else is treated as local, including relative paths,
+   ``my:dir`` and ``a:b/c`` (no drive-letter special cases are needed).
+
+   :param value: The path string to inspect.
+   :return: True if the value looks like a remote destination; False otherwise.
 
 

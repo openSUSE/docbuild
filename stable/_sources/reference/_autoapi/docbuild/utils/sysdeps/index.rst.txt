@@ -28,6 +28,7 @@ Functions
 .. autoapisummary::
 
    docbuild.utils.sysdeps.get_binary_version
+   docbuild.utils.sysdeps.coerce_semver
    docbuild.utils.sysdeps.check_dependencies
    docbuild.utils.sysdeps.requires_system_tools
 
@@ -38,6 +39,11 @@ Module Contents
 .. py:function:: get_binary_version(name: str) -> str | None
 
    Run a tool and attempt to extract its version string using regex.
+
+
+.. py:function:: coerce_semver(version_str: str) -> semver.Version
+
+   Convert loose version strings to strict SemVer objects.
 
 
 .. py:function:: check_dependencies() -> list[DependencyStatus]

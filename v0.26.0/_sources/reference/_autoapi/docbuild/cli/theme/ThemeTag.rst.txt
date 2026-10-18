@@ -1,0 +1,13 @@
+docbuild.cli.theme.ThemeTag
+===========================
+
+.. py:class:: docbuild.cli.theme.ThemeTag
+
+   Bases: :py:obj:`enum.StrEnum`
+
+   .. autoapi-inheritance-diagram:: docbuild.cli.theme.ThemeTag
+      :parts: 1
+
+
+   Semantic style tags used across docbuild CLI.
+

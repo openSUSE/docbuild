@@ -7,6 +7,9 @@ docbuild.cli.cmd_repo.cmd_clone
 
    Clone repositories.
 
+   Choose exactly one mode: provide one or more REPOS repository arguments,
+   or use --all to clone all configured repositories. Do not combine them.
+
    Pass any of the following URLs to clone:
 
    
@@ -27,11 +30,14 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: clone(ctx: click.Context, repos: tuple[str, ...]) -> None
+.. py:function:: clone(ctx: click.Context, repos: tuple[str, ...], all_repos: bool) -> None
 
    Clone repositories into permanent directory.
 
-   :param repos: A tuple of repository selectors. If empty, all repos are cloned.
+   :param repos: A tuple of repository selectors, mutually exclusive with
+       all_repos.
+   :param all_repos: Clone all configured repositories when True.
    :param ctx: The Click context object.
+   :raises click.UsageError: If neither or both selection modes are provided.
 
 

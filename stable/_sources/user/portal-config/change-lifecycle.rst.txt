@@ -6,6 +6,11 @@ Changing the Lifecycle of a Release
 Every product has a lifecycle that defines the stages it goes
 through from initial development to end-of-life:
 
+* ``unpublished``
+
+  The release is not published on public portal instances and can only be
+  viewed on internal staging instances.
+
 * ``beta``
 
   The release is in the beta stage, meaning it is still
@@ -29,7 +34,7 @@ through from initial development to end-of-life:
   of the product versions are available for download.
 
 The lifecycle of a release is defined in the ``<docset>``
-element in the .
+element in the ``lifecycle`` attribute.
 
 To change the lifecycle of a release, change the ``lifecycle``
 attribute to the desired value.

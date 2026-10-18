@@ -33,7 +33,13 @@ In this example, we are going to use XInclude to split the configuration into mu
    with the appropriate content for your portal.
    See section :ref:`global-settings` for details on the expected structure.
 
-#. Create a directory for the the first product (in this example, it's
+#. Create a directory for the first product (in this example, it's
    :file:`productA`) and add a product definition file with the name
    :file:`productA/productA.xml`.
    See section :ref:`product-definition` for details on the expected structure.
+
+.. note::
+   When configuration files are split with XInclude, :command:`docbuild portal validate`
+   automatically resolves all inclusions before validating against the schema.
+   If validating manually with :command:`jing`, resolve the XIncludes first using
+   :command:`xmllint --xinclude`.
