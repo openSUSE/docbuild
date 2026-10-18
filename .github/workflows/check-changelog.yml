@@ -45,7 +45,7 @@ jobs:
 
       - name: Post missing changelog comment
         if: steps.fragments.outputs.missing == 'true'
-        uses: marocchino/sticky-pull-request-comment@v3
+        uses: marocchino/sticky-pull-request-comment@v3.0.5
         with:
           header: changelog
           message: |
