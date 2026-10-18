@@ -46,3 +46,18 @@ TOML has no null value.
 The files include a generated-file header; comments from the example templates
 are not copied. Edit the generated environment configuration for your portal,
 then check it with :ref:`validate-config`.
+
+Choosing an Environment Role
+----------------------------
+
+Use ``--role`` to create an environment configuration for production (the
+default), staging or testing:
+
+.. code-block:: shell-session
+
+   $ docbuild config init --env --role staging
+
+This creates :file:`env.staging.toml` with ``general.role`` set to ``staging``.
+Without ``--env``, the command also creates :file:`config.toml`. Role aliases
+are case-insensitive: ``Prod`` selects production and ``dev`` selects testing.
+An explicit ``--role`` cannot be combined with ``--app``.
