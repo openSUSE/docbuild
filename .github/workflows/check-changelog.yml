@@ -27,18 +27,42 @@ jobs:
           fi
 
       - name: Check for new fragments in changelog.d
+        id: fragments
         if: steps.bypass.outputs.skip == 'false'
         run: |
           # Fetch the target branch to compare against
           git fetch origin ${{ github.base_ref }}
-          
+
           # Find any .rst files added or modified in changelog.d/
           CHANGELOG_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep "^changelog\.d/.*\.rst$" || true)
 
           if [ -z "$CHANGELOG_FILES" ]; then
-            echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one or add the 'skip-changelog' label to this PR."
-            exit 1
+            echo "missing=true" >> $GITHUB_OUTPUT
+          else
+            echo "missing=false" >> $GITHUB_OUTPUT
+            python3 .github/scripts/validate_changelog.py $CHANGELOG_FILES
           fi
 
-          # Validate the fragments using the Python script
-          python3 .github/scripts/validate_changelog.py $CHANGELOG_FILES
+      - name: Post missing changelog comment
+        if: steps.fragments.outputs.missing == 'true'
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: changelog
+          message: |
+            ### ⚠️ Missing changelog fragment
+            No newsfragment was found in `changelog.d/`.
+            Please add one, or add the `skip-changelog` label if no entry is needed.
+            See the section [Adding News Fragments](https://opensuse.github.io/docbuild/latest/developer/add-newsfragments.html) for details.
+
+      - name: Remove changelog comment
+        if: steps.fragments.outputs.missing == 'false'
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: changelog
+          delete: true
+
+      - name: Fail if fragment is missing
+        if: steps.fragments.outputs.missing == 'true'
+        run: |
+          echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one or add the 'skip-changelog' label to this PR."
+          exit 1
