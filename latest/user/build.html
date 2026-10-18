@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building Deliverables &#8212; Docbuild Documentation 0.25.1.dev25+g01edfc5de.d20261018</title>
+    <title>Building Deliverables &#8212; Docbuild Documentation 0.25.1.dev26+gf90cb7054.d20261018</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=a79f9478"></script>
+    <script src="../_static/documentation_options.js?v=cf68d72e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -387,8 +387,9 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing docbuild</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="config-concepts/index.html">Docbuild Configuration Concepts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="config-concepts/config-concepts.html">Understanding Docbuild Configuration</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="config-concepts/index.html">Docbuild Concepts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="config-concepts/doctypes.html">The Doctype Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config-concepts/config-concepts.html">Docbuild Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config-concepts/config-files.html">Configuration Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config-concepts/naming-conventions.html">Key Naming Conventions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config-concepts/placeholders.html">Placeholders</a></li>
@@ -494,58 +495,6 @@
 </div>
 </div>
 <p>The syntax is modeled in the <a class="reference internal" href="../reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Doctype</span></code></a> class.</p>
-<section id="the-doctype-syntax">
-<h2>The doctype syntax<a class="headerlink" href="#the-doctype-syntax" title="Link to this heading">#</a></h2>
-<p>It requires a set of so called “doctypes” to be passed as argument. A <em>doctype</em>
-describes the document to be built. The general syntax for a doctype is:</p>
-<div class="literal-block-wrapper docutils container" id="doctype-syntax">
-<div class="code-block-caption"><span class="caption-text">Doctype syntax</span><a class="headerlink" href="#doctype-syntax" title="Link to this code">#</a></div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[/]?[PRODUCT]/[DOCSET...][@LIFECYCLES...]/[LANGS...]
-</pre></div>
-</div>
-</div>
-<p>The fields in the doctype have the following meanings:</p>
-<ul class="simple">
-<li><p><strong>PRODUCT</strong> (optional): The product name, such as <code class="docutils literal notranslate"><span class="pre">sles</span></code>, <code class="docutils literal notranslate"><span class="pre">smart</span></code> etc.
-You can omit this field if the product is not relevant for the document or you can use <code class="docutils literal notranslate"><span class="pre">*</span></code> to match all products.
-The acronym is checked against a pre-defined set of products.</p></li>
-<li><p><strong>DOCSET</strong> (optional): The docset, usually the version or release of a product such as <code class="docutils literal notranslate"><span class="pre">15-SP6</span></code>, <code class="docutils literal notranslate"><span class="pre">16-GA</span></code> etc.
-You can omit this field if the docset is not relevant for the document or you can use <code class="docutils literal notranslate"><span class="pre">*</span></code> to match all docsets.
-If you specify multiple docsets, separate them with commas (e.g., <code class="docutils literal notranslate"><span class="pre">15-SP6,16-GA</span></code>).</p></li>
-<li><p><strong>LIFECYCLES</strong> (optional): The lifecycle of the document that can have the values of <code class="docutils literal notranslate"><span class="pre">supported</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code>, <code class="docutils literal notranslate"><span class="pre">unsupported</span></code>, or <code class="docutils literal notranslate"><span class="pre">hidden</span></code>.
-You can omit this field if the lifecycle is not relevant for the document or you can use <code class="docutils literal notranslate"><span class="pre">*</span></code> to match all lifecycles.
-If you specify multiple lifecycles, separate them with commas (e.g., <code class="docutils literal notranslate"><span class="pre">supported,beta</span></code>).</p></li>
-<li><p><strong>LANGS</strong> (optional): The language of the document, such as <code class="docutils literal notranslate"><span class="pre">en-us</span></code>, <code class="docutils literal notranslate"><span class="pre">de-de</span></code>, etc.
-You can omit this field if the language is not relevant for the document or you can use <code class="docutils literal notranslate"><span class="pre">*</span></code> to match all languages.
-If you leave this field empty, it will default to English (<code class="docutils literal notranslate"><span class="pre">en-us</span></code>).
-If you specify multiple languages, separate them with commas (e.g., <code class="docutils literal notranslate"><span class="pre">en-us,de-de</span></code>).</p></li>
-</ul>
-<p>Some common examples of doctypes are:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">sles/15-SP6/en-us</span></code> or <code class="docutils literal notranslate"><span class="pre">/sles/15-SP6/en-us</span></code>: Matches the English deliverables for SLES 15-SP6, regardless of the lifecycle.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">*/*/de-de</span></code>: Matches all deliverables in German, regardless of the product, docset, or lifecycle.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">//en-us</span></code>: Matches all deliverables in English, regardless of product, docset, or lifecycle. This is a shorter version of <code class="docutils literal notranslate"><span class="pre">*/*/en-us</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/&#64;supported/</span></code>: Matches all supported English deliverables, regardless of the product, docset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sles//en-us</span></code>: Matches all English SLES deliverables, regardless of the docset or lifecycle.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sle-ha/&#64;unsupported/en-us,de-de</span></code>: Matches all SLE-HA deliverables in English and German that are in the unsupported lifecycle, regardless of the docset.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">*/&#64;beta,supported/de-de</span></code>: Matches all SLES deliverables in German that are in the beta or supported lifecycle, regardless of the product.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">//*</span></code>: Matches all deliverables in all languages, regardless of the product, docset, or lifecycle.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">//</span></code>: Matches all English deliverables, regardless of the product, docset, or lifecycle. Same as <code class="docutils literal notranslate"><span class="pre">*/*/en-us</span></code> or <code class="docutils literal notranslate"><span class="pre">//en-us</span></code>.</p></li>
-</ul>
-</section>
-<section id="minimal-set-of-doctypes">
-<h2>Minimal set of doctypes<a class="headerlink" href="#minimal-set-of-doctypes" title="Link to this heading">#</a></h2>
-<p>The <strong class="command">docbuild build</strong> subcommand can take multiple doctypes as arguments, allowing you to build multiple documents at once.
-The command tries to find overlaps in the specified doctypes and only builds the documents that match all specified criteria avoiding unnecessary rebuilds.</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Minimal set of doctypes</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[1] sles/*/en-us + sles/15-SP6/en-us      =&gt; sles/*/en-us
-[2] sles/*/en-us + sles/15-SP6/de-de      =&gt; sles/*/en-us,sles/15-SP6/de-de
-[3] sles/15-SP6/en-us + sles/15-SP6/de-de =&gt; sles/15-SP6/en-us,de-de
-</pre></div>
-</div>
-</div>
-</section>
 </section>
 
 
@@ -586,19 +535,6 @@ The command tries to find overlaps in the specified doctypes and only builds the
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-doctype-syntax">The doctype syntax</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-set-of-doctypes">Minimal set of doctypes</a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
 
