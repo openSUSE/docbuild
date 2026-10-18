@@ -1,3 +1,3 @@
-Added ``docbuild config init`` to create starter configuration files from
+Added :command:`docbuild config init` to create starter configuration files from
 built-in defaults, with ``--app`` and ``--env`` selection and protection
 against overwriting existing files.

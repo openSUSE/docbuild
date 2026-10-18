@@ -34,12 +34,13 @@ def init_config(ctx: click.Context, app: bool, env: bool) -> None:
     """Create default configuration in the user configuration directory.
 
     With no flags, create both files. Existing files are never overwritten.
+    \f
 
     :param ctx: The Click context holding the global dry-run option.
     :param app: Create application configuration.
     :param env: Create environment configuration.
     :raises click.ClickException: If a destination exists or cannot be written.
-    """
+    """  # noqa: D301 - Click requires an interpreted form-feed separator.
     create_both = not (app or env)
     configs = {}
     if app or create_both:

@@ -10,11 +10,11 @@ files from Docbuild's built-in defaults:
 
    $ docbuild config init
 
-The command creates ``config.toml`` and ``env.production.toml`` in the user
+The command creates :file:`config.toml` and :file:`env.production.toml` in the user
 configuration directory and prints their paths. This is the same directory
 Docbuild searches when loading configuration: typically
-``~/.config/docbuild`` on Linux (or ``$XDG_CONFIG_HOME/docbuild`` when set),
-and ``~/Library/Application Support/docbuild`` on macOS.
+:file:`~/.config/docbuild` on Linux (or :file:`$XDG_CONFIG_HOME/docbuild` when set),
+and :file:`~/Library/Application Support/docbuild` on macOS.
 Missing directories are created automatically.
 
 To create only one file, use ``--app`` or ``--env``:
@@ -36,7 +36,7 @@ selected destination already exists, the command fails before writing files.
 Use the flag for the missing configuration, or back up and move an existing
 file yourself before trying again.
 
-``config init`` does not load existing configuration. Global configuration
+:command:`config init` does not load existing configuration. Global configuration
 selection options and ``--set-env`` overrides do not change the generated
 defaults or their destination. The generated files preserve placeholders,
 such as ``{root_config_dir}`` and ``{{dcfile}}``, for resolution when Docbuild
