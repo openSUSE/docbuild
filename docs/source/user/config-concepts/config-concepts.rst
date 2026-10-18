@@ -1,8 +1,8 @@
 .. _config-tomlfile:
 .. _config-concepts:
 
-Understanding Docbuild Configuration
-====================================
+Docbuild Configuration
+======================
 
 .. note::
 

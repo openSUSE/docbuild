@@ -1,12 +1,13 @@
 .. _user-config-concepts:
 
-Docbuild Configuration Concepts
-===============================
+Docbuild Concepts
+=================
 
 
 .. toctree::
    :maxdepth: 1
 
+   doctypes
    config-concepts
    config-files
    naming-conventions
