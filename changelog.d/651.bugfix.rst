@@ -1,0 +1,1 @@
+Fixed ``docbuild doctor`` only displaying the last checked system dependency in the summary table. All checked dependencies are now rendered.
