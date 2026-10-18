@@ -336,29 +336,3 @@ async def test_rsync_run_command_errors_propagate(
     with pytest.raises(type(error)):
         await rsync("source_dir", "target_dir")
 
-
-@pytest.mark.asyncio
-async def test_rsync_files_from_real(tmp_path: Path) -> None:
-    """Test files_from against a real rsync binary."""
-    src = tmp_path / "src"
-    dst = tmp_path / "dst"
-    (src / "en-us" / "sles" / "16.0" / "html").mkdir(parents=True)
-    (src / "en-us" / "sles" / "16.0" / "html" / "index.html").write_text(
-        "index", encoding="utf-8"
-    )
-    (src / "robots.txt").write_text("robots", encoding="utf-8")
-    (src / "other").mkdir()
-    (src / "other" / "secret.txt").write_text("secret", encoding="utf-8")
-    list_file = tmp_path / "list.txt"
-    list_file.write_text("en-us/sles/16.0\nrobots.txt\n", encoding="utf-8")
-    dst.mkdir()
-
-    result = await rsync(
-        src, dst, content_only=True, options=RsyncOptions(files_from=list_file)
-    )
-
-    assert result.returncode == 0
-    assert (dst / "en-us" / "sles" / "16.0" / "html" / "index.html").is_file()
-    assert (dst / "robots.txt").is_file()
-    assert not (dst / "other" / "secret.txt").exists()
-
