@@ -22,9 +22,35 @@ def cmd_check() -> None:
     nargs=-1,
     callback=validate_doctypes,
 )
+@click.option(
+    "--all",
+    "check_all",
+    is_flag=True,
+    default=False,
+    help="Check all DC files (all products, docsets, and languages).",
+)
 @click.pass_obj
-def check_files(ctx: DocBuildContext, doctypes: tuple[Doctype, ...]) -> None:
-    """Verify that DC files exist. Optional: specify 'product/version/lang'."""
+def check_files(
+    ctx: DocBuildContext,
+    doctypes: tuple[Doctype, ...],
+    check_all: bool,
+) -> None:
+    """Verify that DC files exist.
+
+    Provide one or more doctypes in 'product/version/lang' format, or use
+    ``--all`` to check every DC file. The two ways are mutually exclusive.
+    """
+    if check_all and doctypes:
+        raise click.UsageError(
+            "The --all option cannot be combined with doctypes. "
+            "Use either --all or one or more doctypes."
+        )
+
+    if not check_all and not doctypes:
+        raise click.UsageError(
+            "Please specify one or more doctypes, or use --all to check every DC file."
+        )
+
     # Type guard: Ensure envconfig is loaded before accessing its attributes
     if ctx.envconfig is None:
         raise click.ClickException("Environment configuration is missing. Please initialize or check your config.")
@@ -33,10 +59,13 @@ def check_files(ctx: DocBuildContext, doctypes: tuple[Doctype, ...]) -> None:
     main_portal_config = ctx.envconfig.paths.main_portal_config
     repo_root = ctx.envconfig.paths.repo_dir
 
-    # Pass pure Python types to our isolated task logic
+    # Pass pure Python types to our isolated task logic.
+    # An empty doctype list represents the "--all" case (use the task defaults).
+    selected = list(doctypes) if doctypes else None
+
     async def main() -> list[str]:
         return await asyncio.create_task(
-            check_repository_files(main_portal_config, repo_root, doctypes),
+            check_repository_files(main_portal_config, repo_root, selected),
             name="check-files",
         )
 

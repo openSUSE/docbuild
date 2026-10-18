@@ -1,1 +1,0 @@
-Implemented Git file existence checks for translated deliverables in the metadata pipeline. The pipeline now verifies if a localized DC file exists in the repository before processing. If found, it correctly extracts true localized metadata (such as translated titles). If the file is missing, it safely falls back to the English blueprint cross-reference.

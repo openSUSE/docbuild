@@ -8,6 +8,10 @@ jobs:
   check-fragment:
     name: Verify Newsfragment
     runs-on: ubuntu-latest
+    # Do not run for release branches (e.g. release/*)
+    if: |
+      !startsWith(github.head_ref, 'release/') &&
+      !startsWith(github.base_ref, 'release/')
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7

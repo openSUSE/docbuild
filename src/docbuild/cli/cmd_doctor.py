@@ -42,7 +42,7 @@ def doctor() -> None:
         else:
             status = "[success]✓ OK[/]"
 
-    table.add_row(name, required, found, status)
+        table.add_row(name, required, found, status)
 
     console.print()
     console.print(table)
@@ -51,10 +51,10 @@ def doctor() -> None:
         console.print(
             "\n[error]Some required system dependencies are missing or outdated.[/]"
         )
-        console.print("Please install them using your system package manager (e.g., zypper, apt, or brew).")
+        console.print(
+            "Please install them using your system package manager (e.g., zypper, apt, or brew)."
+        )
         # Exit with error code 1 so CI systems fail if this is run as a pre-flight check
         click.get_current_context().exit(1)
     else:
-        console.print(
-            "\n[success]All system dependencies look good![/]"
-        )
+        console.print("\n[success]All system dependencies look good![/]")
