@@ -1,1 +1,0 @@
-Divide the User Guide into separate "Concepts" and "Tasks" sections to provide a clearer distinction between background knowledge and actionable workflows.

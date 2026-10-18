@@ -1,1 +1,0 @@
-The changelog check workflow now posts a comment on pull requests that have no newsfragment in ``changelog.d/``. The comment links to the newsfragment guide. The comment is removed once a fragment is added.

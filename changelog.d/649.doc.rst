@@ -1,1 +1,0 @@
-Moved the doctype syntax documentation into the configuration concepts section of the User Guide for a more centralized overview.

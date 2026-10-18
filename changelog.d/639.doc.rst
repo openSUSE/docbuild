@@ -1,1 +1,0 @@
-Mentioned in the docs, that custom env configs can be used with the option ``--env-config``. Also adjusted the :file:`env.agent.toml` file.

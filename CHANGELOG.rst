@@ -21,6 +21,64 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.26.0
+==============
+
+Breaking Changes
+----------------
+
+- ``paths.target.target_base_dir`` must now be a local directory. Configurations that set a remote value such as ``user@host:/srv/docs`` are rejected, so move that destination into the ``[remote]`` section. (:gh:`605`)
+
+
+Bug Fixes
+---------
+
+- Fixed a validation crash where ``EnvConfig.from_dict()`` would fail on default configurations because DAPS runtime placeholders (like ``{{builddir}}``) were mistakenly evaluated as environment configuration variables. (:gh:`619`)
+- Fixed :command:`docbuild check files` crashing with an :exc:`AttributeError` when a deliverable has no Git repository configured. Such deliverables are now skipped. The command also no longer silently checks *all* DC files when called without arguments: either provide one or more doctypes or use the new ``--all`` option. The two are mutually exclusive. (:gh:`635`)
+- :command:`docbuild repo clone` now requires repository arguments or ``--all`` to prevent
+  accidental cloning of all configured repositories.
+  Combining repository arguments with ``--all`` produces a usage error. (:gh:`638`)
+- Fix GitHub workflow file :file:`check-changelog.yml` as tag v3 isn't available anymore. Switch to version v3.0.5. (:gh:`647`)
+- Fixed :command:`docbuild doctor` only displaying the last checked system dependency in the summary table. All checked dependencies are now rendered. (:gh:`651`)
+
+Improved Documentation
+----------------------
+
+- Document search locations and file names for application and environment configuration in the User Guide. (:gh:`434`)
+- Rewrote the :command:`docbuild llms` User Guide page to explain why Markdown files are useful, what requirements apply, and how to run the command with an env file or ``-C`` options. (:gh:`626`)
+- The configuration documentation is now split into a concept section and a task section. It explains where docbuild searches for application and environment configuration files, how multiple files are merged, and how the ``--app-config`` and ``--env-config`` options change the search. It also documents the XDG environment variables that change the per-user directories on Linux and macOS, and the ``--flat`` and ``--validate`` options of :command:`docbuild config list`. (:gh:`631`)
+- Mentioned in the docs, that custom env configs can be used with the option ``--env-config``. Also adjusted the :file:`env.agent.toml` file. (:gh:`639`)
+- Moved the doctype syntax documentation into the configuration concepts section of the User Guide for a more centralized overview. (:gh:`649`)
+- Divide the User Guide into separate "Concepts" and "Tasks" sections to provide a clearer distinction between background knowledge and actionable workflows. (:gh:`650`)
+- Aligned Portal configuration documentation and XML snippets with the RelaxNG schema (:file:`portal-config.rnc`). Corrected ``xml:id`` usage, updated child element models, documented supported link formats and lifecycle states, and expanded xref deliverable documentation.
+
+
+Features
+--------
+
+- Added ``-U``/``--unresolved`` option to :command:`docbuild config list` to display the configuration with unresolved placeholders for debugging purposes. (:gh:`545`)
+- Added virtual translation inheritance for empty locales in the metadata runner. Empty non-English locales now automatically generate synthetic cross-references pointing to the canonical ``en-us`` blueprint deliverables, ensuring all translation targets are included in aggregated JSON manifests. (:gh:`595`)
+- Added an optional ``[remote]`` section (``server``, ``path``) to the environment configuration for the remote publish destination. (:gh:`605`)
+- Implemented Git file existence checks for translated deliverables in the metadata pipeline. The pipeline now verifies if a localized DC file exists in the repository before processing. If found, it correctly extracts true localized metadata (such as translated titles). If the file is missing, it safely falls back to the English blueprint cross-reference. (:gh:`611`)
+
+
+Infrastructure
+--------------
+
+- Enabled Python 3.15 in the CI. (:gh:`608`)
+- The changelog check workflow now posts a comment on pull requests that have no newsfragment in ``changelog.d/``. The comment links to the newsfragment guide. The comment is removed once a fragment is added. (:gh:`632`)
+- Added missing "3.15" for :file:`bug-report.yml` issue template. (:gh:`637`)
+- Updated agent skills for coding guidelines and pytest: clarified that Python function names should avoid leading underscores, and updated mocking recommendations to prefer the ``@patch.object`` decorator.
+- Skip ``release/*`` branches in :file:`check-changelog` workflow.
+
+Code Refactoring
+----------------
+
+- Redesigned the metadata processing pipeline to support cross-references (``<xref>``) to other deliverables, docsets, and products. The new three-phase architecture globally partitions build tasks from reference tasks, correctly discovers out-of-scope dependencies, avoids redundant execution, and injects reference metadata dynamically during manifest assembly without causing Git checkout or DAPS execution failures. (:gh:`585`)
+- Fixed a Click DeprecationWarning (:gh:`613`)
+- Removed the leading underscore from 26 module-level helper functions, making them part of the public API. The affected functions cover cache handling, CLI setup, portal listing, XML reference checks, logging, build and metadata tasks, and the ``merge`` and ``sysdeps`` utilities. This is a pure rename with no behavioral change. (:gh:`615`)
+
+
 Version 0.25.0
 ==============
 

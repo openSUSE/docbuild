@@ -1,1 +1,0 @@
-Fixed ``docbuild check files`` crashing with an ``AttributeError`` when a deliverable has no Git repository configured. Such deliverables are now skipped. The command also no longer silently checks *all* DC files when called without arguments: either provide one or more doctypes or use the new ``--all`` option. The two are mutually exclusive.

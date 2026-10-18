@@ -1,1 +1,0 @@
-Added an optional ``[remote]`` section (``server``, ``path``) to the environment configuration for the remote publish destination.
