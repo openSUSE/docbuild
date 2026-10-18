@@ -98,6 +98,30 @@ async def test_process_git_failure(
 
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "ManagedGitRepo")
+async def test_check_repository_files_skips_deliverables_without_git(
+    mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path
+):
+    """Deliverables without a Git repository must not crash the check (#635)."""
+    deli = MagicMock()
+    deli.git = None
+    deli.pdlangdc = "sles/16.0/en-us:README.md"
+
+    mock_parse_portal_config.return_value = MagicMock()
+    mock_get_deli.return_value = [deli]
+
+    main_portal_config = tmp_path / "config.xml"
+    main_portal_config.write_text("<xml/>")
+    repo_root = tmp_path / "repos"
+
+    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+
+    assert result == []
+    mock_repo_class.assert_not_called()
+
+
+@patch.object(check, "parse_portal_config", new_callable=AsyncMock)
+@patch.object(check, "get_deliverable_from_doctype")
 async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_config, tmp_path):
     """Test path where stitch tree returns no deliverables."""
     mock_parse_portal_config.return_value = MagicMock()
