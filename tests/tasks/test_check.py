@@ -105,7 +105,7 @@ async def test_check_repository_files_skips_deliverables_without_git(
     """Deliverables without a Git repository must not crash the check (#635)."""
     deli = MagicMock()
     deli.git = None
-    deli.pdlangdc = "sles/16.0/en-us:README.md"
+    deli.pdlangdc = "sles/16.0/en-us:DC-fake"
 
     mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [deli]

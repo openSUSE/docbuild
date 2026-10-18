@@ -80,7 +80,7 @@ async def check_repository_files(
     groups: dict[tuple[str, str], list[Deliverable]] = {}
     for d in all_deliverables:
         if d.git is None:
-            log.warning(
+            log.debug(
                 "Skipping %s: no Git repository configured for this deliverable.",
                 d.pdlangdc,
             )
