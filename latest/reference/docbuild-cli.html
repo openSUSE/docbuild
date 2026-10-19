@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; Docbuild Documentation 0.25.1.dev29+gd044bc5fb</title>
+    <title>docbuild CLI &#8212; Docbuild Documentation 0.26.1.dev1+g43fcdf0cc.d20261019</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=93f5d63f"></script>
+    <script src="../_static/documentation_options.js?v=e633210a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -400,6 +400,7 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_config/init/index.html">docbuild.cli.cmd_config.init</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_config/theme/index.html">docbuild.cli.cmd_config.theme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
@@ -913,6 +914,62 @@ with the following properties:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 </pre></div>
 </div>
+<section id="docbuild-config-init">
+<h4>init<a class="headerlink" href="#docbuild-config-init" title="Link to this heading">#</a></h4>
+<p>Create default configuration in the user configuration directory.</p>
+<p>With no flags, create both files. Existing files are never overwritten.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context holding the global dry-run option.</p>
+</dd>
+<dt class="field-even">param app<span class="colon">:</span></dt>
+<dd class="field-even"><p>Create application configuration.</p>
+</dd>
+<dt class="field-odd">param env<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Create environment configuration.</p>
+</dd>
+<dt class="field-even">param role<span class="colon">:</span></dt>
+<dd class="field-even"><p>Environment role or alias for the generated configuration.</p>
+</dd>
+<dt class="field-odd">raises click.UsageError<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If an explicit role is combined with –app.</p>
+</dd>
+<dt class="field-even">raises click.ClickException<span class="colon">:</span></dt>
+<dd class="field-even"><p>If a destination exists or cannot be written.</p>
+</dd>
+</dl>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-config-init-app">
+<span class="sig-name descname"><span class="pre">--app</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-config-init-app" title="Link to this definition">#</a></dt>
+<dd><p>Create only application configuration.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-config-init-env">
+<span class="sig-name descname"><span class="pre">--env</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-docbuild-config-init-env" title="Link to this definition">#</a></dt>
+<dd><p>Create only environment configuration.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-docbuild-config-init-role">
+<span class="sig-name descname"><span class="pre">--role</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;role&gt;</span></span><a class="headerlink" href="#cmdoption-docbuild-config-init-role" title="Link to this definition">#</a></dt>
+<dd><p>Role of the environment file to create, written as env.&lt;ROLE&gt;.toml. Available roles: production, staging, testing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'production'</span></code></p>
+</dd>
+<dt class="field-even">Options<span class="colon">:</span></dt>
+<dd class="field-even"><p>PRODUCTION | STAGING | TESTING | PROD | P | prod | p | STAGE | S | stage | s | TEST | T | test | t | DEVEL | devel | DEV | dev</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="docbuild-config-list">
 <h4>list<a class="headerlink" href="#docbuild-config-list" title="Link to this heading">#</a></h4>
 <p>List the configuration as JSON or flat text.</p>
@@ -1298,6 +1355,7 @@ or use –all to clone all configured repositories. Do not combine them.</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config">config</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-init">init</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-list">list</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-theme">theme</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-config-validate">validate</a></li>

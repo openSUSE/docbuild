@@ -45,3 +45,14 @@ docbuild.models.config.app.AppConfig
       Create an AppConfig instance from a dictionary.
 
 
+
+   .. py:method:: get_default_config() -> dict[str, Any]
+      :classmethod:
+
+
+      Generate application defaults without loading user configuration.
+
+      :return: JSON-compatible defaults, including logging aliases and
+          the portable worker-count keyword.
+
+
