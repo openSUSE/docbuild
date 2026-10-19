@@ -33,6 +33,26 @@ Docbuild does not pick a single file from the search directories.
 It loads every matching file and deep-merges them on top of the built-in defaults, in precedence order.
 Keys that a file does not set keep the value from a lower-priority source.
 
+You can therefore keep both application and environment configuration files
+short. For example, a project-level :file:`config.toml` may contain only a
+theme override:
+
+.. code-block:: toml
+
+   [theme]
+   preset = "light"
+
+Likewise, an :file:`env.production.toml` may set only one environment option:
+
+.. code-block:: toml
+
+   [general]
+   default_lang = "de-de"
+
+Docbuild fills in the remaining settings from the built-in defaults and any
+lower-priority files. Nested tables merge by key, so the ``[theme]`` and
+``[general]`` examples do not replace their entire sections.
+
 
 .. _config-standard-vs-custom:
 
