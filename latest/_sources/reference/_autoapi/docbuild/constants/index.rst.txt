@@ -59,6 +59,19 @@ Attributes
    docbuild.constants.ESCAPE_REGEX
 
 
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/constants/DependencySpec
+
+.. autoapisummary::
+
+   docbuild.constants.DependencySpec
+
+
 Module Contents
 ---------------
 

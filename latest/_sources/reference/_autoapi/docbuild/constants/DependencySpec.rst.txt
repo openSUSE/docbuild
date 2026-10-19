@@ -1,0 +1,7 @@
+docbuild.constants.DependencySpec
+=================================
+
+.. py:class:: docbuild.constants.DependencySpec
+
+   Specification for a system dependency.
+
