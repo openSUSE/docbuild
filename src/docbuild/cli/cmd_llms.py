@@ -1,43 +1,97 @@
-"""CLI command to retroactively generate Markdown and llms.txt files."""
+"""CLI command to retroactively generate Markdown and llms.txt files.
+
+Provide one or more doctypes in ``product/docset/lang`` format, or use
+``--all`` to process all configured deliverables. The two modes are
+mutually exclusive.
+
+For standard DAPS builds, this command scans the target directory
+configured in your environment (``paths.target.target_base_dir``). For
+prebuilt deliverables, it locates the source HTML in
+``paths.prebuilt_dir``, copies it to the target directory, and writes
+the generated Markdown and ``llms.txt`` files there.
+
+It also injects ``<link rel="alternate" type="text/markdown">`` tags
+into the HTML files pointing to the generated Markdown counterparts and
+``llms.txt`` index.
+"""
 
 import asyncio
+from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
 
 import click
 
-from ..tasks.build.runner import generate_llmstxt
+from ..models.doctype import Doctype
+from ..tasks.build.runner import process_llms
+from .callback import validate_doctypes
 from .context import DocBuildContext
 
 log = logging.getLogger(__name__)
 
 
-@click.command(name="llms")
+@click.command(name="llms", help=__doc__)
+@click.argument(
+    "doctypes",
+    nargs=-1,
+    callback=validate_doctypes,
+)
+@click.option(
+    "--all",
+    "process_all",
+    is_flag=True,
+    default=False,
+    help="Generate LLMs files for all configured deliverables.",
+)
 @click.pass_obj
-def llms(context: DocBuildContext) -> None:
-    """Generate Markdown and llms.txt files for an existing build directory.
+def llms(
+    context: DocBuildContext,
+    doctypes: Sequence[Doctype],
+    process_all: bool,
+) -> None:
+    """Generate Markdown and llms.txt files for build or prebuilt deliverables.
 
-    This command scans the target base directory configured in your environment
-    (defined as 'paths.target.target_base_dir' in env.toml), cleans the HTML
-    files found within, converts them to Markdown, and generates the root
-    llms.txt index file.
+    Validate that either specific ``doctypes`` or ``--all`` is provided,
+    read paths and flags from the environment configuration, and run
+    :func:`~docbuild.tasks.build.runner.process_llms`.
 
-    It also automatically injects the <link rel="alternate"> tags into the
-    existing HTML files pointing to the new Markdown counterparts.
+    :param context: (DocBuildContext) The shared CLI context containing
+        the loaded environment configuration.
+    :param doctypes: (Sequence[Doctype]) Doctype selectors to process,
+        mutually exclusive with ``process_all``.
+    :param process_all: (bool) Whether to process all configured
+        deliverables instead of specific doctypes.
+    :returns: (None) Exits the process with the status code from the
+        LLMs generation pipeline.
+    :raises click.UsageError: If both or neither of ``doctypes`` and
+        ``--all`` are specified.
     """
+    if process_all and doctypes:
+        raise click.UsageError(
+            "The --all option cannot be combined with doctypes. "
+            "Use either --all or one or more doctypes."
+        )
+
+    if not process_all and not doctypes:
+        raise click.UsageError(
+            "Please specify one or more doctypes, or use --all to process all deliverables."
+        )
+
     if not context.envconfig:
         msg = "Environment configuration not found."
         log.error(msg)
         click.echo(msg, err=True)
         sys.exit(1)
 
-    target_dest = Path(context.envconfig.paths.target.target_base_dir)
-    build_llmstxt = context.envconfig.build.build_llmstxt
-
-    # Resolve llmstxt_dir: if absolute, keep it; if relative, base it on target_dest
-    configured_llms_dir = Path(context.envconfig.paths.llmstxt_dir)
-    llmstxt_dir = configured_llms_dir if configured_llms_dir.is_absolute() else target_dest / configured_llms_dir
+    env = context.envconfig
+    target_base_dir = Path(env.paths.target.target_base_dir)
+    target_dir_dyn = env.paths.target.target_dir_dyn
+    prebuilt_dir = Path(env.paths.prebuilt_dir)
+    main_portal_config = Path(env.paths.main_portal_config)
+    build_llmstxt = env.build.build_llmstxt
+    llmstxt_dir = str(env.paths.llmstxt_dir)
+    canonical_domain = str(env.general.canonical_url_domain)
 
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
@@ -46,37 +100,31 @@ def llms(context: DocBuildContext) -> None:
         click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'.")
         sys.exit(0)
 
-    if not target_dest.exists() or not target_dest.is_dir():
-        msg = f"The configured target directory does not exist or is not a directory: {target_dest}"
-        log.error(msg)
-        click.echo(msg, err=True)
-        sys.exit(1)
+    selected = list(doctypes) if doctypes else None
 
-    msg = f"Starting retroactive LLMs generation in: {target_dest}"
+    msg = f"Starting retroactive LLMs generation in: {target_base_dir}"
     log.info(msg)
     click.echo(msg)
 
-    # Dummy deliverable object expected by generate_llmstxt
-    class DummyDeliverable:
-        def __init__(self, target_dest: Path) -> None:
-            self.full_id = f"retroactive_build_{target_dest.name}"
-
-            class DummyXML:
-                title = f"Documentation Index for {target_dest.name}"
-
-            self.xml = DummyXML()
-
-    dummy_deliverable = DummyDeliverable(target_dest)
-
     try:
-        asyncio.run(
-            generate_llmstxt(
-                deliverable=dummy_deliverable,  # type: ignore
-                target_dest=target_dest,
+        result = asyncio.run(
+            process_llms(
+                main_portal_config=main_portal_config,
+                target_base_dir=target_base_dir,
+                target_dir_dyn=target_dir_dyn,
+                prebuilt_dir=prebuilt_dir,
                 build_llmstxt=build_llmstxt,
-                llmstxt_dir=str(llmstxt_dir),
+                llmstxt_dir=llmstxt_dir,
+                doctypes=selected,
+                canonical_domain=canonical_domain,
             )
         )
+        if result != 0:
+            err_msg = f"Failed to execute retroactive LLMs generation in: {target_base_dir}"
+            log.error(err_msg)
+            click.echo(err_msg, err=True)
+            sys.exit(result)
+
         completion_msg = "Retroactive LLMs generation completed successfully."
         log.info(completion_msg)
         click.echo(completion_msg)

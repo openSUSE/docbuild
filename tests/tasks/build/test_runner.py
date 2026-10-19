@@ -12,10 +12,16 @@ from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
 from docbuild.tasks.build.runner import (
     build_format,
+    copy_prebuilt_html_to_target,
+    format_target_suffix,
     generate_llmstxt,
+    partition_llms_deliverables,
     process,
     process_deliverable_build,
+    process_deliverable_llms,
     process_doctype,
+    process_llms,
+    resolve_prebuilt_rel_path,
 )
 
 
@@ -277,3 +283,196 @@ async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -
 
     assert data["title"] == "Title Without Date"
     assert "build_date" not in data
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_disabled_and_skip_llmstxt_dir(tmp_path: Path) -> None:
+    """Test generate_llmstxt early return when disabled and skipping html inside llmstxt_dir."""
+    class DummyDeliverable:
+        full_id = "test_deliverable"
+        xml = None
+
+    assert await generate_llmstxt(DummyDeliverable(), tmp_path, False, "docs") is True
+
+    ignored_html = tmp_path / "docs" / "ignored.html"
+    ignored_html.parent.mkdir(parents=True)
+    ignored_html.write_text("<html><body>Ignored</body></html>", encoding="utf-8")
+
+    assert await generate_llmstxt(DummyDeliverable(), tmp_path, True, "docs") is True
+    assert not (tmp_path / "docs" / "docs" / "ignored.md").exists()
+
+
+def test_partition_llms_deliverables_deduplicates_dc_targets(tmp_path: Path) -> None:
+    """Test that partition_llms_deliverables deduplicates DC deliverables sharing target_dest."""
+    d1 = Mock(spec=Deliverable)
+    d1.xml.is_prebuilt = False
+    d1.xml.product_id = "sles"
+    d1.xml.docset_path = "16.0"
+    d1.xml.lang = "en-us"
+
+    d2 = Mock(spec=Deliverable)
+    d2.xml.is_prebuilt = False
+    d2.xml.product_id = "sles"
+    d2.xml.docset_path = "16.0"
+    d2.xml.lang = "en-us"
+
+    dc_list, pb_groups = partition_llms_deliverables([d1, d2], tmp_path, "{lang}/{product}/{docset}")
+    assert len(dc_list) == 1
+    assert pb_groups == {}
+
+
+@pytest.mark.asyncio
+async def test_copy_prebuilt_html_to_target_no_url(tmp_path: Path) -> None:
+    """Test copy_prebuilt_html_to_target returns False when deliverable has no HTML URL."""
+    d_pb = Mock(spec=Deliverable, full_id="cn/ai:no-url")
+    d_pb.xml.resolved_prebuilt_html_url = None
+    d_pb.xml.prebuilt_html_url = ""
+
+    assert await copy_prebuilt_html_to_target(d_pb, tmp_path, tmp_path / "out") is False
+
+
+def test_format_target_suffix() -> None:
+    """Test format_target_suffix with single and double braces."""
+    mock_d = Mock(spec=Deliverable)
+    mock_d.xml.product_id = "cloudnative"
+    mock_d.xml.docset_path = "rancher-ai"
+    mock_d.xml.lang = "en-us"
+
+    assert format_target_suffix("{{lang}}/{{product}}/{{docset}}", mock_d) == "en-us/cloudnative/rancher-ai"
+    assert format_target_suffix("{product}/{docset}/{lang}", mock_d) == "cloudnative/rancher-ai/en-us"
+
+
+def test_resolve_prebuilt_rel_path() -> None:
+    """Test resolve_prebuilt_rel_path across URL patterns."""
+    mock_d = Mock(spec=Deliverable)
+    mock_d.xml.product_id = "cloudnative"
+    mock_d.xml.docset_path = "rancher-ai"
+
+    # Pattern 1: /product/docset/...
+    assert resolve_prebuilt_rel_path(mock_d, "/cloudnative/rancher-ai/latest/en/index.html") == Path(
+        "latest/en/index.html"
+    )
+
+    # Pattern 2: /docset/...
+    assert resolve_prebuilt_rel_path(mock_d, "/rancher-ai/latest/en/index.html") == Path(
+        "latest/en/index.html"
+    )
+
+    # Pattern 3: /other.html
+    assert resolve_prebuilt_rel_path(mock_d, "/other.html") == Path("other.html")
+
+
+@pytest.mark.asyncio
+async def test_process_deliverable_llms_variants(tmp_path: Path) -> None:
+    """Test process_deliverable_llms for DC and prebuilt deliverables."""
+    target_base = tmp_path / "target"
+    prebuilt_dir = tmp_path / "prebuilt"
+
+    # 1. DC deliverable with missing target dir -> returns False
+    d_dc = Mock(spec=Deliverable, full_id="sles/16:DC-test")
+    d_dc.xml.is_prebuilt = False
+    d_dc.xml.product_id = "sles"
+    d_dc.xml.docset_path = "16"
+    d_dc.xml.lang = "en-us"
+
+    ok = await process_deliverable_llms(
+        d_dc, target_base, "{lang}/{product}/{docset}", prebuilt_dir, True, "docs"
+    )
+    assert ok is False
+
+    # 2. Prebuilt deliverable with no HTML URL -> returns True (skipped)
+    d_pb_no_url = Mock(spec=Deliverable, full_id="cn/ai:no-url")
+    d_pb_no_url.xml.is_prebuilt = True
+    d_pb_no_url.xml.product_id = "cloudnative"
+    d_pb_no_url.xml.docset_path = "rancher-ai"
+    d_pb_no_url.xml.lang = "en-us"
+    d_pb_no_url.xml.resolved_prebuilt_html_url = None
+    d_pb_no_url.xml.prebuilt_html_url = ""
+
+    ok = await process_deliverable_llms(
+        d_pb_no_url, target_base, "{lang}/{product}/{docset}", prebuilt_dir, True, "docs"
+    )
+    assert ok is True
+
+    # 3. Prebuilt deliverable with missing HTML file -> returns False
+    d_pb = Mock(spec=Deliverable, full_id="cn/ai:intro")
+    d_pb.xml.is_prebuilt = True
+    d_pb.xml.product_id = "cloudnative"
+    d_pb.xml.docset_path = "rancher-ai"
+    d_pb.xml.lang.language = "en-us"
+    d_pb.xml.lang.lang = "en"
+    d_pb.xml.resolved_prebuilt_html_url = "/cloudnative/rancher-ai/latest/en/intro.html"
+    d_pb.xml.prebuilt_html_url = "/cloudnative/rancher-ai/latest/en/intro.html"
+
+    ok = await process_deliverable_llms(
+        d_pb, target_base, "{lang}/{product}/{docset}", prebuilt_dir, True, "docs"
+    )
+    assert ok is False
+
+    # 4. Prebuilt deliverable with existing HTML file -> copies and generates
+    pb_file = prebuilt_dir / "cloudnative" / "rancher-ai" / "latest" / "en" / "intro.html"
+    pb_file.parent.mkdir(parents=True, exist_ok=True)
+    pb_file.write_text("<html><body><h1>Intro</h1></body></html>", encoding="utf-8")
+
+    ok = await process_deliverable_llms(
+        d_pb, target_base, "{lang}/{product}/{docset}", prebuilt_dir, True, "docs"
+    )
+    assert ok is True
+
+
+@pytest.mark.asyncio
+async def test_process_llms_edge_cases(tmp_path: Path) -> None:
+    """Test process_llms edge cases: disabled, missing portal config, no deliverables, failures."""
+    portal_xml = tmp_path / "portal.xml"
+    target_base = tmp_path / "target"
+    prebuilt_dir = tmp_path / "prebuilt"
+
+    # 1. Disabled build_llmstxt -> returns 0 immediately
+    res = await process_llms(
+        portal_xml, target_base, "{{lang}}/{{product}}/{{docset}}", prebuilt_dir, False, "docs"
+    )
+    assert res == 0
+
+    # 2. Missing portal.xml -> returns 1
+    res = await process_llms(
+        portal_xml, target_base, "{{lang}}/{{product}}/{{docset}}", prebuilt_dir, True, "docs"
+    )
+    assert res == 1
+
+    # 3. Empty portal.xml (no matching deliverables) -> returns 0
+    portal_xml.write_text('<portal schemaversion="7.0"/>', encoding="utf-8")
+    res = await process_llms(
+        portal_xml, target_base, "{{lang}}/{{product}}/{{docset}}", prebuilt_dir, True, "docs"
+    )
+    assert res == 0
+
+    # 4. Prebuilt group where HTML file is missing -> returns 1
+    portal_xml.write_text(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<portal schemaversion="7.0">
+  <product xml:id="cloudnative">
+    <name>Cloud Native</name>
+    <acronym>CN</acronym>
+    <docset xml:id="cloudnative.rancher-ai" path="rancher-ai" lifecycle="supported">
+      <version>1.0</version>
+      <resources>
+        <locale lang="en-us">
+          <branch>main</branch>
+          <deliverable xml:id="cn.missing" type="prebuilt">
+            <prebuilt>
+              <title>Missing</title>
+              <url format="html" href="/cloudnative/rancher-ai/latest/en/missing.html"/>
+            </prebuilt>
+          </deliverable>
+        </locale>
+      </resources>
+    </docset>
+  </product>
+</portal>""",
+        encoding="utf-8",
+    )
+    res = await process_llms(
+        portal_xml, target_base, "{{lang}}/{{product}}/{{docset}}", prebuilt_dir, True, "docs"
+    )
+    assert res == 1
+

@@ -1,0 +1,1 @@
+Updated :command:`docbuild llms` to require either ``--all`` or one or more doctype arguments (mutually exclusive), and added support for generating Markdown and :file:`llms.txt` files for prebuilt deliverables from ``paths.prebuilt_dir``.

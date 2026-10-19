@@ -25,6 +25,7 @@ FILE_LIST=""
 CONFIG_DIR="${HOME}/.config/docbuild/config.d/cloudnative"
 REMOTE_BASE_DIR="/data/docserv2/external-builds/external-tree/en-us/"
 REMOTE_HOST="docserv"
+EXCLUDE_IMAGES=false
 
 
 # 3. Define the Help Function using a HERE document
@@ -37,13 +38,15 @@ Options:
   -h, --help               Display this help message and exit.
       --from-file FILE     Specify a custom file containing the list of files to sync.
                            (Overrides dynamic XML config extraction)
+                           Each line in FILE is relative to ${REMOTE_BASE_DIR@Q}.
       --dest DIR           Specify the local destination directory.
                            (Default: ${LOCAL_DEST_DIR@Q})
       --config-dir DIR     Directory containing Cloudnative XML config files.
                            (Default: ${CONFIG_DIR@Q})
+      --exclude-images     Exclude image directories (_images, images) and image files.
 
 Example:
-  ${0##*/} --config-dir /alternate/config/path --dest custom_build_dir
+  ${0##*/} --config-dir /alternate/config/path --dest custom_build_dir --exclude-images
 EOF
 }
 
@@ -81,6 +84,10 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             ;;
+        --exclude-images|--no-images)
+            EXCLUDE_IMAGES=true
+            shift
+            ;;
         *)
             echo "Error: Unknown option '$1'" >&2
             show_help >&2
@@ -92,6 +99,10 @@ done
 # 5. Determine Sync Source (File vs. Config Extraction)
 SYNC_LIST=""
 TMP_FILE_LIST=""
+RSYNC_ERR_LOG=""
+
+# Ensure temporary files are deleted when the script exits (success or fail)
+trap 'rm -f "$TMP_FILE_LIST" "$RSYNC_ERR_LOG"' EXIT
 
 if [[ -n "$FILE_LIST" ]]; then
     # User provided a static file
@@ -119,9 +130,6 @@ else
     # Securely create a temporary file
     TMP_FILE_LIST=$(mktemp)
 
-    # Ensure the temporary file is deleted when the script exits (success or fail)
-    trap 'rm -f "$TMP_FILE_LIST" "$RSYNC_ERR_LOG"' EXIT
-
     # Execute xmlstarlet against all XML files, pipe to sed to remove empty lines, and save to tmp file
     xmlstarlet sel -t -v "/docset/resources/locale[@lang='en-us']//url[@format='html']/@href" -n "$CONFIG_DIR"/*.xml | sed '/^[[:space:]]*$/d' > "$TMP_FILE_LIST"
 
@@ -142,8 +150,23 @@ mkdir -p "$LOCAL_DEST_DIR" || { echo "Error: Failed to create destination direct
 # Define a temporary file to hold the rsync errors
 RSYNC_ERR_LOG=$(mktemp /tmp/rsync_errors.XXXXXX)
 
+RSYNC_EXTRA_ARGS=()
+if [[ "$EXCLUDE_IMAGES" == true ]]; then
+    RSYNC_EXTRA_ARGS+=(
+        --exclude="_images/"
+        --exclude="images/"
+        --exclude="*.png"
+        --exclude="*.jpg"
+        --exclude="*.jpeg"
+        --exclude="*.gif"
+        --exclude="*.svg"
+        --exclude="*.webp"
+        --exclude="*.ico"
+    )
+fi
+
 echo "Starting synchronization..."
-rsync -avzL --files-from="$SYNC_LIST" "${REMOTE_HOST}:${REMOTE_BASE_DIR}" "$LOCAL_DEST_DIR" 2> "$RSYNC_ERR_LOG" || true
+rsync -avrzL "${RSYNC_EXTRA_ARGS[@]}" --files-from="$SYNC_LIST" "${REMOTE_HOST}:${REMOTE_BASE_DIR}" "$LOCAL_DEST_DIR" 2> "$RSYNC_ERR_LOG" || true
 
 # Check if the log file has contents (meaning errors occurred)
 if [ -s "$RSYNC_ERR_LOG" ]; then
