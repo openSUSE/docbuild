@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev1+g43fcdf0cc.d20261019</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev2+g77da531dd.d20261019</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=e633210a"></script>
+    <script src="_static/documentation_options.js?v=235d6c47"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -452,6 +452,8 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Refactored the <strong class="command">docbuild metadata</strong> command into a Click group and moved its core execution logic to the new <strong class="command">docbuild metadata run</strong> subcommand. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/599">GH #599</a>)</p></li>
+<li><p>Added the <strong class="command">docbuild metadata dir</strong> subcommand to easily display the metadata cache directories (supports <code class="docutils literal notranslate"><span class="pre">--json</span></code> and <code class="docutils literal notranslate"><span class="pre">--meta</span></code> flags). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/600">GH #600</a>)</p></li>
 <li><p>Added <strong class="command">docbuild config init</strong> to create starter configuration files from
 built-in defaults, with <code class="docutils literal notranslate"><span class="pre">--app</span></code> and <code class="docutils literal notranslate"><span class="pre">--env</span></code> selection, environment roles via <code class="docutils literal notranslate"><span class="pre">--role</span></code>, and protection
 against overwriting existing files. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/620">GH #620</a>)</p></li>

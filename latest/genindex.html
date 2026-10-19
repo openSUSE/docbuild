@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Docbuild Documentation 0.26.1.dev1+g43fcdf0cc.d20261019</title>
+    <title>Index &#8212; Docbuild Documentation 0.26.1.dev2+g77da531dd.d20261019</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=e633210a"></script>
+    <script src="_static/documentation_options.js?v=235d6c47"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -853,7 +853,7 @@ window.runMermaid = runMermaid;</script>
     --exitfirst
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -873,10 +873,24 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    --json
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-json">docbuild-metadata-dir command line option</a>
+</li>
+      </ul></li>
+      <li>
     --main-portal-config
 
       <ul>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-validate-M">docbuild-portal-validate command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --meta
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-meta">docbuild-metadata-dir command line option</a>
 </li>
       </ul></li>
       <li>
@@ -934,7 +948,7 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">docbuild-build command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1010,7 +1024,7 @@ window.runMermaid = runMermaid;</script>
     -E
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -1049,7 +1063,7 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">docbuild-build command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">docbuild-metadata-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-validate-S">docbuild-portal-validate command line option</a>
 </li>
@@ -1497,6 +1511,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/cache/Cache.html#docbuild.models.cache.Cache.diff">diff() (docbuild.models.cache.Cache method)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/index.html#docbuild.cli.cmd_metadata.dir_cmd">dir_cmd() (in module docbuild.cli.cmd_metadata)</a>
+</li>
       <li><a href="glossary.html#term-DocBook"><strong>DocBook</strong></a>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DOCBOOK_NS">DOCBOOK_NS (in module docbuild.constants)</a>
@@ -1623,18 +1639,27 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
-    docbuild-metadata command line option
+    docbuild-metadata-dir command line option
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">--exitfirst</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-json">--json</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">--skip-repo-update</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-meta">--meta</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">-E</a>
+      </ul></li>
+      <li>
+    docbuild-metadata-run command line option
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">--exitfirst</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">-S</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">--skip-repo-update</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-arg-DOCTYPES">DOCTYPES</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">-E</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">-S</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-arg-DOCTYPES">DOCTYPES</a>
 </li>
       </ul></li>
       <li>
@@ -1899,12 +1924,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderResolutionError.html#docbuild.config.app.PlaceholderResolutionError">docbuild.config.app.PlaceholderResolutionError</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderResolver.html#docbuild.config.app.PlaceholderResolver">docbuild.config.app.PlaceholderResolver (built-in class)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderSyntaxError.html#docbuild.config.app.PlaceholderSyntaxError">docbuild.config.app.PlaceholderSyntaxError</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.config.load
 
@@ -2367,7 +2392,7 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-check-files-arg-DOCTYPES">docbuild-check-files command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-arg-DOCTYPES">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-arg-DOCTYPES">docbuild-metadata-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-list-arg-DOCTYPES">docbuild-portal-list command line option</a>
 </li>
@@ -3149,6 +3174,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="glossary.html#term-Ruff"><strong>Ruff</strong></a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.run_all">run_all() (in module docbuild.utils.concurrency)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/index.html#docbuild.cli.cmd_metadata.run_cmd">run_cmd() (in module docbuild.cli.cmd_metadata)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#docbuild.utils.shell.run_command">run_command() (in module docbuild.utils.shell)</a>
 </li>
