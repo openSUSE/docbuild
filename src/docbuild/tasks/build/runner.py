@@ -82,7 +82,7 @@ async def process_single_html_file(
         md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
         # 2. Extract JSON-LD from already loaded string content (no double disk read)
-        ld_data = read_json_ld(html_content)
+        ld_data = read_json_ld(html_content, source_name=html_file)
 
         dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
