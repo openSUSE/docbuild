@@ -2,12 +2,14 @@
 
 import click
 
+from docbuild.cli.alias import AliasGroup
+
 from .cmd_clone import clone
 from .cmd_dir import cmd_dir
 from .cmd_list import cmd_list
 
 
-@click.group(help=__doc__)
+@click.group(cls=AliasGroup, help=__doc__)
 @click.pass_context
 def repo(ctx: click.Context) -> None:
     """Subcommand to repo management.
@@ -20,4 +22,4 @@ def repo(ctx: click.Context) -> None:
 # Add subcommands
 repo.add_command(clone)
 repo.add_command(cmd_dir)
-repo.add_command(cmd_list)
+repo.add_command(cmd_list, aliases=["ls"])
