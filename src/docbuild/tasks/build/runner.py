@@ -172,10 +172,14 @@ def build_frontmatter_context(
         raw_cats = getattr(d_xml, "categories", None)
         if isinstance(raw_cats, list):
             categories = [str(c) for c in raw_cats if c]
-        elif callable(raw_cats):
-            cat_title = str_attr(d_xml, "category_title", "categoryid")
-            if cat_title:
-                categories = [cat_title]
+        else:
+            cat_titles = getattr(d_xml, "category_titles", None)
+            if isinstance(cat_titles, list) and cat_titles:
+                categories = [str(c) for c in cat_titles if c]
+            else:
+                cat_title = str_attr(d_xml, "category_title", "categoryid")
+                if cat_title:
+                    categories = [cat_title]
 
     product = str_attr(d_xml, "product_name", "productname", "product_id") if d_xml else ""
     version = str_attr(d_xml, "docset_version", "docset_path") if d_xml else ""

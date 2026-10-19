@@ -241,28 +241,56 @@ class DeliverableXMLView:
         yield from root.xpath("categories/category")
 
     @cached_property
-    def all_categories(self) -> Generator[etree._Element, None, None]:
+    def all_categories(self) -> tuple[etree._Element, ...]:
         """Return product and root-level category elements."""
-        yield from self.categories()
-        yield from self.categories_from_root()
+        return (*self.categories(), *self.categories_from_root())
+
+    @staticmethod
+    def extract_category_title(lang_node: etree._Element) -> str | None:
+        """Extract the title string from a ``<language>`` category node."""
+        title = (
+            lang_node.findtext("title")
+            or lang_node.get("title")
+            or lang_node.get("name")
+        )
+        return title.strip() if title else None
+
+    def resolve_single_category_title(self, cat_id: str) -> str:
+        """Resolve a single category ID to its localized title (or fallback to en-us / raw ID)."""
+        target_lang = str(self.lang)
+        fallback_title: str | None = None
+
+        for cat in self.all_categories:
+            cat_lang = (cat.get("lang") or "").strip()
+            lang_nodes = cat.xpath(
+                "language[@xml:id=$cat_id or @linkend=$cat_id]",
+                cat_id=cat_id,
+            )
+            if lang_nodes:
+                title = self.extract_category_title(lang_nodes[0])
+                if title:
+                    if cat_lang == target_lang:
+                        return title
+                    if fallback_title is None:
+                        fallback_title = title
+
+        return fallback_title or cat_id
+
+    @cached_property
+    def category_titles(self) -> list[str]:
+        """Return resolved category titles for all space-separated IDs in ``@category``."""
+        raw_ids = self.categoryid
+        if not raw_ids:
+            return []
+        return [self.resolve_single_category_title(cid) for cid in raw_ids.split() if cid]
 
     @cached_property
     def category_title(self) -> str | None:
-        """Return the resolved category title, or the raw ID if not found."""
-        cat_id = self.categoryid
-        if not cat_id:
+        """Return the resolved category title(s), or the raw ID if not found."""
+        titles = self.category_titles
+        if not titles:
             return None
-
-        for cat in self.all_categories:
-            lang_nodes = cat.xpath("id($cat_id)", cat_id=cat_id)
-            if lang_nodes:
-                title = lang_nodes[0].findtext("title")
-                if not title:
-                    title = lang_nodes[0].get("title")
-                if not title:
-                    title = lang_nodes[0].get("name")
-                return title.strip() if title else cat_id
-        return cat_id
+        return ", ".join(titles)
 
     def desc(self) -> Generator[etree._Element, None, None]:
         """Yield product ``<desc>`` elements."""
