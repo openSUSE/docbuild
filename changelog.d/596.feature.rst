@@ -1,0 +1,1 @@
+Added the :command:`docbuild portal dir` subcommand to display the directory where the portal configuration is stored, with ``--env`` (default) and ``--app`` options.
