@@ -49,6 +49,7 @@ def find_html_path(prebuilt_dir: Path, deliverable: Deliverable, html_url: str) 
 def read_json_ld(
     html_source: Path | str | None,
     source_name: Path | str | None = None,
+    max_chars: int = 8192,
 ) -> dict[str, Any]:
     """Read and parse the JSON-LD block from an HTML file path or raw HTML string."""
     if not html_source:
@@ -59,9 +60,9 @@ def read_json_ld(
     try:
         if isinstance(html_source, Path):
             with open(html_source, encoding="utf-8") as f:
-                content = f.read(5000)
+                content = f.read(max_chars)
         else:
-            content = html_source[:5000]
+            content = html_source[:max_chars]
 
         match = re.search(
             r'<script\s+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
