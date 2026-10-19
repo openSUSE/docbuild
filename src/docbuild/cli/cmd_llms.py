@@ -26,6 +26,7 @@ import click
 from ..models.doctype import Doctype
 from ..tasks.build.runner import process_llms
 from .callback import validate_doctypes
+from .console import console, console_err
 from .context import DocBuildContext
 
 log = logging.getLogger(__name__)
@@ -81,7 +82,7 @@ def llms(
     if not context.envconfig:
         msg = "Environment configuration not found."
         log.error(msg)
-        click.echo(msg, err=True)
+        console_err.print(f"[error]{msg}[/]")
         sys.exit(1)
 
     env = context.envconfig
@@ -96,15 +97,15 @@ def llms(
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
         log.info(msg)
-        click.echo(msg)
-        click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'.")
+        console.print(f"[warning]{msg}[/]")
+        console.print("[hint]To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'.[/]")
         sys.exit(0)
 
     selected = list(doctypes) if doctypes else None
 
     msg = f"Starting retroactive LLMs generation in: {target_base_dir}"
     log.info(msg)
-    click.echo(msg)
+    console.print(f"[header]{msg}[/]")
 
     try:
         result = asyncio.run(
@@ -122,14 +123,14 @@ def llms(
         if result != 0:
             err_msg = f"Failed to execute retroactive LLMs generation in: {target_base_dir}"
             log.error(err_msg)
-            click.echo(err_msg, err=True)
+            console_err.print(f"[error]{err_msg}[/]")
             sys.exit(result)
 
         completion_msg = "Retroactive LLMs generation completed successfully."
         log.info(completion_msg)
-        click.echo(completion_msg)
+        console.print(f"[success]{completion_msg}[/]")
     except Exception as e:
         err_msg = f"Failed to execute retroactive LLMs generation: {e}"
         log.error(err_msg)
-        click.echo(err_msg, err=True)
+        console_err.print(f"[error]{err_msg}[/]")
         sys.exit(1)

@@ -12,6 +12,7 @@ from aiostream import pipe, stream
 from lxml import etree  # type: ignore
 import yaml
 
+from ...cli.console import console
 from ...constants import DEFAULT_DELIVERABLES
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
@@ -83,6 +84,14 @@ async def process_single_html_file(
 
         # 2. Extract JSON-LD from already loaded string content (no double disk read)
         ld_data = read_json_ld(html_content, source_name=html_file)
+        if ld_data:
+            console.print(
+                f"  [info]Read HTML:[/] {html_file} [success](JSON-LD found)[/]"
+            )
+        else:
+            console.print(
+                f"  [info]Read HTML:[/] {html_file} [warning](no JSON-LD found)[/]"
+            )
 
         dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
