@@ -18,7 +18,7 @@ def test_build_run_help():
     result = runner.invoke(build, ["run", "--help"])
 
     assert result.exit_code == 0
-    assert "Run the build pipeline" in result.output
+    assert "CLI interface to build a document" in result.output
     assert "--skip-repo-update" in result.output
     assert "--skip-metadata" in result.output
 
