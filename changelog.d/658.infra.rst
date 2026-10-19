@@ -1,0 +1,3 @@
+Added ``pytest-datadir`` to the test dependencies and extracted the inline XML
+from the ``xmlnode`` fixture in ``tests/config/xml/test_check.py`` into
+``tests/config/xml/data/xmlnode.xml`` (loaded via ``pytest-datadir``).
