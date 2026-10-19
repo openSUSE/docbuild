@@ -231,10 +231,10 @@ def test_llms_end_to_end_dc_and_prebuilt(runner: CliRunner, tmp_path: Path) -> N
     )
     assert res_prebuilt.exit_code == 0
 
-    prebuilt_target = target_dir / "en-us" / "cloudnative" / "rancher-ai" / "html"
-    assert (prebuilt_target / "llms.txt").exists()
-    md_prebuilt = prebuilt_target / "docs" / "latest" / "en" / "introduction.md"
+    assert (target_dir / "llms.txt").exists()
+    md_prebuilt = target_dir / "docs" / "en-us" / "cloudnative" / "rancher-ai" / "latest" / "en" / "introduction.md"
     assert md_prebuilt.exists()
+    assert not (target_dir / "en-us" / "cloudnative" / "rancher-ai" / "html").exists()
     assert "Prebuilt AI content." in md_prebuilt.read_text(encoding="utf-8")
 
     # Test running with --all
@@ -252,10 +252,14 @@ def test_llms_end_to_end_dc_and_prebuilt(runner: CliRunner, tmp_path: Path) -> N
     )
     assert res_all.exit_code == 0
 
-    assert (daps_html_dir / "llms.txt").exists()
-    assert (daps_html_dir / "docs" / "index.md").exists()
-    md_text = (daps_html_dir / "docs" / "index.md").read_text(encoding="utf-8")
+    assert (target_dir / "llms.txt").exists()
+    md_daps = target_dir / "docs" / "en-us" / "sles" / "16.0" / "index.md"
+    assert md_daps.exists()
+    md_text = md_daps.read_text(encoding="utf-8")
     assert "Introduction" in md_text
     assert "Core doc content." in md_text
     updated_html = (daps_html_dir / "index.html").read_text(encoding="utf-8")
     assert 'rel="alternate"' in updated_html
+    llms_txt_content = (target_dir / "llms.txt").read_text(encoding="utf-8")
+    assert "docs/en-us/sles/16.0/index.md" in llms_txt_content
+    assert "docs/en-us/cloudnative/rancher-ai/latest/en/introduction.md" in llms_txt_content

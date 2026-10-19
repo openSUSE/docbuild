@@ -5,7 +5,6 @@ import logging
 import os
 from pathlib import Path
 import shlex
-import shutil
 import tempfile
 from typing import Any, Literal
 
@@ -39,13 +38,17 @@ async def process_single_html_file(
     url_docset: str,
     static_title: str,
     frontmatter_base: dict[str, Any],
+    *,
+    llms_index_path: Path | None = None,
+    rel_path_override: Path | None = None,
+    inject_links: bool = True,
 ) -> str | None:
     """Convert one HTML file to Markdown with YAML frontmatter and link tags.
 
     Read the HTML file, strip navigation chrome, extract JSON-LD metadata
     when available, write the resulting Markdown file under ``llms_dest``,
-    and inject ``<link rel="alternate" type="text/markdown">`` tags into
-    the original HTML file.
+    and optionally inject ``<link rel="alternate" type="text/markdown">``
+    tags into the original HTML file.
 
     :param html_file: (Path) Path to the source HTML file to process.
     :param target_dest: (Path) Root HTML target directory for the
@@ -62,6 +65,12 @@ async def process_single_html_file(
         define a document name.
     :param frontmatter_base: (dict[str, Any]) Base metadata fields to
         merge into the YAML frontmatter block.
+    :param llms_index_path: (Path | None) Optional path to the root
+        ``llms.txt`` index file; defaults to ``target_dest / "llms.txt"``.
+    :param rel_path_override: (Path | None) Optional relative path for the
+        HTML/Markdown file when ``html_file`` is outside ``target_dest``.
+    :param inject_links: (bool) Whether to inject alternate link tags into
+        ``html_file``.
     :returns: (str | None) A formatted Markdown list item for
         ``llms.txt``, or ``None`` if the file was skipped or failed.
     """
@@ -78,7 +87,7 @@ async def process_single_html_file(
         dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
 
-        rel_path = html_file.relative_to(target_dest)
+        rel_path = rel_path_override if rel_path_override is not None else html_file.relative_to(target_dest)
         base_url = f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
 
         frontmatter = {"title": dynamic_title}
@@ -104,19 +113,92 @@ async def process_single_html_file(
         md_file.parent.mkdir(parents=True, exist_ok=True)
         await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
 
-        md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-        llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+        effective_llms_index = llms_index_path if llms_index_path is not None else (target_dest / "llms.txt")
 
-        new_html = await asyncio.to_thread(
-            inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
-        )
-        await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
+        if inject_links:
+            md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
+            llms_txt_rel_to_html = Path(os.path.relpath(effective_llms_index, html_file.parent)).as_posix()
 
-        index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
+            new_html = await asyncio.to_thread(
+                inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
+            )
+            await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
+
+        index_entry = Path(os.path.relpath(md_file, effective_llms_index.parent)).as_posix()
         return f"- [{html_file.name}]({index_entry})"
     except Exception as e:
         log.error("Failed processing %s: %s", html_file, e)
         return None
+
+
+def str_attr(obj: object, *names: str, default: str = "") -> str:
+    """Return the first non-empty string attribute from ``obj``, or ``default``."""
+    for name in names:
+        val = getattr(obj, name, None)
+        if isinstance(val, str) and val:
+            return val
+    return default
+
+
+def build_frontmatter_context(
+    deliverable: Deliverable,
+    canonical_domain: str,
+) -> tuple[str, dict[str, Any], str, str, str]:
+    """Extract static title, base frontmatter dict, and URL parts from a deliverable.
+
+    :param deliverable: (Deliverable) The deliverable supplying metadata.
+    :param canonical_domain: (str) Base URL domain.
+    :returns: (tuple[str, dict[str, Any], str, str, str]) A tuple of
+        ``(static_title, frontmatter_base, domain, url_product, url_docset)``.
+    """
+    d_xml = getattr(deliverable, "xml", None)
+    static_title = (
+        str_attr(d_xml, "title", "prebuilt_title", default=deliverable.full_id)
+        if d_xml
+        else deliverable.full_id
+    )
+
+    categories: list[str] = []
+    if d_xml:
+        raw_cats = getattr(d_xml, "categories", None)
+        if isinstance(raw_cats, list):
+            categories = [str(c) for c in raw_cats if c]
+        elif callable(raw_cats):
+            cat_title = str_attr(d_xml, "category_title", "categoryid")
+            if cat_title:
+                categories = [cat_title]
+
+    product = str_attr(d_xml, "product_name", "productname", "product_id") if d_xml else ""
+    version = str_attr(d_xml, "docset_version", "docset_path") if d_xml else ""
+    lang_obj = getattr(d_xml, "lang", None) if d_xml else None
+    language = (
+        str_attr(lang_obj, "language", default=str(lang_obj))
+        if lang_obj is not None
+        else ""
+    )
+
+    raw_attrs = {
+        "product": product,
+        "version": version,
+        "language": language,
+        "categories": categories,
+    }
+    frontmatter_base: dict[str, Any] = {"deliverable_id": deliverable.full_id}
+    frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
+
+    is_prebuilt = getattr(deliverable, "is_prebuilt", False) is True or (
+        d_xml is not None and getattr(d_xml, "is_prebuilt", False) is True
+    )
+    if not is_prebuilt:
+        frontmatter_base["generator"] = "daps"
+
+    url_product_id = str_attr(d_xml, "product_id", default="unknown") if d_xml else "unknown"
+    make_safe = getattr(Deliverable, "make_safe_name", None)
+    url_product = make_safe(url_product_id) if callable(make_safe) else url_product_id.replace("/", "_")
+
+    url_docset = str_attr(d_xml, "docset_path", default="unknown") if d_xml else "unknown"
+    domain = canonical_domain.rstrip("/")
+    return static_title, frontmatter_base, domain, url_product, url_docset
 
 
 async def generate_llmstxt(
@@ -125,13 +207,16 @@ async def generate_llmstxt(
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
+    *,
+    llms_dest_override: Path | None = None,
+    llms_index_path: Path | None = None,
+    write_index: bool = True,
 ) -> bool:
     """Generate Markdown files and ``llms.txt`` for a target HTML directory.
 
     Concurrently convert all HTML files under ``target_dest`` to Markdown
     with YAML frontmatter, inject alternate Markdown link tags into the
-    HTML files, and write an ``llms.txt`` index at the root of
-    ``target_dest``.
+    HTML files, and write an ``llms.txt`` index.
 
     :param deliverable: (Deliverable) The deliverable supplying metadata
         for YAML frontmatter and the ``llms.txt`` heading.
@@ -140,9 +225,16 @@ async def generate_llmstxt(
     :param build_llmstxt: (bool) Flag controlling whether LLMs generation
         is enabled.
     :param llmstxt_dir: (str) Subdirectory under ``target_dest`` where
-        converted Markdown files are stored.
+        converted Markdown files are stored when ``llms_dest_override``
+        is not provided.
     :param canonical_domain: (str) Base URL domain used to build
         ``source_url`` frontmatter entries.
+    :param llms_dest_override: (Path | None) Optional explicit directory
+        where converted Markdown files are stored.
+    :param llms_index_path: (Path | None) Optional explicit path to the
+        ``llms.txt`` file.
+    :param write_index: (bool) Whether to write ``llms.txt`` at the end
+        of processing.
     :returns: (bool) ``True`` if generation succeeded or was skipped,
         ``False`` if an error occurred.
     """
@@ -151,54 +243,14 @@ async def generate_llmstxt(
 
     try:
         log.info("Generating LLMs text for %s...", deliverable.full_id)
-        llms_dest = target_dest / llmstxt_dir
+        llms_dest = llms_dest_override if llms_dest_override is not None else (target_dest / llmstxt_dir)
         llms_dest.mkdir(parents=True, exist_ok=True)
 
-        d_xml = getattr(deliverable, "xml", None)
-        static_title = (
-            getattr(d_xml, "title", None)
-            or getattr(d_xml, "prebuilt_title", None)
-            or deliverable.full_id
-        ) if d_xml else deliverable.full_id
-        index_lines = [f"# {static_title}", ""]
-
-        categories = getattr(d_xml, "categories", []) if d_xml else []
-        if callable(categories):
-            cat_title = getattr(d_xml, "category_title", None) or getattr(d_xml, "categoryid", None)
-            categories = [cat_title] if cat_title else []
-        product = (
-            getattr(d_xml, "product_name", None)
-            or getattr(d_xml, "productname", None)
-            or getattr(d_xml, "product_id", "")
-        ) if d_xml else ""
-        version = getattr(d_xml, "docset_version", None) or getattr(d_xml, "docset_path", "") if d_xml else ""
-        language = str(getattr(d_xml, "lang", "")) if d_xml else ""
-
-        # Use dictionary comprehension to filter empty keys (reduces C901 complexity)
-        raw_attrs = {
-            "product": product,
-            "version": version,
-            "language": language,
-            "categories": categories,
-        }
-        frontmatter_base: dict[str, Any] = {"deliverable_id": deliverable.full_id}
-        frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
-
-        # Only inject 'generator: daps' if this is an actual DAPS build (not a prebuilt)
-        is_prebuilt = getattr(deliverable, "is_prebuilt", False) or bool(
-            d_xml and getattr(d_xml, "is_prebuilt", False)
+        static_title, frontmatter_base, domain, url_product, url_docset = (
+            build_frontmatter_context(deliverable, canonical_domain)
         )
-        if not is_prebuilt:
-            frontmatter_base["generator"] = "daps"
-
-        url_product_id = getattr(d_xml, "product_id", "unknown") if d_xml else "unknown"
-        if hasattr(deliverable, "make_safe_name"):
-            url_product = deliverable.make_safe_name(url_product_id)
-        else:
-            url_product = url_product_id.replace("/", "_")
-
-        url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
-        domain = canonical_domain.rstrip("/")
+        index_lines = [f"# {static_title}", ""]
+        effective_index = llms_index_path if llms_index_path is not None else (target_dest / "llms.txt")
 
         html_files = list(target_dest.rglob("*.html"))
 
@@ -207,12 +259,13 @@ async def generate_llmstxt(
                 html_file=html_file,
                 target_dest=target_dest,
                 llms_dest=llms_dest,
-                llmstxt_dir=llmstxt_dir,
+                llmstxt_dir=Path(llmstxt_dir).name,
                 domain=domain,
                 url_product=url_product,
                 url_docset=url_docset,
                 static_title=static_title,
                 frontmatter_base=frontmatter_base,
+                llms_index_path=effective_index,
             )
 
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
@@ -222,8 +275,9 @@ async def generate_llmstxt(
                 if result:
                     index_lines.append(result)
 
-        llms_index = target_dest / "llms.txt"
-        llms_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
+        if write_index:
+            effective_index.parent.mkdir(parents=True, exist_ok=True)
+            effective_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
         log.info("Finished generating llms.txt for %s", deliverable.full_id)
         return True
     except Exception as ex:
@@ -365,7 +419,17 @@ async def process_deliverable_build(
                         # Sync contents of the build directory to the target destination
                         sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
                         if fmt == "html":
-                            await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
+                            llms_base_dir = resolve_llms_base_dir(target_base_dir, llmstxt_dir)
+                            llms_dest = llms_base_dir / target_suffix
+                            llms_index_path = Path(target_base_dir) / "llms.txt"
+                            await generate_llmstxt(
+                                deliverable,
+                                target_dest,
+                                build_llmstxt,
+                                llmstxt_dir,
+                                llms_dest_override=llms_dest,
+                                llms_index_path=llms_index_path,
+                            )
                         if sync_result.returncode == 0:
                             log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                         else:
@@ -624,28 +688,51 @@ def resolve_prebuilt_rel_path(deliverable: Deliverable, html_url: str) -> Path:
     return Path(*clean_parts)
 
 
-async def copy_prebuilt_html_to_target(
+def resolve_llms_base_dir(target_base_dir: Path, llmstxt_dir: str) -> Path:
+    """Resolve the base directory for generated Markdown files.
+
+    If ``llmstxt_dir`` is an absolute path, return it directly; otherwise
+    resolve it relative to ``target_base_dir``.
+
+    :param target_base_dir: (Path) Root directory for built deliverables.
+    :param llmstxt_dir: (str) Configured Markdown output directory path or
+        name.
+    :returns: (Path) Resolved base directory for Markdown output.
+    """
+    configured = Path(llmstxt_dir)
+    return configured if configured.is_absolute() else (Path(target_base_dir) / configured)
+
+
+async def convert_prebuilt_deliverable(
     deliverable: Deliverable,
     prebuilt_dir: Path,
-    target_dest: Path,
-) -> bool:
-    """Copy a prebuilt deliverable's HTML file into the target directory.
+    llms_dest: Path,
+    llms_index_path: Path,
+    llmstxt_dir: str,
+    canonical_domain: str = "https://documentation.suse.com",
+) -> str | None:
+    """Convert one prebuilt deliverable's HTML file in ``prebuilt_dir`` to Markdown.
 
-    Locate the prebuilt HTML file in ``prebuilt_dir`` and copy it to its
-    resolved relative path under ``target_dest``.
+    Locate the prebuilt HTML file in ``prebuilt_dir``, convert it to
+    Markdown under ``llms_dest`` without copying or modifying the HTML
+    file, and return its ``llms.txt`` index entry.
 
-    :param deliverable: (Deliverable) The prebuilt deliverable to copy.
+    :param deliverable: (Deliverable) The prebuilt deliverable to convert.
     :param prebuilt_dir: (Path) Base directory containing prebuilt HTML
         trees.
-    :param target_dest: (Path) Destination ``html`` directory under the
-        target base directory.
-    :returns: (bool) ``True`` if the HTML file was found and copied,
-        ``False`` otherwise.
+    :param llms_dest: (Path) Destination directory under ``llmstxt_dir``
+        where the converted Markdown file is written.
+    :param llms_index_path: (Path) Path to the ``llms.txt`` index file.
+    :param llmstxt_dir: (str) Configured Markdown directory name.
+    :param canonical_domain: (str) Base URL domain used to construct
+        ``source_url`` metadata.
+    :returns: (str | None) The formatted ``llms.txt`` list entry, or
+        ``None`` if the HTML file was not found or conversion failed.
     """
     html_url = deliverable.xml.resolved_prebuilt_html_url or deliverable.xml.prebuilt_html_url
     if not html_url:
         log.warning("Prebuilt deliverable %s has no HTML URL; skipping.", deliverable.full_id)
-        return False
+        return None
 
     html_path = await asyncio.to_thread(find_html_path, prebuilt_dir, deliverable, html_url)
     if html_path is None:
@@ -655,13 +742,27 @@ async def copy_prebuilt_html_to_target(
             deliverable.full_id,
             html_url,
         )
-        return False
+        return None
 
     rel_file = resolve_prebuilt_rel_path(deliverable, html_url)
-    dest_html = target_dest / rel_file
-    dest_html.parent.mkdir(parents=True, exist_ok=True)
-    await asyncio.to_thread(shutil.copy2, html_path, dest_html)
-    return True
+    static_title, frontmatter_base, domain, url_product, url_docset = (
+        build_frontmatter_context(deliverable, canonical_domain)
+    )
+
+    return await process_single_html_file(
+        html_file=html_path,
+        target_dest=prebuilt_dir,
+        llms_dest=llms_dest,
+        llmstxt_dir=Path(llmstxt_dir).name,
+        domain=domain,
+        url_product=url_product,
+        url_docset=url_docset,
+        static_title=static_title,
+        frontmatter_base=frontmatter_base,
+        llms_index_path=llms_index_path,
+        rel_path_override=rel_file,
+        inject_links=False,
+    )
 
 
 async def process_deliverable_llms(
@@ -673,11 +774,12 @@ async def process_deliverable_llms(
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
 ) -> bool:
-    """Generate LLMs Markdown and ``llms.txt`` files for one deliverable.
+    """Generate LLMs Markdown files for one deliverable under ``target_base_dir / llmstxt_dir``.
 
-    Resolve the target HTML directory for ``deliverable``, copy prebuilt
-    HTML from ``prebuilt_dir`` if the deliverable is prebuilt, and run
-    :func:`generate_llmstxt`.
+    Resolve the deliverable's Markdown destination under
+    ``<target_base_dir>/<llmstxt_dir>/<target_suffix>`` and convert its
+    HTML files from ``target_base_dir`` (for DAPS builds) or
+    ``prebuilt_dir`` (for prebuilt deliverables).
 
     :param deliverable: (Deliverable) The deliverable to process.
     :param target_base_dir: (Path) Root directory for built deliverables.
@@ -686,24 +788,34 @@ async def process_deliverable_llms(
     :param prebuilt_dir: (Path) Base directory containing prebuilt HTML
         deliverables.
     :param build_llmstxt: (bool) Flag enabling LLMs file generation.
-    :param llmstxt_dir: (str) Subdirectory name for generated Markdown
-        files.
+    :param llmstxt_dir: (str) Directory name (relative to
+        ``target_base_dir``) or absolute path for generated Markdown files.
     :param canonical_domain: (str) Base URL domain used to construct
         ``source_url`` metadata.
     :returns: (bool) ``True`` if processing succeeded, ``False`` if the
         target HTML directory or prebuilt source was missing or failed.
     """
     target_suffix = format_target_suffix(target_dir_dyn, deliverable)
-    target_dest = Path(target_base_dir) / target_suffix / "html"
+    llms_base_dir = resolve_llms_base_dir(target_base_dir, llmstxt_dir)
+    llms_dest = llms_base_dir / target_suffix
+    llms_index_path = Path(target_base_dir) / "llms.txt"
 
     if deliverable.xml.is_prebuilt:
         html_url = deliverable.xml.resolved_prebuilt_html_url or deliverable.xml.prebuilt_html_url
         if not html_url:
             log.warning("Prebuilt deliverable %s has no HTML URL; skipping.", deliverable.full_id)
             return True
-        if not await copy_prebuilt_html_to_target(deliverable, prebuilt_dir, target_dest):
-            return False
+        entry = await convert_prebuilt_deliverable(
+            deliverable=deliverable,
+            prebuilt_dir=prebuilt_dir,
+            llms_dest=llms_dest,
+            llms_index_path=llms_index_path,
+            llmstxt_dir=llmstxt_dir,
+            canonical_domain=canonical_domain,
+        )
+        return entry is not None
 
+    target_dest = Path(target_base_dir) / target_suffix / "html"
     if not target_dest.exists() or not target_dest.is_dir():
         log.warning(
             "Target HTML directory does not exist for %s at %s; skipping.",
@@ -718,27 +830,28 @@ async def process_deliverable_llms(
         build_llmstxt=build_llmstxt,
         llmstxt_dir=llmstxt_dir,
         canonical_domain=canonical_domain,
+        llms_dest_override=llms_dest,
+        llms_index_path=llms_index_path,
+        write_index=False,
     )
 
 
 async def process_prebuilt_group_llms(
-    target_dest: Path,
+    llms_dest: Path,
+    llms_index_path: Path,
     group: list[Deliverable],
     prebuilt_dir: Path,
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
 ) -> bool:
-    """Copy prebuilt HTML files for a docset group and generate LLMs files.
+    """Convert prebuilt HTML files for a docset group into Markdown under ``llms_dest``.
 
-    Copy each prebuilt deliverable in ``group`` into ``target_dest`` and
-    then invoke :func:`generate_llmstxt` once for the shared target
-    directory.
-
-    :param target_dest: (Path) Shared target ``html`` directory for the
-        docset group.
+    :param llms_dest: (Path) Shared Markdown destination directory for the
+        docset group under ``<target_base_dir>/<llmstxt_dir>/<target_suffix>``.
+    :param llms_index_path: (Path) Path to the root ``llms.txt`` index file.
     :param group: (list[Deliverable]) Prebuilt deliverables belonging to
-        the same target directory.
+        the same docset.
     :param prebuilt_dir: (Path) Base directory containing prebuilt HTML
         deliverables.
     :param build_llmstxt: (bool) Flag enabling LLMs file generation.
@@ -746,46 +859,76 @@ async def process_prebuilt_group_llms(
         files.
     :param canonical_domain: (str) Base URL domain used to construct
         ``source_url`` metadata.
-    :returns: (bool) ``True`` if HTML files were available and LLMs
-        generation succeeded, ``False`` otherwise.
+    :returns: (bool) ``True`` if at least one prebuilt HTML file was
+        converted, ``False`` otherwise.
     """
-    copied_any = False
+    if not build_llmstxt:
+        return True
 
+    converted_any = False
+    log.info("Generating LLMs text for %s...", group[0].full_id)
     for d in group:
-        if await copy_prebuilt_html_to_target(d, prebuilt_dir, target_dest):
-            copied_any = True
+        entry = await convert_prebuilt_deliverable(
+            deliverable=d,
+            prebuilt_dir=prebuilt_dir,
+            llms_dest=llms_dest,
+            llms_index_path=llms_index_path,
+            llmstxt_dir=llmstxt_dir,
+            canonical_domain=canonical_domain,
+        )
+        if entry is not None:
+            converted_any = True
 
-    if not copied_any and (not target_dest.exists() or not any(target_dest.rglob("*.html"))):
-        return False
+    if converted_any:
+        log.info("Finished generating LLMs Markdown for %s", group[0].full_id)
+    return converted_any
 
-    return await generate_llmstxt(
-        deliverable=group[0],
-        target_dest=target_dest,
-        build_llmstxt=build_llmstxt,
-        llmstxt_dir=llmstxt_dir,
-        canonical_domain=canonical_domain,
-    )
+
+def write_root_llmstxt_index(
+    target_base_dir: Path,
+    llms_base_dir: Path,
+    llms_index_path: Path,
+) -> None:
+    """Write the root ``llms.txt`` index listing all generated Markdown files under ``llms_base_dir``.
+
+    :param target_base_dir: (Path) Root target directory.
+    :param llms_base_dir: (Path) Directory containing generated ``.md`` files.
+    :param llms_index_path: (Path) Path where ``llms.txt`` is written.
+    :returns: (None)
+    """
+    if not llms_base_dir.exists():
+        return
+
+    md_files = sorted(llms_base_dir.rglob("*.md"))
+    if not md_files:
+        return
+
+    index_lines = [f"# Documentation Index for {target_base_dir.name}", ""]
+    for md_file in md_files:
+        rel_entry = Path(os.path.relpath(md_file, llms_index_path.parent)).as_posix()
+        index_lines.append(f"- [{md_file.stem}.html]({rel_entry})")
+
+    llms_index_path.parent.mkdir(parents=True, exist_ok=True)
+    llms_index_path.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
 
 
 def partition_llms_deliverables(
     eligible: list[Deliverable],
     target_base_dir: Path,
     target_dir_dyn: str,
-) -> tuple[list[Deliverable], dict[Path, list[Deliverable]]]:
-    """Partition deliverables into DC items and grouped prebuilt targets.
+) -> tuple[list[Deliverable], dict[str, list[Deliverable]]]:
+    """Partition deliverables into DC items and grouped prebuilt target suffixes.
 
-    Deduplicate DC deliverables that resolve to the same target ``html``
-    directory so each docset directory is scanned once, and group
-    prebuilt deliverables by their resolved target ``html`` directory so
-    all prebuilt pages in a docset are copied before generating
-    ``llms.txt``.
+    Deduplicate DC deliverables that resolve to the same target suffix so
+    each docset directory is scanned once, and group prebuilt deliverables
+    by their resolved ``target_suffix``.
 
     :param eligible: (list[Deliverable]) HTML-enabled DC and prebuilt
         deliverables matching the requested doctypes.
     :param target_base_dir: (Path) Root directory for built deliverables.
     :param target_dir_dyn: (str) Dynamic path template for resolving each
         deliverable's subdirectory under ``target_base_dir``.
-    :returns: (tuple[list[Deliverable], dict[Path, list[Deliverable]]])
+    :returns: (tuple[list[Deliverable], dict[str, list[Deliverable]]])
         A tuple of ``(dc_deliverables, prebuilt_groups)``.
 
     .. code-block:: python
@@ -796,17 +939,17 @@ def partition_llms_deliverables(
             "{lang}/{product}/{docset}",
         )
     """
-    seen_targets: set[Path] = set()
+    _ = target_base_dir
+    seen_targets: set[str] = set()
     dc_deliverables: list[Deliverable] = []
-    prebuilt_groups: dict[Path, list[Deliverable]] = {}
+    prebuilt_groups: dict[str, list[Deliverable]] = {}
 
     for d in eligible:
         target_suffix = format_target_suffix(target_dir_dyn, d)
-        target_dest = Path(target_base_dir) / target_suffix / "html"
         if d.xml.is_prebuilt:
-            prebuilt_groups.setdefault(target_dest, []).append(d)
-        elif target_dest not in seen_targets:
-            seen_targets.add(target_dest)
+            prebuilt_groups.setdefault(target_suffix, []).append(d)
+        elif target_suffix not in seen_targets:
+            seen_targets.add(target_suffix)
             dc_deliverables.append(d)
 
     return dc_deliverables, prebuilt_groups
@@ -827,7 +970,8 @@ async def process_llms(
     Parse the Portal XML configuration, resolve the requested ``doctypes``
     (or default to all deliverables when ``doctypes`` is ``None`` or
     empty), partition matching HTML deliverables into DC and prebuilt
-    groups, and generate Markdown and ``llms.txt`` files for each target.
+    groups, write Markdown files under ``<target_base_dir>/<llmstxt_dir>/<target_suffix>``,
+    and write the root ``<target_base_dir>/llms.txt`` index.
 
     :param main_portal_config: (Path) Path to the main Portal XML
         configuration file.
@@ -839,8 +983,9 @@ async def process_llms(
         deliverables.
     :param build_llmstxt: (bool) Flag enabling LLMs file generation;
         returns ``0`` immediately when ``False``.
-    :param llmstxt_dir: (str) Subdirectory name under each target
-        ``html`` directory where Markdown files are written.
+    :param llmstxt_dir: (str) Subdirectory name relative to
+        ``target_base_dir`` (or absolute path) where Markdown files are
+        written.
     :param doctypes: (tuple[Doctype, ...] | list[Doctype] | None)
         Optional doctype filters; defaults to all deliverables when
         ``None`` or empty.
@@ -892,6 +1037,8 @@ async def process_llms(
     dc_deliverables, prebuilt_groups = partition_llms_deliverables(
         eligible, target_base_dir, target_dir_dyn
     )
+    llms_base_dir = resolve_llms_base_dir(target_base_dir, llmstxt_dir)
+    llms_index_path = Path(target_base_dir) / "llms.txt"
 
     dc_results = [
         await process_deliverable_llms(
@@ -908,14 +1055,19 @@ async def process_llms(
 
     pb_results = [
         await process_prebuilt_group_llms(
-            target_dest=target_dest,
+            llms_dest=llms_base_dir / target_suffix,
+            llms_index_path=llms_index_path,
             group=group,
             prebuilt_dir=prebuilt_dir,
             build_llmstxt=build_llmstxt,
             llmstxt_dir=llmstxt_dir,
             canonical_domain=canonical_domain,
         )
-        for target_dest, group in prebuilt_groups.items()
+        for target_suffix, group in prebuilt_groups.items()
     ]
+
+    await asyncio.to_thread(
+        write_root_llmstxt_index, target_base_dir, llms_base_dir, llms_index_path
+    )
 
     return 0 if all(dc_results) and all(pb_results) else 1

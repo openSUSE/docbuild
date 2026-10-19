@@ -11,8 +11,8 @@ Why build Markdown files?
 -------------------------
 
 The command converts each built HTML page into a plain Markdown file with YAML frontmatter that keeps only the content and key metadata.
-It also writes an :file:`llms.txt` index in each deliverable's target HTML directory that points AI tools to all of these Markdown files.
-Each HTML page receives ``<link rel="alternate" type="text/markdown">`` tags in its ``<head>`` pointing to its Markdown counterpart and to :file:`llms.txt`, so tools that inspect the HTML can discover the Markdown version automatically.
+It also writes an :file:`llms.txt` index at the root of ``paths.target.target_base_dir`` that points AI tools to all of these Markdown files.
+Built HTML pages receive ``<link rel="alternate" type="text/markdown">`` tags in their ``<head>`` pointing to their Markdown counterparts and to :file:`llms.txt`, so tools that inspect the HTML can discover the Markdown version automatically.
 
 Use this command when you want AI tools to answer questions about your documentation accurately.
 Readers and human visitors still see the normal HTML site.
@@ -31,11 +31,11 @@ Before you run the command, make sure you have the following:
   * ``paths.main_portal_config``: Path to the main :term:`Portal Config` XML file used to resolve :term:`doctypes <Doctype>` and deliverables.
   * ``paths.target.target_base_dir``: The root directory that contains your built deliverables and receives the generated Markdown and :file:`llms.txt` files.
   * ``paths.prebuilt_dir``: The directory that contains prebuilt HTML deliverables (for example, Antora builds).
-    When processing a prebuilt deliverable, :command:`docbuild llms` copies its HTML files from ``paths.prebuilt_dir`` into the target HTML directory under ``paths.target.target_base_dir`` before generating the Markdown files.
+    When processing a prebuilt deliverable, :command:`docbuild llms` reads its HTML files from ``paths.prebuilt_dir`` and writes the converted Markdown files under ``paths.llmstxt_dir``.
   * ``build.build_llmstxt``: Must be ``true`` to enable generation.
     The command exits without doing anything when this option is ``false``.
-  * ``paths.llmstxt_dir``: The subdirectory inside each deliverable's target HTML directory where the converted Markdown files are stored.
-    The default is :file:`docs`.
+  * ``paths.llmstxt_dir``: The directory where the converted Markdown files are stored, mirroring the ``paths.target.target_dir_dyn`` hierarchy (for example, :file:`docs/en-us/cloudnative/rancher-ai/`).
+    The default is :file:`docs`, resolved relative to ``paths.target.target_base_dir``.
 
 Running the command
 -------------------
@@ -76,10 +76,10 @@ To generate the Markdown files for existing deliverables, do the following:
                  -C build.build_llmstxt=true \
                  llms cloudnative/rancher-ai/en-us
 
-#. Verify the generated files in the deliverable's target HTML directory (for example, :file:`/path/to/builds/en-us/cloudnative/rancher-ai/html/`):
+#. Verify the generated files in the target directory (for example, :file:`/path/to/builds/`):
 
-   * :file:`llms.txt` is written at the root of the deliverable's ``html`` directory.
-   * Converted Markdown files (``.md``) are written inside the ``paths.llmstxt_dir`` subdirectory (by default :file:`docs/`).
+   * :file:`llms.txt` is written at the root of ``paths.target.target_base_dir`` (:file:`/path/to/builds/llms.txt`).
+   * Converted Markdown files (``.md``) are written inside ``paths.llmstxt_dir`` mirroring the deliverable hierarchy (for example, :file:`/path/to/builds/docs/en-us/cloudnative/rancher-ai/`).
 
 .. note::
 

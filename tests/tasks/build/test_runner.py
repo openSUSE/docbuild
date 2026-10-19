@@ -12,7 +12,7 @@ from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
 from docbuild.tasks.build.runner import (
     build_format,
-    copy_prebuilt_html_to_target,
+    convert_prebuilt_deliverable,
     format_target_suffix,
     generate_llmstxt,
     partition_llms_deliverables,
@@ -322,13 +322,15 @@ def test_partition_llms_deliverables_deduplicates_dc_targets(tmp_path: Path) -> 
 
 
 @pytest.mark.asyncio
-async def test_copy_prebuilt_html_to_target_no_url(tmp_path: Path) -> None:
-    """Test copy_prebuilt_html_to_target returns False when deliverable has no HTML URL."""
+async def test_convert_prebuilt_deliverable_no_url(tmp_path: Path) -> None:
+    """Test convert_prebuilt_deliverable returns None when deliverable has no HTML URL."""
     d_pb = Mock(spec=Deliverable, full_id="cn/ai:no-url")
     d_pb.xml.resolved_prebuilt_html_url = None
     d_pb.xml.prebuilt_html_url = ""
 
-    assert await copy_prebuilt_html_to_target(d_pb, tmp_path, tmp_path / "out") is False
+    assert await convert_prebuilt_deliverable(
+        d_pb, tmp_path, tmp_path / "docs", tmp_path / "llms.txt", "docs"
+    ) is None
 
 
 def test_format_target_suffix() -> None:
