@@ -56,12 +56,15 @@ class RsyncOptions:
     )
     """List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag."""
 
-    files_from: Path | None = field(default=None, metadata={"flag": "--files-from"})
-    """Path to a file that lists what to transfer (``--files-from``).
+    files_from: Path | str | None = field(
+        default=None,
+        metadata={"flag": "--files-from"},
+    )
+    """Path (or string) to a file that lists what to transfer (``--files-from``).
 
-    Each path in the file is relative to the source path. Setting this option also
-    adds ``-r``, because rsync turns off the recursion implied by ``-a`` when a
-    file list is used. The file is not read or validated by ``rsync()``.
+    Each path in the file is relative to the source path. In archive mode, ``-r`` is
+    also passed, because rsync turns off the recursion implied by ``-a`` when a file
+    list is used. The file is not read or validated by ``rsync()``.
     """
 
     extra_args: list[str] = field(default_factory=list)
