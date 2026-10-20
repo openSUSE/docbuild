@@ -31,6 +31,7 @@ Attributes
    docbuild.constants.PROJECT_DIR
    docbuild.constants.CONFIG_HOME
    docbuild.constants.SYSTEM_CONFIG_DIR
+   docbuild.constants.XDG_CONFIG_DIRS_PATHS
    docbuild.constants.CONFIG_PATHS
    docbuild.constants.STATE_HOME
    docbuild.constants.DATA_HOME
@@ -70,6 +71,14 @@ Classes
 .. autoapisummary::
 
    docbuild.constants.DependencySpec
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.constants.xdg_site_config_dirs
 
 
 Module Contents
@@ -191,6 +200,25 @@ Module Contents
 
    The system-wide configuration directory, typically located
    at /etc/docbuild.
+
+
+.. py:function:: xdg_site_config_dirs(appname: str) -> tuple[pathlib.Path, ...]
+
+   Return system config directories from :envvar:`XDG_CONFIG_DIRS`.
+
+   Directories keep the order defined by the XDG Base Directory Specification
+   (the first entry has the highest priority) and duplicates are removed.
+
+   :param appname: Name of the application.
+   :returns: Tuple of directory paths ordered highest-to-lowest priority.
+
+
+.. py:data:: XDG_CONFIG_DIRS_PATHS
+   :type:  tuple[pathlib.Path, ...]
+
+   The system-wide configuration directories from :envvar:`XDG_CONFIG_DIRS`,
+   highest priority first (default: :file:`/etc/xdg/docbuild` on Linux). Together,
+   they form the lowest-priority system-wide location.
 
 
 .. py:data:: CONFIG_PATHS
