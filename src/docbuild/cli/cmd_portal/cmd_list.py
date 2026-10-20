@@ -48,11 +48,11 @@ def expand_deliverables(
         d_id = d.xml.deliverableid or ""
         native_lang = str(d.xml.lang)
 
-        # 1. Project blueprints
+        # 1. Project blueprints to non-default locales
         if native_lang == "en-us" and d.xml.translations:
             for t_lang in d.xml.translations:
-                if (t_lang, prod, doc, d_id) in native_keys:
-                    continue  # Skip if native override exists
+                if t_lang == native_lang or (t_lang, prod, doc, d_id) in native_keys:
+                    continue
 
                 if matches_doctype(prod, doc, t_lang, doctypes):
                     results.append((t_lang, d))
