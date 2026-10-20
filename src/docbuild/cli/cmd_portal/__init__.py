@@ -22,7 +22,7 @@ def portal(ctx: click.Context) -> None:
     pass  # pragma: no cover
 
 
-# Register both subcommands
+# Register subcommands
 portal.add_command(list_cmd)
 portal.add_command(validate)
 portal.add_command(dir_cmd)

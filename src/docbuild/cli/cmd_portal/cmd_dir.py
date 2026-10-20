@@ -2,43 +2,24 @@
 
 import click
 
-from docbuild.cli.console import console as stdout, console_err
+from docbuild.cli.console import console as stdout
 from docbuild.cli.context import DocBuildContext
 
 
 @click.command(name="dir")
-@click.option(
-    "--app",
-    is_flag=True,
-    help="Display the application config directory.",
-)
-@click.option(
-    "--env",
-    "env_flag",
-    is_flag=True,
-    help="Display the environment config directory (default).",
-)
 @click.pass_context
-def dir_cmd(ctx: click.Context, app: bool, env_flag: bool) -> None:
+def dir_cmd(ctx: click.Context) -> None:
     """Display the portal configuration directory.
 
+    Example:
+        docbuild portal dir
+    \f
+
     :param ctx: The Click context object.
-    """
+    :returns: (None) Prints the resolved directory path to stdout.
+
+    """  # noqa: D301 - Click requires an interpreted form-feed separator.
     context: DocBuildContext = ctx.obj
+    assert context.envconfig is not None
 
-    if app and not env_flag:
-        if not context.appconfig:
-            console_err.print("[error]Application configuration is missing.[/]")
-            ctx.exit(1)
-        try:
-            path = context.appconfig.paths.config_dir
-        except AttributeError:
-            console_err.print("[error]Application configuration does not define paths.config_dir.[/]")
-            ctx.exit(1)
-    else:
-        if not context.envconfig:
-            console_err.print("[error]Environment configuration is missing.[/]")
-            ctx.exit(1)
-        path = context.envconfig.paths.config_dir
-
-    stdout.print(str(path))
+    stdout.print(str(context.envconfig.paths.config_dir), soft_wrap=True)
