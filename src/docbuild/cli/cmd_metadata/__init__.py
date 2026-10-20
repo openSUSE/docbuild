@@ -7,6 +7,7 @@ from pathlib import Path
 import click
 
 from docbuild.cli.callback import validate_doctypes
+from docbuild.cli.completion import complete_doctypes
 from docbuild.cli.console import console as stdout, console_err
 from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
@@ -25,6 +26,7 @@ def metadata() -> None:
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "-E",

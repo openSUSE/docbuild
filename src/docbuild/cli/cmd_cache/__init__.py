@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 
 from docbuild.cli.callback import validate_doctypes
+from docbuild.cli.completion import complete_doctypes
 from docbuild.cli.console import console
 from docbuild.cli.context import DocBuildContext
 from docbuild.constants import CACHE_FILE_EXT
@@ -117,7 +118,9 @@ def cache_dir(ctx: click.Context) -> None:
 
 
 @cache.command(name="list")
-@click.argument("doctypes", nargs=-1, callback=validate_doctypes)
+@click.argument(
+    "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
+)
 @click.option("-t", "--type", "cache_type",
     type=click.Choice(["meta", "json", "all"]),
     default="all",
@@ -153,7 +156,9 @@ def cache_list(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str) ->
 
 
 @cache.command(name="prune")
-@click.argument("doctypes", nargs=-1, callback=validate_doctypes)
+@click.argument(
+    "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
+)
 @click.option("-t", "--type", "cache_type", type=click.Choice(["meta", "json", "all"]), default="all", help="Which cache type to prune.")
 @click.option("-y", "--yes", is_flag=True, help="Confirm deletion without prompting.")
 @click.pass_context
