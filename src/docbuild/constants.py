@@ -91,25 +91,27 @@ SYSTEM_CONFIG_DIR: Path = Path("/etc") / APP_NAME
 at /etc/docbuild."""
 
 
-def _xdg_site_config_dirs(appname: str) -> tuple[Path, ...]:
-    """Return every directory from :envvar:`XDG_CONFIG_DIRS` for *appname*.
+def xdg_site_config_dirs(appname: str) -> tuple[Path, ...]:
+    """Return system config directories from :envvar:`XDG_CONFIG_DIRS`.
 
-    :mod:`platformdirs` joins multiple directories with :data:`os.pathsep`
-    when ``multipath=True``, so split that back into individual paths.
-    Defaults to ``/etc/xdg/docbuild`` on Linux when the variable is unset.
+    Directories keep the order defined by the XDG Base Directory Specification
+    (the first entry has the highest priority) and duplicates are removed.
+
+    :param appname: Name of the application.
+    :returns: Tuple of directory paths ordered highest-to-lowest priority.
     """
-    joined = platformdirs.PlatformDirs(appname, multipath=True).site_config_dir
-    return tuple(Path(path) for path in joined.split(os.pathsep) if path)
+    raw = platformdirs.site_config_dir(appname, multipath=True).split(os.pathsep)
+    return tuple(Path(p) for p in dict.fromkeys(raw) if p)
 
 
-XDG_CONFIG_DIRS_PATHS: tuple[Path, ...] = _xdg_site_config_dirs(APP_NAME)
-"""The system-wide configuration directories from :envvar:`XDG_CONFIG_DIRS`
-(default: ``/etc/xdg/docbuild`` on Linux). This is the lowest-priority
-system-wide location."""
+XDG_CONFIG_DIRS_PATHS: tuple[Path, ...] = xdg_site_config_dirs(APP_NAME)
+"""The system-wide configuration directories from :envvar:`XDG_CONFIG_DIRS`,
+highest priority first (default: :file:`/etc/xdg/docbuild` on Linux). Together,
+they form the lowest-priority system-wide location."""
 
 CONFIG_PATHS: tuple[Path, ...] = (
-    # XDG system-wide config dirs (lowest system priority), e.g. /etc/xdg/docbuild:
-    *XDG_CONFIG_DIRS_PATHS,
+    # XDG system dirs (unpacked lowest-priority first, so first XDG dir wins among XDG):
+    *reversed(XDG_CONFIG_DIRS_PATHS),
     # The fixed system-wide config path (overrides the XDG default(s)):
     SYSTEM_CONFIG_DIR,
     # The user config path:

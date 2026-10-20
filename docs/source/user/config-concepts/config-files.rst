@@ -25,6 +25,8 @@ A higher-priority source overwrites the same setting from a lower-priority sourc
 #. **XDG system directory:** :file:`/etc/xdg/docbuild/` by default, or every directory
    listed in :envvar:`XDG_CONFIG_DIRS` (each with ``docbuild`` appended) when that
    variable is set. Useful when the system-wide config should follow the XDG layout.
+   If the variable lists several directories, earlier entries take precedence over later ones,
+   as defined by the XDG Base Directory Specification.
 #. **System directory:** :file:`/etc/docbuild/`. This path is fixed; no XDG variable changes it.
    It overrides the XDG system directory above.
 #. **User directory:** OS-specific user configuration directory resolved via `platformdirs <https://platformdirs.readthedocs.io/>`_.
