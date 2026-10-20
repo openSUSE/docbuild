@@ -15,6 +15,7 @@ def context_with_paths():
     ctx.envconfig = MagicMock()
     ctx.envconfig.paths.main_portal_config = "dummy_portal.xml"
     ctx.envconfig.paths.repo_dir = "dummy_repo_dir"
+    ctx.envconfig.paths.prebuilt_dir = "dummy_prebuilt_dir"
     return ctx
 
 

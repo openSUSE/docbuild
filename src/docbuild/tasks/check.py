@@ -30,6 +30,7 @@ async def check_repository_files(  # noqa: C901
 
     main_portal_config: Path,
     repo_root: Path,
+    prebuilt_dir: Path,
     doctypes: Sequence[Doctype] | None
 ) -> dict[str, list[FileCheckResult]]:
     """Verify DC file existence using official Deliverable models."""
@@ -37,8 +38,8 @@ async def check_repository_files(  # noqa: C901
 
     # 1. Parse the main portal config (including XIncludes)
     if not main_portal_config.exists():
-        log.warning("Main portal config not found: %s", main_portal_config)
-        return {}
+        log.error("Main portal config not found: %s", main_portal_config)
+        raise FileNotFoundError(f"Main portal config not found: {main_portal_config}")
 
     stitch_tree = await parse_portal_config(main_portal_config)
 
@@ -60,13 +61,7 @@ async def check_repository_files(  # noqa: C901
             continue
 
         for d in deliverables:
-            # Safely extract dcfile (handling both properties and methods)
-            dcfile_val = getattr(d.xml, "dcfile", None)
-            dcfile = dcfile_val() if callable(dcfile_val) else dcfile_val
-            if not dcfile:
-                dcfile = "None"
-
-            # Check for xref and resolve to the ultimate target
+            # Check for xref and resolve to the ultimate target FIRST
             is_xref_val = getattr(d.xml, "is_xref", None)
             is_xref = is_xref_val() if callable(is_xref_val) else is_xref_val
 
@@ -77,18 +72,40 @@ async def check_repository_files(  # noqa: C901
                 if final_node is not None:
                     actual_d = Deliverable(final_node)
 
+            # Now extract the REAL dcfile name from the resolved target
+            dcfile_val = getattr(actual_d.xml, "dcfile", None)
+            dcfile = dcfile_val() if callable(dcfile_val) else dcfile_val
+            if not dcfile:
+                # If even the target has no dcfile, fallback to original or placeholder
+                fallback_val = getattr(d.xml, "dcfile", None)
+                dcfile = fallback_val() if callable(fallback_val) else fallback_val
+                if not dcfile:
+                    dcfile = "Unknown"
+
             is_prebuilt_val = getattr(actual_d.xml, "is_prebuilt", None)
             is_prebuilt = is_prebuilt_val() if callable(is_prebuilt_val) else is_prebuilt_val
+
+            if is_prebuilt:
+                # Check if the prebuilt file exists on disk
+                prebuilt_path = prebuilt_dir / dcfile
+                status = "found" if prebuilt_path.exists() else "error"
+                results[dt_str].append(FileCheckResult(
+                    doctype=dt_str,
+                    dcfile=dcfile,
+                    status=status,
+                    is_prebuilt=True
+                ))
+                continue
 
             git_val = getattr(actual_d, "git", None)
             git_obj = git_val() if callable(git_val) else git_val
 
-            if is_prebuilt or git_obj is None:
+            if git_obj is None:
                 results[dt_str].append(FileCheckResult(
                     doctype=dt_str,
                     dcfile=dcfile,
                     status="skipped",
-                    is_prebuilt=True
+                    is_prebuilt=False
                 ))
                 continue
 
@@ -114,8 +131,8 @@ async def check_repository_files(  # noqa: C901
 
         available_files = await repo_handler.ls_tree(branch)
 
-        for actual_d, dt_str, dcfile, is_default_lang in items:
-            subdir_val = getattr(actual_d, "subdir", None)
+        for _actual_d, dt_str, dcfile, is_default_lang in items:
+            subdir_val = getattr(_actual_d, "subdir", None)
             subdir = subdir_val() if callable(subdir_val) else subdir_val
 
             target_file = dcfile

@@ -34,7 +34,6 @@ def cmd_check() -> None:
 )
 @click.pass_obj
 def check_files(  # noqa: C901
-
     ctx: DocBuildContext,
     doctypes: tuple[Doctype, ...],
     check_all: bool,
@@ -62,6 +61,7 @@ def check_files(  # noqa: C901
     # Wrap the custom config types in pathlib.Path so Pylance knows expanduser() is valid
     main_portal_config = ctx.envconfig.paths.main_portal_config
     repo_root = ctx.envconfig.paths.repo_dir
+    prebuilt_dir = ctx.envconfig.paths.prebuilt_dir
 
     # Pass pure Python types to our isolated task logic.
     # An empty doctype list represents the "--all" case (use the task defaults).
@@ -69,7 +69,7 @@ def check_files(  # noqa: C901
 
     async def main() -> dict:
         return await asyncio.create_task(
-            check_repository_files(main_portal_config, repo_root, selected),
+            check_repository_files(main_portal_config, repo_root, prebuilt_dir, selected),
             name="check-files",
         )
 
@@ -90,7 +90,7 @@ def check_files(  # noqa: C901
                 tree.add(f"{f.dcfile} [green]✔️[/green]")
                 total_found += 1
             elif f.status == "skipped":
-                tree.add(f"{f.dcfile} [yellow]⏭️(Skipped)[/yellow]")
+                tree.add(f"{f.dcfile} [yellow]⏭️  (Skipped)[/yellow]")
                 total_skipped += 1
             else:
                 tree.add(f"{f.dcfile} [red]🔴[/red]")

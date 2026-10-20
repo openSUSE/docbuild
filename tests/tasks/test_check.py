@@ -40,8 +40,9 @@ async def test_check_repository_files_all_found(
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
     assert any(r.status == "found" for files in result.values() for r in files)
 
 
@@ -64,8 +65,9 @@ async def test_check_repository_files_missing(
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
     assert any(r.status == "error" for files in result.values() for r in files)
 
 
@@ -87,8 +89,9 @@ async def test_process_git_failure(
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
     assert any(r.status == "error" for files in result.values() for r in files)
 
 
@@ -113,8 +116,9 @@ async def test_check_repository_files_skips_deliverables_without_git(
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
     assert any(r.status == "skipped" for files in result.values() for r in files)
 
 
@@ -129,8 +133,9 @@ async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_co
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
+    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
     assert not any(result.values())
 
 
@@ -140,9 +145,10 @@ async def test_process_no_xml_files(mock_parse_portal_config, tmp_path):
     """Verify behavior when the main portal config is missing."""
     main_portal_config = tmp_path / "missing.xml"
     repo_root = tmp_path / "repos"
+    prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, doctypes=None)
-    assert not any(result.values())
+    with pytest.raises(FileNotFoundError):
+        await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
 
 
 @pytest.mark.asyncio
@@ -163,10 +169,11 @@ async def test_check_repository_files_with_explicit_doctypes(
 
     main_portal_config = tmp_path / "config.xml"
     main_portal_config.write_text("<xml/>")
+    prebuilt_dir = tmp_path / "prebuilt"
 
     explicit_doctypes = [Doctype.from_str("sles/16.0/en-us")]
 
     result = await check_repository_files(
-        main_portal_config, tmp_path / "repos", doctypes=explicit_doctypes
+        main_portal_config, tmp_path / "repos", prebuilt_dir, doctypes=explicit_doctypes
     )
     assert any(r.status == "found" for files in result.values() for r in files)
