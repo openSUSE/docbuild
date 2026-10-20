@@ -181,18 +181,20 @@ class Category(BaseModel):
                 if not cat_id:
                     continue
                 title = lng.findtext("title")
-                is_default = (
-                    convert2bool(lng.attrib.get("default", ""))
-                    if "default" in lng.attrib
-                    else False
-                )
-                by_id.setdefault(cat_id, []).append(
-                    CategoryTranslation(
-                        lang=LanguageCode(language=cat_lang),
-                        title=title.strip() if title else "",
-                        default=is_default,
+                title_str = title.strip() if title else ""
+                lang_code = LanguageCode(language=cat_lang)
+                if "default" in lng.attrib:
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                        default=convert2bool(lng.attrib.get("default", "")),
                     )
-                )
+                else:
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                    )
+                by_id.setdefault(cat_id, []).append(cat_trans)
 
         for cat_id, translations in by_id.items():
             yield cls(id=cat_id, translations=translations)
