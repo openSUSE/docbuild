@@ -120,6 +120,22 @@ def test_rsync_options_to_args(options: RsyncOptions, expected: list[str]) -> No
     assert options.to_args() == expected
 
 
+def test_rsync_options_positional_extra_args() -> None:
+    """Keep the existing positional extra_args argument compatible."""
+    options = RsyncOptions(
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        [],
+        ["--bwlimit=1000"],
+    )
+
+    assert options.to_args() == ["-a", "--bwlimit=1000"]
+
+
 @pytest.mark.parametrize(
     "name",
     [

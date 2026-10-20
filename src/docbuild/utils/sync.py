@@ -59,6 +59,7 @@ class RsyncOptions:
     files_from: Path | str | None = field(
         default=None,
         metadata={"flag": "--files-from"},
+        kw_only=True,
     )
     """Path (or string) to a file that lists what to transfer (``--files-from``).
 
