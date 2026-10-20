@@ -109,7 +109,9 @@ class RsyncOptions:
                 case _:
                     args.extend([flag, str(value)])
 
-        if self.files_from is not None:
+        # Restore the recursion implied by -a only in archive mode; extra_args
+        # follow so callers can override this behavior.
+        if self.files_from is not None and self.archive:
             args.append("-r")
 
         args.extend(self.extra_args)
