@@ -26,8 +26,8 @@ APP_NAME: str = "docbuild"
 DEFAULT_ENV_NAME = "default-env"
 """The default server name used in the application configuration."""
 
-DEFAULT_LANGS: tuple[str, ...]= ("en-us",)
-"""The default languages used by the application."""
+DEFAULT_LANG: str = "en-us"
+"""The default language used by the application."""
 
 ALLOWED_LANGUAGES: frozenset[str] = frozenset(
     "de-de en-us es-es fr-fr ja-jp ko-kr pt-br zh-cn".split(" "),

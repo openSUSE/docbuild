@@ -5,7 +5,7 @@ import logging
 
 from lxml import etree
 
-from docbuild.constants import DEFAULT_LANGS, XML_ID
+from docbuild.constants import DEFAULT_LANG, XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 
@@ -39,7 +39,7 @@ def get_deliverable_from_doctype(
 
 def is_default_lang(language: etree._Element) -> bool:
     """Return True if the locale element is for a default language."""
-    return language.attrib.get("lang") in DEFAULT_LANGS
+    return language.attrib.get("lang") == DEFAULT_LANG
 
 
 def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]:
@@ -53,7 +53,7 @@ def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]
     :return: The synthetic deliverables, or an empty list if there is no blueprint.
     """
     lang_code = language.get("lang")
-    default_lang = DEFAULT_LANGS[0]
+    default_lang = DEFAULT_LANG
     default_locale = language.getparent().find(f"locale[@lang='{default_lang}']")
     if default_locale is None:
         return

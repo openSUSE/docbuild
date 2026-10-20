@@ -17,7 +17,7 @@ from pydantic import (
     model_validator,
 )
 
-from ..constants import DEFAULT_LANGS, XML_ID
+from ..constants import DEFAULT_LANG, XML_ID
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 from ..utils.convert import convert2bool
@@ -45,7 +45,7 @@ class Description(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English descriptions as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
@@ -97,7 +97,7 @@ class CategoryTranslation(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English translations as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
@@ -244,7 +244,7 @@ class Archive(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English translations as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
