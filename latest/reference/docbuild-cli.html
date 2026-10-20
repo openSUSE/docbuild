@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; Docbuild Documentation 0.26.1.dev4+gad768a0c2.d20261019</title>
+    <title>docbuild CLI &#8212; Docbuild Documentation 0.26.1.dev5+g4c3cb191e.d20261020</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=73f9238b"></script>
+    <script src="../_static/documentation_options.js?v=5291f1da"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -410,6 +410,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_llms/index.html">docbuild.cli.cmd_llms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_portal/cmd_dir/index.html">docbuild.cli.cmd_portal.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_portal/cmd_list/index.html">docbuild.cli.cmd_portal.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_autoapi/docbuild/cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
 </ul>
@@ -1177,6 +1178,26 @@ existing HTML files pointing to the new Markdown counterparts.</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>portal<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 </pre></div>
 </div>
+<section id="docbuild-portal-dir">
+<h4>dir<a class="headerlink" href="#docbuild-portal-dir" title="Link to this heading">#</a></h4>
+<p>Display the portal configuration directory.</p>
+<dl class="simple">
+<dt>Example:</dt><dd><p>docbuild portal dir</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context object.</p>
+</dd>
+<dt class="field-even">returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(None) Prints the resolved directory path to stdout.</p>
+</dd>
+</dl>
+<p class="rubric">Usage</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>portal<span class="w"> </span>dir<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+</section>
 <section id="docbuild-portal-list">
 <h4>list<a class="headerlink" href="#docbuild-portal-list" title="Link to this heading">#</a></h4>
 <p>List products, docsets, and deliverables from the portal config.</p>
@@ -1411,6 +1432,7 @@ or use –all to clone all configured repositories. Do not combine them.</p>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-portal">portal</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-portal-dir">dir</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-portal-list">list</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild-portal-validate">validate</a></li>
 </ul>
