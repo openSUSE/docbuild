@@ -1,10 +1,9 @@
-"""CLI interface to build a document.
+"""Build a documentation deliverables from source.
 
 A document (or "doctype") consists of ``[PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS``
 with the following properties:
 
 \b
-
 * (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the
   product or use "*"
 * (Optional) ``DOCSET`` is the docset, usually the version or release of
@@ -26,6 +25,7 @@ Examples:
   docbuild build run "sles/*@unsupported/en-us,de-de"
   docbuild build run "sles/@beta,supported/de-de"
 
+\b
 * ``"//en-us"``
   Builds all supported deliverables for English
 * ``"sles/*/en-us"``
@@ -85,10 +85,6 @@ def run(
     """
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
-
-    if not context.envconfig:
-        console_err.print("[error]Environment configuration is missing.[/]")
-        ctx.exit(1)
 
     assert context.envconfig is not None
     env = context.envconfig
