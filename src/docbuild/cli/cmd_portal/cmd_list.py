@@ -50,6 +50,9 @@ def expand_deliverables(
         # 1. Project blueprints
         if native_lang == "en-us" and d.xml.translations:
             for t_lang in d.xml.translations:
+                if t_lang == native_lang:
+                    continue  # Native locale is added once below
+
                 if (t_lang, prod, doc, d_id) in native_keys:
                     continue  # Skip if native override exists
 
