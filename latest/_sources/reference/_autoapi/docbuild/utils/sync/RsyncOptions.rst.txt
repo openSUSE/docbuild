@@ -69,6 +69,19 @@ docbuild.utils.sync.RsyncOptions
 
 
 
+   .. py:attribute:: files_from
+      :type:  pathlib.Path | str | None
+      :value: None
+
+
+      Path (or string) to a file that lists what to transfer (``--files-from``).
+
+      Each path in the file is relative to the source path. In archive mode, ``-r`` is
+      also passed, because rsync turns off the recursion implied by ``-a`` when a file
+      list is used. The file is not read or validated by ``rsync()``.
+
+
+
    .. py:attribute:: extra_args
       :type:  list[str]
       :value: []
