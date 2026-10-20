@@ -45,14 +45,18 @@ new shell afterwards.
          _DOCBUILD_COMPLETE=fish_source docbuild | source
 
 The commands above generate the completion script each time a shell starts.
-To make startup faster, you can save the script to a file once and source
-that file instead, for example for Bash:
+To make startup faster, you can save the script to a file once instead. For
+Bash, save it to the user completion directory of the ``bash-completion``
+package, which follows the XDG Base Directory specification:
 
 .. code-block:: shell-session
 
-   $ _DOCBUILD_COMPLETE=bash_source docbuild > ~/.docbuild-complete.bash
+   $ dir=${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions
+   $ mkdir -p "$dir"
+   $ _DOCBUILD_COMPLETE=bash_source docbuild > "$dir/docbuild"
 
-Then add ``. ~/.docbuild-complete.bash`` to your :file:`~/.bashrc`.
+``bash-completion`` loads this file the first time you press :kbd:`Tab` after
+:command:`docbuild`, so remove the ``eval`` line from :file:`~/.bashrc`.
 Regenerate the file after upgrading :command:`docbuild`.
 
 
@@ -66,7 +70,7 @@ Press :kbd:`Tab` after a partial subcommand or option to complete it:
    $ docbuild po<Tab>
    $ docbuild portal
 
-   $ docbuild build --skip-<Tab>
+   $ docbuild build run --skip-<Tab>
    --skip-metadata     --skip-repo-update
 
 
@@ -74,9 +78,8 @@ Completing Doctypes
 -------------------
 
 Commands that accept doctypes (see :ref:`concept-doctype-syntax`), such as
-:command:`docbuild build`, :command:`docbuild portal list`,
-:command:`docbuild metadata run`, :command:`docbuild check files`, and the
-:command:`docbuild cache` subcommands, complete each
+:command:`docbuild build run`, :command:`docbuild portal list`,
+:command:`docbuild metadata run`, and more, complete each
 part of the doctype ``PRODUCT/DOCSETS/LANGS`` separately:
 
 Product
@@ -96,14 +99,14 @@ last item is completed.
 .. code-block:: shell-session
    :caption: Completing a doctype step by step
 
-   $ docbuild build sl<Tab>
+   $ docbuild build run sl<Tab>
    sle-ha  sle-hpc  sle-micro  sled  sles  sles-sap  ...
 
-   $ docbuild build sles/<Tab>
+   $ docbuild build run sles/<Tab>
    sles/*  sles/15-SP7  sles/16.0
 
-   $ docbuild build sles/16.0/de<Tab>
-   $ docbuild build sles/16.0/de-de
+   $ docbuild build run sles/16.0/de<Tab>
+   $ docbuild build run sles/16.0/de-de
 
 Docset completion reads the environment config in the same way as a normal
 :command:`docbuild` run, including the ``--env-config`` and

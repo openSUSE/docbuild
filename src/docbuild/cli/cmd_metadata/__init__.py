@@ -6,13 +6,13 @@ from pathlib import Path
 
 import click
 
-from docbuild.cli.callback import validate_doctypes
-from docbuild.cli.completion import complete_doctypes
-from docbuild.cli.console import console as stdout, console_err
-from docbuild.cli.context import DocBuildContext
-from docbuild.models.doctype import Doctype
-from docbuild.tasks.metadata.runner import process
-from docbuild.utils.contextmgr import make_timer
+from ...models.doctype import Doctype
+from ...tasks.metadata.runner import process
+from ...utils.contextmgr import make_timer
+from ..callback import validate_doctypes
+from ..completion import complete_doctypes
+from ..console import console as stdout, console_err
+from ..context import DocBuildContext
 
 
 @click.group(help=__doc__)

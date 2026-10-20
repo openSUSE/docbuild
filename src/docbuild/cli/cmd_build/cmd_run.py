@@ -51,6 +51,7 @@ from ...tasks.metadata.runner import process as metadata_process
 from ...utils.contextmgr import make_timer
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
+from ..completion import complete_doctypes
 from ..console import console, console_err
 from ..context import DocBuildContext
 
@@ -59,7 +60,9 @@ from ..context import DocBuildContext
     name="run",
     help=__doc__,
 )
-@click.argument("doctypes", nargs=-1, callback=validate_doctypes)
+@click.argument(
+    "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
+)
 @click.option(
     "-S", "--skip-repo-update", is_flag=True, default=False, show_default=True,
     help="Skip updating git repositories before processing.",

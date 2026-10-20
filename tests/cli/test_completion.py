@@ -153,6 +153,34 @@ def test_load_portal_tree_missing_file_returns_none(tmp_path: Path) -> None:
     assert load_portal_tree(ctx) is None
 
 
+def test_load_portal_tree_invalid_xml_returns_none(tmp_path: Path) -> None:
+    portal = tmp_path / "portal.xml"
+    portal.write_text("<portal><unclosed></portal>", encoding="utf-8")
+    ctx = make_ctx(env_overrides=(f"paths.main_portal_config={portal}",))
+
+    assert load_portal_tree(ctx) is None
+
+
+def test_load_portal_tree_invalid_toml_returns_none(tmp_path: Path) -> None:
+    env_config = tmp_path / "env.toml"
+    env_config.write_text("this is = not = toml", encoding="utf-8")
+
+    assert load_portal_tree(make_ctx(env_config=env_config)) is None
+
+
+def test_load_portal_tree_malformed_override_returns_none() -> None:
+    assert load_portal_tree(make_ctx(env_overrides=("no-equals-sign",))) is None
+
+
+def test_load_portal_tree_propagates_unexpected_errors() -> None:
+    """Only configuration errors are swallowed; a bug still surfaces."""
+    with (
+        patch.object(completion, "handle_config", side_effect=RuntimeError("bug")),
+        pytest.raises(RuntimeError, match="bug"),
+    ):
+        load_portal_tree(make_ctx())
+
+
 def iter_doctypes_params(
     group: click.Group, path: str = ""
 ) -> Iterator[tuple[str, click.Parameter]]:

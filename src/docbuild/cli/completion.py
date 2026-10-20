@@ -33,6 +33,14 @@ from .defaults import DEFAULT_ENV_CONFIG
 
 log = logging.getLogger(__name__)
 
+#: Errors from loading the environment and portal config during completion:
+#: an unreadable file (:class:`OSError`), invalid TOML, settings or
+#: ``xi:include`` (:class:`ValueError`, which covers
+#: :class:`tomllib.TOMLDecodeError` and :class:`pydantic.ValidationError`),
+#: a malformed ``--set-env`` (:class:`click.ClickException`), and invalid
+#: XML (:class:`lxml.etree.LxmlError`).
+CONFIG_ERRORS = (OSError, ValueError, click.ClickException, etree.LxmlError)
+
 
 def collect_docsets(
     tree: etree._ElementTree | etree._Element, product: str
@@ -81,7 +89,7 @@ def load_portal_tree(ctx: click.Context) -> etree._ElementTree | None:
         portal_config = Path(envconfig.paths.main_portal_config).expanduser()
         return asyncio.run(parse_portal_config(portal_config))
 
-    except Exception as err:  # Completion must never fail
+    except CONFIG_ERRORS as err:  # Completion must never break the shell
         log.debug("Cannot load portal config for completion: %s", err)
         return None
 

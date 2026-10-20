@@ -5,12 +5,12 @@ from pathlib import Path
 
 import click
 
-from docbuild.cli.callback import validate_doctypes
-from docbuild.cli.completion import complete_doctypes
-from docbuild.cli.console import console
-from docbuild.cli.context import DocBuildContext
-from docbuild.constants import CACHE_FILE_EXT
-from docbuild.models.doctype import Doctype
+from ...constants import CACHE_FILE_EXT
+from ...models.doctype import Doctype
+from ..callback import validate_doctypes
+from ..completion import complete_doctypes
+from ..console import console
+from ..context import DocBuildContext
 
 
 def expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
