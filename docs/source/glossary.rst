@@ -80,10 +80,8 @@ For Python specific terms, look into:
 
    Doctype
       A formal syntax to identify one or many set of documents.
-      The syntax is ``[PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS`` and
-      contains product, docset, lifecycles, and language.
 
-      See section :ref:`doctype-syntax`.
+      See section :ref:`ebnf-doctype-syntax`.
 
    Docserv Config
       A deprecated XML configuration that defines products, releases, deliverables, and translations.

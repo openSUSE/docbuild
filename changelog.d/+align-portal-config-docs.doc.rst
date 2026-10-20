@@ -1,1 +1,0 @@
-Aligned Portal configuration documentation and XML snippets with the RelaxNG schema (:file:`portal-config.rnc`). Corrected ``xml:id`` usage, updated child element models, documented supported link formats and lifecycle states, and expanded xref deliverable documentation.

@@ -37,7 +37,7 @@ def test_metadata_command_delegates_to_task(runner, tmp_path, mock_generate_meta
     context.appconfig = MagicMock()
     context.appconfig.max_workers = 4
 
-    result = runner.invoke(metadata, [], obj=context)
+    result = runner.invoke(metadata, ["run"], obj=context)
 
     assert result.exit_code == 0
     mock_generate_metadata.assert_awaited_once_with(
@@ -67,7 +67,7 @@ def test_metadata_command_with_flags(runner, tmp_path, mock_generate_metadata):
 
     result = runner.invoke(
         metadata,
-        ["--exitfirst", "--skip-repo-update"],
+        ["run", "--exitfirst", "--skip-repo-update"],
         obj=context
     )
 
@@ -76,3 +76,42 @@ def test_metadata_command_with_flags(runner, tmp_path, mock_generate_metadata):
     kwargs = mock_generate_metadata.call_args.kwargs
     assert kwargs["exitfirst"] is True
     assert kwargs["skip_repo_update"] is True
+
+
+
+def test_metadata_dir_default_json(runner):
+    from unittest.mock import MagicMock
+
+    from docbuild.cli.context import DocBuildContext
+    context = DocBuildContext()
+    mock_env = MagicMock()
+    mock_env.paths.json_cache_dir = "/fake/json/dir"
+    context.envconfig = mock_env
+
+    result = runner.invoke(metadata, ["dir"], obj=context)
+
+    assert result.exit_code == 0
+    assert "/fake/json/dir" in result.output
+
+def test_metadata_dir_meta_flag(runner):
+    from unittest.mock import MagicMock
+
+    from docbuild.cli.context import DocBuildContext
+    context = DocBuildContext()
+    mock_env = MagicMock()
+    mock_env.paths.meta_cache_dir = "/fake/meta/dir"
+    context.envconfig = mock_env
+
+    result = runner.invoke(metadata, ["dir", "--meta"], obj=context)
+
+    assert result.exit_code == 0
+    assert "/fake/meta/dir" in result.output
+
+def test_metadata_dir_missing_config(runner):
+    from docbuild.cli.context import DocBuildContext
+    context = DocBuildContext()
+    context.envconfig = None
+
+    result = runner.invoke(metadata, ["dir"], obj=context)
+
+    assert result.exit_code != 0
