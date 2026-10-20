@@ -20,7 +20,7 @@ def test_xdg_site_config_dirs_default(monkeypatch):
 def test_xdg_site_config_dirs_multiple(monkeypatch):
     """Multiple XDG_CONFIG_DIRS entries are split into separate Paths."""
     monkeypatch.setenv("XDG_CONFIG_DIRS", "/etc/xdg:/opt/etc/xdg")
-    dirs = _xdg_site_config_dirs("docbuild")
+    dirs = xdg_site_config_dirs("docbuild")
     assert dirs == (Path("/etc/xdg/docbuild"), Path("/opt/etc/xdg/docbuild"))
 
 
