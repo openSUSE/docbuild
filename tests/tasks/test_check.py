@@ -10,14 +10,21 @@ from docbuild.tasks.check import check_repository_files
 @pytest.fixture
 def mock_deliverable():
     mock_deli = MagicMock()
-    mock_deli.git = MagicMock()
-    mock_deli.git.url = "gh://mock/repo"
-    mock_deli.branch = "main"
-    mock_deli.subdir = "."
-    mock_deli.xml.dcfile = "README.md"
-    mock_deli.xml.is_xref = False
-    mock_deli.xml.is_prebuilt = False
-    mock_deli.lang_is_default = True
+    mock_deli.git.return_value.url = "gh://mock/repo"
+    mock_deli.branch.return_value = "main"
+    mock_deli.subdir.return_value = "."
+    mock_deli.lang_is_default.return_value = True
+
+    mock_view = MagicMock()
+    mock_view.dcfile = "README.md"
+    mock_view.target_id = "mock-id"
+    mock_view.basefile = "README.md"
+    mock_view.is_xref = False
+    mock_view.is_prebuilt = False
+    mock_view.target_type = "deliverable"
+    mock_view.final_target_node = None
+
+    mock_deli.xml.return_value = mock_view
     return mock_deli
 
 
@@ -104,11 +111,19 @@ async def test_check_repository_files_skips_deliverables_without_git(
 ):
     """Deliverables without a Git repository must not crash the check (#635)."""
     deli = MagicMock()
-    deli.git = None
-    deli.pdlangdc = "sles/16.0/en-us:DC-fake"
-    deli.xml.dcfile = "DC-fake"
-    deli.xml.is_prebuilt = False
-    deli.xml.is_xref = False
+    deli.git.return_value = None
+    deli.lang_is_default.return_value = True
+
+    mock_view = MagicMock()
+    mock_view.dcfile = "DC-fake"
+    mock_view.target_id = "DC-fake"
+    mock_view.basefile = "DC-fake"
+    mock_view.is_xref = False
+    mock_view.is_prebuilt = False
+    mock_view.target_type = "deliverable"
+    mock_view.final_target_node = None
+
+    deli.xml.return_value = mock_view
 
     mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = [deli]
