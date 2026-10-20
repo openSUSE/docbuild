@@ -16,6 +16,7 @@
    :caption: Tasks
 
    install
+   shell-completion
    check-env
    run-docbuild
    config/index
