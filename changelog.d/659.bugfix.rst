@@ -1,0 +1,3 @@
+Fixed ``docbuild doctor`` failing to extract versions for tools
+such as ``jing`` and ``trang``. Version checking now uses tool-specific
+arguments and execution timeouts to reliably detect installed dependencies.

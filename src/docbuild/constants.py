@@ -1,5 +1,6 @@
 """Constants for the CLI application."""
 
+from dataclasses import dataclass
 import os
 from pathlib import Path
 import re
@@ -219,14 +220,22 @@ XLINK_NS: Final[str] = "http://www.w3.org/1999/xlink"
 """The XML namespace URI for XLink attributes."""
 
 
+@dataclass(frozen=True)
+class DependencySpec:
+    """Specification for a system dependency."""
+
+    required: str | None = None
+    args: tuple[str, ...] = ("--version",)
+
+
 # First-order dependencies required by docbuild
-SYSTEM_DEPENDENCIES = {
-    "jing": ">=20220510",
-    "trang": None,  # Any version
-    "daps": ">=4",
-    "xmllint": None,
-    "xsltproc": None,
-    "rsync": None,
+SYSTEM_DEPENDENCIES: Final[dict[str, DependencySpec]] = {
+    "jing": DependencySpec(required=">=20220510", args=()),
+    "trang": DependencySpec(required=None, args=()),
+    "daps": DependencySpec(required=">=4"),
+    "xmllint": DependencySpec(required=None),
+    "xsltproc": DependencySpec(required=None),
+    "rsync": DependencySpec(required=None),
 }
 
 RUNTIME_PLACEHOLDERS: frozenset[str] = frozenset(

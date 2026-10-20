@@ -1,1 +1,0 @@
-Added virtual translation inheritance for empty locales in the metadata runner. Empty non-English locales now automatically generate synthetic cross-references pointing to the canonical ``en-us`` blueprint deliverables, ensuring all translation targets are included in aggregated JSON manifests.

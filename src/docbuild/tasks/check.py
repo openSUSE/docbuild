@@ -74,9 +74,17 @@ async def check_repository_files(
         log.error("No deliverables found for the selected doctypes.")
         return []
 
-    # 4. Group by repository and branch to optimize network calls
+    # 4. Group by repository and branch to optimize network calls.
+    # Deliverables without a Git repository (for example prebuilt ones) are
+    # skipped; there is nothing to verify for them.
     groups: dict[tuple[str, str], list[Deliverable]] = {}
     for d in all_deliverables:
+        if d.git is None:
+            log.debug(
+                "Skipping %s: no Git repository configured for this deliverable.",
+                d.pdlangdc,
+            )
+            continue
         key = (d.git.url, d.branch or "main")
         groups.setdefault(key, []).append(d)
 

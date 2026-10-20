@@ -2,6 +2,7 @@
 
 import click
 
+from .init import init_config
 from .list import list_config
 from .theme import theme_cmd
 from .validate import validate
@@ -14,6 +15,7 @@ def config(ctx: click.Context) -> None:
     pass
 
 
+config.add_command(init_config)
 config.add_command(list_config)
 config.add_command(theme_cmd)
 config.add_command(validate)
