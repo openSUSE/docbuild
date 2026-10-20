@@ -1,8 +1,10 @@
 """Logic for checking DC file availability in remote repositories."""
 
 from collections.abc import Sequence
+from dataclasses import dataclass
 import logging
 from pathlib import Path
+from typing import Literal
 
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
@@ -14,50 +16,29 @@ from docbuild.utils.git import ManagedGitRepo
 log = logging.getLogger(__name__)
 
 
-async def verify_repository_files(
-    repo_url: str,
-    branch: str,
-    deliverables: list[Deliverable],
-    repo_root: Path,
-) -> list[str]:
-    """Clone a repository and check for the existence of specific DC files."""
-    missing = []
-    # Use the first deliverable to get the repo's abbreviated name (surl)
-    repo_surl = deliverables[0].git.surl
-    log.info(f"Checking Repo: {repo_surl} [{branch}]")
+@dataclass
+class FileCheckResult:
+    """Result of checking a single DC file in the remote repository."""
 
-    repo_handler = ManagedGitRepo(repo_url, repo_root)
-
-    if not await repo_handler.clone_bare():
-        log.error(f"Repository inaccessible: {repo_surl}")
-        for d in deliverables:
-            # Format: [repo] product/version/lang:file
-            missing.append(f"[{repo_surl}] {d.xml.product_id}/{d.xml.docset_path}/{d.xml.lang}:{d.xml.dcfile}")
-        return missing
-
-    available_files = await repo_handler.ls_tree(branch)
-    for d in deliverables:
-        display_name = f"[{repo_surl}] {d.xml.product_id}/{d.xml.docset_path}/{d.xml.lang}:{d.xml.dcfile}"
-        if d.xml.dcfile in available_files:
-            log.info(f"Found: {display_name}")
-        else:
-            log.error(f"Missing: {display_name}")
-            missing.append(display_name)
-    return missing
+    doctype: str
+    dcfile: str
+    status: Literal["found", "skipped", "error"]
+    is_prebuilt: bool = False
 
 
-async def check_repository_files(
+async def check_repository_files(  # noqa: C901
+
     main_portal_config: Path,
     repo_root: Path,
     doctypes: Sequence[Doctype] | None
-) -> list[str]:
+) -> dict[str, list[FileCheckResult]]:
     """Verify DC file existence using official Deliverable models."""
     log.info("Starting DC file availability check...")
 
     # 1. Parse the main portal config (including XIncludes)
     if not main_portal_config.exists():
         log.warning("Main portal config not found: %s", main_portal_config)
-        return []
+        return {}
 
     stitch_tree = await parse_portal_config(main_portal_config)
 
@@ -65,37 +46,92 @@ async def check_repository_files(
     if not doctypes:
         doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES)]
 
-    # 3. Use official logic to extract Deliverable objects
-    all_deliverables: list[Deliverable] = []
+    results: dict[str, list[FileCheckResult]] = {}
+    repo_queries = {}
+
     for dt in doctypes:
-        all_deliverables.extend(get_deliverable_from_doctype(stitch_tree, dt))
+        dt_str = str(dt)
+        results[dt_str] = []
 
-    if not all_deliverables:
-        log.error("No deliverables found for the selected doctypes.")
-        return []
-
-    # 4. Group by repository and branch to optimize network calls.
-    # Deliverables without a Git repository (for example prebuilt ones) are
-    # skipped; there is nothing to verify for them.
-    groups: dict[tuple[str, str], list[Deliverable]] = {}
-    for d in all_deliverables:
-        if d.git is None:
-            log.debug(
-                "Skipping %s: no Git repository configured for this deliverable.",
-                d.pdlangdc,
-            )
+        deliverables = list(get_deliverable_from_doctype(stitch_tree, dt))
+        if not deliverables:
+            # Handle empty locale naturally without throwing a blocking error
+            log.debug("No deliverables found for doctype %s. (Possibly empty locale)", dt_str)
             continue
-        key = (d.git.url, d.branch or "main")
-        groups.setdefault(key, []).append(d)
 
-    # 5. Verification Loop
-    missing_files: list[str] = []
-    for (url, branch), deli_list in groups.items():
-        results = await verify_repository_files(url, branch, deli_list, repo_root)
-        missing_files.extend(results)
+        for d in deliverables:
+            # Safely extract dcfile (handling both properties and methods)
+            dcfile_val = getattr(d.xml, "dcfile", None)
+            dcfile = dcfile_val() if callable(dcfile_val) else dcfile_val
+            if not dcfile:
+                dcfile = "None"
 
-    # Final success message if no files were missing
-    if not missing_files:
-        log.info("All DC files are available in remote repositories.")
+            # Check for xref and resolve to the ultimate target
+            is_xref_val = getattr(d.xml, "is_xref", None)
+            is_xref = is_xref_val() if callable(is_xref_val) else is_xref_val
 
-    return missing_files
+            actual_d = d
+            if is_xref:
+                final_node_val = getattr(d.xml, "final_target_node", None)
+                final_node = final_node_val() if callable(final_node_val) else final_node_val
+                if final_node is not None:
+                    actual_d = Deliverable(final_node)
+
+            is_prebuilt_val = getattr(actual_d.xml, "is_prebuilt", None)
+            is_prebuilt = is_prebuilt_val() if callable(is_prebuilt_val) else is_prebuilt_val
+
+            git_val = getattr(actual_d, "git", None)
+            git_obj = git_val() if callable(git_val) else git_val
+
+            if is_prebuilt or git_obj is None:
+                results[dt_str].append(FileCheckResult(
+                    doctype=dt_str,
+                    dcfile=dcfile,
+                    status="skipped",
+                    is_prebuilt=True
+                ))
+                continue
+
+            branch_val = getattr(actual_d, "branch", None)
+            branch = branch_val() if callable(branch_val) else branch_val
+            branch = branch or "main"
+
+            is_default_val = getattr(d, "lang_is_default", None)
+            is_default_lang = is_default_val() if callable(is_default_val) else is_default_val
+
+            key = (git_obj.url, branch)
+            repo_queries.setdefault(key, []).append((actual_d, dt_str, dcfile, is_default_lang))
+
+    for (url, branch), items in repo_queries.items():
+        repo_handler = ManagedGitRepo(url, repo_root)
+
+        if not await repo_handler.clone_bare():
+            log.error("Repository inaccessible: %s", url)
+            for _actual_d, dt_str, dcfile, is_default_lang in items:
+                status = "error" if is_default_lang else "skipped"
+                results[dt_str].append(FileCheckResult(dt_str, dcfile, status))
+            continue
+
+        available_files = await repo_handler.ls_tree(branch)
+
+        for actual_d, dt_str, dcfile, is_default_lang in items:
+            subdir_val = getattr(actual_d, "subdir", None)
+            subdir = subdir_val() if callable(subdir_val) else subdir_val
+
+            target_file = dcfile
+            if subdir and subdir != ".":
+                target_file = f"{subdir}/{dcfile}"
+
+            target_file = target_file.strip("/")
+
+            # Accommodate full subtree paths and generic names
+            found = (target_file in available_files) or (dcfile in available_files)
+
+            if found:
+                status = "found"
+            else:
+                status = "error" if is_default_lang else "skipped"
+
+            results[dt_str].append(FileCheckResult(dt_str, dcfile, status))
+
+    return results

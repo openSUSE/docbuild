@@ -1,0 +1,1 @@
+Refactored the :command:`docbuild check files` subcommand to correctly resolve cross-repository references, gracefully skip missing translations and empty locales instead of failing, and provide a structured, visual tree output of the verification results.

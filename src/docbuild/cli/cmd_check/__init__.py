@@ -1,8 +1,11 @@
 import asyncio
 from pathlib import Path
+import sys
 
 import click
+from rich.tree import Tree
 
+from docbuild.cli.console import console
 from docbuild.cli.context import DocBuildContext
 from docbuild.models.doctype import Doctype
 from docbuild.tasks.check import check_repository_files
@@ -30,7 +33,8 @@ def cmd_check() -> None:
     help="Check all DC files (all products, docsets, and languages).",
 )
 @click.pass_obj
-def check_files(
+def check_files(  # noqa: C901
+
     ctx: DocBuildContext,
     doctypes: tuple[Doctype, ...],
     check_all: bool,
@@ -63,16 +67,38 @@ def check_files(
     # An empty doctype list represents the "--all" case (use the task defaults).
     selected = list(doctypes) if doctypes else None
 
-    async def main() -> list[str]:
+    async def main() -> dict:
         return await asyncio.create_task(
             check_repository_files(main_portal_config, repo_root, selected),
             name="check-files",
         )
 
-    missing: list[str] = asyncio.run(main())
+    results = asyncio.run(main())
 
-    if missing:
-        missing_str = "\n- ".join(str(f) for f in missing if f)
-        raise click.ClickException(
-            f"DC file verification failed. The following files are missing:\n- {missing_str}"
-        )
+    total_found = 0
+    total_skipped = 0
+    total_errors = 0
+
+    # Build the Rich UI output
+    for doctype_str, files in results.items():
+        if not files:
+            continue
+
+        tree = Tree(f"[bold]{doctype_str}[/bold]")
+        for f in files:
+            if f.status == "found":
+                tree.add(f"{f.dcfile} [green]✔️[/green]")
+                total_found += 1
+            elif f.status == "skipped":
+                tree.add(f"{f.dcfile} [yellow]⏭️(Skipped)[/yellow]")
+                total_skipped += 1
+            else:
+                tree.add(f"{f.dcfile} [red]🔴[/red]")
+                total_errors += 1
+
+        console.print(tree)
+
+    console.print(f"\nFound {total_found} files, {total_skipped} skipped, {total_errors} error.")
+
+    if total_errors > 0:
+        sys.exit(1)
