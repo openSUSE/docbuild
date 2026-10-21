@@ -1,5 +1,7 @@
 """Tests for system dependency validation and version checking."""
 
+import dataclasses
+import logging
 from pathlib import Path
 import subprocess
 from unittest.mock import MagicMock, patch
@@ -7,7 +9,33 @@ from unittest.mock import MagicMock, patch
 from click.testing import CliRunner
 import pytest
 
+from docbuild.constants import SYSTEM_DEPENDENCIES, DependencySpec
 from docbuild.utils import sysdeps
+
+
+def test_dependency_spec_defaults_and_immutability() -> None:
+    """DependencySpec sets expected defaults and is immutable."""
+    spec = DependencySpec()
+    assert spec.required is None
+    assert spec.args == ("--version",)
+
+    custom = DependencySpec(required=">=1.0.0", args=("-v",))
+    assert custom.required == ">=1.0.0"
+    assert custom.args == ("-v",)
+
+    with pytest.raises(dataclasses.FrozenInstanceError):
+        spec.required = ">=2.0.0"  # type: ignore[misc]
+
+
+def test_system_dependencies_spec_definitions() -> None:
+    """SYSTEM_DEPENDENCIES contains DependencySpec instances with expected configurations."""
+    for name, spec in SYSTEM_DEPENDENCIES.items():
+        assert isinstance(spec, DependencySpec), f"{name} is not a DependencySpec"
+
+    # Jing and Trang should specify empty args to avoid hanging/invalid option error
+    assert SYSTEM_DEPENDENCIES["jing"].args == ()
+    assert SYSTEM_DEPENDENCIES["trang"].args == ()
+    assert SYSTEM_DEPENDENCIES["daps"].args == ("--version",)
 
 
 def test_get_binary_version_parses_stdout() -> None:
@@ -46,19 +74,125 @@ def test_get_binary_version_returns_none_on_error() -> None:
         assert sysdeps.get_binary_version("missing-tool") is None
 
 
+def test_get_binary_version_returns_none_on_subprocess_error() -> None:
+    """A SubprocessError (e.g. timeout) yields None instead of raising."""
+    with patch.object(
+        subprocess,
+        "run",
+        side_effect=subprocess.TimeoutExpired(cmd=["tool"], timeout=5.0),
+    ):
+        assert sysdeps.get_binary_version("hanging-tool") is None
+
+
+def test_get_binary_version_logs_debug_on_error(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """A subprocess failure logs a debug message."""
+    with (
+        patch.object(subprocess, "run", side_effect=OSError("binary crashed")),
+        caplog.at_level(logging.DEBUG, logger=sysdeps.__name__),
+    ):
+        result = sysdeps.get_binary_version("broken-tool")
+        assert result is None
+        assert (
+            "Failed to execute 'broken-tool' to retrieve version: binary crashed"
+            in caplog.text
+        )
+
+
+def test_get_binary_version_custom_args() -> None:
+    """Custom CLI arguments are forwarded to subprocess.run."""
+    mock_result = MagicMock()
+    mock_result.stdout = "tool version 1.2.3\n"
+    mock_result.stderr = ""
+
+    with patch.object(subprocess, "run", return_value=mock_result) as mock_run:
+        assert sysdeps.get_binary_version("tool", args=("-V",)) == "1.2.3"
+        mock_run.assert_called_once_with(
+            ["tool", "-V"],
+            capture_output=True,
+            text=True,
+            errors="replace",
+            check=False,
+            stdin=subprocess.DEVNULL,
+            timeout=5.0,
+        )
+
+
+def test_get_binary_version_custom_timeout() -> None:
+    """Custom timeout is forwarded to subprocess.run."""
+    mock_result = MagicMock()
+    mock_result.stdout = "1.0.0"
+    mock_result.stderr = ""
+
+    with patch.object(subprocess, "run", return_value=mock_result) as mock_run:
+        assert sysdeps.get_binary_version("tool", timeout=12.5) == "1.0.0"
+        mock_run.assert_called_once_with(
+            ["tool", "--version"],
+            capture_output=True,
+            text=True,
+            errors="replace",
+            check=False,
+            stdin=subprocess.DEVNULL,
+            timeout=12.5,
+        )
+
+
+def test_check_dependencies_passes_spec_args() -> None:
+    """check_dependencies passes DependencySpec.args to get_binary_version."""
+    with (
+        patch.object(sysdeps.shutil, "which", return_value="/usr/bin/jing"),
+        patch.object(
+            sysdeps, "get_binary_version", return_value="20220510"
+        ) as mock_gbv,
+        patch.object(
+            sysdeps,
+            "SYSTEM_DEPENDENCIES",
+            {"jing": DependencySpec(required=">=20220510", args=())},
+        ),
+    ):
+        results = sysdeps.check_dependencies()
+
+    mock_gbv.assert_called_once_with("jing", args=())
+    assert results[0]["is_installed"] is True
+    assert results[0]["is_valid"] is True
+    assert results[0]["found"] == "20220510"
+
+
+def test_check_dependencies_supports_legacy_string_spec() -> None:
+    """check_dependencies converts raw string requirements into DependencySpec objects."""
+    with (
+        patch.object(sysdeps.shutil, "which", return_value="/usr/bin/legacy"),
+        patch.object(sysdeps, "get_binary_version", return_value="2.0.0") as mock_gbv,
+        patch.object(
+            sysdeps,
+            "SYSTEM_DEPENDENCIES",
+            {"legacy": ">=1.0.0"},
+        ),
+    ):
+        results = sysdeps.check_dependencies()
+
+    mock_gbv.assert_called_once_with("legacy", args=("--version",))
+    assert len(results) == 1
+    assert results[0]["name"] == "legacy"
+    assert results[0]["required"] == ">=1.0.0"
+    assert results[0]["is_installed"] is True
+    assert results[0]["is_valid"] is True
+
+
 def test_coerce_semver_pure_integer() -> None:
     """A plain integer version is treated as a single major version."""
-    assert sysdeps._coerce_semver("4") == sysdeps.semver.Version(4)
+    assert sysdeps.coerce_semver("4") == sysdeps.semver.Version(4)
 
 
 def test_coerce_semver_pads_incomplete_parts() -> None:
     """Short versions are zero-padded to strict SemVer."""
-    assert str(sysdeps._coerce_semver("3.4")) == "3.4.0"
+    assert str(sysdeps.coerce_semver("3.4")) == "3.4.0"
 
 
 def test_coerce_semver_truncates_extra_parts() -> None:
     """Extra version parts are dropped to keep three segments."""
-    assert str(sysdeps._coerce_semver("1.2.3.4")) == "1.2.3"
+    assert str(sysdeps.coerce_semver("1.2.3.4")) == "1.2.3"
 
 
 def test_check_dependencies_returns_missing_when_not_installed() -> None:

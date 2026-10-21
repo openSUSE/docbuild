@@ -1,7 +1,8 @@
 """System dependency validation and version checking."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from functools import wraps
+import logging
 import re
 import shutil
 import subprocess
@@ -10,7 +11,9 @@ from typing import ParamSpec, TypedDict, TypeVar
 import click
 import semver
 
-from ..constants import SYSTEM_DEPENDENCIES
+from ..constants import SYSTEM_DEPENDENCIES, DependencySpec
+
+log = logging.getLogger(__name__)
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -27,26 +30,46 @@ class DependencyStatus(TypedDict):
     message: str
 
 
-def get_binary_version(name: str) -> str | None:
-    """Run a tool and attempt to extract its version string using regex."""
-    try:
-        # Most tools respond to --version on either stdout or stderr
-        result = subprocess.run(
-            [name, "--version"], capture_output=True, text=True, check=False
-        )
-        output = result.stdout.strip() or result.stderr.strip()
+def get_binary_version(
+    name: str,
+    args: Sequence[str] = ("--version",),
+    *,
+    timeout: float = 5.0,
+) -> str | None:
+    """Run a tool and attempt to extract its version string using regex.
 
-        # Extract the first sequence of numbers and dots (e.g., "1.2.3" or "20220510")
-        match = re.search(r"(\d+(?:\.\d+)*)", output)
-        if match:
-            return match.group(1)
-    except Exception:
-        pass
+    :param name: Name or path of the executable.
+    :param args: Command line arguments to pass to the tool (defaults to ``["--version"]``).
+    :param timeout: Maximum seconds to wait before aborting (default 5.0).
+    :return: Extracted version string, or None if unavailable.
+    """
+    try:
+        # Most tools respond to --version on either stdout or stderr, but some
+        # (like jing or trang) require custom or empty arguments.
+        result = subprocess.run(
+            [name, *args],
+            capture_output=True,
+            text=True,
+            errors="replace",
+            check=False,
+            stdin=subprocess.DEVNULL,
+            timeout=timeout,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        log.debug("Failed to execute '%s' to retrieve version: %s", name, exc)
+        return None
+
+    output = result.stdout.strip() or result.stderr.strip()
+
+    # Extract the first sequence of numbers and dots (e.g., "1.2.3" or "20220510")
+    match = re.search(r"(\d+(?:\.\d+)*)", output)
+    if match:
+        return match.group(1)
 
     return None
 
 
-def _coerce_semver(version_str: str) -> semver.Version:
+def coerce_semver(version_str: str) -> semver.Version:
     """Convert loose version strings to strict SemVer objects."""
     # Handle pure integers (e.g., "4") via the native class constructor
     if version_str.isdigit():
@@ -68,13 +91,18 @@ def check_dependencies() -> list[DependencyStatus]:
     # Pre-compile regex for performance outside the loop
     req_pattern = re.compile(r"^\s*(>=|<=|==|>|<)\s*(.*)$")
 
-    for name, requirement in SYSTEM_DEPENDENCIES.items():
+    for name, raw_spec in SYSTEM_DEPENDENCIES.items():
+        spec = (
+            raw_spec
+            if isinstance(raw_spec, DependencySpec)
+            else DependencySpec(required=raw_spec)
+        )
         is_installed = shutil.which(name) is not None
 
         if not is_installed:
             results.append({
                 "name": name,
-                "required": requirement,
+                "required": spec.required,
                 "found": None,
                 "is_installed": False,
                 "is_valid": False,
@@ -82,9 +110,9 @@ def check_dependencies() -> list[DependencyStatus]:
             })
             continue
 
-        found_version = get_binary_version(name)
+        found_version = get_binary_version(name, args=spec.args)
 
-        if requirement is None:
+        if spec.required is None:
             # Tool exists, and any version is fine
             results.append({
                 "name": name,
@@ -97,53 +125,53 @@ def check_dependencies() -> list[DependencyStatus]:
             continue
 
         # Parse requirement using the pre-compiled regex
-        req_match = req_pattern.match(requirement)
+        req_match = req_pattern.match(spec.required)
         if not req_match:
             results.append({
                 "name": name,
-                "required": requirement,
+                "required": spec.required,
                 "found": found_version,
                 "is_installed": True,
                 "is_valid": True,  # Cannot parse req, assume OK but warn
-                "message": f"Cannot parse requirement: {requirement}",
+                "message": f"Cannot parse requirement: {spec.required}",
             })
             continue
 
         op, min_v = req_match.groups()
 
         if found_version is None:
-             results.append({
+            results.append({
                 "name": name,
-                "required": requirement,
+                "required": spec.required,
                 "found": "Unknown",
                 "is_installed": True,
                 "is_valid": True,
                 "message": "Warning: Could not determine version",
             })
-             continue
+            continue
 
         # Compare semantic versions using semver's match expression
         try:
-            v_found = _coerce_semver(found_version)
+            v_found = coerce_semver(found_version)
 
             # The right side of the expression also needs to be strictly formatted
-            v_min_strict = str(_coerce_semver(min_v))
+            v_min_strict = str(coerce_semver(min_v))
 
             # Evaluate using semver's match engine (e.g., v_found.match(">=4.0.0"))
             is_valid = v_found.match(f"{op}{v_min_strict}")
 
             results.append({
                 "name": name,
-                "required": requirement,
+                "required": spec.required,
                 "found": found_version,
                 "is_installed": True,
                 "is_valid": is_valid,
                 "message": "OK" if is_valid else "Version too old",
             })
-        except Exception:
-             results.append({
+        except (ValueError, TypeError):
+            results.append({
                 "name": name,
-                "required": requirement,
+                "required": spec.required,
                 "found": found_version,
                 "is_installed": True,
                 "is_valid": True,

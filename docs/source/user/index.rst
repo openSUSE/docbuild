@@ -3,18 +3,26 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Concepts
+
+   concepts/doctypes
+   concepts/config-concepts
+   concepts/config-files
+   concepts/naming-conventions
+   concepts/placeholders
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tasks
 
    install
-   config-concepts/index
+   shell-completion
+   check-env
+   run-docbuild
    config/index
    portal-config/index
-   run-docbuild
-
+   clone
    create-metadata
    build
    publishing
-   clone
-   metadata
    create-llms
-   check-env

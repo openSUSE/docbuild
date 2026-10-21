@@ -3,7 +3,7 @@
 Publishing Deliverables
 =======================
 
-After a successful build, :command:`docbuild build` copies each format's output
+After a successful build, :command:`docbuild build run` copies each format's output
 from its fresh temporary build directory into the local target configured by
 ``paths.target.target_base_dir`` and ``paths.target.target_dir_dyn``. This output
 normally contains only deliverables, so there should be no version-control or

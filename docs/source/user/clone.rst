@@ -9,6 +9,11 @@ During the process of building documentation, the script clones Git repositores 
    :caption: Synopsis of :command:`docbuild repo clone`
 
    docbuild repo clone [OPTIONS] REPO [REPO ...]
+   docbuild repo clone [OPTIONS] --all
+
+Choose exactly one mode: provide one or more repository arguments, or use ``--all`` to clone all repositories configured in the portal XML.
+Running ``docbuild repo clone`` without either selector produces a usage error and does not clone anything.
+Repository arguments and ``--all`` are mutually exclusive because they select specific repositories and all configured repositories, respectively.
 
 The ``REPO`` argument can be specified in various formats, such as:
 
@@ -40,6 +45,13 @@ For example, to clone the ``https://github.com/SUSE/doc-modular.git`` repository
    docbuild repo clone SUSE/doc-modular
 
 The command will clone the repository into the permanent storage directory.
+To explicitly clone all configured repositories, run:
+
+.. code-block:: console
+   :caption: Clone all configured repositories
+
+   $ docbuild repo clone --all
+
 You can find the exact path by running:
 
 .. code-block:: shell

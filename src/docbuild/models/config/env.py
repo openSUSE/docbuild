@@ -914,14 +914,17 @@ class EnvConfig(BaseModel):
         return cls.model_validate(data)
 
     @classmethod
-    def get_default_config(cls, resolve_placeholders: bool = True) -> dict[str, Any]:
+    def get_default_config(
+        cls, resolve_placeholders: bool = True, role: EnvRole = EnvRole.PRODUCTION
+    ) -> dict[str, Any]:
         """Generate the default environment configuration from the model.
 
         :param resolve_placeholders: If True, resolve placeholders in the config.
+        :param role: Environment role to include in the generated defaults.
         :return: The default configuration as a dictionary.
         """
         # 1. Create a raw instance with model-defined defaults
-        raw_instance = cls.model_validate({})
+        raw_instance = cls.model_validate({"general": {"role": role}})
         # 2. Dump to a dictionary
         raw_dict = raw_instance.model_dump(mode="json")
 

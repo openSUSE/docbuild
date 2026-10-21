@@ -468,3 +468,20 @@ def test_portal_list_flat_mode_metadata(mock_parse, tmp_path) -> None:
     assert "Translations: de-de" in res_flat_meta.output
     assert "Formats: HTML, PDF" in res_flat_meta.output
     assert "gh://suse/doc-modular" in res_flat_meta.output.lower()
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode_no_duplicate_en_us(mock_parse, tmp_path) -> None:
+    """Test that English deliverables with translations are listed only once (#661)."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, ["--flat", "sles/16.0/*"], obj=mock_ctx)
+    assert result.exit_code == 0, result.output
+    assert result.output.count("en-us/sles/16.0:admin_guide (DC-admin-guide)") == 1

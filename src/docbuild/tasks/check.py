@@ -14,7 +14,7 @@ from docbuild.utils.git import ManagedGitRepo
 log = logging.getLogger(__name__)
 
 
-async def _verify_repository_files(
+async def verify_repository_files(
     repo_url: str,
     branch: str,
     deliverables: list[Deliverable],
@@ -74,16 +74,24 @@ async def check_repository_files(
         log.error("No deliverables found for the selected doctypes.")
         return []
 
-    # 4. Group by repository and branch to optimize network calls
+    # 4. Group by repository and branch to optimize network calls.
+    # Deliverables without a Git repository (for example prebuilt ones) are
+    # skipped; there is nothing to verify for them.
     groups: dict[tuple[str, str], list[Deliverable]] = {}
     for d in all_deliverables:
+        if d.git is None:
+            log.debug(
+                "Skipping %s: no Git repository configured for this deliverable.",
+                d.pdlangdc,
+            )
+            continue
         key = (d.git.url, d.branch or "main")
         groups.setdefault(key, []).append(d)
 
     # 5. Verification Loop
     missing_files: list[str] = []
     for (url, branch), deli_list in groups.items():
-        results = await _verify_repository_files(url, branch, deli_list, repo_root)
+        results = await verify_repository_files(url, branch, deli_list, repo_root)
         missing_files.extend(results)
 
     # Final success message if no files were missing

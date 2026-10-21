@@ -28,7 +28,7 @@ from .deliverables import get_deliverable_from_doctype
 log = logging.getLogger(__name__)
 
 
-def _create_synthetic_document(d: Deliverable) -> Document:
+def create_synthetic_document(d: Deliverable) -> Document:
     """Phase 3: Create a synthetic Navigational Link for docset/product xrefs."""
     url = d.xml.target_url or "/"
     sdoc = SingleDocument(
@@ -40,7 +40,7 @@ def _create_synthetic_document(d: Deliverable) -> Document:
     return Document(docs=[sdoc], category=d.xml.categoryid)
 
 
-def _read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
+def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
     """Read JSON from disk and project into the referencing language if needed."""
     try:
         with actual_file.open(encoding="utf-8") as fh:
@@ -156,7 +156,7 @@ def load_documents_from_deliverables(
 
             tag_name = d.xml.target_type
             if tag_name in ("product", "docset"):
-                loaded_docs.append(_create_synthetic_document(d))
+                loaded_docs.append(create_synthetic_document(d))
                 continue
             elif tag_name == "deliverable":
                 # For concrete targets, read the metadata from the TARGET's cache path
@@ -176,7 +176,7 @@ def load_documents_from_deliverables(
         stdout.print(f"  | {actual_file.stem} [{d.xml.lang}]", markup=False)
 
         # 3. Read and project the JSON data
-        doc_model = _read_and_project_json(actual_file, d)
+        doc_model = read_and_project_json(actual_file, d)
         if doc_model:
             loaded_docs.append(doc_model)
 

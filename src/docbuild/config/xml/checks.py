@@ -623,7 +623,7 @@ def build_id_map(tree: etree._Element | etree._ElementTree) -> dict[str, etree._
     }
 
 
-def _has_circular_reference(
+def has_circular_reference(
     deliv: etree._Element,
     target: etree._Element,
     id_map: dict[str, etree._Element],
@@ -643,7 +643,7 @@ def _has_circular_reference(
     return False
 
 
-def _check_reference_nesting(
+def check_reference_nesting(
     deliv: etree._Element,
     target: etree._Element,
     linkend: str,
@@ -733,7 +733,7 @@ def check_deliverable_reference(
             )
             continue
 
-        if _has_circular_reference(deliv, target, id_map):
+        if has_circular_reference(deliv, target, id_map):
             yield CheckResult(
                 message=f"Circular reference in deliverable: points to cycle involving '{linkend}'.",
                 xpath=semantic_xpath(deliv),
@@ -755,7 +755,7 @@ def check_deliverable_reference(
             continue
 
         if target_tag == "deliverable":
-            yield from _check_reference_nesting(deliv, target, linkend, id_map)
+            yield from check_reference_nesting(deliv, target, linkend, id_map)
 
 
 check_deliverable_references = check_deliverable_reference

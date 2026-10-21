@@ -1,7 +1,7 @@
 import pytest
 
 from docbuild.models.doctype import Doctype
-from docbuild.utils.merge import _dedup_doctypes, merge_doctypes
+from docbuild.utils.merge import dedup_doctypes, merge_doctypes
 
 
 def dt(s: str) -> Doctype:
@@ -82,42 +82,42 @@ def test_merge_doctypes(inputs, expected):
 
 
 def test_dedup_doctypes_empty():
-    assert _dedup_doctypes([]) == []
+    assert dedup_doctypes([]) == []
 
 
 def test_dedup_doctypes_duplicates():
     d = dt("sles/1/en-us")
-    result = _dedup_doctypes([d, d, d])
+    result = dedup_doctypes([d, d, d])
     assert result == [d]
     assert result != [d, d, d]
 
 
 def test_dedup_doctypes_single():
     d = dt("sles/1/en-us")
-    result = _dedup_doctypes([d])
+    result = dedup_doctypes([d])
     assert result == [d]
 
 
 def test_dedup_doctypes_distinct():
     dt1 = dt("sles/1/en-us")
     dt2 = dt("sles/2/en-us")
-    result = _dedup_doctypes([dt1, dt2])
+    result = dedup_doctypes([dt1, dt2])
     assert set(result) == {dt1, dt2}
 
 
 def test_dedup_doctypes_order_preserved():
-    """Test that _dedup_doctypes preserves the order of first occurrence."""
+    """Test that dedup_doctypes preserves the order of first occurrence."""
     dt1 = dt("sles/1/en-us")
     dt2 = dt("sles/2/en-us")
     dt3 = dt("sles/1/en-us")  # duplicate of dt1
-    result = _dedup_doctypes([dt1, dt2, dt3])
+    result = dedup_doctypes([dt1, dt2, dt3])
     assert result == [dt1, dt2]
 
 
 def test_dedup_doctypes_multiple_distinct():
-    """Test _dedup_doctypes with three distinct Doctype objects."""
+    """Test dedup_doctypes with three distinct Doctype objects."""
     dt1 = dt("sles/1/en-us")
     dt2 = dt("sles/2/en-us")
     dt3 = dt("sles/3/en-us")
-    result = _dedup_doctypes([dt1, dt2, dt3])
+    result = dedup_doctypes([dt1, dt2, dt3])
     assert set(result) == {dt1, dt2, dt3}

@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, patch
 from click.testing import CliRunner
 import pytest
 
-import docbuild.cli.cmd_build as cmd_build
+import docbuild.cli.cmd_build.cmd_run as cmd_build
 from docbuild.cli.context import DocBuildContext
 from docbuild.constants import DEFAULT_RSYNC_EXCLUDES
 from docbuild.models.config.env import EnvConfig
@@ -29,7 +29,7 @@ def test_build_uses_env_exclusions(settings, expected):
         patch.object(cmd_build, "build_process", new_callable=AsyncMock) as build_process,
     ):
         build_process.return_value = 0
-        result = CliRunner().invoke(cmd_build.build, ["--skip-metadata"], obj=context)
+        result = CliRunner().invoke(cmd_build.run, ["--skip-metadata"], obj=context)
 
     assert result.exit_code == 0, result.output
     build_process.assert_awaited_once()

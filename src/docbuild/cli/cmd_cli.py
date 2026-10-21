@@ -53,7 +53,7 @@ log = logging.getLogger(__name__)
 CONSOLE = console_err
 
 
-def _setup_console() -> None:
+def setup_console() -> None:
     """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
 
@@ -325,7 +325,7 @@ def load_env_config(
             raise e
 
 
-def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
+def setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
     """Extract logging configuration from context and set it up."""
     if context.appconfig and context.envconfig:
         logging_config = context.appconfig.logging.model_dump(
@@ -351,6 +351,19 @@ def _setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
 
 class BannerGroup(click.Group):
     """Custom Click Group that displays a banner before help messages."""
+
+    def resolve_command(
+        self, ctx: click.Context, args: list[str]
+    ) -> tuple[str | None, click.Command | None, list[str]]:
+        """Identify configuration bootstrapping before loading configuration.
+
+        :param ctx: The root command context.
+        :param args: Arguments remaining after parsing global options.
+        :return: The resolved command name, command and remaining arguments.
+        """
+        name, command, remaining = super().resolve_command(ctx, args)
+        ctx.meta["config_init"] = name == "config" and remaining[:1] == ["init"]
+        return name, command, remaining
 
     def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Format and print help output with banner prefix.
@@ -453,8 +466,8 @@ def cli(
     :param env_overrides: A tuple of key-value strings to override env config.
     :param kwargs: Additional keyword arguments.
     """
-    # 1. Click's internal guard for completion/resilient parsing
-    if ctx.resilient_parsing:
+    # Bootstrapping must also work without loading existing configuration.
+    if ctx.resilient_parsing or ctx.meta.get("config_init"):
         return
 
     # 2. Check if the user is asking for help ANYWHERE in the command
@@ -494,7 +507,7 @@ def cli(
         load_env_config(ctx, env_config, env_overrides, skip_validation)
 
         # --- PHASE 3: Logging & Portal Config ---
-        _setup_logging_from_context(context, verbose)
+        setup_logging_from_context(context, verbose)
 
         # Initialize the Portal configuration if the XML file exists
         if (
@@ -535,12 +548,11 @@ def cli(
 # Add subcommands
 cli.add_command(build)
 cli.add_command(c14n)
+cli.add_command(cache)
 cli.add_command(config)
-cli.add_command(portal)
+cli.add_command(cmd_check)
+cli.add_command(doctor)
+cli.add_command(llms)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
-cli.add_command(cmd_check)
-cli.add_command(doctor)
-cli.add_command(cache)
-cli.add_command(llms)

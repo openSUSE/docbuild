@@ -9,11 +9,11 @@ import pytest
 from docbuild.constants import APP_NAME
 from docbuild.logging import (
     _LOGGING_STATE,
-    _resolve_class,
-    _shutdown_logging,
     build_handlers_from_config,
     register_background_thread,
+    resolve_class,
     setup_logging,
+    shutdown_logging,
 )
 
 
@@ -24,7 +24,7 @@ def clean_logging_state():
     Prevents QueueListener and other handlers from persisting.
     """
     yield
-    _shutdown_logging()
+    shutdown_logging()
     logging.shutdown()
 
 
@@ -129,8 +129,8 @@ def test_setup_with_user_config(logger, tmp_path):
 
 
 def test_resolve_class_stdlib():
-    """Test that _resolve_class correctly imports a standard library class."""
-    cls = _resolve_class("logging.Formatter")
+    """Test that resolve_class correctly imports a standard library class."""
+    cls = resolve_class("logging.Formatter")
     assert cls is logging.Formatter
 
 
@@ -140,7 +140,7 @@ def test_setup_logging_creates_logfile_and_listener(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path))
 
     # Make sure any prior state is cleaned
-    _shutdown_logging()
+    shutdown_logging()
 
     setup_logging(2, tmp_path)
 
@@ -157,7 +157,7 @@ def test_setup_logging_creates_logfile_and_listener(tmp_path, monkeypatch):
     assert files, "log file not created"
 
     # cleanup
-    _shutdown_logging()
+    shutdown_logging()
 
 
 def test_setup_logging_bad_formatter(monkeypatch, tmp_path):
@@ -172,10 +172,10 @@ def test_setup_logging_bad_formatter(monkeypatch, tmp_path):
         }
     }
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path))
-    _shutdown_logging()
+    shutdown_logging()
     with pytest.raises(Exception):  # noqa: B017
         setup_logging(1, tmp_path, user_config=user_config)
-    _shutdown_logging()
+    shutdown_logging()
 
 
 def test_safe_emit_swallows_valueerror(monkeypatch):
@@ -204,7 +204,7 @@ def test_safe_emit_swallows_valueerror(monkeypatch):
 
 
 def test_shutdown_joins_background_threads():
-    """Test that _shutdown_logging joins background threads."""
+    """Test that shutdown_logging joins background threads."""
 
     # Create a short-lived background thread and register it
     def worker():
@@ -215,7 +215,7 @@ def test_shutdown_joins_background_threads():
     register_background_thread(t)
 
     # Call shutdown; this should join the thread without raising
-    _shutdown_logging()
+    shutdown_logging()
     assert not t.is_alive()
 
 
@@ -235,7 +235,7 @@ def test_shutdown_skips_not_alive_threads():
 
     # Register the finished thread directly in the contextvar and run shutdown
     _LOGGING_STATE["background_threads"].set([t])
-    _shutdown_logging()
+    shutdown_logging()
 
 
 def test_register_background_thread_initializes_none():

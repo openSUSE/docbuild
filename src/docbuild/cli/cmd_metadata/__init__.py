@@ -6,19 +6,27 @@ from pathlib import Path
 
 import click
 
-from docbuild.cli.callback import validate_doctypes
-from docbuild.cli.console import console as stdout, console_err
-from docbuild.cli.context import DocBuildContext
-from docbuild.models.doctype import Doctype
-from docbuild.tasks.metadata.runner import process
-from docbuild.utils.contextmgr import make_timer
+from ...models.doctype import Doctype
+from ...tasks.metadata.runner import process
+from ...utils.contextmgr import make_timer
+from ..callback import validate_doctypes
+from ..completion import complete_doctypes
+from ..console import console as stdout, console_err
+from ..context import DocBuildContext
 
 
-@click.command(help=__doc__)
+@click.group(help=__doc__)
+def metadata() -> None:
+    """Subcommands for managing and extracting metadata."""
+    pass
+
+
+@metadata.command(name="run")
 @click.argument(
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "-E",
@@ -37,7 +45,7 @@ from docbuild.utils.contextmgr import make_timer
     help="Skip updating git repositories before processing.",
 )
 @click.pass_context
-def metadata(
+def run_cmd(
     ctx: click.Context,
     doctypes: tuple[Doctype],
     exitfirst: bool,
@@ -103,3 +111,35 @@ def metadata(
             stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
 
     ctx.exit(result)
+
+
+@metadata.command(name="dir")
+@click.option(
+    "--meta",
+    is_flag=True,
+    help="Display the meta_cache_dir instead of the json_cache_dir.",
+)
+@click.option(
+    "--json",
+    "json_flag",
+    is_flag=True,
+    help="Display the json_cache_dir (default).",
+)
+@click.pass_context
+def dir_cmd(ctx: click.Context, meta: bool, json_flag: bool) -> None:
+    """Display the directory where metadata is stored.
+
+    :param ctx: The Click context object.
+    """
+    context: DocBuildContext = ctx.obj
+
+    if not context.envconfig:
+        console_err.print("[error]Environment configuration is missing.[/]")
+        ctx.exit(1)
+
+    if meta and not json_flag:
+        path = context.envconfig.paths.meta_cache_dir
+    else:
+        path = context.envconfig.paths.json_cache_dir
+
+    stdout.print(str(path))

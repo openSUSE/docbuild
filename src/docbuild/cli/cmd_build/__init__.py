@@ -1,170 +1,19 @@
-"""CLI interface to build a document.
-
-A document (or "doctype") consists of ``[PRODUCT]/[DOCSET][@LIFECYCLES]/LANGS``
-with the following properties:
-
-\b
-
-* (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the
-  product or use "*"
-* (Optional) ``DOCSET`` is the docset, usually the version or release of
-  a product.
-  To mark "ALL" docsets, omit the docset or use ``"*"``.
-* (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma
-  or pipe symbol.
-  A lifecycle can be one of the values 'supported', 'unsupported', 'beta',
-  or 'hidden'.
-* ``LANGS`` marks a list of languages separated by comma. Every single
-  language contains a LANGUAGE-COUNTRY syntax, for example 'en-us', 'de-de' etc.
-
-Examples of the doctypes syntax:
-
-\b
-
-* ``"//en-us"``
-  Builds all supported deliverables for English
-* ``"sles/*/en-us"``
-  Builds only SLES deliverables which are supported and in English
-* ``"sles/*@unsupported/en-us,de-de"``
-  Builds all English and German SLES releases which are unsupported
-* ``"sles/@beta|supported/de-de"``
-  Build all docsets that are supported and beta for German SLES.
-* ``"sles/@beta,supported/de-de"``
-  Same as the previous one, but with comma as the separator between
-  the lifecycle states.
-"""  # noqa: D301
-
-
-import asyncio
-import math
-from pathlib import Path
+"""Build documentation products and deliverables."""
 
 import click
 
-from ...models.doctype import Doctype
-from ...tasks.build.runner import process as build_process
-from ...tasks.metadata.runner import process as metadata_process
-from ...utils.contextmgr import make_timer
-from ...utils.sysdeps import requires_system_tools
-from ..callback import validate_doctypes
-from ..console import console, console_err
-from ..context import DocBuildContext
+from .cmd_run import run
 
 
-@click.command(
-    help=__doc__.replace("\b\n\n", "\b\n").replace("``", ""),  # type: ignore
-)
-@click.argument("doctypes", nargs=-1, callback=validate_doctypes)
-@click.option(
-    "-S", "--skip-repo-update", is_flag=True, default=False, show_default=True,
-    help="Skip updating git repositories before processing.",
-)
-@click.option(
-    "-M", "--skip-metadata", is_flag=True, default=False, show_default=True,
-    help="Skip generating metadata (runs before build by default).",
-)
+@click.group(help=__doc__)
 @click.pass_context
-@requires_system_tools()
-def build(
-    ctx: click.Context,
-    doctypes: tuple[Doctype, ...],
-    skip_repo_update: bool,
-    skip_metadata: bool,
-) -> None:
-    """Subcommand build."""
-    ctx.ensure_object(DocBuildContext)
-    context: DocBuildContext = ctx.obj
+def build(ctx: click.Context) -> None:
+    """Subcommand group for build operations.
 
-    if not context.envconfig:
-        console_err.print("[error]Environment configuration is missing.[/]")
-        ctx.exit(1)
+    :param ctx: The Click context object.
+    """
+    pass  # pragma: no cover
 
-    assert context.envconfig is not None
-    env = context.envconfig
 
-    timer = make_timer("build")
-    result = 1  # Default exit code for interruption or error
-
-    # Paths for Metadata & Build
-    main_portal_config = env.paths.main_portal_config
-    repo_dir = env.paths.repo_dir
-    tmp_repo_dir = env.paths.tmp_repo_dir
-    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
-    meta_cache_dir = env.paths.meta_cache_dir
-    json_cache_dir = env.paths.json_cache_dir
-    tmp_build_base_dir = env.paths.tmp.tmp_build_base_dir
-    target_base_dir = env.paths.target.target_base_dir
-    target_dir_dyn = env.paths.target.target_dir_dyn
-
-    dapsmetatmpl = str(env.build.daps.meta)
-    daps_tmpls = {
-        "html": getattr(env.build.daps, "html", "daps -d {{dcfile}} --builddir {{builddir}} html"),
-        "pdf": getattr(env.build.daps, "pdf", "daps -d {{dcfile}} --builddir {{builddir}} pdf"),
-        "single-html": getattr(env.build.daps, "single_html", "daps -d {{dcfile}} --builddir {{builddir}} single-html"),
-        "epub": getattr(env.build.daps, "epub", "daps -d {{dcfile}} --builddir {{builddir}} epub"),
-    }
-
-    max_workers = context.appconfig.max_workers if context.appconfig else 1
-    console.print(f"Config path: {env.paths.config_dir}")
-
-    async def run_pipeline() -> int:
-        build_skip_repo = skip_repo_update
-
-        if not skip_metadata:
-            console.print("[header]Running metadata generation (fail-fast validation)...[/]")
-            meta_result = await asyncio.create_task(
-                metadata_process(
-                    main_portal_config=main_portal_config,
-                    tmp_metadata_dir=tmp_metadata_dir,
-                    repo_dir=repo_dir,
-                    tmp_repo_dir=tmp_repo_dir,
-                    meta_cache_dir=meta_cache_dir,
-                    json_cache_dir=json_cache_dir,
-                    prebuilt_dir=env.paths.prebuilt_dir,
-                    dapsmetatmpl=dapsmetatmpl,
-                    max_workers=max_workers,
-                    doctypes=list(doctypes),
-                    skip_repo_update=skip_repo_update,
-                ),
-                name="build:metadata",
-            )
-
-            if meta_result != 0:
-                console_err.print("[error]Metadata generation failed. Aborting build.[/]")
-                return meta_result
-
-            build_skip_repo = True
-
-        console.print(f"[header]Starting async build pipeline with {max_workers} workers...[/]")
-        return await asyncio.create_task(
-            build_process(
-                main_portal_config=main_portal_config,
-                repo_dir=repo_dir,
-                tmp_repo_dir=tmp_repo_dir,
-                tmp_build_base_dir=tmp_build_base_dir,
-                target_base_dir=target_base_dir,
-                target_dir_dyn=target_dir_dyn,
-                max_workers=max_workers,
-                doctypes=doctypes,
-                daps_tmpls=daps_tmpls,
-                skip_repo_update=build_skip_repo,
-                build_llmstxt=env.build.build_llmstxt,
-                llmstxt_dir=env.paths.llmstxt_dir,
-                rsync_options=env.rsync.to_options(),
-            ),
-            name="build:build",
-        )
-
-    t = None
-    try:
-        with timer() as t:
-
-            async def main() -> int:
-                return await asyncio.create_task(run_pipeline(), name="build")
-
-            result = asyncio.run(main())
-    finally:
-        if t and not math.isnan(t.elapsed):
-            console.print(f"Elapsed time {t.elapsed:0.2f}s")
-
-    ctx.exit(result)
+# Add subcommands
+build.add_command(run)
