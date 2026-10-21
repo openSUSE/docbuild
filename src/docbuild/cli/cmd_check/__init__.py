@@ -78,6 +78,7 @@ def check_files(  # noqa: C901
     total_found = 0
     total_skipped = 0
     total_errors = 0
+    total_xrefs = 0
 
     # Build the Rich UI output
     for doctype_str, files in results.items():
@@ -92,13 +93,17 @@ def check_files(  # noqa: C901
             elif f.status == "skipped":
                 tree.add(f"{f.dcfile} [yellow]⏭️  (Skipped)[/yellow]")
                 total_skipped += 1
+            elif f.status == "xref":
+                tree.add(f"{f.dcfile} [blue]🔗 (xref)[/blue]")
+                total_xrefs += 1
             else:
                 tree.add(f"{f.dcfile} [red]🔴[/red]")
                 total_errors += 1
 
         console.print(tree)
 
-    console.print(f"\nFound {total_found} files, {total_skipped} skipped, {total_errors} error.")
+    xref_str = f", {total_xrefs} xrefs" if total_xrefs > 0 else ""
+    console.print(f"\nFound {total_found} files, {total_skipped} skipped{xref_str}, {total_errors} error.")
 
     if total_errors > 0:
         sys.exit(1)

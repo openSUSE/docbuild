@@ -22,7 +22,7 @@ class FileCheckResult:
 
     doctype: str
     dcfile: str
-    status: Literal["found", "skipped", "error"]
+    status: Literal["found", "skipped", "error", "xref"]
     is_prebuilt: bool = False
 
 
@@ -59,7 +59,8 @@ async def check_repository_files(  # noqa: C901
     repo_queries = {}
 
     for dt in doctypes:
-        dt_str = str(dt)
+        # Elegantly force the UI to display 'supported' instead of 'unknown'
+        dt_str = str(dt).replace("@unknown", "@supported")
         results[dt_str] = []
 
         deliverables = list(get_deliverable_from_doctype(stitch_tree, dt))
@@ -74,18 +75,18 @@ async def check_repository_files(  # noqa: C901
                 continue
 
             is_xref = getattr(view, "is_xref", False)
-            target_type = getattr(view, "target_type", None)
-
-            # 1. Skip structural xrefs that point to docsets or products immediately
-            if is_xref and target_type in ("product", "docset"):
-                continue
-
-            # 2. Extract properties using target_id
             dcfile = getattr(view, "dcfile", None)
             is_prebuilt = getattr(view, "is_prebuilt", False)
             target_id = getattr(view, "target_id", "Unknown")
 
-            # 3. Skip anything that still isn't a physical file or prebuilt
+            # 1. Capture ALL structural xrefs safely (even if the link is broken)
+            if is_xref and not dcfile and not is_prebuilt:
+                target_url = getattr(view, "target_url", None)
+                display_name = target_url or target_id
+                results[dt_str].append(FileCheckResult(dt_str, str(display_name), "xref", False))
+                continue
+
+            # 2. Skip anything that still isn't a physical file or prebuilt
             if not dcfile and not is_prebuilt:
                 continue
 
@@ -102,6 +103,12 @@ async def check_repository_files(  # noqa: C901
             if is_prebuilt:
                 found = False
                 candidates = []
+
+                # Exact HTML mapping via resolved_prebuilt_html_url
+                html_url = getattr(view, "resolved_prebuilt_html_url", None) or getattr(view, "prebuilt_html_url", None)
+                if html_url:
+                    candidates.append(str(html_url).lstrip('/'))
+
                 if target_id and target_id != "Unknown":
                     candidates.extend([str(target_id), f"{target_id}.zip", f"{target_id}.tar.gz"])
 
