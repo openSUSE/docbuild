@@ -33,7 +33,10 @@ Package Contents
 
 .. py:function:: portal(ctx: click.Context) -> None
 
-   Subcommand to Portal XML management.
+   Manage Portal XML configuration.
+
+
+
 
    :param ctx: The Click context object.
 

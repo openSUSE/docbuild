@@ -26,6 +26,10 @@ Module Contents
 
    This checks the syntax and schema of application and environment files.
 
-   :param ctx: The Click context object, which should already have loaded configurations.
+
+
+
+   :param ctx: The Click context object, which should already have loaded
+       configurations.
 
 

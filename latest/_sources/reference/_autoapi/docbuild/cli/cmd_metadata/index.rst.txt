@@ -29,14 +29,23 @@ Package Contents
 
 .. py:function:: run_cmd(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], exitfirst: bool, skip_repo_update: bool) -> None
 
-   Subcommand to create metadata files.
+   Extract metadata from deliverables.
+
+
+
 
    :param ctx: The Click context object.
+   :param doctypes: Target doctypes to extract metadata for.
+   :param exitfirst: Whether to exit on the first failed deliverable.
+   :param skip_repo_update: Whether to skip repository updates.
 
 
 .. py:function:: dir_cmd(ctx: click.Context, meta: bool, json_flag: bool) -> None
 
    Display the directory where metadata is stored.
+
+
+
 
    :param ctx: The Click context object.
 
