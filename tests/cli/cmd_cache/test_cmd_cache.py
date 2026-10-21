@@ -188,6 +188,17 @@ def test_cache_list_json_only(mock_context: DocBuildContext):
 def test_cache_list_meta_only_with_doctype(mock_context: DocBuildContext):
     """Test that --type meta with a doctype lists only matching meta files."""
     make_cache_files(mock_context)
+    assert mock_context.envconfig is not None
+
+    unrelated = (
+        mock_context.envconfig.paths.meta_cache_dir
+        / "de-de"
+        / "sles"
+        / "15-SP5"
+        / f"DC-other{CACHE_FILE_EXT}"
+    )
+    unrelated.parent.mkdir(parents=True)
+    unrelated.touch()
 
     result = CliRunner().invoke(
         cache_list, ["--type", "meta", "sles/15-SP5/en-us"], obj=mock_context
@@ -195,6 +206,7 @@ def test_cache_list_meta_only_with_doctype(mock_context: DocBuildContext):
 
     assert result.exit_code == 0
     assert f"en-us/sles/15-SP5/DC-test{CACHE_FILE_EXT}" in result.output
+    assert f"de-de/sles/15-SP5/DC-other{CACHE_FILE_EXT}" not in result.output
     assert "JSON Cache" not in result.output
 
 
@@ -236,6 +248,21 @@ def test_cache_prune_json_only(mock_context: DocBuildContext):
 def test_cache_prune_all_with_doctype_confirmed(mock_context: DocBuildContext):
     """Test that a confirmed prune for a doctype deletes meta and json files."""
     meta_file, json_file = make_cache_files(mock_context)
+    assert mock_context.envconfig is not None
+
+    unrelated_meta = (
+        mock_context.envconfig.paths.meta_cache_dir
+        / "de-de"
+        / "sles"
+        / "15-SP5"
+        / f"DC-other{CACHE_FILE_EXT}"
+    )
+    unrelated_json = (
+        mock_context.envconfig.paths.json_cache_dir / "opensuse" / "other.json"
+    )
+    for path in (unrelated_meta, unrelated_json):
+        path.parent.mkdir(parents=True)
+        path.touch()
 
     result = CliRunner().invoke(
         cache_prune, ["sles/15-SP5/en-us"], input="y\n", obj=mock_context
@@ -246,3 +273,5 @@ def test_cache_prune_all_with_doctype_confirmed(mock_context: DocBuildContext):
     assert "Successfully pruned 2 cache file" in result.output
     assert not meta_file.exists()
     assert not json_file.exists()
+    assert unrelated_meta.exists()
+    assert unrelated_json.exists()
