@@ -1,6 +1,8 @@
 """Unit tests for docbuild.utils.sync."""
 
+import asyncio
 from pathlib import Path
+from subprocess import CompletedProcess
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -72,12 +74,109 @@ def test_is_remote_path(path: str | Path, expected: bool) -> None:
             RsyncOptions(exclude=["*.log", ".git"]),
             ["-a", "--exclude", "*.log", "--exclude", ".git"],
         ),
+        (
+            RsyncOptions(files_from=Path("list.txt")),
+            ["-a", "--files-from", "list.txt", "-r"],
+        ),
+        (
+            RsyncOptions(archive=False, files_from=Path("list.txt")),
+            ["--files-from", "list.txt"],
+        ),
+        (
+            RsyncOptions(files_from="list.txt"),
+            ["-a", "--files-from", "list.txt", "-r"],
+        ),
+        (
+            RsyncOptions(exclude=["*.log"], files_from=Path("list.txt")),
+            ["-a", "--exclude", "*.log", "--files-from", "list.txt", "-r"],
+        ),
+        (
+            RsyncOptions(files_from=Path("list.txt"), extra_args=["--no-recursive"]),
+            ["-a", "--files-from", "list.txt", "-r", "--no-recursive"],
+        ),
+        (
+            RsyncOptions(
+                archive=False,
+                files_from="list.txt",
+                extra_args=["--bwlimit=1000"],
+            ),
+            ["--files-from", "list.txt", "--bwlimit=1000"],
+        ),
     ],
-    ids=["defaults", "custom_flags", "exclude_list"],
+    ids=[
+        "defaults",
+        "custom_flags",
+        "exclude_list",
+        "files_from",
+        "files_from_no_archive_no_recursion",
+        "files_from_str",
+        "files_from_with_exclude",
+        "files_from_with_extra_args",
+        "files_from_no_archive_with_extra_args",
+    ],
 )
 def test_rsync_options_to_args(options: RsyncOptions, expected: list[str]) -> None:
     """Test rsync options generation."""
     assert options.to_args() == expected
+
+
+def test_rsync_options_positional_extra_args() -> None:
+    """Keep the existing positional extra_args argument compatible."""
+    options = RsyncOptions(
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        [],
+        ["--bwlimit=1000"],
+    )
+
+    assert options.to_args() == ["-a", "--bwlimit=1000"]
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "my list.txt",
+        "a  b.txt",
+        "it's.txt",
+        'say "hi".txt',
+        "back\\slash.txt",
+        "hash#tag.txt",
+        "dollar$HOME.txt",
+        "semi;colon.txt",
+        "amp&pipe|x.txt",
+        "glob*?[x].txt",
+        "tilde~.txt",
+        "-list.txt",
+    ],
+    ids=[
+        "space",
+        "double_space",
+        "single_quote",
+        "double_quote",
+        "backslash",
+        "hash",
+        "dollar",
+        "semicolon",
+        "ampersand_pipe",
+        "glob",
+        "tilde",
+        "leading_dash",
+    ],
+)
+def test_rsync_options_files_from_special_names(name: str) -> None:
+    """Test special file names remain single command-line arguments."""
+    for files_from in (name, Path(name)):
+        expected = name if isinstance(files_from, str) else str(Path(name))
+        assert RsyncOptions(files_from=files_from).to_args() == [
+            "-a",
+            "--files-from",
+            expected,
+            "-r",
+        ]
 
 
 @pytest.mark.asyncio
@@ -199,3 +298,135 @@ async def test_rsync_both_remote_raises() -> None:
     ):
         await rsync("user@host1:/src", "user@host2:/dest")
 
+
+@pytest.mark.asyncio
+@patch.object(sync_mod, "run_command", new_callable=AsyncMock)
+@pytest.mark.parametrize(
+    ("source", "target", "content_only", "expected_command"),
+    [
+        (
+            "source_dir",
+            "target_dir",
+            None,
+            [
+                "rsync",
+                "-a",
+                "--files-from",
+                "list.txt",
+                "-r",
+                "source_dir",
+                "target_dir",
+            ],
+        ),
+        (
+            "source_dir",
+            "target_dir",
+            True,
+            [
+                "rsync",
+                "-a",
+                "--files-from",
+                "list.txt",
+                "-r",
+                "source_dir/",
+                "target_dir",
+            ],
+        ),
+        (
+            "source_dir",
+            "user@host:/srv/docs",
+            True,
+            [
+                "rsync",
+                "-a",
+                "--files-from",
+                "list.txt",
+                "-r",
+                "source_dir/",
+                "user@host:/srv/docs",
+            ],
+        ),
+    ],
+    ids=["default_content_only", "content_only_true", "publish_shape"],
+)
+async def test_rsync_files_from_reaches_command_line(
+    mock_run_command: AsyncMock,
+    source: str,
+    target: str,
+    content_only: bool | None,
+    expected_command: list[str],
+) -> None:
+    """Test files_from reaches the rsync command line with -r appended."""
+    await rsync(
+        source,
+        target,
+        content_only=content_only,
+        options=RsyncOptions(files_from=Path("list.txt")),
+    )
+    mock_run_command.assert_called_once_with(expected_command)
+
+
+@pytest.mark.asyncio
+@patch.object(sync_mod, "run_command", new_callable=AsyncMock)
+@pytest.mark.parametrize(
+    "name",
+    ["my list.txt", "x; rm -rf ~.txt"],
+    ids=["space", "shell_special"],
+)
+async def test_rsync_files_from_special_names_reaches_command_line(
+    mock_run_command: AsyncMock, name: str
+) -> None:
+    """Test special file names remain single command-line arguments."""
+    await rsync(
+        "source_dir",
+        "target_dir",
+        options=RsyncOptions(files_from=name),
+    )
+
+    mock_run_command.assert_called_once_with(
+        ["rsync", "-a", "--files-from", name, "-r", "source_dir", "target_dir"]
+    )
+
+
+@pytest.mark.asyncio
+@patch.object(sync_mod, "run_command", new_callable=AsyncMock)
+@pytest.mark.parametrize(
+    ("returncode", "stderr"),
+    [
+        (1, "usage error"),
+        (23, "partial transfer due to error"),
+        (30, "timeout in data send/receive"),
+        (255, "connection unexpectedly closed"),
+    ],
+    ids=["usage", "partial_transfer", "timeout", "exec_failure"],
+)
+async def test_rsync_nonzero_exit_returned_unchanged(
+    mock_run_command: AsyncMock, returncode: int, stderr: str
+) -> None:
+    """Test non-zero rsync exit codes are returned unchanged without raising."""
+    mock_run_command.return_value = CompletedProcess(
+        ["rsync"], returncode=returncode, stdout="", stderr=stderr
+    )
+    result = await rsync("source_dir", "target_dir")
+    assert result.returncode == returncode
+    assert result.stderr == stderr
+
+
+@pytest.mark.asyncio
+@patch.object(sync_mod, "run_command", new_callable=AsyncMock)
+@pytest.mark.parametrize(
+    "error",
+    [
+        FileNotFoundError("rsync not found"),
+        PermissionError("permission denied"),
+        asyncio.CancelledError(),
+    ],
+    ids=["file_not_found", "permission_error", "cancelled"],
+)
+async def test_rsync_run_command_errors_propagate(
+    mock_run_command: AsyncMock, error: BaseException
+) -> None:
+    """Test exceptions from run_command propagate unchanged."""
+    mock_run_command.side_effect = error
+    with pytest.raises(type(error)):
+        await rsync("source_dir", "target_dir")

@@ -8,6 +8,7 @@ from docbuild.models.doctype import Doctype
 from docbuild.tasks.check import check_repository_files
 
 from ..callback import validate_doctypes
+from ..completion import complete_doctypes
 
 
 @click.group(name="check")
@@ -21,6 +22,7 @@ def cmd_check() -> None:
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "--all",
