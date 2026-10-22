@@ -2,6 +2,7 @@
 
 import click
 
+from .cmd_index import index
 from .cmd_run import run
 
 
@@ -19,3 +20,4 @@ def build(ctx: click.Context) -> None:
 
 # Add subcommands
 build.add_command(run)
+build.add_command(index)
