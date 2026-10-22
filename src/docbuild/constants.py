@@ -239,7 +239,7 @@ SYSTEM_DEPENDENCIES: Final[dict[str, DependencySpec]] = {
 }
 
 RUNTIME_PLACEHOLDERS: frozenset[str] = frozenset(
-    {"builddir", "dcfile", "output", "product", "docset", "lang"}
+    {"builddir", "dcfile", "output", "product", "docset", "lang", "format"}
 )
 """Set of placeholder names that are resolved at runtime by the build system."""
 

@@ -59,6 +59,40 @@ async def test_build_format_failure(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+async def test_build_format_default_template_has_no_runtime_braces(
+    tmp_path: Path,
+) -> None:
+    """Verify build templates receive runtime values."""
+    mock_d = Mock(spec=Deliverable, full_id="test:DC")
+    mock_d.xml.dcfile = "DC-test"
+    cwd = Path(".")
+    build_dir = Path("build")
+
+    with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
+        mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
+
+        success, _ = await build_format(
+            mock_d,
+            "html",
+            cwd,
+            build_dir,
+            "daps --builddir={{builddir}} -d {{dcfile}} {{format}}",
+        )
+
+    assert success is True
+    mock_run.assert_awaited_once_with(
+        [
+            "daps",
+            "--builddir=build",
+            "-d",
+            "DC-test",
+            "html",
+        ],
+        cwd=cwd,
+    )
+
+
+@pytest.mark.asyncio
 @patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
 async def test_process_deliverable_build_success(
     mock_mgr_class: Mock, tmp_path: Path
@@ -97,7 +131,7 @@ async def test_process_deliverable_build_success(
             tmp_path,
             tmp_path,
             tmp_path / "target",
-            "{product}/{docset}/{lang}",
+            "{{product}}/{{docset}}/{{lang}}",
             daps_tmpls
         )
 

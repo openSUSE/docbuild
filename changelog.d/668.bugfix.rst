@@ -1,0 +1,1 @@
+Fixed runtime placeholders in DAPS command templates so default ``docbuild metadata`` and build commands no longer pass literal braces to DAPS.
