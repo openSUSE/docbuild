@@ -1,6 +1,7 @@
 """Logic for checking DC file availability in remote repositories."""
 
 from collections.abc import Sequence
+import dataclasses
 from dataclasses import dataclass
 import logging
 from pathlib import Path
@@ -35,7 +36,6 @@ def _safe_get(obj: object, attr_name: str, default: object | None = None) -> obj
 
 
 async def check_repository_files(  # noqa: C901
-
     main_portal_config: Path,
     repo_root: Path,
     prebuilt_dir: Path,
@@ -59,14 +59,17 @@ async def check_repository_files(  # noqa: C901
     repo_queries = {}
 
     for dt in doctypes:
-        # Elegantly force the UI to display 'supported' instead of 'unknown'
-        dt_str = str(dt).replace("@unknown", "@supported")
-        results[dt_str] = []
+        # Check string representation of lifecycle to safely handle Enums
+        if str(getattr(dt, "lifecycle", "unknown")) == "unknown":
+            dt = dataclasses.replace(dt, lifecycle="supported")
+
+        # Extract the base doctype (e.g., 'sles/16.0@supported') by stripping the language tail
+        dt_base = str(dt).rsplit('/', 1)[0]
 
         deliverables = list(get_deliverable_from_doctype(stitch_tree, dt))
         if not deliverables:
             # Handle empty locale naturally without throwing a blocking error
-            log.debug("No deliverables found for doctype %s. (Possibly empty locale)", dt_str)
+            log.debug("No deliverables found for doctype %s. (Possibly empty locale)", str(dt))
             continue
 
         for d in deliverables:
@@ -74,16 +77,23 @@ async def check_repository_files(  # noqa: C901
             if not view:
                 continue
 
+            # Dynamically reconstruct the display group using the exact language
+            lang = str(getattr(view, "lang", "en-us"))
+            group_key = f"{dt_base}/{lang}"
+
+            if group_key not in results:
+                results[group_key] = []
+
             is_xref = getattr(view, "is_xref", False)
             dcfile = getattr(view, "dcfile", None)
             is_prebuilt = getattr(view, "is_prebuilt", False)
             target_id = getattr(view, "target_id", "Unknown")
 
-            # 1. Capture ALL structural xrefs safely (even if the link is broken)
+            # 1. Capture ALL structural xrefs safely
             if is_xref and not dcfile and not is_prebuilt:
                 target_url = getattr(view, "target_url", None)
                 display_name = target_url or target_id
-                results[dt_str].append(FileCheckResult(dt_str, str(display_name), "xref", False))
+                results[group_key].append(FileCheckResult(group_key, str(display_name), "xref", False))
                 continue
 
             # 2. Skip anything that still isn't a physical file or prebuilt
@@ -104,7 +114,6 @@ async def check_repository_files(  # noqa: C901
                 found = False
                 candidates = []
 
-                # Exact HTML mapping via resolved_prebuilt_html_url
                 html_url = getattr(view, "resolved_prebuilt_html_url", None) or getattr(view, "prebuilt_html_url", None)
                 if html_url:
                     candidates.append(str(html_url).lstrip('/'))
@@ -125,12 +134,12 @@ async def check_repository_files(  # noqa: C901
                         break
 
                 status = "found" if found else ("error" if is_default_lang else "skipped")
-                results[dt_str].append(FileCheckResult(dt_str, str(display_name), status, True))
+                results[group_key].append(FileCheckResult(group_key, str(display_name), status, True))
                 continue
 
             git_obj = _safe_get(actual_d, "git")
             if not git_obj:
-                results[dt_str].append(FileCheckResult(dt_str, str(display_name), "skipped", False))
+                results[group_key].append(FileCheckResult(group_key, str(display_name), "skipped", False))
                 continue
 
             branch = _safe_get(actual_d, "branch") or "main"
@@ -138,25 +147,25 @@ async def check_repository_files(  # noqa: C901
             url = _safe_get(git_obj, "url")
 
             if not url:
-                results[dt_str].append(FileCheckResult(dt_str, str(display_name), "skipped", False))
+                results[group_key].append(FileCheckResult(group_key, str(display_name), "skipped", False))
                 continue
 
             key = (str(url), str(branch))
-            repo_queries.setdefault(key, []).append((str(subdir), dt_str, dcfile, str(display_name), is_default_lang))
+            repo_queries.setdefault(key, []).append((str(subdir), group_key, dcfile, str(display_name), is_default_lang))
 
     for (url, branch), items in repo_queries.items():
         repo_handler = ManagedGitRepo(url, repo_root)
 
         if not await repo_handler.clone_bare():
             log.error("Repository inaccessible: %s", url)
-            for _, dt_str, _, display_name, is_default_lang in items:
+            for _, group_key, _, display_name, is_default_lang in items:
                 status = "error" if is_default_lang else "skipped"
-                results[dt_str].append(FileCheckResult(dt_str, str(display_name), status))
+                results[group_key].append(FileCheckResult(group_key, str(display_name), status))
             continue
 
         available_files = await repo_handler.ls_tree(branch)
 
-        for subdir, dt_str, target_dcfile, display_name, is_default_lang in items:
+        for subdir, group_key, target_dcfile, display_name, is_default_lang in items:
             if not target_dcfile:
                 target_dcfile = display_name
 
@@ -168,6 +177,6 @@ async def check_repository_files(  # noqa: C901
             found = (check_path in available_files) or (str(target_dcfile) in available_files)
             status = "found" if found else ("error" if is_default_lang else "skipped")
 
-            results[dt_str].append(FileCheckResult(dt_str, str(display_name), status))
+            results[group_key].append(FileCheckResult(group_key, str(display_name), status))
 
     return results

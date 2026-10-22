@@ -5,12 +5,11 @@ import sys
 import click
 from rich.tree import Tree
 
-from docbuild.cli.console import console
-from docbuild.cli.context import DocBuildContext
-from docbuild.models.doctype import Doctype
-from docbuild.tasks.check import check_repository_files
-
+from ...models.doctype import Doctype
+from ...tasks.check import check_repository_files
 from ..callback import validate_doctypes
+from ..console import console
+from ..context import DocBuildContext
 
 
 @click.group(name="check")
@@ -88,16 +87,16 @@ def check_files(  # noqa: C901
         tree = Tree(f"[bold]{doctype_str}[/bold]")
         for f in files:
             if f.status == "found":
-                tree.add(f"{f.dcfile} [green]✔️[/green]")
+                tree.add(f"{f.dcfile} [success]✓ OK[/]")
                 total_found += 1
             elif f.status == "skipped":
-                tree.add(f"{f.dcfile} [yellow]⏭️  (Skipped)[/yellow]")
+                tree.add(f"{f.dcfile} [skipped]⏭️ (Skipped)[/]")
                 total_skipped += 1
             elif f.status == "xref":
-                tree.add(f"{f.dcfile} [blue]🔗 (xref)[/blue]")
+                tree.add(f"{f.dcfile} [xref]🔗 (xref)[/]")
                 total_xrefs += 1
             else:
-                tree.add(f"{f.dcfile} [red]🔴[/red]")
+                tree.add(f"{f.dcfile} [error]🔴[/]")
                 total_errors += 1
 
         console.print(tree)
