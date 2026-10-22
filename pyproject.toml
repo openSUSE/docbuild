@@ -63,7 +63,7 @@ classifiers = [
 
 [dependency-groups]
 typing = [
-    "pyrefly>=1.3.0",
+    "pyrefly>=1.4.0",
     "pyright>=1.1.411",
 ]
 formatting = [
