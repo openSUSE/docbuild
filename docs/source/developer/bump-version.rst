@@ -6,7 +6,7 @@ Bumping the Version
 This project follows :term:`Semantic Versioning <SemVer>`. To bump the version, use the alias :command:`bump-version.sh`
 (see :ref:`prepare-devel-env`). For example, if you want to create the next minor release, run:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Bumping the minor part
    :name: sh-bump-version
 

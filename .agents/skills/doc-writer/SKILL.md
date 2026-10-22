@@ -69,13 +69,13 @@ To migrate an existing config, do the following:
 
    .. code-block:: console
 
-      scp server:/tmp/docserv-stitch.xml .
+      $ scp server:/tmp/docserv-stitch.xml .
 
 #. Run the migration wrapper:
 
    .. code-block:: console
 
-      tools/migrate-config.sh docserv-stitch.xml
+      $ tools/migrate-config.sh docserv-stitch.xml
 ```
 
 ## 4. RST conventions
@@ -85,8 +85,16 @@ To migrate an existing config, do the following:
   * `:class:`, `:func:`, `:mod:`, `:meth:` for Python objects.
   * `:file:` for paths, `:command:` for executables.
 * **Code blocks** use `.. code-block:: <lang>` with a `:caption:` when the
-  block benefits from a title. Use `console` for shell sessions, `python`,
-  `xml`, `rnc`, `toml` as appropriate.
+  block benefits from a title. For shell content, pick the lexer by content:
+  * `bash` — scripts or commands with no output. No leading `$` prompt.
+  * `console` — a single command or a command + its output. Every input
+    line starts with `$` (or `#` for root). Never use `shell-session`
+    (deprecated alias for `console`).
+  * `pycon` — an interactive Python REPL session. Input lines use `>>>` and
+    `...`; output/tracebacks have no prompt.
+  Use `python`, `xml`, `rnc`, `toml` as appropriate for non-shell content.
+  The copy button only copies prompted input lines, so getting the prompt
+  right matters for `console` and `pycon` blocks.
 * **Admonitions** (`.. note::`, `.. warning::`, `.. tip::`) for asides — keep
   them short and rare; overuse dilutes them.
 * **Section titles**: sentence case, descriptive, underlined consistently with

@@ -1,0 +1,4 @@
+Standardized shell code blocks in the documentation: ``shell-session`` is
+now ``console`` everywhere. Added copy-button support for ``pycon`` blocks
+and made the copy button skip prompts and output, so only the actual
+command is copied.

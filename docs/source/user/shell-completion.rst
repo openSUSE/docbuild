@@ -49,7 +49,7 @@ To make startup faster, you can save the script to a file once instead. For
 Bash, save it to the user completion directory of the ``bash-completion``
 package, which follows the XDG Base Directory specification:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ dir=${XDG_DATA_HOME:-$HOME/.local/share}/bash-completion/completions
    $ mkdir -p "$dir"
@@ -65,7 +65,7 @@ Completing Subcommands and Options
 
 Press :kbd:`Tab` after a partial subcommand or option to complete it:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild po<Tab>
    $ docbuild portal
@@ -96,7 +96,7 @@ Type the separator ``/`` before pressing :kbd:`Tab` to complete the next
 part. Docsets and languages can be given as a comma-separated list; only the
 last item is completed.
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Completing a doctype step by step
 
    $ docbuild build run sl<Tab>

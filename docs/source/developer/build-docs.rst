@@ -9,14 +9,14 @@ To build the documentation for this project, use the following steps:
 
 #. Build the HTML documentation using the :ref:`makedocs <devel-helpers>` command:
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :name: makedocs
 
       $ makedocs
 
    If you want to have a bit more control, use this command:
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :name: sphinx-build
 
       $ uv run --frozen --no-sync make -C docs html
