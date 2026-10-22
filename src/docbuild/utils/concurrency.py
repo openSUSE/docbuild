@@ -22,20 +22,29 @@ from typing import Concatenate, cast
 
 log = logging.getLogger(__name__)
 
-try:
-    from typing_extensions import Sentinel, sentinel
+class sentinel:  # noqa: N801
+    """Sentinel type for internal queue signaling."""
 
-    #: Sentinel value for internal use when needed (e.g., to signal completion).
-    SENTINEL = sentinel("SENTINEL")
-except (ImportError, AttributeError):  # pragma: no cover
-    class Sentinel:
-        """Sentinel type for internal queue signaling."""
+    __slots__ = ("__name__", "_repr")
 
-        def __repr__(self) -> str:
-            """Return sentinel representation."""
-            return "<SENTINEL>"
+    def __init_subclass__(cls) -> None:
+        """Prevent subclassing of sentinel."""
+        raise TypeError("type 'sentinel' is not an acceptable base type")
 
-    SENTINEL = Sentinel()
+    def __init__(self, name: str, /, repr: str | None = None) -> None:  # noqa: A002
+        """Initialize the sentinel with a name and optional repr."""
+        if not isinstance(name, str):
+            raise TypeError("sentinel name must be a string")
+        self.__name__ = name
+        self._repr = repr if repr is not None else name
+
+    def __repr__(self) -> str:
+        """Return the sentinel representation."""
+        return self._repr
+
+
+SENTINEL = sentinel("SENTINEL")
+type Sentinel = sentinel
 
 
 class TaskFailedError[T](Exception):
