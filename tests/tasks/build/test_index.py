@@ -6,19 +6,7 @@ from pathlib import Path
 import pytest
 
 from docbuild.models.doctype import Doctype
-from docbuild.tasks.build.index import process, resolve_dynamic_path
-
-
-def test_resolve_dynamic_path() -> None:
-    """Verify placeholder substitution handles double braces, mixed case, and standard keys."""
-    template = "{{lang}}/{{product}}/{{docset}}"
-    mapping = {
-        "lang": "en-us",
-        "product": "cloud-native",
-        "docset": "admission-controller",
-    }
-    resolved = resolve_dynamic_path(template, mapping)
-    assert resolved == "en-us/cloud-native/admission-controller"
+from docbuild.tasks.build.index import process
 
 
 @pytest.mark.asyncio
@@ -53,9 +41,10 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
     json_cache_dir.mkdir(parents=True)
     metadata_content = {
         "productname": "Cloud Native",
+        "acronym": "cloudnative",
         "version": "admission-controller",
         "category": "product",
-        "docs": [{"lang": "en-us"}],
+        "archives": [{"lang": "en-us"}],
     }
     (json_cache_dir / "admission-controller.json").write_text(
         json.dumps(metadata_content), encoding="utf-8"
@@ -78,7 +67,7 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
     assert result_1 == 0
 
     expected_html_path = (
-        target_base_dir / "en-us" / "cloud-native" / "admission-controller" / "index.html"
+        target_base_dir / "en-us" / "cloudnative" / "admission-controller" / "index.html"
     )
     assert expected_html_path.exists()
     assert "<h1>Cloud Native</h1>" in expected_html_path.read_text(encoding="utf-8")
@@ -96,7 +85,7 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
     assert result_2 == 0
 
     backup_html_path = (
-        target_base_dir / "en-us" / "cloud-native" / "admission-controller" / "index_old.html"
+        target_base_dir / "en-us" / "cloudnative" / "admission-controller" / "index.html.bak"
     )
     assert backup_html_path.exists()
     assert expected_html_path.exists()

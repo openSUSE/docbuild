@@ -11,6 +11,7 @@ from ...models.doctype import Doctype
 from ...tasks.build.index import process
 
 if TYPE_CHECKING:
+    from ...cli.cmd_cli import DocBuildContext
     from ...models.config.env import EnvConfig
 
 
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
     "--keep-index",
     is_flag=True,
     default=False,
-    help="Rename existing index.html to index_old.html before generating.",
+    help="Rename existing index.html to index.html.bak before generating.",
 )
 @click.pass_context
 def index(
@@ -34,17 +35,19 @@ def index(
     doctypes: tuple[Doctype, ...],
     keep_index: bool,
 ) -> None:
-    """Generate index HTML pages for deliverables using Jinja templates."""
-    env_config: EnvConfig = ctx.obj["env"]
+    r"""Generate index HTML pages for deliverables using Jinja templates."""
+    context: DocBuildContext = ctx.obj
+    assert context.envconfig is not None
+    env_config: EnvConfig = context.envconfig
 
     status = asyncio.run(
         process(
-            main_portal_config=env_config.paths.portal,
+            main_portal_config=env_config.paths.main_portal_config,
             jinja_dir=env_config.paths.jinja_dir,
             json_cache_dir=env_config.paths.json_cache_dir,
             target_base_dir=env_config.paths.target.target_base_dir,
             target_dir_dyn=env_config.paths.target.target_dir_dyn,
-            doctypes=list(doctypes),
+            doctypes=doctypes,
             keep_index=keep_index,
         )
     )
