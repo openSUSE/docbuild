@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory &#8212; Docbuild Documentation 0.26.1.dev17+g92b813cb1.d20261022</title>
+    <title>docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory &#8212; Docbuild Documentation 0.26.1.dev18+g13dc661a4.d20261022</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=ba59dc13"></script>
+    <script src="../../../../../_static/documentation_options.js?v=2c7bb300"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -537,6 +537,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">docbuild.utils</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="../concurrency/index.html">docbuild.utils.concurrency</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../concurrency/TaskFailedError.html">docbuild.utils.concurrency.TaskFailedError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../concurrency/sentinel.html">docbuild.utils.concurrency.sentinel</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">docbuild.utils.contextmgr</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -654,11 +655,10 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.utils.contextmgr.</span></span><span class="sig-name descname"><span class="pre">PersistentOnErrorTemporaryDirectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a></p>
-<div class="graphviz"><img src="../../../../../_images/inheritance-af12c788f89c5bc4c943947ccd8666772556be23.png" alt="Inheritance diagram of docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" usemap="#inheritanceb38d8aa828" class="inheritance graphviz" /></div>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.TemporaryDirectory</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+<div class="graphviz"><img src="../../../../../_images/inheritance-6353061201f32976937eadb0a5b994ca510d7897.png" alt="Inheritance diagram of docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" usemap="#inheritanceb38d8aa828" class="inheritance graphviz" /></div>
 <map id="inheritanceb38d8aa828" name="inheritanceb38d8aa828">
-<area shape="rect" id="node1" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" target="_top" title="A temporary directory that supports both sync and async usage." alt="" coords="204,5,468,33"/>
-<area shape="rect" id="node2" href="https://docs.python.org/3/library/tempfile.html#tempfile.TemporaryDirectory" target="_top" title="Create and return a temporary directory. &#160;This has the same" alt="" coords="5,5,156,33"/>
+<area shape="rect" id="node1" href="#docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory" target="_top" title="A temporary directory that supports both sync and async usage." alt="" coords="5,5,270,33"/>
 </map><p>A temporary directory that supports both sync and async usage.</p>
 <p>It deletes the temporary directory only if no exception occurs within the
 context block. This is useful for debugging, as it preserves the directory

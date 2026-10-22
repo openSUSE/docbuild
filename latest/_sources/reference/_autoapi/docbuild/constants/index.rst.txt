@@ -269,7 +269,7 @@ Module Contents
 
 
 .. py:data:: APP_CONFIG_BASENAMES
-   :type:  tuple[str | pathlib.Path, ...]
+   :type:  tuple[str, ...]
    :value: ('.config.toml', 'config.toml')
 
 
@@ -278,13 +278,13 @@ Module Contents
 
 
 .. py:data:: PROJECT_LEVEL_APP_CONFIG_FILENAMES
-   :type:  tuple[str | pathlib.Path, ...]
+   :type:  tuple[str, ...]
 
    Additional configuration filenames at the project level.
 
 
 .. py:data:: APP_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'config.toml'
 
 
@@ -292,7 +292,7 @@ Module Contents
 
 
 .. py:data:: ENV_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'env.{role}.toml'
 
 
@@ -300,7 +300,7 @@ Module Contents
 
 
 .. py:data:: DEFAULT_ENV_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'env.production.toml'
 
 

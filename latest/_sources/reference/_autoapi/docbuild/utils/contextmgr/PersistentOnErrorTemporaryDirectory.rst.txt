@@ -3,7 +3,7 @@ docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory
 
 .. py:class:: docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory(suffix: str | None = None, prefix: str | None = None, dir: str | pathlib.Path | None = None)
 
-   Bases: :py:obj:`tempfile.TemporaryDirectory`
+   Bases: :py:obj:`tempfile.TemporaryDirectory`\ [\ :py:obj:`str`\ ]
 
    .. autoapi-inheritance-diagram:: docbuild.utils.contextmgr.PersistentOnErrorTemporaryDirectory
       :parts: 1
