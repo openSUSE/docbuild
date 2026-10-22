@@ -34,7 +34,6 @@ dependencies = [
     "rich>=15.0.0",
     "semver>=3.1.0",
     "tomlkit>=0.15.1",
-    "typing-extensions>=4.14.0",
 ]
 authors = [
   {name = "Tom Schraitle", email = "tomschr@users.noreply.github.com"},
