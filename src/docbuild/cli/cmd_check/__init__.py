@@ -8,6 +8,7 @@ from rich.tree import Tree
 from ...models.doctype import Doctype
 from ...tasks.check import check_repository_files
 from ..callback import validate_doctypes
+from ..completion import complete_doctypes
 from ..console import console
 from ..context import DocBuildContext
 
@@ -23,6 +24,7 @@ def cmd_check() -> None:
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "--all",
