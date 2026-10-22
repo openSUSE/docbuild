@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev15+g0c5ee58e3.d20261022</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev16+gcb86152d9.d20261022</title>
   
   
   
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=b4e32fa0"></script>
+    <script src="_static/documentation_options.js?v=ff2ec41f"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -458,6 +458,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <section id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Fix Pydantic validation error during metadata extraction for prebuilt deliverables by properly handling empty <code class="docutils literal notranslate"><span class="pre">dateModified</span></code> fields. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/517">GH #517</a>)</p></li>
 <li><p>Fixed missing form feed (<code class="docutils literal notranslate"><span class="pre">\f</span></code>) separators in CLI docstrings so internal developer parameter documentation is not leaked into <code class="docutils literal notranslate"><span class="pre">--help</span></code> outputs. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/636">GH #636</a>)</p></li>
 <li><p>Fixed <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">doctor</span></code> failing to extract versions for tools
 such as <code class="docutils literal notranslate"><span class="pre">jing</span></code> and <code class="docutils literal notranslate"><span class="pre">trang</span></code>. Version checking now uses tool-specific
