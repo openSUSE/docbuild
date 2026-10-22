@@ -11,6 +11,7 @@ from docbuild.models.manifest import (
     Description,
     Document,
     DocumentFormat,
+    Manifest,
     SingleDocument,
 )
 
@@ -326,3 +327,32 @@ def test_document_isgated_serialization() -> None:
     assert "isGated" in serialized
     assert serialized["isGated"] is True
     assert "isgated" not in serialized
+
+
+def test_manifest_hide_productname_aliases() -> None:
+    """Test that Manifest accepts both hide-productname and hide_productname,
+    and serializes to hide-productname when by_alias=True.
+    """
+    # 1. Validation with hyphenated alias
+    m1 = Manifest(
+        productname="SLES",
+        acronym="sles",
+        version="16.0",
+        **{"hide-productname": True},
+    )
+    assert m1.hide_productname is True
+    dump1 = m1.model_dump(by_alias=True)
+    assert dump1["hide-productname"] is True
+    assert "hide_productname" not in dump1
+
+    # 2. Validation with snake_case field name
+    m2 = Manifest(
+        productname="SLES",
+        acronym="sles",
+        version="16.0",
+        hide_productname=True,
+    )
+    assert m2.hide_productname is True
+    dump2 = m2.model_dump(by_alias=True)
+    assert dump2["hide-productname"] is True
+    assert "hide_productname" not in dump2

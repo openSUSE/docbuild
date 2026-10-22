@@ -22,8 +22,20 @@ from typing import Concatenate, cast
 
 log = logging.getLogger(__name__)
 
-#: Sentinel value for internal use when needed (e.g., to signal completion).
-SENTINEL = object()
+try:
+    from typing_extensions import Sentinel, sentinel
+
+    #: Sentinel value for internal use when needed (e.g., to signal completion).
+    SENTINEL = sentinel("SENTINEL")
+except (ImportError, AttributeError):  # pragma: no cover
+    class Sentinel:
+        """Sentinel type for internal queue signaling."""
+
+        def __repr__(self) -> str:
+            """Return sentinel representation."""
+            return "<SENTINEL>"
+
+    SENTINEL = Sentinel()
 
 
 class TaskFailedError[T](Exception):
@@ -46,7 +58,7 @@ class TaskFailedError[T](Exception):
 
 async def producer[T](
     items: Iterable[T] | AsyncIterableABC[T],
-    input_queue: asyncio.Queue[T | object],
+    input_queue: asyncio.Queue[T | Sentinel],
     num_workers: int,
 ) -> None:
     """Feed items into the input queue, then send one sentinel per worker.
@@ -75,8 +87,8 @@ async def producer[T](
 
 async def worker[T, R](
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue[T | object],
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object],
+    input_queue: asyncio.Queue[T | Sentinel],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel],
 ) -> None:
     """Pull items from the input queue, process them, push results out.
 
@@ -109,8 +121,8 @@ async def worker[T, R](
 async def run_all[T, R](
     items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue[T | object],
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object],
+    input_queue: asyncio.Queue[T | Sentinel],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel],
     limit: int,
     *,
     name: str | None = None,
@@ -210,8 +222,8 @@ async def run_parallel[T, R, **P](
         functools.partial(worker_fn, *worker_args, **worker_kwargs) if worker_kwargs else worker_fn
     )
 
-    input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 5)
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(maxsize=0)
+    input_queue: asyncio.Queue[T | Sentinel] = asyncio.Queue(maxsize=limit * 5)
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel] = asyncio.Queue(maxsize=0)
 
     runner = asyncio.create_task(
         run_all(items, bound_fn, input_queue, result_queue, limit, name=name),
