@@ -1,1 +1,0 @@
-Add :command:`docbuild build dir` subcommand to output the raw build target directory for use in scripts.

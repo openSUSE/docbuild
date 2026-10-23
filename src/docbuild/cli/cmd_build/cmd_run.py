@@ -5,10 +5,10 @@ with the following properties:
 
 \b
 * (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the
-  product or use "*"
+  product or use ``*``
 * (Optional) ``DOCSET`` is the docset, usually the version or release of
   a product.
-  To mark "ALL" docsets, omit the docset or use ``"*"``.
+  To mark "ALL" docsets, omit the docset or use ``*``.
 * (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma
   or pipe symbol.
   A lifecycle can be one of the values 'supported', 'unsupported', 'beta',
@@ -18,21 +18,21 @@ with the following properties:
 
 \b
 Examples:
-  * docbuild build run "//en-us"
-    Builds all supported deliverables for English
+* ``docbuild build run "//en-us"``
+  Builds all supported deliverables for English
 
 \b
-  * docbuild build run "sles/*/en-us"
-    Builds only SLES deliverables which are supported and in English
+* ``docbuild build run "sles/*/en-us"``
+  Builds only SLES deliverables which are supported and in English
 
 \b
-  * docbuild build run "sles/*@unsupported/en-us,de-de"
-    Builds all English and German SLES releases which are unsupported
+* ``docbuild build run "sles/*@unsupported/en-us,de-de"``
+  Builds all English and German SLES releases which are unsupported
 
 \b
-  * docbuild build run "sles/@beta,supported/de-de"
-    Same as the previous one, but with comma as the separator between
-    the lifecycle states.
+* ``docbuild build run "sles/@beta,supported/de-de"``
+  Same as the previous one, but with comma as the separator between
+  the lifecycle states.
 """  # noqa: D301
 
 import asyncio

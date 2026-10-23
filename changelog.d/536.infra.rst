@@ -1,1 +1,0 @@
-Configure Pyright diagnostic settings in ``pyrightconfig.json`` for static type checking.

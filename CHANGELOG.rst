@@ -21,6 +21,72 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.27.0
+==============
+
+Breaking Changes
+----------------
+
+- Refactored :command:`docbuild build` into a command group and move build execution to the :command:`docbuild build run` subcommand. (:gh:`601`)
+- Refactored the :command:`docbuild metadata` command into a Click group and moved its core execution logic to the new :command:`docbuild metadata run` subcommand. (:gh:`599`)
+
+
+Bug Fixes
+---------
+
+- Fix Pydantic validation error during metadata extraction for prebuilt deliverables by properly handling empty ``dateModified`` fields. (:gh:`517`)
+- Fixed missing form feed (``\f``) separators in CLI docstrings so internal developer parameter documentation is not leaked into ``--help`` outputs. (:gh:`636`)
+- Fixed :command:`docbuild doctor` failing to extract versions for tools
+  such as :command:`jing` and :command:`trang`. Version checking now uses tool-specific
+  arguments and execution timeouts to reliably detect installed dependencies. (:gh:`659`)
+- Fixed :command:`docbuild portal list` showing every English (``en-us``)
+  deliverable twice in the tree and ``--flat`` output. (:gh:`661`)
+- Fixed runtime placeholder expansion in DAPS command templates so default :command:`docbuild metadata run` and build commands no longer pass literal braces to DAPS. (:gh:`668`)
+- Fixed GitHub Pages documentation deployment where historical version directories and old entries in :file:`versions.json` were not pruned.
+
+
+Improved Documentation
+----------------------
+
+- Explained partial configuration files in the User Guide. (:gh:`645`)
+
+
+Features
+--------
+
+- Added the :command:`docbuild portal dir` subcommand to display the directory where the portal configuration is stored. (:gh:`596`)
+- Added the :command:`docbuild metadata dir` subcommand to easily display the metadata cache directories (supports ``--json`` and ``--meta`` flags). (:gh:`600`)
+- Add :command:`docbuild build dir` subcommand to output the raw build target directory for use in scripts. (:gh:`602`)
+- Refactored the :command:`docbuild check files` subcommand to correctly resolve cross-repository references, gracefully skip missing translations and empty locales instead of failing, and provide a structured, visual tree output of the verification results. (:gh:`603`)
+- Added a ``files_from`` option to ``RsyncOptions``. When it is set, ``rsync()`` passes ``--files-from <file>`` to rsync, so only the paths listed in the file are transferred. In archive mode it also passes ``-r``, because rsync turns off the recursion implied by ``-a`` when a file list is used. The paths are relative to the source, and the file is not read or validated by ``rsync()``. (:gh:`606`)
+- Added :command:`docbuild config init` to create starter configuration files from
+  built-in defaults, with ``--app`` and ``--env`` selection, environment roles via ``--role``, and protection
+  against overwriting existing files. (:gh:`620`)
+- Added support for the XDG Base Directory Specification's :envvar:`XDG_CONFIG_DIRS` as a system-wide configuration location. Docbuild now also searches ``/etc/xdg/docbuild`` (or every directory listed in :envvar:`XDG_CONFIG_DIRS`) before the fixed ``/etc/docbuild`` directory, which still takes precedence over it. (:gh:`627`)
+- Added shell completion for doctypes: products, docsets from the portal
+  config, and languages are completed segment by segment in all commands that
+  accept ``DOCTYPES``. The new :ref:`shell-completion` task in the User Guide
+  explains how to enable completion in Bash, Zsh, and Fish. (:gh:`648`)
+- Add ``docbuild build index`` command to render HTML index pages from aggregated JSON metadata using Jinja2 templates. (:gh:`673`)
+
+
+Infrastructure
+--------------
+
+- Configure Pyright diagnostic settings in :file:`pyrightconfig.json` for static type checking. (:gh:`536`)
+- Improved test coverage for the ``config validate`` and ``cache`` CLI commands. (:gh:`634`)
+- Added ``pytest-datadir`` to the test dependencies and extracted the inline XML
+  from the ``xmlnode`` fixture in ``tests/config/xml/test_check.py`` into
+  ``tests/config/xml/data/xmlnode.xml`` (loaded via ``pytest-datadir``). (:gh:`658`)
+
+
+Code Refactoring
+----------------
+
+- Improve static type annotations and stability across models, tasks, and CLI modules. (:gh:`536`)
+- Sort subcommands for main command and remove a double call for portal subcommand.
+
+
 Version 0.26.0
 ==============
 

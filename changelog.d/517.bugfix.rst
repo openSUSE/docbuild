@@ -1,1 +1,0 @@
-Fix Pydantic validation error during metadata extraction for prebuilt deliverables by properly handling empty ``dateModified`` fields.

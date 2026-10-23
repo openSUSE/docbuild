@@ -1,1 +1,0 @@
-Fixed runtime placeholder expansion in DAPS command templates so default :command:`docbuild metadata run` and build commands no longer pass literal braces to DAPS.
