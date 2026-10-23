@@ -82,6 +82,10 @@ class Message:
     ) -> Text:
         """Build styled text, omitting an unencodable symbol if needed.
 
+        When combining a message with other output on the same line, pass
+        ``console`` and print the returned text; Rich otherwise starts a new
+        line before rendering the message.
+
         :param console: Optional console used to check whether the destination
             encoding can represent the symbol.
         :param symbols: Whether to include the symbol. When ``None``, the
