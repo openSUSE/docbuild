@@ -1,14 +1,14 @@
 """Task for generating index HTML pages from metadata using Jinja2."""
 
 import asyncio
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from datetime import datetime
 import json
 import logging
 from pathlib import Path
 from typing import Any
 
-from aiostream import pipe, stream
+from aiostream import stream
 import jinja2
 from pydantic import ValidationError
 
@@ -22,60 +22,37 @@ log = logging.getLogger(__name__)
 
 
 def get_matching_doctypes(
-    doctypes: Sequence[Doctype], product: str, docset: str, lang: str | None
-) -> list[Doctype]:
-    """Match product/docset and, when supplied, language constraints."""
+    doctypes: Sequence[Doctype],
+    product: str,
+    docset: str,
+    lang: str | None,
+    lifecycle: str | LifecycleFlag = LifecycleFlag.unknown,
+) -> Iterator[Doctype]:
+    """Yield matching constraints using the shared Doctype containment rules."""
     if not doctypes:
-        return []
+        return
 
-    matches = []
-    for dt in doctypes:
-        dt_prod_str = dt.product.acronym if dt.product.name != "ALL" else "*"
-
-        dt_docsets = dt.docset if dt.docset else ["*"]
-        if not isinstance(dt_docsets, (list, tuple, set)):
-            dt_docsets = [dt_docsets]
-
-        dt_langs = [lng.language for lng in dt.langs] if dt.langs else ["*"]
-
-        match_prod = dt_prod_str == "*" or dt_prod_str.lower() == str(product).lower()
-        match_ds = "*" in dt_docsets or str(docset).lower() in [str(d).lower() for d in dt_docsets]
-        match_lang = (
-            lang is None
-            or "*" in dt_langs
-            or str(lang).lower() in [str(lng).lower() for lng in dt_langs]
-        )
-
-        if match_prod and match_ds and match_lang:
-            matches.append(dt)
-
-    return matches
+    candidate = Doctype(
+        product=product,
+        docset=[docset],
+        langs=[] if lang is None else [lang],
+        lifecycle=lifecycle,
+    )
+    yield from (doctype for doctype in doctypes if candidate in doctype)
 
 
 def get_languages(manifest: Manifest) -> list[str]:
-    """Extract all localized languages from the manifest data using typed fields."""
-    languages = set()
-    if hasattr(manifest, "archives") and manifest.archives:
-        languages.update(
-            str(arch.lang) for arch in manifest.archives if getattr(arch, "lang", None)
-        )
-
-    if not languages and hasattr(manifest, "documents") and manifest.documents:
-        for document in manifest.documents:
-            if hasattr(document, "docs") and document.docs:
-                languages.update(
-                    str(doc.lang) for doc in document.docs if getattr(doc, "lang", None)
-                )
-
-    if not languages and hasattr(manifest, "docs") and manifest.docs:
-        languages.update(
-            str(doc.lang) for doc in manifest.docs if getattr(doc, "lang", None)
-        )
-
+    """Return sorted archive languages, falling back to documents or English."""
+    languages = {str(archive.lang) for archive in manifest.archives}
     if not languages:
-        languages.add("en-us")
+        languages = {
+            doc.lang
+            for document in manifest.documents
+            for doc in document.docs
+            if doc.lang
+        }
 
-    return sorted(list(languages))
+    return sorted(languages) or ["en-us"]
 
 
 def render_and_write_index(
@@ -133,9 +110,9 @@ def process_manifest_sync(
         and isinstance(data, dict)
         and "acronym" in data
         and "version" in data
-        and not get_matching_doctypes(
+        and not any(get_matching_doctypes(
             doctypes, data["acronym"], data["version"], None
-        )
+        ))
     ):
         return 0, 0, []
 
@@ -162,8 +139,9 @@ def process_manifest_sync(
     matched_doctypes = []
 
     for lang in languages:
-        matched = get_matching_doctypes(doctypes, product, docset_id, lang)
-        matched = [dt for dt in matched if manifest.lifecycle in dt.lifecycle]
+        matched = list(get_matching_doctypes(
+            doctypes, product, docset_id, lang, manifest.lifecycle
+        ))
         if not matched and doctypes:
             continue
 
@@ -235,8 +213,8 @@ async def process_manifest(
             target_dir_dyn,
             keep_index,
         )
-    except Exception as exc:
-        console_err.print(f"[error]Unexpected thread failure for {json_file.name}:[/] {exc}")
+    except (OSError, ValueError) as exc:
+        console_err.print(f"[error]Failed to process {json_file.name}:[/] {exc}")
         return 0, 1, []
 
 
@@ -296,9 +274,9 @@ async def process(
         and (
             not doctypes
             or path.parent == json_cache_dir
-            or get_matching_doctypes(
+            or any(get_matching_doctypes(
                 doctypes, path.parent.name, path.stem, None
-            )
+            ))
         )
     ]
 
@@ -312,14 +290,17 @@ async def process(
     errors = 0
     all_matched_doctypes = set()
 
-    async def _map_manifest(jf: Path) -> tuple[int, int, list[Doctype]]:
+    async def _map_manifest(
+        jf: Path, *additional_paths: Path
+    ) -> tuple[int, int, list[Doctype]]:
         return await process_manifest(
             jf, template, doctypes, target_base_dir, target_dir_dyn, keep_index
         )
 
     log.info("Starting index generation for %d manifest(s) with %d workers", len(json_files), max_workers)
 
-    pipeline = stream.iterate(json_files) | pipe.map(
+    pipeline = stream.map(
+        stream.iterate(json_files),
         _map_manifest,
         task_limit=max_workers,
         ordered=False,
