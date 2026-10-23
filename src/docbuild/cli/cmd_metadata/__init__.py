@@ -6,12 +6,13 @@ from pathlib import Path
 
 import click
 
-from docbuild.cli.callback import validate_doctypes
-from docbuild.cli.console import console as stdout, console_err
-from docbuild.cli.context import DocBuildContext
-from docbuild.models.doctype import Doctype
-from docbuild.tasks.metadata.runner import process
-from docbuild.utils.contextmgr import make_timer
+from ...models.doctype import Doctype
+from ...tasks.metadata.runner import process
+from ...utils.contextmgr import make_timer
+from ..callback import validate_doctypes
+from ..completion import complete_doctypes
+from ..console import console as stdout, console_err
+from ..context import DocBuildContext
 
 
 @click.group(help=__doc__)
@@ -25,6 +26,7 @@ def metadata() -> None:
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "-E",
@@ -49,10 +51,15 @@ def run_cmd(
     exitfirst: bool,
     skip_repo_update: bool,
 ) -> None:
-    """Subcommand to create metadata files.
+    """Extract metadata from deliverables.
+
+    \f
 
     :param ctx: The Click context object.
-    """
+    :param doctypes: Target doctypes to extract metadata for.
+    :param exitfirst: Whether to exit on the first failed deliverable.
+    :param skip_repo_update: Whether to skip repository updates.
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:
@@ -127,8 +134,10 @@ def run_cmd(
 def dir_cmd(ctx: click.Context, meta: bool, json_flag: bool) -> None:
     """Display the directory where metadata is stored.
 
+    \f
+
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
 
     if not context.envconfig:

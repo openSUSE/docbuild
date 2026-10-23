@@ -18,12 +18,33 @@ from collections.abc import (
 from contextlib import suppress
 import functools
 import logging
-from typing import Concatenate
+from typing import Concatenate, cast
 
 log = logging.getLogger(__name__)
 
-#: Sentinel value for internal use when needed (e.g., to signal completion).
-SENTINEL = object()
+class sentinel:  # noqa: N801
+    """Sentinel type for internal queue signaling."""
+
+    __slots__ = ("__name__", "_repr")
+
+    def __init_subclass__(cls) -> None:
+        """Prevent subclassing of sentinel."""
+        raise TypeError("type 'sentinel' is not an acceptable base type")
+
+    def __init__(self, name: str, /, repr: str | None = None) -> None:  # noqa: A002
+        """Initialize the sentinel with a name and optional repr."""
+        if not isinstance(name, str):
+            raise TypeError("sentinel name must be a string")
+        self.__name__ = name
+        self._repr = repr if repr is not None else name
+
+    def __repr__(self) -> str:
+        """Return the sentinel representation."""
+        return self._repr
+
+
+SENTINEL = sentinel("SENTINEL")
+type Sentinel = sentinel
 
 
 class TaskFailedError[T](Exception):
@@ -46,7 +67,7 @@ class TaskFailedError[T](Exception):
 
 async def producer[T](
     items: Iterable[T] | AsyncIterableABC[T],
-    input_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | Sentinel],
     num_workers: int,
 ) -> None:
     """Feed items into the input queue, then send one sentinel per worker.
@@ -75,8 +96,8 @@ async def producer[T](
 
 async def worker[T, R](
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue,
-    result_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | Sentinel],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel],
 ) -> None:
     """Pull items from the input queue, process them, push results out.
 
@@ -95,12 +116,12 @@ async def worker[T, R](
             if item is SENTINEL:
                 return
 
-            result = await worker_fn(item)
+            result = await worker_fn(cast(T, item))
             await result_queue.put(result)
         except Exception as exc:
             # If putting an error fails (queue full), don't deadlock.
             with suppress(asyncio.QueueFull, Exception):
-                result_queue.put_nowait(TaskFailedError(item, exc))
+                result_queue.put_nowait(TaskFailedError(cast(T, item), exc))
 
         finally:
             input_queue.task_done()
@@ -109,8 +130,8 @@ async def worker[T, R](
 async def run_all[T, R](
     items: Iterable[T] | AsyncIterableABC[T],
     worker_fn: Callable[[T], Awaitable[R]],
-    input_queue: asyncio.Queue,
-    result_queue: asyncio.Queue,
+    input_queue: asyncio.Queue[T | Sentinel],
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel],
     limit: int,
     *,
     name: str | None = None,
@@ -210,8 +231,8 @@ async def run_parallel[T, R, **P](
         functools.partial(worker_fn, *worker_args, **worker_kwargs) if worker_kwargs else worker_fn
     )
 
-    input_queue: asyncio.Queue[T | object] = asyncio.Queue(maxsize=limit * 5)
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | object] = asyncio.Queue(maxsize=0)
+    input_queue: asyncio.Queue[T | Sentinel] = asyncio.Queue(maxsize=limit * 5)
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel] = asyncio.Queue(maxsize=0)
 
     runner = asyncio.create_task(
         run_all(items, bound_fn, input_queue, result_queue, limit, name=name),

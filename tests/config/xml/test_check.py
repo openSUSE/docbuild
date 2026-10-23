@@ -37,53 +37,10 @@ E = objectify.ElementMaker(annotate=False, namespace=None, nsmap=None)
 
 
 @pytest.fixture
-def xmlnode() -> etree._Element:
+def xmlnode(shared_datadir) -> etree._Element:
     """Minimal portal-like structure aligned with current schema semantics."""
     return etree.fromstring(
-        """<portal schemaversion="7.0">
-            <categories>
-                <category lang="en-us">
-                    <language xml:id="cat.root">
-                        <title>Root</title>
-                    </language>
-                </category>
-            </categories>
-            <productfamilies>
-                <item xml:id="family1">Family 1</item>
-            </productfamilies>
-            <series>
-                <item xml:id="series1">Series 1</item>
-            </series>
-            <product xml:id="product1" series="series1" family="family1">
-                <name>Product 1</name>
-                <maintainers>
-                    <contact>docs@example.invalid</contact>
-                </maintainers>
-                <docset xml:id="docset1" lifecycle="supported">
-                    <version>1.0</version>
-                    <resources>
-                        <git remote="https://example.invalid/repo.git"/>
-                        <locale lang="en-us">
-                            <branch>main</branch>
-                            <deliverable xml:id="deli-1" type="dc">
-                                <dc file="DC-TEST-ONE">
-                                    <format html="1" pdf="0" single-html="0" epub="0"/>
-                                    <subdeliverable>book-1</subdeliverable>
-                                </dc>
-                            </deliverable>
-                        </locale>
-                    </resources>
-                    <external>
-                        <link>
-                            <url lang="en-us" href="https://example.invalid/docs" format="html"/>
-                            <descriptions>
-                                <desc lang="en-us"/>
-                            </descriptions>
-                        </link>
-                    </external>
-                </docset>
-            </product>
-        </portal>""",
+        (shared_datadir / "xmlnode.xml").read_text(encoding="utf-8"),
         parser=None,
     )
 

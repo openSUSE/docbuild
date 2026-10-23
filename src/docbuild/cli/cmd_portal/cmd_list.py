@@ -16,6 +16,7 @@ from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.product import Product
 from ...tasks.portal import parse_portal_config
+from ..completion import collect_docsets, complete_doctypes
 
 
 def matches_doctype(prod: str, doc: str, lang: str, doctypes: Sequence[Doctype] | None) -> bool:
@@ -51,8 +52,8 @@ def expand_deliverables(
         # 1. Project blueprints
         if native_lang == DEFAULT_LANG and d.xml.translations:
             for t_lang in d.xml.translations:
-                if (t_lang, prod, doc, d_id) in native_keys:
-                    continue  # Skip if native override exists
+                if t_lang == native_lang or (t_lang, prod, doc, d_id) in native_keys:
+                    continue
 
                 if matches_doctype(prod, doc, t_lang, doctypes):
                     results.append((t_lang, d))
@@ -267,16 +268,7 @@ def validate_docsets_against_xml(
     for dt in doctypes:
         if dt.product and dt.product != Product.ALL and dt.docset and "*" not in dt.docset:
             prod_val = dt.product.acronym
-
-            # Use the class's own string parser to bypass strict __init__ type-checking issues
-            broad_dt = Doctype.from_str(f"{prod_val}/*/*")
-
-            # Harvest all valid docset IDs using the Deliverable abstraction
-            valid_docsets = set()
-            for node in list_all_deliverables(tree, [broad_dt]):
-                deli = Deliverable(_node=node)
-                if deli.xml.docset_path:
-                    valid_docsets.add(deli.xml.docset_path)
+            valid_docsets = collect_docsets(tree, prod_val)
 
             valid_docsets_str = ["*", *sorted(valid_docsets)]
 
@@ -362,7 +354,7 @@ async def async_list_cmd(
     help="List repository origin (requires 'short' or 'long')."
 )
 @click.option("--flat", is_flag=True, help="Display the output as a flat list.")
-@click.argument("doctypes", nargs=-1)
+@click.argument("doctypes", nargs=-1, shell_complete=complete_doctypes)
 @click.pass_obj
 def list_cmd(
     ctx: DocBuildContext,

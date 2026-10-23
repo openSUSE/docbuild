@@ -9,6 +9,7 @@ import shlex
 from docbuild.models.cache import Cache
 from docbuild.models.deliverable import Deliverable
 
+from ...config.app import normalize_runtime_placeholders
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
@@ -26,7 +27,9 @@ async def get_daps_hashes(
 
     Converts absolute paths to relative paths based on the worktree.
     """
-    cmd_str = daps_list_srcfiles_tmpl.format(dcfile=str(dcfile_path))
+    cmd_str = normalize_runtime_placeholders(daps_list_srcfiles_tmpl).format(
+        dcfile=str(dcfile_path)
+    )
     cmd = shlex.split(cmd_str)
 
     # Use the centralized run_command utility
@@ -70,7 +73,7 @@ def get_daps_command(
         and ``{output}`` placeholders.
     :return: A list of command arguments suitable for ``subprocess.exec``.
     """
-    raw_daps_cmd = dapstmpl.format(
+    raw_daps_cmd = normalize_runtime_placeholders(dapstmpl).format(
         builddir=str(worktree_dir),
         dcfile=str(dcfile_path),
         output=str(outputjson),

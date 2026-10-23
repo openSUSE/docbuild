@@ -1,1 +1,0 @@
-Added the :command:`docbuild metadata dir` subcommand to easily display the metadata cache directories (supports ``--json`` and ``--meta`` flags).

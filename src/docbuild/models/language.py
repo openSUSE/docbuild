@@ -35,7 +35,7 @@ class LanguageCode(BaseModel):
     """Configuration for the model, should be a dictionary
     conforming to Pydantic's :class:`~pydantic.config.ConfigDict`."""
 
-    ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
+    ALLOWED_LANGS: ClassVar[frozenset[str]] = frozenset(
         {"*"} | ALLOWED_LANGUAGES,
     )
     """Class variable containing all allowed languages."""
@@ -176,6 +176,7 @@ class LanguageCode(BaseModel):
         title="The language part of the language code",
         examples=["en", "de", "ja"],
     )
+    @property
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
         return self._parts[0]
@@ -185,6 +186,7 @@ class LanguageCode(BaseModel):
         title="The country part of the language code",
         examples=["us", "de", "jp"],
     )
+    @property
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
         return self._parts[1] if len(self._parts) > 1 else "*"
@@ -194,6 +196,7 @@ class LanguageCode(BaseModel):
         title="The language tag for PDF filenames",
         examples=["en", "de", "pt_br"],
     )
+    @property
     def pdf_tag(self) -> str:
         """Return the language tag used in PDF filenames.
 

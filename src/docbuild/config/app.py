@@ -41,6 +41,18 @@ def unescape(text: str, keep_runtime: bool) -> str:
     )
 
 
+def normalize_runtime_placeholders(text: str) -> str:
+    """Convert supported escaped runtime placeholders for ``str.format``."""
+    return ESCAPE_REGEX.sub(
+        lambda match: (
+            f"{{{match.group('runtime')}}}"
+            if match.group("runtime")
+            else match.group(0)
+        ),
+        text,
+    )
+
+
 class PlaceholderResolver:
     """Handles placeholder resolution in configuration data."""
 

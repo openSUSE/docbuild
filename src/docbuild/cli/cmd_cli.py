@@ -192,7 +192,7 @@ def parse_key(key: str) -> list[str]:
         syntax (e.g., characters after closing delimiter).
 
     """
-    parts = []
+    parts: list[str] = []
     current = ""
     i = 0
 
@@ -457,6 +457,8 @@ def cli(
 ) -> None:
     """Acts as a main entry point for CLI tool.
 
+    \f
+
     :param ctx: The Click context object.
     :param verbose: The verbosity level.
     :param dry_run: If set, just pretend to run the command without making any changes.
@@ -465,7 +467,7 @@ def cli(
     :param env_config: Filename to a environment's TOML config file.
     :param env_overrides: A tuple of key-value strings to override env config.
     :param kwargs: Additional keyword arguments.
-    """
+    """  # noqa: D301
     # Bootstrapping must also work without loading existing configuration.
     if ctx.resilient_parsing or ctx.meta.get("config_init"):
         return
@@ -483,7 +485,7 @@ def cli(
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
-    context = ctx.obj
+    context: DocBuildContext = cast(DocBuildContext, ctx.obj)
     context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
     # State tracking for centralized error handling
@@ -548,12 +550,11 @@ def cli(
 # Add subcommands
 cli.add_command(build)
 cli.add_command(c14n)
+cli.add_command(cache)
 cli.add_command(config)
-cli.add_command(portal)
+cli.add_command(cmd_check)
+cli.add_command(doctor)
+cli.add_command(llms)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
-cli.add_command(cmd_check)
-cli.add_command(doctor)
-cli.add_command(cache)
-cli.add_command(llms)
