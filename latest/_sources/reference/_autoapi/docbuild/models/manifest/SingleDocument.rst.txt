@@ -35,6 +35,14 @@ docbuild.models.manifest.SingleDocument
 
 
 
+   .. py:method:: normalize_empty_date(value: object) -> object
+      :classmethod:
+
+
+      Treat the serialized empty date as an absent date.
+
+
+
    .. py:method:: warn_missing_title(v: str | None, info: pydantic.ValidationInfo) -> str | None
       :classmethod:
 
