@@ -17,6 +17,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 env:
   CI_BIN_DIR: .github/bin
 
