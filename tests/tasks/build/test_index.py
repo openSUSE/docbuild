@@ -17,13 +17,13 @@ async def test_process_missing_jinja_dir(tmp_path: Path) -> None:
     fake_target_base = tmp_path / "target"
 
     result = await process(
-        main_portal_config=tmp_path / "portal.xml",
         jinja_dir=fake_jinja,
         json_cache_dir=fake_json_cache,
         target_base_dir=fake_target_base,
         target_dir_dyn="{{lang}}/{{product}}/{{docset}}",
         doctypes=[Doctype(product="cloudnative", docset=["admission-controller"])],
         keep_index=False,
+        max_workers=5,
     )
     assert result == 1
 
@@ -40,11 +40,13 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
     json_cache_dir = tmp_path / "cache" / "json"
     json_cache_dir.mkdir(parents=True)
     metadata_content = {
+        "id": "cloudnative-admission-controller",
+        "title": "Cloud Native Admission Controller",
         "productname": "Cloud Native",
         "acronym": "cloudnative",
         "version": "admission-controller",
-        "category": "product",
-        "archives": [{"lang": "en-us"}],
+        "dateModified": "2026-10-23T00:00:00Z",
+        "archives": [{"lang": "en-us", "zip": "mock.zip"}],
     }
     (json_cache_dir / "admission-controller.json").write_text(
         json.dumps(metadata_content), encoding="utf-8"
@@ -56,13 +58,13 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
 
     # 1. First Run: Render index.html
     result_1 = await process(
-        main_portal_config=tmp_path / "portal.xml",
         jinja_dir=jinja_dir,
         json_cache_dir=json_cache_dir,
         target_base_dir=target_base_dir,
         target_dir_dyn=target_dir_dyn,
         doctypes=[doctype],
         keep_index=False,
+        max_workers=5,
     )
     assert result_1 == 0
 
@@ -74,13 +76,13 @@ async def test_process_renders_index_and_handles_keep_index(tmp_path: Path) -> N
 
     # 2. Second Run: Render with keep_index=True
     result_2 = await process(
-        main_portal_config=tmp_path / "portal.xml",
         jinja_dir=jinja_dir,
         json_cache_dir=json_cache_dir,
         target_base_dir=target_base_dir,
         target_dir_dyn=target_dir_dyn,
         doctypes=[doctype],
         keep_index=True,
+        max_workers=5,
     )
     assert result_2 == 0
 

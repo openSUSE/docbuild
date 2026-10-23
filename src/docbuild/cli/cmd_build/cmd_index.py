@@ -40,15 +40,17 @@ def index(
     assert context.envconfig is not None
     env_config: EnvConfig = context.envconfig
 
+    workers = getattr(env_config, "workers", 10)
+
     status = asyncio.run(
         process(
-            main_portal_config=env_config.paths.main_portal_config,
             jinja_dir=env_config.paths.jinja_dir,
             json_cache_dir=env_config.paths.json_cache_dir,
             target_base_dir=env_config.paths.target.target_base_dir,
             target_dir_dyn=env_config.paths.target.target_dir_dyn,
             doctypes=doctypes,
             keep_index=keep_index,
+            max_workers=workers,
         )
     )
     if status != 0:

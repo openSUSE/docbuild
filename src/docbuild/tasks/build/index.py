@@ -10,6 +10,7 @@ from typing import Any
 
 from aiostream import pipe, stream
 import jinja2
+from pydantic import ValidationError
 
 from ...cli.console import console, console_err
 from ...models.doctype import Doctype
@@ -18,72 +19,64 @@ from ...models.manifest import Manifest
 log = logging.getLogger(__name__)
 
 
-def _matches_doctypes(
+def get_matching_doctypes(
     doctypes: Sequence[Doctype], product: str, docset: str, lang: str
-) -> bool:
-    """Check if the given product, docset, and language match any of the doctypes."""
+) -> list[Doctype]:
+    """Return all doctypes that match the given product, docset, and language."""
     if not doctypes:
-        return True
+        return []
 
+    matches = []
     for dt in doctypes:
-        # Extract product acronym (handling Product Enum object)
-        dt_prod = getattr(dt, "product", "*")
-        if getattr(dt_prod, "name", "") == "ALL":
-            dt_prod_str = "*"
-        else:
-            dt_prod_str = getattr(dt_prod, "acronym", str(dt_prod))
+        dt_prod_str = dt.product.acronym if dt.product.name != "ALL" else "*"
 
-        # Extract docsets (list of strings)
-        dt_docsets = getattr(dt, "docset", ["*"]) or ["*"]
+        dt_docsets = dt.docset if dt.docset else ["*"]
         if not isinstance(dt_docsets, (list, tuple, set)):
             dt_docsets = [dt_docsets]
 
-        # Extract language strings (handling LanguageCode model objects)
-        dt_langs_raw = getattr(dt, "langs", getattr(dt, "lang", ["*"])) or ["*"]
-        if not isinstance(dt_langs_raw, (list, tuple, set)):
-            dt_langs_raw = [dt_langs_raw]
-        dt_langs = [getattr(lng, "language", str(lng)) for lng in dt_langs_raw]
+        dt_langs = [lng.language for lng in dt.langs] if dt.langs else ["*"]
 
         match_prod = dt_prod_str == "*" or dt_prod_str.lower() == str(product).lower()
         match_ds = "*" in dt_docsets or str(docset).lower() in [str(d).lower() for d in dt_docsets]
         match_lang = "*" in dt_langs or str(lang).lower() in [str(lng).lower() for lng in dt_langs]
 
         if match_prod and match_ds and match_lang:
-            return True
+            matches.append(dt)
 
-    return False
+    return matches
 
 
-def _get_languages(data: dict[str, Any]) -> list[str]:
-    """Extract all localized languages from the manifest data."""
-    languages = {
-        archive["lang"]
-        for archive in data.get("archives", [])
-        if isinstance(archive, dict) and archive.get("lang")
-    }
+def get_languages(manifest: Manifest) -> list[str]:
+    """Extract all localized languages from the manifest data using typed fields."""
+    languages = set()
+    if hasattr(manifest, "archives") and manifest.archives:
+        languages.update(
+            arch.lang for arch in manifest.archives if getattr(arch, "lang", None)
+        )
+
+    if not languages and hasattr(manifest, "documents") and manifest.documents:
+        for document in manifest.documents:
+            if hasattr(document, "docs") and document.docs:
+                languages.update(
+                    doc.lang for doc in document.docs if getattr(doc, "lang", None)
+                )
+
+    if not languages and hasattr(manifest, "docs") and manifest.docs:
+        languages.update(
+            doc.lang for doc in manifest.docs if getattr(doc, "lang", None)
+        )
+
     if not languages:
-        languages = {
-            doc["lang"]
-            for document in data.get("documents", [])
-            if isinstance(document, dict)
-            for doc in document.get("docs", [])
-            if isinstance(doc, dict) and doc.get("lang")
-        }
-    if not languages:
-        languages = {
-            doc["lang"]
-            for doc in data.get("docs", [])
-            if isinstance(doc, dict) and doc.get("lang")
-        }
-    if not languages:
-        languages = {"en-us"}
-    return sorted(languages)
+        languages.add("en-us")
+
+    return sorted(list(languages))
 
 
-def _render_and_write_index(
+def render_and_write_index(
     template: jinja2.Template,
     render_context: dict[str, Any],
     out_dir: Path,
+    product: str,
     docset_id: str,
     lang: str,
     keep_index: bool,
@@ -95,17 +88,20 @@ def _render_and_write_index(
     if index_html.exists() and keep_index:
         old_html = out_dir / "index.html.bak"
         index_html.rename(old_html)
-        console.print(f"Backed up existing {index_html.name} -> {old_html.name}")
+        log.debug("Backed up existing %s to %s", index_html.name, old_html.name)
 
     try:
         rendered = template.render(**render_context)
         index_html.write_text(rendered, encoding="utf-8")
         console.print(
-            f"[success]✔ Rendered index page[/] for {docset_id} ({lang}) -> {index_html}"
+            f"[success]✔ Rendered index page[/] for {product}/{docset_id}/{lang} -> {index_html}"
         )
         return True
-    except Exception as e:
-        console_err.print(f"[error]Failed to render template for {docset_id} ({lang}):[/] {e}")
+    except jinja2.TemplateError as e:
+        console_err.print(f"[error]Failed to render template for {product}/{docset_id}/{lang}:[/] {e}")
+        return False
+    except OSError as e:
+        console_err.print(f"[error]Failed to write index.html for {product}/{docset_id}/{lang}:[/] {e}")
         return False
 
 
@@ -116,35 +112,44 @@ def process_manifest_sync(
     target_base_dir: Path,
     target_dir_dyn: str,
     keep_index: bool,
-) -> tuple[int, int]:
+) -> tuple[int, int, list[Doctype]]:
     """Parse JSON, check doctypes, render and write HTML synchronously."""
+    log.debug("Reading manifest: %s", json_file.name)
     try:
         with open(json_file, encoding="utf-8") as f:
             data = json.load(f)
     except (json.JSONDecodeError, UnicodeDecodeError, OSError) as exc:
         console_err.print(f"[error]Failed to read JSON {json_file.name}:[/] {exc}")
-        return 0, 1
+        return 0, 1, []
 
     try:
-        # Use Manifest model to extract known fields cleanly
-        manifest = Manifest(**data)
-        product = getattr(manifest, "acronym", None) or "unknown"
-        version = getattr(manifest, "version", None) or "unknown"
-    except Exception:
-        # Fallback if validation fails
-        product = data.get("acronym", "unknown")
-        version = data.get("version", "unknown")
+        manifest = Manifest.model_validate(data)
+    except ValidationError as exc:
+        console_err.print(f"[error]Validation error for {json_file.name}:[/] {exc}")
+        return 0, 1, []
 
-    docset_id = version
-    category = str(data.get("category", "product")).lower()
-    languages = _get_languages(data)
+    product = getattr(manifest, "acronym", "unknown")
+    docset_id = getattr(manifest, "version", "unknown")
+
+    cats = getattr(manifest, "categories", [])
+    if cats:
+        primary = cats[0]
+        category = str(getattr(primary, "value", primary)).lower()
+    else:
+        category = "product"
+
+    languages = get_languages(manifest)
 
     processed = 0
     errors = 0
+    matched_doctypes = []
 
     for lang in languages:
-        if not _matches_doctypes(doctypes, product, docset_id, lang):
+        matched = get_matching_doctypes(doctypes, product, docset_id, lang)
+        if not matched and doctypes:
             continue
+
+        matched_doctypes.extend(matched)
 
         render_context = {
             "data": data,
@@ -160,7 +165,7 @@ def process_manifest_sync(
 
         format_dict = {
             "product": product,
-            "version": version,
+            "version": docset_id,
             "lang": lang,
             "docset": docset_id,
             "category": category,
@@ -178,15 +183,15 @@ def process_manifest_sync(
 
         out_dir = target_base_dir / out_dir_rel.strip("/")
 
-        success = _render_and_write_index(
-            template, render_context, out_dir, docset_id, lang, keep_index
+        success = render_and_write_index(
+            template, render_context, out_dir, product, docset_id, lang, keep_index
         )
         if success:
             processed += 1
         else:
             errors += 1
 
-    return processed, errors
+    return processed, errors, matched_doctypes
 
 
 async def process_manifest(
@@ -196,7 +201,7 @@ async def process_manifest(
     target_base_dir: Path,
     target_dir_dyn: str,
     keep_index: bool,
-) -> tuple[int, int]:
+) -> tuple[int, int, list[Doctype]]:
     """Async wrapper to process a single manifest file in a thread."""
     task = asyncio.current_task()
     if task is not None:
@@ -212,28 +217,15 @@ async def process_manifest(
             keep_index,
         )
     except Exception as exc:
-        console_err.print(f"[error]Failed to process {json_file.name}:[/] {exc}")
-        return 0, 1
+        console_err.print(f"[error]Unexpected thread failure for {json_file.name}:[/] {exc}")
+        return 0, 1, []
 
 
-async def process(
-    main_portal_config: Path | str,
-    jinja_dir: Path | str,
-    json_cache_dir: Path | str,
-    target_base_dir: Path | str,
-    target_dir_dyn: str,
-    doctypes: Sequence[Doctype],
-    keep_index: bool,
-) -> int:
-    """Render index pages from JSON metadata using Jinja2 async pipelines."""
-    # Ensure all path arguments are actual Path objects
-    jinja_dir = Path(jinja_dir)
-    json_cache_dir = Path(json_cache_dir)
-    target_base_dir = Path(target_base_dir)
-
+def load_template(jinja_dir: Path, target_base_dir: Path) -> jinja2.Template | None:
+    """Initialize Jinja environment and load the index template."""
     if not jinja_dir.exists():
         console_err.print(f"[error]Jinja directory not found:[/] {jinja_dir}")
-        return 1
+        return None
 
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(jinja_dir),
@@ -241,7 +233,6 @@ async def process(
     )
 
     def custom_file_exists(filepath: str | Path | None) -> bool:
-        """Check if a file exists relative to the target base directory."""
         if not filepath:
             return False
         check_path = target_base_dir / str(filepath).lstrip("/")
@@ -250,9 +241,28 @@ async def process(
     env.filters["file_exists"] = custom_file_exists
 
     try:
-        template = env.get_template("index.html.jinja")
+        return env.get_template("index.html.jinja")
     except jinja2.TemplateNotFound:
         console_err.print(f"[error]Template 'index.html.jinja' not found in {jinja_dir}[/]")
+        return None
+
+
+async def process(
+    jinja_dir: Path,
+    json_cache_dir: Path,
+    target_base_dir: Path,
+    target_dir_dyn: str,
+    doctypes: Sequence[Doctype],
+    keep_index: bool,
+    max_workers: int = 10,
+) -> int:
+    """Render index pages from JSON metadata using Jinja2 async pipelines."""
+    jinja_dir = Path(jinja_dir)
+    json_cache_dir = Path(json_cache_dir)
+    target_base_dir = Path(target_base_dir)
+
+    template = load_template(jinja_dir, target_base_dir)
+    if not template:
         return 1
 
     json_files = list(json_cache_dir.rglob("*.json"))
@@ -265,12 +275,14 @@ async def process(
 
     processed = 0
     errors = 0
-    max_workers = 10
+    all_matched_doctypes = set()
 
-    async def _map_manifest(jf: Path) -> tuple[int, int]:
+    async def _map_manifest(jf: Path) -> tuple[int, int, list[Doctype]]:
         return await process_manifest(
             jf, template, doctypes, target_base_dir, target_dir_dyn, keep_index
         )
+
+    log.info("Starting index generation for %d manifest(s) with %d workers", len(json_files), max_workers)
 
     pipeline = stream.iterate(json_files) | pipe.map(
         _map_manifest,
@@ -279,9 +291,18 @@ async def process(
     )
 
     async with pipeline.stream() as streamer:
-        async for p, e in streamer:
+        async for p, e, matched in streamer:
             processed += p
             errors += e
+            all_matched_doctypes.update(matched)
+
+    # Validate that every doctype constraint provided by the user actually matched something
+    if doctypes:
+        unmatched = set(doctypes) - all_matched_doctypes
+        if unmatched:
+            for u in unmatched:
+                console_err.print(f"[error]No matches found for doctype:[/] {u}")
+            errors += len(unmatched)
 
     console.print(
         f"\n[info]Index Generation Summary:[/] {processed} files rendered, {errors} errors."
