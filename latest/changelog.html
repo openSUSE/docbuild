@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev22+gb8deef3e8.d20261023</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.26.1.dev23+gf944ef068.d20261023</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=ab058881"></script>
+    <script src="_static/documentation_options.js?v=949c01ba"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -481,6 +481,7 @@ deliverable twice in the tree and <code class="docutils literal notranslate"><sp
 <li><p>Added the <strong class="command">docbuild portal dir</strong> subcommand to display the directory where the portal configuration is stored. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/596">GH #596</a>)</p></li>
 <li><p>Refactored the <strong class="command">docbuild metadata</strong> command into a Click group and moved its core execution logic to the new <strong class="command">docbuild metadata run</strong> subcommand. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/599">GH #599</a>)</p></li>
 <li><p>Added the <strong class="command">docbuild metadata dir</strong> subcommand to easily display the metadata cache directories (supports <code class="docutils literal notranslate"><span class="pre">--json</span></code> and <code class="docutils literal notranslate"><span class="pre">--meta</span></code> flags). (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/600">GH #600</a>)</p></li>
+<li><p>Add <strong class="command">docbuild build dir</strong> subcommand to output the raw build target directory for use in scripts. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/602">GH #602</a>)</p></li>
 <li><p>Refactored the <strong class="command">docbuild check files</strong> subcommand to correctly resolve cross-repository references, gracefully skip missing translations and empty locales instead of failing, and provide a structured, visual tree output of the verification results. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/603">GH #603</a>)</p></li>
 <li><p>Added a <code class="docutils literal notranslate"><span class="pre">files_from</span></code> option to <code class="docutils literal notranslate"><span class="pre">RsyncOptions</span></code>. When it is set, <code class="docutils literal notranslate"><span class="pre">rsync()</span></code> passes <code class="docutils literal notranslate"><span class="pre">--files-from</span> <span class="pre">&lt;file&gt;</span></code> to rsync, so only the paths listed in the file are transferred. In archive mode it also passes <code class="docutils literal notranslate"><span class="pre">-r</span></code>, because rsync turns off the recursion implied by <code class="docutils literal notranslate"><span class="pre">-a</span></code> when a file list is used. The paths are relative to the source, and the file is not read or validated by <code class="docutils literal notranslate"><span class="pre">rsync()</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/606">GH #606</a>)</p></li>
 <li><p>Added <strong class="command">docbuild config init</strong> to create starter configuration files from
