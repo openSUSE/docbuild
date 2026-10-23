@@ -22,6 +22,7 @@ DEFAULT_APP_CONFIG = {
     "debug": False,
     "role": "production",
     "max_workers": "half",
+    "symbols": True,
     "paths": {
         "config_dir": f"{CONFIG_HOME}/config.d",
         "": "",

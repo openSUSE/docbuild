@@ -54,6 +54,31 @@ Docbuild provides two built-in presets:
      - Secondary details and dimmed footer text.
 
 
+Status Message Symbols
+----------------------
+
+Common CLI statuses such as ``Valid``, ``OK``, ``Skipped``, and ``Error`` are shared across commands and use the semantic tags described above.
+When the output encoding supports it, Docbuild prefixes the label with a small symbol, for example ``✓``, ``✗``, or ``⚠``.
+The label is always kept, even when the symbol is omitted.
+
+You can disable symbols for all messages with the top-level ``symbols`` option in your application configuration:
+
+.. code-block:: toml
+   :caption: Disable status symbols in the application configuration
+
+   symbols = false
+
+For a temporary change, set the ``DOCBUILD_NO_SYMBOLS`` environment variable.
+Symbols stay enabled when the variable is unset or set to ``0``, ``false``, ``no``, ``off``, or an empty string.
+Any other value disables them.
+The environment variable takes precedence over the application configuration:
+
+.. code-block:: console
+   :caption: Disable status symbols for one session
+
+   export DOCBUILD_NO_SYMBOLS=1
+
+
 Customizing Styles in Configuration
 -----------------------------------
 

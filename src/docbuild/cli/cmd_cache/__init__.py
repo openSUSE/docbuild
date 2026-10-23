@@ -11,6 +11,7 @@ from ..callback import validate_doctypes
 from ..completion import complete_doctypes
 from ..console import console
 from ..context import DocBuildContext
+from ..message import OK, WARNING
 
 
 def expand_meta_paths(meta_dir: Path, doctypes: tuple[Doctype]) -> list[Path]:
@@ -58,7 +59,7 @@ def delete_cache_files(targets: list[Path], extension: str) -> int:
 def print_cache_listing(directory: Path, title: str, target_paths: list[Path], extension: str) -> None:
     """Print cache files for a specific cache type."""
     if not directory.exists():
-        console.print(f"[warning]{title} directory does not exist yet: {directory}[/]")
+        console.print(WARNING, f"{title} directory does not exist yet: {directory}")
         return
 
     console.print(f"\n[header]{title}:[/] {directory}")
@@ -72,7 +73,7 @@ def print_cache_listing(directory: Path, title: str, target_paths: list[Path], e
             console.print(f"- {p.relative_to(directory).as_posix()}")
     else:
         name = "meta" if "Meta" in title else "json"
-        console.print(f"[warning]No {name} cache files found.[/]")
+        console.print(WARNING, f"No {name} cache files found.")
 
 
 def gather_prune_targets(cache_type: str, doctypes: tuple[Doctype], meta_dir: Path, json_dir: Path) -> tuple[list[Path], list[Path]]:
@@ -176,7 +177,7 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
     targets_meta, targets_json = gather_prune_targets(cache_type, doctypes, meta_dir, json_dir)
 
     if not targets_meta and not targets_json:
-        console.print("[warning]No cache files found to prune.[/]")
+        console.print(WARNING, "No cache files found to prune.")
         return
 
     # Ask for confirmation
@@ -190,4 +191,4 @@ def cache_prune(ctx: click.Context, doctypes: tuple[Doctype], cache_type: str, y
     if targets_json:
         deleted_count += delete_cache_files(targets_json, "*.json")
 
-    console.print(f"[success]Successfully pruned {deleted_count} cache file(s).[/]")
+    console.print(OK, f"Successfully pruned {deleted_count} cache file(s).")

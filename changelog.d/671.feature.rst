@@ -1,0 +1,1 @@
+Introduced a shared ``Message`` abstraction for consistent CLI status labels and optional symbols, and adopted it in the ``config validate``, ``doctor``, and ``cache`` commands. Symbols can be disabled with the new top-level ``symbols`` application configuration option or the ``DOCBUILD_NO_SYMBOLS`` environment variable.
