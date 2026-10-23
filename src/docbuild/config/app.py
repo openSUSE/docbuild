@@ -3,7 +3,7 @@
 import re
 from typing import Any
 
-from ..constants import ESCAPE_REGEX, RUNTIME_PLACEHOLDERS
+from ..constants import ESCAPE_REGEX
 
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
@@ -41,14 +41,16 @@ def unescape(text: str, keep_runtime: bool) -> str:
     )
 
 
-_RUNTIME_PLACEHOLDER_PATTERN = re.compile(
-    r"\{\{(" + "|".join(sorted(RUNTIME_PLACEHOLDERS)) + r")\}\}"
-)
-
-
 def normalize_runtime_placeholders(text: str) -> str:
     """Convert supported escaped runtime placeholders for ``str.format``."""
-    return _RUNTIME_PLACEHOLDER_PATTERN.sub(r"{\1}", text)
+    return ESCAPE_REGEX.sub(
+        lambda match: (
+            f"{{{match.group('runtime')}}}"
+            if match.group("runtime")
+            else match.group(0)
+        ),
+        text,
+    )
 
 
 class PlaceholderResolver:

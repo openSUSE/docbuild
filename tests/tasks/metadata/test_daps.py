@@ -64,9 +64,7 @@ def test_get_daps_command(tmp_path: Path):
     ]
 
 
-def test_get_daps_command_default_template_has_no_runtime_braces(
-    tmp_path: Path,
-) -> None:
+def test_get_daps_command_default_template_has_no_runtime_braces() -> None:
     """Verify the default metadata template receives runtime values."""
     template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["meta"]).replace(
         "{build.daps.command}", "daps"
@@ -375,13 +373,14 @@ class TestProcessDeliverable:
 )
 async def test_get_daps_hashes_success(template: str) -> None:
     """Test that valid output is parsed and paths are made relative."""
-    worktree_dir = Path("worktree")
-    dcfile_path = Path("DC-test")
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
 
     mock_result = MagicMock()
     mock_result.returncode = 0
     mock_result.stdout = (
-        "worktree/file1.xml:hash1\nworktree/subdir/file2.xml:hash2\n"
+        "/tmp/worktree/file1.xml:hash1\n"
+        "/tmp/worktree/subdir/file2.xml:hash2\n"
     )
 
     with patch.object(daps_pkg, "run_command", return_value=mock_result) as mock_run:
