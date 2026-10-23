@@ -1,0 +1,46 @@
+
+@import url('https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap');
+
+html {
+    --pst-font-family-base: SUSE, var(--pst-font-family-base-system);
+    --pst-font-family-heading: SUSE, sans-serif, var(--pst-font-family-base-system);
+    --pst-font-family-monospace: Courier, var(--pst-font-family-monospace-system);
+}
+
+/* Add a horizontal line below the glossary letter titles */
+.glossary-letter-title {
+    border-bottom: 1px solid var(--pst-color-border); /* Use theme's border color */
+    padding-bottom: 0.5em; /* Space between title text and the line */
+    margin-bottom: 1em;    /* Space between the line and the content below */
+}
+
+.homepage-nav-card .sd-card-title {
+    font-size: 1.3rem;
+    line-height: 1.25;
+}
+
+/* Makes the text bigger in Mermaid-Diagrammen */
+.mermaid text {
+    font-size: 14pt !important;
+    font-family: "Arial", sans-serif !important;
+}
+
+/* Special rule for actor in a sequence diagram */
+.mermaid .actor {
+    font-size: 16pt !important;
+    font-weight: bold;
+}
+
+/* Removes margins in Mermaid containers */
+div.mermaid {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    text-align: center; /* Zentriert das Diagramm, falls es schmaler als die Seite ist */
+}
+
+
+div.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}

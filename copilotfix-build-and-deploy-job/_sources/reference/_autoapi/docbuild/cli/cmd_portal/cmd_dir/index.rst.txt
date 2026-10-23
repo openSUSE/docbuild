@@ -1,0 +1,36 @@
+docbuild.cli.cmd_portal.cmd_dir
+===============================
+
+.. py:module:: docbuild.cli.cmd_portal.cmd_dir
+
+.. autoapi-nested-parse::
+
+   Display the portal configuration directory.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_portal.cmd_dir.dir_cmd
+
+
+Module Contents
+---------------
+
+.. py:function:: dir_cmd(ctx: click.Context) -> None
+
+   Display the portal configuration directory.
+
+   Example:
+       docbuild portal dir
+
+
+
+   :param ctx: The Click context object.
+   :returns: (None) Prints the resolved directory path to stdout.
+
+
+

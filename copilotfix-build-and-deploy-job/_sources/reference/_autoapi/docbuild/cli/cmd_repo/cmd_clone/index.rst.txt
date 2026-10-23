@@ -1,0 +1,54 @@
+docbuild.cli.cmd_repo.cmd_clone
+===============================
+
+.. py:module:: docbuild.cli.cmd_repo.cmd_clone
+
+.. autoapi-nested-parse::
+
+   Clone repositories.
+
+   Choose exactly one mode: provide one or more REPOS repository arguments,
+   or use --all to clone all configured repositories. Do not combine them.
+
+   Pass any of the following URLs to clone:
+
+   
+   * HTTPS URLs like ``https://github.com/org/repo.git``
+   * SSH URLS like git@github.com:org/repo.git
+   * Abbreviated URLs like 'org/repo'
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_repo.cmd_clone.clone
+
+
+Module Contents
+---------------
+
+.. py:function:: clone(ctx: click.Context, repos: tuple[str, ...], all_repos: bool) -> None
+
+   Clone repositories into permanent directory.
+
+   Choose exactly one mode: provide one or more repository arguments,
+   or use --all to clone all configured repositories. Do not combine them.
+
+   Pass any of the following URLs to clone:
+
+   
+   * HTTPS URLs like ``https://github.com/org/repo.git``
+   * SSH URLS like git@github.com:org/repo.git
+   * Abbreviated URLs like 'org/repo'
+
+
+
+
+   :param repos: A tuple of repository selectors. If empty, all repos
+       are cloned.
+   :param ctx: The Click context object.
+
+
