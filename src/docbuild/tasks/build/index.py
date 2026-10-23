@@ -13,16 +13,18 @@ import jinja2
 from pydantic import ValidationError
 
 from ...cli.console import console, console_err
+from ...constants import DEFAULT_LIFECYCLE
 from ...models.doctype import Doctype
+from ...models.lifecycle import LifecycleFlag
 from ...models.manifest import Manifest
 
 log = logging.getLogger(__name__)
 
 
 def get_matching_doctypes(
-    doctypes: Sequence[Doctype], product: str, docset: str, lang: str
+    doctypes: Sequence[Doctype], product: str, docset: str, lang: str | None
 ) -> list[Doctype]:
-    """Return all doctypes that match the given product, docset, and language."""
+    """Match product/docset and, when supplied, language constraints."""
     if not doctypes:
         return []
 
@@ -38,7 +40,11 @@ def get_matching_doctypes(
 
         match_prod = dt_prod_str == "*" or dt_prod_str.lower() == str(product).lower()
         match_ds = "*" in dt_docsets or str(docset).lower() in [str(d).lower() for d in dt_docsets]
-        match_lang = "*" in dt_langs or str(lang).lower() in [str(lng).lower() for lng in dt_langs]
+        match_lang = (
+            lang is None
+            or "*" in dt_langs
+            or str(lang).lower() in [str(lng).lower() for lng in dt_langs]
+        )
 
         if match_prod and match_ds and match_lang:
             matches.append(dt)
@@ -51,19 +57,19 @@ def get_languages(manifest: Manifest) -> list[str]:
     languages = set()
     if hasattr(manifest, "archives") and manifest.archives:
         languages.update(
-            arch.lang for arch in manifest.archives if getattr(arch, "lang", None)
+            str(arch.lang) for arch in manifest.archives if getattr(arch, "lang", None)
         )
 
     if not languages and hasattr(manifest, "documents") and manifest.documents:
         for document in manifest.documents:
             if hasattr(document, "docs") and document.docs:
                 languages.update(
-                    doc.lang for doc in document.docs if getattr(doc, "lang", None)
+                    str(doc.lang) for doc in document.docs if getattr(doc, "lang", None)
                 )
 
     if not languages and hasattr(manifest, "docs") and manifest.docs:
         languages.update(
-            doc.lang for doc in manifest.docs if getattr(doc, "lang", None)
+            str(doc.lang) for doc in manifest.docs if getattr(doc, "lang", None)
         )
 
     if not languages:
@@ -122,6 +128,17 @@ def process_manifest_sync(
         console_err.print(f"[error]Failed to read JSON {json_file.name}:[/] {exc}")
         return 0, 1, []
 
+    if (
+        doctypes
+        and isinstance(data, dict)
+        and "acronym" in data
+        and "version" in data
+        and not get_matching_doctypes(
+            doctypes, data["acronym"], data["version"], None
+        )
+    ):
+        return 0, 0, []
+
     try:
         manifest = Manifest.model_validate(data)
     except ValidationError as exc:
@@ -146,6 +163,7 @@ def process_manifest_sync(
 
     for lang in languages:
         matched = get_matching_doctypes(doctypes, product, docset_id, lang)
+        matched = [dt for dt in matched if manifest.lifecycle in dt.lifecycle]
         if not matched and doctypes:
             continue
 
@@ -206,6 +224,7 @@ async def process_manifest(
     task = asyncio.current_task()
     if task is not None:
         task.set_name(f"build:index:{json_file.parent.name}:{json_file.stem}")
+    log.debug("Reading manifest: %s", json_file)
     try:
         return await asyncio.to_thread(
             process_manifest_sync,
@@ -261,11 +280,27 @@ async def process(
     json_cache_dir = Path(json_cache_dir)
     target_base_dir = Path(target_base_dir)
 
+    doctypes = [
+        dt.model_copy(update={"lifecycle": LifecycleFlag(DEFAULT_LIFECYCLE)})
+        if dt.lifecycle == LifecycleFlag.unknown else dt
+        for dt in doctypes
+    ]
+
     template = load_template(jinja_dir, target_base_dir)
     if not template:
         return 1
 
-    json_files = list(json_cache_dir.rglob("*.json"))
+    json_files = [
+        path for path in json_cache_dir.rglob("*.json")
+        if path != json_cache_dir / "homepage.json"
+        and (
+            not doctypes
+            or path.parent == json_cache_dir
+            or get_matching_doctypes(
+                doctypes, path.parent.name, path.stem, None
+            )
+        )
+    ]
 
     if not json_files:
         console_err.print(
