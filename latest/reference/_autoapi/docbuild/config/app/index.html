@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.app &#8212; Docbuild Documentation 0.26.1.dev23+gf944ef068.d20261023</title>
+    <title>docbuild.config.app &#8212; Docbuild Documentation 0.26.1.dev24+g59a09ef5c.d20261023</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=949c01ba"></script>
+    <script src="../../../../../_static/documentation_options.js?v=7bcd1fa3"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -706,7 +706,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.app.unescape" title="docbuild.config.app.unescape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unescape</span></code></a>(→ str)</p></td>
 <td><p>Unescape double curly braces, optionally preserving runtime placeholders.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.app.replace_placeholders" title="docbuild.config.app.replace_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_placeholders</span></code></a>(→ dict[str, Any] | None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.app.normalize_runtime_placeholders" title="docbuild.config.app.normalize_runtime_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize_runtime_placeholders</span></code></a>(→ str)</p></td>
+<td><p>Convert supported escaped runtime placeholders for <code class="docutils literal notranslate"><span class="pre">str.format</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.app.replace_placeholders" title="docbuild.config.app.replace_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_placeholders</span></code></a>(→ dict[str, Any] | None)</p></td>
 <td><p>Replace placeholder values in a nested dictionary structure.</p></td>
 </tr>
 </tbody>
@@ -731,6 +734,12 @@
 <dt class="sig sig-object py" id="docbuild.config.app.unescape">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.app.</span></span><span class="sig-name descname"><span class="pre">unescape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_runtime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.app.unescape" title="Link to this definition">#</a></dt>
 <dd><p>Unescape double curly braces, optionally preserving runtime placeholders.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.app.normalize_runtime_placeholders">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.app.</span></span><span class="sig-name descname"><span class="pre">normalize_runtime_placeholders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.app.normalize_runtime_placeholders" title="Link to this definition">#</a></dt>
+<dd><p>Convert supported escaped runtime placeholders for <code class="docutils literal notranslate"><span class="pre">str.format</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -820,6 +829,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.MAX_RECURSION_DEPTH"><code class="docutils literal notranslate"><span class="pre">MAX_RECURSION_DEPTH</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.ConfigValue"><code class="docutils literal notranslate"><span class="pre">ConfigValue</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.unescape"><code class="docutils literal notranslate"><span class="pre">unescape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.normalize_runtime_placeholders"><code class="docutils literal notranslate"><span class="pre">normalize_runtime_placeholders()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.replace_placeholders"><code class="docutils literal notranslate"><span class="pre">replace_placeholders()</span></code></a></li>
 </ul>
 </li>
