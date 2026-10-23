@@ -1,6 +1,7 @@
 """Tests for reusable CLI status messages."""
 
-from io import StringIO
+from contextvars import Context
+from io import BytesIO, StringIO, TextIOWrapper
 from types import SimpleNamespace
 from typing import cast
 
@@ -30,16 +31,16 @@ ALL_MESSAGES = (OK, ERROR, WARNING, INFO, VALID, INVALID, SKIPPED, MISSING)
 
 @pytest.fixture(autouse=True)
 def reset_symbol_setting():
-    """Reset the shared application-config default around each test."""
+    """Reset the application-config default around each test."""
     set_symbols_enabled(True)
     yield
     set_symbols_enabled(True)
 
 
-def test_message_str_returns_plain_label():
+@pytest.mark.parametrize("message", ALL_MESSAGES)
+def test_message_str_returns_plain_label(message):
     """Verify str() returns only the label, without styling or symbols."""
-    assert str(VALID) == "Valid"
-    assert str(OK) == "OK"
+    assert str(message) == message.label
 
 
 def test_message_render_includes_symbol_by_default(monkeypatch):
@@ -101,6 +102,15 @@ def test_app_config_disables_symbols():
     assert VALID.render().plain == "Valid"
 
 
+def test_symbol_setting_is_context_local(monkeypatch):
+    """Verify the application-config default is isolated per context."""
+    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
+    set_symbols_enabled(False)
+
+    assert symbols_enabled() is False
+    assert Context().run(symbols_enabled) is True
+
+
 def test_env_var_overrides_app_config(monkeypatch):
     """Verify the environment variable takes precedence over app config."""
     set_symbols_enabled(False)
@@ -152,27 +162,36 @@ def test_symbols_enabled_values(monkeypatch, value):
 
 
 def test_message_rich_console_rendering(monkeypatch):
-    """Verify Rich renders a Message inline inside console.print()."""
+    """Verify rendered messages stay inline when printed with a prefix."""
     monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
-    monkeypatch.setattr("docbuild.cli.message._stdout_encoding", lambda: "utf-8")
     output = StringIO()
     console = Console(file=output, theme=DOCBUILD_THEME, width=80)
 
-    console.print("Application configuration:", VALID)
+    console.print("Application configuration:", VALID.render(console=console))
 
     assert "Application configuration: ✓ Valid" in output.getvalue()
 
 
-def test_message_rich_render_drops_symbol_for_ascii_stdout(monkeypatch):
-    """Verify Rich rendering drops symbols the standard output cannot encode."""
+@pytest.mark.parametrize(
+    ("encoding", "expected"),
+    [
+        pytest.param("ascii", b"Valid\n", id="ascii"),
+        pytest.param("utf-8", "✓ Valid\n".encode(), id="utf-8"),
+    ],
+)
+def test_message_rich_console_uses_destination_encoding(
+    monkeypatch, encoding, expected
+):
+    """Verify Rich rendering uses the destination console encoding."""
     monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
-    monkeypatch.setattr("docbuild.cli.message._stdout_encoding", lambda: "ascii")
-    output = StringIO()
-    console = Console(file=output, theme=DOCBUILD_THEME, width=80)
+    buffer = BytesIO()
+    stream = TextIOWrapper(buffer, encoding=encoding, newline="")
+    console = Console(file=stream, theme=DOCBUILD_THEME, width=80)
 
-    console.print("Application configuration:", VALID)
+    console.print(VALID)
+    stream.flush()
 
-    assert "Application configuration: Valid" in output.getvalue()
+    assert buffer.getvalue() == expected
 
 
 def test_message_constants_use_theme_tags():

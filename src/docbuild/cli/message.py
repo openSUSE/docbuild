@@ -1,10 +1,11 @@
 """Reusable status messages for consistent docbuild CLI output."""
 
+from collections.abc import Iterator
+from contextvars import ContextVar
 from dataclasses import dataclass
 import os
-import sys
 
-from rich.console import Console
+from rich.console import Console, ConsoleOptions
 from rich.text import Text
 
 from .theme import ThemeTag
@@ -19,7 +20,9 @@ Symbols stay enabled when the variable is unset or set to ``0``, ``false``,
 _SYMBOLS_ENABLED_VALUES = frozenset({"", "0", "false", "no", "off"})
 """Values of :data:`NO_SYMBOLS_ENV_VAR` that keep symbols enabled."""
 
-_app_symbols_enabled: bool = True
+_app_symbols_enabled: ContextVar[bool] = ContextVar(
+    "docbuild_app_symbols_enabled", default=True
+)
 """Application-config default for status symbols."""
 
 
@@ -29,8 +32,7 @@ def set_symbols_enabled(enabled: bool) -> None:
     The :data:`NO_SYMBOLS_ENV_VAR` environment variable still takes
     precedence over this value.
     """
-    global _app_symbols_enabled
-    _app_symbols_enabled = enabled
+    _app_symbols_enabled.set(enabled)
 
 
 def symbols_enabled() -> bool:
@@ -43,12 +45,7 @@ def symbols_enabled() -> bool:
     value = os.environ.get(NO_SYMBOLS_ENV_VAR)
     if value is not None:
         return value.strip().lower() in _SYMBOLS_ENABLED_VALUES
-    return _app_symbols_enabled
-
-
-def _stdout_encoding() -> str | None:
-    """Return the encoding of standard output, if it is known."""
-    return getattr(sys.stdout, "encoding", None)
+    return _app_symbols_enabled.get()
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,9 +91,11 @@ class Message:
         encoding = console.encoding if console is not None else None
         return self._build_text(encoding, symbols)
 
-    def __rich__(self) -> Text:
-        """Return styled text for Rich to print directly."""
-        return self._build_text(_stdout_encoding(), None)
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> Iterator[Text]:
+        """Render using the encoding of Rich's destination console."""
+        yield self.render(console=console)
 
 
 OK = Message("OK", ThemeTag.SUCCESS, symbol="✓")

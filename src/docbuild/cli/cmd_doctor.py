@@ -35,15 +35,11 @@ def doctor() -> None:
             has_errors = True
             found = "[muted]---[/]"
         elif not res["is_valid"]:
-            status = Message(
-                res["message"], ERROR.style, symbol=ERROR.symbol
-            ).render(console=console)
+            status = Message(res["message"], ERROR.style, symbol=ERROR.symbol)
             has_errors = True
             found = f"[error]{found}[/]"
         elif "Warning" in res["message"]:
-            status = Message(
-                res["message"], WARNING.style, symbol=WARNING.symbol
-            ).render(console=console)
+            status = Message(res["message"], WARNING.style, symbol=WARNING.symbol)
         else:
             status = OK
 
