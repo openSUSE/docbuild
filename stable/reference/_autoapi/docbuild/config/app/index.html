@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.app &#8212; Docbuild Documentation 0.26.0</title>
+    <title>docbuild.config.app &#8212; Docbuild Documentation 0.28.0</title>
   
   
   
@@ -32,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/css/custom.css?v=0a0e13a7" />
   
@@ -41,17 +42,17 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=4aa2dafa"></script>
+    <script src="../../../../../_static/documentation_options.js?v=8d643f27"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../../../_static/copybutton.js?v=6f874712"></script>
+    <script src="../../../../../_static/copybutton.js?v=48804fe2"></script>
     <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reference/_autoapi/docbuild/config/app/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.26.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.28.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
@@ -64,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.26.0" />
+  <meta name="docsearch:version" content="0.28.0" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -392,7 +393,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../__main__/index.html">docbuild.__main__</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../cli/index.html">docbuild.cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/callback/index.html">docbuild.cli.callback</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_build/index.html">docbuild.cli.cmd_build</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_build/cmd_dir/index.html">docbuild.cli.cmd_build.cmd_dir</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_build/cmd_index/index.html">docbuild.cli.cmd_build.cmd_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_build/cmd_run/index.html">docbuild.cli.cmd_build.cmd_run</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_c14n/index.html">docbuild.cli.cmd_c14n</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_cache/index.html">docbuild.cli.cmd_cache</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_cli/index.html">docbuild.cli.cmd_cli</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -400,6 +406,7 @@
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_config/index.html">docbuild.cli.cmd_config</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/init/index.html">docbuild.cli.cmd_config.init</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/list/index.html">docbuild.cli.cmd_config.list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/theme/index.html">docbuild.cli.cmd_config.theme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_config/validate/index.html">docbuild.cli.cmd_config.validate</a></li>
@@ -409,6 +416,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_llms/index.html">docbuild.cli.cmd_llms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/cmd_metadata/index.html">docbuild.cli.cmd_metadata</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/cmd_portal/index.html">docbuild.cli.cmd_portal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_dir/index.html">docbuild.cli.cmd_portal.cmd_dir</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_list/index.html">docbuild.cli.cmd_portal.cmd_list</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_portal/cmd_validate/index.html">docbuild.cli.cmd_portal.cmd_validate</a></li>
 </ul>
@@ -419,6 +427,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../cli/cmd_repo/cmd_list/index.html">docbuild.cli.cmd_repo.cmd_list</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli/completion/index.html">docbuild.cli.completion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../cli/console/index.html">docbuild.cli.console</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../cli/context/index.html">docbuild.cli.context</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../cli/context/DocBuildContext.html">docbuild.cli.context.DocBuildContext</a></li>
@@ -453,7 +462,10 @@
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../constants/index.html">docbuild.constants</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../constants/DependencySpec.html">docbuild.constants.DependencySpec</a></li>
+</ul>
+</details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../logging/index.html">docbuild.logging</a></li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../models/index.html">docbuild.models</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../models/cache/index.html">docbuild.models.cache</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -528,6 +540,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../utils/index.html">docbuild.utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/concurrency/index.html">docbuild.utils.concurrency</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/concurrency/TaskFailedError.html">docbuild.utils.concurrency.TaskFailedError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/concurrency/sentinel.html">docbuild.utils.concurrency.sentinel</a></li>
 </ul>
 </details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/contextmgr/index.html">docbuild.utils.contextmgr</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -693,7 +706,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.app.unescape" title="docbuild.config.app.unescape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unescape</span></code></a>(→ str)</p></td>
 <td><p>Unescape double curly braces, optionally preserving runtime placeholders.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.app.replace_placeholders" title="docbuild.config.app.replace_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_placeholders</span></code></a>(→ dict[str, Any] | None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.app.normalize_runtime_placeholders" title="docbuild.config.app.normalize_runtime_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize_runtime_placeholders</span></code></a>(→ str)</p></td>
+<td><p>Convert supported escaped runtime placeholders for <code class="docutils literal notranslate"><span class="pre">str.format</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.app.replace_placeholders" title="docbuild.config.app.replace_placeholders"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_placeholders</span></code></a>(→ dict[str, Any] | None)</p></td>
 <td><p>Replace placeholder values in a nested dictionary structure.</p></td>
 </tr>
 </tbody>
@@ -718,6 +734,12 @@
 <dt class="sig sig-object py" id="docbuild.config.app.unescape">
 <span class="sig-prename descclassname"><span class="pre">docbuild.config.app.</span></span><span class="sig-name descname"><span class="pre">unescape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_runtime</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.app.unescape" title="Link to this definition">#</a></dt>
 <dd><p>Unescape double curly braces, optionally preserving runtime placeholders.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.config.app.normalize_runtime_placeholders">
+<span class="sig-prename descclassname"><span class="pre">docbuild.config.app.</span></span><span class="sig-name descname"><span class="pre">normalize_runtime_placeholders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.config.app.normalize_runtime_placeholders" title="Link to this definition">#</a></dt>
+<dd><p>Convert supported escaped runtime placeholders for <code class="docutils literal notranslate"><span class="pre">str.format</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -807,6 +829,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.MAX_RECURSION_DEPTH"><code class="docutils literal notranslate"><span class="pre">MAX_RECURSION_DEPTH</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.ConfigValue"><code class="docutils literal notranslate"><span class="pre">ConfigValue</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.unescape"><code class="docutils literal notranslate"><span class="pre">unescape()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.normalize_runtime_placeholders"><code class="docutils literal notranslate"><span class="pre">normalize_runtime_placeholders()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.config.app.replace_placeholders"><code class="docutils literal notranslate"><span class="pre">replace_placeholders()</span></code></a></li>
 </ul>
 </li>

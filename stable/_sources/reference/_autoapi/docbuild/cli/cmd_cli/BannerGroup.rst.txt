@@ -12,6 +12,16 @@ docbuild.cli.cmd_cli.BannerGroup
    Custom Click Group that displays a banner before help messages.
 
 
+   .. py:method:: resolve_command(ctx: click.Context, args: list[str]) -> tuple[str | None, click.Command | None, list[str]]
+
+      Identify configuration bootstrapping before loading configuration.
+
+      :param ctx: The root command context.
+      :param args: Arguments remaining after parsing global options.
+      :return: The resolved command name, command and remaining arguments.
+
+
+
    .. py:method:: format_help(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
       Format and print help output with banner prefix.

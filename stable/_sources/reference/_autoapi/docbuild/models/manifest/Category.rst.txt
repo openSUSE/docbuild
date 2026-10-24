@@ -26,6 +26,12 @@ docbuild.models.manifest.Category
        }
 
 
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+
    .. py:method:: reset_rank() -> None
       :classmethod:
 

@@ -7,7 +7,7 @@ To temporarily override environment configuration options directly from the comm
 
 Use ``key=value`` syntax, and use dot notation for nested options:
 
-.. code-block:: shell-session
+.. code-block:: console
 
      $ docbuild -C "general.canonical_url_domain=https://doc.example.net" -C paths.root_config_dir=/etc/docbuild config list --env
 
@@ -25,25 +25,25 @@ If your configuration keys contain dots, use a backslash, quotes, or brackets to
 
 * **Backslash** (Syntax ``key\.with\.dots``)
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C "xslt.html.show\.edit\.link=1" config list --env
 
 * **Single quotes** (Syntax ``'key.with.dots'``)
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C "xslt.html.'show.edit.link'=1" config list --env
 
 * **Double quotes** (Syntax ``"key.with.dots"``)
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C 'xslt.html."show.edit.link"=1' config list --env
 
 * **Square brackets** (Syntax ``[key.with.dots]``)
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C "xslt.html.[show.edit.link]=1" config list --env
 
@@ -57,13 +57,13 @@ Values are automatically converted to their appropriate types:
 
 * **Booleans**: ``true`` and ``false`` (case-insensitive)
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C "general.enable_mail=true" config list --env
 
 * **Strings**: Quoted strings or values that don't match the above patterns
 
-  .. code-block:: shell-session
+  .. code-block:: console
 
      $ docbuild -C "general.name='My ENV Name'" config list --env
 
@@ -74,7 +74,7 @@ Using placeholders in CLI overrides
 
 It is possible to use placeholders in CLI overrides, just like in configuration files. Static placeholders will be resolved based on the current configuration context, while dynamic placeholders will remain as templates for runtime resolution:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild -C 'general.canonical_url_domain=https://docs.example.org' \
               -C 'xslt.html.homepage={general.canonical_url_domain}' \
@@ -103,7 +103,7 @@ Example: Invalid Enum Value
 
 If you pass an invalid value via ``-C`` or ``--set-env``, the command will fail with a clear validation error:
 
-.. code-block:: shell-session
+.. code-block:: console
 
       $ docbuild -C "general.role=invalid_role" build
       1 Validation error in config file 'defaults':
@@ -115,7 +115,7 @@ If you pass an invalid value via ``-C`` or ``--set-env``, the command will fail 
 
 To find the valid values for a field, check the error message or consult the configuration reference documentation. You can also validate the config explicitly with ``docbuild config validate``:
 
-.. code-block:: shell-session
+.. code-block:: console
 
       $ docbuild -C "general.role=invalid_role" config validate
       1 Validation error in config file 'defaults':

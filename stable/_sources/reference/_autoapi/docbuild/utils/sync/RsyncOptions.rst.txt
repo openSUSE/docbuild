@@ -62,10 +62,26 @@ docbuild.utils.sync.RsyncOptions
 
    .. py:attribute:: exclude
       :type:  list[str] | tuple[str, ...]
-      :value: []
+      :value: ('.git/', '.svn/', '.hg/', '.bzr/', '*~', '*.old', '*.bak', '*.BAK', '*.orig', '*.rej', '*.html.new')
 
 
-      List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag.
+      Patterns excluded from transfer, replacing the defaults when supplied.
+
+      Pass an empty list or tuple to disable exclusions. Each pattern becomes a
+      separate ``--exclude`` flag.
+
+
+
+   .. py:attribute:: files_from
+      :type:  pathlib.Path | str | None
+      :value: None
+
+
+      Path (or string) to a file that lists what to transfer (``--files-from``).
+
+      Each path in the file is relative to the source path. In archive mode, ``-r`` is
+      also passed, because rsync turns off the recursion implied by ``-a`` when a file
+      list is used. The file is not read or validated by ``rsync()``.
 
 
 

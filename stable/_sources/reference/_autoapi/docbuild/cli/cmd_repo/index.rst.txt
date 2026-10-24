@@ -33,7 +33,10 @@ Package Contents
 
 .. py:function:: repo(ctx: click.Context) -> None
 
-   Subcommand to repo management.
+   Manage repositories.
+
+
+
 
    :param ctx: The Click context object.
 

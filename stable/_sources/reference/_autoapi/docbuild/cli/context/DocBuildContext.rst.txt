@@ -131,3 +131,12 @@ docbuild.cli.context.DocBuildContext
       The parsed and extracted Portal XML configuration, if loaded
 
 
+
+   .. py:attribute:: env_lock
+      :type:  docbuild.utils.pidlock.PidFileLock | None
+      :value: None
+
+
+      PID lock for the environment config file
+
+

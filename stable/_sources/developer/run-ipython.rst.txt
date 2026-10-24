@@ -11,7 +11,7 @@ To start an interactive IPython shell with pre-loaded project
 modules, use the ``uipython`` alias (see :ref:`devel-helpers`).
 This is useful for experimenting with the project's code and for debugging.
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Running IPython using |uv| with alias :ref:`uipython <devel-helpers>`
 
    $ uipython

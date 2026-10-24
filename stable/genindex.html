@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; Docbuild Documentation 0.26.0</title>
+    <title>Index &#8212; Docbuild Documentation 0.28.0</title>
   
   
   
@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=0a0e13a7" />
   
@@ -40,11 +41,11 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=4aa2dafa"></script>
+    <script src="_static/documentation_options.js?v=8d643f27"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="_static/copybutton.js?v=6f874712"></script>
+    <script src="_static/copybutton.js?v=48804fe2"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
@@ -408,7 +409,7 @@ window.runMermaid = runMermaid;</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.26.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.28.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
@@ -419,7 +420,7 @@ window.runMermaid = runMermaid;</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.26.0" />
+  <meta name="docsearch:version" content="0.28.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -800,6 +801,8 @@ window.runMermaid = runMermaid;</script>
     --app
 
       <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-app">docbuild-config-init command line option</a>
+</li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-list-app">docbuild-config-list command line option</a>
 </li>
       </ul></li>
@@ -835,6 +838,8 @@ window.runMermaid = runMermaid;</script>
     --env
 
       <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-env">docbuild-config-init command line option</a>
+</li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-list-env">docbuild-config-list command line option</a>
 </li>
       </ul></li>
@@ -849,7 +854,7 @@ window.runMermaid = runMermaid;</script>
     --exitfirst
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -869,10 +874,31 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    --json
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-json">docbuild-metadata-dir command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --keep-index
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-index-keep-index">docbuild-build-index command line option</a>
+</li>
+      </ul></li>
+      <li>
     --main-portal-config
 
       <ul>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-validate-M">docbuild-portal-validate command line option</a>
+</li>
+      </ul></li>
+      <li>
+    --meta
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-meta">docbuild-metadata-dir command line option</a>
 </li>
       </ul></li>
       <li>
@@ -904,6 +930,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    --role
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-role">docbuild-config-init command line option</a>
+</li>
+      </ul></li>
+      <li>
     --set-env
 
       <ul>
@@ -914,16 +947,18 @@ window.runMermaid = runMermaid;</script>
     --skip-metadata
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-M">docbuild-build command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-M">docbuild-build-run command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     --skip-repo-update
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">docbuild-build command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-S">docbuild-build-run command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -933,8 +968,6 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-list-T">docbuild-portal-list command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     --type
 
@@ -999,7 +1032,7 @@ window.runMermaid = runMermaid;</script>
     -E
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">docbuild-metadata-run command line option</a>
 </li>
       </ul></li>
       <li>
@@ -1020,7 +1053,7 @@ window.runMermaid = runMermaid;</script>
     -M
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-M">docbuild-build command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-M">docbuild-build-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-validate-M">docbuild-portal-validate command line option</a>
 </li>
@@ -1036,9 +1069,9 @@ window.runMermaid = runMermaid;</script>
     -S
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">docbuild-build command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-S">docbuild-build-run command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">docbuild-metadata-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-validate-S">docbuild-portal-validate command line option</a>
 </li>
@@ -1140,6 +1173,8 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/sentinel.html#docbuild.utils.concurrency.sentinel.__init_subclass__">__init_subclass__() (docbuild.utils.concurrency.sentinel class method)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.__lt__">__lt__() (docbuild.models.deliverable.Deliverable method)</a>
 
       <ul>
@@ -1160,6 +1195,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.__repr__">(docbuild.models.doctype.Doctype method)</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.__repr__">(docbuild.models.language.LanguageCode method)</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/utils/concurrency/sentinel.html#docbuild.utils.concurrency.sentinel.__repr__">(docbuild.utils.concurrency.sentinel method)</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/utils/git/ManagedGitRepo.html#docbuild.utils.git.ManagedGitRepo.__repr__">(docbuild.utils.git.ManagedGitRepo method)</a>
 </li>
@@ -1356,12 +1393,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_reference_nesting">check_reference_nesting() (in module docbuild.config.xml.checks)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_spotlight_target">check_spotlight_target() (in module docbuild.config.xml.checks)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/references/index.html#docbuild.config.xml.references.check_stitched_references">check_stitched_references() (in module docbuild.config.xml.references)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_subdeliverable_in_deliverable">check_subdeliverable_in_deliverable() (in module docbuild.config.xml.checks)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/checks/index.html#docbuild.config.xml.checks.check_unsupported_language_code">check_unsupported_language_code() (in module docbuild.config.xml.checks)</a>
@@ -1392,9 +1429,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#docbuild.utils.sysdeps.coerce_semver">coerce_semver() (in module docbuild.utils.sysdeps)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/completion/index.html#docbuild.cli.completion.collect_docsets">collect_docsets() (in module docbuild.cli.completion)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/cache/Cache.html#docbuild.models.cache.Cache.combined_hash">combined_hash (docbuild.models.cache.Cache property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvBuildDaps.html#docbuild.models.config.env.EnvBuildDaps.command">command (docbuild.models.config.env.EnvBuildDaps attribute)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/completion/index.html#docbuild.cli.completion.complete_doctypes">complete_doctypes() (in module docbuild.cli.completion)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/sync/RsyncOptions.html#docbuild.utils.sync.RsyncOptions.compress">compress (docbuild.utils.sync.RsyncOptions attribute)</a>
 </li>
@@ -1408,6 +1449,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.CONFIG_PATHS">CONFIG_PATHS (in module docbuild.constants)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_config/init/index.html#docbuild.cli.cmd_config.init.config_table">config_table() (in module docbuild.cli.cmd_config.init)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/config/app/index.html#docbuild.config.app.ConfigValue">ConfigValue (in module docbuild.config.app)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/console/index.html#docbuild.cli.console.console">console (in module docbuild.cli.console)</a>
@@ -1418,7 +1461,7 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/convert/index.html#docbuild.utils.convert.convert2bool">convert2bool() (in module docbuild.utils.convert)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.country">country() (docbuild.models.language.LanguageCode method)</a>
+      <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.country">country (docbuild.models.language.LanguageCode property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/git/ManagedGitRepo.html#docbuild.utils.git.ManagedGitRepo.create_worktree">create_worktree() (docbuild.utils.git.ManagedGitRepo method)</a>
 </li>
@@ -1466,9 +1509,11 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvGeneral.html#docbuild.models.config.env.EnvGeneral.default_lang">default_lang (docbuild.models.config.env.EnvGeneral attribute)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DEFAULT_LANGS">DEFAULT_LANGS (in module docbuild.constants)</a>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DEFAULT_LANG">DEFAULT_LANG (in module docbuild.constants)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DEFAULT_LIFECYCLE">DEFAULT_LIFECYCLE (in module docbuild.constants)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DEFAULT_RSYNC_EXCLUDES">DEFAULT_RSYNC_EXCLUDES (in module docbuild.constants)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/theme/index.html#docbuild.cli.theme.DEFAULT_STYLES">DEFAULT_STYLES (in module docbuild.cli.theme)</a>
 </li>
@@ -1484,6 +1529,14 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/cache/Cache.html#docbuild.models.cache.Cache.diff">diff() (docbuild.models.cache.Cache method)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_dir/index.html#docbuild.cli.cmd_build.cmd_dir.dir_cmd">dir_cmd() (in module docbuild.cli.cmd_build.cmd_dir)</a>
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/index.html#docbuild.cli.cmd_metadata.dir_cmd">(in module docbuild.cli.cmd_metadata)</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_dir/index.html#docbuild.cli.cmd_portal.cmd_dir.dir_cmd">(in module docbuild.cli.cmd_portal.cmd_dir)</a>
+</li>
+      </ul></li>
       <li><a href="glossary.html#term-DocBook"><strong>DocBook</strong></a>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.DOCBOOK_NS">DOCBOOK_NS (in module docbuild.constants)</a>
@@ -1525,18 +1578,27 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
-    docbuild-build command line option
+    docbuild-build-index command line option
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-M">--skip-metadata</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-index-keep-index">--keep-index</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">--skip-repo-update</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-index-arg-DOCTYPES">DOCTYPES</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-M">-M</a>
+      </ul></li>
+      <li>
+    docbuild-build-run command line option
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-M">--skip-metadata</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-S">-S</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-S">--skip-repo-update</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-arg-DOCTYPES">DOCTYPES</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-M">-M</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-S">-S</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-arg-DOCTYPES">DOCTYPES</a>
 </li>
       </ul></li>
       <li>
@@ -1575,6 +1637,17 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    docbuild-config-init command line option
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-app">--app</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-env">--env</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-config-init-role">--role</a>
+</li>
+      </ul></li>
+      <li>
     docbuild-config-list command line option
 
       <ul>
@@ -1599,18 +1672,27 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
-    docbuild-metadata command line option
+    docbuild-metadata-dir command line option
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">--exitfirst</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-json">--json</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">--skip-repo-update</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-dir-meta">--meta</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-E">-E</a>
+      </ul></li>
+      <li>
+    docbuild-metadata-run command line option
+
+      <ul>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">--exitfirst</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-S">-S</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">--skip-repo-update</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-arg-DOCTYPES">DOCTYPES</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-E">-E</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-S">-S</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-arg-DOCTYPES">DOCTYPES</a>
 </li>
       </ul></li>
       <li>
@@ -1696,6 +1778,27 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    docbuild.cli.cmd_build.cmd_dir
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_dir/index.html#module-docbuild.cli.cmd_build.cmd_dir">module</a>
+</li>
+      </ul></li>
+      <li>
+    docbuild.cli.cmd_build.cmd_index
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_index/index.html#module-docbuild.cli.cmd_build.cmd_index">module</a>
+</li>
+      </ul></li>
+      <li>
+    docbuild.cli.cmd_build.cmd_run
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_run/index.html#module-docbuild.cli.cmd_build.cmd_run">module</a>
+</li>
+      </ul></li>
+      <li>
     docbuild.cli.cmd_c14n
 
       <ul>
@@ -1723,6 +1826,13 @@ window.runMermaid = runMermaid;</script>
 
       <ul>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_config/index.html#module-docbuild.cli.cmd_config">module</a>
+</li>
+      </ul></li>
+      <li>
+    docbuild.cli.cmd_config.init
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_config/init/index.html#module-docbuild.cli.cmd_config.init">module</a>
 </li>
       </ul></li>
       <li>
@@ -1775,6 +1885,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    docbuild.cli.cmd_portal.cmd_dir
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_dir/index.html#module-docbuild.cli.cmd_portal.cmd_dir">module</a>
+</li>
+      </ul></li>
+      <li>
     docbuild.cli.cmd_portal.cmd_list
 
       <ul>
@@ -1817,6 +1934,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    docbuild.cli.completion
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/cli/completion/index.html#module-docbuild.cli.completion">module</a>
+</li>
+      </ul></li>
+      <li>
     docbuild.cli.console
 
       <ul>
@@ -1850,6 +1974,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/theme/ThemeTag.html#docbuild.cli.theme.ThemeTag">docbuild.cli.theme.ThemeTag (built-in class)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.config
 
@@ -1886,8 +2012,6 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/config/merge/index.html#module-docbuild.config.merge">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     docbuild.config.xml
 
@@ -1948,6 +2072,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/constants/index.html#module-docbuild.constants">module</a>
 </li>
       </ul></li>
+      <li><a href="reference/_autoapi/docbuild/constants/DependencySpec.html#docbuild.constants.DependencySpec">docbuild.constants.DependencySpec (built-in class)</a>
+</li>
       <li>
     docbuild.logging
 
@@ -2017,6 +2143,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPaths.html#docbuild.models.config.env.EnvPaths">docbuild.models.config.env.EnvPaths (built-in class)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRemote.html#docbuild.models.config.env.EnvRemote">docbuild.models.config.env.EnvRemote (built-in class)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync">docbuild.models.config.env.EnvRsync (built-in class)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths">docbuild.models.config.env.EnvTargetPaths (built-in class)</a>
 </li>
@@ -2185,6 +2313,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#module-docbuild.utils.concurrency">module</a>
 </li>
       </ul></li>
+      <li><a href="reference/_autoapi/docbuild/utils/concurrency/sentinel.html#docbuild.utils.concurrency.sentinel">docbuild.utils.concurrency.sentinel (built-in class)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/utils/concurrency/TaskFailedError.html#docbuild.utils.concurrency.TaskFailedError">docbuild.utils.concurrency.TaskFailedError</a>
 </li>
       <li>
@@ -2328,7 +2458,9 @@ window.runMermaid = runMermaid;</script>
     DOCTYPES
 
       <ul>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-arg-DOCTYPES">docbuild-build command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-index-arg-DOCTYPES">docbuild-build-index command line option</a>
+</li>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-build-run-arg-DOCTYPES">docbuild-build-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-cache-list-arg-DOCTYPES">docbuild-cache-list command line option</a>
 </li>
@@ -2336,7 +2468,7 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-check-files-arg-DOCTYPES">docbuild-check-files command line option</a>
 </li>
-        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-arg-DOCTYPES">docbuild-metadata command line option</a>
+        <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-metadata-run-arg-DOCTYPES">docbuild-metadata-run command line option</a>
 </li>
         <li><a href="reference/docbuild-cli.html#cmdoption-docbuild-portal-list-arg-DOCTYPES">docbuild-portal-list command line option</a>
 </li>
@@ -2363,6 +2495,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ENV_CONFIG_FILENAME">ENV_CONFIG_FILENAME (in module docbuild.constants)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/context/DocBuildContext.html#docbuild.cli.context.DocBuildContext.env_lock">env_lock (docbuild.cli.context.DocBuildContext attribute)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ENV_ROLES">ENV_ROLES (in module docbuild.constants)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ENV_ROLES_ALIASES">ENV_ROLES_ALIASES (in module docbuild.constants)</a>
@@ -2377,15 +2511,17 @@ window.runMermaid = runMermaid;</script>
     environment variable
 
       <ul>
-        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-3">XDG_CACHE_HOME</a>, <a href="user/concepts/config-files.html#index-3">[1]</a>
+        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-7">XDG_CACHE_HOME</a>, <a href="user/concepts/config-files.html#index-4">[1]</a>
 </li>
-        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-0">XDG_CONFIG_HOME</a>, <a href="user/concepts/config-files.html#index-0">[1]</a>
+        <li><a href="changelog.html#index-0">XDG_CONFIG_DIRS</a>, <a href="changelog.html#index-1">[1]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-0">[2]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-1">[3]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-3">[4]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-4">[5]</a>, <a href="user/concepts/config-files.html#index-0">[6]</a>
 </li>
-        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-2">XDG_DATA_HOME</a>, <a href="user/concepts/config-files.html#index-2">[1]</a>
+        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-2">XDG_CONFIG_HOME</a>, <a href="user/concepts/config-files.html#index-1">[1]</a>
 </li>
-        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-4">XDG_RUNTIME_DIR</a>, <a href="user/concepts/config-files.html#index-4">[1]</a>
+        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-6">XDG_DATA_HOME</a>, <a href="user/concepts/config-files.html#index-3">[1]</a>
 </li>
-        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-1">XDG_STATE_HOME</a>, <a href="user/concepts/config-files.html#index-1">[1]</a>
+        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-8">XDG_RUNTIME_DIR</a>, <a href="user/concepts/config-files.html#index-5">[1]</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/constants/index.html#index-5">XDG_STATE_HOME</a>, <a href="user/concepts/config-files.html#index-2">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -2394,7 +2530,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.ESCAPE_REGEX">ESCAPE_REGEX (in module docbuild.constants)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/utils/sync/RsyncOptions.html#docbuild.utils.sync.RsyncOptions.exclude">exclude (docbuild.utils.sync.RsyncOptions attribute)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.exclude">exclude (docbuild.models.config.env.EnvRsync attribute)</a>
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/utils/sync/RsyncOptions.html#docbuild.utils.sync.RsyncOptions.exclude">(docbuild.utils.sync.RsyncOptions attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.exclude_extra">exclude_extra (docbuild.models.config.env.EnvRsync attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#docbuild.utils.shell.execute_git_command">execute_git_command() (in module docbuild.utils.shell)</a>
 </li>
@@ -2419,6 +2561,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="reference/_autoapi/docbuild/utils/git/ManagedGitRepo.html#docbuild.utils.git.ManagedGitRepo.fetch_updates">fetch_updates() (docbuild.utils.git.ManagedGitRepo method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/cache/Cache.html#docbuild.models.cache.Cache.files">files() (docbuild.models.cache.Cache method)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/utils/sync/RsyncOptions.html#docbuild.utils.sync.RsyncOptions.files_from">files_from (docbuild.utils.sync.RsyncOptions attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/manifest/Archive.html#docbuild.models.manifest.Archive.fill_zip_from_context">fill_zip_from_context() (docbuild.models.manifest.Archive class method)</a>
 </li>
@@ -2478,8 +2622,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderResolver.html#docbuild.config.app.PlaceholderResolver.get_container_name">get_container_name() (docbuild.config.app.PlaceholderResolver method)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvConfig.html#docbuild.models.config.env.EnvConfig.get_default_config">get_default_config() (docbuild.models.config.env.EnvConfig class method)</a>
+      <li><a href="reference/_autoapi/docbuild/models/config/app/AppConfig.html#docbuild.models.config.app.AppConfig.get_default_config">get_default_config() (docbuild.models.config.app.AppConfig class method)</a>
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/models/config/env/EnvConfig.html#docbuild.models.config.env.EnvConfig.get_default_config">(docbuild.models.config.env.EnvConfig class method)</a>
 </li>
+      </ul></li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_list/index.html#docbuild.cli.cmd_portal.cmd_list.get_display_name">get_display_name() (in module docbuild.cli.cmd_portal.cmd_list)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_cache/index.html#docbuild.cli.cmd_cache.get_prune_confirmation_msg">get_prune_confirmation_msg() (in module docbuild.cli.cmd_cache)</a>
@@ -2538,14 +2686,18 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvBuildContainer.html#docbuild.models.config.env.EnvBuildContainer.image">image (docbuild.models.config.env.EnvBuildContainer attribute)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_index/index.html#docbuild.cli.cmd_build.cmd_index.index">index() (in module docbuild.cli.cmd_build.cmd_index)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_config/init/index.html#docbuild.cli.cmd_config.init.init_config">init_config() (in module docbuild.cli.cmd_config.init)</a>
+</li>
       <li><a href="glossary.html#term-IPython"><strong>IPython</strong></a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.is_dc">is_dc (docbuild.models.deliverable.view.DeliverableXMLView property)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.is_gated">is_gated (docbuild.models.deliverable.view.DeliverableXMLView property)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.is_gated">is_gated (docbuild.models.deliverable.view.DeliverableXMLView property)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.is_prebuilt">is_prebuilt (docbuild.models.deliverable.view.DeliverableXMLView property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/sync/index.html#docbuild.utils.sync.is_remote_path">is_remote_path() (in module docbuild.utils.sync)</a>
@@ -2585,9 +2737,11 @@ window.runMermaid = runMermaid;</script>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.lang">lang (docbuild.models.deliverable.view.DeliverableXMLView property)</a>
+
+      <ul>
+        <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.lang">(docbuild.models.language.LanguageCode property)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.lang">lang() (docbuild.models.language.LanguageCode method)</a>
-</li>
+      </ul></li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.lang_is_default">lang_is_default (docbuild.models.deliverable.Deliverable property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/doctype/Doctype.html#docbuild.models.doctype.Doctype.langs">langs (docbuild.models.doctype.Doctype attribute)</a>
@@ -2625,6 +2779,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/index.html#docbuild.cli.cmd_cli.load_app_config">load_app_config() (in module docbuild.cli.cmd_cli)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/index.html#docbuild.cli.cmd_cli.load_env_config">load_env_config() (in module docbuild.cli.cmd_cli)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/completion/index.html#docbuild.cli.completion.load_portal_tree">load_portal_tree() (in module docbuild.cli.completion)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/load/index.html#docbuild.config.load.load_single_config">load_single_config() (in module docbuild.config.load)</a>
 </li>
@@ -2709,6 +2865,8 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRemote.html#docbuild.models.config.env.EnvRemote.model_config">(docbuild.models.config.env.EnvRemote attribute)</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.model_config">(docbuild.models.config.env.EnvRsync attribute)</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTargetPaths.html#docbuild.models.config.env.EnvTargetPaths.model_config">(docbuild.models.config.env.EnvTargetPaths attribute)</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.model_config">(docbuild.models.config.env.EnvTmpPaths attribute)</a>
@@ -2720,6 +2878,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/models/homepage/Homepage.html#docbuild.models.homepage.Homepage.model_config">(docbuild.models.homepage.Homepage attribute)</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.model_config">(docbuild.models.language.LanguageCode attribute)</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category.model_config">(docbuild.models.manifest.Category attribute)</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/models/manifest/Manifest.html#docbuild.models.manifest.Manifest.model_config">(docbuild.models.manifest.Manifest attribute)</a>
 </li>
@@ -2744,6 +2904,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_build/index.html#module-docbuild.cli.cmd_build">docbuild.cli.cmd_build</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_dir/index.html#module-docbuild.cli.cmd_build.cmd_dir">docbuild.cli.cmd_build.cmd_dir</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_index/index.html#module-docbuild.cli.cmd_build.cmd_index">docbuild.cli.cmd_build.cmd_index</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_run/index.html#module-docbuild.cli.cmd_build.cmd_run">docbuild.cli.cmd_build.cmd_run</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_c14n/index.html#module-docbuild.cli.cmd_c14n">docbuild.cli.cmd_c14n</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_cache/index.html#module-docbuild.cli.cmd_cache">docbuild.cli.cmd_cache</a>
@@ -2751,6 +2917,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/index.html#module-docbuild.cli.cmd_cli">docbuild.cli.cmd_cli</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_config/index.html#module-docbuild.cli.cmd_config">docbuild.cli.cmd_config</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_config/init/index.html#module-docbuild.cli.cmd_config.init">docbuild.cli.cmd_config.init</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_config/list/index.html#module-docbuild.cli.cmd_config.list">docbuild.cli.cmd_config.list</a>
 </li>
@@ -2766,6 +2934,8 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/index.html#module-docbuild.cli.cmd_portal">docbuild.cli.cmd_portal</a>
 </li>
+        <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_dir/index.html#module-docbuild.cli.cmd_portal.cmd_dir">docbuild.cli.cmd_portal.cmd_dir</a>
+</li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_list/index.html#module-docbuild.cli.cmd_portal.cmd_list">docbuild.cli.cmd_portal.cmd_list</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_validate/index.html#module-docbuild.cli.cmd_portal.cmd_validate">docbuild.cli.cmd_portal.cmd_validate</a>
@@ -2777,6 +2947,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_repo/cmd_dir/index.html#module-docbuild.cli.cmd_repo.cmd_dir">docbuild.cli.cmd_repo.cmd_dir</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/cmd_repo/cmd_list/index.html#module-docbuild.cli.cmd_repo.cmd_list">docbuild.cli.cmd_repo.cmd_list</a>
+</li>
+        <li><a href="reference/_autoapi/docbuild/cli/completion/index.html#module-docbuild.cli.completion">docbuild.cli.completion</a>
 </li>
         <li><a href="reference/_autoapi/docbuild/cli/console/index.html#module-docbuild.cli.console">docbuild.cli.console</a>
 </li>
@@ -2900,6 +3072,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/manifest/SingleDocument.html#docbuild.models.manifest.SingleDocument.normalize_empty_date">normalize_empty_date() (docbuild.models.manifest.SingleDocument class method)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/config/app/index.html#docbuild.config.app.normalize_runtime_placeholders">normalize_runtime_placeholders() (in module docbuild.config.app)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="O">O</h2>
@@ -2941,7 +3119,7 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/paths/DeliverablePaths.html#docbuild.models.deliverable.paths.DeliverablePaths.pdf_path">pdf_path (docbuild.models.deliverable.paths.DeliverablePaths property)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.pdf_tag">pdf_tag() (docbuild.models.language.LanguageCode method)</a>
+      <li><a href="reference/_autoapi/docbuild/models/language/LanguageCode.html#docbuild.models.language.LanguageCode.pdf_tag">pdf_tag (docbuild.models.language.LanguageCode property)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.pdlang">pdlang (docbuild.models.deliverable.Deliverable property)</a>
 </li>
@@ -3081,13 +3259,15 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="glossary.html#term-Repository"><strong>Repository</strong></a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/utils/sysdeps/index.html#docbuild.utils.sysdeps.requires_system_tools">requires_system_tools() (in module docbuild.utils.sysdeps)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/manifest/Category.html#docbuild.models.manifest.Category.reset_rank">reset_rank() (docbuild.models.manifest.Category class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/logging/index.html#docbuild.logging.resolve_class">resolve_class() (in module docbuild.logging)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_cli/BannerGroup.html#docbuild.cli.cmd_cli.BannerGroup.resolve_command">resolve_command() (docbuild.cli.cmd_cli.BannerGroup method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/config/xml/xinclude/index.html#docbuild.config.xml.xinclude.resolve_includes">resolve_includes() (in module docbuild.config.xml.xinclude)</a>
 </li>
@@ -3103,11 +3283,17 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.rootid">rootid (docbuild.models.metadata.Metadata attribute)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvConfig.html#docbuild.models.config.env.EnvConfig.rsync">rsync (docbuild.models.config.env.EnvConfig attribute)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/utils/sync/index.html#docbuild.utils.sync.rsync">rsync() (in module docbuild.utils.sync)</a>
 </li>
       <li><a href="glossary.html#term-Ruff"><strong>Ruff</strong></a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_build/cmd_run/index.html#docbuild.cli.cmd_build.cmd_run.run">run() (in module docbuild.cli.cmd_build.cmd_run)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/utils/concurrency/index.html#docbuild.utils.concurrency.run_all">run_all() (in module docbuild.utils.concurrency)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/cli/cmd_metadata/index.html#docbuild.cli.cmd_metadata.run_cmd">run_cmd() (in module docbuild.cli.cmd_metadata)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/utils/shell/index.html#docbuild.utils.shell.run_command">run_command() (in module docbuild.utils.shell)</a>
 </li>
@@ -3253,10 +3439,10 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/metadata/Metadata.html#docbuild.models.metadata.Metadata.title">title (docbuild.models.metadata.Metadata attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvPaths.html#docbuild.models.config.env.EnvPaths.tmp">tmp (docbuild.models.config.env.EnvPaths attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_base_dir">tmp_base_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/config/env/EnvTmpPaths.html#docbuild.models.config.env.EnvTmpPaths.tmp_build_base_dir">tmp_build_base_dir (docbuild.models.config.env.EnvTmpPaths attribute)</a>
@@ -3278,6 +3464,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="reference/_autoapi/docbuild/utils/sync/RsyncOptions.html#docbuild.utils.sync.RsyncOptions.to_args">to_args() (docbuild.utils.sync.RsyncOptions method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/cache/Cache.html#docbuild.models.cache.Cache.to_json">to_json() (docbuild.models.cache.Cache method)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.to_options">to_options() (docbuild.models.config.env.EnvRsync method)</a>
 </li>
       <li><a href="glossary.html#term-TOML"><strong>TOML</strong></a>
 </li>
@@ -3317,6 +3505,8 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="reference/_autoapi/docbuild/config/app/PlaceholderResolver.html#docbuild.config.app.PlaceholderResolver.validate_brace_syntax">validate_brace_syntax() (docbuild.config.app.PlaceholderResolver method)</a>
 </li>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.validate_combined_patterns">validate_combined_patterns() (docbuild.models.config.env.EnvRsync method)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/cli/cmd_portal/cmd_list/index.html#docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml">validate_docsets_against_xml() (in module docbuild.cli.cmd_portal.cmd_list)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/callback/index.html#docbuild.cli.callback.validate_doctypes">validate_doctypes() (in module docbuild.cli.callback)</a>
@@ -3325,6 +3515,8 @@ window.runMermaid = runMermaid;</script>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/config/env/EnvRsync.html#docbuild.models.config.env.EnvRsync.validate_patterns">validate_patterns() (docbuild.models.config.env.EnvRsync class method)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/models/config/app/AppConfig.html#docbuild.models.config.app.AppConfig.validate_theme">validate_theme() (docbuild.models.config.app.AppConfig class method)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/cli/context/DocBuildContext.html#docbuild.cli.context.DocBuildContext.validation_method">validation_method (docbuild.cli.context.DocBuildContext attribute)</a>
@@ -3359,15 +3551,21 @@ window.runMermaid = runMermaid;</script>
 <h2 id="X">X</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-3">XDG_CACHE_HOME</a>, <a href="user/concepts/config-files.html#index-3">[1]</a>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-7">XDG_CACHE_HOME</a>, <a href="user/concepts/config-files.html#index-4">[1]</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-0">XDG_CONFIG_HOME</a>, <a href="user/concepts/config-files.html#index-0">[1]</a>
+      <li><a href="changelog.html#index-0">XDG_CONFIG_DIRS</a>, <a href="changelog.html#index-1">[1]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-0">[2]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-1">[3]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-3">[4]</a>, <a href="reference/_autoapi/docbuild/constants/index.html#index-4">[5]</a>, <a href="user/concepts/config-files.html#index-0">[6]</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-2">XDG_DATA_HOME</a>, <a href="user/concepts/config-files.html#index-2">[1]</a>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.XDG_CONFIG_DIRS_PATHS">XDG_CONFIG_DIRS_PATHS (in module docbuild.constants)</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-4">XDG_RUNTIME_DIR</a>, <a href="user/concepts/config-files.html#index-4">[1]</a>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-2">XDG_CONFIG_HOME</a>, <a href="user/concepts/config-files.html#index-1">[1]</a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-1">XDG_STATE_HOME</a>, <a href="user/concepts/config-files.html#index-1">[1]</a>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-6">XDG_DATA_HOME</a>, <a href="user/concepts/config-files.html#index-3">[1]</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-8">XDG_RUNTIME_DIR</a>, <a href="user/concepts/config-files.html#index-5">[1]</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#docbuild.constants.xdg_site_config_dirs">xdg_site_config_dirs() (in module docbuild.constants)</a>
+</li>
+      <li><a href="reference/_autoapi/docbuild/constants/index.html#index-5">XDG_STATE_HOME</a>, <a href="user/concepts/config-files.html#index-2">[1]</a>
 </li>
       <li><a href="glossary.html#term-XInclude"><strong>XInclude</strong></a>
 </li>
@@ -3379,10 +3577,10 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="glossary.html#term-XML"><strong>XML</strong></a>
 </li>
-      <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.xml">xml (docbuild.models.deliverable.Deliverable property)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/_autoapi/docbuild/models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable.xml">xml (docbuild.models.deliverable.Deliverable property)</a>
+</li>
       <li><a href="reference/_autoapi/docbuild/config/xml/xinclude/index.html#docbuild.config.xml.xinclude.XML_BASE_ATTR">XML_BASE_ATTR (in module docbuild.config.xml.xinclude)</a>
 </li>
       <li><a href="reference/_autoapi/docbuild/models/deliverable/view/DeliverableXMLView.html#docbuild.models.deliverable.view.DeliverableXMLView.xml_id">xml_id (docbuild.models.deliverable.view.DeliverableXMLView property)</a>

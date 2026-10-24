@@ -14,9 +14,10 @@ Attributes
 
 .. autoapisummary::
 
+   docbuild.constants.DEFAULT_RSYNC_EXCLUDES
    docbuild.constants.APP_NAME
    docbuild.constants.DEFAULT_ENV_NAME
-   docbuild.constants.DEFAULT_LANGS
+   docbuild.constants.DEFAULT_LANG
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
    docbuild.constants.ENV_ROLES
@@ -31,6 +32,7 @@ Attributes
    docbuild.constants.PROJECT_DIR
    docbuild.constants.CONFIG_HOME
    docbuild.constants.SYSTEM_CONFIG_DIR
+   docbuild.constants.XDG_CONFIG_DIRS_PATHS
    docbuild.constants.CONFIG_PATHS
    docbuild.constants.STATE_HOME
    docbuild.constants.DATA_HOME
@@ -59,8 +61,37 @@ Attributes
    docbuild.constants.ESCAPE_REGEX
 
 
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/constants/DependencySpec
+
+.. autoapisummary::
+
+   docbuild.constants.DependencySpec
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.constants.xdg_site_config_dirs
+
+
 Module Contents
 ---------------
+
+.. py:data:: DEFAULT_RSYNC_EXCLUDES
+   :type:  Final[tuple[str, ...]]
+   :value: ('.git/', '.svn/', '.hg/', '.bzr/', '*~', '*.old', '*.bak', '*.BAK', '*.orig', '*.rej', '*.html.new')
+
+
+   Version-control directories and temporary files omitted from transfers.
+
 
 .. py:data:: APP_NAME
    :type:  str
@@ -77,12 +108,12 @@ Module Contents
    The default server name used in the application configuration.
 
 
-.. py:data:: DEFAULT_LANGS
-   :type:  tuple[str, ...]
-   :value: ('en-us',)
+.. py:data:: DEFAULT_LANG
+   :type:  str
+   :value: 'en-us'
 
 
-   The default languages used by the application.
+   The default language used by the application.
 
 
 .. py:data:: ALLOWED_LANGUAGES
@@ -180,6 +211,25 @@ Module Contents
    at /etc/docbuild.
 
 
+.. py:function:: xdg_site_config_dirs(appname: str) -> tuple[pathlib.Path, ...]
+
+   Return system config directories from :envvar:`XDG_CONFIG_DIRS`.
+
+   Directories keep the order defined by the XDG Base Directory Specification
+   (the first entry has the highest priority) and duplicates are removed.
+
+   :param appname: Name of the application.
+   :returns: Tuple of directory paths ordered highest-to-lowest priority.
+
+
+.. py:data:: XDG_CONFIG_DIRS_PATHS
+   :type:  tuple[pathlib.Path, ...]
+
+   The system-wide configuration directories from :envvar:`XDG_CONFIG_DIRS`,
+   highest priority first (default: :file:`/etc/xdg/docbuild` on Linux). Together,
+   they form the lowest-priority system-wide location.
+
+
 .. py:data:: CONFIG_PATHS
    :type:  tuple[pathlib.Path, ...]
 
@@ -228,7 +278,7 @@ Module Contents
 
 
 .. py:data:: APP_CONFIG_BASENAMES
-   :type:  tuple[str | pathlib.Path, ...]
+   :type:  tuple[str, ...]
    :value: ('.config.toml', 'config.toml')
 
 
@@ -237,13 +287,13 @@ Module Contents
 
 
 .. py:data:: PROJECT_LEVEL_APP_CONFIG_FILENAMES
-   :type:  tuple[str | pathlib.Path, ...]
+   :type:  tuple[str, ...]
 
    Additional configuration filenames at the project level.
 
 
 .. py:data:: APP_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'config.toml'
 
 
@@ -251,7 +301,7 @@ Module Contents
 
 
 .. py:data:: ENV_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'env.{role}.toml'
 
 
@@ -259,7 +309,7 @@ Module Contents
 
 
 .. py:data:: DEFAULT_ENV_CONFIG_FILENAME
-   :type:  str | pathlib.Path
+   :type:  str
    :value: 'env.production.toml'
 
 

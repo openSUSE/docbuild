@@ -54,6 +54,7 @@ Functions
 .. autoapisummary::
 
    docbuild.config.app.unescape
+   docbuild.config.app.normalize_runtime_placeholders
    docbuild.config.app.replace_placeholders
 
 
@@ -78,6 +79,11 @@ Module Contents
 .. py:function:: unescape(text: str, keep_runtime: bool) -> str
 
    Unescape double curly braces, optionally preserving runtime placeholders.
+
+
+.. py:function:: normalize_runtime_placeholders(text: str) -> str
+
+   Convert supported escaped runtime placeholders for ``str.format``.
 
 
 .. py:function:: replace_placeholders(config: dict[str, Any] | None, max_recursion_depth: int = MAX_RECURSION_DEPTH, *, keep_runtime: bool = False) -> dict[str, Any] | None

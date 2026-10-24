@@ -22,7 +22,10 @@ Package Contents
 
 .. py:function:: c14n(ctx: click.Context) -> None
 
-   Subcommand to apply canonicals (canonicalization = c14n).
+   CLI interface to apply canonicals (canonicalization = c14n).
+
+
+
 
    :param ctx: The Click context object.
 

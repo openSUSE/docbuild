@@ -11,7 +11,7 @@ Running the full test suite
 
 To run the full test suite, use the following command:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Running pytest directly with |uv|
    :name: running-pytest-with-uv
 
@@ -19,7 +19,7 @@ To run the full test suite, use the following command:
 
 or use the alias (see :ref:`devel-helpers` for more information):
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Running pytest using |uv| with alias :ref:`upytest <devel-helpers>`
    :name: running-upytest
 
@@ -32,7 +32,7 @@ Running specific tests
 
 In case you want to run a specific test or a subset of tests, specify the path to the test file or the test function. For example:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Running specific tests
    :name: running-specific-tests
 
@@ -46,7 +46,7 @@ Running failed tests only
 
 If one of the test fails and you want to repeat the test run after you have fixed the issue, use the ``--lf``/``--last-failed`` option. For example:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Running only the last failed tests
    :name: running-last-failed-tests
 

@@ -33,7 +33,7 @@ docbuild.models.language.LanguageCode
 
 
    .. py:attribute:: ALLOWED_LANGS
-      :type:  ClassVar[frozenset]
+      :type:  ClassVar[frozenset[str]]
 
       Class variable containing all allowed languages.
 
@@ -107,19 +107,25 @@ docbuild.models.language.LanguageCode
 
 
 
-   .. py:method:: lang() -> str
+   .. py:property:: lang
+      :type: str
+
 
       Extract the language part of the language code (property).
 
 
 
-   .. py:method:: country() -> str
+   .. py:property:: country
+      :type: str
+
 
       Extract the country part of the language code (property).
 
 
 
-   .. py:method:: pdf_tag() -> str
+   .. py:property:: pdf_tag
+      :type: str
+
 
       Return the language tag used in PDF filenames.
 

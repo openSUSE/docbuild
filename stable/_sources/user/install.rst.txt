@@ -28,7 +28,7 @@ the installation is reproducible across different environments.
 
    For (open)SUSE Linux run the following command in your terminal:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ sudo zypper install python313-uv
 
@@ -36,7 +36,7 @@ the installation is reproducible across different environments.
 
    After the installation, verify that :command:`uv` is installed and in your PATH by running:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ type uv
       uv is hashed (/path/to/uv)
@@ -50,7 +50,7 @@ the installation is reproducible across different environments.
    As of the time of writing, the docbuild tool requires Python 3.12 or higher.
    To list your currently installed Python versions run:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ uv python list --only-installed
       cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14
@@ -60,7 +60,7 @@ the installation is reproducible across different environments.
 
    If you don't have version 3.12 or higher, install one using uv:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ uv python install 3.13
 
@@ -75,7 +75,7 @@ Installing docbuild
 
    Open your terminal and run the following command to clone the docbuild repository from GitHub:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ git clone https://github.com/openSUSE/docbuild.git
       $ cd docbuild
@@ -86,7 +86,7 @@ Installing docbuild
    tool and its dependencies from your system Python environment.
    Run the following command:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ uv venv --python 3.13 --prompt "venv313"
 
@@ -96,7 +96,7 @@ Installing docbuild
 
    Ensure you have Python 3.12 or higher installed, then install the required dependencies:
 
-   .. code-block:: shell-session
+   .. code-block:: console
 
       $ uv sync --dev --frozen
       Resolved 29 packages in 586ms

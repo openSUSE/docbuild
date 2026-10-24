@@ -28,6 +28,19 @@ Exceptions
    docbuild.utils.concurrency.TaskFailedError
 
 
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/concurrency/sentinel
+
+.. autoapisummary::
+
+   docbuild.utils.concurrency.sentinel
+
+
 Functions
 ---------
 
@@ -43,7 +56,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: producer[T](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], input_queue: asyncio.Queue, num_workers: int) -> None
+.. py:function:: producer[T](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], input_queue: asyncio.Queue[T | Sentinel], num_workers: int) -> None
    :async:
 
 
@@ -54,7 +67,7 @@ Module Contents
    :param num_workers: The number of workers, used to send the correct number of sentinels.
 
 
-.. py:function:: worker[T, R](worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue, result_queue: asyncio.Queue) -> None
+.. py:function:: worker[T, R](worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue[T | Sentinel], result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel]) -> None
    :async:
 
 
@@ -65,7 +78,7 @@ Module Contents
    :param result_queue: The queue for results from the workers.
 
 
-.. py:function:: run_all[T, R](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue, result_queue: asyncio.Queue, limit: int, *, name: str | None = None) -> None
+.. py:function:: run_all[T, R](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue[T | Sentinel], result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel], limit: int, *, name: str | None = None) -> None
    :async:
 
 

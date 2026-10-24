@@ -36,9 +36,14 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: get_binary_version(name: str) -> str | None
+.. py:function:: get_binary_version(name: str, args: collections.abc.Sequence[str] = ('--version', ), *, timeout: float = 5.0) -> str | None
 
    Run a tool and attempt to extract its version string using regex.
+
+   :param name: Name or path of the executable.
+   :param args: Command line arguments to pass to the tool (defaults to ``["--version"]``).
+   :param timeout: Maximum seconds to wait before aborting (default 5.0).
+   :return: Extracted version string, or None if unavailable.
 
 
 .. py:function:: coerce_semver(version_str: str) -> semver.Version

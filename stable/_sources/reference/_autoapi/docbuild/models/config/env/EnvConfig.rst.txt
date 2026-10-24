@@ -63,6 +63,15 @@ docbuild.models.config.env.EnvConfig
 
 
 
+   .. py:attribute:: rsync
+      :type:  EnvRsync
+      :value: None
+
+
+      Transfer exclusions for built deliverables.
+
+
+
    .. py:method:: from_dict(data: dict[str, Any]) -> Self
       :classmethod:
 
@@ -71,13 +80,14 @@ docbuild.models.config.env.EnvConfig
 
 
 
-   .. py:method:: get_default_config(resolve_placeholders: bool = True) -> dict[str, Any]
+   .. py:method:: get_default_config(resolve_placeholders: bool = True, role: docbuild.models.envroles.EnvRole = EnvRole.PRODUCTION) -> dict[str, Any]
       :classmethod:
 
 
       Generate the default environment configuration from the model.
 
       :param resolve_placeholders: If True, resolve placeholders in the config.
+      :param role: Environment role to include in the generated defaults.
       :return: The default configuration as a dictionary.
 
 

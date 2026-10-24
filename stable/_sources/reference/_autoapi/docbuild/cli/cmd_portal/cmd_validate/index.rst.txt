@@ -22,7 +22,10 @@ Module Contents
 
 .. py:function:: validate(ctx: click.Context, main_portal_config: pathlib.Path | None, portal_schema: pathlib.Path | None) -> None
 
-   Subcommand to validate XML configuration files.
+   Validate Portal XML configuration.
+
+
+
 
    :param ctx: The Click context object.
    :param main_portal_config: main Portal XML config file to validate.

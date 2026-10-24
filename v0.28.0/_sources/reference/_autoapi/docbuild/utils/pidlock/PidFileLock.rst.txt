@@ -1,0 +1,66 @@
+docbuild.utils.pidlock.PidFileLock
+==================================
+
+.. py:class:: docbuild.utils.pidlock.PidFileLock(resource_path: pathlib.Path, lock_dir: pathlib.Path = BASE_LOCK_DIR)
+
+   Context manager for process-safe file locking using fcntl.
+
+   Ensures only one process can hold a lock for a given resource.
+   The mutual exclusion is guaranteed by the atomic fcntl.flock(LOCK_EX|LOCK_NB).
+   The lock file is automatically created and is removed on successful exit.
+
+   Implements a per-path singleton pattern: each lock_path has at most one
+   instance within this process.
+
+   .. code-block:: python
+
+       from pathlib import Path
+       from docbuild.utils.pidlock import PidFileLock
+
+       resource = Path("/tmp/my-resource")
+       try:
+           with PidFileLock(resource) as lock:
+               # critical section
+               print("Lock acquired at", lock.lock_path)
+       except LockAcquisitionError:
+           print("Resource is already locked by another process")
+
+
+   .. py:property:: lock_path
+      :type: pathlib.Path
+
+
+      Get the path to the lock file.
+
+      :return: Absolute path of the lock file for this resource.
+
+
+
+   .. py:method:: __enter__() -> Self
+
+      Acquire the exclusive, non-blocking file lock.
+
+      Creates the lock directory and lock file if necessary, then attempts
+      to acquire an exclusive lock via :func:`~fcntl.flock`. Writes the current
+      process PID into the lock file for debugging.
+
+      :return: Self, so the lock can be used as a context manager.
+      :raises LockAcquisitionError: If another process already holds the lock.
+      :raises RuntimeError: If the lock is already acquired by this instance
+          or if a permission error occurs.
+
+
+
+   .. py:method:: __exit__(exc_type: type[BaseException] | None, exc_value: BaseException | None, traceback: object | None) -> None
+
+      Release the lock and remove the lock file.
+
+      Releases the fcntl lock, closes the file handle, and deletes the
+      lock file. Failures during release are logged but do not raise
+      exceptions (to avoid masking the original exception).
+
+      :param exc_type: Exception type if an exception occurred, else None.
+      :param exc_value: Exception instance if an exception occurred, else None.
+      :param traceback: Traceback object if an exception occurred, else None.
+
+

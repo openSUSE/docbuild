@@ -6,6 +6,6 @@ Updating a Specific Package
 If you want to update a specific package in your project, but at the same
 time keep the development group dependencies intact, use the following command:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ uv sync --upgrade-package pydantic-core

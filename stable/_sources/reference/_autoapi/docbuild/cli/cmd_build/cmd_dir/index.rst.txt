@@ -1,0 +1,30 @@
+docbuild.cli.cmd_build.cmd_dir
+==============================
+
+.. py:module:: docbuild.cli.cmd_build.cmd_dir
+
+.. autoapi-nested-parse::
+
+   CLI command to show the build target directory.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_build.cmd_dir.dir_cmd
+
+
+Module Contents
+---------------
+
+.. py:function:: dir_cmd(ctx: click.Context) -> None
+
+   Print the directory where build data is stored.
+
+   This command outputs the raw path to the target base directory,
+   making it ideal for use in scripts.
+
+

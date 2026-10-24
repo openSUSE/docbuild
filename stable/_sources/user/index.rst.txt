@@ -16,6 +16,7 @@
    :caption: Tasks
 
    install
+   shell-completion
    check-env
    run-docbuild
    config/index
@@ -23,4 +24,5 @@
    clone
    create-metadata
    build
+   publishing
    create-llms

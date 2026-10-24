@@ -1,0 +1,37 @@
+docbuild.cli.cmd_build.cmd_run
+==============================
+
+.. py:module:: docbuild.cli.cmd_build.cmd_run
+
+.. autoapi-nested-parse::
+
+   Build a documentation deliverables from source.
+
+   See :ref:`concept-doctype-syntax`
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_build.cmd_run.run
+
+
+Module Contents
+---------------
+
+.. py:function:: run(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, ...], skip_repo_update: bool, skip_metadata: bool) -> None
+
+   Run the build pipeline for deliverables.
+
+
+
+
+   :param ctx: Click context holding environment and app configuration.
+   :param doctypes: Tuple of parsed Doctype specifications.
+   :param skip_repo_update: If True, do not pull or update git remotes.
+   :param skip_metadata: If True, bypass metadata generation phase.
+
+

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installing docbuild &#8212; Docbuild Documentation 0.26.0</title>
+    <title>Installing docbuild &#8212; Docbuild Documentation 0.28.0</title>
   
   
   
@@ -32,6 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0a0e13a7" />
   
@@ -41,17 +42,17 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=4aa2dafa"></script>
+    <script src="../_static/documentation_options.js?v=8d643f27"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=6f874712"></script>
+    <script src="../_static/copybutton.js?v=48804fe2"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/install';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.26.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.28.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
@@ -59,12 +60,12 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Checking your Environment" href="check-env.html" />
+    <link rel="next" title="Enabling Shell Completion" href="shell-completion.html" />
     <link rel="prev" title="Placeholders" href="concepts/placeholders.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.26.0" />
+  <meta name="docsearch:version" content="0.28.0" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -395,9 +396,11 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tasks</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Installing docbuild</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell-completion.html">Enabling Shell Completion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="check-env.html">Checking your Environment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="run-docbuild.html">Running docbuild</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="config/index.html">Working with Docbuild configs</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="config/init.html">Creating Starter Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config/view.html">Viewing the Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config/validate.html">Validating Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="config/config-cli.html">Setting Env Keys on the Command Line</a></li>
@@ -423,6 +426,7 @@
 <li class="toctree-l1"><a class="reference internal" href="clone.html">Cloning Repositories</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-metadata.html">Creating Metadata</a></li>
 <li class="toctree-l1"><a class="reference internal" href="build.html">Building Deliverables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publishing.html">Publishing Deliverables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="create-llms.html">Creating Markdown for AI Tools</a></li>
 </ul>
 </div>
@@ -503,13 +507,13 @@ the installation is reproducible across different environments.</p>
 <p>There are different methods to install <strong class="command">uv</strong>. Preferably use your systems package manager,
 otherwise follow the <a class="reference external" href="https://docs.astral.sh/uv/getting-started/installation/">uv documentation</a>.</p>
 <p>For (open)SUSE Linux run the following command in your terminal:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>python313-uv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>zypper<span class="w"> </span>install<span class="w"> </span>python313-uv
 </pre></div>
 </div>
 </li>
 <li><p><strong>Check the installation</strong></p>
 <p>After the installation, verify that <strong class="command">uv</strong> is installed and in your PATH by running:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">type</span><span class="w"> </span>uv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">type</span><span class="w"> </span>uv
 <span class="go">uv is hashed (/path/to/uv)</span>
 <span class="gp">$ </span>uv<span class="w"> </span>--version
 <span class="go">...</span>
@@ -520,7 +524,7 @@ otherwise follow the <a class="reference external" href="https://docs.astral.sh/
 <li><p><strong>Check the available Python versions</strong></p>
 <p>As of the time of writing, the docbuild tool requires Python 3.12 or higher.
 To list your currently installed Python versions run:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>list<span class="w"> </span>--only-installed
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>list<span class="w"> </span>--only-installed
 <span class="go">cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14</span>
 <span class="go">cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3.13</span>
 <span class="go">cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3 -&gt; python3.13</span>
@@ -528,7 +532,7 @@ To list your currently installed Python versions run:</p>
 </pre></div>
 </div>
 <p>If you don’t have version 3.12 or higher, install one using uv:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>python<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.13
 
 <span class="go">This downloads and installs Python 3.13 in the directory :file:`~/.local/share/uv/python/&lt;VERSION&gt;`.</span>
 </pre></div>
@@ -541,7 +545,7 @@ To list your currently installed Python versions run:</p>
 <ol class="arabic">
 <li><p><strong>Clone the repository</strong></p>
 <p>Open your terminal and run the following command to clone the docbuild repository from GitHub:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/openSUSE/docbuild.git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/openSUSE/docbuild.git
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>docbuild
 </pre></div>
 </div>
@@ -550,14 +554,14 @@ To list your currently installed Python versions run:</p>
 <p>It is recommended to create a virtual environment to isolate the docbuild
 tool and its dependencies from your system Python environment.
 Run the following command:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;venv313&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>--prompt<span class="w"> </span><span class="s2">&quot;venv313&quot;</span>
 </pre></div>
 </div>
 <p>This will create a virtual environment in the directory <code class="file docutils literal notranslate"><span class="pre">.venv</span></code>.</p>
 </li>
 <li><p><strong>Install dependencies</strong></p>
 <p>Ensure you have Python 3.12 or higher installed, then install the required dependencies:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--dev<span class="w"> </span>--frozen
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--dev<span class="w"> </span>--frozen
 <span class="go">Resolved 29 packages in 586ms</span>
 <span class="go">Built docbuild @ file:///.../docbuild</span>
 <span class="go">Installed 15 packages in 2.11s</span>
@@ -600,11 +604,11 @@ As an alternative, use the <cite>RNC schema &lt;https://www.oasis-open.org/commi
       </div>
     </a>
     <a class="right-next"
-       href="check-env.html"
+       href="shell-completion.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Checking your Environment</p>
+        <p class="prev-next-title">Enabling Shell Completion</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

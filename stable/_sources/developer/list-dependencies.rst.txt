@@ -5,7 +5,7 @@
 
 If you want to get an overview of the dependencies used in the project, you can use the `uv` command to list them:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ uv tree --frozen
    Resolved 78 packages in 290ms
@@ -31,7 +31,7 @@ This gives a tree-like structure of the dependencies, showing the main packages 
 
 In case you want to list outdated dependencies, use the option ``--outdated``:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ uv tree --outdated
    Resolved 78 packages in 15ms

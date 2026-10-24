@@ -9,6 +9,7 @@ Working with Docbuild configs
    :maxdepth: 1
    :caption: Configuration Options
 
+   init
    view
    validate
    config-cli
