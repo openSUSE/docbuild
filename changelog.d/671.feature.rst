@@ -1,0 +1,1 @@
+Introduced a shared :class:`~docbuild.cli.message.Message` abstraction for consistent CLI status labels and optional symbols, and adopted it in the :command:`config validate`, :command:`doctor`, and :command:`cache` commands. Symbols can be disabled with the new top-level ``symbols`` application configuration option.
