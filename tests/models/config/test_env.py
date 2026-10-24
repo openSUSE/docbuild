@@ -1,11 +1,15 @@
 """Unit tests for the EnvConfig Pydantic models."""
 
 from pathlib import Path
+import tomllib
 from typing import Any
 
 from pydantic import ValidationError
 import pytest
+import tomlkit
 
+from docbuild.cli.cmd_config.init import config_table
+from docbuild.config.app import normalize_runtime_placeholders
 import docbuild.models.config.env as env_mod
 from docbuild.models.config.env import EnvConfig
 
@@ -267,6 +271,28 @@ def test_get_default_config_unresolved():
     assert isinstance(unresolved_config, dict)
     # Check for a known placeholder
     assert "{base_cache_dir}" in unresolved_config["paths"]["base_server_cache_dir"]
+
+
+def test_envconfig_runtime_placeholders_survive_toml_round_trip() -> None:
+    """Keep runtime placeholders intact through config serialization and reload."""
+    defaults = EnvConfig.get_default_config(resolve_placeholders=False)
+    toml_text = tomlkit.dumps(config_table(defaults))
+    reloaded = tomllib.loads(toml_text)
+    config = EnvConfig.from_dict(reloaded)
+
+    template = config.build.daps.meta
+    assert "{{builddir}}" in template
+    assert "{{dcfile}}" in template
+    assert "{{output}}" in template
+
+    command = normalize_runtime_placeholders(template).format(
+        builddir="build",
+        dcfile="DC-test",
+        output="metadata.json",
+    )
+    assert command == (
+        "daps --builddir=build -d DC-test metadata --output metadata.json"
+    )
 
 
 def _with_remote(data: dict[str, Any], server: Any, path: str | Path) -> dict[str, Any]:

@@ -1,1 +1,0 @@
-Refactor :command:`docbuild build` into a command group and move build execution to the :command:`docbuild build run` subcommand.

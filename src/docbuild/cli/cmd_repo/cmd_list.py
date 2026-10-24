@@ -7,7 +7,7 @@ from ...cli.console import console, console_err
 from ...cli.context import DocBuildContext
 
 
-@click.command(help=__doc__, name="list")
+@click.command(name="list")
 @click.pass_context
 def cmd_list(ctx: click.Context) -> None:
     """List the available permanent repositories.
@@ -17,8 +17,10 @@ def cmd_list(ctx: click.Context) -> None:
     If no repositories are defined, it outputs a message indicating that
     no repositories are available.
 
+    \f
+
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
     env = context.envconfig
 

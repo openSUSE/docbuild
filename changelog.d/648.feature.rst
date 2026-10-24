@@ -1,4 +1,0 @@
-Added shell completion for doctypes: products, docsets from the portal
-config, and languages are completed segment by segment in all commands that
-accept ``DOCTYPES``. The new :ref:`shell-completion` task in the User Guide
-explains how to enable completion in Bash, Zsh, and Fish.

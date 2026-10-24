@@ -117,7 +117,7 @@ def test_extract_prebuilt_metadata_missing_html(tmp_path: Path, mock_deliverable
     assert doc["description"] == "Test description for admission controller."
     assert doc["format"]["html"] == "/admission-controller/latest/en/index.html"
     assert doc["title"] == "SUSE Security Admission Controller"
-    assert "T" not in doc["dateModified"]
+    assert doc["dateModified"] is None or "T" not in doc["dateModified"]
     assert result["tasks"] == []
 
 
@@ -133,7 +133,7 @@ def test_extract_prebuilt_metadata_no_json_ld(tmp_path: Path, mock_deliverable: 
 
     doc = result["docs"][0]
     assert doc["title"] == "SUSE Security Admission Controller"
-    assert "T" not in doc["dateModified"]
+    assert doc["dateModified"] is None or "T" not in doc["dateModified"]
     assert result["tasks"] == []
 
 

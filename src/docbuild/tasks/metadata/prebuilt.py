@@ -73,19 +73,24 @@ def read_json_ld(html_source: Path | str | None) -> dict[str, Any]:
     return {}
 
 
-def extract_entities(json_ld: dict[str, Any], prod_title: str) -> tuple[list[str], list[dict[str, Any]]]:
+def extract_entities(json_ld: dict[str, Any] | None, prod_title: str) -> tuple[list[str], list[dict[str, Any]]]:
     """Extract tasks and products from the JSON-LD entities."""
-    entities = json_ld.get("about", json_ld.get("mentions", []))
+    if not json_ld or not isinstance(json_ld, dict):
+        entities = []
+    else:
+        entities = json_ld.get("about") or json_ld.get("mentions") or []
+
     if isinstance(entities, dict):
         entities = [entities]
 
     tasks = []
     versions = []
     for entity in entities:
-        if name := entity.get("name"):
-            tasks.append(name)
-        if version := entity.get("softwareVersion"):
-            versions.append(version)
+        if isinstance(entity, dict):
+            if name := entity.get("name"):
+                tasks.append(name)
+            if version := entity.get("softwareVersion"):
+                versions.append(version)
 
     products = []
     if prod_title:
@@ -98,21 +103,20 @@ def extract_entities(json_ld: dict[str, Any], prod_title: str) -> tuple[list[str
 
 
 def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> dict[str, Any]:
-    """Extract metadata for a prebuilt (Antora) deliverable.
-
-    Parses its JSON-LD and combines it with XML properties from the view.
-    """
+    """Extract metadata for a prebuilt (Antora) deliverable."""
     html_url = deliverable.xml.prebuilt_html_url
 
     # Pass deliverable so it can search translated directories
     html_path = find_html_path(prebuilt_dir, deliverable, html_url)
     json_ld = read_json_ld(html_path)
 
-    in_language = json_ld.get("inLanguage", str(deliverable.xml.lang))
+    in_language = json_ld.get("inLanguage", str(deliverable.xml.lang)) if isinstance(json_ld, dict) else str(deliverable.xml.lang)
     lang_code = LanguageCode(language=in_language).language
     is_default = (lang_code == "en-us")
 
-    date_modified = json_ld.get("dateModified", "").strip()
+    date_modified_raw = json_ld.get("dateModified") if isinstance(json_ld, dict) else None
+    date_modified = str(date_modified_raw).strip() if date_modified_raw else None
+
     if date_modified:
         if "T" in date_modified:
             date_modified = date_modified.split("T")[0]
@@ -122,18 +126,19 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             datetime.date.fromisoformat(date_modified)
         except ValueError:
             log.warning(
-                "Invalid date format '%s' in JSON-LD for %s. Falling back to empty string.",
+                "Invalid date format '%s' in JSON-LD for %s. Falling back to None.",
                 date_modified,
                 html_url
             )
-            date_modified = ""
+            date_modified = None
 
+    headline = json_ld.get("headline") if isinstance(json_ld, dict) else None
     tasks, products = extract_entities(json_ld, deliverable.xml.prebuilt_title)
 
     # Extract text from the first valid local description
     desc_text = next(
         (' '.join(node.xpath("string()").split()) for node in deliverable.xml.local_desc()),
-        ""  # the default
+        ""
     )
 
     # Build format dict dynamically so we don't include empty 'pdf' keys
@@ -149,7 +154,7 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             {
                 "lang": lang_code,
                 "default": is_default,
-                "title": json_ld.get("headline") or deliverable.xml.prebuilt_title,
+                "title": headline or deliverable.xml.prebuilt_title,
                 "subtitle": "",
                 "description": desc_text,
                 "dcfile": deliverable.xml.dcfile or deliverable.xml.target_id or "",

@@ -16,7 +16,7 @@ the Docbuild XML configuration exist in the repos.
 
 To check *all* DC files in *all* repositories, use the ``--all`` option:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Checking DC files in all repositories
 
    $ docbuild --env-config ENV_CONFIG_FILE check files --all
@@ -24,7 +24,7 @@ To check *all* DC files in *all* repositories, use the ``--all`` option:
 To check DC files only for a specific product and docset, use the doctype
 syntax:
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Checking DC files for SLES 16.0 in English only
 
    $ docbuild --env-config ENV_CONFIG_FILE check files 'sles/16.0/en-us'

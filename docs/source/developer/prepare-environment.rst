@@ -68,7 +68,7 @@ The following steps are recommended to set up your development environment:
 
 #. If you haven't created a virtual environment, do so:
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :caption: Creating a virtual environment with |uv|
       :name: uv-venv
 
@@ -81,7 +81,7 @@ The following steps are recommended to set up your development environment:
 
 #. Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :caption: Synchronizing the virtual environment with the development dependencies
       :name: uv-sync-devel
 
@@ -91,7 +91,7 @@ The following steps are recommended to set up your development environment:
 
 #. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :caption: Activating the shell aliases for development
       :name: activate-aliases
 
@@ -111,7 +111,7 @@ repository.
 
 To get started, clone this repository to your local machine (you need VPN access):
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
 

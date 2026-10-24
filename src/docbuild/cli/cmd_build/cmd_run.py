@@ -5,10 +5,10 @@ with the following properties:
 
 \b
 * (Optional) ``PRODUCT`` is the product. To mark "ALL" products, omit the
-  product or use "*"
+  product or use ``*``
 * (Optional) ``DOCSET`` is the docset, usually the version or release of
   a product.
-  To mark "ALL" docsets, omit the docset or use ``"*"``.
+  To mark "ALL" docsets, omit the docset or use ``*``.
 * (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma
   or pipe symbol.
   A lifecycle can be one of the values 'supported', 'unsupported', 'beta',
@@ -16,25 +16,21 @@ with the following properties:
 * ``LANGS`` marks a list of languages separated by comma. Every single
   language contains a LANGUAGE-COUNTRY syntax, for example 'en-us', 'de-de' etc.
 
-Examples of the doctypes syntax:
-
 \b
 Examples:
-  docbuild build run "//en-us"
-  docbuild build run "sles/*/en-us"
-  docbuild build run "sles/*@unsupported/en-us,de-de"
-  docbuild build run "sles/@beta,supported/de-de"
+* ``docbuild build run "//en-us"``
+  Builds all supported deliverables for English
 
 \b
-* ``"//en-us"``
-  Builds all supported deliverables for English
-* ``"sles/*/en-us"``
+* ``docbuild build run "sles/*/en-us"``
   Builds only SLES deliverables which are supported and in English
-* ``"sles/*@unsupported/en-us,de-de"``
+
+\b
+* ``docbuild build run "sles/*@unsupported/en-us,de-de"``
   Builds all English and German SLES releases which are unsupported
-* ``"sles/@beta|supported/de-de"``
-  Build all docsets that are supported and beta for German SLES.
-* ``"sles/@beta,supported/de-de"``
+
+\b
+* ``docbuild build run "sles/@beta,supported/de-de"``
   Same as the previous one, but with comma as the separator between
   the lifecycle states.
 """  # noqa: D301
@@ -58,7 +54,7 @@ from ..context import DocBuildContext
 
 @click.command(
     name="run",
-    help=__doc__,
+    help=__doc__.replace("``", ""),
 )
 @click.argument(
     "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
@@ -81,11 +77,13 @@ def run(
 ) -> None:
     """Run the build pipeline for deliverables.
 
+    \f
+
     :param ctx: Click context holding environment and app configuration.
     :param doctypes: Tuple of parsed Doctype specifications.
     :param skip_repo_update: If True, do not pull or update git remotes.
     :param skip_metadata: If True, bypass metadata generation phase.
-    """
+    """  # noqa: D301
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
 

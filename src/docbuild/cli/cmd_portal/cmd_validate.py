@@ -20,7 +20,7 @@ console_out = Console()
 console_err = Console(stderr=True)
 
 
-@click.command(help=__doc__)
+@click.command(name="validate")
 @click.option(
     "-M", "--main-portal-config",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
@@ -37,12 +37,14 @@ def validate(
     main_portal_config: Path | None,
     portal_schema: Path | None,
 ) -> None:
-    """Subcommand to validate XML configuration files.
+    """Validate Portal XML configuration.
+
+    \f
 
     :param ctx: The Click context object.
     :param main_portal_config: main Portal XML config file to validate.
     :param portal_schema: Portal schema file to use for validation.
-    """
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
 
     # Type guard: Ensure envconfig is loaded before accessing its attributes

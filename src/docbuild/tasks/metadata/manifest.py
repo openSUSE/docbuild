@@ -69,7 +69,9 @@ def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
         return None
 
 
-def apply_parity_fixes(descriptions: list, categories: list) -> None:
+def apply_parity_fixes(
+    descriptions: list[Description], categories: list[Category]
+) -> None:
     """Apply wording and HTML parity fixes for legacy JSON consistency.
 
     :param descriptions: List of Description objects to patch.

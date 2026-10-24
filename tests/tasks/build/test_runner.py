@@ -7,6 +7,7 @@ from lxml import etree  # type: ignore
 import pytest
 import yaml
 
+from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
@@ -63,6 +64,42 @@ async def test_build_format_failure(tmp_path: Path) -> None:
     "rsync_options", [None, RsyncOptions(exclude=[]), RsyncOptions(exclude=["*.tmp"])]
 )
 @pytest.mark.asyncio
+async def test_build_format_default_template_has_no_runtime_braces() -> None:
+    """Verify build templates receive runtime values."""
+    mock_d = Mock(spec=Deliverable, full_id="test:DC")
+    mock_d.xml.dcfile = "DC-test"
+    cwd = Path(".")
+    build_dir = Path("build")
+    template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["html"]).replace(
+        "{build.daps.command}", "daps"
+    )
+
+    with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
+        mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
+
+        success, _ = await build_format(
+            mock_d,
+            "html",
+            cwd,
+            build_dir,
+            template,
+        )
+
+    assert success is True
+    mock_run.assert_awaited_once_with(
+        [
+            "daps",
+            "--builddir",
+            "build",
+            "-d",
+            "DC-test",
+            "html",
+        ],
+        cwd=cwd,
+    )
+
+
+@pytest.mark.asyncio
 @patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
 async def test_process_deliverable_build_success(
     mock_mgr_class: Mock, tmp_path: Path, rsync_options: RsyncOptions | None
@@ -101,9 +138,8 @@ async def test_process_deliverable_build_success(
             tmp_path,
             tmp_path,
             tmp_path / "target",
-            "{product}/{docset}/{lang}",
-            daps_tmpls,
-            rsync_options=rsync_options,
+            "{{product}}/{{docset}}/{{lang}}",
+            daps_tmpls
         )
 
         assert success is True

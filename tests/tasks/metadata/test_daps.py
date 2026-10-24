@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, Mock, patch
 from lxml import etree  # type: ignore
 import pytest
 
+from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
 from docbuild.models.deliverable import Deliverable
 import docbuild.tasks.metadata.daps as daps_pkg
 from docbuild.tasks.metadata.daps import (
@@ -61,6 +62,30 @@ def test_get_daps_command(tmp_path: Path):
         f"--dc={dcfile}",
         f"--output={output}",
     ]
+
+
+def test_get_daps_command_default_template_has_no_runtime_braces() -> None:
+    """Verify the default metadata template receives runtime values."""
+    template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["meta"]).replace(
+        "{build.daps.command}", "daps"
+    )
+    worktree = Path("worktree")
+    dcfile = worktree / "DC-test"
+    output = Path("out.json")
+
+    result = get_daps_command(
+        worktree,
+        dcfile,
+        output,
+        template,
+    )
+
+    assert result[0] == "daps"
+    assert result[1] == "--builddir=worktree"
+    assert result[2] == "-d"
+    assert result[3].endswith("DC-test")
+    assert result[4:] == ["metadata", "--output", "out.json"]
+    assert all("{" not in argument and "}" not in argument for argument in result)
 
 
 def test_update_metadata_json_sets_category_at_document_level(
@@ -338,23 +363,37 @@ class TestProcessDeliverable:
         mock_update_metadata_json.assert_called_once()
 
 
-async def test_get_daps_hashes_success():
+@pytest.mark.parametrize(
+    "template",
+    [
+        "daps -d {dcfile} list-srcfiles --hashes",
+        "daps -d {{dcfile}} list-srcfiles --hashes",
+    ],
+    ids=["single_braces", "double_braces"],
+)
+async def test_get_daps_hashes_success(template: str) -> None:
     """Test that valid output is parsed and paths are made relative."""
     worktree_dir = Path("/tmp/worktree")
     dcfile_path = worktree_dir / "DC-test"
 
     mock_result = MagicMock()
     mock_result.returncode = 0
-    mock_result.stdout = "/tmp/worktree/file1.xml:hash1\n/tmp/worktree/subdir/file2.xml:hash2\n"
+    mock_result.stdout = (
+        "/tmp/worktree/file1.xml:hash1\n"
+        "/tmp/worktree/subdir/file2.xml:hash2\n"
+    )
 
     with patch.object(daps_pkg, "run_command", return_value=mock_result) as mock_run:
-        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles --hashes")
+        result = await get_daps_hashes(worktree_dir, dcfile_path, template)
 
         mock_run.assert_called_once_with(
             ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"],
             cwd=worktree_dir
         )
-        assert result == {"file1.xml": "hash1", "subdir/file2.xml": "hash2"}
+        assert result == {
+            "file1.xml": "hash1",
+            str(Path("subdir") / "file2.xml"): "hash2",
+        }
 
 
 async def test_get_daps_hashes_failure():

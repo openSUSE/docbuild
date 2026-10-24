@@ -11,7 +11,7 @@ from lxml import etree  # type: ignore
 
 from docbuild.cli.console import console, console_err
 from docbuild.config.xml.portal import PortalConfig
-from docbuild.constants import DEFAULT_DELIVERABLES, DEFAULT_LANGS, XML_ID
+from docbuild.constants import DEFAULT_DELIVERABLES, DEFAULT_LANG, XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
@@ -70,7 +70,7 @@ def gather_build_tasks(
             build_tasks[d.full_id] = d
         else:
             # Include translation xrefs so Phase 2 can check them against Git
-            if d.xml.lang not in DEFAULT_LANGS:
+            if d.xml.lang != DEFAULT_LANG:
                 build_tasks[d.full_id] = d
 
             target = d.xml.final_target_node
@@ -133,7 +133,7 @@ async def resolve_single_translation(
     """Check Git for a translated DC file and return the Deliverable to build (if any)."""
     fallback_return = None if d.xml.is_xref else d
 
-    if d.xml.lang in DEFAULT_LANGS:
+    if d.xml.lang == DEFAULT_LANG:
         return fallback_return
 
     repo_url = d.git.url if d.git else None

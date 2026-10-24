@@ -1,1 +1,0 @@
-Refactored the :command:`docbuild metadata` command into a Click group and moved its core execution logic to the new :command:`docbuild metadata run` subcommand.

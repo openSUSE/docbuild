@@ -9,7 +9,7 @@ When you change the version of this project it should be reflected already in yo
 
 In some cases, it may be helpful to manually update the project.
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Updating the project
    :name: uv-pip-update-project
 

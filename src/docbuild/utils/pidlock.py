@@ -1,4 +1,9 @@
-"""PID file locking utility."""
+"""PID file locking utility.
+
+Provides a context-manager-based process-safe lock using fcntl to ensure
+only one process can hold a lock for a given resource path. The lock file
+is created automatically and removed on exit.
+"""
 
 import errno
 import fcntl
@@ -13,18 +18,16 @@ from ..constants import BASE_LOCK_DIR
 log = logging.getLogger(__name__)
 
 
-# ------------------
-# New Exception
-# ------------------
 class LockAcquisitionError(RuntimeError):
-    """Raised when a file lock cannot be acquired because it is already held."""
+    """Raised when a file lock cannot be acquired because it is already held.
+
+    This exception indicates that another process currently holds the exclusive
+    lock on the resource.
+    """
 
     pass
 
 
-# ----------------------------------------
-# Simplified PidFileLock Class
-# ----------------------------------------
 class PidFileLock:
     """Context manager for process-safe file locking using fcntl.
 
@@ -34,12 +37,31 @@ class PidFileLock:
 
     Implements a per-path singleton pattern: each lock_path has at most one
     instance within this process.
+
+    .. code-block:: python
+
+        from pathlib import Path
+        from docbuild.utils.pidlock import PidFileLock
+
+        resource = Path("/tmp/my-resource")
+        try:
+            with PidFileLock(resource) as lock:
+                # critical section
+                print("Lock acquired at", lock.lock_path)
+        except LockAcquisitionError:
+            print("Resource is already locked by another process")
     """
 
     _instances: ClassVar[dict[Path, "PidFileLock"]] = {}
 
     def __new__(cls, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> Self:
-        """Implement per-path singleton behavior."""
+        """Implement per-path singleton behavior.
+
+        :param resource_path: The path of the resource to lock.
+        :param lock_dir: Directory in which lock files are stored.
+            Defaults to :data:`BASE_LOCK_DIR`.
+        :return: The singleton instance for the derived lock path.
+        """
         lock_path = cls._generate_lock_name(resource_path, lock_dir)
         if lock_path in cls._instances:
             return cast(Self, cls._instances[lock_path])
@@ -49,6 +71,14 @@ class PidFileLock:
         return instance
 
     def __init__(self, resource_path: Path, lock_dir: Path = BASE_LOCK_DIR) -> None:
+        """Initialize the lock for a resource path.
+
+        Subsequent calls for the same path return the existing instance
+        without re-initialization.
+
+        :param resource_path: The path of the resource to lock.
+        :param lock_dir: Directory in which lock files are stored.
+        """
         # Prevent multiple initializations
         if hasattr(self, "_lock_path"):
             return
@@ -61,15 +91,24 @@ class PidFileLock:
 
     @property
     def lock_path(self) -> Path:
-        """Get the path to the lock file."""
+        """Get the path to the lock file.
+
+        :return: Absolute path of the lock file for this resource.
+        """
         return self._lock_path
 
-    # --------------------
-    # Core Locking Logic
-    # --------------------
-
     def __enter__(self) -> Self:
-        """Acquire the file lock using fcntl.flock(LOCK_EX | LOCK_NB)."""
+        """Acquire the exclusive, non-blocking file lock.
+
+        Creates the lock directory and lock file if necessary, then attempts
+        to acquire an exclusive lock via :func:`~fcntl.flock`. Writes the current
+        process PID into the lock file for debugging.
+
+        :return: Self, so the lock can be used as a context manager.
+        :raises LockAcquisitionError: If another process already holds the lock.
+        :raises RuntimeError: If the lock is already acquired by this instance
+            or if a permission error occurs.
+        """
         if self._lock_acquired:
             # Internal check for misuse, though public acquire is removed
             raise RuntimeError("Lock already acquired by this PidFileLock instance.")
@@ -123,7 +162,16 @@ class PidFileLock:
                  exc_type: type[BaseException] | None,
                  exc_value: BaseException | None,
                  traceback: object | None) -> None:
-        """Release the lock and remove the lock file."""
+        """Release the lock and remove the lock file.
+
+        Releases the fcntl lock, closes the file handle, and deletes the
+        lock file. Failures during release are logged but do not raise
+        exceptions (to avoid masking the original exception).
+
+        :param exc_type: Exception type if an exception occurred, else None.
+        :param exc_value: Exception instance if an exception occurred, else None.
+        :param traceback: Traceback object if an exception occurred, else None.
+        """
         if not self._lock_acquired or self._handle is None:
             return
 
@@ -131,7 +179,7 @@ class PidFileLock:
 
         # 1. Release the fcntl lock
         try:
-            # Must use the file descriptor (handle.fileno()) for fcntl.flockq
+            # Must use the file descriptor (handle.fileno()) for fcntl.flock
             fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
         except OSError as e:
             # Log OS-level failures releasing the lock; don't raise from __exit__
@@ -162,6 +210,15 @@ class PidFileLock:
 
     @staticmethod
     def _generate_lock_name(resource_path: Path, lock_dir: Path) -> Path:
+        """Generate a deterministic lock file path from a resource path.
+
+        Uses a SHA-256 hash of the resolved resource path so that different
+        resources produce distinct lock files within ``lock_dir``.
+
+        :param resource_path: The resource whose lock file name is derived.
+        :param lock_dir: Directory in which the lock file will be placed.
+        :return: Path of the lock file (``lock_dir / docbuild-<hash>.pid``).
+        """
         import hashlib
 
         path_hash = hashlib.sha256(

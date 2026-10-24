@@ -11,6 +11,7 @@ from rich.tree import Tree
 from ...cli.console import console as shared_console
 from ...cli.context import DocBuildContext
 from ...config.xml.list import list_all_deliverables
+from ...constants import DEFAULT_LANG
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.product import Product
@@ -36,7 +37,7 @@ def expand_deliverables(
     native_keys = {
         (str(d.xml.lang), d.xml.product_id or "", d.xml.docset_path or "", d.xml.deliverableid or "")
         for d in deliverables
-        if str(d.xml.lang) != "en-us"
+        if str(d.xml.lang) != DEFAULT_LANG
     }
 
     results = []
@@ -48,8 +49,8 @@ def expand_deliverables(
         d_id = d.xml.deliverableid or ""
         native_lang = str(d.xml.lang)
 
-        # 1. Project blueprints to non-default locales
-        if native_lang == "en-us" and d.xml.translations:
+        # 1. Project blueprints
+        if native_lang == DEFAULT_LANG and d.xml.translations:
             for t_lang in d.xml.translations:
                 if t_lang == native_lang or (t_lang, prod, doc, d_id) in native_keys:
                     continue

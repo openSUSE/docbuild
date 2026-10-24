@@ -23,7 +23,7 @@ async def update_repositories(
     repo_map = {
         d.git.url: d.git.name
         for d in deliverables
-        if getattr(d, "git", None) and hasattr(d.git, "url")
+        if d.git is not None
     }
     unique_urls = set(repo_map.keys())
 

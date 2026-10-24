@@ -119,8 +119,10 @@ exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "__pycache__"]
 language = "en"
 
 # -- Options for copybutton
-copybutton_selector = "div.highlight-console pre"
-copybutton_prompt_text = "$ "
+copybutton_selector = "div.highlight-console pre, div.highlight-pycon pre"
+copybutton_prompt_text = r"^(?:[$#]|>>>|\.\.\.)\s"
+copybutton_prompt_is_regexp = True
+copybutton_only_copy_prompt_lines = True
 copybutton_line_continuation_character = "\\"
 
 # -- Options for autoapi extension

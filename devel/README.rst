@@ -21,10 +21,10 @@ The directory :file:`devel/` contains some helper tools to make development easi
 
     It is recommended to enable the aliases in your shell by sourcing the shell script from the root directory of the project:
 
-    .. code-block:: shell-session
+    .. code-block:: console
        :caption: Activating development aliases
 
-       source devel/activate-aliases.sh
+       $ source devel/activate-aliases.sh
 
 * :command:`bump-version.sh`
    Bumps the version of the project. To bump the minor version, use

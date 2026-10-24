@@ -72,7 +72,7 @@ def make_timer(
     return wrapper
 
 
-class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory):
+class PersistentOnErrorTemporaryDirectory(tempfile.TemporaryDirectory[str]):
     """A temporary directory that supports both sync and async usage.
 
     It deletes the temporary directory only if no exception occurs within the

@@ -7,6 +7,7 @@ from typing import Any, ClassVar, Self
 
 from lxml import etree
 from pydantic import (
+    AliasChoices,
     BaseModel,
     ConfigDict,
     Field,
@@ -17,7 +18,7 @@ from pydantic import (
     model_validator,
 )
 
-from ..constants import DEFAULT_LANGS, XML_ID
+from ..constants import DEFAULT_LANG, XML_ID
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
 from ..utils.convert import convert2bool
@@ -45,7 +46,7 @@ class Description(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English descriptions as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
@@ -97,7 +98,7 @@ class CategoryTranslation(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English translations as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
@@ -133,10 +134,12 @@ class Category(BaseModel):
         Category._current_rank += 1
         return Category._current_rank
 
-    id: str = Field(serialization_alias="categoryId")
+    id: str = Field(alias="categoryId")
     # Automatically called. Depends on the order of the XML element.
     rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    model_config = ConfigDict(populate_by_name=True)
 
     @classmethod
     def reset_rank(cls: type[Self]) -> None:
@@ -180,17 +183,20 @@ class Category(BaseModel):
                 if not cat_id:
                     continue
                 title = lng.findtext("title")
-                translation_data: dict[str, str | bool] = {
-                    "lang": cat_lang,
-                    "title": title.strip() if title else "",
-                }
+                title_str = title.strip() if title else ""
+                lang_code = LanguageCode(language=cat_lang)
                 if "default" in lng.attrib:
-                    translation_data["default"] = convert2bool(
-                        lng.attrib.get("default", "")
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                        default=convert2bool(lng.attrib.get("default", "")),
                     )
-                by_id.setdefault(cat_id, []).append(
-                    CategoryTranslation(**translation_data)
-                )
+                else:
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                    )
+                by_id.setdefault(cat_id, []).append(cat_trans)
 
         for cat_id, translations in by_id.items():
             yield cls(id=cat_id, translations=translations)
@@ -244,7 +250,7 @@ class Archive(BaseModel):
     def set_default_for_english(self: Self) -> Self:
         """Auto-mark English translations as default when not explicitly set."""
         if ("default" not in self.model_fields_set and
-            self.lang.language in DEFAULT_LANGS):
+            self.lang.language == DEFAULT_LANG):
             self.default = True
         return self
 
@@ -300,6 +306,12 @@ class SingleDocument(BaseModel):
     datemodified: date | None = Field(default=None, alias="dateModified")
 
     model_config = ConfigDict(populate_by_name=True)
+
+    @field_validator("datemodified", mode="before")
+    @classmethod
+    def normalize_empty_date(cls, value: object) -> object:
+        """Treat the serialized empty date as an absent date."""
+        return None if value == "" else value
 
     @field_validator("title")
     @classmethod
@@ -404,8 +416,11 @@ class Manifest(BaseModel):
     acronym: str
     version: str
     lifecycle: str | LifecycleFlag = Field(default=LifecycleFlag.unknown)
-    # Ensure this is defined exactly like this:
-    hide_productname: bool = Field(default=False, alias="hide-productname")
+    hide_productname: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("hide-productname", "hide_productname"),
+        serialization_alias="hide-productname",
+    )
     descriptions: list[Description] = Field(default_factory=list)
     categories: list[Category] = Field(default_factory=list)
     documents: list[Document] = Field(default_factory=list)

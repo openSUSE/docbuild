@@ -1,2 +1,0 @@
-Fixed ``docbuild portal list`` showing every English (``en-us``)
-deliverable twice in the tree and ``--flat`` output.

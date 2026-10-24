@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 git_logger = logging.getLogger(GITLOGGER_NAME)
 
 
-@click.command(help=__doc__)
+@click.command()
 @click.argument(
     "repos",
     nargs=-1,
@@ -40,19 +40,28 @@ git_logger = logging.getLogger(GITLOGGER_NAME)
 def clone(ctx: click.Context, repos: tuple[str, ...], all_repos: bool) -> None:
     """Clone repositories into permanent directory.
 
-    :param repos: A tuple of repository selectors, mutually exclusive with
-        all_repos.
-    :param all_repos: Clone all configured repositories when True.
+    Choose exactly one mode: provide one or more repository arguments,
+    or use --all to clone all configured repositories. Do not combine them.
+
+    Pass any of the following URLs to clone:
+
+    \b
+    * HTTPS URLs like ``https://github.com/org/repo.git``
+    * SSH URLS like git@github.com:org/repo.git
+    * Abbreviated URLs like 'org/repo'
+
+    \f
+
+    :param repos: A tuple of repository selectors. If empty, all repos
+        are cloned.
     :param ctx: The Click context object.
-    :raises click.UsageError: If neither or both selection modes are provided.
-    """
+    """  # noqa: D301
     if repos and all_repos:
         raise click.UsageError("Repository arguments and --all are mutually exclusive.")
     if not (repos or all_repos):
         raise click.UsageError("Provide at least one repository argument or --all.")
 
     context: DocBuildContext = ctx.obj
-
     # Type guard: Ensure envconfig is loaded before accessing its attributes
     if context.envconfig is None:
         raise click.ClickException("Environment configuration is missing.")

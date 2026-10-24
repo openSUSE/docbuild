@@ -1,0 +1,3 @@
+Rename ``DEFAULT_LANGS`` to ``DEFAULT_LANG``. There is only ever one
+default language, so the constant is now a plain string instead of a
+single-element tuple, and the hardcoded ``"en-us"`` checks use it.

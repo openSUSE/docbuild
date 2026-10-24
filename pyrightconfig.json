@@ -14,9 +14,13 @@
   // Keep this in sync with "requires-python" in pyproject.toml: type check
   // against the oldest supported Python so newer-only stdlib APIs are flagged.
   "pythonVersion": "3.12",
-
+  "typeCheckingMode": "standard",
   // Point pyright at the uv-managed virtual environment so third-party
   // imports (pydantic, semver, ...) resolve from the installed packages.
   "venvPath": ".",
-  "venv": ".venv"
+  "venv": ".venv",
+
+  // Diagnostic rules for typing stability
+  "reportMissingParameterType": "warning",
+  "reportMissingTypeArgument": "warning"
 }

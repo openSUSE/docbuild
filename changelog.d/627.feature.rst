@@ -1,1 +1,0 @@
-Added support for the XDG Base Directory Specification's :envvar:`XDG_CONFIG_DIRS` as a system-wide configuration location. Docbuild now also searches ``/etc/xdg/docbuild`` (or every directory listed in :envvar:`XDG_CONFIG_DIRS`) before the fixed ``/etc/docbuild`` directory, which still takes precedence over it.

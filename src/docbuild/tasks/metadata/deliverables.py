@@ -5,7 +5,7 @@ import logging
 
 from lxml import etree
 
-from docbuild.constants import DEFAULT_LANGS, XML_ID
+from docbuild.constants import DEFAULT_LANG, XML_ID
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 
@@ -39,7 +39,7 @@ def get_deliverable_from_doctype(
 
 def is_default_lang(language: etree._Element) -> bool:
     """Return True if the locale element is for a default language."""
-    return language.attrib.get("lang") in DEFAULT_LANGS
+    return language.attrib.get("lang") == DEFAULT_LANG
 
 
 def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]:
@@ -53,7 +53,7 @@ def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]
     :return: The synthetic deliverables, or an empty list if there is no blueprint.
     """
     lang_code = language.get("lang")
-    default_lang = DEFAULT_LANGS[0]
+    default_lang = DEFAULT_LANG
     default_locale = language.getparent().find(f"locale[@lang='{default_lang}']")
     if default_locale is None:
         return
@@ -61,7 +61,15 @@ def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]
     for blueprint in default_locale.findall("deliverable"):
         blueprint_id = blueprint.get(XML_ID)
         if not blueprint_id:
-            log.warning("Skipping blueprint deliverable without xml:id")
+            # Make the warning actionable for the user
+            dc_node = blueprint.find("dc")
+            dc_file = dc_node.get("file") if dc_node is not None else "Unknown"
+            line_no = blueprint.sourceline or "unknown"
+            log.warning(
+                "Skipping blueprint deliverable without xml:id (dc file: '%s', line: %s)",
+                dc_file,
+                line_no,
+            )
             continue
 
         synth_node = etree.Element("deliverable")
