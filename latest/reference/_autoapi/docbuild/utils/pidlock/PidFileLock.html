@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.pidlock.PidFileLock &#8212; Docbuild Documentation 0.27.1.dev3+gd22b0c542.d20261024</title>
+    <title>docbuild.utils.pidlock.PidFileLock &#8212; Docbuild Documentation 0.27.1.dev4+g53341beaf.d20261024</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=4aac2ebe"></script>
+    <script src="../../../../../_static/documentation_options.js?v=1726e55c"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -664,22 +664,66 @@ The mutual exclusion is guaranteed by the atomic fcntl.flock(LOCK_EX|LOCK_NB).
 The lock file is automatically created and is removed on successful exit.</p>
 <p>Implements a per-path singleton pattern: each lock_path has at most one
 instance within this process.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">docbuild.utils.pidlock</span><span class="w"> </span><span class="kn">import</span> <span class="n">PidFileLock</span>
+
+<span class="n">resource</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp/my-resource&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">PidFileLock</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span> <span class="k">as</span> <span class="n">lock</span><span class="p">:</span>
+        <span class="c1"># critical section</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lock acquired at&quot;</span><span class="p">,</span> <span class="n">lock</span><span class="o">.</span><span class="n">lock_path</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">LockAcquisitionError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Resource is already locked by another process&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py property">
 <dt class="sig sig-object py" id="docbuild.utils.pidlock.PidFileLock.lock_path">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lock_path</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span><a class="headerlink" href="#docbuild.utils.pidlock.PidFileLock.lock_path" title="Link to this definition">#</a></dt>
 <dd><p>Get the path to the lock file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Absolute path of the lock file for this resource.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.utils.pidlock.PidFileLock.__enter__">
 <span class="sig-name descname"><span class="pre">__enter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.utils.pidlock.PidFileLock.__enter__" title="Link to this definition">#</a></dt>
-<dd><p>Acquire the file lock using fcntl.flock(LOCK_EX | LOCK_NB).</p>
+<dd><p>Acquire the exclusive, non-blocking file lock.</p>
+<p>Creates the lock directory and lock file if necessary, then attempts
+to acquire an exclusive lock via <a class="reference external" href="https://docs.python.org/3/library/fcntl.html#fcntl.flock" title="(in Python v3.15)"><code class="xref py py-func docutils literal notranslate"><span class="pre">flock()</span></code></a>. Writes the current
+process PID into the lock file for debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Self, so the lock can be used as a context manager.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="LockAcquisitionError.html#docbuild.utils.pidlock.LockAcquisitionError" title="docbuild.utils.pidlock.LockAcquisitionError"><strong>LockAcquisitionError</strong></a> – If another process already holds the lock.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.15)"><strong>RuntimeError</strong></a> – If the lock is already acquired by this instance
+or if a permission error occurs.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.utils.pidlock.PidFileLock.__exit__">
 <span class="sig-name descname"><span class="pre">__exit__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exc_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#type" title="(in Python v3.15)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#BaseException" title="(in Python v3.15)"><span class="pre">BaseException</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#BaseException" title="(in Python v3.15)"><span class="pre">BaseException</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">traceback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.utils.pidlock.PidFileLock.__exit__" title="Link to this definition">#</a></dt>
 <dd><p>Release the lock and remove the lock file.</p>
+<p>Releases the fcntl lock, closes the file handle, and deletes the
+lock file. Failures during release are logged but do not raise
+exceptions (to avoid masking the original exception).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exc_type</strong> – Exception type if an exception occurred, else None.</p></li>
+<li><p><strong>exc_value</strong> – Exception instance if an exception occurred, else None.</p></li>
+<li><p><strong>traceback</strong> – Traceback object if an exception occurred, else None.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

@@ -7,6 +7,10 @@ docbuild.utils.pidlock
 
    PID file locking utility.
 
+   Provides a context-manager-based process-safe lock using fcntl to ensure
+   only one process can hold a lock for a given resource path. The lock file
+   is created automatically and removed on exit.
+
 
 
 Exceptions

@@ -11,3 +11,6 @@ docbuild.utils.pidlock.LockAcquisitionError
 
    Raised when a file lock cannot be acquired because it is already held.
 
+   This exception indicates that another process currently holds the exclusive
+   lock on the resource.
+
