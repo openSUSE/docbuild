@@ -1,12 +1,14 @@
 # Source: https://docs.astral.sh/uv/guides/integration/docker/#non-editable-installs
 #
+# Based on Debian:bookworm-slim
+#
 # Build it with:
 # $ docker build -t docbuild:latest .
 #  -- or --
-# $ docker buildx build -t docbuild:latest .
+# $ docker buildx build --file Dockerfile.python -t docbuild:latest .
 #
 # If you want to skip the jing installation step, use:
-# $ docker build --build-arg WITH_JING=false -t docbuild:latest .
+# $ docker build  --file Dockerfile.python --build-arg WITH_JING=false -t docbuild:latest .
 
 ARG PYTHON_VERSION=3.13-slim
 
