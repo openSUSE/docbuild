@@ -3,22 +3,11 @@
 from collections.abc import Iterator
 from contextvars import ContextVar
 from dataclasses import dataclass
-import os
 
 from rich.console import Console, ConsoleOptions
 from rich.text import Text
 
 from .theme import ThemeTag
-
-NO_SYMBOLS_ENV_VAR = "DOCBUILD_NO_SYMBOLS"
-"""Environment variable that disables status symbols.
-
-Symbols stay enabled when the variable is unset or set to ``0``, ``false``,
-``no``, ``off``, or an empty string. Any other value disables them.
-"""
-
-_SYMBOLS_ENABLED_VALUES = frozenset({"", "0", "false", "no", "off"})
-"""Values of :data:`NO_SYMBOLS_ENV_VAR` that keep symbols enabled."""
 
 _app_symbols_enabled: ContextVar[bool] = ContextVar(
     "docbuild_app_symbols_enabled", default=True
@@ -27,11 +16,7 @@ _app_symbols_enabled: ContextVar[bool] = ContextVar(
 
 
 def set_symbols_enabled(enabled: bool) -> None:
-    """Set the application-config default for status symbols.
-
-    The :data:`NO_SYMBOLS_ENV_VAR` environment variable still takes
-    precedence over this value.
-    """
+    """Set the application-config default for status symbols."""
     _app_symbols_enabled.set(enabled)
 
 
@@ -39,12 +24,8 @@ def symbols_enabled() -> bool:
     """Return whether status symbols are enabled.
 
     Symbols are enabled by default. The application configuration can change
-    the default through :func:`set_symbols_enabled`; setting
-    :data:`NO_SYMBOLS_ENV_VAR` takes precedence over that value.
+    the default through :func:`set_symbols_enabled`.
     """
-    value = os.environ.get(NO_SYMBOLS_ENV_VAR)
-    if value is not None:
-        return value.strip().lower() in _SYMBOLS_ENABLED_VALUES
     return _app_symbols_enabled.get()
 
 

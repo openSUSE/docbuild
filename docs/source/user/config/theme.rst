@@ -68,16 +68,6 @@ You can disable symbols for all messages with the top-level ``symbols`` option i
 
    symbols = false
 
-For a temporary change, set the ``DOCBUILD_NO_SYMBOLS`` environment variable.
-Symbols stay enabled when the variable is unset or set to ``0``, ``false``, ``no``, ``off``, or an empty string.
-Any other value disables them.
-The environment variable takes precedence over the application configuration:
-
-.. code-block:: console
-   :caption: Disable status symbols for one session
-
-   export DOCBUILD_NO_SYMBOLS=1
-
 
 Customizing Styles in Configuration
 -----------------------------------

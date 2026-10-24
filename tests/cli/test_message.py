@@ -14,7 +14,6 @@ from docbuild.cli.message import (
     INFO,
     INVALID,
     MISSING,
-    NO_SYMBOLS_ENV_VAR,
     OK,
     SKIPPED,
     VALID,
@@ -43,53 +42,39 @@ def test_message_str_returns_plain_label(message):
     assert str(message) == message.label
 
 
-def test_message_render_includes_symbol_by_default(monkeypatch):
+def test_message_render_includes_symbol_by_default():
     """Verify render() includes the symbol and semantic style by default."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
-
     text = VALID.render()
 
     assert text.plain == "✓ Valid"
     assert text.style == ThemeTag.SUCCESS.value
 
 
-def test_message_render_can_omit_symbols(monkeypatch):
+def test_message_render_can_omit_symbols():
     """Verify render(symbols=False) keeps the label and drops the symbol."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
-
     text = WARNING.render(symbols=False)
 
     assert text.plain == "Warning"
     assert text.style == ThemeTag.WARNING.value
 
 
-def test_message_render_keeps_symbol_for_utf8_console(monkeypatch):
+def test_message_render_keeps_symbol_for_utf8_console():
     """Verify render() keeps the symbol when the console encoding supports it."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
     console = cast(Console, SimpleNamespace(encoding="utf-8"))
 
     assert VALID.render(console=console).plain == "✓ Valid"
 
 
-def test_message_render_drops_symbol_for_ascii_console(monkeypatch):
+def test_message_render_drops_symbol_for_ascii_console():
     """Verify render() drops an unencodable symbol but keeps the label."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
     console = cast(Console, SimpleNamespace(encoding="ascii"))
 
     assert VALID.render(console=console).plain == "Valid"
 
 
-def test_message_render_respects_shared_opt_out(monkeypatch):
-    """Verify the shared environment opt-out disables symbols."""
-    monkeypatch.setenv(NO_SYMBOLS_ENV_VAR, "1")
-
-    assert symbols_enabled() is False
-    assert VALID.render().plain == "Valid"
-
-
-def test_explicit_symbols_override_shared_opt_out(monkeypatch):
+def test_explicit_symbols_override_shared_opt_out():
     """Verify an explicit symbols value overrides the shared opt-out."""
-    monkeypatch.setenv(NO_SYMBOLS_ENV_VAR, "1")
+    set_symbols_enabled(False)
 
     assert VALID.render(symbols=True).plain == "✓ Valid"
 
@@ -102,22 +87,12 @@ def test_app_config_disables_symbols():
     assert VALID.render().plain == "Valid"
 
 
-def test_symbol_setting_is_context_local(monkeypatch):
+def test_symbol_setting_is_context_local():
     """Verify the application-config default is isolated per context."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
     set_symbols_enabled(False)
 
     assert symbols_enabled() is False
     assert Context().run(symbols_enabled) is True
-
-
-def test_env_var_overrides_app_config(monkeypatch):
-    """Verify the environment variable takes precedence over app config."""
-    set_symbols_enabled(False)
-    monkeypatch.setenv(NO_SYMBOLS_ENV_VAR, "0")
-
-    assert symbols_enabled() is True
-    assert VALID.render().plain == "✓ Valid"
 
 
 def test_appconfig_symbols_setting():
@@ -153,17 +128,8 @@ def test_apply_message_settings_ignores_missing_config():
     assert symbols_enabled() is True
 
 
-@pytest.mark.parametrize("value", ["", "0", "false", "no", "off"])
-def test_symbols_enabled_values(monkeypatch, value):
-    """Verify falsy opt-out values keep symbols enabled."""
-    monkeypatch.setenv(NO_SYMBOLS_ENV_VAR, value)
-
-    assert symbols_enabled() is True
-
-
-def test_message_rich_console_rendering(monkeypatch):
+def test_message_rich_console_rendering():
     """Verify rendered messages stay inline when printed with a prefix."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
     output = StringIO()
     console = Console(file=output, theme=DOCBUILD_THEME, width=80)
 
@@ -179,11 +145,8 @@ def test_message_rich_console_rendering(monkeypatch):
         pytest.param("utf-8", "✓ Valid\n".encode(), id="utf-8"),
     ],
 )
-def test_message_rich_console_uses_destination_encoding(
-    monkeypatch, encoding, expected
-):
+def test_message_rich_console_uses_destination_encoding(encoding, expected):
     """Verify Rich rendering uses the destination console encoding."""
-    monkeypatch.delenv(NO_SYMBOLS_ENV_VAR, raising=False)
     buffer = BytesIO()
     stream = TextIOWrapper(buffer, encoding=encoding, newline="")
     console = Console(file=stream, theme=DOCBUILD_THEME, width=80)
