@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.27.1.dev4+g53341beaf.d20261024</title>
+    <title>docbuild.models.config.env &#8212; Docbuild Documentation 0.27.1.dev5+ge3b9f79e5.d20261024</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=1726e55c"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=6212e1de"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -742,7 +742,12 @@ runtime during the build process.</p>
 <span class="w">    </span><span class="c1">// Remote destination for publishing built documentation.</span>
 <span class="w">    </span><span class="c1">// Both keys are unset by default, so publish is disabled unless</span>
 <span class="w">    </span><span class="c1">// [remote] is configured. Corresponds to the EnvRemote model.</span>
-<span class="w">    </span><span class="s2">&quot;remote&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;server&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;path&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">}</span>
+<span class="w">    </span><span class="s2">&quot;remote&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;server&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;path&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">},</span>
+<span class="w">    </span><span class="c1">// Transfer exclusions. Corresponds to the EnvRsync model.</span>
+<span class="w">    </span><span class="s2">&quot;rsync&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;exclude&quot;</span><span class="o">:</span><span class="w"> </span><span class="nx">DEFAULT_RSYNC_EXCLUDES</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;exclude_extra&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -782,7 +787,10 @@ runtime during the build process.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="EnvRemote.html#docbuild.models.config.env.EnvRemote" title="docbuild.models.config.env.EnvRemote"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvRemote</span></code></a></p></td>
 <td><p>Defines the remote destination for publishing built documentation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="EnvConfig.html#docbuild.models.config.env.EnvConfig" title="docbuild.models.config.env.EnvConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvConfig</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="EnvRsync.html#docbuild.models.config.env.EnvRsync" title="docbuild.models.config.env.EnvRsync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvRsync</span></code></a></p></td>
+<td><p>Configure exclusions for syncing built deliverables.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="EnvConfig.html#docbuild.models.config.env.EnvConfig" title="docbuild.models.config.env.EnvConfig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EnvConfig</span></code></a></p></td>
 <td><p>Root model for the environment configuration (env.toml).</p></td>
 </tr>
 </tbody>

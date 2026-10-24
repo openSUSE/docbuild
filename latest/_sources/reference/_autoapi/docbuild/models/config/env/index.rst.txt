@@ -97,7 +97,12 @@ docbuild.models.config.env
            // Remote destination for publishing built documentation.
            // Both keys are unset by default, so publish is disabled unless
            // [remote] is configured. Corresponds to the EnvRemote model.
-           "remote": {"server": null, "path": null}
+           "remote": {"server": null, "path": null},
+           // Transfer exclusions. Corresponds to the EnvRsync model.
+           "rsync": {
+               "exclude": DEFAULT_RSYNC_EXCLUDES,
+               "exclude_extra": []
+           }
        }
 
 
@@ -118,6 +123,7 @@ Classes
    /reference/_autoapi/docbuild/models/config/env/EnvXslt
    /reference/_autoapi/docbuild/models/config/env/SSHEndpoint
    /reference/_autoapi/docbuild/models/config/env/EnvRemote
+   /reference/_autoapi/docbuild/models/config/env/EnvRsync
    /reference/_autoapi/docbuild/models/config/env/EnvConfig
 
 .. autoapisummary::
@@ -132,6 +138,7 @@ Classes
    docbuild.models.config.env.EnvXslt
    docbuild.models.config.env.SSHEndpoint
    docbuild.models.config.env.EnvRemote
+   docbuild.models.config.env.EnvRsync
    docbuild.models.config.env.EnvConfig
 
 

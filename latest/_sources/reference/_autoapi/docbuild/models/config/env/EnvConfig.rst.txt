@@ -63,6 +63,15 @@ docbuild.models.config.env.EnvConfig
 
 
 
+   .. py:attribute:: rsync
+      :type:  EnvRsync
+      :value: None
+
+
+      Transfer exclusions for built deliverables.
+
+
+
    .. py:method:: from_dict(data: dict[str, Any]) -> Self
       :classmethod:
 

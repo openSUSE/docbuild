@@ -14,6 +14,7 @@ Attributes
 
 .. autoapisummary::
 
+   docbuild.constants.DEFAULT_RSYNC_EXCLUDES
    docbuild.constants.APP_NAME
    docbuild.constants.DEFAULT_ENV_NAME
    docbuild.constants.DEFAULT_LANG
@@ -83,6 +84,14 @@ Functions
 
 Module Contents
 ---------------
+
+.. py:data:: DEFAULT_RSYNC_EXCLUDES
+   :type:  Final[tuple[str, ...]]
+   :value: ('.git/', '.svn/', '.hg/', '.bzr/', '*~', '*.old', '*.bak', '*.BAK', '*.orig', '*.rej', '*.html.new')
+
+
+   Version-control directories and temporary files omitted from transfers.
+
 
 .. py:data:: APP_NAME
    :type:  str

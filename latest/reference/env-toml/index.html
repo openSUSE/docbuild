@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.27.1.dev4+g53341beaf.d20261024</title>
+    <title>Env TOML Configuration &#8212; Docbuild Documentation 0.27.1.dev5+ge3b9f79e5.d20261024</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=1726e55c"></script>
+    <script src="../../_static/documentation_options.js?v=6212e1de"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1089,6 +1089,34 @@ The path must be absolute, for example: “/srv/docs”.</p>
 </dd>
 </dl>
 </section>
+<section id="rsync">
+<span id="envtoml-section-rsync"></span><h2>[rsync]<a class="headerlink" href="#rsync" title="Link to this heading">#</a></h2>
+<dl id="envtoml-rsync-exclude">
+<dt><code class="docutils literal notranslate"><span class="pre">exclude</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">list[str]</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">['.git/',</span> <span class="pre">'.svn/',</span> <span class="pre">'.hg/',</span> <span class="pre">'.bzr/',</span> <span class="pre">'*~',</span> <span class="pre">'*.old',</span> <span class="pre">'*.bak',</span> <span class="pre">'*.BAK',</span> <span class="pre">'*.orig',</span> <span class="pre">'*.rej',</span> <span class="pre">'*.html.new']</span></code></p>
+</dd>
+</dl>
+<p>Replace the built-in exclusion list. Omit to keep defaults.
+Set exclude = [] to disable the base exclusions.</p>
+</dd>
+</dl>
+<dl id="envtoml-rsync-exclude-extra">
+<dt><code class="docutils literal notranslate"><span class="pre">exclude_extra</span></code></dt><dd><dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="code docutils literal notranslate"><span class="pre">list[str]</span></code></p>
+</dd>
+<dt class="field-even">Default<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+<p>Extend the selected base exclusions.</p>
+</dd>
+</dl>
+</section>
 <section id="build">
 <span id="envtoml-section-build"></span><h2>[build]<a class="headerlink" href="#build" title="Link to this heading">#</a></h2>
 </section>
@@ -1309,6 +1337,7 @@ to the transformation process for ALL output formats</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-tmp">[paths.tmp]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#paths-target">[paths.target]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remote">[remote]</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rsync">[rsync]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build">[build]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-daps">[build.daps]</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-container">[build.container]</a></li>

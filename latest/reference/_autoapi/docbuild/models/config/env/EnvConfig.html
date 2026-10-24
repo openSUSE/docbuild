@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.config.env.EnvConfig &#8212; Docbuild Documentation 0.27.1.dev4+g53341beaf.d20261024</title>
+    <title>docbuild.models.config.env.EnvConfig &#8212; Docbuild Documentation 0.27.1.dev5+ge3b9f79e5.d20261024</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=1726e55c"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=6212e1de"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@
     <link rel="index" title="Index" href="../../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../../search.html" />
     <link rel="next" title="docbuild.models.deliverable" href="../../deliverable/index.html" />
-    <link rel="prev" title="docbuild.models.config.env.EnvRemote" href="EnvRemote.html" />
+    <link rel="prev" title="docbuild.models.config.env.EnvRsync" href="EnvRsync.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -702,6 +702,12 @@
 <dd><p>Remote publish destination.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.rsync">
+<span class="sig-name descname"><span class="pre">rsync</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="EnvRsync.html#docbuild.models.config.env.EnvRsync" title="docbuild.models.config.env.EnvRsync"><span class="pre">EnvRsync</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.rsync" title="Link to this definition">#</a></dt>
+<dd><p>Transfer exclusions for built deliverables.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.config.env.EnvConfig.from_dict">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="headerlink" href="#docbuild.models.config.env.EnvConfig.from_dict" title="Link to this definition">#</a></dt>
@@ -740,12 +746,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="EnvRemote.html"
+       href="EnvRsync.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">docbuild.models.config.env.EnvRemote</p>
+        <p class="prev-next-title">docbuild.models.config.env.EnvRsync</p>
       </div>
     </a>
     <a class="right-next"
@@ -783,6 +789,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.build"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.build</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.xslt"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.xslt</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.remote"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.remote</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.rsync"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.rsync</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.from_dict"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.from_dict()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.models.config.env.EnvConfig.get_default_config"><code class="docutils literal notranslate"><span class="pre">docbuild.models.config.env.EnvConfig.get_default_config()</span></code></a></li>
 </ul>

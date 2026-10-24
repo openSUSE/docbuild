@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.sync &#8212; Docbuild Documentation 0.27.1.dev4+g53341beaf.d20261024</title>
+    <title>docbuild.utils.sync &#8212; Docbuild Documentation 0.27.1.dev5+ge3b9f79e5.d20261024</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=1726e55c"></script>
+    <script src="../../../../../_static/documentation_options.js?v=6212e1de"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -702,6 +702,10 @@
 <dd><p>Asynchronously execute the rsync command.</p>
 <p>Supports both local and remote paths. Remote paths use rsync syntax:
 SSH (<code class="docutils literal notranslate"><span class="pre">user&#64;host:/path</span></code>), daemon (<code class="docutils literal notranslate"><span class="pre">host::module</span></code>), or URL (<code class="docutils literal notranslate"><span class="pre">rsync://host/path</span></code>).</p>
+<p>When options are omitted, <a class="reference internal" href="RsyncOptions.html#docbuild.utils.sync.RsyncOptions" title="docbuild.utils.sync.RsyncOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">RsyncOptions</span></code></a> applies
+<a class="reference internal" href="../../constants/index.html#docbuild.constants.DEFAULT_RSYNC_EXCLUDES" title="docbuild.constants.DEFAULT_RSYNC_EXCLUDES"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_RSYNC_EXCLUDES</span></code></a> to every transfer,
+including remote-source pulls. Pass <code class="docutils literal notranslate"><span class="pre">RsyncOptions(exclude=[])</span></code> to
+transfer matching files too, or supply a replacement list explicitly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

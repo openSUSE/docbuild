@@ -62,10 +62,13 @@ docbuild.utils.sync.RsyncOptions
 
    .. py:attribute:: exclude
       :type:  list[str] | tuple[str, ...]
-      :value: []
+      :value: ('.git/', '.svn/', '.hg/', '.bzr/', '*~', '*.old', '*.bak', '*.BAK', '*.orig', '*.rej', '*.html.new')
 
 
-      List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag.
+      Patterns excluded from transfer, replacing the defaults when supplied.
+
+      Pass an empty list or tuple to disable exclusions. Each pattern becomes a
+      separate ``--exclude`` flag.
 
 
 
