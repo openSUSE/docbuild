@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_build.cmd_run &#8212; Docbuild Documentation 0.27.1.dev5+ge3b9f79e5.d20261024</title>
+    <title>docbuild.cli.cmd_build.cmd_run &#8212; Docbuild Documentation 0.27.1.dev6+g07424b9d0</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=6212e1de"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=1bfeebd7"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.27.0" />
+  <meta name="docsearch:version" content="0.28.0" />
   
     
     <script src="../../../../../../_static/searchtools.js"></script>
@@ -656,46 +656,7 @@
   <section id="module-docbuild.cli.cmd_build.cmd_run">
 <span id="docbuild-cli-cmd-build-cmd-run"></span><h1>docbuild.cli.cmd_build.cmd_run<a class="headerlink" href="#module-docbuild.cli.cmd_build.cmd_run" title="Link to this heading">#</a></h1>
 <p>Build a documentation deliverables from source.</p>
-<p>A document (or “doctype”) consists of <code class="docutils literal notranslate"><span class="pre">[PRODUCT]/[DOCSET][&#64;LIFECYCLES]/LANGS</span></code>
-with the following properties:</p>
-<p>
-* (Optional) <code class="docutils literal notranslate"><span class="pre">PRODUCT</span></code> is the product. To mark “ALL” products, omit the</p>
-<blockquote>
-<div><p>product or use <code class="docutils literal notranslate"><span class="pre">*</span></code></p>
-</div></blockquote>
-<ul class="simple">
-<li><p>(Optional) <code class="docutils literal notranslate"><span class="pre">DOCSET</span></code> is the docset, usually the version or release of
-a product.
-To mark “ALL” docsets, omit the docset or use <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p></li>
-<li><p>(Optional) <code class="docutils literal notranslate"><span class="pre">LIFECYCLES</span></code> marks a list of lifecycles separated by comma
-or pipe symbol.
-A lifecycle can be one of the values ‘supported’, ‘unsupported’, ‘beta’,
-or ‘hidden’.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LANGS</span></code> marks a list of languages separated by comma. Every single
-language contains a LANGUAGE-COUNTRY syntax, for example ‘en-us’, ‘de-de’ etc.</p></li>
-</ul>
-<p>
-Examples:
-* <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">run</span> <span class="pre">&quot;//en-us&quot;</span></code></p>
-<blockquote>
-<div><p>Builds all supported deliverables for English</p>
-</div></blockquote>
-<p>
-* <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">run</span> <span class="pre">&quot;sles/*/en-us&quot;</span></code></p>
-<blockquote>
-<div><p>Builds only SLES deliverables which are supported and in English</p>
-</div></blockquote>
-<p>
-* <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">run</span> <span class="pre">&quot;sles/*&#64;unsupported/en-us,de-de&quot;</span></code></p>
-<blockquote>
-<div><p>Builds all English and German SLES releases which are unsupported</p>
-</div></blockquote>
-<p>
-* <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">run</span> <span class="pre">&quot;sles/&#64;beta,supported/de-de&quot;</span></code></p>
-<blockquote>
-<div><p>Same as the previous one, but with comma as the separator between
-the lifecycle states.</p>
-</div></blockquote>
+<p>See <a class="reference internal" href="../../../../../../user/concepts/doctypes.html#concept-doctype-syntax"><span class="std std-ref">The Doctype Syntax</span></a></p>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
