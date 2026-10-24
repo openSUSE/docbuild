@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Developing the Project &#8212; Docbuild Documentation 0.27.1.dev1+g16d612fae.d20261023</title>
+    <title>Developing the Project &#8212; Docbuild Documentation 0.27.1.dev2+g5ae879171.d20261024</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=a92bc9d4"></script>
+    <script src="../_static/documentation_options.js?v=626a7a7c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=6f874712"></script>
+    <script src="../_static/copybutton.js?v=48804fe2"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/develop-project';</script>
     <script>
@@ -494,7 +494,7 @@ as listing dependencies and using an interactive shell for debugging.</p>
 <section id="listing-dependencies">
 <span id="list-dependencies"></span><h2>Listing dependencies<a class="headerlink" href="#listing-dependencies" title="Link to this heading">#</a></h2>
 <p>If you want to get an overview of the dependencies used in the project, you can use the <cite>uv</cite> command to list them:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--frozen
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--frozen
 <span class="go">Resolved 78 packages in 290ms</span>
 <span class="go">docbuild</span>
 <span class="go">├── click v8.2.1</span>
@@ -517,7 +517,7 @@ as listing dependencies and using an interactive shell for debugging.</p>
 </div>
 <p>This gives a tree-like structure of the dependencies, showing the main packages and their sub-dependencies. The output includes the package names and their versions, allowing you to see which libraries are being used in the project.</p>
 <p>In case you want to list outdated dependencies, use the option <code class="docutils literal notranslate"><span class="pre">--outdated</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--outdated
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>tree<span class="w"> </span>--outdated
 <span class="go">Resolved 78 packages in 15ms</span>
 <span class="go">docbuild</span>
 <span class="go">├── click v8.2.1</span>
@@ -550,7 +550,7 @@ modules, use the <code class="docutils literal notranslate"><span class="pre">ui
 This is useful for experimenting with the project’s code and for debugging.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Running IPython using <strong class="command">uv</strong> with alias <a class="reference internal" href="prepare-environment.html#devel-helpers"><span class="std std-ref">uipython</span></a></span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uipython
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uipython
 </pre></div>
 </div>
 </div>

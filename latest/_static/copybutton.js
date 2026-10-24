@@ -132,7 +132,7 @@ const addCopyButtonToCodeCells = () => {
   }
 
   // Add copybuttons to all of our code cells
-  const COPYBUTTON_SELECTOR = 'div.highlight-console pre';
+  const COPYBUTTON_SELECTOR = 'div.highlight-console pre, div.highlight-pycon pre';
   const codeCells = document.querySelectorAll(COPYBUTTON_SELECTOR)
   codeCells.forEach((codeCell, index) => {
     const id = codeCellId(index)
@@ -227,7 +227,7 @@ var copyTargetText = (trigger) => {
   let exclude = '.linenos';
 
   let text = filterText(target, exclude);
-  return formatCopyText(text, '$ ', false, true, true, true, '\\', '')
+  return formatCopyText(text, '^(?:[$#]|>>>|\\.\\.\\.)\\s', true, true, true, true, '\\', '')
 }
 
   // Initialize with a callback so we can modify the text before copy

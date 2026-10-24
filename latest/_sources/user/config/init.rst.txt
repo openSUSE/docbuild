@@ -6,7 +6,7 @@ Creating Starter Configuration
 Run the following command to create application and environment configuration
 files from Docbuild's built-in defaults:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild config init
 
@@ -19,7 +19,7 @@ Missing directories are created automatically.
 
 To create only one file, use ``--app`` or ``--env``:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild config init --app
    $ docbuild config init --env
@@ -27,7 +27,7 @@ To create only one file, use ``--app`` or ``--env``:
 Passing both flags is equivalent to passing neither. To preview the paths
 without creating directories or files, use the global ``--dry-run`` option:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild --dry-run config init
 
@@ -53,7 +53,7 @@ Choosing an Environment Role
 Use ``--role`` to create an environment configuration for production (the
 default), staging or testing:
 
-.. code-block:: shell-session
+.. code-block:: console
 
    $ docbuild config init --env --role staging
 

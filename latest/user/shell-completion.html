@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Enabling Shell Completion &#8212; Docbuild Documentation 0.27.1.dev1+g16d612fae.d20261023</title>
+    <title>Enabling Shell Completion &#8212; Docbuild Documentation 0.27.1.dev2+g5ae879171.d20261024</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=a92bc9d4"></script>
+    <script src="../_static/documentation_options.js?v=626a7a7c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=6f874712"></script>
+    <script src="../_static/copybutton.js?v=48804fe2"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/shell-completion';</script>
     <script>
@@ -530,7 +530,7 @@ with this content:</p>
 To make startup faster, you can save the script to a file once instead. For
 Bash, save it to the user completion directory of the <code class="docutils literal notranslate"><span class="pre">bash-completion</span></code>
 package, which follows the XDG Base Directory specification:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">dir</span><span class="o">=</span><span class="si">${</span><span class="nv">XDG_DATA_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.local/share</span><span class="si">}</span>/bash-completion/completions
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">dir</span><span class="o">=</span><span class="si">${</span><span class="nv">XDG_DATA_HOME</span><span class="k">:-</span><span class="nv">$HOME</span><span class="p">/.local/share</span><span class="si">}</span>/bash-completion/completions
 <span class="gp">$ </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$dir</span><span class="s2">&quot;</span>
 <span class="gp">$ </span><span class="nv">_DOCBUILD_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>docbuild<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$dir</span><span class="s2">/docbuild&quot;</span>
 </pre></div>
@@ -542,7 +542,7 @@ Regenerate the file after upgrading <strong class="command">docbuild</strong>.</
 <section id="completing-subcommands-and-options">
 <h2>Completing Subcommands and Options<a class="headerlink" href="#completing-subcommands-and-options" title="Link to this heading">#</a></h2>
 <p>Press <kbd class="kbd docutils literal notranslate">Tab</kbd> after a partial subcommand or option to complete it:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>po&lt;Tab&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>po&lt;Tab&gt;
 <span class="gp">$ </span>docbuild<span class="w"> </span>portal
 
 <span class="gp">$ </span>docbuild<span class="w"> </span>build<span class="w"> </span>run<span class="w"> </span>--skip-&lt;Tab&gt;
@@ -570,7 +570,7 @@ part. Docsets and languages can be given as a comma-separated list; only the
 last item is completed.</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Completing a doctype step by step</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>build<span class="w"> </span>run<span class="w"> </span>sl&lt;Tab&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>build<span class="w"> </span>run<span class="w"> </span>sl&lt;Tab&gt;
 <span class="go">sle-ha  sle-hpc  sle-micro  sled  sles  sles-sap  ...</span>
 
 <span class="gp">$ </span>docbuild<span class="w"> </span>build<span class="w"> </span>run<span class="w"> </span>sles/&lt;Tab&gt;

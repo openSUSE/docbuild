@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Setting Env Keys on the Command Line &#8212; Docbuild Documentation 0.27.1.dev1+g16d612fae.d20261023</title>
+    <title>Setting Env Keys on the Command Line &#8212; Docbuild Documentation 0.27.1.dev2+g5ae879171.d20261024</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=a92bc9d4"></script>
+    <script src="../../_static/documentation_options.js?v=626a7a7c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=6f874712"></script>
+    <script src="../../_static/copybutton.js?v=48804fe2"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/config/config-cli';</script>
     <script>
@@ -494,7 +494,7 @@
 <span id="config-overwriting-cli"></span><h1>Setting Env Keys on the Command Line<a class="headerlink" href="#setting-env-keys-on-the-command-line" title="Link to this heading">#</a></h1>
 <p>To temporarily override environment configuration options directly from the command line use the <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> option. This avoids having to create or modify TOML files for quick adjustments.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">key=value</span></code> syntax, and use dot notation for nested options:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.canonical_url_domain=https://doc.example.net&quot;</span><span class="w"> </span>-C<span class="w"> </span>paths.root_config_dir<span class="o">=</span>/etc/docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.canonical_url_domain=https://doc.example.net&quot;</span><span class="w"> </span>-C<span class="w"> </span>paths.root_config_dir<span class="o">=</span>/etc/docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 <p>Options passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected environment configuration file.</p>
@@ -507,22 +507,22 @@
 <p>If your configuration keys contain dots, use a backslash, quotes, or brackets to prevent them from being treated as nested separators:</p>
 <ul>
 <li><p><strong>Backslash</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">key\.with\.dots</span></code>)</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.show\.edit\.link=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.show\.edit\.link=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
 <li><p><strong>Single quotes</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">'key.with.dots'</span></code>)</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.&#39;show.edit.link&#39;=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.&#39;show.edit.link&#39;=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
 <li><p><strong>Double quotes</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">&quot;key.with.dots&quot;</span></code>)</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s1">&#39;xslt.html.&quot;show.edit.link&quot;=1&#39;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s1">&#39;xslt.html.&quot;show.edit.link&quot;=1&#39;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
 <li><p><strong>Square brackets</strong> (Syntax <code class="docutils literal notranslate"><span class="pre">[key.with.dots]</span></code>)</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.[show.edit.link]=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;xslt.html.[show.edit.link]=1&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
@@ -534,12 +534,12 @@
 <p>Values are automatically converted to their appropriate types:</p>
 <ul>
 <li><p><strong>Booleans</strong>: <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code> (case-insensitive)</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.enable_mail=true&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.enable_mail=true&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
 <li><p><strong>Strings</strong>: Quoted strings or values that don’t match the above patterns</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.name=&#39;My ENV Name&#39;&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.name=&#39;My ENV Name&#39;&quot;</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 </pre></div>
 </div>
 </li>
@@ -548,7 +548,7 @@
 <section id="using-placeholders-in-cli-overrides">
 <h2>Using placeholders in CLI overrides<a class="headerlink" href="#using-placeholders-in-cli-overrides" title="Link to this heading">#</a></h2>
 <p>It is possible to use placeholders in CLI overrides, just like in configuration files. Static placeholders will be resolved based on the current configuration context, while dynamic placeholders will remain as templates for runtime resolution:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s1">&#39;general.canonical_url_domain=https://docs.example.org&#39;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s1">&#39;general.canonical_url_domain=https://docs.example.org&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">           </span>-C<span class="w"> </span><span class="s1">&#39;xslt.html.homepage={general.canonical_url_domain}&#39;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">           </span>config<span class="w"> </span>list<span class="w"> </span>--env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>example
 <span class="go">&quot;canonical_url_domain&quot;: &quot;https://docs.example.org/&quot;</span>
@@ -573,7 +573,7 @@
 <section id="example-invalid-enum-value">
 <h2>Example: Invalid Enum Value<a class="headerlink" href="#example-invalid-enum-value" title="Link to this heading">#</a></h2>
 <p>If you pass an invalid value via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code>, the command will fail with a clear validation error:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>build
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>build
 <span class="go">1 Validation error in config file &#39;defaults&#39;:</span>
 
 <span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;:</span>
@@ -583,7 +583,7 @@
 </pre></div>
 </div>
 <p>To find the valid values for a field, check the error message or consult the configuration reference documentation. You can also validate the config explicitly with <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">validate</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>config<span class="w"> </span>validate
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.role=invalid_role&quot;</span><span class="w"> </span>config<span class="w"> </span>validate
 <span class="go">1 Validation error in config file &#39;defaults&#39;:</span>
 <span class="gp gp-VirtualEnv">(1)</span> <span class="go">In &#39;general.role&#39;: Input should be &#39;production&#39;, &#39;staging&#39;, &#39;testing&#39; ...</span>
 

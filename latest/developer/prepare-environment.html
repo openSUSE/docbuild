@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.27.1.dev1+g16d612fae.d20261023</title>
+    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.27.1.dev2+g5ae879171.d20261024</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=a92bc9d4"></script>
+    <script src="../_static/documentation_options.js?v=626a7a7c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=6f874712"></script>
+    <script src="../_static/copybutton.js?v=48804fe2"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/prepare-environment';</script>
     <script>
@@ -559,7 +559,7 @@ in the <code class="file docutils literal notranslate"><span class="pre">.ipytho
 <p>It is recommended to enable the aliases in your shell by sourcing the shell script from the root directory of the project:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Activating development aliases</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">source devel/activate-aliases.sh</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
 </div>
 </div>
@@ -595,7 +595,7 @@ for each file type.</p>
 <li><p>If you haven’t created a virtual environment, do so:</p>
 <div class="literal-block-wrapper docutils container" id="uv-venv">
 <div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
 </pre></div>
 </div>
 </div>
@@ -606,7 +606,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
 <div class="literal-block-wrapper docutils container" id="uv-sync-devel">
 <div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
 </pre></div>
 </div>
 </div>
@@ -615,7 +615,7 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 <li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
 <div class="literal-block-wrapper docutils container" id="activate-aliases">
 <div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
 </div>
 </div>
@@ -630,7 +630,7 @@ build SUSE product documentation. These files, which define all products,
 docsets, and their deliverables, are managed in the <code class="docutils literal notranslate"><span class="pre">susedoc/docserv-config</span></code>
 repository.</p>
 <p>To get started, clone this repository to your local machine (you need VPN access):</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
 </pre></div>
 </div>
 <p>You will later need to point <code class="docutils literal notranslate"><span class="pre">docbuild</span></code> to the location of this cloned

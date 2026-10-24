@@ -7,7 +7,7 @@ To deal with different environments without having to type the full command
 each time, create aliases in your shell. This allows you to quickly switch
 between configurations without needing to remember the exact command syntax.
 
-.. code-block:: shell-session
+.. code-block:: console
    :caption: Example aliases for different configuration files
    :name: docbuild-aliases
 

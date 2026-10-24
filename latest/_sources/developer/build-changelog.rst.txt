@@ -13,7 +13,7 @@ To build the changelog, make sure you have:
 #. If needed, :ref:`bump the version <bump-version>`.
 #. Build the changelog file from all news fragments:
 
-   .. code-block:: shell-session
+   .. code-block:: console
       :caption: Build a combined changelog from news fragments
 
       $ towncrier build [--yes]

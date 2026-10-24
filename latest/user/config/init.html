@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Starter Configuration &#8212; Docbuild Documentation 0.27.1.dev1+g16d612fae.d20261023</title>
+    <title>Creating Starter Configuration &#8212; Docbuild Documentation 0.27.1.dev2+g5ae879171.d20261024</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=a92bc9d4"></script>
+    <script src="../../_static/documentation_options.js?v=626a7a7c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=6f874712"></script>
+    <script src="../../_static/copybutton.js?v=48804fe2"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/config/init';</script>
     <script>
@@ -494,7 +494,7 @@
 <span id="config-init"></span><h1>Creating Starter Configuration<a class="headerlink" href="#creating-starter-configuration" title="Link to this heading">#</a></h1>
 <p>Run the following command to create application and environment configuration
 files from Docbuild’s built-in defaults:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init
 </pre></div>
 </div>
 <p>The command creates <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> and <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> in the user
@@ -504,13 +504,13 @@ Docbuild searches when loading configuration: typically
 and <code class="file docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/docbuild</span></code> on macOS.
 Missing directories are created automatically.</p>
 <p>To create only one file, use <code class="docutils literal notranslate"><span class="pre">--app</span></code> or <code class="docutils literal notranslate"><span class="pre">--env</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--app
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--app
 <span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--env
 </pre></div>
 </div>
 <p>Passing both flags is equivalent to passing neither. To preview the paths
 without creating directories or files, use the global <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> option:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--dry-run<span class="w"> </span>config<span class="w"> </span>init
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--dry-run<span class="w"> </span>config<span class="w"> </span>init
 </pre></div>
 </div>
 <p>Existing files, directories and symbolic links are never overwritten. If any
@@ -530,7 +530,7 @@ then check it with <a class="reference internal" href="validate.html#validate-co
 <h2>Choosing an Environment Role<a class="headerlink" href="#choosing-an-environment-role" title="Link to this heading">#</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">--role</span></code> to create an environment configuration for production (the
 default), staging or testing:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--env<span class="w"> </span>--role<span class="w"> </span>staging
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--env<span class="w"> </span>--role<span class="w"> </span>staging
 </pre></div>
 </div>
 <p>This creates <code class="file docutils literal notranslate"><span class="pre">env.staging.toml</span></code> with <code class="docutils literal notranslate"><span class="pre">general.role</span></code> set to <code class="docutils literal notranslate"><span class="pre">staging</span></code>.
