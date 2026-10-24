@@ -60,7 +60,7 @@ from ..context import DocBuildContext
     * docbuild build run "sles/@beta,supported/de-de"
       Same as the previous one, but with comma as the separator between
       the lifecycle states.
-    """  # noqa: D301,
+    """
 )
 @click.argument(
     "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
