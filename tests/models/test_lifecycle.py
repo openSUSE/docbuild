@@ -76,3 +76,23 @@ def test_contains_other_lifecycle_flag():
 
     # Should return True as `beta` is in `supported|beta`
     assert other_lifecycle in lifecycle
+
+
+def test_unpublished_lifecycle_is_valid():
+    flag = LifecycleFlag.from_str("unpublished")
+    assert flag is LifecycleFlag.unpublished
+    assert flag.value == 4
+
+
+def test_hidden_is_not_a_lifecycle():
+    with pytest.raises(ValueError, match="hidden"):
+        LifecycleFlag.from_str("hidden")
+
+
+def test_lifecycles_match_schema():
+    assert set(ALLOWED_LIFECYCLES) == {
+        "unpublished",
+        "beta",
+        "supported",
+        "unsupported",
+    }

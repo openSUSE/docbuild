@@ -39,7 +39,7 @@ from ..context import DocBuildContext
     * (Optional) ``LIFECYCLES`` marks a list of lifecycles separated by comma
       or pipe symbol.
       A lifecycle can be one of the values 'supported', 'unsupported', 'beta',
-      or 'hidden'.
+      or 'unpublished'.
     * 'LANGS' marks a list of languages separated by comma. Every single
       language contains a LANGUAGE-COUNTRY syntax, for example 'en-us', 'de-de' etc.
 

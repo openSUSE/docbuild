@@ -121,3 +121,27 @@ def test_portal_config_products(portal_tree: etree._ElementTree) -> None:
 
     assert len(prod["unsupported"]) == 1
     assert prod["unsupported"][0]["path"] == "/prod1/2.0/"
+
+
+def test_portal_config_products_excludes_unpublished() -> None:
+    """Unpublished docsets must not appear in the homepage product lists."""
+    xml = """
+    <portal>
+      <product xml:id="sles" rank="1">
+        <name>SLES</name>
+        <docset xml:id="sles-16.0" path="16.0" lifecycle="supported"><version>16.0</version></docset>
+        <docset xml:id="sles-16.1" path="16.1" lifecycle="beta"><version>16.1</version></docset>
+        <docset xml:id="sles-17.0" path="17.0" lifecycle="unpublished"><version>17.0</version></docset>
+        <docset xml:id="sles-15.0" path="15.0" lifecycle="unsupported"><version>15.0</version></docset>
+      </product>
+    </portal>
+    """
+    tree = etree.ElementTree(etree.fromstring(xml))
+    prod = next(iter(PortalConfig(source=tree).products))
+
+    supported_paths = [d["path"] for d in prod["supported"]]
+    unsupported_paths = [d["path"] for d in prod["unsupported"]]
+
+    assert supported_paths == ["/sles/16.0/", "/sles/16.1/"]
+    assert unsupported_paths == ["/sles/15.0/"]
+    assert "/sles/17.0/" not in supported_paths + unsupported_paths

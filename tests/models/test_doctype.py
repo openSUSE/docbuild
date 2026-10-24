@@ -478,3 +478,9 @@ def test_docset_xpath_segment_with_argument():
     dt = Doctype.from_str("sles/15-SP6/en-us")
     assert dt.docset_xpath_segment("16.0") == "docset[@path='16.0']"
     assert dt.docset_xpath_segment("*") == "docset"
+
+
+def test_doctype_accepts_unpublished_lifecycle():
+    dt = Doctype.from_str("sles/16.0@unpublished/en-us")
+    assert dt.lifecycle == LifecycleFlag.unpublished
+    assert "[@lifecycle='unpublished']" in dt.xpath()

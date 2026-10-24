@@ -19,8 +19,8 @@ class LifecycleFlag(Flag):
     beta = auto()
     """Beta lifecycle state."""
 
-    hidden = auto()
-    """Hidden lifecycle state."""
+    unpublished = auto()
+    """Unpublished lifecycle state: only shown on internal staging instances."""
 
     unsupported = auto()
     """Unsupported lifecycle state."""
@@ -40,7 +40,7 @@ class LifecycleFlag(Flag):
     def from_str(cls: type[Self], value: str) -> Self:
         """Convert a string to a LifecycleFlag object.
 
-        The string accepts the values 'supported', 'beta', 'hidden',
+        The string accepts the values 'supported', 'beta', 'unpublished',
         'unsupported', or a combination of them separated by a comma or pipe.
         Additionally, the class knows the values "unknown".
         An empty string, "", is equivalent to "unknown".

@@ -67,7 +67,7 @@ DEFAULT_LIFECYCLE: str = "supported"
 """The default lifecycle state for a docset."""
 
 ALLOWED_LIFECYCLES: tuple[str, ...] = tuple(str(lc.name) for lc in LifecycleFlag if lc.name)
-# ('supported', 'beta', 'hidden', 'unsupported')
+# ('supported', 'beta', 'unpublished', 'unsupported')
 """The available lifecycle states for a docset (without 'unknown')."""
 
 

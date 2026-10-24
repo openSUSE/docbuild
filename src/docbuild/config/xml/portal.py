@@ -151,9 +151,12 @@ class PortalConfig:
             supported: list[dict[str, str]] = []
             unsupported: list[dict[str, str]] = []
             for ds in prod.xpath("docset"):
+                lifecycle = ds.get("lifecycle", "supported")
+                if lifecycle == "unpublished":
+                    continue
                 target = (
                     supported
-                    if ds.get("lifecycle", "supported") in ("supported", "beta")
+                    if lifecycle in ("supported", "beta")
                     else unsupported
                 )
                 target.append(
