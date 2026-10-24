@@ -1,9 +1,9 @@
 .. _config-overwriting-cli:
 
-Setting Env Keys on the Command Line
-====================================
+Setting Config Keys on the Command Line
+=======================================
 
-To temporarily override environment configuration options directly from the command line use the ``-C`` or ``--set-env`` option. This avoids having to create or modify TOML files for quick adjustments.
+To temporarily override configuration options directly from the command line use the ``-C`` or ``--set-env`` option for environment configuration and the ``-A`` or ``--set-app`` option for application configuration. This avoids having to create or modify TOML files for quick adjustments.
 
 Use ``key=value`` syntax, and use dot notation for nested options:
 
@@ -11,11 +11,15 @@ Use ``key=value`` syntax, and use dot notation for nested options:
 
      $ docbuild -C "general.canonical_url_domain=https://doc.example.net" -C paths.root_config_dir=/etc/docbuild config list --env
 
-Options passed via ``-C`` or ``--set-env`` have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected environment configuration file.
+     $ docbuild -A max_workers=4 config list --app
+
+Options passed via ``-C`` or ``--set-env`` and via ``-A`` or ``--set-app`` have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected configuration files.
+
+Everything below applies to both options; the examples use ``-C``, replace it with ``-A`` to override application configuration instead.
 
 .. important::
 
-   Values passed via ``-C`` or ``--set-env`` are subject to the same validation rules as configuration files when validation runs. The ``config list`` command skips validation unless you pass ``--validate``.
+   Values passed via ``-C`` or ``--set-env`` and via ``-A`` or ``--set-app`` are subject to the same validation rules as configuration files when validation runs. The ``config list`` command skips validation unless you pass ``--validate``.
 
 
 Handling Keys with Dots

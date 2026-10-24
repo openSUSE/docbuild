@@ -126,7 +126,8 @@ def load_app_config(
     ctx: click.Context,
     app_config: Path,
     max_workers: str | None,
-    skip_validation: bool = False
+    skip_validation: bool = False,
+    app_overrides: tuple[str, ...] = (),
 ) -> None:
     """Load and validate Application configuration."""
     context = ctx.obj
@@ -146,6 +147,12 @@ def load_app_config(
 
     if max_workers is not None:
         raw_appconfig["max_workers"] = max_workers
+
+    # --- Merge CLI overrides ---
+    # Overwrites any values from config files with highest priority, like
+    # --set-env does for the environment config.
+    for override in app_overrides:
+        apply_override(raw_appconfig, override, param_hint="-A / --set-app")
 
     try:
         context.appconfig = AppConfig.from_dict(raw_appconfig)
@@ -231,13 +238,15 @@ def parse_key(key: str) -> list[str]:
     return parts
 
 
-def apply_override(config: dict[str, Any], override: str) -> None:
+def apply_override(
+    config: dict[str, Any], override: str, param_hint: str = "-C / --set-env"
+) -> None:
     """Parse and apply a single KEY=VALUE override to the configuration dictionary.
 
-    Processes a command-line override string (e.g., from ``--set-env``) and merges
-    it into the configuration dictionary. The key is parsed to support nested keys
-    with dots, and the value is automatically converted to its appropriate type
-    (boolean, integer, float, or string).
+    Processes a command-line override string (e.g., from ``--set-env`` or
+    ``--set-app``) and merges it into the configuration dictionary. The key is
+    parsed to support nested keys with dots, and the value is automatically
+    converted to its appropriate type (boolean, integer, float, or string).
 
     Type conversion behavior:
     - ``true``/``false`` (case-insensitive) → ``bool``
@@ -267,7 +276,7 @@ def apply_override(config: dict[str, Any], override: str) -> None:
     if "=" not in override:
         raise click.BadParameter(
             f"Invalid format for override: {override!r}. Use 'KEY=VALUE'.",
-            param_hint="-C / --set-env",
+            param_hint=param_hint,
         )
 
     key, value_str = override.split("=", 1)
@@ -443,6 +452,17 @@ class BannerGroup(click.Group):
         "xslt.html.'show.edit.link'=true are equivalent."
     ),
 )
+@click.option(
+    "-A",
+    "--set-app",
+    "app_overrides",
+    metavar="KEY=VALUE",
+    multiple=True,
+    help=(
+        "Override an application config value (e.g., 'max_workers=4'). "
+        "Uses the same KEY=VALUE syntax and key handling as --set-env."
+    ),
+)
 @click.pass_context
 def cli(
     ctx: click.Context,
@@ -453,6 +473,7 @@ def cli(
     env_config: Path,
     max_workers: str | None,
     env_overrides: tuple[str, ...],
+    app_overrides: tuple[str, ...],
     **kwargs: dict,
 ) -> None:
     """Acts as a main entry point for CLI tool.
@@ -466,6 +487,7 @@ def cli(
     :param app_config: Filename to the application TOML config file.
     :param env_config: Filename to a environment's TOML config file.
     :param env_overrides: A tuple of key-value strings to override env config.
+    :param app_overrides: A tuple of key-value strings to override app config.
     :param kwargs: Additional keyword arguments.
     """  # noqa: D301
     # Bootstrapping must also work without loading existing configuration.
@@ -500,7 +522,7 @@ def cli(
         # --- PHASE 1: Load Application Config ---
         current_model = AppConfig
         current_files = (app_config,) if app_config else None
-        load_app_config(ctx, app_config, max_workers, skip_validation)
+        load_app_config(ctx, app_config, max_workers, skip_validation, app_overrides)
         apply_theme_overrides(context)
 
         # --- PHASE 2: Load Environment Config ---
