@@ -156,7 +156,7 @@ async def rsync(
     Supports both local and remote paths. Remote paths use rsync syntax:
     SSH (``user@host:/path``), daemon (``host::module``), or URL (``rsync://host/path``).
 
-    When options are omitted, :class:`RsyncOptions` applies
+    When options are omitted, :class:`~docbuild.utils.sync.RsyncOptions` applies
     :data:`~docbuild.constants.DEFAULT_RSYNC_EXCLUDES` to every transfer,
     including remote-source pulls. Pass ``RsyncOptions(exclude=[])`` to
     transfer matching files too, or supply a replacement list explicitly.

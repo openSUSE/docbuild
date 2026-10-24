@@ -79,9 +79,7 @@ lists are not concatenated across configuration files. After merging,
 ``exclude_extra`` is appended to the selected ``exclude`` list.
 
 Use :command:`docbuild config list --env` to inspect the effective settings.
-In Python, passing ``RsyncOptions(exclude=[...])`` also replaces the defaults;
-passing ``RsyncOptions(exclude=[])`` disables them. The ENV ``exclude_extra``
-option combines the two lists before creating those options.
+The ENV ``exclude_extra`` option combines the two lists before creating those options.
 
 Patterns must not be empty or whitespace-only. Duplicate patterns within either
 list or across the two lists are rejected. Nonblank patterns are preserved
