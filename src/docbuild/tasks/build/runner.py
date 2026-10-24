@@ -1,6 +1,8 @@
 """Runner for the build task."""
 
 import asyncio
+from collections import defaultdict
+from collections.abc import Awaitable, Callable
 import logging
 import os
 from pathlib import Path
@@ -205,89 +207,175 @@ async def build_format(
         return False, str(e)
 
 
-async def process_deliverable_build(
+async def process_single_deliverable(
     deliverable: Deliverable,
-    repo_dir: Path,
-    tmp_repo_dir: Path,
+    worktree_dir: str,
     tmp_build_base_dir: Path,
     target_base_dir: Path,
     target_dir_dyn: str,
     daps_tmpls: dict[str, str],
-    build_llmstxt: bool = True,
-    llmstxt_dir: str = "docs",
+    build_llmstxt: bool,
+    llmstxt_dir: str,
 ) -> tuple[bool, Deliverable]:
-    """Process a single deliverable: checkout worktree, build formats, and sync."""
+    """Build and sync formats for a single deliverable using an existing worktree."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
+    cwd = Path(worktree_dir) / deliverable.subdir if deliverable.subdir else Path(worktree_dir)
 
-    # 1. Create temporary worktree (cleaned up automatically)
-    async with PersistentOnErrorTemporaryDirectory(
-        dir=tmp_repo_dir,
-        prefix=f"wt_{safe_id}_",
-    ) as worktree_dir:
-        mg = ManagedGitRepo(deliverable.git.url, repo_dir)
-        try:
-            await mg.create_worktree(worktree_dir, deliverable.branch)
-        except Exception as e:
-            log.error("Failed to create worktree for %s: %s", deliverable.full_id, e)
-            return False, deliverable
+    for fmt, is_enabled in deliverable.format.items():
+        if is_enabled:
+            # Fixed string formatting template (removed double braces)
+            tmpl = daps_tmpls.get(fmt, "daps -d {dcfile} --builddir {builddir} {format}")
 
-        cwd = Path(worktree_dir) / deliverable.subdir if deliverable.subdir else Path(worktree_dir)
+            deliverable_build_dir = Path(
+                tempfile.mkdtemp(
+                    dir=tmp_build_base_dir,
+                    prefix=f"build_{safe_id}_",
+                    suffix=f"_{fmt}",
+                )
+            )
 
-        # 2. Build all enabled formats (output persists in tmp_build_base_dir)
-        for fmt, is_enabled in deliverable.format.items():
-            if is_enabled:
-                tmpl = daps_tmpls.get(fmt, "daps -d {{dcfile}} --builddir {{builddir}} {{format}}")
+            fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
 
-                # Persist the output directory instead of auto-deleting it
-                deliverable_build_dir = Path(
-                    tempfile.mkdtemp(
-                        dir=tmp_build_base_dir,
-                        prefix=f"build_{safe_id}_",
-                        suffix=f"_{fmt}",
-                    )
+            if not fmt_success:
+                success = False
+            else:
+                # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
+                target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
+                    product=deliverable.xml.product_id,
+                    docset=deliverable.xml.docset_path,
+                    lang=deliverable.xml.lang,
                 )
 
-                fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
+                local_target = Path(target_base_dir) / target_suffix / fmt
+                local_target.mkdir(parents=True, exist_ok=True)
+                target_dest = local_target
 
-                if not fmt_success:
-                    success = False
-                else:
-                    # 3. Resolve placeholders for the target path
-                    target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
-                        product=deliverable.xml.product_id,
-                        docset=deliverable.xml.docset_path,
-                        lang=deliverable.xml.lang,
-                    )
+                log.debug("Syncing %s result to %s", fmt, target_dest)
 
-                    # Final destination includes the format (e.g. /target/sles/15/en-us/html)
-                    local_target = Path(target_base_dir) / target_suffix / fmt
-                    local_target.mkdir(parents=True, exist_ok=True)
-                    target_dest = local_target
-
-                    log.debug("Syncing %s result to %s", fmt, target_dest)
-
-                    try:
-                        # Sync contents of the build directory to the target destination
-                        sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
-                        if fmt == "html":
-                            await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
-                        if sync_result.returncode == 0:
-                            log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
-                        else:
-                            log.error(
-                                "Failed to sync %s for %s to %s:\n%s",
-                                fmt,
-                                deliverable.full_id,
-                                target_dest,
-                                sync_result.stderr,
-                            )
-                            success = False
-                    except Exception as e:
-                        log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
+                try:
+                    sync_result = await rsync(deliverable_build_dir, target_dest, content_only=True)
+                    if fmt == "html":
+                        await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
+                    if sync_result.returncode == 0:
+                        log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
+                    else:
+                        log.error(
+                            "Failed to sync %s for %s to %s:\n%s",
+                            fmt,
+                            deliverable.full_id,
+                            target_dest,
+                            sync_result.stderr,
+                        )
                         success = False
+                except Exception as e:
+                    log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
+                    success = False
 
     return success, deliverable
+
+
+async def _safe_process_one(
+    d: Deliverable,
+    wt_dir: str,
+    semaphore: asyncio.Semaphore,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+) -> tuple[bool, Deliverable]:
+    """Safely process a single deliverable using the provided function and semaphore."""
+    try:
+        async with semaphore:
+            return await process_single_func(d, wt_dir)
+    except (OSError, KeyError, ValueError) as exc:
+        log.error("Unexpected error for %s: %s", d.full_id, exc)
+        return False, d
+    except Exception as exc:
+        log.error("Fatal error for %s: %s", d.full_id, exc)
+        return False, d
+
+
+async def _process_group(
+    group_item: tuple[tuple[str, str], list[Deliverable]],
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    build_limit: int,
+    semaphore: asyncio.Semaphore,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+) -> list[Deliverable]:
+    """Process a single repository group within an isolated worktree."""
+    group_key, group_deliverables = group_item
+    repo_url, branch = group_key
+    safe_prefix = f"wt_{group_deliverables[0].make_safe_name(group_deliverables[0].full_id)}_grp{len(group_deliverables)}_"
+
+    async with PersistentOnErrorTemporaryDirectory(dir=tmp_repo_dir, prefix=safe_prefix) as wt_dir:
+        mg = ManagedGitRepo(repo_url, repo_dir)
+        try:
+            await mg.create_worktree(wt_dir, branch)
+        except Exception as e:
+            log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
+            return group_deliverables
+
+        # Replaced the lambda with a proper async wrapper for aiostream
+        async def process_mapped(d: Deliverable) -> tuple[bool, Deliverable]:
+            return await _safe_process_one(d, wt_dir, semaphore, process_single_func)
+
+        pipeline = stream.iterate(group_deliverables) | pipe.map(
+            process_mapped,
+            task_limit=build_limit,
+            ordered=True,
+        )
+
+        failed_in_group = []
+        try:
+            async with pipeline.stream() as streamer:
+                async for success, d in streamer:
+                    if not success:
+                        failed_in_group.append(d)
+        except Exception as e:
+            log.error("Group pipeline failed: %s", e)
+            failed_in_group.extend(group_deliverables)
+
+        return failed_in_group
+
+
+async def process_with_shared_worktrees(
+    deliverables: list[Deliverable],
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    max_workers: int,
+    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+) -> list[Deliverable]:
+    """Group deliverables by repo/branch and create a shared Git worktree per group.
+
+    Process them concurrently with a global semaphore to enforce max_workers.
+    This function is fully decoupled and can be easily reused by metadata or other tasks.
+    """
+    groups: dict[tuple[str, str], list[Deliverable]] = defaultdict(list)
+    for d in deliverables:
+        groups[(d.git.url, d.branch)].append(d)
+
+    group_limit = get_deliverable_worker_limit(max_workers, len(groups))
+    build_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
+    build_semaphore = asyncio.Semaphore(build_limit)
+
+    async def mapped_process_group(item: tuple[tuple[str, str], list[Deliverable]]) -> list[Deliverable]:
+        return await _process_group(
+            item, repo_dir, tmp_repo_dir, build_limit, build_semaphore, process_single_func
+        )
+
+    pipeline = stream.iterate(list(groups.items())) | pipe.map(
+        mapped_process_group, task_limit=group_limit, ordered=True
+    )
+
+    failed: list[Deliverable] = []
+    try:
+        async with pipeline.stream() as streamer:
+            async for group_failed in streamer:
+                failed.extend(group_failed)
+    except Exception as e:
+        log.error("Global pipeline failed: %s", e)
+        failed.extend(deliverables)
+
+    return failed
 
 
 async def process_doctype(
@@ -305,7 +393,7 @@ async def process_doctype(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
 ) -> list[Deliverable]:
-    """Process a doctype and build its deliverables using aiostream."""
+    """Process a doctype and build its deliverables using grouped aiostream pipelines."""
     deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
@@ -316,42 +404,21 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    worker_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
+    async def build_single(d: Deliverable, worktree_dir: str) -> tuple[bool, Deliverable]:
+        return await process_single_deliverable(
+            d,
+            worktree_dir,
+            tmp_build_base_dir,
+            target_base_dir,
+            target_dir_dyn,
+            daps_tmpls,
+            build_llmstxt,
+            llmstxt_dir,
+        )
 
-    async def build_wrapper(d: Deliverable, *args: object) -> tuple[bool, Deliverable]:
-        try:
-            return await asyncio.create_task(
-                process_deliverable_build(
-                    d,
-                    repo_dir,
-                    tmp_repo_dir,
-                    tmp_build_base_dir,
-                    target_base_dir,
-                    target_dir_dyn,
-                    daps_tmpls,
-                    build_llmstxt,
-                    llmstxt_dir,
-                ),
-                name=f"build:{d.full_id}",
-            )
-        except Exception as e:
-            log.error("Build task error for %s: %s", d.full_id, e)
-            return False, d
-
-    pipeline: Any = stream.iterate(deliverables) | pipe.map(
-        build_wrapper, task_limit=worker_limit, ordered=True  # type: ignore[arg-type]
+    return await process_with_shared_worktrees(
+        deliverables, repo_dir, tmp_repo_dir, max_workers, build_single
     )
-
-    failed: list[Deliverable] = []
-    try:
-        async with pipeline.stream() as streamer:
-            async for success, deliverable in streamer:
-                if not success:
-                    failed.append(deliverable)
-    except Exception as e:
-        log.error("Pipeline failed unexpectedly: %s", e)
-
-    return failed
 
 
 async def process(
