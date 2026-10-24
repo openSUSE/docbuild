@@ -1,0 +1,1 @@
+Improves documentation for the :class:`~docbuild.utils.pidlock.PidFileLock` class and related types in :file:`src/docbuild/utils/pidlock.py`.
