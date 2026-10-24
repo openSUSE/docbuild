@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from functools import cached_property
 
+from ...constants import DEFAULT_LANG
 from ..metadata import Metadata
 from .view import DeliverableXMLView
 
@@ -49,7 +50,7 @@ class DeliverablePaths:
             rootid = fallback_rootid
 
         # Suppress English
-        if self.xml.lang != "en-us":
+        if self.xml.lang != DEFAULT_LANG:
             path += f"{self.xml.lang}/"
 
         path += f"{self.xml.product_id}/{self.xml.docset_path}/{fmt}/{rootid}/"
@@ -74,7 +75,7 @@ class DeliverablePaths:
         if dcfile is None:
             raise ValueError("No DC filename found for PDF path generation")
         name = dcfile.lstrip("DC-")
-        if self.xml.lang != "en-us":
+        if self.xml.lang != DEFAULT_LANG:
             path += f"{self.xml.lang}/"
 
         path += f"{self.product_docset}/pdf/{name}{draft}_{self.xml.lang.pdf_tag}.pdf"

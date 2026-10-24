@@ -5,6 +5,7 @@ import logging
 
 from lxml import etree  # type: ignore
 
+from ...constants import DEFAULT_LANG
 from ...models.doctype import Doctype
 
 xpathlog = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ def list_all_deliverables(
 
     else:
         # Default fallback route with a flexible relative search path pattern
-        dt = Doctype.from_str("//en-us")
+        dt = Doctype.from_str(f"//{DEFAULT_LANG}")
         xpath = f"{dt.xpath(absolute=True)}/deliverable"
 
         xpathlog.debug("XPath: %r", xpath)

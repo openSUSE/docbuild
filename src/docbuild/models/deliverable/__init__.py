@@ -14,6 +14,7 @@ from typing import ClassVar, Literal
 
 from lxml import etree  # type: ignore[import]
 
+from ...constants import DEFAULT_LANG
 from ...utils.convert import convert2bool
 from ..metadata import Metadata
 from ..repo import Repo
@@ -30,9 +31,6 @@ class Deliverable:
     * DeliverablePaths owns path construction.
     * Deliverable owns orchestration and non-XML domain objects.
     """
-
-    # -- Class variables
-    _DEFAULT_LANGUAGE: ClassVar[str] = "en-us"
 
     # -- Instance variables
     _node: etree._Element = field(repr=False)
@@ -91,7 +89,7 @@ class Deliverable:
     def lang_is_default(self) -> bool:
         """Return ``True`` when the language node is marked as default."""
         content: str = self._node.getparent().attrib.get("lang", "")
-        return content == type(self)._DEFAULT_LANGUAGE
+        return content == DEFAULT_LANG
 
     @cached_property
     def branch(self) -> str:
