@@ -1,6 +1,7 @@
 """Tests for the main CLI entry point and configuration loading flow."""
 
 from pathlib import Path
+import tomllib
 from unittest.mock import Mock, patch
 
 import click
@@ -9,6 +10,7 @@ import pytest
 
 import docbuild.cli.cmd_cli as cli_mod
 from docbuild.cli.context import DocBuildContext
+from docbuild.constants import DOCBUILD_BANNER
 from docbuild.models.config.app import AppConfig
 from docbuild.models.config.env import EnvConfig
 from docbuild.utils.pidlock import LockAcquisitionError
@@ -60,8 +62,9 @@ def mock_config_models(monkeypatch):
     mock_app_instance.logging = mock_logging_attribute
 
     mock_env_dump = Mock(return_value={"env_data": "from_mock_dump"})
-    mock_env_instance = Mock(spec=EnvConfig)
+    mock_env_instance = Mock()
     mock_env_instance.model_dump.return_value = mock_env_dump
+    mock_env_instance.paths.tmp.log_dir = Path("/tmp")
 
     # Mock the static methods that perform validation
     mock_app_from_dict = Mock(return_value=mock_app_instance)
@@ -87,8 +90,16 @@ def test_cli_no_subcommand_shows_help(runner):
     """
     result = runner.invoke(cli)
     assert result.exit_code == 0
-    assert "Main CLI tool for document operations" in result.output
-    assert "----------" in result.output
+    assert cli.help in result.output
+    assert DOCBUILD_BANNER in result.output
+
+
+def test_cli_banner_not_on_version(runner):
+    """Test that the banner is NOT displayed when just checking the version."""
+    result = runner.invoke(cli, ["--version"])
+
+    assert result.exit_code == 0
+    assert DOCBUILD_BANNER not in result.output
 
 
 def test_cli_defaults(
@@ -175,6 +186,54 @@ def test_cli_config_validation_failure(
     assert result.exit_code == 1
     assert "Validation error" in result.output
     assert "server.port" in result.output
+    assert "'test.toml'" in result.output
+
+
+@pytest.mark.parametrize("is_app_config_failure", [True, False])
+def test_cli_config_validation_failure_from_defaults(
+    runner,
+    fake_handle_config,
+    mock_config_models,
+    is_app_config_failure,
+):
+    """Verify that CLI validation errors with no config file report 'defaults' instead of 'unknown'."""
+    mock_validation_error = ValidationError.from_exception_data(
+        "TestModel",
+        [{"type": "int_parsing", "loc": ("server", "port"), "input": "x"}]
+    )
+
+    if is_app_config_failure:
+        mock_config_models["app_from_dict"].side_effect = mock_validation_error
+    else:
+        mock_config_models["env_from_dict"].side_effect = mock_validation_error
+
+    fake_handle_config(lambda *a, **k: (None, {"x": 1}, True))
+
+    result = runner.invoke(cli, ["capture"])
+    assert result.exit_code == 1
+    assert "Validation error" in result.output
+    assert "'defaults'" in result.output
+    assert "'unknown'" not in result.output
+
+
+def test_cli_config_list_validate_invalid_override_reports_defaults(
+    runner, tmp_path, monkeypatch
+):
+    """Test issue #435: 'config list --validate' with invalid override reports 'defaults'."""
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(
+        cli,
+        [
+            "-C",
+            "configx.canonical_url_domain=https://doc.example.net",
+            "config",
+            "list",
+            "--validate",
+        ],
+    )
+    assert result.exit_code == 1
+    assert "Validation error in config file 'defaults':" in result.output
+    assert "'unknown'" not in result.output
 
 
 @pytest.mark.parametrize("model_target", ["AppConfig", "EnvConfig"])
@@ -267,3 +326,82 @@ def test_cli_verbose_and_debug(
     assert result.exit_code == 0
     assert context.verbose == 3
     assert context.debug is True
+
+
+@pytest.mark.parametrize("is_app_config_failure", [True, False])
+def test_cli_toml_syntax_error(
+    runner,
+    fake_handle_config,
+    mock_config_models,
+    is_app_config_failure,
+):
+    """Verify that the CLI handles TOML syntax errors gracefully."""
+
+    def resolver_with_syntax_error(user_path, *args, **kwargs):
+        # If we are testing Env failure, let the App config pass first
+        if not is_app_config_failure and "default_app" in str(user_path):
+             return (Path("app.toml"),), {"logging": {"version": 1}}, False
+
+        raise tomllib.TOMLDecodeError("Invalid value", "test.toml", 0)
+
+    fake_handle_config(resolver_with_syntax_error)
+
+    result = runner.invoke(cli, ["capture"])
+
+    assert result.exit_code == 1
+    assert "Syntax error in config file" in result.output
+    assert "Invalid value" in result.output
+    assert "Booleans must be lowercase" in result.output
+    assert "Traceback (most recent call last)" not in result.output
+
+
+def test_load_config_helpers_populate_context(fake_handle_config, mock_config_models):
+    """Verify that the refactored helper functions correctly update the context object."""
+    from docbuild.cli.cmd_cli import load_app_config, load_env_config
+
+    # Setup mock resolver
+    fake_handle_config(lambda *a, **k: ((Path("test.toml"),), {"key": "val"}, False))
+
+    mock_ctx = Mock()
+    mock_ctx.obj = DocBuildContext()
+
+    # Test App Loader
+    load_app_config(mock_ctx, Path("app.toml"), max_workers="5")
+    assert mock_ctx.obj.appconfig is not None
+
+    # Test Env Loader
+    load_env_config(mock_ctx, Path("env.toml"), env_overrides=())
+    assert mock_ctx.obj.envconfig is not None
+
+
+def test_load_env_config_applies_cli_overrides(fake_handle_config, mock_config_models):
+    """Verify that --set-env / -C overrides are properly parsed into raw_envconfig."""
+    from docbuild.cli.cmd_cli import load_env_config
+
+    # Setup mock resolver to return a basic dictionary
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"server": {"host": "localhost"}}, False))
+
+    mock_ctx = Mock()
+    mock_ctx.obj = DocBuildContext()
+
+    # 1. Test successful override
+    overrides = ("server.host=192.168.1.1", "paths.tmp.log_dir=/custom/log")
+    load_env_config(mock_ctx, Path("env.toml"), env_overrides=overrides)
+
+    raw = mock_ctx.obj.raw_envconfig
+    assert raw["server"]["host"] == "192.168.1.1"
+    assert raw["paths"]["tmp"]["log_dir"] == "/custom/log"
+
+    # 2. Test invalid syntax raises BadParameter
+    with pytest.raises(click.BadParameter, match="Invalid format for override"):
+        load_env_config(mock_ctx, Path("env.toml"), env_overrides=("invalid_override_without_equals",))
+
+
+def test_load_env_config_missing_equals_sign_fails(runner, context, fake_handle_config, mock_config_models):
+    """Verify that providing an override without an '=' sign raises an error on the CLI."""
+    fake_handle_config(lambda *a, **k: ((Path("env.toml"),), {"server": {"host": "localhost"}}, False))
+
+    result = runner.invoke(cli, ["-C", "server.host", "config", "list"], obj=context)
+
+    assert result.exit_code != 0
+    assert "Invalid format for override" in result.output or "server.host" in result.output

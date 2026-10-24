@@ -10,20 +10,71 @@ Additionally, it uses GitHub Actions for different tasks like building the docum
 GitHub Actions
 --------------
 
-* Testing (:file:`.github/workflows/ci.yml`):
-  Runs the test suite on every push and pull request to the main branch.
-  It uses the `pytest` framework to execute tests.
+This project uses GitHub Actions extensively. Currently we have
+the following Actions:
 
-* Documentation (:file:`.github/workflows/gh-pages.yml`):
-  Builds the documentation and deploys it to the `gh-pages` branch.
-  This is triggered on every push to the main branch and on pull requests that target the main. Furthermore it is only triggered if the workflow file itself is changed or anything inside the `docs/` directory.
-  The documentation is available at |gh_repo|.
+* :file:`.github/workflows/ci.yml` (CI/Test)
 
-* Release (:file:`.github/workflows/release.yml`):
-  Create a new release when a tag is pushed to the repository.
-  It is triggered by a tag in the format `MAJOR.MINOR.PATCH`, e.g. `1.0.0`.
-  Currently, it creates a release on GitHub where the description is automatically generated from pull requests and issues that are closed in the release.
-  The releases are available at |gh_release|.
+  Runs the automated test suite and verifies code stability across supported Python environments to ensure every change is functional.
+
+* :file:`.github/workflows/codeql-analysis.yml` (CodeQL)
+
+  Performs automated security scanning to identify vulnerabilities and maintain high code quality standards.
+
+* :file:`.github/workflows/gh-pages.yml` (Documentation)
+
+  Builds the Sphinx documentation and deploys it to the gh-pages branch, managing multi-version support and the version switcher.
+
+* :file:`.github/workflows/release.yml` (Release)
+
+  Creates official GitHub Releases, tags the repository, and uploads built assets like wheels when a release branch is merged.
+
+* :file:`".github/workflows/ruff.yml` (Ruff/Linting)
+
+  Enforces consistent coding styles and identifies potential errors through fast linting and formatting checks.
+
+* :file:`.github/dependabot.yml` (Dependabot)
+
+  Automatically checks for and updates dependencies to keep the project secure and up-to-date.
+
+The following diagram illustrates the interrelations between the release workflow and the documentation deployment workflow:
+
+.. mermaid::
+
+   sequenceDiagram
+      participant D as Developer
+      participant M as main branch
+      participant R as release.yml
+      participant G as gh-pages.yml
+
+      D->>M: Merge release/0.19.2
+      M->>R: Trigger Workflow
+      R->>R: Validate & Build
+      R->>M: Push Tag (using PAT)
+      M->>G: Trigger on Tag
+      G->>G: Build Sphinx Docs
+      G->>GitHub Pages: Deploy to /v0.19.2/
+
+
+Issue Templates
+---------------
+
+The repository includes issue templates to guide contributors.
+These templates assist in providing necessary information when reporting bugs or suggesting features. They help maintain a structured and efficient issue tracking process.
+
+You can find them in the :file:`.github/ISSUE_TEMPLATE` directory of the repository. Currently we distinguish between the following types:
+
+* Bug Report (:file:`bug_report.yml`)
+
+  For reporting bugs or unexpected behavior in the project.
+
+* Feature Request (:file:`feature-request.yml`)
+
+  For suggesting new features or improvements to the project.
+
+* Documentation Issue (:file:`docs-update.yml`)
+
+  For reporting issues related to the documentation, such as errors, omissions, or suggestions for improvement.
 
 
 Rulesets

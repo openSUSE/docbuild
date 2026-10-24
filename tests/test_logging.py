@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from logging.handlers import MemoryHandler
 import threading
@@ -8,12 +9,11 @@ import pytest
 from docbuild.constants import APP_NAME
 from docbuild.logging import (
     _LOGGING_STATE,
-    _resolve_class,
-    _shutdown_logging,
     build_handlers_from_config,
-    create_base_log_dir,
     register_background_thread,
+    resolve_class,
     setup_logging,
+    shutdown_logging,
 )
 
 
@@ -24,7 +24,7 @@ def clean_logging_state():
     Prevents QueueListener and other handlers from persisting.
     """
     yield
-    _shutdown_logging()
+    shutdown_logging()
     logging.shutdown()
 
 
@@ -47,10 +47,10 @@ def _get_logged_messages(memory_handler):
     return [record.getMessage() for record in memory_handler.buffer]
 
 
-def test_console_verbosity_levels(logger, memory_handler):
+def test_console_verbosity_levels(logger, memory_handler, tmp_path):
     """Test that console logging respects verbosity levels."""
     # Setup logging with verbosity 0 (console WARNING)
-    setup_logging(cliverbosity=0)
+    setup_logging(cliverbosity=0, log_dir=tmp_path)
 
     # Replace existing StreamHandlers with MemoryHandler
     for h in logger.handlers[:]:
@@ -73,9 +73,9 @@ def test_console_verbosity_levels(logger, memory_handler):
     logger.removeHandler(memory_handler)
 
 
-def test_file_logs_all_levels(logger, memory_handler):
+def test_file_logs_all_levels(logger, memory_handler, tmp_path):
     """Test that file logging captures all levels regardless of console verbosity."""
-    setup_logging(cliverbosity=0)
+    setup_logging(cliverbosity=0, log_dir=tmp_path)
 
     # Replace StreamHandlers with MemoryHandler
     for h in logger.handlers[:]:
@@ -97,7 +97,7 @@ def test_file_logs_all_levels(logger, memory_handler):
     logger.removeHandler(memory_handler)
 
 
-def test_setup_with_user_config(logger):
+def test_setup_with_user_config(logger, tmp_path):
     """Test that user-provided logging configuration is correctly applied."""
     user_config = {
         "logging": {
@@ -107,7 +107,7 @@ def test_setup_with_user_config(logger):
     }
 
     # Apply user logging setup
-    setup_logging(cliverbosity=2, user_config=user_config)
+    setup_logging(cliverbosity=2, log_dir=tmp_path, user_config=user_config)
 
     # Attach MemoryHandler to capture logs
     memory_handler = MemoryHandler(capacity=10 * 1024, target=None)
@@ -128,18 +128,9 @@ def test_setup_with_user_config(logger):
     assert "A warning." not in msgs
 
 
-def test_create_base_log_dir(tmp_path, monkeypatch):
-    """Test that the base log directory is created correctly."""
-    base = tmp_path / "state"
-    # ensure function uses provided base when env var absent
-    monkeypatch.delenv("XDG_STATE_HOME", raising=False)
-    p = create_base_log_dir(base)
-    assert p.exists() and p.is_dir()
-
-
 def test_resolve_class_stdlib():
-    """Test that _resolve_class correctly imports a standard library class."""
-    cls = _resolve_class("logging.Formatter")
+    """Test that resolve_class correctly imports a standard library class."""
+    cls = resolve_class("logging.Formatter")
     assert cls is logging.Formatter
 
 
@@ -149,9 +140,9 @@ def test_setup_logging_creates_logfile_and_listener(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path))
 
     # Make sure any prior state is cleaned
-    _shutdown_logging()
+    shutdown_logging()
 
-    setup_logging(2, None)
+    setup_logging(2, tmp_path)
 
     listener = _LOGGING_STATE["listener"].get()
     handlers = _LOGGING_STATE["handlers"].get()
@@ -166,7 +157,7 @@ def test_setup_logging_creates_logfile_and_listener(tmp_path, monkeypatch):
     assert files, "log file not created"
 
     # cleanup
-    _shutdown_logging()
+    shutdown_logging()
 
 
 def test_setup_logging_bad_formatter(monkeypatch, tmp_path):
@@ -181,10 +172,10 @@ def test_setup_logging_bad_formatter(monkeypatch, tmp_path):
         }
     }
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path))
-    _shutdown_logging()
+    shutdown_logging()
     with pytest.raises(Exception):  # noqa: B017
-        setup_logging(1, user_config)
-    _shutdown_logging()
+        setup_logging(1, tmp_path, user_config=user_config)
+    shutdown_logging()
 
 
 def test_safe_emit_swallows_valueerror(monkeypatch):
@@ -213,7 +204,7 @@ def test_safe_emit_swallows_valueerror(monkeypatch):
 
 
 def test_shutdown_joins_background_threads():
-    """Test that _shutdown_logging joins background threads."""
+    """Test that shutdown_logging joins background threads."""
 
     # Create a short-lived background thread and register it
     def worker():
@@ -224,7 +215,7 @@ def test_shutdown_joins_background_threads():
     register_background_thread(t)
 
     # Call shutdown; this should join the thread without raising
-    _shutdown_logging()
+    shutdown_logging()
     assert not t.is_alive()
 
 
@@ -244,7 +235,7 @@ def test_shutdown_skips_not_alive_threads():
 
     # Register the finished thread directly in the contextvar and run shutdown
     _LOGGING_STATE["background_threads"].set([t])
-    _shutdown_logging()
+    shutdown_logging()
 
 
 def test_register_background_thread_initializes_none():
@@ -261,6 +252,26 @@ def test_register_background_thread_initializes_none():
     threads = _LOGGING_STATE["background_threads"].get()
     assert isinstance(threads, list)
     assert threads and threads[-1] is t
+
+
+async def test_log_record_includes_asyncio_task_name(memory_handler):
+    """Log records emitted in an asyncio task expose the task name."""
+    logger = logging.getLogger("docbuild.test.logging")
+    logger.handlers.clear()
+    logger.propagate = False
+    logger.setLevel(logging.INFO)
+    logger.addHandler(memory_handler)
+
+    async def emit_log() -> None:
+        logger.info("inside task")
+
+    task = asyncio.create_task(emit_log(), name="metadata-worker-1")
+    await task
+
+    assert memory_handler.buffer
+    assert memory_handler.buffer[-1].taskName == "metadata-worker-1"
+
+    logger.removeHandler(memory_handler)
 
 
 def test_formatter_kwargs_applied():

@@ -1,0 +1,16 @@
+# Pyrefly configuration for docbuild
+# See https://pyrefly.org/en/docs/configuration/
+
+# Files to type check. Tests are intentionally excluded; they are exempt from
+# annotation rules (see the per-file-ignores in .ruff.toml).
+project-includes = ["src"]
+
+# Keep this in sync with "requires-python" in pyproject.toml: type check
+# against the oldest supported Python so newer-only stdlib APIs are flagged.
+python-version = "3.12"
+
+# Align with .ruff.toml, which already excludes "contrib".
+project-excludes = ["contrib"]
+
+# Respect .gitignore-based excludes (default, but explicit here for clarity).
+use-ignore-files = true

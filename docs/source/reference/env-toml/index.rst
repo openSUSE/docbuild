@@ -1,3 +1,5 @@
+.. _ref-env-toml:
+
 Env TOML Configuration
 ======================
 

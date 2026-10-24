@@ -1,0 +1,127 @@
+"""Shared fixtures for deliverable model tests."""
+
+from collections.abc import Callable
+from pathlib import Path
+
+from lxml import etree
+import pytest
+
+from docbuild.models.deliverable import Deliverable
+from docbuild.models.metadata import Metadata
+
+#
+DATADIR = Path(__file__).resolve().parent / "data"
+
+
+def _parse_xml(xml_file: str) -> etree._ElementTree:
+    parser = etree.XMLParser(remove_blank_text=True)
+    root = etree.fromstring((DATADIR / xml_file).read_bytes(), parser=parser)
+    return root.getroottree()
+
+
+def _first_deliverable_node(node: etree._ElementTree, *, lang: str) -> etree._Element:
+    result = node.xpath(
+        f"//locale[@lang={lang!r}]/deliverable"
+    )
+    assert result
+    return result[0]
+
+
+@pytest.fixture
+def node() -> etree._ElementTree:
+    """Return a minimal XML tree for common deliverable tests."""
+    return _parse_xml("minimal_dc.xml")
+
+
+@pytest.fixture
+def root_categories_node() -> etree._ElementTree:
+    """Return an XML tree with product and root-level categories."""
+    return _parse_xml("root_categories.xml")
+
+
+@pytest.fixture
+def ref_node() -> etree._ElementTree:
+    """Return an XML tree with a translated reference deliverable."""
+    return _parse_xml("ref_locale.xml")
+
+
+@pytest.fixture
+def ref_node_with_subdir() -> etree._ElementTree:
+    """Return an XML tree with a translated reference deliverable with a subdir."""
+    return _parse_xml("ref_locale_with_subdir.xml")
+
+@pytest.fixture
+def prebuilt_node() -> etree._ElementTree:
+    """Return an XML tree with one prebuilt deliverable."""
+    return _parse_xml("prebuilt.xml")
+
+
+@pytest.fixture
+def first_deliverable(node: etree._ElementTree) -> Deliverable:
+    """Return the first English deliverable model."""
+    return Deliverable(_first_deliverable_node(node, lang="en-us"))
+
+
+@pytest.fixture
+def first_de_deliverable(node: etree._ElementTree) -> Deliverable:
+    """Return the first German deliverable model."""
+    return Deliverable(_first_deliverable_node(node, lang="de-de"))
+
+
+@pytest.fixture
+def first_ref_deliverable(ref_node: etree._ElementTree) -> Deliverable:
+    """Return the first German reference deliverable model."""
+    return Deliverable(_first_deliverable_node(ref_node, lang="de-de"))
+
+
+@pytest.fixture
+def first_ref_deliverable_with_subdir(
+    ref_node_with_subdir: etree._ElementTree,
+) -> Deliverable:
+    """Return the first German reference deliverable model with a subdir."""
+    return Deliverable(_first_deliverable_node(ref_node_with_subdir, lang="de-de"))
+
+@pytest.fixture
+def first_prebuilt_deliverable(prebuilt_node: etree._ElementTree) -> Deliverable:
+    """Return the first English prebuilt deliverable model."""
+    return Deliverable(_first_deliverable_node(prebuilt_node, lang="en-us"))
+
+
+@pytest.fixture
+def first_deliverable_from_lang() -> Callable[[etree._ElementTree, str], Deliverable]:
+    """Return a helper to build a first deliverable model for a language."""
+
+    def _factory(xml_node: etree._ElementTree, lang: str) -> Deliverable:
+        return Deliverable(_first_deliverable_node(xml_node, lang=lang))
+
+    return _factory
+
+
+@pytest.fixture
+def meta_without_rootid() -> Metadata:
+    """Return a predefined Metadata instance missing a rootid."""
+    return Metadata(rootid=None)
+
+
+@pytest.fixture
+def deliverable_from_xml_factory() -> Callable[[str, str], Deliverable]:
+    """Return a factory to build a deliverable from an XML string and language."""
+
+    def _factory(xml_string: str, lang: str) -> Deliverable:
+        xml_template = f'''
+        <portal>
+          <product xml:id="sles">
+            <docset xml:id="sles.15-sp6" path="15-SP6">
+              <resources>
+                 <locale lang="{lang}">
+                    {xml_string}
+                 </locale>
+              </resources>
+            </docset>
+          </product>
+        </portal>
+        '''
+        root = etree.fromstring(xml_template)
+        return Deliverable(root.find(".//deliverable"))
+
+    return _factory

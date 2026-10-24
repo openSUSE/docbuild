@@ -1,16 +1,27 @@
-User Guide
-==========
+:octicon:`person` User Guide
+============================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: Concepts
+
+   concepts/doctypes
+   concepts/config-concepts
+   concepts/config-files
+   concepts/naming-conventions
+   concepts/placeholders
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tasks
 
    install
-   config
+   shell-completion
+   check-env
    run-docbuild
    config/index
-   build
-   validate
+   portal-config/index
    clone
-   metadata
-   check-env
+   create-metadata
+   build
+   create-llms

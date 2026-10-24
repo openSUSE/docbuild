@@ -2,26 +2,31 @@
 
 import asyncio
 import math
+from pathlib import Path
 
 import click
-from rich.console import Console
 
 from ...models.doctype import Doctype
+from ...tasks.metadata.runner import process
 from ...utils.contextmgr import make_timer
 from ..callback import validate_doctypes
+from ..completion import complete_doctypes
+from ..console import console as stdout, console_err
 from ..context import DocBuildContext
-from .metaprocess import process
-
-# Set up rich consoles for output
-stdout = Console()
-console_err = Console(stderr=True, style="red")
 
 
-@click.command(help=__doc__)
+@click.group(help=__doc__)
+def metadata() -> None:
+    """Subcommands for managing and extracting metadata."""
+    pass
+
+
+@metadata.command(name="run")
 @click.argument(
     "doctypes",
     nargs=-1,
     callback=validate_doctypes,
+    shell_complete=complete_doctypes,
 )
 @click.option(
     "-E",
@@ -40,35 +45,108 @@ console_err = Console(stderr=True, style="red")
     help="Skip updating git repositories before processing.",
 )
 @click.pass_context
-def metadata(
+def run_cmd(
     ctx: click.Context,
     doctypes: tuple[Doctype],
     exitfirst: bool,
     skip_repo_update: bool,
 ) -> None:
-    """Subcommand to create metadata files.
+    """Extract metadata from deliverables.
+
+    \f
 
     :param ctx: The Click context object.
-    """
+    :param doctypes: Target doctypes to extract metadata for.
+    :param exitfirst: Whether to exit on the first failed deliverable.
+    :param skip_repo_update: Whether to skip repository updates.
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
+
+    if not context.envconfig:
+        console_err.print("[error]Environment configuration is missing.[/]")
+        ctx.exit(1)
+
     timer = make_timer("metadata")
     result = 1  # Default exit code for interruption or error
 
-    # The timer data object 't' will be populated by the context manager.
-    # We define it here so it's accessible in the 'finally' block.
+    # Unpack paths for the decoupled task
+    env = context.envconfig
+    main_portal_config = env.paths.main_portal_config
+    tmp_metadata_dir = env.paths.tmp.tmp_metadata_dir
+    repo_dir = env.paths.repo_dir
+    tmp_repo_dir = env.paths.tmp_repo_dir
+    meta_cache_dir = env.paths.meta_cache_dir
+    json_cache_dir = env.paths.json_cache_dir
+    dapsmetatmpl = str(env.build.daps.meta)
+    daps_list_srcfiles_tmpl = str(env.build.daps.list_srcfiles)
+
+    # Unpack max_workers for the new concurrency semaphore
+    max_workers = context.appconfig.max_workers if context.appconfig else 1
+
+    stdout.print(f"Config path: {env.paths.config_dir}")
+
     t = None
     try:
         with timer() as t:
-            result = asyncio.run(
-                process(
-                    context,
-                    doctypes,
-                    exitfirst=exitfirst,
-                    skip_repo_update=skip_repo_update,
+
+            async def main() -> int:
+                # Name the top-level task for this command
+                return await asyncio.create_task(
+                    process(
+                        main_portal_config=main_portal_config,
+                        tmp_metadata_dir=tmp_metadata_dir,
+                        repo_dir=repo_dir,
+                        tmp_repo_dir=tmp_repo_dir,
+                        meta_cache_dir=meta_cache_dir,
+                        json_cache_dir=json_cache_dir,
+                        prebuilt_dir=env.paths.prebuilt_dir,
+                        dapsmetatmpl=dapsmetatmpl,
+                        daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+                        max_workers=max_workers,
+                        doctypes=list(doctypes),
+                        exitfirst=exitfirst,
+                        skip_repo_update=skip_repo_update,
+                    ),
+                    name="metadata",
                 )
-            )
+
+            result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
             stdout.print(f"Elapsed time {t.elapsed:0.2f}s")
 
     ctx.exit(result)
+
+
+@metadata.command(name="dir")
+@click.option(
+    "--meta",
+    is_flag=True,
+    help="Display the meta_cache_dir instead of the json_cache_dir.",
+)
+@click.option(
+    "--json",
+    "json_flag",
+    is_flag=True,
+    help="Display the json_cache_dir (default).",
+)
+@click.pass_context
+def dir_cmd(ctx: click.Context, meta: bool, json_flag: bool) -> None:
+    """Display the directory where metadata is stored.
+
+    \f
+
+    :param ctx: The Click context object.
+    """  # noqa: D301
+    context: DocBuildContext = ctx.obj
+
+    if not context.envconfig:
+        console_err.print("[error]Environment configuration is missing.[/]")
+        ctx.exit(1)
+
+    if meta and not json_flag:
+        path = context.envconfig.paths.meta_cache_dir
+    else:
+        path = context.envconfig.paths.json_cache_dir
+
+    stdout.print(str(path))

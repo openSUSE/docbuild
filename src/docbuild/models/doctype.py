@@ -1,9 +1,12 @@
 """Module for defining the Doctype model."""
 
+from collections.abc import Iterator
+from itertools import product
 import re
 from re import Pattern
-from typing import ClassVar, Self
+from typing import ClassVar, Self, cast
 
+from lxml import etree  # type: ignore
 from pydantic import BaseModel, Field, field_validator
 
 from .language import LanguageCode
@@ -19,35 +22,32 @@ class Doctype(BaseModel):
 
     .. code-block:: text
 
-       [/]?[PRODUCT]/[DOCSETS][@LIFECYCLES]/LANGS
+       [/]?[PRODUCT]/[DOCSET...][@LIFECYCLES...]/[LANGS...]
 
     The placeholders mean the following:
 
     * ``PRODUCT``: a lowercase acronym of a SUSE product, e.g. ``sles``
     * ``DOCSETS``: one or more docsets of the mentioned product, separated by comma
-    * ``LIFECYCLES``: one or more lifecycles, separated by comma or pipe
-    * ``LANGS``: one or more languages, separated by comma
+    * ``LIFECYCLES``: zero or more lifecycles, separated by comma or pipe.
+      Default to ``unknown`` if omitted.
+    * ``LANGS``: zero or more languages, separated by comma.
+      Default to English (``en-us``) if omitted.
+
+    :raises pydantic_core.ValidationError: if the input values are invalid.
 
     >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
     >>> doctype.product
     <Product.sles: 'sles'>
+    <Product.sles: 'SUSE Linux Enterprise Server'>
     >>> doctype.docset
     ['15-SP6']
     >>> doctype.lifecycle.name
     'supported'
     >>> doctype.langs
     [LanguageCode(language='de-de'), LanguageCode(language='en-us')]
+
+    See also: :ref:`build-deliverables`
     """
-
-    # __init__.__doc__ = """Create a new Doctype instance.
-
-    # :param product: A SUSE product, e.g. 'sles', 'smart'.
-    # :param docset: A specific release or version of a product.
-    # :param lifecycle: The state of the Doctype, e.g. 'supported', 'beta'.
-    # :param langs: A natural language, e.g. 'en-us', 'de-de'.
-
-    # :raises pydantic_core.ValidationError: if the input values are invalid.
-    # """   # type: ignore
 
     product: Product = Field(
         title="A SUSE product",
@@ -69,6 +69,7 @@ class Doctype(BaseModel):
 
     lifecycle: LifecycleFlag = Field(
         title="The state of the Doctype",
+        default=LifecycleFlag.unknown,
         description=(
             "One or more lifecycle states that indicate the "
             "support or development. "
@@ -80,8 +81,10 @@ class Doctype(BaseModel):
 
     langs: list[LanguageCode] = Field(
         title="A natural language",
+        default=[LanguageCode(language="en-us")],
         description=(
             "The natural language containing language and country. "
+            "Values can be combined using commas. "
             "After validation, langs are sorted"
         ),
         examples=["en-us", "de-de"],
@@ -92,11 +95,11 @@ class Doctype(BaseModel):
     # The regex contains non-capturing groups on purpose
     # This leads to None in the result if that group isn't matched
     _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
-        r"^"  # start
-        r"(?:/?([^/@]+|\*))?"  # optional product (group 1)
-        r"/(?:([^/@]+|\*))?"  # optional docset (group 2)
-        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"  # optional lifecycle (group 3)
-        r"/(\*|[\w-]+(?:,[\w-]+)*)$",  # required langs (group 4)
+        r"^"                                 # start
+        r"(?:/?([^/@]+|\*))?"                # optional product (group 1)
+        r"/(?:([^/@]+|\*))?"                 # optional docset (group 2)
+        r"(?:@([a-z]+(?:[,|][a-z]+)*))?"     # optional lifecycle (group 3)
+        r"(?:/(\*|[\w-]+(?:,[\w-]+)*)?)?$",  # optional langs (group 4)
     )
 
     # dunder methods
@@ -129,14 +132,14 @@ class Doctype(BaseModel):
         """Implement str(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
-        return f"{self.product.value}/{docset_str}@{self.lifecycle.name}/{langs_str}"
+        return f"{self.product.acronym}/{docset_str}@{self.lifecycle.name}/{langs_str}"
 
     def __repr__(self: Self) -> str:
         """Implement repr(self)."""
         langs_str = ",".join(lang.language for lang in self.langs)
         docset_str = ",".join(self.docset)
         return (
-            f"{self.__class__.__name__}(product={self.product.value!r}, "
+            f"{self.__class__.__name__}(product={self.product.acronym!r}, "
             f"docset=[{docset_str}], "
             f"lifecycle={self.lifecycle.name!r}, "
             f"langs=[{langs_str}]"
@@ -153,7 +156,7 @@ class Doctype(BaseModel):
 
         return all(
             [
-                self.product == other.product or self.product == Product.ALL,
+                self.product == other.product or self.product is Product.ALL,
                 set(other.docset).issubset(self.docset) or "*" in self.docset,
                 other.lifecycle in self.lifecycle,
                 set(other.langs).issubset(self.langs) or "*" in self.langs,
@@ -169,6 +172,95 @@ class Doctype(BaseModel):
                 tuple(self.langs),
             ),
         )
+
+    def iter_doctypes(self: Self,
+                      portal_root: etree._Element | None = None) -> Iterator["Doctype"]:
+        """Iterate over all docset and language combinations.
+
+        The iteration order is docset-major: for each docset, iterate all
+        languages. This is the Cartesian product of ``docset`` and ``langs``.
+
+        If ``portal_root`` is given, wildcard values (``*``) are expanded from
+        the parsed portal XML tree. Without ``portal_root``, wildcards remain
+        symbolic.
+
+        >>> doctype = Doctype.from_str("sles/15-SP6,15-SP7/en-us,de-de")
+        >>> [
+        ...     f"{item.product.value}/{item.docset[0]}/{item.langs[0].language}"
+        ...     for item in doctype.iter_doctypes()
+        ... ]
+        ['sles/15-SP6/de-de', 'sles/15-SP6/en-us', 'sles/15-SP7/de-de', 'sles/15-SP7/en-us']
+        """
+        has_product_wildcard = self.product is Product.ALL
+        has_docset_wildcard = "*" in self.docset
+        has_lang_wildcard = any(lang.language == "*" for lang in self.langs)
+
+        product_values = [self.product]
+        if portal_root is not None and has_product_wildcard:
+            product_values = [
+                self.coerce_product(product_id)
+                for product_id in sorted(
+                    {
+                        product_id
+                        for product_id in portal_root.xpath("product/@xml:id")
+                        if product_id
+                    },
+                )
+            ]
+
+        combinations: set[tuple[Product, str, LanguageCode]] = set()
+
+        for product_value in product_values:
+            docsets = self.docset
+            if portal_root is not None and has_docset_wildcard:
+                docsets = sorted(
+                    {
+                        cast(str, docset)
+                        for docset in portal_root.xpath(
+                            f"product[@xml:id={product_value.acronym!r}]/docset/@path",
+                        )
+                        if docset
+                    },
+                )
+
+            docset_lang_pairs = {
+                (docset, lang) for docset, lang in product(docsets, self.langs)
+            }
+            if portal_root is not None and has_lang_wildcard:
+                docset_lang_pairs: set[tuple[str, LanguageCode]] = {
+                    (docset, LanguageCode(language=lang))
+                    for docset in docsets
+                    for lang in sorted(
+                        {
+                            cast(str, lang)
+                            for lang in portal_root.xpath(
+                                (
+                                    f"product[@xml:id={product_value.acronym!r}]"
+                                    f"/docset[@path={docset!r}]"
+                                    "/resources/locale/@lang"
+                                ),
+                            )
+                            if lang
+                        },
+                    )
+                }
+
+            combinations.update(
+                (product_value, docset, lang)
+                for docset, lang in docset_lang_pairs
+            )
+
+        for product_value, docset, lang in sorted(
+            combinations,
+            key=lambda item: (item[0].acronym, item[1], item[2].language),
+        ):
+            yield self.model_copy(
+                update={
+                    "product": product_value,
+                    "docset": [docset],
+                    "langs": [lang],
+                },
+            )
 
     # Validators
     @field_validator("product", mode="before")
@@ -198,8 +290,21 @@ class Doctype(BaseModel):
         )
 
     @classmethod
-    def from_str(cls: type["Doctype"], doctype_str: str) -> Self:
-        """Parse a string that adheres to the doctype format."""
+    def from_str(cls: type["Doctype"],
+                 doctype_str: str,
+                 *,
+                 default_lang: str="en-us") -> "Doctype":
+        """Parse a string that adheres to the doctype format.
+
+        :param doctype_str: A string that adheres to the doctype format.
+        :param default_lang: The default language to use if none is specified (by default, "en-us").
+        :return: A Doctype object.
+        :raise ValueError: If the input string is invalid.
+
+        The language segment is optional: ``sles/16`` and ``sles/16/`` all select
+        English (``en-us``) by default, while ``sles/16/*`` and ``sles/16@supported/*``
+        are all equivalent and select *all* languages.
+        """
         match = cls._DOCTYPE_REGEX.match(doctype_str)
 
         if not match:
@@ -209,74 +314,91 @@ class Doctype(BaseModel):
         product = "*" if not product else product
         docset = "*" if not docset else docset
         lifecycle = "unknown" if lifecycle is None else lifecycle
-        langs = "en-us" if langs is None else langs
+        langs = default_lang if langs is None else langs
         return cls(
-            product=product,
+            product=cls.coerce_product(product),
             docset=docset,
             lifecycle=lifecycle,
             langs=langs,
         )
 
-    def xpath(self: Self) -> str:
+    def xpath(self: Self, absolute:bool=False) -> str:
         """Return an XPath expression for this Doctype to find all deliverables.
 
-        >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath()
+        >>> result = Doctype.from_str("sles/15-SP6@supported/en-us,de-de").xpath(absolute=True)
         >>> expected = (
-        ...     "product[@productid='sles']/docset[@setid='15-SP6']"
+        ...     "//product[@xml:id='sles']/docset[@path='15-SP6']"
         ...     "[@lifecycle='supported']"
-        ...     "/builddocs/language[@lang='de-de' or @lang='en-us']"
+        ...     "/resources/locale[@lang='de-de' or @lang='en-us']"
+        ...     "/deliverable"
         ... )
         >>> result == expected
         True
 
-        :return: A relative XPath expression that can be used to find all
+        :return: An XPath expression that can be used to find all
             deliverables that match this Doctype.
         """
         # Example: /sles/15-SP6@supported/en-us,de-de
         product = "product"
-        if self.product != Product.ALL:
-            product += f"[@productid={self.product.value!r}]"
+        if self.product is not Product.ALL:
+            product += f"[@xml:id={self.product.acronym!r}]"
 
-        setids = [f"@setid={d!r}" for d in self.docset if d != "*"]
-
-        setids_str = " or ".join(setids)
-        if setids_str:
-            docset = f"docset[{setids_str}]"
-        else:
-            docset = "docset"
-
-        lifecycle = " or ".join(
-            [
-                f"@lifecycle={lc.name!r}"
-                for lc in self.lifecycle
-                if lc != LifecycleFlag.unknown
-            ]
-        )
-        if lifecycle:
-            docset += f"[{lifecycle}]"
-
-        if "*" in self.langs:
-            language = "language"
-        else:
-            language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
-            language = f"language[{language}]"
-
-        return f"{product}/{docset}/builddocs/{language}"
+        docset = self.docset_xpath_segment()
+        docset += self.lifecycle_xpath_segment()
+        locale = self.locale_xpath_segment()
+        return f"{product}/{docset}/resources/{locale}"
 
     def product_xpath_segment(self: Self) -> str:
         """Return the XPath segment for the product node.
 
-        Example: "product[@productid='sles']" or "product"
+        Example: "product[@xml:id='sles']" or "product"
         """
-        if self.product != Product["ALL"]:
-            return f"product[@productid={self.product.value!r}]"
+        if self.product is not Product.ALL:
+            return f"product[@xml:id={self.product.acronym!r}]"
         return "product"
 
-    def docset_xpath_segment(self: Self, docset: str) -> str:
+    def docset_xpath_segment(self: Self, docset: str | None = None) -> str:
         """Return the XPath segment for the docset node.
 
-        Example: "docset[@setid='15-SP6']" or "docset"
+        Example: "docset[@path='15-SP6']" or "docset"
         """
-        if docset != "*":
-            return f"docset[@setid={docset!r}]"
+        if docset is not None:
+            if docset != "*":
+                return f"docset[@path={docset!r}]"
+            return "docset"
+
+        if self.docset and "*" not in self.docset:
+            setids = [f"@path={d!r}" for d in self.docset if d != "*"]
+            setids_str = " or ".join(setids)
+            return f"docset[{setids_str}]"
         return "docset"
+
+    def lifecycle_xpath_segment(self: Self) -> str:
+        """Return the XPath segment for the lifecycle node.
+
+        Example: "docset[@lifecycle='supported']" or "docset"
+        """
+        if self.lifecycle and self.lifecycle != LifecycleFlag.unknown:
+            lifecycle = " or ".join(
+                [
+                    f"@lifecycle={lc.name!r}"
+                    for lc in self.lifecycle
+                ]
+            )
+            return f"[{lifecycle}]"
+        return ""
+
+    def locale_xpath_segment(self: Self) -> str:
+        """Return the XPath segment for the language node.
+
+        Example: "resources/locale[@lang='en-us']" or "resources/locale"
+        """
+        language = "locale"
+        has_wildcard = any(lang.language == "*" for lang in self.langs)
+        if self.langs and not has_wildcard:
+            language = " or ".join([f"@lang={lang.language!r}" for lang in self.langs])
+            language = f"locale[{language}]"
+        elif not self.langs:
+            # Toms' Suggestion: Fallback to English if no language is specified
+            language += "[@lang='en-us']"
+        return language

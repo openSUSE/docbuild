@@ -8,6 +8,8 @@ from docbuild.config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
     PlaceholderResolver,
+    PlaceholderSyntaxError,
+    normalize_runtime_placeholders,
     replace_placeholders,
 )
 from docbuild.models.config.app import AppConfig
@@ -331,3 +333,76 @@ def test_nested_list_processing_appends_stack_items():
     out = replace_placeholders(config)
     assert out["seq"][0]["inner"] == "VAL"
     assert out["seq"][1] == "VAL"
+
+
+def test_placeholder_syntax_missing_end():
+    """Test orphaned opening brace."""
+    resolver = PlaceholderResolver({"key": "{server.name"})
+    with pytest.raises(PlaceholderSyntaxError, match="Missing end curly brace"):
+        resolver.replace()
+
+
+def test_placeholder_syntax_missing_start():
+    """Test orphaned closing brace."""
+    resolver = PlaceholderResolver({"key": "server.name}"})
+    with pytest.raises(PlaceholderSyntaxError, match="Missing start curly brace"):
+        resolver.replace()
+
+
+def test_placeholder_syntax_swapped_escapes():
+    """Test the reviewer's edge case: }} hello {{."""
+    resolver = PlaceholderResolver({"key": "}} hello {{"})
+    with pytest.raises(PlaceholderSyntaxError, match="Invalid placeholder syntax"):
+        resolver.replace()
+
+
+def test_replace_placeholders_keep_runtime() -> None:
+    """Verify that keep_runtime=True preserves known runtime placeholders but unescapes others."""
+    config = {
+        "daps": "daps --builddir={{builddir}} -d {{dcfile}}",
+        "other": "Escaped {{value}} goes here",
+        "ref": "{daps}"
+    }
+
+
+    resolved = replace_placeholders(config, keep_runtime=True)
+    assert resolved is not None
+    assert resolved["daps"] == "daps --builddir={{builddir}} -d {{dcfile}}"
+    assert resolved["other"] == "Escaped {value} goes here"
+    assert resolved["ref"] == "daps --builddir={{builddir}} -d {{dcfile}}"
+
+
+@pytest.mark.parametrize(
+    ("template", "expected"),
+    [
+        (
+            "daps --builddir={{builddir}} -d {{dcfile}} --output={{output}}",
+            "daps --builddir={builddir} -d {dcfile} --output={output}",
+        ),
+        ("daps --builddir={builddir}", "daps --builddir={builddir}"),
+        ("literal={{unknown}}", "literal={{unknown}}"),
+    ],
+)
+def test_normalize_runtime_placeholders(template: str, expected: str) -> None:
+    """Normalize only supported escaped runtime placeholders."""
+    assert normalize_runtime_placeholders(template) == expected
+
+
+def test_normalize_runtime_placeholders_missing_value() -> None:
+    """Require ``str.format`` to reject an omitted runtime value."""
+    template = normalize_runtime_placeholders("daps {{builddir}} {{dcfile}}")
+
+    with pytest.raises(KeyError, match="dcfile"):
+        template.format(builddir="build")
+
+
+def test_normalize_runtime_placeholders_preserves_literal_braces() -> None:
+    """Preserve unsupported placeholders as escaped literal braces."""
+    template = normalize_runtime_placeholders(
+        "daps {{builddir}} {{literal}} {{{{already_literal}}}}"
+    )
+
+    assert template == "daps {builddir} {{literal}} {{{{already_literal}}}}"
+    assert template.format(builddir="build") == (
+        "daps build {literal} {{already_literal}}"
+    )

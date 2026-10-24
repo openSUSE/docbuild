@@ -1,0 +1,35 @@
+<?xml-model href="../../../../../src/docbuild/config/xml/data/portal-config.rnc" type="application/relax-ng-compact-syntax"?>
+<portal schemaversion="7.0">
+  <categories>
+    <category lang="en-us">
+      <language xml:id="cat.test">
+        <title>Test Category</title>
+      </language>
+    </category>
+  </categories>
+  <productfamilies>
+    <item xml:id="f.linux">Linux</item>
+  </productfamilies>
+  <series>
+    <item xml:id="s.pas">Products &amp; Solutions</item>
+  </series>
+  <product xml:id="testproduct" family="f.linux" series="s.pas">
+    <name>Test Product</name>
+    <maintainers>
+      <contact>test@example.com</contact>
+    </maintainers>
+    <docset xml:id="testdocset" lifecycle="supported">
+      <version>1.0</version>
+      <resources>
+        <locale lang="en-us">
+          <branch>main</branch>
+          <deliverable xml:id="testdc" type="dc">
+            <dc file="DC-test">
+              <format html="true"/>
+            </dc>
+          </deliverable>
+        </locale>
+      </resources>
+    </docset>
+  </product>
+</portal>

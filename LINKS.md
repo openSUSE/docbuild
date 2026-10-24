@@ -11,10 +11,23 @@ This document lists some links that may be helpful for this project.
 
 * [PEX](https://docs.pex-tool.org)
 
-## Async I/O
+## General Async I/O
 
 * [Python's asyncio: A Hands-On Walkthrough](https://realpython.com/async-io-python/)
+* [Awesome asyncio](https://github.com/timofurrer/awesome-asyncio)
+
+## Producer-Consumer-Workers / Channels
+
+* [aiomultiprocess](https://github.com/omnilib/aiomultiprocess)
+* [anyio](https://github.com/agronholm/anyio)
+* [pychanasync](https://github.com/Gwali-1/PY_CHANNELS_ASYNC)
+* [janus](https://github.com/aio-libs/janus)
 * [joblib](https://joblib.readthedocs.io)
+
+## Pipelines
+
+* [aiostream](https://github.com/vxgmichel/aiostream)
+* [asyncstdlib](https://github.com/maxfischer2781/asyncstdlib)
 
 ## Task Queues
 

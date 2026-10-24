@@ -1,6 +1,6 @@
-##########
-Change Log
-##########
+###############################
+:octicon:`checklist` Change Log
+###############################
 
 All notable changes to this project will be documented in this file.
 
@@ -20,6 +20,661 @@ Changes for the upcoming release can be found in the
    for details.
 
 .. towncrier release notes start
+
+Version 0.27.0
+==============
+
+Breaking Changes
+----------------
+
+- Refactored :command:`docbuild build` into a command group and move build execution to the :command:`docbuild build run` subcommand. (:gh:`601`)
+- Refactored the :command:`docbuild metadata` command into a Click group and moved its core execution logic to the new :command:`docbuild metadata run` subcommand. (:gh:`599`)
+
+
+Bug Fixes
+---------
+
+- Fix Pydantic validation error during metadata extraction for prebuilt deliverables by properly handling empty ``dateModified`` fields. (:gh:`517`)
+- Fixed missing form feed (``\f``) separators in CLI docstrings so internal developer parameter documentation is not leaked into ``--help`` outputs. (:gh:`636`)
+- Fixed :command:`docbuild doctor` failing to extract versions for tools
+  such as :command:`jing` and :command:`trang`. Version checking now uses tool-specific
+  arguments and execution timeouts to reliably detect installed dependencies. (:gh:`659`)
+- Fixed :command:`docbuild portal list` showing every English (``en-us``)
+  deliverable twice in the tree and ``--flat`` output. (:gh:`661`)
+- Fixed runtime placeholder expansion in DAPS command templates so default :command:`docbuild metadata run` and build commands no longer pass literal braces to DAPS. (:gh:`668`)
+- Fixed GitHub Pages documentation deployment where historical version directories and old entries in :file:`versions.json` were not pruned.
+
+
+Improved Documentation
+----------------------
+
+- Explained partial configuration files in the User Guide. (:gh:`645`)
+
+
+Features
+--------
+
+- Added the :command:`docbuild portal dir` subcommand to display the directory where the portal configuration is stored. (:gh:`596`)
+- Added the :command:`docbuild metadata dir` subcommand to easily display the metadata cache directories (supports ``--json`` and ``--meta`` flags). (:gh:`600`)
+- Add :command:`docbuild build dir` subcommand to output the raw build target directory for use in scripts. (:gh:`602`)
+- Refactored the :command:`docbuild check files` subcommand to correctly resolve cross-repository references, gracefully skip missing translations and empty locales instead of failing, and provide a structured, visual tree output of the verification results. (:gh:`603`)
+- Added a ``files_from`` option to ``RsyncOptions``. When it is set, ``rsync()`` passes ``--files-from <file>`` to rsync, so only the paths listed in the file are transferred. In archive mode it also passes ``-r``, because rsync turns off the recursion implied by ``-a`` when a file list is used. The paths are relative to the source, and the file is not read or validated by ``rsync()``. (:gh:`606`)
+- Added :command:`docbuild config init` to create starter configuration files from
+  built-in defaults, with ``--app`` and ``--env`` selection, environment roles via ``--role``, and protection
+  against overwriting existing files. (:gh:`620`)
+- Added support for the XDG Base Directory Specification's :envvar:`XDG_CONFIG_DIRS` as a system-wide configuration location. Docbuild now also searches ``/etc/xdg/docbuild`` (or every directory listed in :envvar:`XDG_CONFIG_DIRS`) before the fixed ``/etc/docbuild`` directory, which still takes precedence over it. (:gh:`627`)
+- Added shell completion for doctypes: products, docsets from the portal
+  config, and languages are completed segment by segment in all commands that
+  accept ``DOCTYPES``. The new :ref:`shell-completion` task in the User Guide
+  explains how to enable completion in Bash, Zsh, and Fish. (:gh:`648`)
+- Add ``docbuild build index`` command to render HTML index pages from aggregated JSON metadata using Jinja2 templates. (:gh:`673`)
+
+
+Infrastructure
+--------------
+
+- Configure Pyright diagnostic settings in :file:`pyrightconfig.json` for static type checking. (:gh:`536`)
+- Improved test coverage for the ``config validate`` and ``cache`` CLI commands. (:gh:`634`)
+- Added ``pytest-datadir`` to the test dependencies and extracted the inline XML
+  from the ``xmlnode`` fixture in ``tests/config/xml/test_check.py`` into
+  ``tests/config/xml/data/xmlnode.xml`` (loaded via ``pytest-datadir``). (:gh:`658`)
+
+
+Code Refactoring
+----------------
+
+- Improve static type annotations and stability across models, tasks, and CLI modules. (:gh:`536`)
+- Sort subcommands for main command and remove a double call for portal subcommand.
+
+
+Version 0.26.0
+==============
+
+Breaking Changes
+----------------
+
+- ``paths.target.target_base_dir`` must now be a local directory. Configurations that set a remote value such as ``user@host:/srv/docs`` are rejected, so move that destination into the ``[remote]`` section. (:gh:`605`)
+
+
+Bug Fixes
+---------
+
+- Fixed a validation crash where ``EnvConfig.from_dict()`` would fail on default configurations because DAPS runtime placeholders (like ``{{builddir}}``) were mistakenly evaluated as environment configuration variables. (:gh:`619`)
+- Fixed :command:`docbuild check files` crashing with an :exc:`AttributeError` when a deliverable has no Git repository configured. Such deliverables are now skipped. The command also no longer silently checks *all* DC files when called without arguments: either provide one or more doctypes or use the new ``--all`` option. The two are mutually exclusive. (:gh:`635`)
+- :command:`docbuild repo clone` now requires repository arguments or ``--all`` to prevent
+  accidental cloning of all configured repositories.
+  Combining repository arguments with ``--all`` produces a usage error. (:gh:`638`)
+- Fix GitHub workflow file :file:`check-changelog.yml` as tag v3 isn't available anymore. Switch to version v3.0.5. (:gh:`647`)
+- Fixed :command:`docbuild doctor` only displaying the last checked system dependency in the summary table. All checked dependencies are now rendered. (:gh:`651`)
+
+Improved Documentation
+----------------------
+
+- Document search locations and file names for application and environment configuration in the User Guide. (:gh:`434`)
+- Rewrote the :command:`docbuild llms` User Guide page to explain why Markdown files are useful, what requirements apply, and how to run the command with an env file or ``-C`` options. (:gh:`626`)
+- The configuration documentation is now split into a concept section and a task section. It explains where docbuild searches for application and environment configuration files, how multiple files are merged, and how the ``--app-config`` and ``--env-config`` options change the search. It also documents the XDG environment variables that change the per-user directories on Linux and macOS, and the ``--flat`` and ``--validate`` options of :command:`docbuild config list`. (:gh:`631`)
+- Mentioned in the docs, that custom env configs can be used with the option ``--env-config``. Also adjusted the :file:`env.agent.toml` file. (:gh:`639`)
+- Moved the doctype syntax documentation into the configuration concepts section of the User Guide for a more centralized overview. (:gh:`649`)
+- Divide the User Guide into separate "Concepts" and "Tasks" sections to provide a clearer distinction between background knowledge and actionable workflows. (:gh:`650`)
+- Aligned Portal configuration documentation and XML snippets with the RelaxNG schema (:file:`portal-config.rnc`). Corrected ``xml:id`` usage, updated child element models, documented supported link formats and lifecycle states, and expanded xref deliverable documentation.
+
+
+Features
+--------
+
+- Added ``-U``/``--unresolved`` option to :command:`docbuild config list` to display the configuration with unresolved placeholders for debugging purposes. (:gh:`545`)
+- Added virtual translation inheritance for empty locales in the metadata runner. Empty non-English locales now automatically generate synthetic cross-references pointing to the canonical ``en-us`` blueprint deliverables, ensuring all translation targets are included in aggregated JSON manifests. (:gh:`595`)
+- Added an optional ``[remote]`` section (``server``, ``path``) to the environment configuration for the remote publish destination. (:gh:`605`)
+- Implemented Git file existence checks for translated deliverables in the metadata pipeline. The pipeline now verifies if a localized DC file exists in the repository before processing. If found, it correctly extracts true localized metadata (such as translated titles). If the file is missing, it safely falls back to the English blueprint cross-reference. (:gh:`611`)
+
+
+Infrastructure
+--------------
+
+- Enabled Python 3.15 in the CI. (:gh:`608`)
+- The changelog check workflow now posts a comment on pull requests that have no newsfragment in ``changelog.d/``. The comment links to the newsfragment guide. The comment is removed once a fragment is added. (:gh:`632`)
+- Added missing "3.15" for :file:`bug-report.yml` issue template. (:gh:`637`)
+- Updated agent skills for coding guidelines and pytest: clarified that Python function names should avoid leading underscores, and updated mocking recommendations to prefer the ``@patch.object`` decorator.
+- Skip ``release/*`` branches in :file:`check-changelog` workflow.
+
+Code Refactoring
+----------------
+
+- Redesigned the metadata processing pipeline to support cross-references (``<xref>``) to other deliverables, docsets, and products. The new three-phase architecture globally partitions build tasks from reference tasks, correctly discovers out-of-scope dependencies, avoids redundant execution, and injects reference metadata dynamically during manifest assembly without causing Git checkout or DAPS execution failures. (:gh:`585`)
+- Fixed a Click DeprecationWarning (:gh:`613`)
+- Removed the leading underscore from 26 module-level helper functions, making them part of the public API. The affected functions cover cache handling, CLI setup, portal listing, XML reference checks, logging, build and metadata tasks, and the ``merge`` and ``sysdeps`` utilities. This is a pure rename with no behavioral change. (:gh:`615`)
+
+
+Version 0.25.0
+==============
+
+Bug Fixes
+---------
+
+- Report ``'defaults'`` instead of ``'unknown'`` when configuration validation fails and no configuration file is used. (:gh:`435`)
+- Fix an infinite recursion issue in the migration stylesheet. (:gh:`547`)
+- Changed all element identifiers from ``id`` to ``xml:id`` throughout the Portal schema and configuration system. This aligns with XML standards and allows proper namespace handling. Affected elements: ``<product>``, ``<docset>``, ``<deliverable>``, ``<language>``, ``<item>``, and ``<category>``. (:gh:`548`)
+- Fixed migration stylesheet to generate valid deliverable IDs for v6→v7 config conversion. Resolved empty ``xml:id`` attributes (XSLT 1.0 syntax error) and ID separator inconsistency that caused ~1940 IDREF validation errors. The stylesheet now generates consistent IDs using dots as separators, matching the portal schema requirements. (:gh:`551`)
+
+
+Improved Documentation
+----------------------
+
+- Standardized and consolidated developer skill documentation for consistency and clarity. (:gh:`561`)
+- Restructure the "Configuring Docbuild" section (:gh:`570`)
+
+
+Features
+--------
+
+- Added a centralized Rich theme with semantic styles and configuration support for custom theme overrides in application config. (:gh:`280`)
+- Added automatic generation of :file:`llms.txt` and clean Markdown files during the HTML build process to support AI bots. This feature can be configured via the new ``build.build_llmstxt`` and ``paths.llmstxt_dir`` options in :file:`env.toml`. The generator strips navigation and layout elements using a custom parser, converts the core content using ``justhtml``, and safely injects ``<link rel="alternate" type="text/markdown">`` tags into the source HTML headers. (:gh:`365`)
+- Added support for remote source and destination paths in rsync utility and build runner. (:gh:`492`)
+- Added support for deliverable cross-references (``<deliverable type="xref"><xref .../>``) with recursive target resolution and semantic validation in :command:`docbuild portal validate`. (:gh:`526`)
+- Introduced ``PortalConfig`` to separate XML extraction and XPath traversal logic from Pydantic data models. (:gh:`546`)
+- Added the :command:`docbuild llms` CLI subcommand to retroactively generate Markdown files and the :file:`llms.txt` index for existing build directories without requiring a full rebuild. (:gh:`552`)
+- Inject standard YAML frontmatter metadata into generated Markdown files for LLM/RAG pipelines. (:gh:`556`)
+- The :command:`portal list` command now dynamically projects deliverables from the canonical ``en-us`` blueprint into translated locales, marking them with an ``[en-us blueprint]`` indicator. This restores visibility of translated deliverables following the removal of explicit locale XML configurations. (:gh:`558`)
+- Added the ``code-style`` skill with guidelines for writing clean, idiomatic Python tailored for the this project. (:gh:`560`)
+- Added "docbuild" ASCII art banner when running :command:`docbuild --help`. (:gh:`565`)
+- Added support for escaping dots with backslashes in ``-C``/``--set-env`` configuration keys (e.g., ``xslt.html.show\.edit\.link=1``). (:gh:`576`)
+- The :command:`tools/migrate-config.sh` script now has a ``--with-link`` flag to create a symbolic link to the :file:`portal-config.rnc` file. (:gh:`581`)
+
+
+Infrastructure
+--------------
+
+- Reorganized the Portal config developer tooling. Renamed and moved the migration wrapper script to :command:`tools/migrate-config.sh` (now expanding a leading ``~`` in ``--dir`` and requiring the Docserv stitchfile argument), and removed the redundant :command:`validate.sh` in favor of ``docbuild portal validate``. Added agent skills for the Portal config schema, config migration, and config validation. (:gh:`542`)
+- Fixed the GitHub Actions workflow for checking newsfragment files.
+  The workflow now validates that the newsfragment filename matches the current PR number or follows the ``+description`` format for unrelated changes.
+  It also dynamically reads valid fragment types from :file:`towncrier.toml` using the standard library :mod:`tomllib` parser, eliminating hard-coded values. (:gh:`563`)
+- Refactor CI pipeline to prepare for 3.15. Dropped ``setup-python`` completely in favor of :command:`uv python install`. (:gh:`564`)
+- Update check-changelog workflow to validate newsfragment filenames using regex patterns based on towncrier config instead of strict PR numbers. (:gh:`570`)
+
+
+Code Refactoring
+----------------
+
+- Moved the ``title`` attribute in ``<language>`` elements to a ``<title>`` tag for consistency. Affected files are the Portal schema, migration stylesheet, models, and configuration files. (:gh:`519`)
+- Rename the directory :file:`tests/models/deliverables` (plural) to :file:`tests/models/deliverable` (singular). (:gh:`553`)
+- Adjust content model of ``<locale>`` element for translations. Allow deliverables of all types. (:gh:`559`)
+
+
+Removed Features
+----------------
+
+- Remove ``<internal>`` from the Portal Config schema. References to other products, docsets, or deliverables are added inside the ``<locale>`` element. (:gh:`526`)
+
+
+Version 0.24.0
+==============
+
+Breaking Changes
+----------------
+
+- Integrate ``path`` attribute for ``<product>`` tag and expose it to :class:`~docbuild.model.deliverable.view.DeliverableXMLView`. Also rename properties (``productid`` -> ``product_id``, ``docsetid`` -> ``docset_path``, ``docsetrealid`` -> ``docset_id``). (:gh:`525`)
+
+
+Bug Fixes
+---------
+
+- Fix a grouping problem in the migration stylesheet. For Cloudnative, no translations were added. (:gh:`503`)
+- The :class:`~docbuild.models.language.LanguageCode` model now accepts language codes with uppercase letters, like 'zh-CN'. (:gh:`504`)
+- Change the default set of languages. Previously, only English was enabled. Now, the it contains the full list of supported languages. (:gh:`507`)
+- Add prebuilt descriptions into result JSON file (:gh:`523`)
+
+
+Features
+--------
+
+- Automatically generates :file:`homepage.json` from the Portal XML configuration during the :command:`docbuild metadata` command, storing it directly into the JSON cache directory for frontend template consumption. (:gh:`141`)
+- Implement dependency-aware caching for DAPS metadata extraction. ``docbuild metadata`` now caches file dependencies and environment configurations, significantly speeding up subsequent runs by skipping unnecessary DAPS executions for unchanged deliverables. (:gh:`447`)
+- Added the ``docbuild cache`` command group with ``dir``, ``list``, and ``prune`` subcommands to easily inspect and manage the metadata caching system. (:gh:`485`)
+- Added support for extracting metadata from prebuilt Antora deliverables via fast JSON-LD parsing. (:gh:`491`)
+- The ``<git>`` element in portal configuration is now optional, which accommodates projects like SUMA/MLM and Cloud Native that do not require source Git repositories for their documentation builds. (:gh:`496`)
+
+
+Infrastructure
+--------------
+
+- Suppress :exc:`DeprecationWarning` of :func:`asyncio.iscoroutinefunction` in :mod:`aiostream`. (:gh:`498`)
+- Implemented a unique agentic workflow (:gh:`501`)
+- Added shell script that syncs CN HTML files from Docserv into a local prebuilt directory (useful for calling metadata and checking if all HTML files are available). (:gh:`516`)
+- Improved `Dependabot` configuration to use ``uv`` and ignore patch releases for version updates. This does not affect security updates. (:gh:`537`)
+- Removed :exc:`DeprecationWarning` caused by :func:`asyncio.iscoroutinefunction` in :mod:`aiostream`.
+  Upstream fixed it (related to :gh:`498`). (:gh:`543`)
+
+
+Code Refactoring
+----------------
+
+- Refactored the environment configuration to have a single source of truth for default values. The :data:`~docbuild.cli.defaults.DEFAULT_ENV_CONFIG` dictionary is now generated directly from the Pydantic models. (:gh:`506`)
+- Allows to pass another :class:`~docbuild.models.repo.Repo` object besides ``str`` in the initializer.
+  Initializing from an existing Repo reuses its normalized values without reparsing. If that Repo has no branch, ``default_branch`` can be used to select the branch for its tree URL; an existing branch always takes precedence. (:gh:`521`)
+- Renamed ``ServerRole`` to ``EnvRole`` to better reflect its purpose. (:gh:`522`)
+
+
+Version 0.23.0
+==============
+
+Breaking Changes
+----------------
+
+- Refactored the environment configuration to remove obsolete server terminology. The ``[server]`` section has been removed (along with unused ``host`` and ``port`` keys), and its remaining keys were moved to a new ``[general]`` section. Additionally, ``[xslt-params]`` was restructured into ``[xslt.common]``, ``[xslt.html]``, and ``[xslt.pdf]`` to allow target-specific parameter configurations. (:gh:`370`)
+
+
+Bug Fixes
+---------
+
+- Several fixes to the :command:`docbuild metadata` manifest generation :gh:`467`:
+
+  * Fix incorrect serialization of `isGated` in the manifest. The key is now correctly serialized as `isGated` instead of `isGate`.
+  * The `acronym` in the manifest is now correctly read from the `productid` attribute of the product. (:gh:`468`)
+  * The order of deliverables in the generated JSON now correctly follows the order in the Portal XML file. (:gh:`470`)
+  * The `default` flag for translated documents is now correctly set to `false`. (:gh:`472`)
+  * The :command:`docbuild metadata` manifest now only includes referenced categories by default. A new ``full_categories`` argument in the ``process`` function allows including all categories. (:gh:`477`)
+  * Fixed missing text in field ``description`` of the generated JSON. Additionally, removed XML XInclude namespaces and excessive whitespaces in JSON. (:gh:`478`)
+
+- Fixed the placeholder-resolution tests for the environment configuration, which previously mocked the wrong module and did not exercise the mocked code path. The mock now targets the ``docbuild.models.config.env`` module so the tests fail when placeholder resolution breaks. Additionally, removed obsolete and duplicate test files and dead fixtures, and parametrized repeated check validation tests to reduce maintenance overhead. (:gh:`430`)
+- The ``--set-env`` option now correctly parses keys with dots when they are quoted (e.g., ``'key.with.dots'``) or bracketed (e.g., ``[key.with.dots]``). It also correctly interprets boolean and numeric values. (:gh:`444`)
+- Adjusted invalid :class:`~docbuild.models.product.Product` error messages during doctype parsing to list allowed product acronyms (for example ``sle-ha`` and ``sles``) instead of full product names. (:gh:`449`)
+- Fixed :func:`~docbuild.tasks.metadata.manifest.store_productdocset_json` not writing any product/docset JSON file when the doctype contained a docset wildcard (for example ``appliance/*/*``). Doctypes are now resolved with :meth:`~docbuild.models.doctype.Doctype.iter_doctypes` before the cached metadata files are collected. (:gh:`455`)
+- Correctly handle ``<subdir>`` in translated ``<deliverable type="ref">`` elements, which fixes a regression causing ``list index out of range`` errors for certain translated documents. (:gh:`469`)
+
+
+Improved Documentation
+----------------------
+
+- Amended the documentation about doctype syntax and the class
+  :class:`~docbuild.models.doctype.Doctype` to stay consistent. Also
+  added some more examples and the fallback default value to English. (:gh:`453`)
+- Fixed ``--outputdir`` parameter in the example stylesheet command to point to the correct directory for the new Portal configuration files. Add also a new section to validate the config file with :command:`jing`. (:gh:`471`)
+
+
+Features
+--------
+
+- Implemented the core ``docbuild build`` CLI command with an asynchronous pipeline to concurrently execute ``daps html`` and ``daps pdf`` builds. Added the ``--skip-repo-update`` CLI flag to bypass repository fetching during local testing. (:gh:`12`)
+- Added ``--validate`` flag to ``config list`` and disabled validation by default for easier debugging. (:gh:`384`)
+- Add a global command-line option ``-C`` / ``--set-env`` to override specific environment configuration values using key=value syntax with dot notation (e.g., ``-C server.host=127.0.0.1``). (:gh:`410`)
+- Added more test cases for the Portal Config schema. (:gh:`419`)
+- Add :meth:`~docbuild.models.doctype.Doctype.iter_doctypes` to iterate over all docset and language combinations. This is the Cartesian product of ``docset`` and ``langs``. (:gh:`428`)
+- Added an async :command:`rsync` utility function and ``RsyncOptions`` dataclass for flexible directory synchronization, and registered :command:`rsync` as a validated system dependency. (:gh:`452`)
+- Integrated ``rsync`` into the ``docbuild build`` subcommand to automatically synchronize successful build artifacts to their final target directories. (:gh:`462`)
+- Improved logging by replacing generic asyncio task names (e.g., ``Task-1``) with meaningful, hierarchical names (e.g., ``build:metadata:sles/15-SP6@supported/en-us``). This provides better traceability in debug logs. (:gh:`475`)
+
+
+Infrastructure
+--------------
+
+- Added dedicated :file:`pyrefly.toml` and :file:`pyrightconfig.json` configuration files in preparation for type checking with Pyrefly and Pyright.
+  Both checkers now cover the ``src/`` directory only and target Python 3.12;
+  tests are intentionally excluded. (:gh:`436`)
+- Switched from weekly to monthly Dependabot version updates (:gh:`445`)
+- Several dependency updates:
+
+  * `Update ruff requirement from >=0.16.4 to >=0.16.5 <https://github.com/openSUSE/docbuild/pull/488>`_
+  * `Update pydata-sphinx-theme requirement <https://github.com/openSUSE/docbuild/pull/486>`_
+  * `Update sphinx-autodoc-typehints requirement <https://github.com/openSUSE/docbuild/pull/487>`_
+  * `Update sphinx-autoapi requirement <https://github.com/openSUSE/docbuild/pull/466>`_
+  * `Update ruff requirement from >=0.16.3 to >=0.16.4 <https://github.com/openSUSE/docbuild/pull/465>`_
+  * `Update ruff requirement from >=0.16.2 to >=0.16.3 <https://github.com/openSUSE/docbuild/pull/459>`_
+  * `Update setuptools requirement from >=83 to >=84.0.0 <https://github.com/openSUSE/docbuild/pull/441>`_
+  * `Update sphinx-autodoc-typehints requirement <https://github.com/openSUSE/docbuild/pull/439>`_
+  * `Update ruff requirement from >=0.16.1 to >=0.16.2 <https://github.com/openSUSE/docbuild/pull/438>`_
+  * `Update ipython requirement from >=9.15.0 to >=9.16.1 <https://github.com/openSUSE/docbuild/pull/421>`_
+  * `Update ruff requirement from >=0.16.0 to >=0.16.1 <https://github.com/openSUSE/docbuild/pull/420>`_
+
+
+Code Refactoring
+----------------
+
+- Refactored the internal async task orchestration in the metadata extraction pipeline to use ``aiostream``. This replaces manual task tracking and semaphore logic with a clean, Unix-pipe-style concurrency model, laying the groundwork for robust build pipelines and dependency caching. (:gh:`325`)
+- Refactor :class:`~docbuild.models.product.Product` to use `acronym` as the primary identifier instead of `value`. Switch from a dynamic class to a static enum class due to problems with dynamic class generation and type-checking. This change improves type safety and simplifies the codebase. (:gh:`427`)
+- Consolidate XPath logic in :class:`~docbuild.models.doctype.Doctype` by introducing :meth:`~docbuild.models.doctype.Doctype.lifecycle_xpath_segment` and :meth:`~docbuild.models.doctype.Doctype.locale_xpath_segment` helper methods, refactoring :meth:`~docbuild.models.doctype.Doctype.xpath` to use them, and adding an optional ``absolute`` argument.
+
+  Refactor :meth:`~docbuild.config.xml.list.list_all_deliverables` to delegate XPath construction to :meth:`~docbuild.models.doctype.Doctype.xpath` instead of building expressions manually. (:gh:`431`)
+- Refactored the `EnsureWritableDirectory` type to a more modern and Pythonic `Annotated` Pydantic type. This improves type hinting and developer experience by making validated paths behave as native `pathlib.Path` objects, removing the need for widespread casting. (:gh:`461`)
+- Fixed PDF filename generation to use correct country-specific suffixes for languages like Brazilian Portuguese (`pt-br`) and Chinese (`zh_cn`). (:gh:`467`)
+- Removed auto-generated Sphinx autoapi files from version control. (:gh:`494`)
+
+
+
+Version 0.22.0
+==============
+
+Bug Fixes
+---------
+
+- Correct :command:`docbuild portal list` to fix "unnamed-deliverable" output for translated deliverables. The deliverable ID is now correctly retrieved from the English locale node when the current node is a reference deliverable. (:gh:`400`)
+- Implement formerly empty ``archives`` key in :class:`~docbuild.models.manifest.Manifest`. (:gh:`414`)
+- Fix handling of option ``--skip-repo-update``.
+  Previously, this flag was ignored and repos were always updated. (:gh:`415`)
+- Fix description logic in output JSON and how global and local descriptions are merged. (:gh:`416`)
+
+
+Features
+--------
+
+- Added a ``docbuild doctor`` command to check for system-level dependencies (like ``daps``, ``jing``, ``xmllint``) and a fail-fast decorator to prevent execution of commands when required tools are missing. (:gh:`234`)
+- Implement :command:`docbuild metadata`. (:gh:`268`)
+- Refactored the ``check files`` command to separate CLI argument parsing from core business logic, introducing a new ``docbuild.tasks`` module as a Proof of Concept for CLI layer decoupling. (:gh:`307`)
+- Add a ``--flat`` option to ``docbuild portal list`` to display the output as a flat, non-hierarchical list. (:gh:`382`)
+- Added ``suse-telco`` and ``suse-ai-factory`` for converting old Docserv config into new Portal config.
+  Amended start rule with ``<desc>`` element in RNC Portal schema. (:gh:`416`)
+
+
+Infrastructure
+--------------
+
+- Bumped GitHub Action ``astral-sh/setup-uv`` from 8.2.0 to 8.3.2. (:gh:`376`)
+- Added ``skip-chanagelog`` label for Dependabot pull requests. (:gh:`395`)
+- Minor fix in the GitHub issue template and mentions user stories (:gh:`412`)
+- Change dependency group ``devel`` to ``dev`` to simplify calling :command:`uv`. (:gh:`413`)
+- Several dependency updates:
+
+  * `Update pydata-sphinx-theme requirement <https://github.com/openSUSE/docbuild/pull/373>`_
+  * `Update ipython requirement from >=9.14.0 to >=9.15.0 <https://github.com/openSUSE/docbuild/pull/374>`_
+  * `Update ruff requirement from >=0.15.20 to >=0.15.21 <https://github.com/openSUSE/docbuild/pull/375>`_
+  * `Update pytest requirement from >=9.0.3 to >=9.1.1 <https://github.com/openSUSE/docbuild/pull/377>`_
+  * `Update sphinxcontrib-mermaid requirement <https://github.com/openSUSE/docbuild/pull/379>`_
+  * `Bump astral-sh/ruff-action from 4.0.0 to 4.1.0 <https://github.com/openSUSE/docbuild/pull/380>`_
+  * `Bump github/codeql-action from 4.36.2 to 4.37.0 <https://github.com/openSUSE/docbuild/pull/381>`_
+  * `Update tomlkit requirement from >=0.15.0 to >=0.15.1 <https://github.com/openSUSE/docbuild/pull/387>`_
+  * `Bump actions/setup-python from 6 to 6.3.0 <https://github.com/openSUSE/docbuild/pull/388>`_
+  * `Update sphinxcontrib-mermaid requirement <https://github.com/openSUSE/docbuild/pull/389>`_
+  * `Update ruff requirement from >=0.15.21 to >=0.15.22 <https://github.com/openSUSE/docbuild/pull/390>`_
+  * `Update platformdirs requirement from >=4.10.0 to >=4.11.0 <https://github.com/openSUSE/docbuild/pull/391>`_
+  * `Update setuptools-scm requirement <https://github.com/openSUSE/docbuild/pull/392>`_
+  * `Bump github/codeql-action from 4.37.0 to 4.37.1 <https://github.com/openSUSE/docbuild/pull/393>`_
+  * `Bump softprops/action-gh-release from 3.0.1 to 3.0.2 <https://github.com/openSUSE/docbuild/pull/394>`_
+  * `Update sphinx-autodoc-typehints requirement <https://github.com/openSUSE/docbuild/pull/396>`_
+  * `Update semver requirement from >=3.0.0 to >=3.0.4 <https://github.com/openSUSE/docbuild/pull/397>`_
+  * `Update ruff requirement from >=0.15.22 to >=0.16.0 <https://github.com/openSUSE/docbuild/pull/404>`_
+  * `Bump astral-sh/setup-uv from 8.3.2 to 9.0.0 <https://github.com/openSUSE/docbuild/pull/405>`_
+  * `Bump actions/setup-python from 6.3.0 to 7.0.0 <https://github.com/openSUSE/docbuild/pull/406>`_
+  * `Bump github/codeql-action from 4.37.1 to 4.37.3 <https://github.com/openSUSE/docbuild/pull/407>`_
+
+
+Security
+--------
+
+- Updated setuptools to >=83 to resolve security vulnerability in :file:`pyproject.toml` and :file:`uv.lock`. (:gh:`403`)
+
+
+Version 0.21.0
+==============
+
+Bug Fixes
+---------
+
+- Added dynamic validation to the :command:`portal list` command to provide helpful error messages with available allowed values when an invalid docset is provided. (:gh:`303`)
+- Fixed an issue where overriding list values (such as ``languages``) in the environment configuration appended to the default list instead of cleanly replacing it. (:gh:`368`)
+
+
+Improved Documentation
+----------------------
+
+- Added a short project description to the landing page. (:gh:`320`)
+- Differentiated shell commands from their output across all shell code-blocks. (:gh:`349`)
+- Described uv installation for (open)SUSE distros and link to uv docs for other operating systems. (:gh:`354`)
+
+
+
+Features
+--------
+
+- Updated default environment and cache paths to conform to the XDG Base Directory Specification using the ``platformdirs`` library. (:gh:`248`)
+- Added foundational AI agent skill files under ``.agents/skills/`` (with a symlink at ``.github/skills/``) and updated the primary agent instructions to standardize AI interactions with repository workflows. (:gh:`266`)
+- Enhanced the ``portal list`` command with new optional flags (``--trans``, ``--formats``, ``--categories``, and ``--repo``) to display extended deliverable metadata directly in the output tree. (:gh:`302`)
+- Enabled Git-style deep merging for App and Env configurations, allowing users to define partial config files that inherit gracefully from global defaults. (:gh:`321`)
+
+
+Infrastructure
+--------------
+
+- Added a step in the GitHub Pages CI workflow to dynamically build the changelog using Towncrier, ensuring the ``latest`` documentation page reflects the most recent unreleased entries. (:gh:`323`)
+- When Dependabot creates a PR, the ``check-changelog`` workflow checks for a newsfragment file.
+  As Dependabot never creates one, we need to skip this check with adding the ``skip-changelog``. (:gh:`344`)
+- Fixed failures of the Towncrier step in the GitHub Pages CI. (:gh:`367`)
+- Several dependency updates:
+
+  * `Bump actions/checkout from 6 to 7 <https://github.com/openSUSE/docbuild/pull/351>`_
+  * `Bump astral-sh/setup-uv from 7 to 8.1.0 <https://github.com/openSUSE/docbuild/pull/341>`_
+  * `Bump peaceiris/actions-gh-pages from 4 to 4.1.0 <https://github.com/openSUSE/docbuild/pull/333>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.10.3 to >=3.10.5 <https://github.com/openSUSE/docbuild/pull/338>`_
+  * `Update ipython requirement from >=9.13.0 to >=9.14.0 <https://github.com/openSUSE/docbuild/pull/337>`_
+  * `Update ruff requirement from >=0.15.14 to >=0.15.15 <https://github.com/openSUSE/docbuild/pull/336>`_
+  * `Update pyright requirement from >=1.1.409 to >=1.1.410 <https://github.com/openSUSE/docbuild/pull/335>`_
+  * `Update platformdirs requirement from >=4.0.0 to >=4.10.0 <https://github.com/openSUSE/docbuild/pull/334>`_
+  * `Bump github/codeql-action from 4.35.5 to 4.36.2 <https://github.com/openSUSE/docbuild/pull/347>`_
+  * `Update setuptools requirement from >=82.0.1 to >=83.0.0 <https://github.com/openSUSE/docbuild/pull/362>`_
+  * `Update click requirement from >=8.4.1 to >=8.4.2 <https://github.com/openSUSE/docbuild/pull/358>`_
+  * `Bump astral-sh/setup-uv from 8.1.0 to 8.2.0 <https://github.com/openSUSE/docbuild/pull/357>`_
+  * `Update setuptools-scm requirement from >=10.0.5 to >=10.2.0 <https://github.com/openSUSE/docbuild/pull/363>`_
+  * `Update ruff requirement from >=0.15.15 to >=0.15.20 <https://github.com/openSUSE/docbuild/pull/361>`_
+  * `Bump astral-sh/ruff-action from 3 to 4.0.0 <https://github.com/openSUSE/docbuild/pull/356>`_
+  * `Bump soupsieve from 2.8.3 to 2.8.4 <https://github.com/openSUSE/docbuild/pull/366>`_
+  * `Update pyright requirement from >=1.1.410 to >=1.1.411 <https://github.com/openSUSE/docbuild/pull/360>`_
+
+
+Code Refactoring
+----------------
+
+- The project's directory structure was refactored to align with XDG standards using ``platformdirs``, centralizing path definitions and introducing new, more flexible configuration options for cache, runtime, and lock directories. (:gh:`369`)
+
+
+Version 0.20.0
+==============
+
+Bug Fixes
+---------
+
+- Fixed a validation bug in ``LanguageCode`` by automatically stripping leading and trailing whitespaces from input strings. (:gh:`259`)
+
+
+Improved Documentation
+----------------------
+
+- Added new section about "Mainting GitHub Actions" (:gh:`300`)
+- The documentation index page now shows the current release (via ``setuptools-scm``) and build date on the title page. (:gh:`306`)
+
+
+Features
+--------
+
+- Added a new ``portal list`` subcommand to provide a compact tree overview of products, docsets, and deliverables from the Portal schema. (:gh:`252`)
+- Refactored ``LanguageCode`` to automatically strip leading and trailing whitespaces and auto-complete partial language codes (for example, resolving `en` to `en-us`). (:gh:`309`)
+- Added a GitHub Actions CI workflow to automatically enforce the presence of changelog fragments in Pull Requests. (:gh:`322`)
+
+
+Infrastructure
+--------------
+
+- Used ``--no-sync`` for custom alias. (:gh:`301`)
+- Added "security" as newsfragment option (:gh:`310`)
+- Several dependency updates:
+
+  * `Bump github/codeql-action from 4.35.4 to 4.35.5 <https://github.com/openSUSE/docbuild/pull/316>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.10.2 to >=3.10.3 <https://github.com/openSUSE/docbuild/pull/315>`_
+  * `Update click requirement from >=8.4.0 to >=8.4.1 <https://github.com/openSUSE/docbuild/pull/314>`_
+  * `Update ruff requirement from >=0.15.13 to >=0.15.14 <https://github.com/openSUSE/docbuild/pull/313>`_
+  * `Update pydata-sphinx-theme requirement from >=0.17.1 to >=0.18.0 <https://github.com/openSUSE/docbuild/pull/312>`_
+  * `Update pytest-asyncio requirement from >=1.3.0 to >=1.4.0 <https://github.com/openSUSE/docbuild/pull/311>`_
+
+
+Security
+--------
+
+- Removed the default dependency cooldown from ``uv.toml`` so CI and Dependabot now rely on the committed ``uv.lock`` file, while cooldown-based updates remain available via ``UV_EXCLUDE_NEWER``. (:gh:`305`)
+- Upgraded ``idna`` from 3.13 to 3.16 to fix a security vulnerability. (:gh:`308`)
+
+
+Version 0.19.0
+==============
+
+Improved Documentation
+----------------------
+
+- Added a new topic into the Developer Guide about how to migrate the
+  old Docserv config (version 6) into new Portal config (version 7). (:gh:`250`)
+- Improved howto topic and make separate files. Add procedures for common tasks. (:gh:`283`)
+
+
+Features
+--------
+
+- Updated models to align with Portal schema (:gh:`222`)
+- Added an in-tree PEP 517 build backend to automatically compile the Portal Schema from  RELAX NG Compact (``.rnc``) into XML (``.rng``) format during the build process, ensuring both formats are available in the distributed package. (:gh:`232`)
+- Added :command:`portal validate` subcommand. (:gh:`254`)
+- Added convenience wrapper scripts for Portal validation and migration from old Docserv config. (:gh:`256`)
+
+
+Infrastructure
+--------------
+
+- Added a data-driven test suite for the Portal XML Schema using Jing.
+  Includes valid and invalid test cases to ensure schema integrity and XInclude support. (:gh:`258`)
+- Switched order in GH issue template (bug report) (:gh:`260`)
+- Portal Config: Correct ``<git>`` tag inside ``<dc>`` (:gh:`267`)
+- Portal Config: Correct content model of ``<dc>``.
+  The previous content model enforced a ``<git>`` element.
+  A "lonely" ``<subdir>`` wasn't possible. This is fixed now. (:gh:`269`)
+- GHA: Provide :command:`jing` custom wrapper for MacOS to resolve XInclude elements (:gh:`278`)
+- Implemented multi-version doc switcher (:gh:`282`)
+- Introduced a dependency cooldown  to mitigate supply-chain attacks (:gh:`286`)
+
+
+
+Version 0.18.0
+==============
+
+Bug Fixes
+---------
+
+- Fixed the ``config`` subcommand to prevent crashes when displaying help (``-h/--help``) with an invalid configuration file. The ``app`` and ``env`` subcommands have been unified into ``config list`` and ``config validate`` for a more streamlined user experience. (:gh:`112`)
+- Improved error handling for configuration loading. Malformed TOML files now trigger a formatted diagnostic message with line and column details instead of a Python traceback. (:gh:`175`)
+- Added strict syntax validation for configuration placeholders. The application will now explicitly report an error and halt when encountering malformed placeholders (e.g., missing or incorrectly ordered curly braces like ``{server.name``) instead of silently leaving them unresolved. (:gh:`233`)
+
+
+Improved Documentation
+----------------------
+
+- Described the new portal schema from the perspective of a user trying to add
+  or change the config.
+  Additionally, rework on the glossary page to improve the layout and readability of terms and definitions. (:gh:`238`)
+- Improved usability and readability of docs by adding
+  homepage navigation cards using Sphinx Design extension. (:gh:`247`)
+
+
+Infrastructure
+--------------
+
+- Several dependency updates:
+
+  * `Update pytest-cov requirement from >=6.1.1 to >=7.1.0 <https://github.com/openSUSE/docbuild/pull/244>`_
+  * `Update sphinx-autodoc-typehints requirement from >=3.2.0 to >=3.10.2 <https://github.com/openSUSE/docbuild/pull/243>`_
+  * `Update sphobjinv requirement from >=2.3.1.3 to >=2.4 <https://github.com/openSUSE/docbuild/pull/242>`_
+  * `Update sphinx requirement from >=8.2.3 to >=9.1.0 <https://github.com/openSUSE/docbuild/pull/241>`_
+  * `Update pydata-sphinx-theme requirement from >=0.16.1 to >=0.17.1 <https://github.com/openSUSE/docbuild/pull/240>`_
+  * `Update sphinx-autoapi requirement from >=3.6.0 to >=3.8.0 <https://github.com/openSUSE/docbuild/pull/229>`_
+  * `Update towncrier requirement from >=24.8.0 to >=25.8.0 <https://github.com/openSUSE/docbuild/pull/228>`_
+  * `Update pydantic requirement from >=2.11.4 to >=2.13.3 <https://github.com/openSUSE/docbuild/pull/227>`_
+  * `Update tomlkit requirement from >=0.13.2 to >=0.14.0 <https://github.com/openSUSE/docbuild/pull/226>`_
+  * `Update rich requirement from >=14.0.0 to >=15.0.0 <https://github.com/openSUSE/docbuild/pull/225>`_
+  * `Bump softprops/action-gh-release from 2 to 2.6.2 <https://github.com/openSUSE/docbuild/pull/219>`_
+  * `Update pyright requirement from >=1.1.401 to >=1.1.408 <https://github.com/openSUSE/docbuild/pull/218>`_
+  * `Update setuptools requirement from >=77 to >=82.0.1 <https://github.com/openSUSE/docbuild/pull/217>`_
+  * `Update ruff requirement from >=0.11.12 to >=0.15.10 <https://github.com/openSUSE/docbuild/pull/216>`_
+  * `Update pytest-asyncio requirement from >=1.0.0 to >=1.3.0 <https://github.com/openSUSE/docbuild/pull/215>`_
+  * `Update docformatter requirement from >=1.7.5 to >=1.7.7 <https://github.com/openSUSE/docbuild/pull/214>`_
+
+
+Code Refactoring
+----------------
+
+- Refactored product schema (:pr:`197`)
+
+  These changes reflect broad architectural shifts and naming conventions
+  throughout the entire configuration system.
+
+  * **Rebranding**: The naming convention has shifted from Docserv to Portal.
+    This is reflected in namespace changes and element renaming
+    (e.g., ``<product>`` is now part of a portal root).
+
+  * **Documentation-First Design**: The schema now heavily utilizes ``db:refname``
+    and ``db:refpurpose`` annotations for almost every element and attribute.
+    This allows for automated generation of human-readable documentation directly
+    from the RNC file.
+
+  * **Enhanced Modularity**: The schema now explicitly supports splitting large
+    configuration files into smaller, more manageable parts. By utilizing
+    inclusion mechanisms, you can maintain different sections of the portal
+    (like ``<categories>`` or specific products) in separate files, leading to
+    a cleaner and more maintainable structure.
+
+  * **Implicit Language Logic**: Master/source language identification
+    has shifted from a boolean attribute (``@default``) to a value-based system.
+    The schema now assumes ``en-us`` is the source locale for products and deliverables.
+
+  * **Migration Tooling**: To facilitate the transition, an XSLT migration
+    stylesheet is available. This tool automates the conversion of version
+    6.0 configuration files to the 7.0 format, handling the renaming of
+    elements, restructuring of attributes, and the removal of deprecated metadata. (:gh:`187`)
+
+
+Version 0.17.0
+==============
+
+Improved Documentation
+----------------------
+
+- Described some missing features:
+
+  * Document the command :command:`docbuild check files` in the new seciton
+    "Checking your Environment"
+  * Add Pydantic definition into glossary
+  * Adjusted "Configuring the Tool" section and included placeholders
+    (static & dynamic), key naming conventions, and more. (:gh:`173`)
+- Streamlined CLI subcommands by removing redundant environment configuration
+  checks and implementing strict typing with EnvConfig models.
+  Updated :class:`~docbuild.utils.git.ManagedGitRepo` to support both string
+  and :class:`~docbuild.models.repo.Repo` model initialization. (:gh:`181`)
+
+
+Features
+--------
+
+- Added serialization of missing :class:`~docserv.models.deliverable.Description`. (:gh:`155`)
+- Added a rich-formatted Pydantic validation error reporter for the CLI, providing field descriptions, expected values, and documentation links. (:gh:`158`)
+- Implemented manifest parity with legacy JSON portal configuration, including support for nested product metadata collection, full locale (BCP 47) support, and a new manifest audit utility for structural verification. (:gh:`183`)
+- Introduced the ``max_workers`` configuration key in the application config. This allows users to define concurrency limits using integers or hardware-aware keywords such as ``all``, ``half``, or ``all2``. (:gh:`189`)
+- Added a global CLI option ``-j``/``--workers`` to manage concurrency. This option overrides the configuration file and supports both explicit integer values and dynamic keywords (``all``, ``half``, ``all2``). (:gh:`190`)
+- Added a producer/consumer model implementation. (:gh:`191`)
+- Enhanced metadata pipeline resilience by implementing default values for missing legacy fields and added a comprehensive suite of catalog-wide audit tools. (:gh:`192`)
+
+
+Infrastructure
+--------------
+
+- Integrated GitHub CodeQL for automated security scanning and data-flow analysis of Python source code. (:gh:`164`)
+- Improve test coverage for :file:`git.py`, :file:`env.py`, and
+  :file:`lifecycle.py`. Raises coverage report by 1%. (:gh:`168`)
+- Added a project security policy (SECURITY.md) to define a coordinated disclosure process for reporting vulnerabilities. (:gh:`179`)
+- Print more information from the setup-uv step. (:gh:`186`)
+- In the bug reporting template, remove "Windows" and add "Generic". (:gh:`196`)
+- Added :file:`AGENTS.md` for guiding coding agents. (:gh:`203`)
+- Switched the Ubuntu CI toolchain to use the modernized ``doc-container`` hosted on GitHub Container Registry (GHCR), providing Python 3.12 support and improved build reliability. (:gh:`205`)
+
+
+Code Refactoring
+----------------
+
+- The implementation of :func:`~docbuild.config.app.deep_merge` has been
+  fixed to properly handle deep copies of lists, tuples, and sets.
+  Refactored to be more robust and handle a wider variety of data types
+  (including lists, tuples, and sets) correctly during the merging process. (:gh:`202`)
+
 
 Version 0.16.0
 ==============
@@ -43,7 +698,7 @@ Features
 --------
 
 - Added :command:`check files` subcommand to verify that all DC files defined in XML configurations exist in their respective remote repositories. The implementation includes an optimization to group checks by repository, significantly reducing Git network overhead. (:gh:`78`)
-- Implemented a "smart" :class:`~docbuild.models.serverroles.ServerRole` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
+- Implemented a "smart" ``ServerRole`` enum that accepts case-insensitive or abbreviated aliases like ``p``, ``prod``, or ``PRODUCTION``. The new value ``devel`` is an alias for ``testing``.
   Refactor CLI error handling to display Pydantic validation failures in a clean, structured format. (:gh:`113`)
 
 

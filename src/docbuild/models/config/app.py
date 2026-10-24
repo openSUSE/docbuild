@@ -2,13 +2,23 @@
 
 from collections.abc import Sequence  # Added Sequence for internal use
 from copy import deepcopy
+import os
 from typing import Any, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from rich.errors import StyleSyntaxError
+from rich.style import Style
 
+from docbuild.cli.theme import (
+    DARK_THEME_STYLES,
+    DEFAULT_STYLES,
+    LIGHT_THEME_STYLES,
+    ThemeTag,
+)
 from docbuild.config.app import (
     CircularReferenceError,
     PlaceholderResolutionError,
+    PlaceholderSyntaxError,
     replace_placeholders,
 )
 from docbuild.logging import DEFAULT_LOGGING_CONFIG
@@ -188,7 +198,100 @@ class AppConfig(BaseModel):
         description="Configuration for the application's logging system.",
     )
 
+    # Added max_workers with support for ints and descriptive strings
+    max_workers: int = Field(
+        default="half",  # type: ignore
+        description="Max concurrent workers. Supports integers or 'all', 'all2'/'half'.",
+    )
+
+    theme: dict[ThemeTag, str] = Field(
+        default_factory=lambda: dict(DEFAULT_STYLES),
+        description="Configuration for Rich console theme styles.",
+    )
+
     model_config = ConfigDict(extra="allow")
+
+    @field_validator("theme", mode="before")
+    @classmethod
+    def merge_theme_defaults(cls, v: object) -> object:
+        """Merge user overrides on top of default theme styles.
+
+        Supports theme presets ('dark' or 'light'), string style specifications
+        (e.g., 'bold red on black'), and structured dictionaries (e.g.,
+        {'color': 'red', 'bold': True}).
+        """
+        if not isinstance(v, dict):
+            return v
+        raw = dict(v)
+        preset_raw = raw.pop("preset", raw.pop("mode", "dark"))
+        preset = str(preset_raw).lower()
+        if preset == "dark":
+            base = DARK_THEME_STYLES
+        elif preset == "light":
+            base = LIGHT_THEME_STYLES
+        else:
+            raise ValueError(
+                f"Invalid theme preset '{preset_raw}'. "
+                "Supported presets are 'dark' and 'light'."
+            )
+
+        normalized: dict[object, object] = {}
+        for k, val in raw.items():
+            if isinstance(val, dict):
+                try:
+                    normalized[k] = str(Style(**val))
+                except Exception as e:
+                    raise ValueError(
+                        f"Invalid style table for '{k}': {e}"
+                    ) from e
+            else:
+                normalized[k] = val
+        return dict(base) | normalized
+
+    @field_validator("theme")
+    @classmethod
+    def validate_theme(cls, v: dict[ThemeTag, str]) -> dict[ThemeTag, str]:
+        """Validate that all defined styles are valid Rich style syntax."""
+        for tag, style_str in v.items():
+            try:
+                Style.parse(style_str)
+            except StyleSyntaxError as e:
+                raise ValueError(
+                    f"Invalid Rich style syntax for '{tag}': {e}"
+                ) from e
+        return v
+
+    @field_validator("max_workers", mode="before")
+    @classmethod
+    def _resolve_worker_count(cls, v: int | str) -> int:
+        """Resolve keywords 'all', 'half', 'all2' into concrete integers."""
+        cpu_count = os.cpu_count() or 1
+
+        keyword_map = {
+            "all": lambda cpu: cpu,
+            "half": lambda cpu: max(1, cpu // 2),
+            "all2": lambda cpu: max(1, cpu // 2),
+        }
+
+        if isinstance(v, str):
+            val = v.lower()
+            if val in keyword_map:
+                # Return immediately once resolved
+                return keyword_map[val](cpu_count)
+
+            if val.isdigit():
+                v = int(val)
+            else:
+                raise ValueError(
+                    f"Invalid max_workers value: '{v}'. "
+                    "Use an integer, 'all', or 'half'/'all2'."
+                )
+
+        # At this point, v is guaranteed to be an int
+        if v < 1:
+            raise ValueError("max_workers must be at least 1")
+
+        return v
 
     @model_validator(mode="before")
     @classmethod
@@ -196,7 +299,12 @@ class AppConfig(BaseModel):
         if isinstance(data, dict):
             try:
                 return replace_placeholders(deepcopy(data))
-            except (PlaceholderResolutionError, CircularReferenceError) as e:
+            except (
+                PlaceholderResolutionError,
+                CircularReferenceError,
+                PlaceholderSyntaxError
+            ) as e:
+                # This wraps the error so Pydantic reports it as a validation failure
                 raise ValueError(f"Configuration placeholder error: {e}") from e
         return data
 
@@ -204,3 +312,17 @@ class AppConfig(BaseModel):
     def from_dict(cls, data: dict[str, Any]) -> Self:
         """Create an AppConfig instance from a dictionary."""
         return cls.model_validate(data)
+
+    @classmethod
+    def get_default_config(cls) -> dict[str, Any]:
+        """Generate application defaults without loading user configuration.
+
+        :return: JSON-compatible defaults, including logging aliases and
+            the portable worker-count keyword.
+        """
+        workers = cls.model_fields["max_workers"].default
+        defaults = cls.model_validate({"max_workers": workers}).model_dump(
+            mode="json", by_alias=True
+        )
+        defaults["max_workers"] = workers
+        return defaults

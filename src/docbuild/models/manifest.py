@@ -3,24 +3,28 @@
 from collections.abc import Generator
 from datetime import date
 import logging
-from typing import ClassVar, Self
+from typing import Any, ClassVar, Self
 
 from lxml import etree
 from pydantic import (
+    AliasChoices,
     BaseModel,
     ConfigDict,
-    # model_validator,
     Field,
     SerializationInfo,
     ValidationInfo,
     field_serializer,
     field_validator,
+    model_validator,
 )
 
+from ..constants import DEFAULT_LANGS, XML_ID
 from ..models.language import LanguageCode
 from ..models.lifecycle import LifecycleFlag
+from ..utils.convert import convert2bool
 
 log = logging.getLogger(__name__)
+
 
 class Description(BaseModel):
     """Represents a description for a product/docset.
@@ -35,8 +39,16 @@ class Description(BaseModel):
     """
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     description: str = Field(default="")
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English descriptions as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -49,24 +61,21 @@ class Description(BaseModel):
     ) -> Generator[Self, None, None]:
         """Extract descriptions from a parent XML node.
 
-        :param node: a node pointing to ``<product>``
-        :yield:
+        Handles the schema v7 wrapper ``<descriptions><desc .../></descriptions>``.
+
+        :param node: a node pointing to ``<product>`` (or root)
+        :yield: A :class:`Description` instance per ``<desc>`` element found.
         """
-        for n in node.xpath("desc"):
-            text = "".join(
-                f"<{child.tag}>{
-                    ' '.join(
-                        x.strip()
-                        for t in child.itertext()
-                        for x in t.splitlines()
-                        if x.strip()
-                    )
-                }</{child.tag}>"
-                for child in n.iterchildren()
+        for n in node.xpath("descriptions/desc"):
+            attrs: dict[str, Any] = dict(n.attrib)
+            text = (n.text or "") + "".join(
+                etree.tostring(child, encoding="unicode", method="html")
+                for child in n
                 if child.tag != "title"
             )
+            text = " ".join(text.split()).strip()
 
-            yield cls(**{"default": False, **n.attrib}, description=text)
+            yield cls(**attrs, description=text)
 
 
 class CategoryTranslation(BaseModel):
@@ -84,6 +93,14 @@ class CategoryTranslation(BaseModel):
     lang: LanguageCode
     default: bool = Field(default=False)
     title: str
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English translations as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
@@ -117,10 +134,12 @@ class Category(BaseModel):
         Category._current_rank += 1
         return Category._current_rank
 
-    id: str = Field(serialization_alias="categoryId")
+    id: str = Field(alias="categoryId")
     # Automatically called. Depends on the order of the XML element.
     rank: int = Field(default_factory=_increment_rank)
     translations: list[CategoryTranslation] = Field(default_factory=list)
+
+    model_config = ConfigDict(populate_by_name=True)
 
     @classmethod
     def reset_rank(cls: type[Self]) -> None:
@@ -131,22 +150,56 @@ class Category(BaseModel):
     def from_xml_node(
         cls: type[Self], node: etree._Element
     ) -> Generator[Self, None, None]:
-        """Extract categories from a parent XML node.
+        """Extract categories from a parent XML node (portal schema v7).
+
+        In schema v7 the structure is::
+
+            <categories>
+              <category lang="en-us">
+                <language xml:id="cat.about">
+                  <title>About</title>
+                </language>
+              </category>
+              <category lang="de-de">
+                <language linkend="cat.about">
+                  <title>Über</title>
+                </language>
+              </category>
+            </categories>
+
+        The ``lang`` attribute lives on ``<category>``; each ``<language>``
+        carries either ``xml:id`` (canonical entry) or ``linkend`` (translation)
+        as the category identifier.
 
         :param node: a node pointing to ``<product>``
-        :yield: A :class:`Category` instance for each category found.
+        :yield: A :class:`Category` instance for each unique category ID.
         """
-        for cat in node.xpath("category|categories/category"):
-            langs = cat.xpath("language")
-            translations = [
-                CategoryTranslation(
-                    lang=lng.attrib.get("lang", "en-us"),
-                    default=lng.attrib.get("default", False),
-                    title=lng.attrib.get("title", ""),
-                )
-                for lng in langs
-            ]
-            yield cls(id=cat.attrib.get("categoryid", ""), translations=translations)
+        by_id: dict[str, list[CategoryTranslation]] = {}
+
+        for cat in node.xpath("categories/category"):
+            cat_lang = cat.attrib.get("lang", "en-us")
+            for lng in cat.xpath("language"):
+                cat_id = lng.get(XML_ID) or lng.attrib.get("linkend", "")
+                if not cat_id:
+                    continue
+                title = lng.findtext("title")
+                title_str = title.strip() if title else ""
+                lang_code = LanguageCode(language=cat_lang)
+                if "default" in lng.attrib:
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                        default=convert2bool(lng.attrib.get("default", "")),
+                    )
+                else:
+                    cat_trans = CategoryTranslation(
+                        lang=lang_code,
+                        title=title_str,
+                    )
+                by_id.setdefault(cat_id, []).append(cat_trans)
+
+        for cat_id, translations in by_id.items():
+            yield cls(id=cat_id, translations=translations)
 
 
 class Archive(BaseModel):
@@ -162,13 +215,44 @@ class Archive(BaseModel):
     """
 
     lang: LanguageCode
-    default: bool
+    default: bool = Field(default=False)
     zip: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def fill_zip_from_context(cls, data: object) -> object:
+        """Build ``zip`` when omitted using lang/product/docset inputs."""
+        if not isinstance(data, dict):
+            return data
+
+        if data.get("zip"):
+            return data
+
+        product = str(data.get("product") or "").strip()
+        docset = str(data.get("docset") or "").strip()
+        lang_value = data.get("lang")
+        lang = str(lang_value).strip() if lang_value is not None else ""
+
+        if not product or not docset or not lang:
+            raise ValueError(
+                "Argument 'zip' is required unless lang, product, and docset are provided"
+            )
+
+        data["zip"] = f"/{lang}/{product}/{docset}/{product}-{docset}-{lang}.zip"
+        return data
 
     @field_serializer("lang")
     def serialize_lang(self: Self, value: LanguageCode, info: SerializationInfo) -> str:
         """Serialize LanguageCode to a string like 'en-us'."""
         return str(value)
+
+    @model_validator(mode="after")
+    def set_default_for_english(self: Self) -> Self:
+        """Auto-mark English translations as default when not explicitly set."""
+        if ("default" not in self.model_fields_set and
+            self.lang.language in DEFAULT_LANGS):
+            self.default = True
+        return self
 
 
 class DocumentFormat(BaseModel):
@@ -213,12 +297,21 @@ class SingleDocument(BaseModel):
     # Define dcfile first so it is available to other validators in 'info.data'
     dcfile: str = Field(default="")
     lang: str | None = None
+    default: bool = Field(default=False)
     title: str | None = Field(default=None)
     subtitle: str = Field(default="")
     description: str = Field(default="")
     rootid: str = Field(default="")
     format: DocumentFormat = Field(default_factory=DocumentFormat)
-    datemodified: date | None = Field(default=None, serialization_alias="dateModified")
+    datemodified: date | None = Field(default=None, alias="dateModified")
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    @field_validator("datemodified", mode="before")
+    @classmethod
+    def normalize_empty_date(cls, value: object) -> object:
+        """Treat the serialized empty date as an absent date."""
+        return None if value == "" else value
 
     @field_validator("title")
     @classmethod
@@ -292,8 +385,12 @@ class Document(BaseModel):
     docs: list[SingleDocument] = Field(default_factory=list)
     tasks: list[str] = Field(default_factory=list)
     products: list[Product] = Field(default_factory=list)
+    category: str | None = Field(
+        default=None,
+        exclude_if=lambda v: v is None or v == "",
+    )
     doctypes: list[str] = Field(default_factory=list, alias="docTypes")
-    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGate")
+    isgated: bool = Field(default=False, alias="isGated", serialization_alias="isGated")
     rank: int | str | None = Field(default=None)
 
     @field_validator("rank", mode="before")
@@ -319,8 +416,11 @@ class Manifest(BaseModel):
     acronym: str
     version: str
     lifecycle: str | LifecycleFlag = Field(default=LifecycleFlag.unknown)
-    # Ensure this is defined exactly like this:
-    hide_productname: bool = Field(default=False, alias="hide-productname")
+    hide_productname: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("hide-productname", "hide_productname"),
+        serialization_alias="hide-productname",
+    )
     descriptions: list[Description] = Field(default_factory=list)
     categories: list[Category] = Field(default_factory=list)
     documents: list[Document] = Field(default_factory=list)

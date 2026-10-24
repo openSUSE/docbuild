@@ -23,7 +23,7 @@ jobs:
         id: validate
         run: |
           BRANCH="${{ github.event.pull_request.head.ref }}"
-          if [[ "$BRANCH" =~ ^release/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+          if [[ "$BRANCH" =~ ^release/v?([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
             echo "valid_release=true" >> "$GITHUB_OUTPUT"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -43,7 +43,11 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          # A Personal Access Token (PAT) is REQUIRED here to trigger gh-pages.yml
+          # The default GITHUB_TOKEN intentionally prevents triggered events from starting new workflows.
+          token: ${{ secrets.PAT_DOCBUILD_TOKEN_FOR_TAGS }}
 
       - name: Check Version Consistency
         id: version_check
@@ -66,7 +70,7 @@ jobs:
 
       - name: Setup uv
         id: setup-uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v10.2.0
         with:
             version: "latest"
             enable-cache: true
@@ -87,7 +91,7 @@ jobs:
         run: uv build --wheel
 
       - name: Generate GitHub Release & Upload wheel
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3.0.2
         with:
           tag_name: ${{ env.VERSION }}
           generate_release_notes: true

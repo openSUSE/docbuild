@@ -1,5 +1,8 @@
 """Clone repositories.
 
+Choose exactly one mode: provide one or more REPOS repository arguments,
+or use --all to clone all configured repositories. Do not combine them.
+
 Pass any of the following URLs to clone:
 
 \b
@@ -15,26 +18,62 @@ import click
 
 from ...cli.context import DocBuildContext
 from ...constants import GITLOGGER_NAME
-from .process import process
+from ...tasks.repo import clone_repositories
 
 log = logging.getLogger(__name__)
 
 git_logger = logging.getLogger(GITLOGGER_NAME)
 
 
-@click.command(help=__doc__)
+@click.command()
 @click.argument(
     "repos",
     nargs=-1,
 )
+@click.option(
+    "--all",
+    "all_repos",
+    is_flag=True,
+    help="Clone all configured repositories instead of specifying REPOS.",
+)
 @click.pass_context
-def clone(ctx: click.Context, repos: tuple[str, ...]) -> None:
+def clone(ctx: click.Context, repos: tuple[str, ...], all_repos: bool) -> None:
     """Clone repositories into permanent directory.
 
-    :param repos: A tuple of repository selectors. If empty, all repos are cloned.
+    Choose exactly one mode: provide one or more repository arguments,
+    or use --all to clone all configured repositories. Do not combine them.
+
+    Pass any of the following URLs to clone:
+
+    \b
+    * HTTPS URLs like ``https://github.com/org/repo.git``
+    * SSH URLS like git@github.com:org/repo.git
+    * Abbreviated URLs like 'org/repo'
+
+    \f
+
+    :param repos: A tuple of repository selectors. If empty, all repos
+        are cloned.
     :param ctx: The Click context object.
-    """
+    """  # noqa: D301
+    if repos and all_repos:
+        raise click.UsageError("Repository arguments and --all are mutually exclusive.")
+    if not (repos or all_repos):
+        raise click.UsageError("Provide at least one repository argument or --all.")
+
     context: DocBuildContext = ctx.obj
-    result = asyncio.run(process(context, repos))
+    # Type guard: Ensure envconfig is loaded before accessing its attributes
+    if context.envconfig is None:
+        raise click.ClickException("Environment configuration is missing.")
+
+    main_portal_config = context.envconfig.paths.main_portal_config
+    repo_dir = context.envconfig.paths.repo_dir
+
+    async def main() -> int:
+        return await asyncio.create_task(
+            clone_repositories(main_portal_config, repo_dir, repos), name="repo-clone"
+        )
+
+    result = asyncio.run(main())
     log.info(f"Clone process completed with exit code: {result}")
     ctx.exit(result)

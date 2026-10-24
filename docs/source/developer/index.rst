@@ -1,5 +1,5 @@
-Developer Guide
-===============
+:octicon:`code-review` Developer Guide
+======================================
 
 This guide provides all the necessary information for contributing to the project. It covers core concepts, design principles, and instructions for setting up your development environment. You will also find detailed procedures for testing, creating releases, and other common development tasks.
 
@@ -9,6 +9,7 @@ This guide provides all the necessary information for contributing to the projec
 
    overview
    design
+   async-pipeline
    directory-overview
 
 .. toctree::
@@ -28,12 +29,15 @@ This guide provides all the necessary information for contributing to the projec
    build-changelog
    create-release
    trigger-actions
+   maintain-ghactions/index
 
+   migrate-config
    build-docs
-   howto
+   howto/index
 
 .. toctree::
    :maxdepth: 2
    :caption: Appendix
 
+   agentic-workflow
    knowing-github-setup

@@ -1,0 +1,591 @@
+"""Unit tests for docbuild.tasks.metadata.manifest."""
+
+import json
+from pathlib import Path
+from unittest.mock import patch
+
+from lxml import etree  # type: ignore
+import pytest
+
+from docbuild.models.deliverable import Deliverable
+from docbuild.models.doctype import Doctype
+import docbuild.tasks.metadata.manifest as manifest_pkg
+from docbuild.tasks.metadata.manifest import (
+    configured_languages_from_docset,
+    merge_descriptions_with_treatment,
+    store_productdocset_json,
+)
+
+# ---------------------------------------------------------------------------
+# Shared fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def deliverable() -> Deliverable:
+    """Provide a Deliverable built from a minimal docservconfig XML."""
+    xml_string = """
+    <docservconfig>
+      <product xml:id="sles">
+        <docset xml:id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-SLES-deployment">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    root = etree.fromstring(xml_string)
+    locale_node = root.find(".//locale")
+    return Deliverable(locale_node.find("deliverable"))
+
+
+@pytest.fixture
+def stitchnode(deliverable: Deliverable) -> etree._ElementTree:
+    """Minimal stitched docservconfig ElementTree matching the deliverable fixture."""
+    from docbuild.constants import XML_ID
+
+    prod_node = etree.Element(
+        "product",
+        productid=deliverable.xml.product_id,
+    )
+    prod_node.set(XML_ID, deliverable.xml.product_id)
+
+    etree.SubElement(prod_node, "name").text = "SUSE Linux Enterprise Server"
+    etree.SubElement(prod_node, "acronym").text = "SLES"
+    docset_node = etree.SubElement(
+        prod_node,
+        "docset",
+        path=deliverable.xml.docset_path,
+        setid=deliverable.xml.docset_path,
+        productid=deliverable.xml.product_id,
+    )
+    docset_node.set(XML_ID, deliverable.xml.docset_path)
+
+    resources_node = etree.SubElement(docset_node, "resources")
+    locale_node = etree.SubElement(resources_node, "locale", lang="en-us")
+    deliverable_node = etree.SubElement(locale_node, "deliverable")
+    etree.SubElement(deliverable_node, "dc", file="DC-SLES-deployment")
+
+    root = etree.Element("docservconfig")
+    root.append(prod_node)
+    return etree.ElementTree(root)
+
+
+@pytest.fixture
+def test_dirs(tmp_path: Path) -> dict[str, Path]:
+    """Provide mock directories needed for manifest creation."""
+    meta_cache_dir = tmp_path / "cache" / "metadata"
+    meta_cache_dir.mkdir(parents=True)
+    json_cache_dir = tmp_path / "cache" / "json"
+    json_cache_dir.mkdir(parents=True)
+    return {
+        "meta_cache_dir": meta_cache_dir,
+        "json_cache_dir": json_cache_dir,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+
+
+def test_store_productdocset_json_merges_and_writes(
+    test_dirs: dict[str, Path],
+    deliverable: Deliverable,
+    stitchnode: etree._ElementTree,
+):
+    """Merge docs from metadata files and write a product/docset JSON file."""
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    # Create a dummy metadata file
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / deliverable.xml.dcfile
+    doc_content = {
+        "docs": [
+            {
+                "title": "Doc1",
+                "dcfile": deliverable.xml.dcfile,
+                "lang": "en-us",
+                "description": "A test document.",
+                "dateModified": "2024-01-01",
+                "format": {"html": "path/to/html"},
+            }
+        ],
+        "category": "cat.administration",
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    doctype = Doctype.from_str(
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
+    )
+
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    out_file = (
+        json_cache_dir
+        / deliverable.xml.product_id
+        / f"{deliverable.xml.docset_path}.json"
+    )
+    assert out_file.exists()
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+    assert "documents" in merged
+    assert merged["documents"][0]["docs"][0]["title"] == "Doc1"
+    assert merged["documents"][0]["category"] == "cat.administration"
+    assert "category" not in merged["documents"][0]["docs"][0]
+    assert "hide-productname" in merged
+    assert merged["acronym"] == "sles"
+
+
+def test_store_productdocset_json_warns_on_empty_metadata(
+    test_dirs: dict[str, Path],
+    deliverable: Deliverable,
+    stitchnode: etree._ElementTree,
+):
+    """If a metadata file contains an empty object, an error is logged."""
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    (deliverable_path / deliverable.xml.dcfile).write_text("{}", encoding="utf-8")
+
+    doctype = Doctype.from_str(
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
+    )
+
+    with patch.object(manifest_pkg, "log") as mock_log:
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
+
+    mock_log.error.assert_called_with(
+        "Empty metadata file %s", deliverable_path / deliverable.xml.dcfile
+    )
+
+
+def test_store_productdocset_json_handles_read_error(
+    test_dirs: dict[str, Path],
+    deliverable: Deliverable,
+    stitchnode: etree._ElementTree,
+):
+    """If a metadata file contains invalid JSON, the error is caught and logged."""
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    deliverable_path = meta_cache_dir / deliverable.paths.relpath
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    (deliverable_path / deliverable.xml.dcfile).write_text(
+        "{ not json }", encoding="utf-8"
+    )
+
+    doctype = Doctype.from_str(
+        f"{deliverable.xml.product_id}/{deliverable.xml.docset_path}/{deliverable.xml.lang}"
+    )
+
+    with patch.object(manifest_pkg, "log") as mock_log:
+        store_productdocset_json(
+            doctypes=[doctype],
+            stitchnode=stitchnode,
+            meta_cache_dir=meta_cache_dir,
+            json_cache_dir=json_cache_dir,
+        )
+
+    mock_log.error.assert_called()
+
+
+@pytest.mark.parametrize(
+    ("treatment", "docset_lang", "expected_lang", "expected_description"),
+    [
+        ("append", "en-us", "en-us", "<p>global</p><p>local</p>"),
+        ("prepend", "en-us", "en-us", "<p>local</p><p>global</p>"),
+        ("replace", "de-de", "de-de", "<p>local</p>"),
+    ],
+)
+def test_merge_descriptions_with_treatment(
+    treatment: str,
+    docset_lang: str,
+    expected_lang: str,
+    expected_description: str,
+) -> None:
+    """Merges descriptions according to append/prepend/replace treatment."""
+    product_desc = [
+        manifest_pkg.Description(
+            lang="en-us", default=True, description="<p>global</p>"
+        )
+    ]
+    docset_desc = [
+        manifest_pkg.Description(
+            lang=docset_lang, default=False, description="<p>local</p>"
+        )
+    ]
+
+    merged = merge_descriptions_with_treatment(
+        product_desc,
+        docset_desc,
+        treatment=treatment,
+    )
+
+    assert len(merged) == 1
+    assert str(merged[0].lang) == expected_lang
+    assert merged[0].description == expected_description
+
+
+def test_store_productdocset_json_applies_docset_description_treatment(
+    tmp_path: Path,
+) -> None:
+    """Docset descriptions with treatment=append are merged with product descriptions."""
+    xml_string = """
+    <docservconfig>
+      <product xml:id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <descriptions>
+          <desc lang="en-us"><p>Global</p></desc>
+        </descriptions>
+        <docset xml:id="sles.16.0" path="16.0" lifecycle="supported">
+          <descriptions treatment="append">
+            <desc lang="en-us"><p>Local</p></desc>
+          </descriptions>
+          <resources>
+            <git remote="https://github.com/SUSE/doc-sle.git"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-dummy"/></deliverable>
+            </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode_local = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/16.0/en-us")
+    meta_cache_dir = tmp_path / "cache" / "metadata"
+    meta_cache_dir.mkdir(parents=True, exist_ok=True)
+    json_cache_dir = tmp_path / "cache" / "json"
+    json_cache_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create a dummy metadata file
+    deliverable_path = meta_cache_dir / "en-us" / "sles" / "16.0"
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / "DC-dummy"
+    doc_content = {
+        "docs": [
+            {
+                "title": "dummy",
+                "dcfile": "DC-dummy",
+                "lang": "en-us",
+                "description": "A test document.",
+                "dateModified": "2024-01-01",
+                "format": {"html": "path/to/html"},
+            }
+        ]
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode_local,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    out_file = json_cache_dir / "sles" / "16.0.json"
+    data = json.loads(out_file.read_text(encoding="utf-8"))
+    assert data["descriptions"][0]["description"] == "<p>Global</p><p>Local</p>"
+
+
+def test_store_productdocset_json_expands_docset_wildcard(tmp_path: Path) -> None:
+    """A wildcard doctype writes one JSON file per configured docset."""
+    xml_string = """
+    <docservconfig>
+      <product xml:id="appliance">
+        <name>Appliance building</name>
+        <acronym>appliance</acronym>
+        <docset xml:id="appliance.keg-2" path="keg-2" lifecycle="supported">
+          <resources>
+            <git remote="https://github.com/SUSE-Enceladus/keg.git"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-keg"/></deliverable>
+            </locale>
+          </resources>
+        </docset>
+        <docset xml:id="appliance.kiwi-9" path="kiwi-9" lifecycle="supported">
+          <resources>
+            <git remote="https://github.com/OSInside/kiwi-suse-doc.git"/>
+            <locale lang="en-us">
+                <deliverable><dc file="DC-kiwi"/></deliverable>
+            </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode_local = etree.ElementTree(etree.fromstring(xml_string))
+
+    meta_cache_dir = tmp_path / "cache" / "metadata"
+    json_cache_dir = tmp_path / "cache" / "json"
+    json_cache_dir.mkdir(parents=True, exist_ok=True)
+
+    for docset, dcfile, title in (
+        ("keg-2", "DC-keg", "Keg"),
+        ("kiwi-9", "DC-kiwi", "KIWI"),
+    ):
+        outdir = meta_cache_dir / "en-us" / "appliance" / docset
+        outdir.mkdir(parents=True, exist_ok=True)
+        (outdir / dcfile).write_text(
+            json.dumps(
+                {
+                    "docs": [
+                        {
+                            "title": title,
+                            "dcfile": f"{dcfile}.xml",
+                            "lang": "en-us",
+                            "description": f"The {title} guide.",
+                            "dateModified": "2024-01-01",
+                            "format": {"html": "path/to/html"},
+                        }
+                    ],
+                    "category": "cat.administration",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+    store_productdocset_json(
+        doctypes=[Doctype.from_str("appliance/*/*")],
+        stitchnode=stitchnode_local,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    jsondir = json_cache_dir / "appliance"
+    assert sorted(p.name for p in jsondir.glob("*.json")) == [
+        "keg-2.json",
+        "kiwi-9.json",
+    ]
+
+    keg = json.loads((jsondir / "keg-2.json").read_text(encoding="utf-8"))
+    assert keg["productname"] == "Appliance building"
+    assert [doc["docs"][0]["title"] for doc in keg["documents"]] == ["Keg"]
+
+
+def test_configured_languages_from_docset_preserves_order_and_uniqueness() -> None:
+    """Extract configured locale languages in order while removing duplicates."""
+    docset_node = etree.fromstring(
+        """
+        <docset>
+          <resources>
+            <locale lang="en-us"/>
+            <locale lang="de-de"/>
+            <locale lang="fr-fr"/>
+          </resources>
+        </docset>
+        """
+    )
+
+    languages = configured_languages_from_docset(docset_node)
+
+    assert [str(lang) for lang in languages] == ["en-us", "de-de", "fr-fr"]
+
+
+def test_store_productdocset_json_preserves_order(
+    test_dirs: dict[str, Path],
+) -> None:
+    """Documents in the manifest should be in the same order as in the XML."""
+    xml_string = """
+    <docservconfig>
+      <product xml:id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <docset xml:id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-first"/>
+                </deliverable>
+                <deliverable>
+                    <dc file="DC-second"/>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/15-SP7/en-us")
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    # Create dummy metadata files
+    for dcfile in ["DC-first", "DC-second"]:
+        deliverable_path = meta_cache_dir / "en-us" / "sles" / "15-SP7"
+        deliverable_path.mkdir(parents=True, exist_ok=True)
+        meta_file = deliverable_path / dcfile
+        doc_content = {
+            "docs": [
+                {
+                    "title": dcfile,
+                    "dcfile": dcfile,
+                    "lang": "en-us",
+                    "description": "A test document.",
+                    "dateModified": "2024-01-01",
+                    "format": {"html": "path/to/html"},
+                }
+            ]
+        }
+        meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    out_file = json_cache_dir / "sles" / "15-SP7.json"
+    assert out_file.exists()
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+
+    doc_titles = [doc["docs"][0]["title"] for doc in merged["documents"]]
+    assert doc_titles == ["DC-first", "DC-second"]
+
+
+def test_merge_documents_by_dcfile_sets_default_correctly():
+    """Verify that merge_documents_by_dcfile sets default=True only for en-us."""
+    from docbuild.models.manifest import Document, SingleDocument
+
+    doc1 = Document(docs=[SingleDocument(lang="en-us", dcfile="DC-test")])
+    doc2 = Document(docs=[SingleDocument(lang="de-de", dcfile="DC-test")])
+    doc3 = Document(docs=[SingleDocument(lang="fr-fr", dcfile="DC-test")])
+
+    merged = manifest_pkg.merge_documents_by_dcfile([doc1, doc2, doc3])
+
+    assert len(merged) == 1
+
+    docs = merged[0].docs
+    assert len(docs) == 3
+
+    en_doc = next(d for d in docs if d.lang == "en-us")
+    de_doc = next(d for d in docs if d.lang == "de-de")
+    fr_doc = next(d for d in docs if d.lang == "fr-fr")
+
+    assert en_doc.default is True
+    assert de_doc.default is False
+    assert fr_doc.default is False
+
+
+def test_store_productdocset_json_filters_categories(
+    test_dirs: dict[str, Path],
+):
+    """Categories are filtered to referenced ones, unless full_categories=True."""
+    xml_string = """
+    <docservconfig>
+      <categories>
+        <category lang="en-us">
+            <language xml:id="cat.referenced">
+                <title>Referenced</title>
+            </language>
+        </category>
+        <category lang="en-us">
+            <language xml:id="cat.unreferenced">
+                <title>Unreferenced</title>
+            </language>
+        </category>
+      </categories>
+      <product xml:id="sles">
+        <name>SUSE Linux Enterprise Server</name>
+        <acronym>SLES</acronym>
+        <docset xml:id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-SLES-deployment">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    stitchnode = etree.ElementTree(etree.fromstring(xml_string))
+    doctype = Doctype.from_str("sles/15-SP7/en-us")
+    meta_cache_dir = test_dirs["meta_cache_dir"]
+    json_cache_dir = test_dirs["json_cache_dir"]
+
+    # Create a dummy metadata file that references one category
+    deliverable_path = meta_cache_dir / "en-us" / "sles" / "15-SP7"
+    deliverable_path.mkdir(parents=True, exist_ok=True)
+    meta_file = deliverable_path / "DC-SLES-deployment"
+    doc_content = {
+        "docs": [
+            {
+                "title": "Doc1",
+                "dcfile": "DC-SLES-deployment",
+                "lang": "en-us",
+            }
+        ],
+        "category": "cat.referenced",
+    }
+    meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
+
+    # 1. Test default behavior (filtered)
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+        # full_categories=False is the default
+    )
+
+    out_file = json_cache_dir / "sles" / "15-SP7.json"
+    assert out_file.exists()
+    merged = json.loads(out_file.read_text(encoding="utf-8"))
+
+    assert "categories" in merged
+    assert len(merged["categories"]) == 1
+    assert merged["categories"][0]["categoryId"] == "cat.referenced"
+
+    # 2. Test full_categories=True behavior
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+        full_categories=True,
+    )
+
+    assert out_file.exists()  # Should be overwritten
+    merged_full = json.loads(out_file.read_text(encoding="utf-8"))
+
+    assert "categories" in merged_full
+    assert len(merged_full["categories"]) == 2
+    category_ids = {c["categoryId"] for c in merged_full["categories"]}
+    assert category_ids == {"cat.referenced", "cat.unreferenced"}

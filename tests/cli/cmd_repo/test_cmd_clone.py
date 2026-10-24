@@ -1,154 +1,129 @@
 """Tests for the 'docbuild repo clone' command."""
 
-import logging
-import re
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
+from docbuild.cli.cmd_repo import cmd_clone as cmd_clone_module
 from docbuild.cli.cmd_repo.cmd_clone import clone
-import docbuild.cli.cmd_repo.process as mod_process
 from docbuild.cli.context import DocBuildContext
-from docbuild.utils import shell as shell_module
-
-log = logging.getLogger(__name__)
-
-
-class _DummyPaths:
-    """Lightweight stand-in for EnvPathsConfig used in tests.
-
-    Only the attributes accessed by cmd_repo.process are provided.
-    """
-
-    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
-        self.config_dir = config_dir
-        self.repo_dir = repo_dir
-
-
-class _DummyEnv:
-    """Minimal envconfig replacement exposing ``paths`` for tests.
-
-    This avoids constructing a full EnvConfig instance while still matching
-    the runtime behaviour expected by the cloning logic.
-    """
-
-    def __init__(self, *, config_dir: str, repo_dir: str) -> None:
-        self.paths = _DummyPaths(config_dir=config_dir, repo_dir=repo_dir)
-
-#
-# @pytest.fixture
-# def process_mock() -> AsyncMock:
-#     """Mock the process object returned by create_subprocess_exec."""
-#     mock = AsyncMock()
-#     mock.communicate.return_value = (b'stdout', b'stderr')
-#     mock.returncode = 0
-#     return mock
 
 
 @pytest.fixture
-def mock_subprocess(monkeypatch) -> AsyncMock:
-    """Fixture to mock asyncio.create_subprocess_exec."""
-    process_mock = AsyncMock()
-    process_mock.communicate.return_value = (b"stdout", b"stderr")
-    process_mock.returncode = 0
-    mock_create_subprocess = AsyncMock(return_value=process_mock)
-    # Git commands go through shell.run_command → asyncio.create_subprocess_exec
-    # in the shell utility module.
-    monkeypatch.setattr(
-        shell_module.asyncio, "create_subprocess_exec", mock_create_subprocess
-    )
-    return mock_create_subprocess
+def mock_clone_repositories(monkeypatch) -> AsyncMock:
+    """Fixture to mock the clone_repositories task."""
+    mock = AsyncMock(return_value=0)
+    monkeypatch.setattr(cmd_clone_module, "clone_repositories", mock)
+    return mock
 
 
-def test_clone_from_xml_config(runner, tmp_path, mock_subprocess, caplog):
-    """Test cloning repositories defined in an XML configuration file."""
-    caplog.set_level(logging.INFO, logger="docbuild.git")
+@pytest.mark.parametrize(
+    ("args", "expected_repos"),
+    [
+        (["org/repo1"], ("org/repo1",)),
+        (["org/repo1", "org/repo2"], ("org/repo1", "org/repo2")),
+        (["--all"], ()),
+    ],
+    ids=["single_repo", "multiple_repos", "all_flag"],
+)
+@pytest.mark.parametrize("exit_code", [0, 1])
+def test_clone_command_delegates_to_task(
+    runner, tmp_path, mock_clone_repositories, args, expected_repos, exit_code
+):
+    """Test that the clone CLI command correctly calls the task module."""
+    # Setup dummy paths for the context
     config_dir = tmp_path / "config"
     config_dir.mkdir()
     repo_dir = tmp_path / "repos"
     repo_dir.mkdir()
 
-    # Create a dummy XML config
-    xml_content = """
-<docservconfig>
-  <product productid="sles">
-    <docset setid="15-SP1">
-      <builddocs>
-        <git remote="https://github.com/test/one.git" />
-      </builddocs>
-    </docset>
-    <docset setid="15-SP2">
-      <builddocs>
-        <git remote="https://github.com/test/two.git" />
-      </builddocs>
-    </docset>
-  </product>
-</docservconfig>
-"""
-    (config_dir / "sles.xml").write_text(xml_content)
+    # Use MagicMock to satisfy strict type checkers without defining dummy classes
+    mock_env = MagicMock()
+    mock_env.paths.main_portal_config = config_dir / "portal.xml"
+    mock_env.paths.repo_dir = repo_dir
 
-    context = DocBuildContext(
-        envconfig=_DummyEnv(
-            config_dir=str(config_dir),
-            repo_dir=str(repo_dir),
+    # Initialize context and assign the mock directly to bypass __init__ type checking
+    context = DocBuildContext()
+    context.envconfig = mock_env
+
+    # Call the CLI command with some repo arguments
+    mock_clone_repositories.return_value = exit_code
+    result = runner.invoke(clone, args, obj=context)
+
+    # Verify the CLI executed without errors
+    assert result.exit_code == exit_code
+
+    # Verify our business logic was called with the correct extracted arguments
+    mock_clone_repositories.assert_awaited_once_with(
+        config_dir / "portal.xml",
+        repo_dir,
+        expected_repos,
+    )
+
+
+@pytest.mark.parametrize(
+    ("args", "message"),
+    [
+        ([], "Provide at least one repository argument or --all."),
+        (
+            ["org/repo1", "--all"],
+            "Repository arguments and --all are mutually exclusive.",
         ),
-    )
+        (
+            ["--all", "org/repo1"],
+            "Repository arguments and --all are mutually exclusive.",
+        ),
+        (
+            ["org/repo1", "org/repo2", "--all"],
+            "Repository arguments and --all are mutually exclusive.",
+        ),
+    ],
+    ids=["missing_all", "repo_then_all", "all_then_repo", "multi_repos_with_all"],
+)
+@pytest.mark.parametrize("has_envconfig", [False, True])
+def test_clone_command_rejects_invalid_selection(
+    runner, mock_clone_repositories, args, message, has_envconfig
+):
+    """Reject invalid selections before configuration access or cloning."""
+    context = DocBuildContext()
+    context.envconfig = MagicMock() if has_envconfig else None
 
-    runner.invoke(clone, [], obj=context)
+    result = runner.invoke(clone, args, obj=context)
 
-    assert mock_subprocess.call_count == 2
-
-    calls = mock_subprocess.call_args_list
-    cloned_repos = {call[0][6] for call in calls}  # The 7th arg is the repo URL
-    assert "https://github.com/test/one.git" in cloned_repos
-    assert "https://github.com/test/two.git" in cloned_repos
-
-
-# @pytest.mark.asyncio
-async def test_process_stitchnode_none(monkeypatch, tmp_path):
-    """Test that process raises ValueError if create_stitchfile returns None."""
-    # Patch create_stitchfile to return None
-    monkeypatch.setattr(mod_process, "create_stitchfile", AsyncMock(return_value=None))
-
-    context = DocBuildContext(
-        envconfig=_DummyEnv(
-            config_dir=str(tmp_path / "config"),
-            repo_dir=str(tmp_path / "repos"),
-        )
-    )
-
-    # The config_dir must exist, even if empty
-    (tmp_path / "config").mkdir()
-    (tmp_path / "repos").mkdir()
-
-    with pytest.raises(ValueError,
-                       match=re.escape("Stitch node could not be created.")):
-        await mod_process.process(context, repos=())
+    assert result.exit_code == 2
+    assert "Usage:" in result.output
+    assert message in result.output
+    mock_clone_repositories.assert_not_called()
 
 
-async def test_process_configdir_none():
-    """This scenario is no longer reachable with validated EnvConfig.
+def test_clone_command_help(runner, mock_clone_repositories):
+    """Explain both mutually exclusive modes without starting cloning."""
+    result = runner.invoke(clone, ["--help"])
 
-    The higher-level CLI now ensures ``envconfig`` is a fully validated
-    environment configuration. Retain this test as a smoke check that
-    calling ``process`` with a dummy, but structurally valid, envconfig
-    does not raise and returns an integer exit code.
-    """
-
-    context = DocBuildContext(
-        envconfig=_DummyEnv(config_dir="/non/existent/config", repo_dir="/tmp/repos"),
-    )
-
-    result = await mod_process.process(context, repos=())
-    assert isinstance(result, int)
+    assert result.exit_code == 0
+    output = " ".join(result.output.split())
+    assert "REPOS" in output
+    assert "--all" in output
+    assert "exactly one mode" in output
+    assert "repository arguments" in output
+    assert "all configured repositories" in output
+    mock_clone_repositories.assert_not_called()
 
 
-async def test_process_repodir_none():
-    """See docstring of test_process_configdir_none for rationale."""
+@pytest.mark.parametrize(
+    "args",
+    [
+        ["org/repo1"],
+        ["--all"],
+    ],
+    ids=["explicit_repo", "all_flag"],
+)
+def test_clone_command_fails_missing_envconfig(runner, args):
+    """Test that the clone command aborts cleanly if envconfig is None."""
+    context = DocBuildContext()
+    context.envconfig = None
 
-    context = DocBuildContext(
-        envconfig=_DummyEnv(config_dir="/tmp/config", repo_dir="/non/existent/repos"),
-    )
+    result = runner.invoke(clone, args, obj=context)
 
-    result = await mod_process.process(context, repos=())
-    assert isinstance(result, int)
+    assert result.exit_code != 0
+    assert "Environment configuration is missing" in result.output

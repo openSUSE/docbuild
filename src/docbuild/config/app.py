@@ -3,6 +3,8 @@
 import re
 from typing import Any
 
+from ..constants import ESCAPE_REGEX
+
 MAX_RECURSION_DEPTH: int = 10
 """The maximum recursion depth for placeholder replacement."""
 
@@ -24,6 +26,33 @@ class CircularReferenceError(ValueError):
     pass
 
 
+class PlaceholderSyntaxError(ValueError):
+    """Exception raised when a placeholder has invalid syntax."""
+
+    pass
+
+def unescape(text: str, keep_runtime: bool) -> str:
+    """Unescape double curly braces, optionally preserving runtime placeholders."""
+    if not keep_runtime:
+        return text.replace("{{", "{").replace("}}", "}")
+
+    return ESCAPE_REGEX.sub(
+        lambda m: m.group(0) if m.group("runtime") else m.group(0)[0], text
+    )
+
+
+def normalize_runtime_placeholders(text: str) -> str:
+    """Convert supported escaped runtime placeholders for ``str.format``."""
+    return ESCAPE_REGEX.sub(
+        lambda match: (
+            f"{{{match.group('runtime')}}}"
+            if match.group("runtime")
+            else match.group(0)
+        ),
+        text,
+    )
+
+
 class PlaceholderResolver:
     """Handles placeholder resolution in configuration data."""
 
@@ -32,10 +61,11 @@ class PlaceholderResolver:
        files (like ``{placeholder}``)."""
 
     def __init__(
-        self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH
+        self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH, *, keep_runtime: bool = False
     ) -> None:
         self.config = config
         self.max_recursion_depth = max_recursion_depth
+        self.keep_runtime: bool = keep_runtime
         self._current_container: dict[str, Any] | list[Any] | None = None
         self._current_key: str | int | None = None
 
@@ -86,17 +116,43 @@ class PlaceholderResolver:
                 f"key '{placeholder}' not found in current section.",
             )
 
-    def _resolve_string_placeholders(self, text: str) -> str:
-        """Resolve all placeholders in a string with recursion protection."""
-        count = 0
-        cls = self.__class__
-        while count < self.max_recursion_depth:
-            new_text = cls.PLACEHOLDER_PATTERN.sub(self._resolve_placeholder, text)
+    def validate_brace_syntax(self, text: str, original_text: str) -> None:
+        """Validate that curly braces are balanced and properly ordered."""
+        brace_level = 0
+        for char in text:
+            if char == "{":
+                brace_level += 1
+            elif char == "}":
+                brace_level -= 1
 
-            if new_text == text:
-                # No more changes, we're done
+            # If it ever drops below 0, we've hit a '}' before a '{'
+            if brace_level < 0:
                 break
 
+        # If the level isn't exactly 0 at the end, the syntax is broken
+        if brace_level != 0:
+            container_name = self._get_container_name()
+
+            if "{" in text and "}" not in text:
+                msg = f"Missing end curly brace in placeholder in value: '{original_text}'"
+            elif "}" in text and "{" not in text:
+                msg = f"Missing start curly brace in placeholder in value: '{original_text}'"
+            else:
+                msg = f"Invalid placeholder syntax in value: '{original_text}'"
+
+            raise PlaceholderSyntaxError(f"In configuration key '{container_name}': {msg}")
+
+    def _resolve_string_placeholders(self, text: str) -> str:
+        """Resolve all placeholders in a string with recursion protection."""
+        original_text = text
+        count = 0
+        cls = self.__class__
+
+        # 1. Resolve valid placeholders
+        while count < self.max_recursion_depth:
+            new_text = cls.PLACEHOLDER_PATTERN.sub(self._resolve_placeholder, text)
+            if new_text == text:
+                break
             text = new_text
             count += 1
 
@@ -106,8 +162,11 @@ class PlaceholderResolver:
                 f"Too many nested placeholder expansions in key '{key_name}'."
             )
 
-        # Replace escaped braces with literal ones
-        return text.replace("{{", "{").replace("}}", "}")
+        # 2. Syntax Validation using the helper method
+        self.validate_brace_syntax(text, original_text)
+
+        # 3. Final cleanup of escapes
+        return unescape(text, self.keep_runtime)
 
     def _get_container_name(self) -> str:
         """Get a human-readable name for the current container/key being processed."""
@@ -134,6 +193,7 @@ class PlaceholderResolver:
         :return: The configuration with all placeholders resolved.
         :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
         :raises CircularReferenceError: If a circular reference is detected.
+        :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
         """
         # Use a stack to process all items iteratively
         # Stack items: (container, key, context) where container can be dict or list
@@ -171,6 +231,8 @@ class PlaceholderResolver:
 def replace_placeholders(
     config: dict[str, Any] | None,
     max_recursion_depth: int = MAX_RECURSION_DEPTH,
+    *,
+    keep_runtime: bool = False,
 ) -> dict[str, Any] | None:
     """Replace placeholder values in a nested dictionary structure.
 
@@ -183,9 +245,10 @@ def replace_placeholders(
     :return: A new dictionary with placeholders replaced.
     :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
     :raises CircularReferenceError: If a circular reference is detected.
+    :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
     """
     if not isinstance(config, dict):
         return config
 
-    resolver = PlaceholderResolver(config, max_recursion_depth)
+    resolver = PlaceholderResolver(config, max_recursion_depth, keep_runtime=keep_runtime)
     return resolver.replace()

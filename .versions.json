@@ -1,0 +1,12 @@
+[
+  {
+    "name": "latest",
+    "version": "latest",
+    "url": "https://opensuse.github.io/docbuild/latest/"
+  },
+  {
+    "name": "stable",
+    "version": "stable",
+    "url": "https://opensuse.github.io/docbuild/stable/"
+  }
+]

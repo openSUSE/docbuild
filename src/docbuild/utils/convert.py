@@ -8,20 +8,22 @@ def convert2bool(value: str | bool) -> bool:
 
         * True, "yes", "true", "1", "on" for True and
         * False, "no", "false", "0", "off" for False.
-    :return: The boolean value
+    :return: The boolean value, ``True`` or ``False``
     :raises ValueError: If the value cannot be converted to a valid boolean
     """
     mapping = {
+        # Truthy values
         "yes": True,
         "true": True,
         "1": True,
         "on": True,
+        # Falsy values
         "no": False,
         "false": False,
         "0": False,
         "off": False,
     }
-    value = str(value).lower()
+    value = str(value).strip().lower()
     if value in mapping:
         return mapping[value]
 

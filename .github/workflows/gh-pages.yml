@@ -5,9 +5,24 @@ on:
   push:
     branches:
       - main
+      - 'test-docs?-**'
+    tags:
+      - '[0-9]*.[0-9]*.[0-9]*'
     paths:
       - 'docs/**'
       - '.github/workflows/gh-pages.yml'
+      - 'src/docbuild/__about__.py'
+      - 'changelog.d/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+env:
+  CI_BIN_DIR: .github/bin
 
 jobs:
   build-and-deploy:
@@ -15,18 +30,20 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Install Graphviz
         run: sudo apt-get update && sudo apt-get install -y graphviz
 
       - name: Install the latest version of uv
         id: setup-uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v10.2.0
         with:
-            version: "latest"
-            enable-cache: true
-            cache-suffix: "docbuild"
+          version: "latest"
+          enable-cache: true
+          cache-suffix: "docbuild"
 
       - name: Print uv debug information
         run: |
@@ -35,18 +52,49 @@ jobs:
           echo "Set Python version is ${{ steps.setup-uv.outputs.python-version }}"
 
       - name: Install dependencies
-        run: uv sync --frozen --group docs
+        run: uv sync --frozen --group docs --group changelog
+
+      - name: Determine documentation version
+        run: ${{ env.CI_BIN_DIR }}/determine-version.sh
+
+      - name: Build Changelog
+        if: github.ref_type != 'tag'
+        run: |
+          if find changelog.d -maxdepth 1 -type f -name '*.rst' ! -name 'README.rst' ! -name '_template.rst' -print -quit | grep -q .; then
+            uv run --frozen --no-sync towncrier build --keep --version "${{ env.DOC_VERSION }}"
+          else
+            echo "No news fragments found; skipping Towncrier build."
+          fi
 
       - name: Build documentation
+        env:
+          DOC_VERSION: ${{ env.DOC_VERSION }}
+          TARGET_DIR: ${{ env.TARGET_DIR }}
         run: |
+          # The DOC_VERSION is handled inside conf.py using os.environ
           uv run make -C docs html
 
+      - name: Prepare deployment
+        env:
+          TARGET_DIR: ${{ env.TARGET_DIR }}
+        run: ${{ env.CI_BIN_DIR }}/prepare-deploy.sh
+
+      - name: Generate versions.json
+        run: ${{ env.CI_BIN_DIR }}/generate-versions.py --output versions.json
+
+      - name: Debug GITHUB_ENV
+        run: echo $GITHUB_ENV
+
+      - name: Debug ${{ env.TARGET_DIR }}
+        run: ls -R "deploy/${{ env.TARGET_DIR }}" || exit 10
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html
-    
+          publish_dir: ./deploy
+
       - name: Print documentation URL
         run: |
-            echo "Your documentation will be available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+            echo "Documentation URL: "
+            echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"

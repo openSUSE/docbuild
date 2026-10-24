@@ -2,12 +2,20 @@
 
 from dataclasses import dataclass, field
 import re
-from typing import ClassVar
+from typing import ClassVar, Self
 
 
 @dataclass(frozen=True, init=False)
 class Repo:
-    """A repository model that can be initialized from a URL or a short name.
+    """A model for Git URL and SSH repositories.
+
+    It can be initialized from another Repo object, a URL, or a short name.
+
+    Initializing from an existing ``Repo`` object is a cheap operation that
+    avoids re-parsing the URL. The ``default_branch`` parameter can be used
+    to create a new ``Repo`` instance with a different branch. If provided,
+    it will overwrite the original branch (or set one if the original
+    ``Repo`` had no branch).
 
     This model can be compared directly with strings, which will check
     against the repository's abbreviated name (e.g., ``org/repo``).
@@ -43,16 +51,23 @@ class Repo:
     .. code-block:: python
 
         >>> from docbuild.models.repo import Repo
-        >>> repo = Repo("https://github.com/openSUSE/docbuild.git")
+        >>> repo = Repo("https://github.com/openSUSE/docbuild")
         >>> repo.url
-        'https://github.com/openSUSE/docbuild.git'
+        'https://github.com/opensuse/docbuild.git'
         >>> repo.name
-        'openSUSE/docbuild'
+        'opensuse/docbuild'
         >>> repo.surl
-        'gh://openSUSE/docbuild'
+        'gh://opensuse/docbuild'
         >>> repo.treeurl
-        'https://github.com/openSUSE/docbuild/tree/main'
+        'https://github.com/opensuse/docbuild/tree/main'
 
+        >>> # Create a new Repo with a different branch from an existing one
+        >>> r1 = Repo("gh://opensuse/docbuild@main")
+        >>> r2 = Repo(r1, default_branch="v1")
+        >>> r2.branch
+        'v1'
+        >>> r2.surl
+        'gh://opensuse/docbuild@v1'
     """
 
     DEFAULT_HOST: ClassVar[str] = "https://github.com"
@@ -144,13 +159,42 @@ class Repo:
     origin: str = field(init=False, repr=False)
     """The original unchanged URL of the repository."""
 
-    def __init__(self, value: str, default_branch: str | None = None) -> None:
-        """Initialize a repository model from a URL or a short name.
+    def __init__(self, value: Self | str, default_branch: str | None = None) -> None:
+        """Initialize a repository model.
 
-        :param default_branch: The default branch to use if no branch is specified in the URL.
+        :param value: A URL string, a short name (e.g., ``org/repo``), or an
+            existing ``Repo`` object.
+        :param default_branch: If the input ``value`` does not specify a branch,
+            this branch is used. If ``value`` is another ``Repo`` object,
+            this parameter can be used to override its branch.
         """
         if not value:
             raise ValueError("Repository value cannot be empty.")
+
+        if isinstance(value, Repo):
+            # Perform a cheap copy of attributes.
+            for attribute in (
+                "url", "treeurl", "surl", "name", "branch", "origin",
+            ):
+                object.__setattr__(self, attribute, getattr(value, attribute))
+
+            # If a new branch is provided that differs from the original, update
+            # branch-dependent attributes without re-parsing the whole URL.
+            if default_branch is not None and default_branch != value.branch:
+                service, _, _ = value.surl.partition("://")
+                owner, repo = value.name.split("/", maxsplit=1)
+                treeurl_template = self._TREE_PATTERN.get(service, self._TREE_PATTERN["gh"])
+
+                object.__setattr__(self, "branch", default_branch)
+                object.__setattr__(self, "surl", f"{service}://{value.name}@{default_branch}")
+                object.__setattr__(
+                    self,
+                    "treeurl",
+                    treeurl_template.format(
+                        owner=owner, repo=repo, branch=default_branch
+                    ),
+                )
+            return
 
         # Store the original string
         object.__setattr__(self, "origin", value)
@@ -159,25 +203,9 @@ class Repo:
 
         # Consolidate data from regex match
         name = f"{data['org']}/{data['repo']}"
-        branch = data.get("branch")
-        host = data.get("host")
-        schema = data.get("schema")
-
-        match schema:
-            case "http" | "https":
-                # For https, a host from regex does not include the schema
-                service = self._MAP_URL2SERVICE.get(f"{schema}://{host}", "gh")
-                url = f"{schema}://{host}/{name}.git"
-            case "git@":
-                # For ssh, map to service and get canonical URL
-                service = self._MAP_URL2SERVICE.get(f"https://{host}", "gh")
-                host = self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)
-                url = f"{host}/{name}.git"
-            case _:
-                # For abbreviations (gh://) or bare (org/repo)
-                service = schema or "gh"
-                host = self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)
-                url = f"{host}/{name}.git"
+        branch = data.get("branch") or default_branch
+        service = data["service"]
+        url = data["url"]
 
         # Build URLs
         surl = f"{service}://{name}"
@@ -209,17 +237,38 @@ class Repo:
                 "or an abbreviated name."
             )
         raw_data = match.groupdict()
-        result = {
-            "schema": raw_data.get("https_schema")
-            or raw_data.get("ssh_schema")
-            or raw_data.get("gh_schema"),
-            "host": raw_data.get("https_host") or raw_data.get("ssh_host"),
-            "org": raw_data.get("https_org")
+        org = (
+            raw_data.get("https_org")
             or raw_data.get("ssh_org")
-            or raw_data.get("gh_org"),
-            "repo": raw_data.get("https_repo")
+            or raw_data.get("gh_org")
+        )
+        repo = (
+            raw_data.get("https_repo")
             or raw_data.get("ssh_repo")
-            or raw_data.get("gh_repo"),
+            or raw_data.get("gh_repo")
+        )
+
+        match raw_data:
+            case {
+                "https_schema": https_schema,
+                "https_host": https_host,
+            } if https_schema and https_host:
+                service = self._MAP_URL2SERVICE.get(
+                    f"{https_schema}://{https_host}", "gh"
+                )
+                url = f"{https_schema}://{https_host}/{org}/{repo}.git"
+            case {"ssh_schema": "git@", "ssh_host": ssh_host} if ssh_host:
+                service = self._MAP_URL2SERVICE.get(f"https://{ssh_host}", "gh")
+                url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
+            case _:
+                service = raw_data.get("gh_schema") or "gh"
+                url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
+
+        result = {
+            "org": org,
+            "repo": repo,
+            "service": service,
+            "url": url,
         }
 
         # Branch Logic: Prioritize the /tree/ branch, fallback to @branch
@@ -229,7 +278,20 @@ class Repo:
         return result
 
     def __eq__(self, other: object) -> bool:
-        """Compare Repo with another Repo (by name) or a string (by name)."""
+        """Compare Repo with another Repo (by name) or a string (by name).
+
+        For example:
+
+        .. code-block:: python
+
+            >>> repo = Repo("opensuse/docbuild")
+            >>> repo == "https://github.com/opensuse/docbuild.git"
+            True
+            >>> repo == "gh://opensuse/docbuild"
+            True
+            >>> repo == "opensuse/docbuild@v1"
+            True
+        """
         if isinstance(other, str):
             return self.name == Repo(other).name
         if isinstance(other, Repo):
@@ -259,6 +321,8 @@ class Repo:
 
 
 if __name__ == "__main__":
+    # Run it as:
+    # python -m src.docbuild.models.repo
     test_urls = [
         "https://github.com/lycheeverse/lychee/tree/relative-link-fixes",  # New #variant
         "https://GitHub.com/opensuse/docbuild.git",  # HTTPS no branch

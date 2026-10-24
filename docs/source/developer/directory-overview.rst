@@ -13,7 +13,7 @@ The repository of this project contains the following directories:
 
 * :file:`.github/`
 
-  Contains GitHub-specific files, such as issue templates and workflows.
+  Contains GitHub-specific files. For more information, see :ref:`know-github-setup` and :ref:`maintain-ghaction`.
 
 * :file:`.ipython/`
 

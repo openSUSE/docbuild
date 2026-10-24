@@ -1,0 +1,487 @@
+"""Tests for the portal list command."""
+
+from unittest.mock import AsyncMock, MagicMock, patch
+
+from click.testing import CliRunner
+from lxml import etree  # type: ignore
+
+from docbuild.cli.cmd_portal import cmd_list
+from docbuild.cli.cmd_portal.cmd_list import list_cmd
+from docbuild.cli.context import DocBuildContext
+
+
+def test_portal_list_help() -> None:
+    """Test that the help menu renders correctly for 'portal list'."""
+    runner = CliRunner()
+    result = runner.invoke(list_cmd, ["--help"])
+
+    assert result.exit_code == 0
+    assert (
+        "List products, docsets, and deliverables from the portal config."
+        in result.output
+    )
+    assert "Format:" in result.output
+    assert "PRODUCT/DOCSETS" in result.output
+
+
+def test_portal_list_no_main_config(tmp_path) -> None:
+    """Test that the command gracefully aborts if the portal config is missing."""
+    runner = CliRunner()
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    # Point to a path that does not exist
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "does_not_exist.xml"
+    )
+
+    result = runner.invoke(list_cmd, obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "Error loading XML schema:" in result.output
+
+
+def test_portal_list_invalid_doctype() -> None:
+    """Test that the command gracefully aborts if an invalid doctype is passed."""
+    runner = CliRunner()
+    mock_ctx = DocBuildContext()
+
+    result = runner.invoke(list_cmd, ["invalid_doctype_format!"], obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "Error parsing doctype:" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_invalid_docset_for_product(mock_parse, tmp_path) -> None:
+    """Test that the command dynamically validates docsets and aborts with available options."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="15sp4" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="admin_guide"/>\n'
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        '        <docset path="15sp5" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="dummy_guide"/>\n'
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, ["sles/invalid_docset"], obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "1 validation error for Doctype" in result.output
+    assert "* sles/invalid_docset is not a valid Docset." in result.output
+
+    # Rich console automatically wraps long text in test environments.
+    # Strip newlines to safely assert the exact string match.
+    clean_output = result.output.replace("\n", "")
+    assert "Allowed values are: '*', '15sp4', '15sp5'" in clean_output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_malformed_xml(mock_parse, tmp_path) -> None:
+    """Test that the command gracefully aborts if the portal.xml contains unparseable syntax."""
+    runner = CliRunner()
+
+    # Simulate the real core function throwing a standard parsing exception
+    mock_parse.side_effect = etree.XMLSyntaxError("Malformed", 1, 0, 0)
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "Error loading XML schema:" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_success(mock_parse, tmp_path) -> None:
+    """Test that 'portal list' parses a valid configuration and displays the tree structure."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="15sp4" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="admin_guide">\n'
+        '                        <dc file="DC-admin-guide"/>\n'
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    # Bypass complex application context dependencies by mocking the parsed tree output
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, obj=mock_ctx)
+
+    assert result.exit_code == 0, result.output
+    assert "en-us" in result.output
+    assert "sles" in result.output
+    assert "15sp4" in result.output
+    assert "admin_guide (DC-admin-guide)" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_with_doctype_filter(mock_parse, tmp_path) -> None:
+    """Test that 'portal list' successfully accepts and processes valid Doctype filtering arguments."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="15sp4" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="admin_guide">\n'
+        '                        <dc file="DC-admin-guide"/>\n'
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    # Use a known test-suite-approved doctype version string
+    result = runner.invoke(list_cmd, ["sles/15sp4"], obj=mock_ctx)
+
+    assert result.exit_code == 0, (
+        f"Command aborted unexpectedly. Output: {result.output}"
+    )
+    assert "en-us" in result.output
+    assert "sles" in result.output
+    assert "15sp4" in result.output
+    assert "admin_guide (DC-admin-guide)" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_ref_uses_english_dcfile(mock_parse, tmp_path) -> None:
+    """Test that translated ref deliverables display the linked English DC file."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="16.0" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="admin_guide" type="dc">\n'
+        '                        <dc file="DC-admin-guide">\n'
+        '                            <format html="1"/>\n'
+        "                        </dc>\n"
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        '                <locale lang="de-de">\n'
+        '                    <deliverable xml:id="admin_guide_de" type="xref">\n'
+        '                        <xref linkend="admin_guide"/>\n'
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, ["sles/16.0/de-de"], obj=mock_ctx)
+
+    assert result.exit_code == 0, result.output
+    assert "admin_guide_de (DC-admin-guide)" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_ref_without_id_uses_linked_id(mock_parse, tmp_path) -> None:
+    """Test that translated ref deliverables without @id use linked English ID."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="16.0" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        '                    <deliverable xml:id="admin_guide" type="dc">\n'
+        '                        <dc file="DC-admin-guide">\n'
+        '                            <format html="1"/>\n'
+        "                        </dc>\n"
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        '                <locale lang="de-de">\n'
+        '                    <deliverable type="xref">\n'
+        '                        <xref linkend="admin_guide"/>\n'
+        "                    </deliverable>\n"
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, ["sles/16.0/de-de"], obj=mock_ctx)
+
+    assert result.exit_code == 0, result.output
+    assert "admin_guide (DC-admin-guide)" in result.output
+    assert "unnamed-deliverable" not in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_no_matching_deliverables(mock_parse, tmp_path) -> None:
+    """Test that the command displays a yellow notice if filters yield zero results."""
+    runner = CliRunner()
+
+    portal_content = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<portal schemaversion="7.0">\n'
+        '    <product xml:id="sles">\n'
+        '        <docset path="15sp4" lifecycle="supported">\n'
+        "            <resources>\n"
+        '                <locale lang="en-us">\n'
+        "                    \n"
+        "                </locale>\n"
+        "            </resources>\n"
+        "        </docset>\n"
+        "    </product>\n"
+        "</portal>\n"
+    )
+    mock_parse.return_value = etree.fromstring(portal_content.encode("utf-8"))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, obj=mock_ctx)
+
+    assert result.exit_code == 0, result.output
+    assert "No deliverables found matching the criteria." in result.output
+
+
+COMPREHENSIVE_MOCK_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<portal schemaversion="7.0">
+    <categories>
+        <category lang="en-us">
+            <language xml:id="tuning-and-performance">
+                <title>Tuning and performance</title>
+            </language>
+        </category>
+    </categories>
+    <product xml:id="sles">
+        <docset path="16.0" lifecycle="supported">
+            <resources>
+                <git remote="https://github.com/SUSE/doc-modular.git" />
+                <locale lang="en-us">
+                    <deliverable xml:id="admin_guide" category="tuning-and-performance">
+                        <dc file="DC-admin-guide">
+                            <format epub="0" html="1" pdf="1" single-html="0"/>
+                        </dc>
+                    </deliverable>
+                    <deliverable xml:id="prebuilt_docs" type="prebuilt">
+                        <title>SUSE Docs</title>
+                        <prebuilt>
+                            <url href="https://documentation.suse.com/sles/" format="html"/>
+                        </prebuilt>
+                    </deliverable>
+                </locale>
+                <locale lang="de-de">
+                    <deliverable xml:id="admin_guide_de" type="xref">
+                        <xref linkend="admin_guide" category="tuning-and-performance"/>
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+
+        <docset path="invalid-repo" lifecycle="supported">
+            <resources>
+                <git remote="https://todo" />
+                <locale lang="en-us">
+                    <deliverable xml:id="bad_repo_doc">
+                        <dc file="DC-bad-repo" />
+                    </deliverable>
+                </locale>
+            </resources>
+        </docset>
+    </product>
+</portal>
+"""
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_metadata_flags(mock_parse, tmp_path) -> None:
+    """Test that all metadata flags successfully inject info into the tree."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    # 1. Test Translations
+    res_trans = runner.invoke(list_cmd, ["--trans"], obj=mock_ctx)
+    assert res_trans.exit_code == 0
+    assert "Translations: de-de" in res_trans.output
+
+    # 2. Test Formats
+    res_formats = runner.invoke(list_cmd, ["--formats"], obj=mock_ctx)
+    assert res_formats.exit_code == 0
+    assert "Formats: HTML, PDF" in res_formats.output
+
+    # 3. Test Categories
+    res_cats = runner.invoke(list_cmd, ["--categories"], obj=mock_ctx)
+    assert res_cats.exit_code == 0
+    assert "Category: Tuning and performance" in res_cats.output
+
+    # 4. Test Repo (Short & Long) - Explicitly testing valid surl AND dummy URL fallback
+    res_repo_short = runner.invoke(list_cmd, ["--repo", "short"], obj=mock_ctx)
+    assert res_repo_short.exit_code == 0
+    assert (
+        "gh://suse/doc-modular" in res_repo_short.output.lower()
+    )  # Valid short (no .git)
+    assert "Repo: https://todo" in res_repo_short.output  # Fallback short
+
+    res_repo_long = runner.invoke(list_cmd, ["--repo", "long"], obj=mock_ctx)
+    assert res_repo_long.exit_code == 0
+    assert (
+        "https://github.com/suse/doc-modular.git" in res_repo_long.output.lower()
+    )  # Valid long
+    assert "Repo: https://todo" in res_repo_long.output  # Fallback long
+
+    # 5. Test Prebuilt Titles & URLs (Implicit behavior)
+    res_prebuilt = runner.invoke(list_cmd, [], obj=mock_ctx)
+    assert res_prebuilt.exit_code == 0
+    assert "SUSE Docs (Prebuilt)" in res_prebuilt.output
+    assert "URL: https://documentation.suse.com/sles/" in res_prebuilt.output
+
+
+def test_portal_list_repo_requires_argument() -> None:
+    """Test that omitting 'short' or 'long' for the -R flag correctly throws a Click error."""
+    runner = CliRunner()
+    mock_ctx = DocBuildContext()
+
+    # Passing a doctype argument immediately after -R.
+    result = runner.invoke(list_cmd, ["-R", "sles/16.0"], obj=mock_ctx)
+
+    assert result.exit_code != 0
+    assert "Invalid value for '--repo' / '-R'" in result.output
+    assert "is not one of 'short', 'long'" in result.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode_basic(mock_parse, tmp_path) -> None:
+    """Test that the --flat flag formats the output as a flat list."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    res_flat = runner.invoke(list_cmd, ["--flat", "sles/16.0/*"], obj=mock_ctx)
+    assert res_flat.exit_code == 0
+    assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat.output
+    assert "en-us/sles/16.0:SUSE Docs (Prebuilt)" in res_flat.output
+    assert "de-de/sles/16.0:admin_guide_de (DC-admin-guide)" in res_flat.output
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode_metadata(mock_parse, tmp_path) -> None:
+    """Test that the --flat flag properly appends metadata branches."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    res_flat_meta = runner.invoke(
+        list_cmd,
+        ["--flat", "--trans", "--formats", "--repo", "short", "sles/16.0/*"],
+        obj=mock_ctx,
+    )
+    assert res_flat_meta.exit_code == 0
+    assert "en-us/sles/16.0:admin_guide (DC-admin-guide)" in res_flat_meta.output
+    assert "Translations: de-de" in res_flat_meta.output
+    assert "Formats: HTML, PDF" in res_flat_meta.output
+    assert "gh://suse/doc-modular" in res_flat_meta.output.lower()
+
+
+@patch.object(cmd_list, "parse_portal_config", new_callable=AsyncMock)
+def test_portal_list_flat_mode_no_duplicate_en_us(mock_parse, tmp_path) -> None:
+    """Test that English deliverables with translations are listed only once (#661)."""
+    runner = CliRunner()
+    mock_parse.return_value = etree.fromstring(COMPREHENSIVE_MOCK_XML.encode("utf-8"), parser=etree.XMLParser(load_dtd=False, no_network=True))
+
+    mock_ctx = DocBuildContext()
+    mock_ctx.envconfig = MagicMock()
+    mock_ctx.envconfig.paths.main_portal_config.expanduser.return_value = (
+        tmp_path / "portal.xml"
+    )
+
+    result = runner.invoke(list_cmd, ["--flat", "sles/16.0/*"], obj=mock_ctx)
+    assert result.exit_code == 0, result.output
+    assert result.output.count("en-us/sles/16.0:admin_guide (DC-admin-guide)") == 1

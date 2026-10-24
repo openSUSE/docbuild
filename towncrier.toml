@@ -37,3 +37,6 @@ name = "Infrastructure"
 
 [tool.towncrier.fragment.refactor]
 name = "Code Refactoring"
+
+[tool.towncrier.fragment.security]
+name = "Security"

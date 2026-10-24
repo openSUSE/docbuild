@@ -1,0 +1,424 @@
+"""Unit tests for docbuild.tasks.metadata.daps."""
+
+from collections.abc import Iterator
+from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
+
+from lxml import etree  # type: ignore
+import pytest
+
+from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
+from docbuild.models.deliverable import Deliverable
+import docbuild.tasks.metadata.daps as daps_pkg
+from docbuild.tasks.metadata.daps import (
+    get_daps_command,
+    get_daps_hashes,
+    process_deliverable,
+    update_metadata_json,
+)
+
+
+@pytest.fixture
+def deliverable() -> Deliverable:
+    """Provide a Deliverable built from a minimal docservconfig XML."""
+    xml_string = """
+    <docservconfig>
+      <product id="sles">
+        <docset id="sles.15-sp7" path="15-SP7">
+          <resources>
+             <git remote="https://github.com/SUSE/doc-sle.git"/>
+             <locale lang="en-us">
+                <branch>main</branch>
+                <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-SLES-deployment">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                </deliverable>
+             </locale>
+          </resources>
+        </docset>
+      </product>
+    </docservconfig>
+    """
+    root = etree.fromstring(xml_string)
+    locale_node = root.find(".//locale")
+    deliverable_node = locale_node.find("deliverable")
+    return Deliverable(deliverable_node)
+
+
+def test_get_daps_command(tmp_path: Path):
+    """Verify get_daps_command correctly interpolates the template."""
+    worktree = tmp_path / "worktree"
+    dcfile = worktree / "DC-test"
+    output = tmp_path / "out.json"
+    tmpl = "daps --builddir={builddir} --dc={dcfile} --output={output}"
+
+    result = get_daps_command(worktree, dcfile, output, tmpl)
+
+    assert result == [
+        "daps",
+        f"--builddir={worktree}",
+        f"--dc={dcfile}",
+        f"--output={output}",
+    ]
+
+
+def test_get_daps_command_default_template_has_no_runtime_braces() -> None:
+    """Verify the default metadata template receives runtime values."""
+    template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["meta"]).replace(
+        "{build.daps.command}", "daps"
+    )
+    worktree = Path("worktree")
+    dcfile = worktree / "DC-test"
+    output = Path("out.json")
+
+    result = get_daps_command(
+        worktree,
+        dcfile,
+        output,
+        template,
+    )
+
+    assert result[0] == "daps"
+    assert result[1] == "--builddir=worktree"
+    assert result[2] == "-d"
+    assert result[3].endswith("DC-test")
+    assert result[4:] == ["metadata", "--output", "out.json"]
+    assert all("{" not in argument and "}" not in argument for argument in result)
+
+
+def test_update_metadata_json_sets_category_at_document_level(
+    deliverable: Deliverable,
+    tmp_path: Path,
+):
+    """Category is written on the outer document object, not inside docs[0]."""
+    outputjson = tmp_path / "metadata.json"
+    outputjson.write_text("{}", encoding="utf-8")
+
+    mock_json_data = {
+        "docs": [{"format": {}, "lang": ""}],
+    }
+
+    with patch.object(daps_pkg, "edit_json") as mock_edit_json:
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+        update_metadata_json(outputjson, deliverable)
+
+    assert mock_json_data.get("category") == deliverable.xml.categoryid
+    assert "category" not in mock_json_data["docs"][0]
+
+
+def test_update_metadata_json_no_pdf(tmp_path: Path):
+    """When pdf is not in the format dict, "pdf" key is not added (line 50->52 branch)."""
+    outputjson = tmp_path / "metadata.json"
+    outputjson.write_text("{}", encoding="utf-8")
+
+    d = MagicMock()
+    d.format = {"html": "1"}  # no pdf key
+    d.xml.dcfile = "DC-FOO"
+    d.xml.lang = "en-us"
+    d.xml.categoryid = None
+    d.paths.html_path = "/html"
+
+    mock_json_data = {"docs": [{"format": {}, "lang": ""}]}
+
+    with patch.object(daps_pkg, "edit_json") as mock_edit_json:
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+        update_metadata_json(outputjson, d)
+
+    assert "pdf" not in mock_json_data["docs"][0]["format"]
+
+
+def test_update_metadata_json_with_single_html(tmp_path: Path):
+    """When single-html is set, "single-html" key is written to format (line 53)."""
+    outputjson = tmp_path / "metadata.json"
+    outputjson.write_text("{}", encoding="utf-8")
+
+    d = MagicMock()
+    d.format = {"html": "1", "single-html": "1"}
+    d.xml.dcfile = "DC-FOO"
+    d.xml.lang = "en-us"
+    d.xml.categoryid = None
+    d.paths.html_path = "/html"
+    d.paths.singlehtml_path = "/single-html"
+
+    mock_json_data = {"docs": [{"format": {}, "lang": ""}]}
+
+    with patch.object(daps_pkg, "edit_json") as mock_edit_json:
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+        update_metadata_json(outputjson, d)
+
+    assert mock_json_data["docs"][0]["format"]["single-html"] == "/single-html"
+
+
+def test_update_metadata_json_with_category(tmp_path: Path):
+    """When categoryid is set, it is written to jsonconfig (line 58)."""
+    outputjson = tmp_path / "metadata.json"
+    outputjson.write_text("{}", encoding="utf-8")
+
+    d = MagicMock()
+    d.format = {}
+    d.xml.dcfile = "DC-FOO"
+    d.xml.lang = "en-us"
+    d.xml.categoryid = "cat.administration"
+    d.paths.html_path = "/html"
+
+    mock_json_data = {"docs": [{"format": {}, "lang": ""}]}
+
+    with patch.object(daps_pkg, "edit_json") as mock_edit_json:
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+        update_metadata_json(outputjson, d)
+
+    assert mock_json_data.get("category") == "cat.administration"
+
+
+@pytest.mark.asyncio
+class TestProcessDeliverable:
+    """Tests for the process_deliverable function."""
+
+    @pytest.fixture
+    def mock_subprocess(self) -> Iterator[AsyncMock]:
+        """Mock asyncio.create_subprocess_exec inside the daps module."""
+        with patch.object(
+            daps_pkg.asyncio,
+            "create_subprocess_exec",
+            new_callable=AsyncMock,
+        ) as mock:
+            yield mock
+
+    @pytest.fixture
+    def setup_paths(self, tmp_path: Path) -> dict:
+        """Create directories needed by process_deliverable."""
+        paths = {
+            "repo_dir": tmp_path / "repos",
+            "tmp_repo_dir": tmp_path / "tmp_repos",
+            "meta_cache_dir": tmp_path / "cache" / "metadata",
+        }
+        for p in paths.values():
+            p.mkdir(parents=True, exist_ok=True)
+        return paths
+
+    @pytest.mark.parametrize(
+        "scenario, make_bare_repo, clone_returns, daps_returncode, expected_success, expected_log",
+        [
+            ("success", True, True, 0, True, None),
+            ("bare_repo_not_found", False, True, 0, False, "Bare repository not found"),
+            ("clone_fails", True, False, 0, False, "Failed to ensure bare repository"),
+            ("daps_fails", True, True, 1, False, "Error processing"),
+        ],
+        ids=["success", "bare_repo_not_found", "clone_fails", "daps_fails"],
+    )
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "edit_json")
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_scenarios(
+        self,
+        mock_managed_git_repo: Mock,
+        mock_edit_json: Mock,
+        mock_get_daps_hashes: AsyncMock,
+        deliverable: Deliverable,
+        setup_paths: dict,
+        mock_subprocess: AsyncMock,
+        caplog,
+        scenario: str,
+        make_bare_repo: bool,
+        clone_returns: bool,
+        daps_returncode: int,
+        expected_success: bool,
+        expected_log: str | None,
+    ):
+        """Test success, missing repo, clone failure, and DAPS failure scenarios."""
+        # Force a cache miss so the test proceeds
+        mock_get_daps_hashes.return_value = {"fake.xml": "123"}
+
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.clone_bare.return_value = clone_returns
+        mock_repo_instance.create_worktree.return_value = None
+
+        mock_daps_proc = AsyncMock()
+        mock_daps_proc.communicate.return_value = (b"", b"")
+        mock_daps_proc.returncode = daps_returncode
+        mock_subprocess.return_value = mock_daps_proc
+
+        mock_json_data = {"docs": [{"format": {}, "lang": ""}]}
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+
+        if make_bare_repo:
+            assert deliverable.git is not None
+            (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        success, res_deliverable = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+        )
+
+        assert success is expected_success
+        assert res_deliverable == deliverable
+        if expected_log:
+            assert any(expected_log in r.message for r in caplog.records)
+
+    @pytest.mark.asyncio
+    async def test_prebuilt_deliverable_skipped(
+        self, tmp_path: Path, deliverable: Deliverable
+    ):
+        """A deliverable with no DC file (prebuilt) is skipped with success=True."""
+        deliverable.xml.dcfile = None  # type: ignore[assignment]
+
+        success, res_deliverable = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=tmp_path / "repos",
+            tmp_repo_dir=tmp_path / "tmp_repos",
+            meta_cache_dir=tmp_path / "cache",
+            prebuilt_dir=tmp_path / "prebuilt",
+            dapstmpl="daps -d {dcfile} metadata",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+        )
+
+        assert success is True
+        assert res_deliverable is deliverable
+
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_create_worktree_failure(
+        self,
+        mock_managed_git_repo: Mock,
+        deliverable: Deliverable,
+        setup_paths: dict,
+        caplog,
+    ):
+        """When create_worktree raises, the error is wrapped and (False, deliverable)
+        is returned (lines 119-120 coverage)."""
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.clone_bare.return_value = True
+        mock_repo_instance.create_worktree.side_effect = RuntimeError("git clone failed")
+
+        assert deliverable.git is not None
+        (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        success, res_deliverable = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+        )
+
+        assert success is False
+        assert res_deliverable is deliverable
+        assert any("Error processing" in r.message for r in caplog.records)
+
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "update_metadata_json")
+    @patch.object(daps_pkg.asyncio, "create_subprocess_exec", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_skip_repo_update_bypasses_clone_bare(
+        self,
+        mock_managed_git_repo: Mock,
+        mock_subprocess_exec: AsyncMock,
+        mock_update_metadata_json: Mock,
+        mock_get_daps_hashes: AsyncMock,
+        deliverable: Deliverable,
+        setup_paths: dict,
+    ):
+        """When skip_repo_update=True, clone_bare is not called."""
+        # Force a cache miss so the test proceeds
+        mock_get_daps_hashes.return_value = {"fake.xml": "123"}
+
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.create_worktree.return_value = None
+
+        mock_daps_proc = AsyncMock()
+        mock_daps_proc.communicate.return_value = (b"", b"")
+        mock_daps_proc.returncode = 0
+        mock_subprocess_exec.return_value = mock_daps_proc
+
+        assert deliverable.git is not None
+        (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        # Using explicit paths instead of mock_context!
+        success, res_deliverable = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+            skip_repo_update=True,
+        )
+
+        assert success is True
+        assert res_deliverable is deliverable
+        mock_repo_instance.clone_bare.assert_not_awaited()
+        mock_repo_instance.create_worktree.assert_awaited_once()
+        mock_update_metadata_json.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "template",
+    [
+        "daps -d {dcfile} list-srcfiles --hashes",
+        "daps -d {{dcfile}} list-srcfiles --hashes",
+    ],
+    ids=["single_braces", "double_braces"],
+)
+async def test_get_daps_hashes_success(template: str) -> None:
+    """Test that valid output is parsed and paths are made relative."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = (
+        "/tmp/worktree/file1.xml:hash1\n"
+        "/tmp/worktree/subdir/file2.xml:hash2\n"
+    )
+
+    with patch.object(daps_pkg, "run_command", return_value=mock_result) as mock_run:
+        result = await get_daps_hashes(worktree_dir, dcfile_path, template)
+
+        mock_run.assert_called_once_with(
+            ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"],
+            cwd=worktree_dir
+        )
+        assert result == {
+            "file1.xml": "hash1",
+            str(Path("subdir") / "file2.xml"): "hash2",
+        }
+
+
+async def test_get_daps_hashes_failure():
+    """Test that a non-zero return code returns an empty dictionary."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 1
+    mock_result.stderr = "Command failed"
+
+    with patch.object(daps_pkg, "run_command", return_value=mock_result):
+        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        assert result == {}
+
+
+async def test_get_daps_hashes_malformed_output():
+    """Test that empty or malformed lines are safely skipped."""
+    worktree_dir = Path("/tmp/worktree")
+    dcfile_path = worktree_dir / "DC-test"
+
+    mock_result = MagicMock()
+    mock_result.returncode = 0
+    mock_result.stdout = "\nmalformed_line\n/tmp/worktree/valid.xml:hash1\n"
+
+    with patch.object(daps_pkg, "run_command", return_value=mock_result):
+        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        assert result == {"valid.xml": "hash1"}

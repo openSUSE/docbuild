@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html>
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><title>Identifying Operating Systems | SUSE Linux</title><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, user-scalable=yes" name="viewport"/><link href="static/css/style-new.css" rel="stylesheet" type="text/css"/>
+<link href="http://purl.org/dc/elements/1.1/" rel="schema.dc"/><link href="http://purl.org/dc/terms/" rel="schema.dcterms"/>
+<meta content="2025-11-04" name="dcterms.created"/>
+<meta content="2025-11-04" name="dcterms.modified"/>
+<meta content="2026-09-17" name="dcterms.dateSubmitted"/>
+<meta content="Identifying Operating Systems | SUSE Linux" name="title"/>
+<meta content="How to identify SUSE products using the /etc/os-release file" name="description"/>
+<meta content="SUSE Linux" name="product-name"/>
+<meta content="Identifying Operating Systems" name="book-title"/>
+<meta content="https://bugzilla.suse.com/enter_bug.cgi" name="tracker-url"/>
+<meta content="bsc" name="tracker-type"/>
+<meta content="jsindelarova@suse.com" name="tracker-bsc-assignee"/>
+<meta content="Documentation" name="tracker-bsc-component"/>
+<meta content="SUSE Linux Enterprise Server 16.0" name="tracker-bsc-product"/>
+<meta content="SUSE" name="publisher"/><meta content="jsindelarova@suse.com" name="dc.creator"/>
+<meta content="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/index.html" property="og:url"/>
+<meta content="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/https://documentation.suse.com/sles/16.0/html/SLE-os-identification/document.jpg" property="og:image"/>
+<meta content="DAPS 4.0.beta15 (https://opensuse.github.io/daps) using SUSE XSL Stylesheets 2.95.40 (based on DocBook XSL Stylesheets 1.79.2) - chunked" name="generator"/>
+<meta content="Identifying Operating Systems" property="og:title"/>
+<meta content="Identify SUSE products" property="og:description"/>
+<meta content="article" property="og:type"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/document.jpg" name="twitter:image"/>
+<meta content="Identifying Operating Systems" name="twitter:title"/>
+<meta content="Identify SUSE products" name="twitter:description"/>
+<meta content="@SUSE" name="twitter:site"/>
+<script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@type": ["TechArticle"],
+    "image": "https://www.suse.com/assets/img/suse-white-logo-green.svg",
+    "name": "Identifying Operating Systems | SUSE Linux",
+    "isPartOf": {
+      "@type": "CreativeWorkSeries",
+      "name": "Products &amp; Solutions"
+    },
+    "inLanguage": "en",
+    "headline": "Identifying Operating Systems",
+    "description": "How to identify SUSE products using the /etc/os-release file",
+    "author": [
+      {
+        "@type": "Corporation",
+        "name": "SUSE Product &amp; Solution Documentation Team",
+        "url": "https://documentation.suse.com"
+      }
+    ],
+    "dateCreated": "2025-11-04T00:00+02:00",
+    "dateModified": "2025-11-04T00:00+02:00",
+    "datePublished": "2026-09-17T07:21+02:00",
+    "about": [
+      {
+        "@type": "Thing",
+        "name": "About"
+      }
+    ],
+    "mentions": [
+      { "@type": "SoftwareApplication",
+        "name": "SUSE Linux",
+        "applicationCategory": "Operating System",
+        "operatingSystem": "Linux",
+        "processorRequirements": "AMD64/Intel 64, POWER, AArch64, IBM Z"
+      }
+    ],
+    "sameAs": [
+          "https://www.facebook.com/SUSEWorldwide/about",
+          "https://www.youtube.com/channel/UCHTfqIzPKz4f_dri36lAQGA",
+          "https://twitter.com/SUSE",
+          "https://www.linkedin.com/company/suse"
+    ],
+    "publisher": {
+      "@type": "Corporation",
+      "name": "SUSE",
+      "url": "https://documentation.suse.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+      }
+    }
+  }</script>
+<!--BEGIN QUALTRICS WEBSITE FEEDBACK SNIPPET--><script defer="defer" src="static/js/qualtrics-feedback.js" type="text/javascript"> </script><div id="ZN_8qZUmklKYbBqAYe"><!--DO NOT REMOVE-CONTENTS PLACED HERE--></div><!--END WEBSITE FEEDBACK SNIPPET-->
+<!--SUVA/AskGeeko start--><!--searchUnifyChatbot ("Ask Geeko") copyright 2024 Grazitti Interactive - All Rights Reserved. NOTICE: All information contained herein is, and remains the property of Grazitti Interactive and its suppliers, if any. The intellectual and technical concepts contained herein are proprietary to Grazitti Interactive and its suppliers and may be covered by India, U.S. and Foreign Patents, patents in process, and are protected by trade secret or copyright law. Dissemination of this information or reproduction of this material is strictly forbidden unless prior written permission is obtained from Grazitti Interactive.-->
+<script src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/Allow/an.js?c485cb3c-93d4-4942-99e8-91f3b8ca5636" type="text/javascript"></script>
+<script src="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/js/index.js?q=gAAAAABp3JBN9VuEJTi5tFafLIMwgMkCPdJS3Qm56lSYx93ir3Twt9hgSvd3OHEt6-nYfSbY3yHq0Zv8PRPsSy4nbqZiaJ4cZvRc6ItVZdvwz9Urf35cH6OUyPOwdA0phlS-zVIznQ2rWW438p-91NlTHuxJuOFpnA==" type="text/javascript"></script>
+<link href="https://suse.searchunify.com/suva-resources/suva_clients_custom/c485cb3c-93d4-4942-99e8-91f3b8ca5636/css/index.css" rel="stylesheet"/>
+<div id="searchUnifyChatbot"></div>
+<!--SUVA/AskGeeko end--><!--SUSE Header head--><script type="module">
+     import { defineCustomElements, setAssetPath } from 'https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/shared-header.esm.js';
+     defineCustomElements();
+     setAssetPath("https://d12w0ryu9hjsx8.cloudfront.net/shared-header/1.10/assets");
+   </script>
+<link href="doc-gfdl-license.html" rel="next" title="A. GNU Free Documentation License"/><link as="style" href="https://documentation.suse.com/docserv/res/fonts/suse/suse.css" onload="this.rel='stylesheet'" rel="preload" type="text/css"/><script src="static/js/script-purejs.js" type="text/javascript"></script><script src="static/js/highlight.js" type="text/javascript"></script><script>hljs.highlightAll();</script><script src="static/js/ui-modifiers.js" type="text/javascript"></script><script type="text/javascript">
+if (window.location.protocol.toLowerCase() != 'file:') {
+  var externalScript1 = document.createElement("script");
+  externalScript1.src = "/docserv/res/extra.js";
+  document.head.appendChild(externalScript1);
+}
+      </script><link href="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/index.html" rel="canonical"/><link href="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/index.html" hreflang="x-default" rel="alternate"/><link href="https://documentation.suse.com/de-de/sles/16.0/html/SLE-os-identification/index.html" hreflang="de-de" rel="alternate"/><link href="https://documentation.suse.com/es-es/sles/16.0/html/SLE-os-identification/index.html" hreflang="es-es" rel="alternate"/><link href="https://documentation.suse.com/fr-fr/sles/16.0/html/SLE-os-identification/index.html" hreflang="fr-fr" rel="alternate"/><link href="https://documentation.suse.com/ja-jp/sles/16.0/html/SLE-os-identification/index.html" hreflang="ja-jp" rel="alternate"/><link href="https://documentation.suse.com/pt-br/sles/16.0/html/SLE-os-identification/index.html" hreflang="pt-br" rel="alternate"/><link href="https://documentation.suse.com/zh-cn/sles/16.0/html/SLE-os-identification/index.html" hreflang="zh-cn" rel="alternate"/><link href="https://documentation.suse.com/sles/16.0/html/SLE-os-identification/index.html" hreflang="en-us" rel="alternate"/></head><body class="wide offline js-off"><!-- SUSE Header --><shared-header enable-search="false" language="en" languages='{      "en": { "label": "English", "url": "https://documentation.suse.com/en-us/" },      "de": { "label": "Deutsch", "url": "https://documentation.suse.com/de-de/" },      "fr": { "label": "Français", "url": "https://documentation.suse.com/fr-fr/" },      "es": { "label": "Español", "url": "https://documentation.suse.com/es-es/" },      "zh_CN": { "label": "中文", "url": "https://documentation.suse.com/zh-cn/" },      "pt_BR": { "label": "Português Brasileiro", "url": "https://documentation.suse.com/pt-br/" }     }'> </shared-header><div class="crumbs"><div class="growth-inhibitor"><a class="crumb overview-link" href="/" title="documentation.suse.com"></a><span class="sep">|</span><a class="crumb index-page-crumb" href="">Index</a><span class="sep">|</span><a class="crumb" href="index.html">Identifying Operating Systems</a></div></div><main id="_content"><nav class="side-toc" id="_side-toc-overall" tabindex="0"><div class="side-title">Identifying Operating Systems</div> </nav><button id="_open-side-toc-overall" title="Contents"> </button><article class="documentation"><button id="_unfold-side-toc-page">On this page</button><section class="article" data-id-title="Identifying Operating Systems" id="identifying-os" xml:lang="en"><div class="titlepage"><div><div class="big-version-info"><span class="productname">SUSE Linux</span></div><div><h1 class="title">Identifying Operating Systems</h1></div><div class="date"><span class="imprint-label">Publication Date: </span>17 Sep 2026</div><div><div class="abstract"><div class="variablelist"><dl class="variablelist"><dt id="id-1.1.12.1.1"><span class="term">WHAT?</span></dt><dd><p>
+              The article describes how you can identify SUSE products and changes coming with
+              the last release of SUSE Linux.
+            </p></dd><dt id="id-1.1.12.1.2"><span class="term">WHY?</span></dt><dd><p>
+              You want to review your system configuration and scripts to match the new values.
+            </p></dd><dt id="id-1.1.12.1.3"><span class="term">EFFORT</span></dt><dd><p>
+                It takes about 5 minutes to read the article.
+              </p></dd><dt id="id-1.1.12.1.4"><span class="term">GOAL</span></dt><dd><p>
+                You will know the new values and attributes that identify SUSE products.
+              </p></dd><dt id="id-1.1.12.1.5"><span class="term">REQUIREMENTS</span></dt><dd><div class="itemizedlist"><ul class="itemizedlist"><li class="listitem"><p>
+                    Installed product of the SUSE Linux family.
+                  </p></li></ul></div></dd></dl></div></div></div><div><div class="titlepage-revhistory"><a aria-label="Revision History: Identifying Operating Systems" href="rh-identifying-os.html" hreflang="en" target="_blank">Revision History: Identifying Operating Systems</a></div></div></div></div><section class="sect1" data-id-title="Why identify an operating system?" id="identifying-os-reasons" xml:lang="en"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">1 </span><span class="title-name">Why identify an operating system?</span></span> <a class="permalink" href="index.html#identifying-os-reasons" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div></div><div><div class="abstract"><p>
+       As software developers and system administrators, you often manage several versions of the same
+       product or even several products. Operations on each version or product may require
+       a different configuration, therefore, it is crucial to easily identify the system. 
+      </p></div></div></div></div><p>
+Proper system identification can help you with automation, ensuring compatibility, troubleshooting, and so on.
+  </p></section><section class="sect1" data-id-title="The /etc/os-release content" id="identifying-os-attributes" xml:lang="en"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">2 </span><span class="title-name">The <code class="filename">/etc/os-release</code> content</span></span> <a class="permalink" href="index.html#identifying-os-attributes" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div></div><div><div class="abstract"><p>
+        For operating system identification, use a text-based file <code class="filename">/etc/os-release</code>. The file contains product key attributes like name and version. Viewing and
+        interpreting the content can help you with automation, ensuring compatibility, troubleshooting, and so on.
+          </p></div></div></div></div><div class="admonition note normal" data-id-title="Different content for SUSE Linux 16.0 and SUSE Linux Micro 6.2" id="id-1.3.2"><img alt="Note" class="symbol" src="static/images/icon-note.svg" title="Note"/><div class="admon-title">Note: Different content for SUSE Linux 16.0 and SUSE Linux Micro 6.2</div><p>
+        With SUSE Linux 16.0 and SUSE Linux Micro 6.2  the content of the <code class="filename">/etc/os-release</code> is
+        changed to the values described in the following sections. However, the values are
+        compatible with previous releases.
+      </p></div><p>
+        The <code class="filename">/etc/os-release</code> file contains two types of attributes: common
+        attributes and product-specific attributes. Each type is described further.
+       </p><section class="sect2" data-id-title="Common attributes" id="identifying-os-attributes-common"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">2.1 </span><span class="title-name">Common attributes</span></span> <a class="permalink" href="index.html#identifying-os-attributes-common" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div></div></div></div><p>
+      The common attributes have the same values for all SUSE Linux products.
+    </p><div class="table" data-id-title="Common attributes" id="id-1.3.4.3"><div class="title-container"><div class="table-title-wrap"><div class="table-title"><span class="title-number-name"><span class="title-number">Table 1: </span><span class="title-name">Common attributes </span></span><a class="permalink" href="index.html#id-1.3.4.3" title="Permalink">#</a></div></div><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div><div class="table-contents"><table style="border-collapse: collapse; border-top: 1px solid ; border-bottom: 1px solid ; border-left: 1px solid ; border-right: 1px solid ; "><colgroup><col/><col/><col/></colgroup><thead><tr><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Attribute</th><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Meaning</th><th style="border-bottom: 1px solid ; ">Value</th></tr></thead><tbody><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">NAME</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">Full name of the distribution</td><td style="border-bottom: 1px solid ; ">SLES</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">PRETTY_NAME</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">A prettified name that is displayed to the user</td><td style="border-bottom: 1px solid ; ">SUSE Linux Enterprise Server 16.0</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">VERSION</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">A complete version</td><td style="border-bottom: 1px solid ; ">16.0</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">VERSION_ID</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">A version number. This is the recommended attribute for
+              identifying the operating system.</td><td style="border-bottom: 1px solid ; ">16.0</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">ID</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">Short identification of the distribution. This is the recommended attribute for
+            identifying the operating system.</td><td style="border-bottom: 1px solid ; ">sles</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">ID_LIKE</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">A list of similar distributions</td><td style="border-bottom: 1px solid ; ">suse opensuse</td></tr><tr><td style="border-right: 1px solid ; "><code class="literal">CPE_NAME</code></td><td style="border-right: 1px solid ; ">Common Platform Enumeration</td><td>cpe:/o:suse:sles:16:16.0</td></tr></tbody></table></div></div></section><section class="sect2" data-id-title="Product-specific attributes" id="identifying-os-attributes-specific"><div class="titlepage"><div><div><div class="title-container"><h3 class="title"><span class="title-number-name"><span class="title-number">2.2 </span><span class="title-name">Product-specific attributes</span></span> <a class="permalink" href="index.html#identifying-os-attributes-specific" title="Permalink">#</a></h3><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div></div></div></div><p>
+      The product-specific attributes differ for each SUSE product. The file
+      <code class="filename">/etc/os-release</code> contains the following product-specific attributes:
+    </p><div class="table" data-id-title="Product-specific attributes" id="id-1.3.5.3"><div class="title-container"><div class="table-title-wrap"><div class="table-title"><span class="title-number-name"><span class="title-number">Table 2: </span><span class="title-name">Product-specific attributes </span></span><a class="permalink" href="index.html#id-1.3.5.3" title="Permalink">#</a></div></div><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div><div class="table-contents"><table style="border-collapse: collapse; border-top: 1px solid ; border-bottom: 1px solid ; border-left: 1px solid ; border-right: 1px solid ; "><colgroup><col/><col/><col/><col/><col/></colgroup><thead><tr><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Attribute</th><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Meaning</th><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Value for SUSE Linux Enterprise Server</th><th style="border-right: 1px solid ; border-bottom: 1px solid ; ">Value for SLES for SAP</th><th style="border-bottom: 1px solid ; ">Value for SUSE Linux Micro</th></tr></thead><tbody><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">VARIANT</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">The specific flavor of the product. This is a newly introduced attribute.</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">Enterprise Server</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">Enterprise Server for SAP applications</td><td style="border-bottom: 1px solid ; ">Micro</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">VARIANT_ID</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">A short machine readable name that can be used to identify a particular product
+            in scripts. This is a newly introduced attribute.</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">server</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">server-sap</td><td style="border-bottom: 1px solid ; ">transactional</td></tr><tr><td style="border-right: 1px solid ; border-bottom: 1px solid ; "><code class="literal">SUSE_SUPPORT_PRODUCT</code></td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">The official SUSE product name. This is a newly introduced attribute.</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">SUSE Linux Enterprise Server</td><td style="border-right: 1px solid ; border-bottom: 1px solid ; ">SUSE Linux Enterprise Server for SAP applications</td><td style="border-bottom: 1px solid ; ">SUSE Linux Micro</td></tr><tr><td style="border-right: 1px solid ; "><code class="literal">SUSE_SUPPORT_PRODUCT_VERSION</code></td><td style="border-right: 1px solid ; ">The official SUSE product version. This is a newly introduced attribute.</td><td style="border-right: 1px solid ; ">16.0</td><td style="border-right: 1px solid ; ">16.0</td><td>6.2</td></tr></tbody></table></div></div></section></section><section class="sect1" data-id-title="Legal Notice" id="legal-disclaimer"><div class="titlepage"><div><div><div class="title-container"><h2 class="title"><span class="title-number-name"><span class="title-number">3 </span><span class="title-name">Legal Notice</span></span> <a class="permalink" href="index.html#legal-disclaimer" title="Permalink">#</a></h2><div class="icons"><a class="icon-reportbug" target="_blank" title="Report an issue"> </a></div></div></div></div></div><p>
+    Copyright© 2006–
+2026
+
+    SUSE LLC and contributors. All rights reserved.
+  </p><p>
+    Permission is granted to copy, distribute and/or modify this document under the terms of the
+    GNU Free Documentation License, Version 1.2 or (at your option) version 1.3; with the Invariant
+    Section being this copyright notice and license. A copy of the license version 1.2 is included
+    in the section entitled <span class="quote">“<span class="quote">GNU Free Documentation License</span>”</span>.
+  </p><p>
+    For SUSE trademarks, see <a class="link" href="https://www.suse.com/company/legal/" target="_blank">https://www.suse.com/company/legal/</a>. All other
+    third-party trademarks are the property of their respective owners. Trademark symbols (®, ™
+    etc.) denote trademarks of SUSE and its affiliates. Asterisks (*) denote third-party
+    trademarks.
+  </p><p>
+    All information found in this book has been compiled with utmost attention to detail. However,
+    this does not guarantee complete accuracy. Neither SUSE LLC, its affiliates, the authors, nor
+    the translators shall be held liable for possible errors or the consequences thereof.
+  </p></section></section><nav class="bottom-pagination"><div> </div><div><a class="pagination-link next" href="doc-gfdl-license.html"><span class="pagination-relation">Next</span><span class="pagination-label"><span class="title-number">Appendix A </span>GNU Free Documentation License</span></a> </div></nav></article><aside class="side-toc" id="_side-toc-page"><div class="docsurvey-wrapper"><a class="survey-link" href="https://suselinux.fra1.qualtrics.com/jfe/form/SV_diCzHC9xxyJyuN0">Documentation survey</a></div><div class="side-title">On this page</div><div class="toc"><ul><li><span class="section"><a href="index.html#identifying-os-reasons"><span class="title-number">1 </span><span class="title-name">Why identify an operating system?</span></a></span></li><li><span class="section"><a href="index.html#identifying-os-attributes"><span class="title-number">2 </span><span class="title-name">The <code class="filename">/etc/os-release</code> content</span></a></span></li><li><span class="section"><a href="index.html#legal-disclaimer"><span class="title-number">3 </span><span class="title-name">Legal Notice</span></a></span></li><li><span class="appendix"><a href="doc-gfdl-license.html"><span class="title-number">A </span><span class="title-name">GNU Free Documentation License</span></a></span></li></ul></div><div class="side-title">Share this page</div><ul class="share"><li><a href="#" id="_share-mail" title="E-Mail"> </a></li><li><a href="#" id="_print-button" title="Print this page"> </a></li></ul><div id="qualtrics_container"></div> </aside></main><footer id="_footer"><div class="growth-inhibitor"><div class="copy"><span class="copy__rights">© SUSE  2026</span></div></div></footer>
+<script src="static/js/language-switcher.js" type="text/javascript"> </script></body></html>

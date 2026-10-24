@@ -1,85 +1,19 @@
 """Unit tests for the EnvConfig Pydantic models."""
 
-from ipaddress import IPv4Address
 from pathlib import Path
+import tomllib
 from typing import Any
 
 from pydantic import ValidationError
 import pytest
+import tomlkit
 
-import docbuild.config.app as config_app_mod
+from docbuild.cli.cmd_config.init import config_table
+from docbuild.config.app import normalize_runtime_placeholders
+import docbuild.models.config.env as env_mod
 from docbuild.models.config.env import EnvConfig
-from docbuild.models.path import EnsureWritableDirectory
 
 # --- Fixture Setup ---
-
-
-def _mock_successful_placeholder_resolver(data: dict[str, Any]) -> dict[str, Any]:
-    """Mock the placeholder resolver to return a clean, resolved dictionary."""
-    resolved_data = data.copy()
-
-    # Define resolved paths based on the EnvConfig structure
-    tmp_general = "/var/tmp/docbuild/doc-example-com"
-
-    resolved_data["paths"]["config_dir"] = "/etc/docbuild"
-    resolved_data["paths"]["root_config_dir"] = "/etc/docbuild"
-    resolved_data["paths"]["jinja_dir"] = "/etc/docbuild/jinja-doc-suse-com"
-    resolved_data["paths"]["server_rootfiles_dir"] = (
-        "/etc/docbuild/server-root-files-doc-suse-com"
-    )
-    resolved_data["paths"]["repo_dir"] = "/var/cache/docbuild/repos/permanent-full/"
-    resolved_data["paths"]["tmp_repo_dir"] = (
-        "/var/cache/docbuild/repos/temporary-branches/"
-    )
-    resolved_data["paths"]["base_cache_dir"] = "/var/cache/docserv"
-    resolved_data["paths"]["base_server_cache_dir"] = (
-        "/var/cache/docserv/doc-example-com"
-    )
-    resolved_data["paths"]["meta_cache_dir"] = (
-        "/var/cache/docbuild/doc-example-com/meta"
-    )
-    resolved_data["paths"]["base_tmp_dir"] = "/var/tmp/docbuild"
-    resolved_data["paths"]["tmp"]["tmp_base_dir"] = "/var/tmp/docbuild"
-    resolved_data["paths"]["tmp"]["tmp_dir"] = tmp_general
-    resolved_data["paths"]["tmp"]["tmp_deliverable_dir"] = tmp_general + "/deliverable"
-    resolved_data["paths"]["tmp"]["tmp_metadata_dir"] = tmp_general + "/metadata"
-
-    # Split build_dir: base is provided, dyn is optional (tested via default)
-    resolved_data["paths"]["tmp"]["tmp_build_base_dir"] = tmp_general + "/build"
-
-    resolved_data["paths"]["tmp"]["tmp_out_dir"] = tmp_general + "/out"
-    resolved_data["paths"]["tmp"]["log_dir"] = tmp_general + "/log"
-
-    # Renamed to match the updated model and use standard placeholder
-    resolved_data["paths"]["tmp"]["tmp_deliverable_name_dyn"] = (
-        "{{product}}_{{docset}}_{{lang}}_XXXXXX"
-    )
-
-    # Split target_dir and use placeholder requested by reviewer
-    resolved_data["paths"]["target"]["target_base_dir"] = "doc@10.100.100.100:/srv/docs"
-    resolved_data["paths"]["target"]["target_dir_dyn"] = "{{product}}"
-    resolved_data["paths"]["target"]["backup_dir"] = Path(
-        "/data/docbuild/external-builds/"
-    )
-
-    # Ensure mandatory top-level fields (like 'build') are present
-    resolved_data.setdefault(
-        "build",
-        {
-            "daps": {"command": "daps", "meta": "daps meta"},
-            "container": {"container": "none"},
-        },
-    )
-
-    return resolved_data
-
-
-@pytest.fixture(autouse=True)
-def mock_placeholder_resolution(monkeypatch):
-    """Mock the replace_placeholders utility used inside EnvConfig."""
-    monkeypatch.setattr(
-        config_app_mod, "replace_placeholders", _mock_successful_placeholder_resolver
-    )
 
 
 @pytest.fixture
@@ -90,40 +24,32 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
     base = tmp_path / "docbuild_test"
     base.mkdir()
 
-    nested_xslt_params = {
-        "external": {"js": {"onlineonly": "/docserv/res/extra.js"}},
-        "show": {"edit": {"link": 1}},
-        "twittercards": {"twitter": {"account": "@SUSE"}},
-        "generate": {"json-ld": 1},
-        "search": {"description": {"length": 118}},
-        "socialmedia": {"description": {"length": 65}},
-    }
-
     return {
-        "server": {
+        "general": {
             "name": "doc-example-com",
             "role": "production",
-            "host": "127.0.0.1",
             "enable_mail": True,
-        },
-        "config": {
             "default_lang": "en-us",
             "languages": ["en-us", "de-de"],
             "canonical_url_domain": "https://docs.example.com",
         },
         "paths": {
             "config_dir": str(base / "config"),
+            "main_portal_config": str(base / "config/portal.xml"),
+            "portal_rncschema": str(base / "portal-config.rnc"),
             "root_config_dir": str(base / "etc/docbuild"),
             "jinja_dir": str(base / "etc/docbuild/jinja"),
             "server_rootfiles_dir": str(base / "etc/docbuild/rootfiles"),
 
-            # These use EnsureWritableDirectory - MUST be in tmp_path
+            # These use WritablePath - MUST be in tmp_path
             "base_cache_dir": str(base / "cache"),
             "base_server_cache_dir": str(base / "cache/server"),
-            "base_tmp_dir": str(base / "var/tmp"),
+            "runtime_base_dir": str(base / "runtime"),
+            "lock_dir": str(base / "runtime/locks"),
             "repo_dir": str(base / "repos/perm"),
             "tmp_repo_dir": str(base / "repos/temp"),
             "meta_cache_dir": str(base / "cache/meta"),
+            "json_cache_dir": str(base / "cache/json"),
 
             "tmp": {
                 "tmp_base_dir": str(base / "var/tmp"),
@@ -136,7 +62,7 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
                 "tmp_deliverable_name_dyn": "{{product}}_{{docset}}_{{lang}}_XXXXXX",
             },
             "target": {
-                "target_base_dir": "doc@10.100.100.100:/srv/docs",
+                "target_base_dir": str(base / "target"),
                 "target_dir_dyn": "{{product}}",
                 "backup_dir": str(base / "backups"),
             },
@@ -145,7 +71,19 @@ def mock_valid_raw_env_data(tmp_path: Path) -> dict[str, Any]:
             "daps": {"command": "daps", "meta": "daps meta"},
             "container": {"container": "none"},
         },
-        "xslt-params": nested_xslt_params,
+        "xslt": {
+            "common": {
+                "show.edit.link": 1,
+                "twittercards.twitter.account": "@SUSE",
+                "generate.json-ld": 1,
+                "search.description.length": 118,
+                "socialmedia.description.length": 65,
+            },
+            "html": {
+                "external.js.onlineonly": "/docserv/res/extra.js",
+            },
+            "pdf": {}
+        }
     }
 
 
@@ -159,7 +97,7 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert isinstance(config, EnvConfig)
 
     # Check type coercion for core types
-    assert isinstance(config.paths.base_cache_dir, EnsureWritableDirectory)
+    assert isinstance(config.paths.base_cache_dir, Path)
 
     # Check tmp_dir instead of tmp_path
     assert config.paths.tmp.tmp_dir.is_absolute()
@@ -170,33 +108,22 @@ def test_envconfig_full_success(mock_valid_raw_env_data: dict[str, Any]):
     assert "build" in str(config.paths.tmp.tmp_build_base_dir)
 
     # Check XSLT params
-    assert "external" in config.xslt_params
-    assert isinstance(config.xslt_params["external"], dict)
-    assert config.xslt_params["show"]["edit"]["link"] == 1
+    assert "external.js.onlineonly" in config.xslt.html
+    assert config.xslt.html["external.js.onlineonly"] == "/docserv/res/extra.js"
+    assert config.xslt.common["show.edit.link"] == 1
 
     # Test serialization of LanguageCode fields back to strings
     dumped_config = config.model_dump()
-    assert isinstance(dumped_config["config"]["default_lang"], str)
-    assert dumped_config["config"]["default_lang"] == "en-us"
-    assert isinstance(dumped_config["config"]["languages"], list)
-    assert all(isinstance(lang, str) for lang in dumped_config["config"]["languages"])
-    assert set(dumped_config["config"]["languages"]) == {"en-us", "de-de"}
-
-
-def test_envconfig_type_coercion_ip_host(mock_valid_raw_env_data: dict[str, Any]):
-    """Test that the host field handles IPvAnyAddress correctly."""
-    data = mock_valid_raw_env_data.copy()
-    data["server"]["host"] = "192.168.1.1"
-
-    config = EnvConfig.from_dict(data)
-
-    assert isinstance(config.server.host, IPv4Address)
-    assert str(config.server.host) == "192.168.1.1"
+    assert isinstance(dumped_config["general"]["default_lang"], str)
+    assert dumped_config["general"]["default_lang"] == "en-us"
+    assert isinstance(dumped_config["general"]["languages"], list)
+    assert all(isinstance(lang, str) for lang in dumped_config["general"]["languages"])
+    assert set(dumped_config["general"]["languages"]) == {"en-us", "de-de"}
 
 
 def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: Any):
     """Test that extra fields are forbidden on the top-level EnvConfig model."""
-    monkeypatch.setattr(config_app_mod, "replace_placeholders", lambda data: data)
+    monkeypatch.setattr(env_mod, "replace_placeholders", lambda data, **kwargs: data)
 
     paths_to_create = [
         tmp_path,
@@ -216,19 +143,18 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
             "daps": {"command": "daps", "meta": "daps meta"},
             "container": {"container": "none"},
         },
-        "server": {
+        "general": {
             "name": "D",
             "role": "production",
-            "host": "1.1.1.1",
             "enable_mail": True,
-        },
-        "config": {
             "default_lang": "en-us",
             "languages": ["en-us"],
             "canonical_url_domain": "https://a.b",
         },
         "paths": {
             "config_dir": str(tmp_path / "config"),
+            "main_portal_config": str(tmp_path / "config/portal.xml"),
+            "portal_rncschema": str(tmp_path / "portal-config.rnc"),
             "root_config_dir": str(tmp_path),
             "jinja_dir": str(tmp_path),
             "server_rootfiles_dir": str(tmp_path),
@@ -237,7 +163,9 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
             "base_cache_dir": str(tmp_path),
             "base_server_cache_dir": str(tmp_path),
             "meta_cache_dir": str(tmp_path),
-            "base_tmp_dir": str(tmp_path),
+            "json_cache_dir": str(tmp_path),
+            "runtime_base_dir": str(tmp_path),
+            "lock_dir": str(tmp_path),
             "tmp": {
                 "tmp_base_dir": str(tmp_path),
                 "tmp_dir": str(tmp_path),
@@ -254,7 +182,11 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
                 "backup_dir": str(tmp_path / "backup"),
             },
         },
-        "xslt-params": {"test": 1},
+        "xslt": {
+            "common": {"test": 1},
+            "html": {},
+            "pdf": {}
+        },
         "typo_section": {"key": "value"},
     }
 
@@ -266,21 +198,29 @@ def test_envconfig_strictness_extra_field_forbid(tmp_path: Path, monkeypatch: An
 
 
 def test_envconfig_invalid_role_fails(mock_valid_raw_env_data: dict[str, Any]):
-    """Test that an invalid role string is rejected by ServerRole enum."""
+    """Test that an invalid role string is rejected by EnvRole enum."""
     data = mock_valid_raw_env_data.copy()
-    data["server"]["role"] = "testing_invalid"
+    data["general"]["role"] = "testing_invalid"
 
     with pytest.raises(ValidationError) as excinfo:
         EnvConfig.from_dict(data)
 
     locs = excinfo.value.errors()[0]["loc"]
-    assert ("server", "role") == tuple(locs)
+    assert ("general", "role") == tuple(locs)
 
 
 def test_envconfig_unresolved_placeholder_fails(
-    mock_valid_raw_env_data: dict[str, Any]
+    mock_valid_raw_env_data: dict[str, Any],
+    monkeypatch
 ):
     """Test that an unresolved placeholder raises a ValueError."""
+    from docbuild.config.app import PlaceholderResolutionError
+
+    def mock_raise(*args, **kwargs):
+        raise PlaceholderResolutionError("Unresolved placeholder")
+
+    monkeypatch.setattr(env_mod, "replace_placeholders", mock_raise)
+
     data = mock_valid_raw_env_data.copy()
     # Introduce an unresolvable placeholder
     data["paths"]["jinja_dir"] = "/etc/docbuild/{UNRESOLVED_PLACEHOLDER}"
@@ -295,3 +235,484 @@ def test_envconfig_with_non_dict_input():
     # Pydantic will then raise a ValidationError because the input is not a dict.
     with pytest.raises(ValidationError, match="Input should be a valid dictionary"):
         EnvConfig.model_validate("not a dict")
+
+
+def test_env_config_invalid_placeholder_syntax(monkeypatch):
+    """Ensure EnvConfig raises ValueError for malformed placeholders."""
+    from docbuild.config.app import PlaceholderSyntaxError
+
+    def mock_raise(*args, **kwargs):
+        raise PlaceholderSyntaxError("Malformed placeholder syntax")
+
+    monkeypatch.setattr(env_mod, "replace_placeholders", mock_raise)
+
+    invalid_data = {
+        "general": {"name": "test", "role": "production", "enable_mail": False, "default_lang": "en", "languages": ["en"], "canonical_url_domain": "https://example.com"},
+        "paths": {
+            # ... other required paths ...
+            "base_server_cache_dir": "{base_cache_dir}/{general.name" # THE BUG
+        },
+        "build": {
+            "daps": {"command": "daps", "meta": "daps metadata"},
+            "container": {"container": "some-image"}
+        }
+    }
+    # We expect a ValueError because our model validator wraps PlaceholderSyntaxError
+    with pytest.raises(ValueError, match="Configuration placeholder error"):
+        EnvConfig.from_dict(invalid_data)
+
+
+def test_get_default_config_unresolved():
+    """
+    Test that get_default_config(resolve_placeholders=False) returns
+    a dictionary with unresolved placeholders.
+    """
+    unresolved_config = EnvConfig.get_default_config(resolve_placeholders=False)
+    assert isinstance(unresolved_config, dict)
+    # Check for a known placeholder
+    assert "{base_cache_dir}" in unresolved_config["paths"]["base_server_cache_dir"]
+
+
+def test_envconfig_runtime_placeholders_survive_toml_round_trip() -> None:
+    """Keep runtime placeholders intact through config serialization and reload."""
+    defaults = EnvConfig.get_default_config(resolve_placeholders=False)
+    toml_text = tomlkit.dumps(config_table(defaults))
+    reloaded = tomllib.loads(toml_text)
+    config = EnvConfig.from_dict(reloaded)
+
+    template = config.build.daps.meta
+    assert "{{builddir}}" in template
+    assert "{{dcfile}}" in template
+    assert "{{output}}" in template
+
+    command = normalize_runtime_placeholders(template).format(
+        builddir="build",
+        dcfile="DC-test",
+        output="metadata.json",
+    )
+    assert command == (
+        "daps --builddir=build -d DC-test metadata --output metadata.json"
+    )
+
+
+def _with_remote(data: dict[str, Any], server: Any, path: str | Path) -> dict[str, Any]:
+    """Return a copy of *data* with the given ``[remote]`` section."""
+    result = data.copy()
+    result["remote"] = {"server": server, "path": str(path)}
+    return result
+
+
+def test_env_remote_section_omitted_gives_no_remote(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that omitting the [remote] section leaves server and path as None."""
+    config = EnvConfig.from_dict(mock_valid_raw_env_data)
+    assert config.remote.server is None
+    assert config.remote.path is None
+
+
+@pytest.mark.parametrize(
+    ("server", "expected_user", "expected_host"),
+    [
+        ("doc@example.com", "doc", "example.com"),
+        ("docs.example.com", None, "docs.example.com"),
+        ("192.0.2.10", None, "192.0.2.10"),
+        ("2001:db8::1", None, "2001:db8::1"),
+    ],
+    ids=["user_and_host", "hostname_only", "ipv4", "ipv6"],
+)
+def test_env_remote_server_string_shorthand(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    server: str,
+    expected_user: str | None,
+    expected_host: str,
+) -> None:
+    """Test that the ``user@host`` string shorthand parses correctly."""
+    data = _with_remote(mock_valid_raw_env_data, server, tmp_path / "remote")
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == expected_user
+    assert str(config.remote.server.host) == expected_host
+    assert config.remote.path == (tmp_path / "remote")
+
+
+def test_env_remote_table_form(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """Test that the [remote] section accepts the structured table form."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": "docs.example.com"},
+        "path": str(tmp_path / "remote"),
+    }
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert config.remote.server.host == "docs.example.com"
+    assert config.remote.path == (tmp_path / "remote")
+
+
+@pytest.mark.parametrize(
+    ("endpoint_data", "expected"),
+    [
+        ({"user": "doc", "host": "example.com"}, "doc@example.com"),
+        ({"host": "example.com"}, "example.com"),
+        ({"host": "192.0.2.1"}, "192.0.2.1"),
+        ({"host": "2001:db8::1"}, "2001:db8::1"),
+    ],
+    ids=["user_and_hostname", "hostname_only", "ipv4", "ipv6_without_user"],
+)
+def test_sshendpoint_str(endpoint_data: dict[str, str], expected: str) -> None:
+    """Test that SSHEndpoint renders its string form (e.g., 'user@host')."""
+    endpoint = env_mod.SSHEndpoint.model_validate(endpoint_data)
+    assert str(endpoint) == expected
+
+
+@pytest.mark.parametrize(
+    "endpoint_data",
+    [
+        {"user": "doc", "host": "example.com"},
+        {"host": "example.com"},
+        {"host": "192.0.2.1"},
+        {"host": "2001:db8::1"},
+    ],
+    ids=["user_and_hostname", "hostname_only", "ipv4", "ipv6_without_user"],
+)
+def test_sshendpoint_str_round_trip(endpoint_data: dict[str, str]) -> None:
+    """Test that SSHEndpoint parses its own string form back to the same model."""
+    endpoint = env_mod.SSHEndpoint.model_validate(endpoint_data)
+    assert env_mod.SSHEndpoint.model_validate(str(endpoint)) == endpoint
+
+
+@pytest.mark.parametrize(
+    "server",
+    [
+        "-bad",
+        "Doc@x.example.com",
+        "a@b@host",
+        "@example.com",
+        " ",
+    ],
+    ids=["dash_bad_host", "uppercase_user", "double_at", "empty_user", "only_whitespace"],
+)
+def test_env_remote_invalid_server_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    server: str,
+) -> None:
+    """Test that invalid server values are rejected."""
+    data = _with_remote(mock_valid_raw_env_data, server, tmp_path / "remote")
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_dict_user(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the dict ``user`` field are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": f"doc{character}", "host": "docs.example.com"},
+        "path": str(tmp_path / "remote"),
+    }
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_dict_host(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the dict ``host`` field are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": f"docs.example.com{character}"},
+        "path": str(tmp_path / "remote"),
+    }
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_shorthand_user(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the shorthand ``user`` are rejected."""
+    data = _with_remote(
+        mock_valid_raw_env_data, f"doc{character}@docs.example.com", tmp_path / "remote"
+    )
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "character",
+    ["\n", "\t", "\r", " ", "\x00", "\x1f", "\x7f"],
+    ids=["newline", "tab", "carriage_return", "space", "nul", "unit_separator", "del"],
+)
+def test_env_remote_rejects_control_characters_in_shorthand_host(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    character: str,
+) -> None:
+    """Test that whitespace/control chars in the shorthand ``host`` are rejected."""
+    data = _with_remote(
+        mock_valid_raw_env_data, f"doc@docs.example.com{character}", tmp_path / "remote"
+    )
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+@pytest.mark.parametrize(
+    "host",
+    ["192.0.2.10", "2001:db8::1"],
+    ids=["ipv4", "ipv6"],
+)
+def test_env_remote_dict_host_ip_address_passes(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+    host: str,
+) -> None:
+    """Test that valid IP address hosts still pass (str() conversion in the validator)."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {
+        "server": {"user": "doc", "host": host},
+        "path": str(tmp_path / "remote"),
+    }
+    config = EnvConfig.from_dict(data)
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert str(config.remote.server.host) == host
+    assert config.remote.path == (tmp_path / "remote")
+
+
+def test_env_remote_relative_path_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that a relative remote path is rejected."""
+    data = _with_remote(mock_valid_raw_env_data, "doc@example.com", "srv/docs")
+    with pytest.raises(ValidationError):
+        EnvConfig.from_dict(data)
+
+
+def test_env_remote_requires_both_or_neither(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """Test that [remote] with only server or only path is rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"server": "doc@example.com"}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    assert "both 'server' and 'path'" in str(excinfo.value)
+
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"path": str(tmp_path / "remote")}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    assert "both 'server' and 'path'" in str(excinfo.value)
+
+
+def test_env_remote_unknown_key_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that an unknown key inside [remote] raises a ValidationError."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"rsync_options": []}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("remote", "rsync_options") == tuple(locs)
+
+
+def test_env_remote_wrong_type_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that a non-dict, non-string server value inside [remote] raises a ValidationError."""
+    data = mock_valid_raw_env_data.copy()
+    data["remote"] = {"server": 123}
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("remote", "server") == tuple(locs)
+
+
+def test_envconfig_remote_round_trip() -> None:
+    """Test that the default config round-trips through model_dump and from_dict.
+
+    ``resolve_placeholders=False`` keeps runtime placeholders escaped.
+    """
+    dumped = EnvConfig.get_default_config(resolve_placeholders=False)
+    config = EnvConfig.from_dict(dumped)
+    assert config.remote.server is None
+    assert config.remote.path is None
+
+
+def test_envconfig_remote_none_config_list_smoke(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Smoke-test the 'docbuild config list' serialization path with None values."""
+    from docbuild.cli.cmd_config.list import print_section
+
+    config = EnvConfig.from_dict(mock_valid_raw_env_data)
+    assert config.remote.server is None
+    assert config.remote.path is None
+
+    data = config.model_dump(mode="json")
+    assert data["remote"] == {"server": None, "path": None}
+
+    # This is exactly the code path 'docbuild config list --env' uses.
+    print_section("Environment Configuration", data, "env", False, "yellow")
+
+
+def test_envconfig_example_file_validates_and_enables_remote(
+    example_env_toml: Path,
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """The shipped example must validate and enable [remote].
+
+    The example's [paths] use home-directory locations, and its remote path
+    lives on the Linux server. Both are replaced with tmp_path-based values
+    before validation. The shipped remote path is checked separately as a
+    POSIX absolute path.
+    """
+    from pathlib import PurePosixPath
+
+    from docbuild.config.load import load_single_config
+
+    raw_config = load_single_config(example_env_toml)
+    assert PurePosixPath(raw_config["remote"]["path"]).is_absolute()
+
+    raw_config["paths"] = mock_valid_raw_env_data["paths"]
+    raw_config["remote"]["path"] = str(tmp_path / "remote")
+
+    config = EnvConfig.from_dict(raw_config)
+
+    assert config.remote.server is not None
+    assert config.remote.path == tmp_path / "remote"
+
+
+def test_envconfig_remote_section_from_file_loads_tmp_path(
+    mock_valid_raw_env_data: dict[str, Any],
+    tmp_path: Path,
+) -> None:
+    """A [remote] section written to tmp_path loads into EnvConfig."""
+    from docbuild.config.load import load_single_config
+
+    config_file = tmp_path / "remote.toml"
+    config_file.write_text(
+        "[remote]\n"
+        'server = "doc@example.com"\n'
+        f'path = "{(tmp_path / "remote").as_posix()}"\n',
+        encoding="utf-8",
+    )
+
+    raw_config = mock_valid_raw_env_data.copy()
+    raw_config["remote"] = load_single_config(config_file)["remote"]
+
+    config = EnvConfig.from_dict(raw_config)
+
+    assert config.remote.server is not None
+    assert config.remote.server.user == "doc"
+    assert str(config.remote.server.host) == "example.com"
+    assert config.remote.path == (tmp_path / "remote")
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "user@host:/srv/docs",
+        "host:/srv/docs",
+        "rsync://host/module",
+        "host::module",
+        "ssh://host/x",
+    ],
+)
+def test_envconfig_remote_target_base_dir_rejected(
+    mock_valid_raw_env_data: dict[str, Any],
+    value: str,
+) -> None:
+    """Test that remote-looking target_base_dir values are rejected."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = value
+
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+
+    locs = excinfo.value.errors()[0]["loc"]
+    assert ("paths", "target", "target_base_dir") == tuple(locs)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("/srv/docs", "/srv/docs"),
+        ("relative/dir", "relative/dir"),
+        ("~/Documents/docbuild/target", "~/Documents/docbuild/target"),
+        ("my:dir", "my:dir"),
+        ("a:b/c", "a:b/c"),
+    ],
+)
+def test_envconfig_local_target_base_dir_accepted(
+    mock_valid_raw_env_data: dict[str, Any],
+    value: str,
+    expected: str,
+) -> None:
+    """Test that local target_base_dir values are accepted."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = value
+
+    config = EnvConfig.from_dict(data)
+
+    assert config.paths.target.target_base_dir == expected
+
+
+def test_envconfig_remote_target_base_dir_error_message(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that the rejection message mentions [remote] and the offending value."""
+    data = mock_valid_raw_env_data.copy()
+    data["paths"]["target"]["target_base_dir"] = "doc@example.com:/srv/docs"
+
+    with pytest.raises(ValidationError) as excinfo:
+        EnvConfig.from_dict(data)
+
+    message = str(excinfo.value)
+    assert "[remote]" in message
+    assert "doc@example.com:/srv/docs" in message
+
+
+def test_envconfig_target_base_dir_default_is_local(
+    mock_valid_raw_env_data: dict[str, Any],
+) -> None:
+    """Test that omitting target_base_dir keeps a local, non-remote default."""
+    from docbuild.models.config.env import target_is_remote
+
+    data = mock_valid_raw_env_data.copy()
+    del data["paths"]["target"]["target_base_dir"]
+
+    config = EnvConfig.from_dict(data)
+
+    assert not target_is_remote(config.paths.target.target_base_dir)

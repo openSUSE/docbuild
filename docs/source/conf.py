@@ -7,11 +7,16 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 from datetime import datetime
+import os
 from pathlib import Path
 import sys
+from typing import Self
 
+from docutils import nodes
+from setuptools_scm import get_version
 from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
+from sphinx.transforms import SphinxTransform
 from sphinx.util import logging
 
 from docbuild.__about__ import __version__
@@ -24,7 +29,14 @@ project = "docbuild"
 current_year = datetime.now().year
 copyright = f"{current_year}, Tom Schraitle | Sushant Gaurav"  # noqa: A001
 author = "Tom Schraitle, Sushant Gaurav"
-release = __version__
+
+# Check, if we are using 'latest' (main) build
+if os.environ.get("DOC_VERSION") == "latest":
+    release: str = get_version(root="../..", relative_to=__file__)
+else:
+    release = __version__
+
+version = __version__
 
 gh_user = "openSUSE"
 gh_repo_url = f"https://github.com/{gh_user}/{project}"
@@ -50,6 +62,12 @@ rst_prolog = f"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    #
+    # AutoAPI must run early to generate API files before other extensions
+    # Generate API documentation from source code
+    # https://sphinx-autoapi.readthedocs.io/en/latest/
+    "autoapi.extension",
+    #
     # Include documentation from docstrings
     # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html
     "sphinx.ext.autodoc",
@@ -78,19 +96,32 @@ extensions = [
     # https://sphinx-copybutton.readthedocs.io/en/latest/
     "sphinx_copybutton",
     #
+    # Card/grid components for richer documentation landing pages
+    # https://sphinx-design.readthedocs.io/
+    "sphinx_design",
+    #
     # Render type hints in signatures
     # https://github.com/tox-dev/sphinx-autodoc-typehints
     "sphinx_autodoc_typehints",
     #
-    # Generate API documentation from source code
-    # https://sphinx-autoapi.readthedocs.io/en/latest/
-    "autoapi.extension",
+    # Render mermaid graphs
+    # https://github.com/mgaitan/sphinxcontrib-mermaid
+    "sphinxcontrib.mermaid",
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+
+# List of patterns, relative to source directory, that match files and
+# directories to ignore when looking for source files.
+# This pattern also affects html_static_path and html_extra_path.
+exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "__pycache__"]
 
 language = "en"
+
+# -- Options for copybutton
+copybutton_selector = "div.highlight-console pre"
+copybutton_prompt_text = "$ "
+copybutton_line_continuation_character = "\\"
 
 # -- Options for autoapi extension
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
@@ -133,6 +164,8 @@ extlinks = {
     "gh_tree": (f"{gh_repo_url}/tree/main/%s", "%s"),
     # Linking to the GH issue tracker:
     "gh": (f"{gh_repo_url}/issues/%s", "GH #%s"),
+    # Linking to a GH pull request:
+    "pr": (f"{gh_repo_url}/pull/%s", "PR #%s"),
 }
 
 
@@ -166,7 +199,7 @@ html_context = {
 }
 
 html_theme_options = {
-    "announcement": "Documentation is under construction.",
+    # "announcement": "Documentation is under construction.",
     "show_prev_next": True,
     # "html_last_updated_fmt": "%b %d, %Y",
     "content_footer_items": ["last-updated"],
@@ -197,11 +230,18 @@ html_theme_options = {
         # "image_light": "_static/logo-light.png",
         # "image_dark": "_static/logo-dark.png",
     },
+    "switcher": {
+        "json_url": "https://opensuse.github.io/docbuild/versions.json",
+        "version_match": os.environ.get("DOC_VERSION", "latest"),
+    },
+    "navbar_end": ["theme-switcher", "version-switcher"],
 }
 
 html_logo = "_static/logo.png"
 
 html_favicon = "_static/favicon.ico"
+
+html_title = f"{project.capitalize()} Documentation {release}"
 
 # -- Options for intersphinx extension ---------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
@@ -229,6 +269,34 @@ linkcheck_ignore = [
     # Just ignore useless example URLs
     r"https://github\.com/org/repo",
 ]
+
+
+# Mermaid configuration
+mermaid_params = [
+    "--theme",
+    "default",
+    "--backgroundColor",
+    "transparent",
+    "--sequence_mirrorActors", "false",
+    "--sequence_diagramMarginX", "5",
+    "--sequence_diagramMarginY", "5",
+]
+
+# Hier kannst du CSS direkt injizieren, um die Schriftgröße zu erzwingen
+mermaid_init_js = """
+mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    sequence: {
+        diagramMarginX: 5,     // Horizontaler Rand des gesamten Diagramms
+        diagramMarginY: 5,     // Vertikaler Rand des gesamten Diagramms
+        boxMargin: 5,          // Abstand um die Akteur-Boxen
+        messageMargin: 30,     // Platz zwischen den Pfeilen (verringern für Kompaktheit)
+        mirrorActors: false,   // Verhindert, dass die Akteure unten nochmals wiederholt werden (spart Platz)
+        bottomMarginRight: 5   // Rechter unterer Rand
+    }
+});
+"""
 
 
 # Configuration for TOML documentation generation
@@ -285,7 +353,143 @@ def run_toml_generator(app: Sphinx) -> None:
         generate_toml_reference(toml_input, rst_output, **config_data)
 
 
+class GlossaryRearranger(SphinxTransform):
+    """Group glossary terms by first letter into section nodes.
+
+    The glossary directive emits a flat definition list. This transform rewrites
+    it into per-letter sections so each letter gets its own heading and anchor.
+    """
+
+    default_priority = 400
+
+    @staticmethod
+    def _is_glossary_definition_list(node: nodes.definition_list) -> bool:
+        """Return whether a definition list belongs to a glossary block."""
+        parent = node.parent
+        if parent is None:
+            return False
+
+        return "glossary" in parent.get("classes", []) or "glossary" in node.get(
+            "classes", []
+        )
+
+    @staticmethod
+    def _group_terms_by_letter(
+        node: nodes.definition_list,
+    ) -> dict[str, list[nodes.definition_list_item]]:
+        """Group glossary items by the first letter of each term."""
+        groups: dict[str, list[nodes.definition_list_item]] = {}
+        for item in list(node.children):
+            if not isinstance(item, nodes.definition_list_item):
+                continue
+
+            term_node = item.next_node(nodes.term)
+            if not term_node:
+                continue
+
+            term_text = term_node.astext().strip()
+            if not term_text:
+                continue
+
+            letter = term_text[0].upper()
+            groups.setdefault(letter, []).append(item)
+
+        return groups
+
+    @staticmethod
+    def _build_letter_sections(
+        groups: dict[str, list[nodes.definition_list_item]],
+    ) -> list[nodes.section]:
+        """Build one section per glossary letter group."""
+        new_sections: list[nodes.section] = []
+        for letter in sorted(groups.keys()):
+            sec = nodes.section(
+                ids=[letter],
+                classes=["glossary-section", f"glossary-letter-{letter.lower()}"],
+            )
+            sec += nodes.title(letter, letter, classes=["glossary-letter-title"])
+
+            letter_list = nodes.definition_list()
+            letter_list.extend(groups[letter])
+            sec += letter_list
+            new_sections.append(sec)
+
+        return new_sections
+
+    @staticmethod
+    def _replace_with_sections(
+        parent: nodes.Element,
+        node: nodes.definition_list,
+        new_sections: list[nodes.section],
+    ) -> None:
+        """Replace glossary list with generated sections in the proper parent."""
+        if getattr(parent, "tagname", "") == "glossary" and parent.parent is not None:
+            # Sphinx's ToC collector ignores <section> nodes nested inside a
+            # <glossary> node. Hoist sections one level up so they are indexed.
+            grandparent = parent.parent
+            idx = grandparent.index(parent)
+            for sec in reversed(new_sections):
+                grandparent.insert(idx, sec)
+            parent.remove(node)
+            if not parent.children:
+                grandparent.remove(parent)
+            return
+
+        node.replace_self(new_sections)
+
+    def apply(self: Self) -> None:
+        """Rewrite glossary definition lists into grouped letter sections."""
+        for node in list(self.document.findall(nodes.definition_list)):
+            if node.get("_glossary_rearranged", False):
+                continue
+
+            if not self._is_glossary_definition_list(node):
+                continue
+
+            groups = self._group_terms_by_letter(node)
+            if not groups:
+                continue
+
+            new_sections = self._build_letter_sections(groups)
+            parent = node.parent
+            if not isinstance(parent, nodes.Element):
+                continue
+
+            self._replace_with_sections(parent, node, new_sections)
+
+            node["_glossary_rearranged"] = True
+            logger.info("GlossaryRearranger: Grouped %d letters.", len(groups))
+
+
+class GlossaryToCBuilder(SphinxTransform):
+    """Add glossary term permalinks used by the rendered HTML output.
+
+    This transform keeps generated glossary terms linkable via header links.
+    """
+
+    default_priority = 950
+
+    def apply(self) -> None:
+        """Attach permalink references to glossary term nodes."""
+        # Inject Term Permalinks (existing logic)
+        for term_node in self.document.findall(nodes.term):
+            t_ids = term_node.get("ids", [])
+            if t_ids and not any(
+                isinstance(c, nodes.reference) for c in term_node.children
+            ):
+                t_ref = nodes.reference(
+                    "",
+                    "#",
+                    refuri=f"#{t_ids[0]}",
+                    classes=["headerlink"],
+                    reftitle="Permalink",
+                )
+                term_node += t_ref
+
+
 def setup(app: Sphinx) -> None:
     """Sphinx setup function to connect the TOML generator to the build process."""
     # This hook ensures the file exists before Sphinx tries to 'include' it
     app.connect("builder-inited", run_toml_generator)
+    app.add_transform(GlossaryRearranger)
+    app.add_transform(GlossaryToCBuilder)

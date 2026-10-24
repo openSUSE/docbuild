@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+#
+# -----------------------------------------------------------------------------
+# Jing Wrapper Script (macOS/Linux Parity)
+#
+# This script ensures a consistent execution environment across macOS and Linux.
+# It addresses a functional gap in the standard Homebrew (jing-trang) formula, 
+# which excludes the Xerces JARs necessary for XInclude resolution.
+#
+# Configuration:
+#   - Explicitly includes Xerces and XML-APIs in the classpath.
+#   - Supports XInclude resolution via the ADDITIONAL_FLAGS environment variable
+#     (see DEFAULT_FLAGS for the required parser configuration).
+#   - DEBUG or VERBOSE: Set to "1" to print the Java VM path, classpath,
+#     main class, active flags, and arguments to stderr.
+#
+# Features:
+#   - Explicitly includes Xerces and XML-APIs in the classpath if found.
+#   - Supports XInclude resolution via ADDITIONAL_FLAGS (see DEFAULT_FLAGS below).
+# -----------------------------------------------------------------------------
+#
+# Author: Tom Schraitle 2026
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# -----------------------------------------------------------------------------
+# JAR locations
+# -----------------------------------------------------------------------------
+# Path logic:
+# $SCRIPT_DIR              -> .github/workflows/MacOS/bin
+# $SCRIPT_DIR/..           -> .github/workflows/MacOS
+# $SCRIPT_DIR/../..        -> .github/workflows
+# $SCRIPT_DIR/../../..     -> (Repository Root)
+# $SCRIPT_DIR/../../../MacOS/lib -> Target JAR folder
+
+SCRIPT_PATH="${BASH_SOURCE[0]}"
+# Resolve symlinks (macOS/Linux compatible version)
+while [ -L "$SCRIPT_PATH" ]; do
+  DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+  SCRIPT_PATH="$(readlink "$SCRIPT_PATH")"
+  [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH="$DIR/$SCRIPT_PATH"
+done
+
+SCRIPT_DIR="$(cd -P "$(dirname "$SCRIPT_PATH")" && pwd)"
+JAR_ROOT="$(realpath $SCRIPT_DIR/../lib)"
+
+JING_JAR="${JING_JAR:-$JAR_ROOT/jing.jar}"
+RELAXNG_DATATYPE_JAR="${RELAXNG_DATATYPE_JAR:-$JAR_ROOT/relaxngDatatype.jar}"
+XERCES_JAR="${XERCES_JAR:-$JAR_ROOT/xercesImpl.jar}" 
+XML_APIS_JAR="${XML_APIS_JAR:-$JAR_ROOT/xml-apis.jar}"
+
+# -----------------------------------------------------------------------------
+# Default JVM flags
+# -----------------------------------------------------------------------------
+
+DEFAULT_FLAGS=(
+# Java property to enable the XInclude resolution. It is not set
+# here to be consistent with the Linux version. If you need it, set the
+# ADDITIONAL_FLAGS environment variable to the following value:
+#  "-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
+)
+
+# -----------------------------------------------------------------------------
+# Jing's main class
+# -----------------------------------------------------------------------------
+
+MAIN_CLASS="com.thaiopensource.relaxng.util.Driver"
+
+# -----------------------------------------------------------------------------
+# Classpath
+# -----------------------------------------------------------------------------
+
+CLASSPATH=(
+  "$JING_JAR"
+  "$RELAXNG_DATATYPE_JAR"
+)
+
+[[ -f "$XERCES_JAR" ]] && CLASSPATH+=("$XERCES_JAR")
+[[ -f "$XML_APIS_JAR" ]] && CLASSPATH+=("$XML_APIS_JAR")
+
+CP=$(IFS=:; printf '%s' "${CLASSPATH[*]}")
+
+# -----------------------------------------------------------------------------
+# Build Java command
+# -----------------------------------------------------------------------------
+
+JAVA_CMD=(java)
+
+# Internal default flags. Use parameter transformation to fix expansion of
+# zero-indexed arrays
+JAVA_CMD+=(${DEFAULT_FLAGS[@]+"${DEFAULT_FLAGS[@]}"})
+
+# User-provided ADDITIONAL_FLAGS
+if [[ -n "${ADDITIONAL_FLAGS:-}" ]]; then
+  # shellcheck disable=SC2206
+  EXTRA_FLAGS_ARRAY=(${ADDITIONAL_FLAGS})
+  JAVA_CMD+=("${EXTRA_FLAGS_ARRAY[@]}")
+fi
+
+
+# -----------------------------------------------------------------------------
+# Debug output
+# -----------------------------------------------------------------------------
+
+if [[ "${DEBUG:-0}" == "1" || "${VERBOSE:-0}" == "1" ]]; then
+  {
+    echo "Java virtual machine used: $(command -v java)"
+    echo "classpath used: $CP"
+    echo "main class used: ${MAIN_CLASS}"
+    echo "flags used: ${JAVA_CMD[*]:1}"
+    echo "arguments used: $*"
+  } >&2
+fi
+
+# -----------------------------------------------------------------------------
+# Execute Jing
+# -----------------------------------------------------------------------------
+
+exec "${JAVA_CMD[@]}" \
+  -cp "$CP" \
+  ${MAIN_CLASS} \
+  "$@"
+

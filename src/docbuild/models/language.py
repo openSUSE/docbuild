@@ -21,11 +21,11 @@ class LanguageCode(BaseModel):
         title="The natural language",
         description=(
             "A natural language in the format ll-cc, "
-            "whereas 'll' is the language and 'cc' the country "
-            "both in lowercase letters. "
+            "whereas 'll' is the language (ISO 639-1) and 'cc' the country (ISO 3166-1). "
+            "The model accepts different spellings, but normalizes it to lowercase. "
             "The special syntax '*' denotes every language."
         ),
-        examples=["en-us", "de-de"],
+        examples=["en-us", "de-de", "zh-CN"],
         frozen=True,
     )
     """The natural language in the format ``ll-cc``, where ``ll`` is the
@@ -35,7 +35,7 @@ class LanguageCode(BaseModel):
     """Configuration for the model, should be a dictionary
     conforming to Pydantic's :class:`~pydantic.config.ConfigDict`."""
 
-    ALLOWED_LANGS: ClassVar[frozenset] = frozenset(
+    ALLOWED_LANGS: ClassVar[frozenset[str]] = frozenset(
         {"*"} | ALLOWED_LANGUAGES,
     )
     """Class variable containing all allowed languages."""
@@ -61,9 +61,9 @@ class LanguageCode(BaseModel):
 
         The comparison does NOT break the principle of equality:
 
-        *  Reflexive: a == b
-        *  Symmetric: a == b <=> b == a
-        *  Transitive: if a == b and b == c, then a == c
+        * Reflexive: a == b
+        * Symmetric: a == b <=> b == a
+        * Transitive: if a == b and b == c, then a == c
 
         If you need to check for wildcard logic, use
         :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
@@ -79,9 +79,9 @@ class LanguageCode(BaseModel):
 
         Special properties:
 
-        *  "*" is always the "smallest" language
-        *  If self contains "*" and the other not, return True
-        *  If self and the other contains "*", return False
+        * "*" is always the "smallest" language
+        * If self contains "*" and the other not, return True
+        * If self and the other contains "*", return False
         """
         if isinstance(other, LanguageCode):
             other_value = other.language
@@ -116,7 +116,8 @@ class LanguageCode(BaseModel):
         >>> LanguageCode("de-de").matches("*")
         True
         """
-        other_value = str(other)
+        # Also defensively strip spaces when performing wildcard matches against strings
+        other_value = str(other).strip() if isinstance(other, str) else str(other)
         return (
             self.language == "*" or other_value == "*" or self.language == other_value
         )
@@ -124,9 +125,17 @@ class LanguageCode(BaseModel):
     @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
-        """Normalize separator from ``_`` to ``-``."""
+        """Strip whitespaces, normalize separator, and auto-complete partial languages."""
         if isinstance(value, str):
-            return value.replace("_", "-")
+            val = value.strip().lower().replace("_", "-")
+
+            # Auto-complete partial languages (e.g. "en" -> "en-us")
+            if val != "*" and "-" not in val:
+                for allowed_lang in cls.ALLOWED_LANGS:
+                    if allowed_lang != "*" and allowed_lang.startswith(f"{val}-"):
+                        return allowed_lang
+
+            return val
         return value
 
     @field_validator("language")
@@ -160,11 +169,14 @@ class LanguageCode(BaseModel):
         parts = self.language.split("-")
         return (parts[0], parts[1]) if len(parts) > 1 else (parts[0],)
 
+    _COUNTRY_SIGNIFICANT: ClassVar[frozenset[str]] = frozenset({"pt", "zh"})
+
     @computed_field(
         repr=False,
         title="The language part of the language code",
         examples=["en", "de", "ja"],
     )
+    @property
     def lang(self) -> str:
         """Extract the language part of the language code (property)."""
         return self._parts[0]
@@ -174,6 +186,24 @@ class LanguageCode(BaseModel):
         title="The country part of the language code",
         examples=["us", "de", "jp"],
     )
+    @property
     def country(self) -> str:
         """Extract the country part of the language code (property)."""
         return self._parts[1] if len(self._parts) > 1 else "*"
+
+    @computed_field(
+        repr=False,
+        title="The language tag for PDF filenames",
+        examples=["en", "de", "pt_br"],
+    )
+    @property
+    def pdf_tag(self) -> str:
+        """Return the language tag used in PDF filenames.
+
+        For most languages, this is just the language code (e.g., ``en``).
+        For some languages where the country is significant (e.g., ``pt-br``),
+        it returns a ``language_country`` tag (e.g., ``pt_br``).
+        """
+        if self.lang in self._COUNTRY_SIGNIFICANT:
+            return f"{self.lang}_{self.country}"
+        return self.lang

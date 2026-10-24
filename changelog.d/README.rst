@@ -33,24 +33,25 @@ We recommend to follow the steps to make a smooth integration of your changes af
    * ``refactor``: refactors code without changing the user facing API.
    * ``removal``: removes obsolete or deprecated features.
    * ``infra``: improves the infrastructure, e.g. build or test system.
+   * ``security``: informs about security related issues.
 
    For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
 
-#. Create the new file with the command, for example for a feature in issue 123:
+#. Create the new file with the following command, for example for a feature in issue 123:
 
    .. code-block:: shell
       :caption: Create a new newsfragment file
       :name: towncrier-create
 
-      towncrier create -c "Description" 123.feature.rst
+      towncrier create 123.feature.rst
 
    The file is created in the :file:`changelog.d/` directory.
 
-#. If neccessary, open the file and describe your changes in RST format.
+#. Open the file and describe your changes in RST format.
 
+   * Prefer simple past tense or constructions with "now".
    * Wrap symbols like modules, functions, or classes into double backticks
      to render them in a ``monospace font``.
-   * Prefer simple past tense or constructions with "now".
 
    Try to keep the description short.
 

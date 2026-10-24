@@ -5,62 +5,38 @@
 
 .. -text-begin-
 
-.. _envtoml-section-server:
+.. _envtoml-section-general:
 
-[server]
---------
+[general]
+---------
 
-Deals with all config about server settings
+General configuration
 
-.. _envtoml-server-name:
+.. _envtoml-general-name:
 
 ``name``
     :Type: :code:`str`
-    :Default: ``doc-example-com``
+    :Default: ``default-env``
 
-    Name of the server, used for logging and cache paths
+    Name of the environment, used for logging and cache paths
 
-.. _envtoml-server-role:
+.. _envtoml-general-role:
 
 ``role``
     :Type: :code:`str`
     :Default: ``production``
 
-    Role of the server, used for logging and other purposes. Possible values: "production", "staging", "development"
+    Role of the environment. Possible values: "production", "staging", "development"
 
-.. _envtoml-server-host:
-
-``host``
-    :Type: :code:`str`
-    :Default: ``127.0.0.1``
-
-    Hostname or IP address to bind the server to.
-
-.. _envtoml-server-port:
-
-``port``
-    :Type: :code:`int`
-    :Default: ``80``
-
-    Port number to listen on. Uncomment and set to enable.
-
-.. _envtoml-server-enable-mail:
+.. _envtoml-general-enable-mail:
 
 ``enable_mail``
     :Type: :code:`bool`
     :Default: ``true``
 
     Whether to enable email notifications.
-    Set to true to enable.
 
-.. _envtoml-section-config:
-
-[config]
---------
-
-General configuration
-
-.. _envtoml-config-default-lang:
+.. _envtoml-general-default-lang:
 
 ``default_lang``
     :Type: :code:`str`
@@ -68,7 +44,7 @@ General configuration
 
     Default language for the documentation.
 
-.. _envtoml-config-languages:
+.. _envtoml-general-languages:
 
 ``languages``
     :Type: :code:`list[str]`
@@ -76,7 +52,7 @@ General configuration
 
     A list of all supported languages.
 
-.. _envtoml-config-canonical-url-domain:
+.. _envtoml-general-canonical-url-domain:
 
 ``canonical_url_domain``
     :Type: :code:`str`
@@ -105,14 +81,6 @@ Key naming convention:
 
     The root directory where all configuration files are stored.
 
-.. _envtoml-paths-jinja-dir:
-
-``jinja_dir``
-    :Type: :code:`str`
-    :Default: ``{root_config_dir}/jinja-doc-suse-com``
-
-    Path to the directory containing Jinja templates.
-
 .. _envtoml-paths-config-dir:
 
 ``config_dir``
@@ -120,6 +88,30 @@ Key naming convention:
     :Default: ``{root_config_dir}/config.d``
 
     Path to the directory for additional configuration files.
+
+.. _envtoml-paths-main-portal-config:
+
+``main_portal_config``
+    :Type: :code:`str`
+    :Default: ``{config_dir}/portal.xml``
+
+    Absolute path to the main Portal XML configuration file.
+
+.. _envtoml-paths-portal-rncschema:
+
+``portal_rncschema``
+    :Type: :code:`str`
+    :Default: ``{root_config_dir}/portal-config.rnc``
+
+    Absolute path to the Portal RELAX NG (RNC) schema file used for validation.
+
+.. _envtoml-paths-jinja-dir:
+
+``jinja_dir``
+    :Type: :code:`str`
+    :Default: ``{root_config_dir}/jinja-doc-suse-com``
+
+    Path to the directory containing Jinja templates.
 
 .. _envtoml-paths-server-rootfiles-dir:
 
@@ -129,54 +121,69 @@ Key naming convention:
 
     Path to the directory containing server root files like robots.txt.
 
+.. _envtoml-paths-tmp-repo-dir:
+
+``tmp_repo_dir``
+    :Type: :code:`str`
+    :Default: ``~/.local/state/docbuild/repos/branches``
+
+    The directory for storing temporary repositories from branches.
+
+.. _envtoml-paths-repo-dir:
+
+``repo_dir``
+    :Type: :code:`str`
+    :Default: ``~/.local/state/docbuild/repos/permanent``
+
+    The directory where permanent full repositories are stored.
+
 .. _envtoml-paths-base-cache-dir:
 
 ``base_cache_dir``
     :Type: :code:`str`
-    :Default: ``/var/cache/docserv``
+    :Default: ``~/.cache/docbuild``
 
-    
     The base directory for storing cached data.
 
 .. _envtoml-paths-base-server-cache-dir:
 
 ``base_server_cache_dir``
     :Type: :code:`str`
-    :Default: ``{base_cache_dir}/{server.name}``
+    :Default: ``{base_cache_dir}/{general.name}``
 
     The server-specific cache directory, derived from base_cache_dir and server name.
-
-.. _envtoml-paths-base-tmp-dir:
-
-``base_tmp_dir``
-    :Type: :code:`str`
-    :Default: ``/var/tmp/docbuild``
-
-    The base directory for temporary files.
-
-.. _envtoml-paths-repo-dir:
-
-``repo_dir``
-    :Type: :code:`str`
-    :Default: ``/data/docserv/repos/permanent-full/``
-
-    The directory where permanent full repositories are stored.
-
-.. _envtoml-paths-tmp-repo-dir:
-
-``tmp_repo_dir``
-    :Type: :code:`str`
-    :Default: ``/data/docserv/repos/temporary-branches/``
-
-    The directory for storing temporary repositories from branches.
 
 .. _envtoml-paths-meta-cache-dir:
 
 ``meta_cache_dir``
     :Type: :code:`str`
-    :Default: ``{base_cache_dir}/{server.name}/meta``
+    :Default: ``{base_server_cache_dir}/meta``
 
     The directory for caching metadata.
+
+.. _envtoml-paths-runtime-base-dir:
+
+``runtime_base_dir``
+    :Type: :code:`str`
+    :Default: ``{base_cache_dir}/runtime``
+
+    The base directory for lightweight runtime artifacts.
+
+.. _envtoml-paths-lock-dir:
+
+``lock_dir``
+    :Type: :code:`str`
+    :Default: ``{runtime_base_dir}/locks``
+
+    Directory for lock files used to prevent concurrent builds.
+
+.. _envtoml-paths-json-cache-dir:
+
+``json_cache_dir``
+    :Type: :code:`str`
+    :Default: ``{base_server_cache_dir}/json``
+
+    JSON cache path
 
 .. _envtoml-section-paths-tmp:
 
@@ -190,9 +197,9 @@ Paths can hold placeholders in brackets.
 
 ``tmp_base_dir``
     :Type: :code:`str`
-    :Default: ``{paths.base_tmp_dir}``
+    :Default: ``/tmp/docbuild``
 
-    The base directory for temporary files, referencing paths.base_tmp_dir.
+    The base directory for temporary files.
 
 .. _envtoml-paths-tmp-tmp-dir:
 
@@ -269,9 +276,10 @@ Defines target paths
 
 ``target_base_dir``
     :Type: :code:`str`
-    :Default: ``doc@10.100.60.1:/srv/docs``
+    :Default: ``~/Documents/docbuild/target``
 
-    The base path for the deployment target, including server and directory.
+    The LOCAL base directory for built documentation.
+    Remote destinations are configured in the [remote] section instead.
 
 .. _envtoml-paths-target-target-dir-dyn:
 
@@ -279,15 +287,42 @@ Defines target paths
     :Type: :code:`str`
     :Default: ``{{product}}``
 
-    A dynamic template for the final target directory on the remote server.
+    A dynamic template for the subdirectory under target_base_dir.
 
 .. _envtoml-paths-target-backup-dir:
 
 ``backup_dir``
     :Type: :code:`str`
-    :Default: ``/data/docbuild/external-builds/``
+    :Default: ``~/.local/state/docbuild/default-env/backup``
 
     The directory where backups of external builds are stored.
+
+.. _envtoml-section-remote:
+
+[remote]
+--------
+
+The remote destination where built documentation is published.
+
+This section is optional: there is no remote destination unless it is set.
+When set, both keys below must be given together.
+
+.. _envtoml-remote-server:
+
+``server``
+    :Type: :code:`str`
+    :Default: ``n/a``
+
+    The SSH server as "user@host" or "host" (an IP address or DNS name).
+
+.. _envtoml-remote-path:
+
+``path``
+    :Type: :code:`str`
+    :Default: ``n/a``
+
+    The absolute directory on the remote server where documentation is published.
+    The path must be absolute, for example: "/srv/docs".
 
 .. _envtoml-section-build:
 
@@ -313,9 +348,10 @@ Configuration for daps
 
 ``meta``
     :Type: :code:`str`
-    :Default: ``daps -vv metadata --output {{output}}``
+    :Default: ``daps -vv --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}``
 
-    The DAPS command to extract metadata, with a placeholder for the output file.
+    The DAPS command to extract metadata. Placeholders {{builddir}}, {{dcfile}},
+    and {{output}} are filled at runtime by the metadata task.
 
 .. _envtoml-section-build-container:
 
@@ -332,24 +368,22 @@ Configuration for container
 
     The full name of the container image to be used for the build environment.
 
-.. _envtoml-section-xslt-params:
+.. _envtoml-section-xslt-common:
 
-[xslt-params]
+[xslt.common]
 -------------
 
-Replaces :file:`/etc/docserv/xslt-params-doc-suse-com.txt` file
 These keys are considered as XSLT parameters and passed
-to the transformation process
+to the transformation process for ALL output formats
 
-.. _envtoml-xslt-params-homepage:
+.. _envtoml-xslt-common-homepage:
 
 ``homepage``
-    :Type: :code:`str`
+    :Type: :code:`unknown`
     :Default: ``https://documentation.suse.com/``
 
-    The URL for the main homepage link in the documentation.
 
-.. _envtoml-xslt-params-overview-page:
+.. _envtoml-xslt-common-overview-page:
 
 ``overview-page``
     :Type: :code:`str`
@@ -357,7 +391,7 @@ to the transformation process
 
     The URL for the documentation overview page.
 
-.. _envtoml-xslt-params-overview-page-title:
+.. _envtoml-xslt-common-overview-page-title:
 
 ``overview-page-title``
     :Type: :code:`str`
@@ -365,15 +399,7 @@ to the transformation process
 
     The title displayed for the overview page link.
 
-.. _envtoml-xslt-params-external-js-onlineonly:
-
-``external.js.onlineonly``
-    :Type: :code:`str`
-    :Default: ``n/a``
-
-    Path to an external JavaScript file that is only included in the online version.
-
-.. _envtoml-xslt-params-show-edit-link:
+.. _envtoml-xslt-common-show-edit-link:
 
 ``show.edit.link``
     :Type: :code:`int`
@@ -381,7 +407,7 @@ to the transformation process
 
     A flag to control the visibility of the "Edit on GitHub" link (1 for true).
 
-.. _envtoml-xslt-params-twittercards-twitter-account:
+.. _envtoml-xslt-common-twittercards-twitter-account:
 
 ``twittercards.twitter.account``
     :Type: :code:`str`
@@ -389,7 +415,7 @@ to the transformation process
 
     The Twitter username to associate with Twitter Cards.
 
-.. _envtoml-xslt-params-generate-json-ld:
+.. _envtoml-xslt-common-generate-json-ld:
 
 ``generate.json-ld``
     :Type: :code:`int`
@@ -397,7 +423,7 @@ to the transformation process
 
     A flag to enable or disable the generation of JSON-LD structured data (1 for true).
 
-.. _envtoml-xslt-params-search-description-length:
+.. _envtoml-xslt-common-search-description-length:
 
 ``search.description.length``
     :Type: :code:`int`
@@ -405,10 +431,29 @@ to the transformation process
 
     The maximum character length for search result descriptions.
 
-.. _envtoml-xslt-params-socialmedia-description-length:
+.. _envtoml-xslt-common-socialmedia-description-length:
 
 ``socialmedia.description.length``
     :Type: :code:`int`
     :Default: ``n/a``
 
     The maximum character length for descriptions used in social media sharing.
+
+.. _envtoml-section-xslt-html:
+
+[xslt.html]
+-----------
+
+Parameters specifically for HTML output
+
+.. _envtoml-xslt-html-"external-js-onlineonly":
+
+``"external.js.onlineonly"``
+    :Type: :code:`unknown`
+    :Default: ``n/a``
+
+
+.. _envtoml-section-xslt-pdf:
+
+[xslt.pdf]
+----------

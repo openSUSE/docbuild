@@ -1,90 +1,383 @@
 """Main CLI tool for document operations."""
 
+import ast
 from collections.abc import Sequence
 import logging
 from pathlib import Path
 import sys
+import tempfile
+import tomllib
 from typing import Any, cast
 
 import click
 from pydantic import BaseModel, ValidationError
-import rich.console
+from rich.errors import StyleSyntaxError
+from rich.theme import Theme
 from rich.traceback import install as install_traceback
 
 from ..__about__ import __version__
 from ..config.load import handle_config
+from ..config.xml.portal import PortalConfig
 from ..constants import (
     APP_CONFIG_BASENAMES,
     APP_NAME,
     CONFIG_PATHS,
     DEFAULT_ENV_CONFIG_FILENAME,
-    PROJECT_DIR,
+    DOCBUILD_BANNER,
     PROJECT_LEVEL_APP_CONFIG_FILENAMES,
 )
 from ..logging import setup_logging
 from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
-from ..utils.errors import format_pydantic_error
+from ..utils.errors import format_pydantic_error, format_toml_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
 from .cmd_c14n import c14n
+from .cmd_cache import cache
 from .cmd_check import cmd_check
 from .cmd_config import config
+from .cmd_doctor import doctor
+from .cmd_llms import llms
 from .cmd_metadata import metadata
+from .cmd_portal import portal
 from .cmd_repo import repo
-from .cmd_validate import validate
+from .console import console, console_err
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
+from .theme import DEFAULT_STYLES
 
 PYTHON_VERSION = (
     f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
 log = logging.getLogger(__name__)
-CONSOLE = rich.console.Console(stderr=True, highlight=False)
+CONSOLE = console_err
 
 
-def _setup_console() -> None:
+def setup_console() -> None:
     """Configure the rich console."""
     install_traceback(console=CONSOLE, show_locals=True)
+
+
+def apply_theme_overrides(context: DocBuildContext | None) -> None:
+    """Apply theme overrides from application config to the rich console.
+
+    :param context: The CLI context containing the loaded application
+        configuration, or None.
+    """
+    for con in (console, console_err):
+        while len(con._theme_stack._entries) > 1:
+            con.pop_theme()
+
+    if (
+        context
+        and context.appconfig
+        and hasattr(context.appconfig, "theme")
+        and isinstance(context.appconfig.theme, dict)
+        and context.appconfig.theme != DEFAULT_STYLES
+    ):
+        theme_dict = {str(k): v for k, v in context.appconfig.theme.items()}
+        try:
+            new_theme = Theme(theme_dict)
+        except StyleSyntaxError as e:
+            sys.stderr.write(f"Error in theme: {e}\n")
+            sys.exit(1)
+        console.push_theme(new_theme)
+        console_err.push_theme(new_theme)
 
 
 def handle_validation_error(
     e: Exception,
     model_class: type[BaseModel],
-    config_files: Sequence[Path] | None,
+    config_files: Sequence[Path | str] | None,
     verbose: int,
     ctx: click.Context,
 ) -> None:
     """Format validation errors and exit the CLI.
 
     Outsourced logic to avoid code duplication between App and Env config phases.
-    Using Sequence[Path] ensures compatibility with both lists and tuples.
+    Using Sequence[Path | str] ensures compatibility with both lists and tuples.
+
     :param e: The exception that was raised during validation.
     :param model_class: The Pydantic model class that was being validated
-      (AppConfig or EnvConfig).
-    :param config_files: The list of config files that were attempted to be loaded, used for error context.
+       (AppConfig or EnvConfig).
+    :param config_files: The list of config files that were attempted to be
+       loaded, used for error context.
     :param verbose: The verbosity level from the CLI options, which can be
-      used to control the level of detail in the error output.
+       used to control the level of detail in the error output.
     :param ctx: The Click context, used to exit the CLI with an appropriate
-      status code after handling the error.
+       status code after handling the error.
     """
-    config_label = "Application" if model_class == AppConfig else "Environment"
+    # Determine which file we were working on
+    config_file = str((config_files or ["defaults"])[0])
 
-    if isinstance(e, ValidationError):
-        # Safely extract the first config file name for the error header
-        config_file = str((config_files or ["unknown"])[0])
-        format_pydantic_error(
-            e, model_class, config_file, verbose, console=CONSOLE
-        )
+    if isinstance(e, tomllib.TOMLDecodeError):
+        format_toml_error(e, config_file, console=CONSOLE)
+    elif isinstance(e, ValidationError):
+        format_pydantic_error(e, model_class, config_file, verbose, console=CONSOLE)
     else:
-        log.error("%s configuration failed validation:", config_label)
+        config_label = "Application" if model_class == AppConfig else "Environment"
+        log.error("%s configuration failed:", config_label)
         log.error("Error in config file(s): %s", config_files)
         log.error(e)
     ctx.exit(1)
 
 
+def load_app_config(
+    ctx: click.Context,
+    app_config: Path,
+    max_workers: str | None,
+    skip_validation: bool = False
+) -> None:
+    """Load and validate Application configuration."""
+    context = ctx.obj
+    result = handle_config(
+        app_config,
+        CONFIG_PATHS,
+        APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
+        None,
+        DEFAULT_APP_CONFIG,
+    )
+    context.appconfigfiles, raw_appconfig, context.appconfig_from_defaults = cast(
+        tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+    )
+
+    # Always store the raw dict so `config list` has access to it
+    context.raw_appconfig = raw_appconfig
+
+    if max_workers is not None:
+        raw_appconfig["max_workers"] = max_workers
+
+    try:
+        context.appconfig = AppConfig.from_dict(raw_appconfig)
+    except (ValueError, ValidationError) as e:
+        if skip_validation:
+            log.warning("Application config validation failed. Proceeding with raw data.")
+        else:
+            raise e
+
+
+KEY_DELIMITERS: dict[str, str] = {"'": "'", '"': '"', "[": "]"}
+
+
+def parse_key(key: str) -> list[str]:
+    r"""Parse dot-separated key path, respecting quoted/bracketed/escaped segments.
+
+    Parses a key string that may contain dots as separators or within quoted,
+    bracketed, or backslash-escaped segments. This enables setting configuration
+    values where keys themselves contain dots (e.g., XSLT parameters).
+
+    Supported delimiters and escapes:
+    - Backslash: ``segment\.with\.dots``
+    - Single quotes: ``'segment.with.dots'``
+    - Double quotes: ``"segment.with.dots"``
+    - Square brackets: ``[segment.with.dots]``
+
+    Examples:
+        >>> parse_key('server.host')
+        ['server', 'host']
+
+        >>> parse_key(r'xslt.html.show\.edit\.link')
+        ['xslt', 'html', 'show.edit.link']
+
+        >>> parse_key("server.'db.connection'")
+        ['server', 'db.connection']
+
+        >>> parse_key('xslt.html.[show.edit.link]')
+        ['xslt', 'html', 'show.edit.link']
+
+    :param key: A dot-separated key path with optional quoted/bracketed/escaped segments.
+    :return: A list of key segments suitable for nested dictionary access.
+    :raises click.BadParameter: If the key contains misplaced delimiters, unmatched
+        quotes/brackets, backslashes inside delimiters, trailing backslash, or invalid
+        syntax (e.g., characters after closing delimiter).
+
+    """
+    parts: list[str] = []
+    current = ""
+    i = 0
+
+    while i < len(key):
+        c = key[i]
+        if c == "\\":
+            if i + 1 >= len(key):
+                raise click.BadParameter(f"Trailing backslash in key: {key!r}")
+            current += key[i + 1]
+            i += 2
+        elif c == '.':
+            parts.append(current)
+            current = ""
+            i += 1
+        elif c in KEY_DELIMITERS:
+            if current:
+                raise click.BadParameter(f"Misplaced delimiter in key: {key!r}")
+            start_delim = c
+            end_delim = KEY_DELIMITERS[start_delim]
+            end_pos = key.find(end_delim, i + 1)
+            if end_pos == -1:
+                raise click.BadParameter(f"Unmatched '{start_delim}' in key: {key!r}")
+            current = key[i + 1 : end_pos]
+            if "\\" in current:
+                raise click.BadParameter(
+                    f"Backslash not allowed inside delimiters in key: {key!r}"
+                )
+            i = end_pos + 1
+            if i < len(key) and key[i] != '.':
+                raise click.BadParameter(f"Invalid syntax after delimiter in key: {key!r}")
+        else:
+            current += c
+            i += 1
+
+    parts.append(current)
+    return parts
+
+
+def apply_override(config: dict[str, Any], override: str) -> None:
+    """Parse and apply a single KEY=VALUE override to the configuration dictionary.
+
+    Processes a command-line override string (e.g., from ``--set-env``) and merges
+    it into the configuration dictionary. The key is parsed to support nested keys
+    with dots, and the value is automatically converted to its appropriate type
+    (boolean, integer, float, or string).
+
+    Type conversion behavior:
+    - ``true``/``false`` (case-insensitive) → ``bool``
+    - Numeric literals (e.g., ``42``, ``3.14``) → ``int`` or ``float``
+    - Quoted strings (e.g., ``'text'``, ``"text"``) → ``str``
+    - Unquoted non-numeric strings → ``str`` (fallback)
+
+    Examples:
+        >>> config = {'server': {}}
+        >>> apply_override(config, 'server.port=8080')
+        >>> config['server']['port']
+        8080
+
+        >>> config = {'xslt': {'html': {}}}
+        >>> apply_override(config, "xslt.html.'show.edit.link'=true")
+        >>> config['xslt']['html']['show.edit.link']
+        True
+
+    :param config: The configuration dictionary to update. Intermediate nested
+        dictionaries are created as needed.
+    :param override: A string in the format ``KEY=VALUE`` where KEY is a dot-separated
+        path (supporting quoted/bracketed segments) and VALUE is a literal.
+    :raises click.BadParameter: If the override string is malformed (missing '='),
+        or if the key syntax is invalid (see :func:`parse_key`).
+
+    """
+    if "=" not in override:
+        raise click.BadParameter(
+            f"Invalid format for override: {override!r}. Use 'KEY=VALUE'.",
+            param_hint="-C / --set-env",
+        )
+
+    key, value_str = override.split("=", 1)
+    keys = parse_key(key)
+
+    # Parse value: handle bool/int/float/str
+    if value_str.lower() in ('true', 'false'):
+        value = value_str.lower() == 'true'
+    else:
+        try:
+            value = ast.literal_eval(value_str)
+        except (ValueError, SyntaxError):
+            value = value_str
+
+    # Navigate and set value
+    d = config
+    for k in keys[:-1]:
+        d = d.setdefault(k, {})
+    d[keys[-1]] = value
+
+
+def load_env_config(
+    ctx: click.Context,
+    env_config: Path,
+    env_overrides: tuple[str, ...],
+    skip_validation: bool = False
+) -> None:
+    """Load and validate Environment configuration."""
+    context = ctx.obj
+    result = handle_config(
+        env_config,
+        CONFIG_PATHS,
+        None,
+        DEFAULT_ENV_CONFIG_FILENAME,
+        DEFAULT_ENV_CONFIG,
+    )
+    context.envconfigfiles, raw_envconfig, context.envconfig_from_defaults = cast(
+        tuple[tuple[Path, ...] | None, dict[str, Any], bool], result
+    )
+
+    # --- Merge CLI overrides ---
+    # Overwrites any values from config files with highest priority.
+    for override in env_overrides:
+        apply_override(raw_envconfig, override)
+
+    # Always store the raw dict so `config list` has access to it
+    context.raw_envconfig = raw_envconfig
+
+    try:
+        context.envconfig = EnvConfig.from_dict(raw_envconfig)
+    except (ValueError, ValidationError) as e:
+        if skip_validation:
+            log.warning("Environment config validation failed. Proceeding with raw data.")
+        else:
+            raise e
+
+
+def setup_logging_from_context(context: DocBuildContext, verbose: int) -> None:
+    """Extract logging configuration from context and set it up."""
+    if context.appconfig and context.envconfig:
+        logging_config = context.appconfig.logging.model_dump(
+            by_alias=True, exclude_none=True
+        )
+        log_dir = context.envconfig.paths.tmp.log_dir
+    else:
+        # Fall back to a safe, console-only configuration
+        logging_config = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "handlers": {
+                "console": {"class_name": "logging.StreamHandler", "level": "INFO"}
+            },
+            "root": {"level": "INFO", "handlers": ["console"]}
+        }
+        log_dir = Path(tempfile.gettempdir())
+
+    setup_logging(
+        cliverbosity=verbose, log_dir=log_dir, user_config={"logging": logging_config}
+    )
+
+
+class BannerGroup(click.Group):
+    """Custom Click Group that displays a banner before help messages."""
+
+    def resolve_command(
+        self, ctx: click.Context, args: list[str]
+    ) -> tuple[str | None, click.Command | None, list[str]]:
+        """Identify configuration bootstrapping before loading configuration.
+
+        :param ctx: The root command context.
+        :param args: Arguments remaining after parsing global options.
+        :return: The resolved command name, command and remaining arguments.
+        """
+        name, command, remaining = super().resolve_command(ctx, args)
+        ctx.meta["config_init"] = name == "config" and remaining[:1] == ["init"]
+        return name, command, remaining
+
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+        """Format and print help output with banner prefix.
+
+        :param ctx: The Click context.
+        :param formatter: Click help formatter instance.
+        """
+        click.echo(DOCBUILD_BANNER)
+        super().format_help(ctx, formatter)
+
+
 @click.group(
     name=APP_NAME,
+    cls=BannerGroup,
     context_settings={"show_default": True, "help_option_names": ["-h", "--help"]},
     help="Main CLI tool for document operations.",
     invoke_without_command=True,
@@ -96,6 +389,14 @@ def handle_validation_error(
 )
 @click.option("-v", "--verbose", count=True, help="Increase verbosity")
 @click.option("--dry-run", is_flag=True, help="Run without making changes")
+@click.option(
+    "-j",
+    "--workers",
+    "max_workers",
+    default="half",
+    show_default=True,
+    help="Maximum number of concurrent workers (integer, 'all', or 'all2').",
+)
 @click.option(
     "--debug/--no-debug",
     default=False,
@@ -129,6 +430,19 @@ def handle_validation_error(
         "in the current working directory."
     ),
 )
+@click.option(
+    "-C",
+    "--set-env",
+    "env_overrides",
+    metavar="KEY=VALUE",
+    multiple=True,
+    help=(
+        "Override an environment config value (e.g., 'paths.tmp_dir=/new/path'). "
+        "For keys that contain dots, use backslashes, quotes, or brackets. "
+        "xslt.html.show\\.edit\\.link=true, xslt.html.[show.edit.link]=true, and "
+        "xslt.html.'show.edit.link'=true are equivalent."
+    ),
+)
 @click.pass_context
 def cli(
     ctx: click.Context,
@@ -137,9 +451,13 @@ def cli(
     debug: bool,
     app_config: Path,
     env_config: Path,
+    max_workers: str | None,
+    env_overrides: tuple[str, ...],
     **kwargs: dict,
 ) -> None:
     """Acts as a main entry point for CLI tool.
+
+    \f
 
     :param ctx: The Click context object.
     :param verbose: The verbosity level.
@@ -147,8 +465,18 @@ def cli(
     :param debug: If set, enable debug mode.
     :param app_config: Filename to the application TOML config file.
     :param env_config: Filename to a environment's TOML config file.
+    :param env_overrides: A tuple of key-value strings to override env config.
     :param kwargs: Additional keyword arguments.
-    """
+    """  # noqa: D301
+    # Bootstrapping must also work without loading existing configuration.
+    if ctx.resilient_parsing or ctx.meta.get("config_init"):
+        return
+
+    # 2. Check if the user is asking for help ANYWHERE in the command
+    # This covers 'docbuild -h', 'docbuild config -h', and 'docbuild config list -h'
+    if any(arg in ctx.help_option_names for arg in sys.argv):
+        return
+
     if ctx.invoked_subcommand is None:
         click.echo(10 * "-")
         click.echo(ctx.get_help())
@@ -157,65 +485,60 @@ def cli(
     if ctx.obj is None:
         ctx.ensure_object(DocBuildContext)
 
-    context = ctx.obj
-    context.verbose = verbose
-    context.dry_run = dry_run
-    context.debug = debug
+    context: DocBuildContext = cast(DocBuildContext, ctx.obj)
+    context.verbose, context.dry_run, context.debug = verbose, dry_run, debug
 
-    # --- PHASE 1: Load and Validate Application Config ---
-    (
-        context.appconfigfiles,
-        raw_appconfig,
-        context.appconfig_from_defaults,
-    ) = handle_config(
-        app_config,
-        CONFIG_PATHS,
-        APP_CONFIG_BASENAMES + PROJECT_LEVEL_APP_CONFIG_FILENAMES,
-        None,
-        DEFAULT_APP_CONFIG,
-    )
+    # State tracking for centralized error handling
+    current_model: type[BaseModel] = AppConfig
+    current_files: Sequence[Path | str] | None = None
 
-    raw_appconfig = cast(dict[str, Any], raw_appconfig)
+    # Determine if we should skip validation
+    is_config_list = (ctx.invoked_subcommand == "config") and ("list" in sys.argv)
+    skip_validation = is_config_list and "--validate" not in sys.argv
 
     try:
-        context.appconfig = AppConfig.from_dict(raw_appconfig)
-    except (ValueError, ValidationError) as e:
-        handle_validation_error(e, AppConfig, context.appconfigfiles, verbose, ctx)
+        # --- PHASE 1: Load Application Config ---
+        current_model = AppConfig
+        current_files = (app_config,) if app_config else None
+        load_app_config(ctx, app_config, max_workers, skip_validation)
+        apply_theme_overrides(context)
 
-    # 3. Setup logging using the validated config object
-    logging_config = context.appconfig.logging.model_dump(
-        by_alias=True, exclude_none=True
-    )
-    setup_logging(cliverbosity=verbose, user_config={"logging": logging_config})
+        # --- PHASE 2: Load Environment Config ---
+        current_model = EnvConfig
+        current_files = (env_config,) if env_config else None
+        load_env_config(ctx, env_config, env_overrides, skip_validation)
 
-    # --- PHASE 2: Load Environment Config, Validate, and Acquire Lock ---
-    (
-        context.envconfigfiles,
-        raw_envconfig,
-        context.envconfig_from_defaults,
-    ) = handle_config(
-        env_config,
-        (PROJECT_DIR,),
-        None,
-        DEFAULT_ENV_CONFIG_FILENAME,
-        DEFAULT_ENV_CONFIG,
-    )
+        # --- PHASE 3: Logging & Portal Config ---
+        setup_logging_from_context(context, verbose)
 
-    raw_envconfig = cast(dict[str, Any], raw_envconfig)
+        # Initialize the Portal configuration if the XML file exists
+        if (
+            context.envconfig
+            and hasattr(context.envconfig, "paths")
+            and hasattr(context.envconfig.paths, "portal_xml")
+            and context.envconfig.paths.portal_xml.exists()
+        ):
+            context.portalconfig = PortalConfig(source=context.envconfig.paths.portal_xml)
 
-    try:
-        context.envconfig = EnvConfig.from_dict(raw_envconfig)
-    except (ValueError, ValidationError) as e:
-        handle_validation_error(e, EnvConfig, context.envconfigfiles, verbose, ctx)
+    except (ValueError, ValidationError, tomllib.TOMLDecodeError) as e:
+        files = (
+            context.appconfigfiles
+            if current_model == AppConfig and context.appconfigfiles
+            else context.envconfigfiles
+            if current_model == EnvConfig and context.envconfigfiles
+            else current_files
+        )
+        handle_validation_error(e, current_model, files, verbose, ctx)
 
+    # --- PHASE 3: Setup Concurrency Lock ---
+    # (Remains outside the try block as it has its own specialized error handling)
     env_config_path = (context.envconfigfiles or [None])[0]
-
-    # --- CONCURRENCY CONTROL ---
     if env_config_path:
         ctx.obj.env_lock = PidFileLock(resource_path=cast(Path, env_config_path))
         try:
             ctx.obj.env_lock.__enter__()
             log.info("Acquired lock for environment config: %r", env_config_path.name)
+            ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
         except LockAcquisitionError as e:
             log.error(str(e))
             ctx.exit(1)
@@ -223,14 +546,15 @@ def cli(
             log.error("Failed to set up environment lock: %s", e)
             ctx.exit(1)
 
-        ctx.call_on_close(lambda: ctx.obj.env_lock.__exit__(None, None, None))
-
 
 # Add subcommands
 cli.add_command(build)
 cli.add_command(c14n)
+cli.add_command(cache)
 cli.add_command(config)
+cli.add_command(cmd_check)
+cli.add_command(doctor)
+cli.add_command(llms)
 cli.add_command(repo)
 cli.add_command(metadata)
-cli.add_command(validate)
-cli.add_command(cmd_check)
+cli.add_command(portal)

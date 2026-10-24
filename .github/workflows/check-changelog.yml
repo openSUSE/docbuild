@@ -1,0 +1,72 @@
+name: Changelog Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  check-fragment:
+    name: Verify Newsfragment
+    runs-on: ubuntu-latest
+    # Do not run for release branches (e.g. release/*)
+    if: |
+      !startsWith(github.head_ref, 'release/') &&
+      !startsWith(github.base_ref, 'release/')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check for bypass label
+        id: bypass
+        env:
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ' ') }}
+        run: |
+          if [[ "$LABELS" == *"skip-changelog"* ]]; then
+            echo "Bypass label found. Skipping check."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for new fragments in changelog.d
+        id: fragments
+        if: steps.bypass.outputs.skip == 'false'
+        run: |
+          # Fetch the target branch to compare against
+          git fetch origin ${{ github.base_ref }}
+
+          # Find any .rst files added or modified in changelog.d/
+          CHANGELOG_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD | grep "^changelog\.d/.*\.rst$" || true)
+
+          if [ -z "$CHANGELOG_FILES" ]; then
+            echo "missing=true" >> $GITHUB_OUTPUT
+          else
+            echo "missing=false" >> $GITHUB_OUTPUT
+            python3 .github/scripts/validate_changelog.py $CHANGELOG_FILES
+          fi
+
+      - name: Post missing changelog comment
+        if: steps.fragments.outputs.missing == 'true'
+        uses: marocchino/sticky-pull-request-comment@v3.0.5
+        with:
+          header: changelog
+          message: |
+            ### ⚠️ Missing changelog fragment
+            No newsfragment was found in `changelog.d/`.
+            Please add one, or add the `skip-changelog` label if no entry is needed.
+            See the section [Adding News Fragments](https://opensuse.github.io/docbuild/latest/developer/add-newsfragments.html) for details.
+
+      - name: Remove changelog comment
+        if: steps.fragments.outputs.missing == 'false'
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: changelog
+          delete: true
+
+      - name: Fail if fragment is missing
+        if: steps.fragments.outputs.missing == 'true'
+        run: |
+          echo "::error title=Missing Changelog Fragment::No newsfragment found in the 'changelog.d/' directory! Please add one or add the 'skip-changelog' label to this PR."
+          exit 1

@@ -1,17 +1,11 @@
 # TOML example configuration file
 #
 
-[server]
-# Section "server": deals with all config about server settings
+[general]
+# Section "general": deals with all config about general settings
 name = "doc-example-com"
 role = "production"
-host = "127.0.0.1"
-# port = 
 enable_mail = true
-
-
-[config]
-# Section "config": general configuration
 default_lang = "en-us"
 languages = [
     'de-de',
@@ -33,7 +27,7 @@ config_dir = "/etc/docbuild"
 repo_dir = "/data/docserv/repos/permanent-full/"
 tmp_repo_dir = "/data/docserv/repos/temporary-branches/"
 base_cache_dir = "/var/cache/docserv"
-cache_dir = "{base_cache_dir}/{server.name}"
+cache_dir = "{base_cache_dir}/{general.name}"
 meta_cache_dir = "{base_cache_dir}/meta"
 
 [paths.tmp]
@@ -68,16 +62,27 @@ meta = "daps -vv metadata --output {{output}}"
 # Section "build.container": Configuration for container
 container = "registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"
 
-[xslt-params]
-# Section "xslt-params": Replaces /etc/docserv/xslt-params-doc-suse-com.txt file
+[xslt.common]
+# Section "xslt.common": Replaces /etc/docserv/xslt-params-doc-suse-com.txt file
 # These keys are considered as XSLT parameters and passed
 # to the transformation process
 homepage = "https://documentation.suse.com/"
-overview-page = "https://documentation.suse.com/"
-overview-page-title = "documentation.suse.com"
-external.js.onlineonly = "/docserv/res/extra.js"
-show.edit.link = 1
-twittercards.twitter.account = "@SUSE"
-generate.json-ld = 1
-search.description.length = 118
-socialmedia.description.length = 65
+# overview-page(str): The URL for the documentation overview page.
+"overview-page" = "https://documentation.suse.com/"
+# overview-page-title(str): The title displayed for the overview page link.
+"overview-page-title" = "documentation.suse.com"
+# show.edit.link(int): A flag to control the visibility of the "Edit on GitHub" link (1 for true).
+"show.edit.link" = 1
+# twittercards.twitter.account(str): The Twitter username to associate with Twitter Cards.
+"twittercards.twitter.account" = "@SUSE"
+# generate.json-ld(int): A flag to enable or disable the generation of JSON-LD structured data (1 for true).
+"generate.json-ld" = 1
+# search.description.length(int): The maximum character length for search result descriptions.
+"search.description.length" = 118
+# socialmedia.description.length(int): The maximum character length for descriptions used in social media sharing.
+"socialmedia.description.length" = 65
+
+[xslt.html]
+"external.js.onlineonly" = "/docserv/res/extra.js"
+
+[xslt.pdf]

@@ -1,9 +1,16 @@
 """Context for the docbuild CLI commands."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
+if TYPE_CHECKING:
+    from ..utils.pidlock import PidFileLock
+
+from ..config.xml.portal import PortalConfig
+from ..models.config.app import AppConfig
 from ..models.config.env import EnvConfig
 from ..models.doctype import Doctype
 
@@ -24,8 +31,11 @@ class DocBuildContext:
     appconfig_from_defaults: bool = False
     """If set, the app's config was loaded from defaults"""
 
-    appconfig: dict[str, Any] | None = None
+    appconfig: AppConfig | None = None
     """The accumulated content of all app config files"""
+
+    raw_appconfig: dict[str, Any] | None = None
+    """The raw unvalidated application configuration dictionary"""
 
     envconfigfiles: tuple[str | Path, ...] | None = None
     """The env's config files to load, if any"""
@@ -36,6 +46,9 @@ class DocBuildContext:
     envconfig: EnvConfig | None = None
     """The accumulated content of all env config files"""
 
+    raw_envconfig: dict[str, Any] | None = None
+    """The raw unvalidated environment configuration dictionary"""
+
     doctypes: list[Doctype] | None = None
     """The doctypes to process, if any"""
 
@@ -44,3 +57,9 @@ class DocBuildContext:
 
     validation_method: str = "jing"
     """Method used to validate XML files: 'jing' (default) or 'lxml'"""
+
+    portalconfig: PortalConfig | None = None
+    """The parsed and extracted Portal XML configuration, if loaded"""
+
+    env_lock: PidFileLock | None = None
+    """PID lock for the environment config file"""
