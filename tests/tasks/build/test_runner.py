@@ -60,9 +60,6 @@ async def test_build_format_failure(tmp_path: Path) -> None:
         assert err == "Build crashed"
 
 
-@pytest.mark.parametrize(
-    "rsync_options", [None, RsyncOptions(exclude=[]), RsyncOptions(exclude=["*.tmp"])]
-)
 @pytest.mark.asyncio
 async def test_build_format_default_template_has_no_runtime_braces() -> None:
     """Verify build templates receive runtime values."""
@@ -99,6 +96,9 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    "rsync_options", [None, RsyncOptions(exclude=[]), RsyncOptions(exclude=["*.tmp"])]
+)
 @pytest.mark.asyncio
 @patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
 async def test_process_deliverable_build_success(
@@ -139,7 +139,8 @@ async def test_process_deliverable_build_success(
             tmp_path,
             tmp_path / "target",
             "{{product}}/{{docset}}/{{lang}}",
-            daps_tmpls
+            daps_tmpls,
+            rsync_options=rsync_options,
         )
 
         assert success is True
