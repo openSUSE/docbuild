@@ -314,6 +314,8 @@ async def validate_portal_config(
         console_err.print(f"  [error]Error:[/] {err}")
         return 200
 
+    console_out.print("[header]Stage 2 (Python checks):[/] [success]success[/]")
+
     # Run custom Python checks only after RNG validation and XML parsing succeeded.
     checks_passed = await run_checks_and_display(tree, verbose)
 

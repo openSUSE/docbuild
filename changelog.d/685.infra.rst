@@ -1,1 +1,0 @@
-Fixed issue in :file:`.github/workflows/gh-pages.yml` when deploying to GitHub Pages.

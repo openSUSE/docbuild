@@ -1,3 +1,0 @@
-Rsync transfers now exclude version-control directories and backup or temporary
-files by default. The ENV ``[rsync]`` section can extend the defaults with
-``exclude_extra``, replace them with ``exclude``, or disable them with empty lists.
