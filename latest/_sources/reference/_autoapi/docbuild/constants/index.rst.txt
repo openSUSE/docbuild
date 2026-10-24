@@ -16,7 +16,7 @@ Attributes
 
    docbuild.constants.APP_NAME
    docbuild.constants.DEFAULT_ENV_NAME
-   docbuild.constants.DEFAULT_LANGS
+   docbuild.constants.DEFAULT_LANG
    docbuild.constants.ALLOWED_LANGUAGES
    docbuild.constants.DEFAULT_DELIVERABLES
    docbuild.constants.ENV_ROLES
@@ -99,12 +99,12 @@ Module Contents
    The default server name used in the application configuration.
 
 
-.. py:data:: DEFAULT_LANGS
-   :type:  tuple[str, ...]
-   :value: ('en-us',)
+.. py:data:: DEFAULT_LANG
+   :type:  str
+   :value: 'en-us'
 
 
-   The default languages used by the application.
+   The default language used by the application.
 
 
 .. py:data:: ALLOWED_LANGUAGES
