@@ -30,6 +30,7 @@ This guide provides all the necessary information for contributing to the projec
    create-release
    trigger-actions
    maintain-ghactions/index
+   containers/index
 
    migrate-config
    build-docs
