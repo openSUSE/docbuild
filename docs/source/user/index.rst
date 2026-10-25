@@ -24,4 +24,5 @@
    clone
    create-metadata
    build
+   publishing
    create-llms

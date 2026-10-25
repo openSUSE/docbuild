@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import subprocess
 
+from ..constants import DEFAULT_RSYNC_EXCLUDES
 from .shell import run_command
 
 
@@ -51,10 +52,14 @@ class RsyncOptions:
     """Keep partially transferred files. Useful for resuming interrupted transfers."""
 
     exclude: list[str] | tuple[str, ...] = field(
-        default_factory=list,
+        default=DEFAULT_RSYNC_EXCLUDES,
         metadata={"flag": "--exclude"},
     )
-    """List of patterns to exclude from transfer. Each pattern becomes a separate --exclude flag."""
+    """Patterns excluded from transfer, replacing the defaults when supplied.
+
+    Pass an empty list or tuple to disable exclusions. Each pattern becomes a
+    separate ``--exclude`` flag.
+    """
 
     files_from: Path | str | None = field(
         default=None,
@@ -150,6 +155,11 @@ async def rsync(
 
     Supports both local and remote paths. Remote paths use rsync syntax:
     SSH (``user@host:/path``), daemon (``host::module``), or URL (``rsync://host/path``).
+
+    When options are omitted, :class:`~docbuild.utils.sync.RsyncOptions` applies
+    :data:`~docbuild.constants.DEFAULT_RSYNC_EXCLUDES` to every transfer,
+    including remote-source pulls. Pass ``RsyncOptions(exclude=[])`` to
+    transfer matching files too, or supply a replacement list explicitly.
 
     :param source: Path to the source file or directory (local or remote).
     :param target: Path to the target destination (local or remote).

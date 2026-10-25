@@ -44,6 +44,7 @@ from .cmd_repo import repo
 from .console import console, console_err
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
+from .message import set_app_symbols
 from .theme import DEFAULT_STYLES
 
 PYTHON_VERSION = (
@@ -83,6 +84,16 @@ def apply_theme_overrides(context: DocBuildContext | None) -> None:
             sys.exit(1)
         console.push_theme(new_theme)
         console_err.push_theme(new_theme)
+
+
+def apply_message_settings(context: DocBuildContext | None) -> None:
+    """Apply message settings from application config.
+
+    :param context: The CLI context containing the loaded application
+        configuration, or None.
+    """
+    if context and context.appconfig:
+        set_app_symbols(bool(getattr(context.appconfig, "symbols", True)))
 
 
 def handle_validation_error(
@@ -502,6 +513,7 @@ def cli(
         current_files = (app_config,) if app_config else None
         load_app_config(ctx, app_config, max_workers, skip_validation)
         apply_theme_overrides(context)
+        apply_message_settings(context)
 
         # --- PHASE 2: Load Environment Config ---
         current_model = EnvConfig

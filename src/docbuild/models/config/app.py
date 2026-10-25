@@ -204,6 +204,11 @@ class AppConfig(BaseModel):
         description="Max concurrent workers. Supports integers or 'all', 'all2'/'half'.",
     )
 
+    symbols: bool = Field(
+        default=True,
+        description="Whether CLI status messages include symbols when supported.",
+    )
+
     theme: dict[ThemeTag, str] = Field(
         default_factory=lambda: dict(DEFAULT_STYLES),
         description="Configuration for Rich console theme styles.",

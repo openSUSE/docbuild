@@ -21,6 +21,41 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.28.0
+==============
+
+Improved Documentation
+----------------------
+
+- Improves documentation for the :class:`~docbuild.utils.pidlock.PidFileLock` class and related types in :file:`src/docbuild/utils/pidlock.py`. (:gh:`616`)
+- Standardized shell code blocks in the documentation: ``shell-session`` is
+  now ``console`` everywhere. Added copy-button support for ``pycon`` blocks
+  and made the copy button skip prompts and output, so only the actual
+  command is copied. (:gh:`670`)
+
+
+Features
+--------
+
+- Rsync transfers now exclude version-control directories and backup or temporary
+  files by default. The ENV ``[rsync]`` section can extend the defaults with
+  ``exclude_extra``, replace them with ``exclude``, or disable them with empty lists. (:gh:`617`)
+
+
+Infrastructure
+--------------
+
+- Fixed issue in :file:`.github/workflows/gh-pages.yml` when deploying to GitHub Pages. (:gh:`685`)
+
+
+Code Refactoring
+----------------
+
+- Rename ``DEFAULT_LANGS`` to ``DEFAULT_LANG``. There is only ever one
+  default language, so the constant is now a plain string instead of a
+  single-element tuple, and the hardcoded ``"en-us"`` checks use it. (:gh:`663`)
+
+
 Version 0.27.0
 ==============
 

@@ -5,6 +5,7 @@ from rich.table import Table
 
 from ..utils.sysdeps import check_dependencies
 from .console import console
+from .message import ERROR, MISSING, OK, WARNING, Message
 
 
 @click.command(name="doctor", help="Check system dependencies required by docbuild.")
@@ -30,17 +31,17 @@ def doctor() -> None:
         found = res["found"] or "---"
 
         if not res["is_installed"]:
-            status = "[error]✗ Missing[/]"
+            status = MISSING
             has_errors = True
             found = "[muted]---[/]"
         elif not res["is_valid"]:
-            status = f"[error]✗ {res['message']}[/]"
+            status = Message(res["message"], ERROR.style, symbol=ERROR.symbol)
             has_errors = True
             found = f"[error]{found}[/]"
         elif "Warning" in res["message"]:
-            status = f"[warning]⚠ {res['message']}[/]"
+            status = Message(res["message"], WARNING.style, symbol=WARNING.symbol)
         else:
-            status = "[success]✓ OK[/]"
+            status = OK
 
         table.add_row(name, required, found, status)
 

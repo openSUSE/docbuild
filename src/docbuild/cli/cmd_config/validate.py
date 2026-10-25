@@ -4,6 +4,7 @@ import click
 from rich.panel import Panel
 
 from ..console import console
+from ..message import VALID
 
 
 @click.command(name="validate")
@@ -23,12 +24,16 @@ def validate(ctx: click.Context) -> None:
     console.print("[header]Running Configuration Validation...[/]\n")
 
     if context.appconfig:
-        console.print("✅ [info]Application Configuration:[/] [success]Valid[/]")
+        console.print(
+            "[info]Application Configuration:[/]", VALID.render(console=console)
+        )
         for f in (context.appconfigfiles or []):
             console.print(f"   [muted]- {f}[/]")
 
     if context.envconfig:
-        console.print("\n✅ [info]Environment Configuration:[/] [success]Valid[/]")
+        console.print(
+            "\n[info]Environment Configuration:[/]", VALID.render(console=console)
+        )
         if context.envconfigfiles:
             for f in context.envconfigfiles:
                 console.print(f"   [muted]- {f}[/]")

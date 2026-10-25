@@ -12,6 +12,21 @@ import platformdirs
 from .models.envroles import EnvRole
 from .models.lifecycle import LifecycleFlag
 
+DEFAULT_RSYNC_EXCLUDES: Final[tuple[str, ...]] = (
+    ".git/",
+    ".svn/",
+    ".hg/",
+    ".bzr/",
+    "*~",
+    "*.old",
+    "*.bak",
+    "*.BAK",
+    "*.orig",
+    "*.rej",
+    "*.html.new",
+)
+"""Version-control directories and temporary files omitted from transfers."""
+
 # ---------------------------------------------------------------
 DOCBUILD_BANNER: Final[str] = """
        █          █         ▀ █     █
