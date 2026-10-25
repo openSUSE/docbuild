@@ -1,5 +1,6 @@
 """Unit tests for docbuild.tasks.build.runner."""
 
+import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -17,8 +18,8 @@ from docbuild.tasks.build.runner import (
     process,
     process_doctype,
     process_single_deliverable,
-    process_with_shared_worktrees,
 )
+from docbuild.tasks.worktrees import process_with_shared_worktrees
 
 
 class SortableMock(Mock):
@@ -141,7 +142,7 @@ async def test_process_single_deliverable_success(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-@patch("docbuild.tasks.build.runner.ManagedGitRepo", autospec=True)
+@patch("docbuild.tasks.worktrees.ManagedGitRepo", autospec=True)
 async def test_process_with_shared_worktrees_success(
     mock_mgr_class: Mock, tmp_path: Path
 ) -> None:
@@ -161,6 +162,7 @@ async def test_process_with_shared_worktrees_success(
         tmp_path,
         tmp_path,
         max_workers=2,
+        semaphore=asyncio.Semaphore(2),
         process_single_func=dummy_process,
     )
 
@@ -201,6 +203,7 @@ async def test_process_doctype_build(
             target_base_dir=tmp_path / "target",
             target_dir_dyn="{product}",
             max_workers=2,
+            semaphore=asyncio.Semaphore(2),
             daps_tmpls=daps_tmpls,
             skip_repo_update=False,
         )

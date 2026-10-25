@@ -1,8 +1,6 @@
 """Runner for the build task."""
 
 import asyncio
-from collections import defaultdict
-from collections.abc import Awaitable, Callable
 import logging
 import os
 from pathlib import Path
@@ -17,14 +15,13 @@ import yaml
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory
-from ...utils.git import ManagedGitRepo
 from ...utils.shell import run_command
 from ...utils.sync import rsync
 from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
-from ..metadata.runner import get_deliverable_from_doctype, get_deliverable_worker_limit
+from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
+from ..worktrees import process_with_shared_worktrees
 from .llms import clean_and_convert, inject_llms_links
 
 log = logging.getLogger(__name__)
@@ -275,109 +272,6 @@ async def process_single_deliverable(
     return success, deliverable
 
 
-async def _safe_process_one(
-    d: Deliverable,
-    wt_dir: str,
-    semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
-) -> tuple[bool, Deliverable]:
-    """Safely process a single deliverable using the provided function and semaphore."""
-    try:
-        async with semaphore:
-            return await process_single_func(d, wt_dir)
-    except (OSError, KeyError, ValueError) as exc:
-        log.error("Unexpected error for %s: %s", d.full_id, exc)
-        return False, d
-    except Exception as exc:
-        log.error("Fatal error for %s: %s", d.full_id, exc)
-        return False, d
-
-
-async def _process_group(
-    group_item: tuple[tuple[str, str], list[Deliverable]],
-    repo_dir: Path,
-    tmp_repo_dir: Path,
-    build_limit: int,
-    semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
-) -> list[Deliverable]:
-    """Process a single repository group within an isolated worktree."""
-    group_key, group_deliverables = group_item
-    repo_url, branch = group_key
-    safe_prefix = f"wt_{group_deliverables[0].make_safe_name(group_deliverables[0].full_id)}_grp{len(group_deliverables)}_"
-
-    async with PersistentOnErrorTemporaryDirectory(dir=tmp_repo_dir, prefix=safe_prefix) as wt_dir:
-        mg = ManagedGitRepo(repo_url, repo_dir)
-        try:
-            await mg.create_worktree(wt_dir, branch)
-        except Exception as e:
-            log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
-            return group_deliverables
-
-        # Replaced the lambda with a proper async wrapper for aiostream
-        async def process_mapped(d: Deliverable) -> tuple[bool, Deliverable]:
-            return await _safe_process_one(d, wt_dir, semaphore, process_single_func)
-
-        pipeline = stream.iterate(group_deliverables) | pipe.map(
-            process_mapped,
-            task_limit=build_limit,
-            ordered=True,
-        )
-
-        failed_in_group = []
-        try:
-            async with pipeline.stream() as streamer:
-                async for success, d in streamer:
-                    if not success:
-                        failed_in_group.append(d)
-        except Exception as e:
-            log.error("Group pipeline failed: %s", e)
-            failed_in_group.extend(group_deliverables)
-
-        return failed_in_group
-
-
-async def process_with_shared_worktrees(
-    deliverables: list[Deliverable],
-    repo_dir: Path,
-    tmp_repo_dir: Path,
-    max_workers: int,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
-) -> list[Deliverable]:
-    """Group deliverables by repo/branch and create a shared Git worktree per group.
-
-    Process them concurrently with a global semaphore to enforce max_workers.
-    This function is fully decoupled and can be easily reused by metadata or other tasks.
-    """
-    groups: dict[tuple[str, str], list[Deliverable]] = defaultdict(list)
-    for d in deliverables:
-        groups[(d.git.url, d.branch)].append(d)
-
-    group_limit = get_deliverable_worker_limit(max_workers, len(groups))
-    build_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
-    build_semaphore = asyncio.Semaphore(build_limit)
-
-    async def mapped_process_group(item: tuple[tuple[str, str], list[Deliverable]]) -> list[Deliverable]:
-        return await _process_group(
-            item, repo_dir, tmp_repo_dir, build_limit, build_semaphore, process_single_func
-        )
-
-    pipeline = stream.iterate(list(groups.items())) | pipe.map(
-        mapped_process_group, task_limit=group_limit, ordered=True
-    )
-
-    failed: list[Deliverable] = []
-    try:
-        async with pipeline.stream() as streamer:
-            async for group_failed in streamer:
-                failed.extend(group_failed)
-    except Exception as e:
-        log.error("Global pipeline failed: %s", e)
-        failed.extend(deliverables)
-
-    return failed
-
-
 async def process_doctype(
     root: etree._ElementTree,
     doctype: Doctype,
@@ -387,6 +281,7 @@ async def process_doctype(
     target_base_dir: Path,
     target_dir_dyn: str,
     max_workers: int,
+    semaphore: asyncio.Semaphore,
     daps_tmpls: dict[str, str],
     *,
     skip_repo_update: bool = False,
@@ -417,7 +312,7 @@ async def process_doctype(
         )
 
     return await process_with_shared_worktrees(
-        deliverables, repo_dir, tmp_repo_dir, max_workers, build_single
+        deliverables, repo_dir, tmp_repo_dir, max_workers, semaphore, build_single
     )
 
 
@@ -438,6 +333,7 @@ async def process(
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
+    global_semaphore = asyncio.Semaphore(max_workers)
 
     tasks = [
         asyncio.create_task(
@@ -450,6 +346,7 @@ async def process(
                 target_base_dir,
                 target_dir_dyn,
                 max_workers,
+                global_semaphore,
                 daps_tmpls,
                 skip_repo_update=skip_repo_update,
                 build_llmstxt=build_llmstxt,
