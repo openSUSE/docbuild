@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.27.1.dev6+g07424b9d0</title>
+    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.28.1.dev2+g3048d96de.d20261025</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=1bfeebd7"></script>
+    <script src="../../_static/documentation_options.js?v=86309ea6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -558,6 +558,19 @@ Docbuild provides two built-in presets:</p>
 </table>
 </div>
 </section>
+<section id="status-message-symbols">
+<h2>Status Message Symbols<a class="headerlink" href="#status-message-symbols" title="Link to this heading">#</a></h2>
+<p>Common CLI statuses such as <code class="docutils literal notranslate"><span class="pre">Valid</span></code>, <code class="docutils literal notranslate"><span class="pre">OK</span></code>, <code class="docutils literal notranslate"><span class="pre">Skipped</span></code>, and <code class="docutils literal notranslate"><span class="pre">Error</span></code> are shared across commands and use the semantic tags described above.
+When the output encoding supports it, Docbuild prefixes the label with a small symbol, for example <code class="docutils literal notranslate"><span class="pre">✓</span></code>, <code class="docutils literal notranslate"><span class="pre">✗</span></code>, or <code class="docutils literal notranslate"><span class="pre">⚠</span></code>.
+The label is always kept, even when the symbol is omitted.</p>
+<p>You can disable symbols for all messages with the top-level <code class="docutils literal notranslate"><span class="pre">symbols</span></code> option in your application configuration:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Disable status symbols in the application configuration</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">symbols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+</pre></div>
+</div>
+</div>
+</section>
 <section id="customizing-styles-in-configuration">
 <h2>Customizing Styles in Configuration<a class="headerlink" href="#customizing-styles-in-configuration" title="Link to this heading">#</a></h2>
 <p>To customize styles, add a <code class="docutils literal notranslate"><span class="pre">[theme]</span></code> table to your application configuration file (<code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> or <code class="file docutils literal notranslate"><span class="pre">.config.toml</span></code>).</p>
@@ -612,23 +625,23 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <section id="previewing-preset-palettes-and-active-themes">
 <h2>Previewing Preset Palettes and Active Themes<a class="headerlink" href="#previewing-preset-palettes-and-active-themes" title="Link to this heading">#</a></h2>
 <p>To see a visual showcase of all semantic tokens directly in your terminal, use the <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">theme</span></code> command:</p>
-<div class="literal-block-wrapper docutils container" id="id2">
-<div class="code-block-caption"><span class="caption-text">Preview built-in presets and active theme</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Preview built-in presets and active theme</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config theme</span>
 </pre></div>
 </div>
 </div>
 <p>By default, this command displays both the Dark and Light built-in presets, along with an <strong>Active Configuration Theme</strong> table if custom styles or a preset are configured in your application configuration.</p>
 <p>To view a specific preset only, use the <code class="docutils literal notranslate"><span class="pre">--preset</span></code> option:</p>
-<div class="literal-block-wrapper docutils container" id="id3">
-<div class="code-block-caption"><span class="caption-text">Preview a specific preset</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Preview a specific preset</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config theme --preset light</span>
 </pre></div>
 </div>
 </div>
 <p>You can also run the theme module directly:</p>
-<div class="literal-block-wrapper docutils container" id="id4">
-<div class="code-block-caption"><span class="caption-text">Run the theme module directly</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Run the theme module directly</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m docbuild.cli.theme</span>
 </pre></div>
 </div>
@@ -651,8 +664,8 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <ol class="arabic">
 <li><p>Open or create your <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> in your project or configuration directory.</p></li>
 <li><p>Add the <code class="docutils literal notranslate"><span class="pre">[theme]</span></code> section with your desired overrides:</p>
-<div class="literal-block-wrapper docutils container" id="id5">
-<div class="code-block-caption"><span class="caption-text">Define custom theme overrides</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Define custom theme overrides</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[theme]</span>
 <span class="n">preset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dark&quot;</span>
 <span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bold magenta&quot;</span>
@@ -662,8 +675,8 @@ Docbuild supports two equivalent formats for defining styles:</p>
 </div>
 </li>
 <li><p>Verify that your custom theme values are loaded:</p>
-<div class="literal-block-wrapper docutils container" id="id6">
-<div class="code-block-caption"><span class="caption-text">Inspect active theme settings</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Inspect active theme settings</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config list --app --flat</span>
 </pre></div>
 </div>
@@ -680,8 +693,8 @@ app.theme.muted = &#39;dim white&#39;
 </div>
 </li>
 <li><p>Validate the configuration file syntax:</p>
-<div class="literal-block-wrapper docutils container" id="id7">
-<div class="code-block-caption"><span class="caption-text">Validate configuration</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">Validate configuration</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config validate</span>
 </pre></div>
 </div>
@@ -747,6 +760,7 @@ app.theme.muted = &#39;dim white&#39;
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#semantic-style-tags-and-presets">Semantic Style Tags and Presets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#status-message-symbols">Status Message Symbols</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#customizing-styles-in-configuration">Customizing Styles in Configuration</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-a-preset">Selecting a Preset</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#individual-style-overrides">Individual Style Overrides</a></li>

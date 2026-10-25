@@ -29,6 +29,7 @@ Functions
 
    docbuild.cli.cmd_cli.setup_console
    docbuild.cli.cmd_cli.apply_theme_overrides
+   docbuild.cli.cmd_cli.apply_message_settings
    docbuild.cli.cmd_cli.handle_validation_error
    docbuild.cli.cmd_cli.load_app_config
    docbuild.cli.cmd_cli.parse_key
@@ -49,6 +50,14 @@ Module Contents
 .. py:function:: apply_theme_overrides(context: docbuild.cli.context.DocBuildContext | None) -> None
 
    Apply theme overrides from application config to the rich console.
+
+   :param context: The CLI context containing the loaded application
+       configuration, or None.
+
+
+.. py:function:: apply_message_settings(context: docbuild.cli.context.DocBuildContext | None) -> None
+
+   Apply message settings from application config.
 
    :param context: The CLI context containing the loaded application
        configuration, or None.
