@@ -44,7 +44,7 @@ from .cmd_repo import repo
 from .console import console, console_err
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
-from .message import set_symbols_enabled
+from .message import set_app_symbols
 from .theme import DEFAULT_STYLES
 
 PYTHON_VERSION = (
@@ -93,7 +93,7 @@ def apply_message_settings(context: DocBuildContext | None) -> None:
         configuration, or None.
     """
     if context and context.appconfig:
-        set_symbols_enabled(bool(getattr(context.appconfig, "symbols", True)))
+        set_app_symbols(bool(getattr(context.appconfig, "symbols", True)))
 
 
 def handle_validation_error(

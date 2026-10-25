@@ -15,16 +15,16 @@ _app_symbols_enabled: ContextVar[bool] = ContextVar(
 """Application-config default for status symbols."""
 
 
-def set_symbols_enabled(enabled: bool) -> None:
+def set_app_symbols(enabled: bool) -> None:
     """Set the application-config default for status symbols."""
     _app_symbols_enabled.set(enabled)
 
 
-def symbols_enabled() -> bool:
+def get_app_symbols() -> bool:
     """Return whether status symbols are enabled.
 
     Symbols are enabled by default. The application configuration can change
-    the default through :func:`set_symbols_enabled`.
+    the default through :func:`set_app_symbols`.
     """
     return _app_symbols_enabled.get()
 
@@ -43,7 +43,7 @@ class Message:
 
     def _build_text(self, encoding: str | None, symbols: bool | None) -> Text:
         """Build styled text and omit the symbol when it cannot be encoded."""
-        show_symbols = symbols_enabled() if symbols is None else symbols
+        show_symbols = get_app_symbols() if symbols is None else symbols
         symbol = self.symbol if show_symbols else None
 
         if symbol and encoding:
@@ -70,7 +70,7 @@ class Message:
         :param console: Optional console used to check whether the destination
             encoding can represent the symbol.
         :param symbols: Whether to include the symbol. When ``None``, the
-            shared :func:`symbols_enabled` setting is used.
+            shared :func:`get_app_symbols` setting is used.
         :returns: Styled text containing the label and optional symbol.
         """
         encoding = console.encoding if console is not None else None

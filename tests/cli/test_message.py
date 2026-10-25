@@ -19,8 +19,8 @@ from docbuild.cli.message import (
     VALID,
     WARNING,
     Message,
-    set_symbols_enabled,
-    symbols_enabled,
+    get_app_symbols,
+    set_app_symbols,
 )
 from docbuild.cli.theme import DOCBUILD_THEME, ThemeTag
 from docbuild.models.config.app import AppConfig
@@ -31,9 +31,9 @@ ALL_MESSAGES = (OK, ERROR, WARNING, INFO, VALID, INVALID, SKIPPED, MISSING)
 @pytest.fixture(autouse=True)
 def reset_symbol_setting():
     """Reset the application-config default around each test."""
-    set_symbols_enabled(True)
+    set_app_symbols(True)
     yield
-    set_symbols_enabled(True)
+    set_app_symbols(True)
 
 
 @pytest.mark.parametrize("message", ALL_MESSAGES)
@@ -74,25 +74,25 @@ def test_message_render_drops_symbol_for_ascii_console():
 
 def test_explicit_symbols_override_shared_opt_out():
     """Verify an explicit symbols value overrides the shared opt-out."""
-    set_symbols_enabled(False)
+    set_app_symbols(False)
 
     assert VALID.render(symbols=True).plain == "✓ Valid"
 
 
 def test_app_config_disables_symbols():
     """Verify the application-config default disables symbols."""
-    set_symbols_enabled(False)
+    set_app_symbols(False)
 
-    assert symbols_enabled() is False
+    assert get_app_symbols() is False
     assert VALID.render().plain == "Valid"
 
 
 def test_symbol_setting_is_context_local():
     """Verify the application-config default is isolated per context."""
-    set_symbols_enabled(False)
+    set_app_symbols(False)
 
-    assert symbols_enabled() is False
-    assert Context().run(symbols_enabled) is True
+    assert get_app_symbols() is False
+    assert Context().run(get_app_symbols) is True
 
 
 def test_appconfig_symbols_setting():
@@ -116,7 +116,7 @@ def test_apply_message_settings_uses_app_config():
 
     apply_message_settings(context)
 
-    assert symbols_enabled() is False
+    assert get_app_symbols() is False
 
 
 def test_apply_message_settings_ignores_missing_config():
@@ -125,7 +125,7 @@ def test_apply_message_settings_ignores_missing_config():
 
     apply_message_settings(None)
 
-    assert symbols_enabled() is True
+    assert get_app_symbols() is True
 
 
 def test_message_rich_console_rendering():
