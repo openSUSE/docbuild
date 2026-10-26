@@ -18,9 +18,9 @@ log = logging.getLogger(__name__)
 
 async def _safe_process_one(
     d: Deliverable,
-    wt_dir: str,
+    wt_dir: Path,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
 ) -> tuple[bool, Deliverable]:
     """Safely process a single deliverable using the provided function and semaphore."""
     try:
@@ -40,7 +40,7 @@ async def _process_group(
     tmp_repo_dir: Path,
     build_limit: int,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
 ) -> list[Deliverable]:
     """Process a single repository group within an isolated worktree."""
     group_key, group_deliverables = group_item
@@ -83,7 +83,7 @@ async def process_with_shared_worktrees(
     tmp_repo_dir: Path,
     max_workers: int,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, str], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
 ) -> list[Deliverable]:
     """Group deliverables by repo/branch and create a shared Git worktree per group.
 

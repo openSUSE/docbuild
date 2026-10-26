@@ -17,7 +17,7 @@ async def test_process_shared_worktrees_skips_missing_git(tmp_path: Path) -> Non
     mock_d = Mock(spec=Deliverable, full_id="missing:git")
     mock_d.git = None  # Explicitly missing
 
-    async def dummy_process(d: Deliverable, wt: str) -> tuple[bool, Deliverable]:
+    async def dummy_process(d: Deliverable, wt: Path) -> tuple[bool, Deliverable]:
         return True, d
 
     failed = await process_with_shared_worktrees(

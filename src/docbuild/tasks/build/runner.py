@@ -206,7 +206,7 @@ async def build_format(
 
 async def process_single_deliverable(
     deliverable: Deliverable,
-    worktree_dir: str,
+    worktree_dir: Path,
     tmp_build_base_dir: Path,
     target_base_dir: Path,
     target_dir_dyn: str,
@@ -218,7 +218,7 @@ async def process_single_deliverable(
     """Build and sync formats for a single deliverable using an existing worktree."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
     success = True
-    cwd = Path(worktree_dir) / deliverable.subdir if deliverable.subdir else Path(worktree_dir)
+    cwd = worktree_dir / deliverable.subdir if deliverable.subdir else worktree_dir
 
     for fmt, is_enabled in deliverable.format.items():
         if is_enabled:
@@ -307,7 +307,7 @@ async def process_doctype(
     else:
         await update_repositories(deliverables, repo_dir)
 
-    async def build_single(d: Deliverable, worktree_dir: str) -> tuple[bool, Deliverable]:
+    async def build_single(d: Deliverable, worktree_dir: Path) -> tuple[bool, Deliverable]:
         return await process_single_deliverable(
             d,
             worktree_dir,

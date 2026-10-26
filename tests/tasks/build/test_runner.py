@@ -128,7 +128,7 @@ async def test_process_single_deliverable_success(tmp_path: Path, rsync_options:
 
         success, _ = await process_single_deliverable(
             mock_deliverable,
-            str(tmp_path),
+            tmp_path,
             tmp_path,
             tmp_path / "target",
             "{{product}}/{{docset}}/{{lang}}",
@@ -165,7 +165,7 @@ async def test_process_with_shared_worktrees_success(
     mock_mgr_instance = mock_mgr_class.return_value
     mock_mgr_instance.create_worktree = AsyncMock()
 
-    async def dummy_process(d: Deliverable, wt: str) -> tuple[bool, Deliverable]:
+    async def dummy_process(d: Deliverable, wt: Path) -> tuple[bool, Deliverable]:
         return True, d
 
     failed = await process_with_shared_worktrees(
