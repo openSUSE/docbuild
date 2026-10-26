@@ -40,6 +40,7 @@ from .cmd_doctor import doctor
 from .cmd_llms import llms
 from .cmd_metadata import metadata
 from .cmd_portal import portal
+from .cmd_publish import publish
 from .cmd_repo import repo
 from .console import console, console_err
 from .context import DocBuildContext
@@ -570,3 +571,4 @@ cli.add_command(llms)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
+cli.add_command(publish)
