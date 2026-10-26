@@ -25,7 +25,7 @@ ARG OPENSUSE_VERSION=16.0
 ARG UV_VERSION=0.13.5
 
 # Pin the build tool in its own stage; it is not included in the runtime.
-FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
+# FROM ghcr.io/astral-sh/uv:${UV_VERSION} AS uv
 
 # ------- Stage 1: Shared operating system and documentation tools -------
 # Sharing the base keeps the builder and runtime Python libraries compatible.
@@ -37,9 +37,9 @@ RUN zypper --non-interactive addrepo \
     Documentation_Tools && \
   zypper --gpg-auto-import-keys --non-interactive refresh && \
   zypper --non-interactive install --no-recommends \
-    ca-certificates python313 shadow \
+    ca-certificates python313 python313-uv shadow \
     git-core openssh-clients rsync tar gzip \
-    daps jing trang libxml2-tools libxslt-tools \
+    daps dia jing trang libxml2-tools libxslt-tools \
     suse-xsl-stylesheets geekodoc rsvg-convert dejavu-fonts && \
   zypper clean --all
 
@@ -47,7 +47,7 @@ RUN zypper --non-interactive addrepo \
 FROM base AS builder
 
 # uv is needed only during the build; pin it rather than following latest.
-COPY --from=uv /uv /usr/local/bin/uv
+# COPY --from=uv /uv /usr/local/bin/uv
 
 WORKDIR /app
 ENV UV_PYTHON_DOWNLOADS=never \
