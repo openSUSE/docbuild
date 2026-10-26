@@ -67,6 +67,11 @@ Values are automatically converted to their appropriate types:
 
      $ docbuild -C "general.name='My ENV Name'" config list --env
 
+* **Arrays**: Comma-separated values enclosed in square brackets (with or without spaces)
+
+  .. code-block:: console
+
+     $ docbuild -C "general.languages=['en-us', 'de-de','fr-fr']" config list --env
 
 
 Using placeholders in CLI overrides
