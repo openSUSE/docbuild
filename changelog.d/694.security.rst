@@ -1,0 +1,6 @@
+setuptools: Windows path escape via :file:`namespace_packages.txt` during legacy wheel installation Description.
+
+* CVSS:4.0/AV:L/AC:H/AT:P/PR:L/UI:A/VC:N/VI:L/VA:L/SC:N/SI:N/SA:N
+* GHSA-xmj3-9gf7-h52w
+* No CVE yet
+
