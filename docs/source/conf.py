@@ -124,6 +124,7 @@ copybutton_prompt_text = r"^(?:[$#]|>>>|\.\.\.)\s"
 copybutton_prompt_is_regexp = True
 copybutton_only_copy_prompt_lines = True
 copybutton_line_continuation_character = "\\"
+copybutton_here_doc_delimiter = "EOF"
 
 # -- Options for autoapi extension
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html

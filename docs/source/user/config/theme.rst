@@ -132,7 +132,7 @@ To see a visual showcase of all semantic tokens directly in your terminal, use t
 .. code-block:: console
    :caption: Preview built-in presets and active theme
 
-   docbuild config theme
+   $ docbuild config theme
 
 By default, this command displays both the Dark and Light built-in presets, along with an **Active Configuration Theme** table if custom styles or a preset are configured in your application configuration.
 
@@ -141,14 +141,14 @@ To view a specific preset only, use the ``--preset`` option:
 .. code-block:: console
    :caption: Preview a specific preset
 
-   docbuild config theme --preset light
+   $ docbuild config theme --preset light
 
 You can also run the theme module directly:
 
 .. code-block:: console
    :caption: Run the theme module directly
 
-   python -m docbuild.cli.theme
+   $ python -m docbuild.cli.theme
 
 
 Supported Style Syntax
@@ -185,7 +185,7 @@ Follow these steps to customize your theme and verify the changes:
    .. code-block:: console
       :caption: Inspect active theme settings
 
-      docbuild config list --app --flat
+      $ docbuild config list --app --flat
 
    The output displays your overrides alongside the preserved defaults:
 
@@ -204,7 +204,7 @@ Follow these steps to customize your theme and verify the changes:
    .. code-block:: console
       :caption: Validate configuration
 
-      docbuild config validate
+      $ docbuild config validate
 
    If an invalid color or an unknown tag name is configured, Docbuild catches the error and reports it with exact field details:
 

@@ -25,13 +25,13 @@ Follow these steps:
 
    .. code-block:: console
 
-      ruff check .
+      $ ruff check .
 
 #. In your current branch, push the branch to the remote repository:
 
    .. code-block:: console
 
-      git push -u origin HEAD
+      $ git push -u origin HEAD
 
 #. Wait for the CI to pass.
 

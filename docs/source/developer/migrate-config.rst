@@ -75,20 +75,20 @@ If you don't have access to the Docserv server or prefer to create the stitchfil
 
    .. code-block:: console
 
-      git clone https://gitlab.suse.de/susedoc/docserv-config.git
-      cd docserv-config/config.d
+      $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
+      $ cd docserv-config/config.d
 
 #. Set the result file name and path:
 
    .. code-block:: console
 
-      stitchfile="/tmp/docserv-stitch-$(date --iso-8601).xml"
+      $ stitchfile="/tmp/docserv-stitch-$(date --iso-8601).xml"
 
 #. Prepare the header of the stitchfile:
 
    .. code-block:: console
 
-      cat << EOF > "$stitchfile"
+      $ cat << EOF > "$stitchfile"
       <?xml version="1.0" encoding="UTF-8"?>
       <docservconfig>
       <!-- <hashes>...</hashes> -->
@@ -99,19 +99,19 @@ If you don't have access to the Docserv server or prefer to create the stitchfil
 
    .. code-block:: console
 
-      xmllint --xpath "/*" _categories.xml >> "$stitchfile"
+      $ xmllint --xpath "/*" _categories.xml >> "$stitchfile"
 
 #. Append all config files to the result and resolve any XInclude elements:
 
    .. code-block:: console
 
-      xmllint --xinclude --xpath "/*" [a-z]*.xml >> "$stitchfile"
+      $ xmllint --xinclude --xpath "/*" [a-z]*.xml >> "$stitchfile"
 
 #. Close the root element:
 
    .. code-block:: console
 
-      printf "</docservconfig>\n" >> "$stitchfile"
+      $ printf "</docservconfig>\n" >> "$stitchfile"
 
 
 .. _convert-stitchfile:
@@ -174,7 +174,7 @@ To create a directory with multiple files, do the following:
 
    .. code-block:: console
 
-      xsltproc --stringparam outputfile portal.xml \
+      $ xsltproc --stringparam outputfile portal.xml \
         --stringparam outputdir "$HOME/.config/docbuild/config.d/" \
         --param use.xincludes 'true()' \
         src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile
@@ -200,7 +200,7 @@ To create a single configuration file, do the following:
 
    .. code-block:: console
 
-      xsltproc --stringparam schemafile "portal-config.rnc" \
+      $ xsltproc --stringparam schemafile "portal-config.rnc" \
         --stringparam outputfile portal-$(date --iso-8601).xml \
         --stringparam outputdir "./" \
         src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile
@@ -251,33 +251,33 @@ If you prefer to validate the configuration file against the schema using
    .. code-block:: console
 
       # cd $PATH_TO_DOCBUILD_GITHUB_REPO
-      cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/
+      $ cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/
 
 #. Create a symbolic link to the RNC schema file in the configuration directory:
 
    .. code-block:: console
 
-      ln -s ../portal-config.rnc "$HOME/.config/docbuild/config.d/portal-config.rnc"
+      $ ln -s ../portal-config.rnc "$HOME/.config/docbuild/config.d/portal-config.rnc"
 
 #. Set the appropriate Java system property for XInclude support:
 
    .. code-block:: console
 
-      XINCLUDE_PROP="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
+      $ XINCLUDE_PROP="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
 
 #. Set the environment variable for your operating system:
 
    .. code-block:: console
 
       # For openSUSE
-      export ADDITIONAL_FLAGS="$XINCLUDE_PROP"
+      $ export ADDITIONAL_FLAGS="$XINCLUDE_PROP"
       # For Debian/Ubuntu
-      export JAVA_ARGS="$XINCLUDE_PROP"
+      $ export JAVA_ARGS="$XINCLUDE_PROP"
       # For Fedora/RHEL/CentOS
-      export JAVA_OPTS="$XINCLUDE_PROP"
+      $ export JAVA_OPTS="$XINCLUDE_PROP"
 
 #. Validate the configuration file against the schema using :command:`jing`:
 
    .. code-block:: console
 
-      jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml
+      $ jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml
