@@ -51,6 +51,9 @@ You can use a shell function (it expects that the necessary host directories are
    :caption: Shell function to run docbuild with Docker
 
    # use --network=host only for trusted containers.
+   # Impose CPU limits with:
+   #   --cpu=4: limits total CPU time to roughly four core's capacity
+   #   --cpuset-cpus=0-3: restrict execution to thos specific logical CPUs
    ddocbuild() {
       docker run --rm -it \
         --network=host \
