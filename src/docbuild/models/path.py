@@ -13,8 +13,8 @@ def ensure_writeable_directory(path: Path) -> Path:
     Behavior:
 
     1. Expands user paths (e.g., ``~/data`` -> ``/home/user/data``).
-    2. If path DOES NOT exist: It creates it (including parents) after
-       verifying the first existing parent is writable.
+     2. If path DOES NOT exist: It attempts to create it (including parents),
+         letting the filesystem enforce permissions.
     3. If path DOES exist (or was just created): It checks if it's a
        directory and has R/W/X permissions.
 
@@ -29,17 +29,6 @@ def ensure_writeable_directory(path: Path) -> Path:
 
     # 1. Existence and Creation Logic
     if not path.exists():
-        # Find the first existing parent directory to check for write permissions.
-        # For a path like '/a/b/c', path.parents is ('/a/b', '/a', '/').
-        # We find the first one in that sequence that exists.
-        parent = next((p for p in path.parents if p.exists()), path.root)
-
-        if not os.access(parent, os.W_OK):
-            raise ValueError(
-                f"Cannot create directory '{path}'. "
-                f"Permission denied: Parent directory '{parent}' is not writable."
-            )
-
         try:
             path.mkdir(parents=True, exist_ok=True)
         except OSError as e:

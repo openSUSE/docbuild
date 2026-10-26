@@ -113,32 +113,26 @@ def test_writable_directory_attributes_are_path_attributes(tmp_path: Path):
     assert str(model.writable_dir) == str(test_dir.resolve())
 
 
-def test_writable_directory_failure_parent_not_writable(tmp_path: Path, monkeypatch):
-    """Test validation fails when the parent directory is not writable."""
-    # 1. Setup a "protected" parent and a target child
-    protected_parent = tmp_path / "protected_parent"
-    protected_parent.mkdir()
-    target_dir = protected_parent / "new_child_dir"
+def test_writable_directory_creation_ignores_parent_access(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Let mkdir decide access instead of prechecking parent permissions."""
+    parent_dir = tmp_path / "parent"
+    parent_dir.mkdir()
+    target_dir = parent_dir / "new_child_dir" / "nested"
+    original_os_access = os.access
 
-    # 2. Mock os.access to report the parent as NOT writable
-    _original_os_access = os.access
-
-    def fake_access(path, mode):
-        # Resolve path to ensure comparison works on all OSs
-        if str(path) == str(protected_parent.resolve()) and mode == os.W_OK:
+    def fake_access(path: Path, mode: int) -> bool:
+        if path == parent_dir and mode == os.W_OK:
             return False
-        return _original_os_access(path, mode)
+        return original_os_access(path, mode)
 
     monkeypatch.setattr(os, "access", fake_access)
 
-    # 3. Action & Assertions
-    with pytest.raises(ValidationError) as excinfo:
-        PathTestModel(writable_dir=target_dir)  # type: ignore
+    model = PathTestModel(writable_dir=target_dir)  # type: ignore
 
-    error_msg = excinfo.value.errors()[0]["msg"]
-    assert "Cannot create directory" in error_msg
-    assert "Permission denied: Parent directory" in error_msg
-    assert str(protected_parent.resolve()) in error_msg
+    assert target_dir.is_dir()
+    assert model.writable_dir == target_dir.resolve()
 
 
 @pytest.mark.parametrize(
