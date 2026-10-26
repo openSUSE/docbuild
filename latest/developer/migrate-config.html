@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.28.1.dev5+g28324dfca.d20261026</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.28.1.dev6+g5933040de.d20261026</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../_static/documentation_options.js?v=888d15b8"></script>
+    <script src="../_static/documentation_options.js?v=389b3826"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=48804fe2"></script>
+    <script src="../_static/copybutton.js?v=7e8f0003"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/migrate-config';</script>
     <script>
@@ -544,18 +544,18 @@ more complex and takes care of validation and other checks, but the above steps 
 <p>If you don’t have access to the Docserv server or prefer to create the stitchfile locally, follow these steps to prepare it:</p>
 <ol class="arabic">
 <li><p>Clone the Docserv config repo if you haven’t already:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://gitlab.suse.de/susedoc/docserv-config.git</span>
-<span class="go">cd docserv-config/config.d</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>docserv-config/config.d
 </pre></div>
 </div>
 </li>
 <li><p>Set the result file name and path:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">stitchfile=&quot;/tmp/docserv-stitch-$(date --iso-8601).xml&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">stitchfile</span><span class="o">=</span><span class="s2">&quot;/tmp/docserv-stitch-</span><span class="k">$(</span>date<span class="w"> </span>--iso-8601<span class="k">)</span><span class="s2">.xml&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Prepare the header of the stitchfile:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cat &lt;&lt; EOF &gt; &quot;$stitchfile&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>&lt;&lt;<span class="w"> </span>EOF<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 <span class="go">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="go">&lt;docservconfig&gt;</span>
 <span class="go">&lt;!-- &lt;hashes&gt;...&lt;/hashes&gt; --&gt;</span>
@@ -565,17 +565,17 @@ more complex and takes care of validation and other checks, but the above steps 
 </div>
 </li>
 <li><p>Copy content from all categories into result:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xpath &quot;/*&quot; _categories.xml &gt;&gt; &quot;$stitchfile&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xmllint<span class="w"> </span>--xpath<span class="w"> </span><span class="s2">&quot;/*&quot;</span><span class="w"> </span>_categories.xml<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Append all config files to the result and resolve any XInclude elements:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xmllint --xinclude --xpath &quot;/*&quot; [a-z]*.xml &gt;&gt; &quot;$stitchfile&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xmllint<span class="w"> </span>--xinclude<span class="w"> </span>--xpath<span class="w"> </span><span class="s2">&quot;/*&quot;</span><span class="w"> </span><span class="o">[</span>a-z<span class="o">]</span>*.xml<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Close the root element:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">printf &quot;&lt;/docservconfig&gt;\n&quot; &gt;&gt; &quot;$stitchfile&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;&lt;/docservconfig&gt;\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </li>
@@ -623,10 +623,10 @@ default to create a single configuration file.</p>
 <p>To create a directory with multiple files, do the following:</p>
 <ol class="arabic">
 <li><p>Run the XSLT transformation with the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xsltproc --stringparam outputfile portal.xml \</span>
-<span class="go">  --stringparam outputdir &quot;$HOME/.config/docbuild/config.d/&quot; \</span>
-<span class="go">  --param use.xincludes &#39;true()&#39; \</span>
-<span class="go">  src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xsltproc<span class="w"> </span>--stringparam<span class="w"> </span>outputfile<span class="w"> </span>portal.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--stringparam<span class="w"> </span>outputdir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.config/docbuild/config.d/&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--param<span class="w"> </span>use.xincludes<span class="w"> </span><span class="s1">&#39;true()&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>src/docbuild/config/xml/data/convert-v6-to-v7.xsl<span class="w"> </span><span class="nv">$stitchfile</span>
 </pre></div>
 </div>
 <p>This will create all files in the <code class="file docutils literal notranslate"><span class="pre">$HOME/.config/docbuild/config.d/</span></code> directory, with the main
@@ -643,10 +643,10 @@ use the variable <code class="docutils literal notranslate"><span class="pre">pa
 <p>To create a single configuration file, do the following:</p>
 <ol class="arabic">
 <li><p>Run the XSLT transformation with the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xsltproc --stringparam schemafile &quot;portal-config.rnc&quot; \</span>
-<span class="go">  --stringparam outputfile portal-$(date --iso-8601).xml \</span>
-<span class="go">  --stringparam outputdir &quot;./&quot; \</span>
-<span class="go">  src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xsltproc<span class="w"> </span>--stringparam<span class="w"> </span>schemafile<span class="w"> </span><span class="s2">&quot;portal-config.rnc&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--stringparam<span class="w"> </span>outputfile<span class="w"> </span>portal-<span class="k">$(</span>date<span class="w"> </span>--iso-8601<span class="k">)</span>.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--stringparam<span class="w"> </span>outputdir<span class="w"> </span><span class="s2">&quot;./&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>src/docbuild/config/xml/data/convert-v6-to-v7.xsl<span class="w"> </span><span class="nv">$stitchfile</span>
 </pre></div>
 </div>
 <p>This will create a file named <code class="file docutils literal notranslate"><span class="pre">portal-&lt;DATE&gt;.xml</span></code> in the current directory.</p>
@@ -684,32 +684,32 @@ references as follows:</p>
 <ol class="arabic">
 <li><p>Copy the RNC schema file to the configuration directory:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$PATH_TO_DOCBUILD_GITHUB_REPO</span>
-<span class="go">cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/</span>
+<span class="gp">$ </span>cp<span class="w"> </span>src/docbuild/config/xml/data/portal-config.rnc<span class="w"> </span><span class="nv">$HOME</span>/.config/docbuild/config.d/
 </pre></div>
 </div>
 </li>
 <li><p>Create a symbolic link to the RNC schema file in the configuration directory:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ln -s ../portal-config.rnc &quot;$HOME/.config/docbuild/config.d/portal-config.rnc&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ln<span class="w"> </span>-s<span class="w"> </span>../portal-config.rnc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.config/docbuild/config.d/portal-config.rnc&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Set the appropriate Java system property for XInclude support:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">XINCLUDE_PROP=&quot;-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">XINCLUDE_PROP</span><span class="o">=</span><span class="s2">&quot;-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Set the environment variable for your operating system:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>For<span class="w"> </span>openSUSE
-<span class="go">export ADDITIONAL_FLAGS=&quot;$XINCLUDE_PROP&quot;</span>
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">ADDITIONAL_FLAGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
 <span class="gp"># </span>For<span class="w"> </span>Debian/Ubuntu
-<span class="go">export JAVA_ARGS=&quot;$XINCLUDE_PROP&quot;</span>
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_ARGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
 <span class="gp"># </span>For<span class="w"> </span>Fedora/RHEL/CentOS
-<span class="go">export JAVA_OPTS=&quot;$XINCLUDE_PROP&quot;</span>
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_OPTS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Validate the configuration file against the schema using <strong class="command">jing</strong>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>jing<span class="w"> </span>-c<span class="w"> </span>~/.config/docbuild/config.d/portal-config.rnc<span class="w"> </span>~/.config/docbuild/config.d/portal.xml
 </pre></div>
 </div>
 </li>

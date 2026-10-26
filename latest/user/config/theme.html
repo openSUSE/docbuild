@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.28.1.dev5+g28324dfca.d20261026</title>
+    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.28.1.dev6+g5933040de.d20261026</title>
   
   
   
@@ -42,11 +42,11 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../_static/documentation_options.js?v=888d15b8"></script>
+    <script src="../../_static/documentation_options.js?v=389b3826"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../_static/copybutton.js?v=48804fe2"></script>
+    <script src="../../_static/copybutton.js?v=7e8f0003"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user/config/theme';</script>
     <script>
@@ -627,7 +627,7 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <p>To see a visual showcase of all semantic tokens directly in your terminal, use the <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">config</span> <span class="pre">theme</span></code> command:</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">Preview built-in presets and active theme</span><a class="headerlink" href="#id3" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config theme</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>theme
 </pre></div>
 </div>
 </div>
@@ -635,14 +635,14 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <p>To view a specific preset only, use the <code class="docutils literal notranslate"><span class="pre">--preset</span></code> option:</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">Preview a specific preset</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config theme --preset light</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>theme<span class="w"> </span>--preset<span class="w"> </span>light
 </pre></div>
 </div>
 </div>
 <p>You can also run the theme module directly:</p>
 <div class="literal-block-wrapper docutils container" id="id5">
 <div class="code-block-caption"><span class="caption-text">Run the theme module directly</span><a class="headerlink" href="#id5" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m docbuild.cli.theme</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>docbuild.cli.theme
 </pre></div>
 </div>
 </div>
@@ -677,7 +677,7 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <li><p>Verify that your custom theme values are loaded:</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Inspect active theme settings</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config list --app --flat</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--app<span class="w"> </span>--flat
 </pre></div>
 </div>
 </div>
@@ -695,7 +695,7 @@ app.theme.muted = &#39;dim white&#39;
 <li><p>Validate the configuration file syntax:</p>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">Validate configuration</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">docbuild config validate</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>validate
 </pre></div>
 </div>
 </div>
