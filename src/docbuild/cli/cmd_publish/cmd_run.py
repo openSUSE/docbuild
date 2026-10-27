@@ -107,7 +107,7 @@ def run(
         _handle_server_root_files_staging(server_rootfiles_dir, target_base_dir, rsync_opts)
 
     # 2. Collect files to sync
-    portal_config = context.main_portal_config
+    portal_config = envconfig.paths.main_portal_config
     paths_to_sync = asyncio.run(
         collect_publish_paths(
             portal_config=portal_config,
