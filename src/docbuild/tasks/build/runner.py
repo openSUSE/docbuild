@@ -189,6 +189,12 @@ async def build_format(
     )
     args = shlex.split(cmd_str)
 
+    # Inject canonicals and hreflangs for HTML outputs via DAPS
+    if args and args[0] == "daps" and fmt in ("html", "single-html"):
+        if translations := deliverable.xml.translations:
+            hreflangs = " ".join(sorted(translations))
+            args.extend(["--stringparam", f"canonicals.hreflangs={hreflangs}"])
+
     log.info("Building %s for %s...", fmt, deliverable.full_id)
 
     try:

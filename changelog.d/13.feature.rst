@@ -1,0 +1,1 @@
+Implement on-the-fly HTML canonicals and hreflang links by dynamically injecting available translations as XSLT parameters into the DAPS build command.

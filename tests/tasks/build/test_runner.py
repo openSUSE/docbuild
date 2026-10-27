@@ -51,6 +51,7 @@ async def test_build_format_failure(tmp_path: Path) -> None:
     """Test handling of a failed daps subprocess."""
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = "DC-test"
+    mock_d.xml.translations = {"en-us"}
 
     with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="Build crashed")
@@ -67,6 +68,7 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
     """Verify build templates receive runtime values."""
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = "DC-test"
+    mock_d.xml.translations = {"en-us"}
     cwd = Path(".")
     build_dir = Path("build")
     template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["html"]).replace(
@@ -93,7 +95,9 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
             "-d",
             "DC-test",
             "html",
-        ],
+                "--stringparam",
+                "canonicals.hreflangs=en-us",
+            ],
         cwd=cwd,
     )
 
@@ -115,6 +119,7 @@ async def test_process_single_deliverable_success(tmp_path: Path, rsync_options:
     mock_deliverable.xml.product_id = "sles"
     mock_deliverable.xml.docset_path = "15"
     mock_deliverable.xml.lang = "en-us"
+    mock_deliverable.xml.translations = {"en-us", "de-de"}
     mock_deliverable.make_safe_name.return_value = "safe_sles_15_TEST"
 
     daps_tmpls = {"html": "daps -d {dcfile} --builddir {builddir} {format}"}
