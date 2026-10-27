@@ -213,6 +213,98 @@ def test_store_productdocset_json_handles_read_error(
     mock_log.error.assert_called()
 
 
+@pytest.mark.parametrize("lang", ["en-us", "de-de"], ids=["english", "german"])
+@pytest.mark.parametrize(
+    "category", [None, "cat.xref"], ids=["inherit-category", "override-category"]
+)
+def test_read_and_project_json_projects_xref(tmp_path, lang, category):
+    root = etree.fromstring(
+        """
+        <docservconfig>
+          <product xml:id="sles">
+            <docset path="15-SP7">
+              <resources>
+                <locale lang="fr-fr">
+                  <deliverable xml:id="target">
+                    <dc file="DC-guide"/>
+                  </deliverable>
+                </locale>
+                <locale>
+                  <deliverable type="xref"><xref linkend="target"/></deliverable>
+                </locale>
+              </resources>
+            </docset>
+          </product>
+        </docservconfig>
+        """
+    )
+    locale = root.find(".//locale[2]")
+    locale.set("lang", lang)
+    xref = locale.find("deliverable")
+    if category is not None:
+        xref.find("xref").set("category", category)
+
+    metadata = {
+        "docs": [
+            {
+                "lang": "fr-fr",
+                "default": lang != "en-us",
+                "title": "Guide",
+                "dcfile": "DC-guide",
+                "format": {"html": "guide/index.html"},
+            }
+        ],
+        "category": "cat.original",
+    }
+    meta_file = tmp_path / "DC-guide.json"
+    original_json = json.dumps(metadata)
+    meta_file.write_text(original_json, encoding="utf-8")
+
+    result = manifest_pkg.read_and_project_json(meta_file, Deliverable(xref))
+
+    assert result is not None
+    assert len(result.docs) == 1
+    document = result.docs[0]
+    assert document.lang == lang
+    assert document.default is (lang == "en-us")
+    assert document.title == "Guide"
+    assert document.dcfile == "DC-guide"
+    assert document.format.html == "guide/index.html"
+    assert result.category == (category or "cat.original")
+    assert meta_file.read_text(encoding="utf-8") == original_json
+
+
+def test_read_and_project_json_missing_file(tmp_path, deliverable, caplog):
+    meta_file = tmp_path / "missing.json"
+
+    result = manifest_pkg.read_and_project_json(meta_file, deliverable)
+
+    assert result is None
+    assert len(caplog.records) == 1
+    record = caplog.records[0]
+    assert record.name == manifest_pkg.__name__
+    assert record.levelname == "ERROR"
+    assert record.getMessage().startswith(
+        f"Error processing metadata file {meta_file}:"
+    )
+
+
+def test_read_and_project_json_invalid_schema(tmp_path, deliverable, caplog):
+    meta_file = tmp_path / "invalid.json"
+    meta_file.write_text(json.dumps({"docs": "not a list"}), encoding="utf-8")
+
+    result = manifest_pkg.read_and_project_json(meta_file, deliverable)
+
+    assert result is None
+    assert len(caplog.records) == 1
+    record = caplog.records[0]
+    assert record.name == manifest_pkg.__name__
+    assert record.levelname == "ERROR"
+    assert record.getMessage().startswith(
+        f"Error processing metadata file {meta_file}:"
+    )
+
+
 @pytest.mark.parametrize(
     ("treatment", "docset_lang", "expected_lang", "expected_description"),
     [
