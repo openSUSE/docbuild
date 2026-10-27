@@ -20,7 +20,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: run(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...] | list[docbuild.models.doctype.Doctype], *, with_server_files: bool, yes: bool) -> None
+.. py:function:: run(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...] | list[docbuild.models.doctype.Doctype], *, with_server_files: bool, dry_run: bool, yes: bool) -> None
 
    Run the publish command.
 

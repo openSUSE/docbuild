@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.28.1.dev8+g8d7e4b88e.d20261027</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.28.1.dev9+ge04ef93f1.d20261027</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=51ff8d41"></script>
+    <script src="_static/documentation_options.js?v=f0623699"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -472,6 +472,7 @@ support HERE scripts. (<a class="extlink-gh reference external" href="https://gi
 <li><p>Optimize Git worktree creation during builds by grouping deliverables that share the same repository and branch, significantly reducing I/O overhead and Git lock contention. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/425">GH #425</a>)</p></li>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">publish</span> <span class="pre">run</span></code> command to publish built documentation to a remote destination via <code class="docutils literal notranslate"><span class="pre">rsync</span> <span class="pre">--files-from</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/582">GH #582</a>)</p></li>
 <li><p>Introduced a shared <a class="reference internal" href="reference/_autoapi/docbuild/cli/message/Message.html#docbuild.cli.message.Message" title="docbuild.cli.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> abstraction for consistent CLI status labels and optional symbols, and adopted it in the <strong class="command">config validate</strong>, <strong class="command">doctor</strong>, and <strong class="command">cache</strong> commands. Symbols can be disabled with the new top-level <code class="docutils literal notranslate"><span class="pre">symbols</span></code> application configuration option. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/671">GH #671</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">-n</span></code> / <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> option to <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">publish</span> <span class="pre">run</span></code> to simulate publishing without making changes. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/702">GH #702</a>)</p></li>
 </ul>
 </section>
 <section id="security">
