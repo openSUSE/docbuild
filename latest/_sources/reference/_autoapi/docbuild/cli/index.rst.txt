@@ -41,6 +41,7 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_llms/index
    /reference/_autoapi/docbuild/cli/cmd_metadata/index
    /reference/_autoapi/docbuild/cli/cmd_portal/index
+   /reference/_autoapi/docbuild/cli/cmd_publish/index
    /reference/_autoapi/docbuild/cli/cmd_repo/index
    /reference/_autoapi/docbuild/cli/completion/index
    /reference/_autoapi/docbuild/cli/console/index
