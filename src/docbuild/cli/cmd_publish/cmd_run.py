@@ -1,6 +1,7 @@
 """Publish documentation deliverables to a remote server."""
 
 import asyncio
+from dataclasses import replace
 from pathlib import Path
 
 import click
@@ -68,6 +69,13 @@ def _handle_server_root_files_staging(
     help="Stage and publish server root files (assets, robots.txt, etc.). Enabled by default.",
 )
 @click.option(
+    "-n",
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Perform a trial run with no changes made.",
+)
+@click.option(
     "-y",
     "--yes",
     is_flag=True,
@@ -81,6 +89,7 @@ def run(
     doctypes: tuple[Doctype, ...] | list[Doctype],
     *,
     with_server_files: bool,
+    dry_run: bool,
     yes: bool,
 ) -> None:
     """Run the publish command."""
@@ -100,14 +109,15 @@ def run(
         Path(envconfig.paths.server_rootfiles_dir) if envconfig.paths.server_rootfiles_dir else None
     )
 
-    rsync_opts = envconfig.rsync.to_options()
+    base_opts = envconfig.rsync.to_options()
+    rsync_opts = replace(base_opts, dry_run=dry_run) if dry_run else base_opts
 
     # 1. Optionally stage server root files
     if with_server_files and server_rootfiles_dir:
         _handle_server_root_files_staging(server_rootfiles_dir, target_base_dir, rsync_opts)
 
     # 2. Collect files to sync
-    portal_config = envconfig.paths.main_portal_config
+    portal_config = context.main_portal_config
     paths_to_sync = asyncio.run(
         collect_publish_paths(
             portal_config=portal_config,
@@ -123,8 +133,9 @@ def run(
         console.print("[warning]No deliverables or files found to publish.[/]")
         raise click.exceptions.Exit(0)
 
+    dry_prefix = r"[bold yellow]\[DRY RUN][/] " if dry_run else ""
     console.print(
-        f"Ready to publish [bold cyan]{len(paths_to_sync)}[/bold cyan] item(s) from "
+        f"{dry_prefix}Ready to publish [bold cyan]{len(paths_to_sync)}[/bold cyan] item(s) from "
         f"[bold]{target_base_dir}[/bold] to [bold green]{remote_server}:{remote_path}[/bold green]:"
     )
     for p in paths_to_sync[:10]:
@@ -132,8 +143,8 @@ def run(
     if len(paths_to_sync) > 10:
         console.print(f"  [dim]... and {len(paths_to_sync) - 10} more[/dim]")
 
-    # 3. Confirmation prompt
-    if not yes:
+    # 3. Confirmation prompt (skip if --yes or --dry-run)
+    if not yes and not dry_run:
         click.confirm("Do you want to continue?", abort=True)
 
     # 4. Perform remote rsync
@@ -151,4 +162,7 @@ def run(
         console_err.print(f"[error]Publish failed with returncode {ret}.[/]")
         raise click.exceptions.Exit(ret)
 
-    console.print("[success]Publish completed successfully![/]")
+    if dry_run:
+        console.print("[success]Dry run completed successfully![/]")
+    else:
+        console.print("[success]Publish completed successfully![/]")
