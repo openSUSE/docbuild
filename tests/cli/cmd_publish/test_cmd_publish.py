@@ -5,6 +5,7 @@ from unittest.mock import AsyncMock, Mock, patch
 from click.testing import CliRunner
 
 from docbuild.cli.cmd_cli import cli
+from docbuild.cli.cmd_publish import cmd_run
 from docbuild.cli.cmd_publish.cmd_run import run
 from docbuild.cli.context import DocBuildContext
 from docbuild.utils.sync import RsyncOptions
@@ -53,8 +54,9 @@ def test_publish_run_staging_failure(tmp_path) -> None:
     mock_ctx.envconfig.rsync.to_options.return_value = RsyncOptions()
     (tmp_path / "server_files").mkdir()
 
-    with patch(
-        "docbuild.cli.cmd_publish.cmd_run.stage_server_root_files",
+    with patch.object(
+        cmd_run,
+        "stage_server_root_files",
         side_effect=RuntimeError("Disk write error"),
     ):
         result = runner.invoke(run, ["sles/16.0/en-us"], obj=mock_ctx)
@@ -76,13 +78,15 @@ def test_publish_run_dry_run(tmp_path) -> None:
     mock_ctx.main_portal_config = tmp_path / "portal.xml"
 
     with (
-        patch(
-            "docbuild.cli.cmd_publish.cmd_run.collect_publish_paths",
+        patch.object(
+            cmd_run,
+            "collect_publish_paths",
             new_callable=AsyncMock,
             return_value=["sles/16.0/en-us/html"],
         ),
-        patch(
-            "docbuild.cli.cmd_publish.cmd_run.publish_deliverables",
+        patch.object(
+            cmd_run,
+            "publish_deliverables",
             new_callable=AsyncMock,
             return_value=0,
         ) as mock_pub,
