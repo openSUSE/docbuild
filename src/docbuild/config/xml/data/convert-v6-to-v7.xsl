@@ -72,7 +72,7 @@
   <!-- Define a key to group product category <language> elements by product ID and @lang -->
    <xsl:key name="productCategoryLangKey" match="product/category/language" use="concat(ancestor::product[1]/@productid, '|', @lang)" />
   <!-- Define a key to group prebuilt deliverable languages by docset and @lang -->
-  <xsl:key name="prebuiltLangKey" match="external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree'))]/language[not(starts-with(@lang, 'en'))]" use="concat(generate-id(ancestor::docset[1]), '|', @lang)" />
+  <xsl:key name="prebuiltLangKey" match="external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree')) and not(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]/language[not(starts-with(@lang, 'en'))]" use="concat(generate-id(ancestor::docset[1]), '|', @lang)" />
 
 
 <!-- ======== Variables -->
@@ -642,7 +642,8 @@
                                            ]" />
               <xsl:if test="internal or external/link[not(starts-with(language/url/@href, 'https://'))
                                           and not(starts-with(language/url/@href, 'external-tree'))
-                                          ]">
+                                          ]
+                            or external/link[(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]">
                  <xsl:call-template name="docset-without-builddocs" />
                </xsl:if>
 
@@ -694,10 +695,13 @@
   </xsl:template>
 
   <xsl:template name="docset-without-builddocs">
+    <!-- Release notes are internal deliverables of the releasenotes product -->
+    <xsl:variable name="releasenotes-links" select="external/link[(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]"/>
     <xsl:variable name="eligible-links" select="external/link[not(starts-with(language/url/@href, 'https://'))
-                                                               and not(starts-with(language/url/@href, 'external-tree'))]"/>
+                                                               and not(starts-with(language/url/@href, 'external-tree'))
+                                                               and not((starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')))]"/>
 
-    <xsl:if test="$eligible-links or internal">
+    <xsl:if test="$eligible-links or $releasenotes-links or internal">
       <!-- v7 may omit <git>; later validation rejects DC docsets that lack git. -->
       <resources>
         <xsl:if test="$eligible-links">
@@ -709,6 +713,7 @@
           <xsl:if test="$eligible-links">
             <xsl:apply-templates select="$eligible-links" mode="external-link-deliverable"/>
           </xsl:if>
+          <xsl:apply-templates select="$releasenotes-links" mode="releasenotes-xref"/>
           <xsl:apply-templates select="internal"/>
         </locale>
 
@@ -807,6 +812,27 @@
           </xsl:for-each>
         </descriptions>
       </prebuilt>
+    </deliverable>
+  </xsl:template>
+
+  <!-- /releasenotes/&lt;docset&gt;/&lt;version&gt;/ points to the internal release
+       notes deliverable, e.g. rn.sle-ha.dc-releasenotes_sle-ha_16.0 -->
+  <xsl:template match="link" mode="releasenotes-xref">
+    <xsl:variable name="href" select="language[1]/url[1]/@href"/>
+    <xsl:variable name="rest" select="substring-after(concat('/', $href), '/releasenotes/')"/>
+    <xsl:variable name="rn.docset" select="substring-before($rest, '/')"/>
+    <xsl:variable name="rn.version" select="substring-before(concat(substring-after($rest, '/'), '/'), '/')"/>
+    <xsl:variable name="rn.abbrev" select="$config/product[@xml:id='releasenotes']/@idabbrev"/>
+    <xsl:variable name="rn.id">
+      <xsl:call-template name="generate.id">
+        <xsl:with-param name="product.idabbrev" select="$rn.abbrev"/>
+        <xsl:with-param name="docset" select="$rn.docset"/>
+        <xsl:with-param name="dc" select="concat('DC-releasenotes_', $rn.docset, '_', $rn.version)"/>
+      </xsl:call-template>
+    </xsl:variable>
+
+    <deliverable type="xref">
+      <xref linkend="{$rn.id}"/>
     </deliverable>
   </xsl:template>
 
@@ -1030,7 +1056,7 @@
 
   <!-- builddocs -->
   <xsl:template match="builddocs/language">
-    <xsl:variable name="has.external.prebuilt" select="../../external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree'))]/language[@lang = current()/@lang]" />
+    <xsl:variable name="has.external.prebuilt" select="../../external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree')) and not((starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')))]/language[@lang = current()/@lang]" />
     <xsl:choose>
       <xsl:when test="deliverable or $has.external.prebuilt">
         <locale lang="{@lang}">
@@ -1041,18 +1067,22 @@
             <xsl:attribute name="sitemap">false</xsl:attribute>
           </xsl:if>
           <xsl:apply-templates />
+          <xsl:if test="starts-with(@lang, 'en')">
+            <xsl:apply-templates select="../../external/link[(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]" mode="releasenotes-xref"/>
+          </xsl:if>
           <xsl:if test="$has.external.prebuilt and starts-with(@lang, 'en')">
-            <xsl:apply-templates select="../../external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree'))]" mode="builddocs" />
+            <xsl:apply-templates select="../../external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree')) and not((starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')))]" mode="builddocs" />
           </xsl:if>
           <xsl:if test="starts-with(@lang, 'en')">
             <xsl:apply-templates select="../../internal"/>
           </xsl:if>
         </locale>
       </xsl:when>
-      <xsl:when test="@lang = 'en-us' and ../../internal">
+      <xsl:when test="@lang = 'en-us' and (../../internal or ../../external/link[((starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')))])">
         <!-- No deliverables of its own, but internal refs still need an English home -->
         <locale lang="en-us">
           <branch>main</branch>
+          <xsl:apply-templates select="../../external/link[((starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')))]" mode="releasenotes-xref"/>
           <xsl:apply-templates select="../../internal"/>
         </locale>
       </xsl:when>
