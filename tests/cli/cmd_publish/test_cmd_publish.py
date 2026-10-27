@@ -1,10 +1,11 @@
 """Tests for the docbuild publish command."""
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from click.testing import CliRunner
 
 from docbuild.cli.cmd_cli import cli
+from docbuild.cli.cmd_publish.cmd_run import run
 from docbuild.cli.context import DocBuildContext
 
 
@@ -25,6 +26,28 @@ def test_publish_run_missing_remote() -> None:
     mock_ctx.envconfig.remote.server = None
     mock_ctx.envconfig.remote.path = None
 
-    result = runner.invoke(cli, ["publish", "run", "sles/16.0/en-us"], obj=mock_ctx)
+    result = runner.invoke(run, ["sles/16.0/en-us"], obj=mock_ctx)
     assert result.exit_code != 0
     assert "The [remote] section is not configured" in result.output
+
+
+def test_publish_run_staging_failure(tmp_path) -> None:
+    """Test publish run aborts with ClickException if staging fails."""
+    runner = CliRunner()
+
+    mock_ctx = Mock(spec=DocBuildContext)
+    mock_ctx.envconfig.remote.server = "doc@example.com"
+    mock_ctx.envconfig.remote.path = "/srv/docs"
+    mock_ctx.envconfig.paths.target.target_base_dir = tmp_path / "target"
+    mock_ctx.envconfig.paths.target.target_dir_dyn = "{product}"
+    mock_ctx.envconfig.paths.server_rootfiles_dir = tmp_path / "server_files"
+    mock_ctx.envconfig.rsync.to_options.return_value = Mock()
+    (tmp_path / "server_files").mkdir()
+
+    with patch(
+        "docbuild.cli.cmd_publish.cmd_run.stage_server_root_files",
+        side_effect=RuntimeError("Disk write error"),
+    ):
+        result = runner.invoke(run, ["sles/16.0/en-us"], obj=mock_ctx)
+        assert result.exit_code != 0
+        assert "Disk write error" in result.output

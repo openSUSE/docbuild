@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 
 from ..config.app import normalize_runtime_placeholders
+from ..models.deliverable import Deliverable
 from ..models.doctype import Doctype
 from ..utils.sync import RsyncOptions, rsync
 from .metadata.runner import get_deliverable_from_doctype
@@ -15,12 +16,26 @@ from .portal import parse_portal_config
 log = logging.getLogger(__name__)
 
 
+def render_target_suffix(target_dir_dyn: str, deliverable: Deliverable) -> Path:
+    """Render the relative target directory path for a deliverable using template placeholders."""
+    rendered = normalize_runtime_placeholders(target_dir_dyn).format(
+        product=deliverable.xml.product_id,
+        docset=deliverable.xml.docset_path,
+        lang=deliverable.xml.lang,
+    )
+    return Path(rendered)
+
+
 async def stage_server_root_files(
     server_rootfiles_dir: Path,
     target_base_dir: Path,
     rsync_options: RsyncOptions | None = None,
 ) -> bool:
-    """Stage server root files into the local target base directory."""
+    """Stage server root files into the local target base directory.
+
+    :return: False if the source directory does not exist, True on success.
+    :raises RuntimeError: If rsync fails to copy the files.
+    """
     if not server_rootfiles_dir.is_dir():
         log.warning(
             "Server root files directory does not exist: %s. Skipping staging.",
@@ -32,8 +47,9 @@ async def stage_server_root_files(
     target_base_dir.mkdir(parents=True, exist_ok=True)
     res = await rsync(server_rootfiles_dir, target_base_dir, content_only=True, options=rsync_options)
     if res.returncode != 0:
-        log.error("Failed to stage server root files: %s", res.stderr)
-        return False
+        msg = f"Failed to stage server root files with returncode {res.returncode}: {res.stderr}"
+        log.error(msg)
+        raise RuntimeError(msg)
     return True
 
 
@@ -55,15 +71,11 @@ async def collect_publish_paths(
             if not d.xml.is_dc:
                 continue
 
-            target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
-                product=d.xml.product_id,
-                docset=d.xml.docset_path,
-                lang=d.xml.lang,
-            )
+            target_suffix = render_target_suffix(target_dir_dyn, d)
 
             for fmt, enabled in d.format.items():
                 if enabled:
-                    rel_dir = Path(target_suffix) / fmt
+                    rel_dir = target_suffix / fmt
                     full_dir = target_base_dir / rel_dir
                     if full_dir.exists():
                         paths_to_sync.add(rel_dir.as_posix())

@@ -19,6 +19,33 @@ from ..console import console, console_err
 from ..context import DocBuildContext
 
 
+def _handle_server_root_files_staging(
+    server_rootfiles_dir: Path,
+    target_base_dir: Path,
+    rsync_opts: RsyncOptions,
+) -> None:
+    """Stage server root files, reporting warnings if missing or raising if transfer fails."""
+    if not server_rootfiles_dir.is_dir():
+        console.print(
+            f"[warning]Warning:[/] Server root files directory '{server_rootfiles_dir}' not found. "
+            "Continuing without it."
+        )
+        return
+
+    try:
+        staged = asyncio.run(
+            stage_server_root_files(server_rootfiles_dir, target_base_dir, rsync_options=rsync_opts)
+        )
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    if not staged:
+        raise click.ClickException(
+            f"Server root files directory '{server_rootfiles_dir}' disappeared "
+            "during staging; aborting publish."
+        )
+
+
 @click.command(
     name="run",
     help="""Publish built documentation deliverables to a remote destination.
@@ -60,7 +87,7 @@ def run(
     envconfig = context.envconfig
     if not envconfig.remote or not envconfig.remote.server or not envconfig.remote.path:
         console_err.print(
-            r"[bold red]Error:[/bold red] The \[remote] section is not configured in your environment config. "
+            r"[error]Error:[/] The \[remote] section is not configured in your environment config. "
             "Publish requires both 'server' and 'path'."
         )
         raise click.exceptions.Exit(1)
@@ -73,17 +100,11 @@ def run(
         Path(envconfig.paths.server_rootfiles_dir) if envconfig.paths.server_rootfiles_dir else None
     )
 
-    rsync_opts = RsyncOptions(exclude=list(envconfig.rsync.exclude))
+    rsync_opts = envconfig.rsync.to_options()
 
     # 1. Optionally stage server root files
     if with_server_files and server_rootfiles_dir:
-        staged = asyncio.run(
-            stage_server_root_files(server_rootfiles_dir, target_base_dir, rsync_options=rsync_opts)
-        )
-        if not staged and not server_rootfiles_dir.is_dir():
-            console.print(
-                f"[yellow]Warning: Server root files directory '{server_rootfiles_dir}' not found. Continuing without it.[/yellow]"
-            )
+        _handle_server_root_files_staging(server_rootfiles_dir, target_base_dir, rsync_opts)
 
     # 2. Collect files to sync
     portal_config = context.main_portal_config
@@ -99,7 +120,7 @@ def run(
     )
 
     if not paths_to_sync:
-        console.print("[yellow]No deliverables or files found to publish.[/yellow]")
+        console.print("[warning]No deliverables or files found to publish.[/]")
         raise click.exceptions.Exit(0)
 
     console.print(
@@ -127,7 +148,7 @@ def run(
     )
 
     if ret != 0:
-        console_err.print(f"[bold red]Publish failed with returncode {ret}.[/bold red]")
+        console_err.print(f"[error]Publish failed with returncode {ret}.[/]")
         raise click.exceptions.Exit(ret)
 
-    console.print("[bold green]Publish completed successfully![/bold green]")
+    console.print("[success]Publish completed successfully![/]")

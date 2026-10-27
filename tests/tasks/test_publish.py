@@ -10,9 +10,21 @@ from docbuild.models.doctype import Doctype
 from docbuild.tasks.publish import (
     collect_publish_paths,
     publish_deliverables,
+    render_target_suffix,
     stage_server_root_files,
 )
 from docbuild.utils.sync import RsyncOptions
+
+
+def test_render_target_suffix() -> None:
+    """Verify render_target_suffix renders runtime placeholders correctly."""
+    mock_d = Mock(spec=Deliverable)
+    mock_d.xml.product_id = "sles"
+    mock_d.xml.docset_path = "16.0"
+    mock_d.xml.lang = "en-us"
+
+    path = render_target_suffix("{product}/{docset}/{lang}", mock_d)
+    assert path == Path("sles/16.0/en-us")
 
 
 @pytest.mark.asyncio
@@ -34,6 +46,19 @@ async def test_stage_server_root_files_success(tmp_path: Path) -> None:
         res = await stage_server_root_files(server_dir, target_dir)
         assert res is True
         mock_rsync.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_stage_server_root_files_failure(tmp_path: Path) -> None:
+    """Verify rsync failure raises a RuntimeError."""
+    server_dir = tmp_path / "server_files"
+    server_dir.mkdir()
+    target_dir = tmp_path / "target"
+
+    with patch("docbuild.tasks.publish.rsync", new_callable=AsyncMock) as mock_rsync:
+        mock_rsync.return_value = Mock(returncode=1, stderr="Rsync error")
+        with pytest.raises(RuntimeError, match="Failed to stage server root files"):
+            await stage_server_root_files(server_dir, target_dir)
 
 
 @pytest.mark.asyncio

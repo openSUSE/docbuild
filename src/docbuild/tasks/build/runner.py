@@ -21,6 +21,7 @@ from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
+from ..publish import render_target_suffix
 from ..worktrees import process_with_shared_worktrees
 from .llms import clean_and_convert, inject_llms_links
 
@@ -239,12 +240,7 @@ async def process_single_deliverable(
                 success = False
             else:
                 # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
-                target_suffix = normalize_runtime_placeholders(target_dir_dyn).format(
-                    product=deliverable.xml.product_id,
-                    docset=deliverable.xml.docset_path,
-                    lang=deliverable.xml.lang,
-                )
-
+                target_suffix = render_target_suffix(target_dir_dyn, deliverable)
                 local_target = Path(target_base_dir) / target_suffix / fmt
                 local_target.mkdir(parents=True, exist_ok=True)
                 target_dest = local_target
