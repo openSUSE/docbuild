@@ -39,7 +39,6 @@ class sentinel:  # noqa: N801
     creating additional sentinel instances.
 
     Example:
-
         >>> SENTINEL is sentinel("SENTINEL")
         False
         >>> repr(SENTINEL)
@@ -96,7 +95,6 @@ class TaskFailedError[T](Exception):
         ``item``.
 
     Example:
-
         >>> error = TaskFailedError(42, ValueError("invalid item"))
         >>> error.item
         42
@@ -299,7 +297,6 @@ async def run_parallel[T, R, **P](
         original exceptions being raised.
 
     Example:
-
         >>> async def double(value: int) -> int:
         ...     return value * 2
         >>> async for result in run_parallel(range(3), double, limit=2):
@@ -325,7 +322,6 @@ async def run_parallel[T, R, **P](
         4
 
     """
-
     if limit <= 0:
         raise ValueError("limit must be >= 1")
 
