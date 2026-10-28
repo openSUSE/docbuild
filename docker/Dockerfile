@@ -4,7 +4,7 @@
 #   docker build -f docker/Dockerfile -t docbuild:leap16 .
 #   podman build -f docker/Dockerfile -t docbuild:leap16 .
 # Match host ownership for bind mounts with rootful Docker (without userns remapping):
-#   docker build -f docker/Dockerfile --build-arg APP_UID="$(id -u)" --build-arg APP_GID="$(id -g)" -t docbuild:local .
+#   docker build -f docker/Dockerfile --build-arg APP_UID="$(id -u)" --build-arg APP_GID="$(id -g)" --build-arg APP_HOME="$HOME" -t docbuild:local .
 # Run a dependency check:
 #   podman run --rm docbuild:leap16 doctor
 #
@@ -12,13 +12,13 @@
 #   mkdir -p "$HOME/.config/docbuild" "$HOME/.cache/docbuild" "$HOME/.local/state/docbuild"
 #   podman run --rm \
 #     --userns=keep-id:uid=1000,gid=1000 \
-#     -v "$HOME/.config/docbuild:/home/app/.config/docbuild:ro,Z" \
-#     -v "$HOME/.cache/docbuild:/home/app/.cache/docbuild:Z" \
-#     -v "$HOME/.local/state/docbuild:/home/app/.local/state/docbuild:Z" \
+#     -v "$HOME/.config/docbuild:$HOME/.config/docbuild:ro,Z" \
+#     -v "$HOME/.cache/docbuild:$HOME/.cache/docbuild:Z" \
+#     -v "$HOME/.local/state/docbuild:$HOME/.local/state/docbuild:Z" \
 #     docbuild:leap16 config list --flat --env
 # keep-id maps the host user to app (UID/GID 1000) without changing host ownership.
 # :Z applies a private SELinux label; use :z for directories shared by containers.
-# The host shell expands $HOME; container paths must match the image's HOME (/home/app).
+# The host shell expands $HOME; pass the same path as APP_HOME when building the image.
 
 
 ARG OPENSUSE_VERSION=16.0
@@ -69,10 +69,11 @@ FROM base AS runtime
 
 ARG APP_UID=1000
 ARG APP_GID=1000
+ARG APP_HOME=/home/app
 
 # Configuration, caches, and build output must be writable by the runtime user.
 RUN (getent group "${APP_GID}" >/dev/null || groupadd --gid "${APP_GID}" app) && \
-  useradd --create-home --uid "${APP_UID}" --gid "${APP_GID}" app && \
+  useradd --create-home --home-dir "${APP_HOME}" --uid "${APP_UID}" --gid "${APP_GID}" app && \
   mkdir -p /app /workspace /run/docbuild && \
   chown "${APP_UID}:${APP_GID}" /app /workspace /run/docbuild && \
   chmod 0700 /run/docbuild
@@ -82,7 +83,7 @@ COPY --chown=0:0 --chmod=0644 docker/env.production.toml /etc/docbuild/env.produ
 RUN chmod 0755 /etc/docbuild
 
 ENV PATH="/app/.venv/bin:${PATH}" \
-  HOME=/home/app \
+  HOME=${APP_HOME} \
   XDG_RUNTIME_DIR=/run/docbuild \
   LANG=C.UTF-8 \
   PYTHONUNBUFFERED=1
