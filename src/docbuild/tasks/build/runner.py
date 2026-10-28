@@ -115,7 +115,7 @@ async def generate_llmstxt(
         static_title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
         index_lines = [f"# {static_title}", ""]
 
-        categories = getattr(d_xml, "categories", []) if d_xml else []
+        categories = list(d_xml.categories() or []) if d_xml and hasattr(d_xml, "categories") else []
         product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
         version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
         language = str(getattr(d_xml, "lang", "")) if d_xml else ""
