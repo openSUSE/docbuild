@@ -65,7 +65,7 @@ def inherit_default_blueprint(language: etree._Element) -> Iterator[Deliverable]
             dc_node = blueprint.find("dc")
             dc_file = dc_node.get("file") if dc_node is not None else "Unknown"
             line_no = blueprint.sourceline or "unknown"
-            log.warning(
+            log.info(
                 "Skipping blueprint deliverable without xml:id (dc file: '%s', line: %s)",
                 dc_file,
                 line_no,

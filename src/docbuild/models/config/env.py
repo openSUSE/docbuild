@@ -231,7 +231,7 @@ class EnvBuildDaps(BaseModel):
     "The command template used to build PDF."
 
     single_html: str = Field(
-        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} single-html",
+        default="{build.daps.command} --builddir {{builddir}} -d {{dcfile}} html --single",
         title="DAPS Single HTML Command Template",
         description="The template string to build Single HTML.",
     )
