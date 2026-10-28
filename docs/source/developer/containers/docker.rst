@@ -9,28 +9,20 @@ Building a Docker Container Image
 
 To build a Docker container image, you need to have a :file:`Containerfile` or :file:`Dockerfile` that defines the image's contents and build instructions.
 
-Use the :command:`docker build` command to create the image:
+To build the container image, run the following command:
 
 .. code-block:: console
 
-    $ docker build \
-      -f docker/Dockerfile \
-      --build-arg APP_UID="$(id -u)" \
-      --build-arg APP_GID="$(id -g)" \
-      -t docbuild:leap160 .
+    $ ./docker/build.sh
     [...]
      => => naming to docker.io/library/docbuild:leap160
+    [...]
+    All system dependencies look good!
 
-If you have an older version of Docker, you might try the following approach:
+Internally, it runs the :command:`docker build` command. The container image has the following properties:
 
-.. code-block:: console
-
-    $ DOCKER_BUILDKIT=1 docker build \
-      --network=host \
-      -f docker/Dockerfile \
-      --build-arg APP_UID="$(id -u)" \
-      --build-arg APP_GID="$(id -g)" \
-      -t docbuild:leap160 .
+* The user and group IDs are the same than on your host (build parameters ``APP_UID`` and ``APP_GID``). This is needed so have the same user and group mapping without running into permission issues.
+* The user home is the same as on your host (build parameter ``APP_HOME``).
 
 
 Using the Docker Container Image
@@ -47,23 +39,35 @@ However, this command does not take into account your local environment, such as
 
 You can use a shell function (it expects that the necessary host directories are already created) to run the `docbuild` tool with Docker:
 
-.. code-block:: bash
-   :caption: Shell function to run docbuild with Docker
+.. literalinclude:: ddocbuild.sh
+   :language: bash
+   :caption: Shell script to run docbuild with Docker
 
-   # use --network=host only for trusted containers.
-   # Impose CPU limits with:
-   #   --cpu=4: limits total CPU time to roughly four core's capacity
-   #   --cpuset-cpus=0-3: restrict execution to thos specific logical CPUs
-   ddocbuild() {
-      docker run --rm -it \
-        --network=host \
-        -v "$HOME/.config/docbuild:/home/app/.config/docbuild:ro" \
-        -v "$HOME/.cache/docbuild:/home/app/.cache/docbuild" \
-        -v "$HOME/.local/state/docbuild:/home/app/.local/state/docbuild" \
-        -v "$PWD:$PWD" \
-        -w "$PWD" \
-        docbuild:leap160 "$@"
-   }
+
+The function uses these :command:`docker run` options and mounts:
+
+* ``--cpus="$cpu_limit"`` sets the CPU quota for the container based on the host's available processing units or the value of :envvar:`DDOCBUILD_CPUS`.
+* ``--rm`` removes the container after it exits. It does not remove the image
+   or data in bind-mounted host directories.
+* ``-it`` keeps standard input open and allocates a terminal for interactive
+   use.
+* ``--init`` runs a small init process to forward signals and reap orphaned
+   child processes.
+* ``--network=host`` shares the host network stack. Use it only when the
+   container needs host networking; otherwise, Docker's default network provides
+   more isolation.
+   The practical advantage is more reliable signal forwarding and cleanup of orphaned child processes. That can matter when you interrupt a build or stop the container while DAPS or another subprocess is running.
+* Each ``-v`` mount uses the form ``host-path:container-path[:options]``. The
+   XDG variables, when set, select the host-side config, cache, and state
+   directories; otherwise, the paths under ``$HOME`` are used. The config mount
+   is read-only (``:ro``), while the cache and state mounts are writable.
+* ``-v "$PWD:$PWD"`` makes the current host directory available at the same
+   path inside the container, and ``-w "$PWD"`` sets it as the working
+   directory.
+* ``docbuild:leap160`` selects the image, and ``"$@"`` forwards the function's
+   arguments to its entrypoint.
+
+
 
 Debugging the Docker Container Image
 ------------------------------------
