@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from pathlib import Path
+import tempfile
 from typing import Any
 from unittest.mock import MagicMock, Mock
 
@@ -9,6 +10,7 @@ from click.testing import CliRunner
 import pytest
 
 import docbuild.cli.cmd_cli as cli
+import docbuild.cli.completion as completion
 from docbuild.cli.context import DocBuildContext
 
 # Import the module containing setup_logging for mocking
@@ -35,6 +37,33 @@ def mock_setup_logging_globally(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     # This prevents docbuild.logging.setup_logging from ever running during tests.
     monkeypatch.setattr(docbuild.logging, "setup_logging", mock_func)
     return mock_func
+
+
+# --- Global Fixture to Isolate Configuration Discovery ---
+@pytest.fixture(autouse=True, scope="function")
+def isolate_test_config_discovery(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> Path:
+    """Redirect configuration discovery to an empty temporary directory.
+
+    Without this, tests consult the real user/system/project configuration
+    (``docbuild.constants.CONFIG_PATHS`` is captured at import time), so a
+    malformed user ``env.*.toml`` can fail unrelated CLI tests. Both modules
+    that import ``CONFIG_PATHS`` directly are patched, since patching only
+    ``docbuild.constants`` would leave their existing references unchanged.
+    The ``docbuild.constants`` module itself is intentionally left alone:
+    ``test_constants.py`` checks its production structure.
+
+    Tests that need configuration can request this fixture and write
+    controlled files into the returned directory, or patch discovery paths
+    themselves as before.
+    """
+    # A unique directory (not a fixed name like ``config``) so tests that
+    # create their own ``tmp_path / "config"`` do not collide with this one.
+    config_dir = Path(tempfile.mkdtemp(prefix="isolated-config-", dir=tmp_path))
+    monkeypatch.setattr(cli, "CONFIG_PATHS", (config_dir,))
+    monkeypatch.setattr(completion, "CONFIG_PATHS", (config_dir,))
+    return config_dir
 
 
 # --- Original Fixtures ---
