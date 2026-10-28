@@ -22,6 +22,7 @@ from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
 from ..publish import render_target_suffix
+from ..translations import resolve_actual_translations
 from ..worktrees import process_with_shared_worktrees
 from .llms import clean_and_convert, inject_llms_links
 
@@ -284,79 +285,6 @@ async def process_single_deliverable(
 
 
 
-async def _resolve_actual_translations(  # noqa: C901
-    root: etree._ElementTree,
-    doctype: Doctype,
-    repo_dir: Path
-) -> dict[str, set[str]]:
-    """Resolve actual available translations by checking the git tree cache."""
-    from docbuild.utils.git import ManagedGitRepo
-
-    base_dt = doctype.model_copy(update={"langs": ["all"]}) if hasattr(doctype, "model_copy") else doctype.copy(update={"langs": ["all"]})
-    all_dels = await asyncio.to_thread(get_deliverable_from_doctype, root, base_dt)
-
-    tree_cache: dict[tuple[str, str], list[str]] = {}
-    valid_translations: dict[str, set[str]] = {}
-
-    for d in all_dels:
-        if not getattr(d.xml, "is_dc", False):
-            continue
-
-        lang = str(getattr(d.xml, "lang", "en-us"))
-        dcfile = getattr(d.xml, "dcfile", None)
-        target_id = getattr(d.xml, "target_id", None)
-
-        eff_dcfile = dcfile
-        actual_d = d
-
-        if getattr(d.xml, "is_xref", False):
-            final_node = getattr(d.xml, "final_target_node", None)
-            if final_node is not None:
-                from ...models.deliverable import Deliverable
-                actual_d = Deliverable(final_node)
-                dc_node = final_node.find("dc")
-                if dc_node is not None:
-                    eff_dcfile = dc_node.attrib.get("file")
-
-        if not eff_dcfile:
-            eff_dcfile = target_id
-        if not eff_dcfile:
-            continue
-
-        git_obj = getattr(actual_d, "git", None)
-        if not git_obj:
-            continue
-
-        repo_url = getattr(git_obj, "url", None)
-        branch = getattr(actual_d, "branch", "main")
-        subdir = getattr(actual_d, "subdir", "")
-
-        if not repo_url:
-            continue
-
-        cache_key = (str(repo_url), str(branch))
-        if cache_key not in tree_cache:
-            repo = ManagedGitRepo(str(repo_url), repo_dir)
-            try:
-                await repo.clone_bare()
-                tree_cache[cache_key] = await repo.ls_tree(str(branch))
-            except Exception:
-                tree_cache[cache_key] = []
-
-        available_files = tree_cache[cache_key]
-
-        check_path = str(eff_dcfile)
-        if subdir and subdir != ".":
-            check_path = f"{subdir}/{eff_dcfile}".strip("/")
-
-        found = (check_path in available_files) or (str(eff_dcfile) in available_files)
-
-        if found:
-            key = target_id or eff_dcfile
-            valid_translations.setdefault(str(key), set()).add(lang)
-
-    return valid_translations
-
 async def process_doctype(
 
     root: etree._ElementTree,
@@ -388,7 +316,7 @@ async def process_doctype(
 
     # Pre-resolve valid translations across all languages for these deliverables
     if deliverables:
-        translations_map = await _resolve_actual_translations(root, doctype, repo_dir)
+        translations_map = await resolve_actual_translations(root, doctype, repo_dir)
         for d in deliverables:
             key = getattr(d.xml, "target_id", None) or getattr(d.xml, "dcfile", None)
             if key and key in translations_map:
