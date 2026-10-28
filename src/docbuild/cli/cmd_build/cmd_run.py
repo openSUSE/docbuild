@@ -12,6 +12,7 @@ import click
 from ...models.doctype import Doctype
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
+from ...tasks.sitemap import generate_sitemap
 from ...utils.contextmgr import make_timer
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
@@ -73,6 +74,10 @@ from ..context import DocBuildContext
     "-M", "--skip-metadata", is_flag=True, default=False, show_default=True,
     help="Skip generating metadata (runs before build by default).",
 )
+@click.option(
+    "--sitemap/--no-sitemap", is_flag=True, default=True, show_default=True,
+    help="Generate a sitemap.xml in the target root after building.",
+)
 @click.pass_context
 @requires_system_tools()
 def run(
@@ -80,6 +85,7 @@ def run(
     doctypes: tuple[Doctype, ...],
     skip_repo_update: bool,
     skip_metadata: bool,
+    sitemap: bool,
 ) -> None:
     """Run the build pipeline for deliverables.
 
@@ -89,6 +95,7 @@ def run(
     :param doctypes: Tuple of parsed Doctype specifications.
     :param skip_repo_update: If True, do not pull or update git remotes.
     :param skip_metadata: If True, bypass metadata generation phase.
+    :param sitemap: If True, generate sitemap.xml after build.
     """  # noqa: D301
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
@@ -175,7 +182,11 @@ def run(
     try:
         with timer() as t:
             async def main() -> int:
-                return await asyncio.create_task(run_pipeline(), name="build")
+                res = await asyncio.create_task(run_pipeline(), name="build")
+                if res == 0 and sitemap:
+                    base_url = str(getattr(env, "canonical_url_domain", "https://documentation.suse.com/"))
+                    await generate_sitemap(target_base_dir, base_url)
+                return res
 
             result = asyncio.run(main())
     finally:

@@ -1,0 +1,1 @@
+Added a sitemap generator that automatically creates a ``sitemap.xml`` post-build and can be triggered via a new ``--sitemap`` flag.
