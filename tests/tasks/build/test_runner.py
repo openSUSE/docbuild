@@ -199,9 +199,10 @@ async def test_process_doctype_build(
         branch="main",
         format={"html": True},
     )
-    d1.git.url = "https://git.test"
     d1.xml.is_dc = True
-
+    d1.xml.is_xref = False
+    d1.xml.dcfile = "DC-test"
+    d1.git = None
     daps_tmpls = {"html": "daps {format}"}
 
     with (
