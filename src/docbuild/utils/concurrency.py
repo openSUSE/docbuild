@@ -1,10 +1,15 @@
 """Concurrency utilities using producer-consumer patterns.
 
 This module provides helpers for managing concurrent asyncio tasks with
-strict concurrency limits, backpressure handling, and robust exception tracking.
+strict concurrency limits, backpressure handling, and exception tracking.
 
-It is designed to handle both I/O-bound tasks (via native asyncio coroutines) and
-CPU-bound tasks (via `loop.run_in_executor`) while keeping resource usage deterministic.
+The producer-consumer pipeline supports both synchronous and asynchronous
+iterables as input and uses asyncio tasks to process items concurrently.
+Results are yielded as workers complete, so result order is not guaranteed.
+
+The main public components are :class:`TaskFailedError` and
+:func:`run_parallel`. The lower-level :func:`producer`, :func:`worker`, and
+:func:`run_all` functions implement the underlying queue-based pipeline.
 """
 
 import asyncio
@@ -22,24 +27,55 @@ from typing import Concatenate, cast
 
 log = logging.getLogger(__name__)
 
+
 class sentinel:  # noqa: N801
-    """Sentinel type for internal queue signaling."""
+    """Sentinel type used for internal queue signaling.
+
+    Instances of this class are used to signal workers that no more items
+    are available for processing. The class intentionally cannot be
+    subclassed.
+
+    The :data:`SENTINEL` instance is used throughout this module instead of
+    creating additional sentinel instances.
+
+    Example:
+
+        >>> SENTINEL is sentinel("SENTINEL")
+        False
+        >>> repr(SENTINEL)
+        'SENTINEL'
+
+    """
 
     __slots__ = ("__name__", "_repr")
 
     def __init_subclass__(cls) -> None:
-        """Prevent subclassing of sentinel."""
+        """Prevent subclassing of :class:`sentinel`.
+
+        :raises TypeError: Always raised when an attempt is made to subclass
+            :class:`sentinel`.
+        """
         raise TypeError("type 'sentinel' is not an acceptable base type")
 
     def __init__(self, name: str, /, repr: str | None = None) -> None:  # noqa: A002
-        """Initialize the sentinel with a name and optional repr."""
+        """Initialize a sentinel with a name and optional representation.
+
+        :param name: The name assigned to the sentinel.
+        :param repr: The string returned by :func:`repr`. If omitted, ``name``
+            is used.
+        :raises TypeError: If ``name`` is not a string.
+        """
         if not isinstance(name, str):
             raise TypeError("sentinel name must be a string")
         self.__name__ = name
         self._repr = repr if repr is not None else name
 
     def __repr__(self) -> str:
-        """Return the sentinel representation."""
+        """Return the configured representation of the sentinel.
+
+        :return: The string representation configured when the sentinel
+            was initialized.
+        """
         return self._repr
 
 
@@ -48,18 +84,35 @@ type Sentinel = sentinel
 
 
 class TaskFailedError[T](Exception):
-    """Exception raised when a task fails during processing.
+    """Exception wrapper for a task that failed during processing.
 
-    This wrapper preserves the context of a failure in concurrent processing pipelines.
-    Since results may be returned out of order or aggregated later, wrapping the
-    exception allows the caller to link a failure back to the specific input item
-    that caused it.
+    Concurrent processing can produce results out of order, making it
+    important to retain the input item associated with a failed operation.
+    This exception stores both the original item and the exception raised
+    while processing it.
 
-    :param item: The item that was being processed.
-    :param original_exception: The exception that caused the failure.
+    :param item: The item that was being processed when the failure occurred.
+    :param original_exception: The exception raised while processing
+        ``item``.
+
+    Example:
+
+        >>> error = TaskFailedError(42, ValueError("invalid item"))
+        >>> error.item
+        42
+        >>> error.original_exception
+        ValueError('invalid item')
+
     """
 
     def __init__(self, item: T, original_exception: Exception) -> None:
+        """Initialize a task failure with its item and original exception.
+
+        :param item: The item that was being processed when the failure
+            occurred.
+        :param original_exception: The exception raised while processing
+            ``item``.
+        """
         super().__init__(f"Task failed for item {item}: {original_exception}")
         self.item = item
         self.original_exception = original_exception
@@ -70,11 +123,21 @@ async def producer[T](
     input_queue: asyncio.Queue[T | Sentinel],
     num_workers: int,
 ) -> None:
-    """Feed items into the input queue, then send one sentinel per worker.
+    """Feed items into the input queue and signal workers when finished.
 
-    :param items: An iterable or async iterable of items to be processed.
-    :param input_queue: The queue for items to be processed by workers.
-    :param num_workers: The number of workers, used to send the correct number of sentinels.
+    The producer accepts either a regular iterable or an asynchronous
+    iterable. Items are added to the input queue as they become available.
+    Once input processing finishes, one :data:`SENTINEL` is added for each
+    worker so that every worker can detect the end of the input stream.
+
+    Sentinel insertion uses :meth:`asyncio.Queue.put_nowait` during cleanup
+    so that the producer does not block indefinitely if the queue is full.
+
+    :param items: Iterable or asynchronous iterable containing the items
+        to process.
+    :param input_queue: Queue into which input items are placed for workers.
+    :param num_workers: Number of workers that will consume from
+        ``input_queue``. This determines how many sentinels are attempted.
     """
     try:
         if isinstance(items, AsyncIterableABC):
@@ -99,11 +162,22 @@ async def worker[T, R](
     input_queue: asyncio.Queue[T | Sentinel],
     result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel],
 ) -> None:
-    """Pull items from the input queue, process them, push results out.
+    """Process items from the input queue and place results in the result queue.
 
-    :param worker_fn: The asynchronous function that processes a single item.
-    :param input_queue: The queue for items to be processed by workers.
-    :param result_queue: The queue for results from the workers.
+    Each worker waits for an item from ``input_queue``, invokes ``worker_fn``
+    with that item, and places the resulting value into ``result_queue``.
+    Workers terminate when they receive :data:`SENTINEL` or when their task
+    is cancelled.
+
+    Exceptions raised by ``worker_fn`` are wrapped in
+    :class:`TaskFailedError` and placed into the result queue when possible.
+    This allows the remaining items to continue processing instead of
+    terminating the complete pipeline because of one failed item.
+
+    :param worker_fn: Asynchronous callable used to process each input item.
+    :param input_queue: Queue from which items are consumed.
+    :param result_queue: Queue into which successful results and
+        :class:`TaskFailedError` instances are placed.
     """
     while True:
         # If the loop is closing, get() might raise CancelledError
@@ -136,14 +210,21 @@ async def run_all[T, R](
     *,
     name: str | None = None,
 ) -> None:
-    """Orchestrate producer + workers, then signal the consumer when done.
+    """Run the producer and workers as a coordinated task group.
 
-    :param items: An iterable or async iterable of items to be processed.
-    :param worker_fn: The asynchronous function that processes a single item.
-    :param input_queue: The queue for items to be processed by workers.
-    :param result_queue: The queue for results from the workers.
-    :param limit: The maximum number of concurrent workers.
-    :param name: The optional name of the task shown in the log
+    This function creates one producer and ``limit`` worker tasks and manages
+    their lifecycle using :class:`asyncio.TaskGroup`. Once all producer and
+    worker tasks have completed, a :data:`SENTINEL` is placed in the result
+    queue to signal the consumer that no further results will be produced.
+
+    :param items: Iterable or asynchronous iterable containing the items
+        to process.
+    :param worker_fn: Asynchronous callable used to process each item.
+    :param input_queue: Queue used to pass input items from the producer
+        to the workers.
+    :param result_queue: Queue used to pass worker results to the consumer.
+    :param limit: Maximum number of workers to run concurrently.
+    :param name: Optional name prefix used when naming the asyncio tasks.
     """
     # Remove the internal .join() and let TaskGroup manage the lifecycle
     try:
@@ -174,65 +255,90 @@ async def run_parallel[T, R, **P](
 ) -> AsyncIterator[R | TaskFailedError[T]]:
     """Process items concurrently with bounded parallelism.
 
-    Uses a producer/worker/consumer pipeline:
+    ``run_parallel`` implements a producer/worker/consumer pipeline in which
+    a single producer feeds items to a bounded input queue and a fixed number
+    of workers process those items concurrently. The caller consumes results
+    directly by iterating over the returned asynchronous iterator.
 
-    - A single **producer** task feeds items into a bounded input queue.
-    - ``limit`` **worker** tasks pull from the input queue, call ``worker_fn``,
-      and push results into a bounded result queue.
-    - The **caller** consumes results by iterating this async generator.
+    The three pipeline stages operate concurrently. Backpressure propagates
+    through the queues: a slow consumer can stall workers, and stalled
+    workers can in turn stall the producer.
 
-    All three stages run concurrently. Backpressure propagates naturally:
-    a slow consumer stalls workers; stalled workers stall the producer.
-    Order of results is NOT guaranteed.
+    Results are yielded in completion order rather than input order. If
+    ``worker_fn`` raises an exception for an item, the exception is wrapped
+    in :class:`TaskFailedError` and yielded as a result. This allows
+    processing of other items to continue after an individual failure.
 
-    If ``worker_fn`` raises, the exception is wrapped in
-    :class:`TaskFailedError` and yielded rather than re-raised, so one
-    failing item does not abort the pipeline.
+    The number of concurrently running workers is controlled by ``limit``.
+    Input and result queues are bounded to prevent an unbounded number of
+    items from accumulating in memory.
 
-    Performance characteristics
-    ---------------------------
-    - **Throughput:** approaches ``limit * per-worker-throughput`` for
-      I/O-bound workloads where workers spend most time awaiting external
-      resources. CPU-bound work gains little due to the GIL; use
-      ``ProcessPoolExecutor`` wrapped in ``asyncio.run_in_executor`` instead.
-    - **Startup cost:** O(limit) — one asyncio task per worker, each cheap
-      to create (~microseconds).
-    - **Memory:** O(limit). Both the input queue (``maxsize=limit * 2``)
-      and the result queue (``maxsize=limit * 2``) are bounded. At most
-      ``limit`` items are in-flight inside workers at any time, giving a
-      total live-item count of roughly ``5 * limit``.
-      Note: each item itself may be arbitrarily large; the O(limit) bound
-      refers to the *number* of items held in memory, not their byte size.
-    - **Latency:** time-to-first-result equals one worker's latency.
-      Remaining results stream out as workers complete, with no polling
-      delay (sentinel-based signalling, zero busy-wait).
-    - **Cancellation:** if the caller abandons the generator (e.g. ``break``
-      in an ``async for`` loop), the internal runner task is cancelled and
-      all worker tasks are cleaned up promptly via ``TaskGroup``.
+    The function is suitable for I/O-bound workloads where workers spend
+    significant time awaiting external resources. For CPU-bound work,
+    consider using a :class:`concurrent.futures.ProcessPoolExecutor` with
+    :meth:`asyncio.loop.run_in_executor`.
 
-    :param items: Iterable or async iterable of items to process.
-    :param worker_fn: Async callable invoked as ``worker_fn(item)`` for
-        each item. Must be safe to call concurrently from ``limit`` tasks.
-    :param limit: Maximum number of concurrent workers. Must be >= 1.
-        Higher values increase throughput up to the point where the event
-        loop, network, or downstream service becomes the bottleneck.
-    :param worker_args: Positional arguments to pass to ``worker_fn``.
-    :param name: The optional name of the task shown in the log.
-    :param worker_kwargs: Keyword arguments to pass to ``worker_fn``.
+    Result ordering is not guaranteed.
+
+    :param items: Iterable or asynchronous iterable containing the items to
+        process.
+    :param worker_fn: Asynchronous callable invoked as
+        ``worker_fn(item, *worker_args, **worker_kwargs)`` for each item.
+        The callable must be safe to invoke concurrently from ``limit``
+        workers.
+    :param limit: Maximum number of workers running concurrently. Must be
+        greater than or equal to 1.
+    :param worker_args: Additional positional arguments passed to
+        ``worker_fn`` for every item.
+    :param name: Optional name prefix used when naming the asyncio tasks.
+    :param worker_kwargs: Additional keyword arguments passed to
+        ``worker_fn`` for every item.
     :raises ValueError: If ``limit`` is less than 1.
-    :yields: Results in completion order (not input order). Failed items
-        are yielded as :class:`TaskFailedError` instances rather than
-        raising, so the caller can handle partial failures inline.
+    :yields: Successful results in completion order. Failed items are
+        yielded as :class:`TaskFailedError` instances instead of their
+        original exceptions being raised.
+
+    Example:
+
+        >>> async def double(value: int) -> int:
+        ...     return value * 2
+        >>> async for result in run_parallel(range(3), double, limit=2):
+        ...     print(result)
+        0
+        2
+        4
+
+    A failed item is returned as a :class:`TaskFailedError`:
+
+        >>> async def process(value: int) -> int:
+        ...     if value == 2:
+        ...         raise ValueError("invalid value")
+        ...     return value * 2
+        >>> async for result in run_parallel(range(3), process, limit=2):
+        ...     if isinstance(result, TaskFailedError):
+        ...         print(result.item)
+        ...     else:
+        ...         print(result)
+        0
+        2
+        1
+        4
+
     """
+
     if limit <= 0:
         raise ValueError("limit must be >= 1")
 
     bound_fn = (
-        functools.partial(worker_fn, *worker_args, **worker_kwargs) if worker_kwargs else worker_fn
+        functools.partial(worker_fn, *worker_args, **worker_kwargs)
+        if worker_kwargs
+        else worker_fn
     )
 
     input_queue: asyncio.Queue[T | Sentinel] = asyncio.Queue(maxsize=limit * 5)
-    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel] = asyncio.Queue(maxsize=0)
+    result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel] = asyncio.Queue(
+        maxsize=0
+    )
 
     runner = asyncio.create_task(
         run_all(items, bound_fn, input_queue, result_queue, limit, name=name),
@@ -263,10 +369,22 @@ async def run_parallel[T, R, **P](
 if __name__ == "__main__":
     import time
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
 
     async def sample_worker(num: int) -> int:
-        """Create a simple worker that simulates some I/O-bound work."""
+        """Process a number after simulating an asynchronous I/O operation.
+
+        The example intentionally raises an exception for selected input
+        values to demonstrate how :func:`run_parallel` reports failures.
+
+        :param num: Number to process.
+        :return: The input number multiplied by two.
+        :raises ValueError: When ``num`` is one of the values configured
+            to simulate a failure.
+        """
         if num in (5, 8):
             log.warning("Simulating failure for item %d", num)
             # HINT: This is the "alternative" implementation.
@@ -283,12 +401,27 @@ if __name__ == "__main__":
     # Make process intensive tasks in a executor
     # 1. Define the heavy lifting function (must be at module level for pickle)
     def heavy_cpu_math(item: int) -> int:
-        """Simulate a CPU-bound task."""
+        """Perform the CPU-bound calculation used by the example.
+
+        :param item: Input number to calculate.
+        :return: The square of ``item``.
+        """
         return item * item
 
     async def main() -> None:
-        """Run the example."""
+        """Run the concurrency utility examples.
+
+        The first example demonstrates asynchronous I/O-bound processing
+        with :func:`run_parallel`. The second demonstrates how the same
+        utility can be combined with a
+        :class:`concurrent.futures.ProcessPoolExecutor` for CPU-bound work.
+        """
+
         async def generate_items() -> AsyncIterableABC[int]:
+            """Generate the integer inputs used by the asynchronous example.
+
+            :yield: Integers from 0 through 9.
+            """
             for i in range(10):
                 yield i
             # yield from range(10)
@@ -320,6 +453,13 @@ if __name__ == "__main__":
         async def cpu_worker_wrapper(
             item: int, executor: Executor | None = None
         ) -> int:
+            """Run CPU-bound work through an executor.
+
+            :param item: Input value to process.
+            :param executor: Executor used to run the CPU-bound calculation.
+                If ``None``, the event loop's default executor is used.
+            :return: The result produced by :func:`heavy_cpu_math`.
+            """
             loop = asyncio.get_running_loop()
             # Use the passed executor
             return await loop.run_in_executor(executor, heavy_cpu_math, item)
