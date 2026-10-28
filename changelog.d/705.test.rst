@@ -1,0 +1,1 @@
+Add tests for manifest metadata validation and error handling.
