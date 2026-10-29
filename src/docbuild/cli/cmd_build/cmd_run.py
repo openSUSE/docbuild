@@ -184,7 +184,7 @@ def run(
             async def main() -> int:
                 res = await asyncio.create_task(run_pipeline(), name="build")
                 if res == 0 and sitemap:
-                    base_url = str(getattr(env, "canonical_url_domain", "https://documentation.suse.com/"))
+                    base_url = str(env.general.canonical_url_domain)
                     await generate_sitemap(target_base_dir, base_url)
                 return res
 

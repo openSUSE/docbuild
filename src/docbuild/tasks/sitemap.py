@@ -18,11 +18,11 @@ QMap = partial(etree.QName, SITEMAP_NS)
 
 
 def _is_ignored(path: Path) -> bool:
-    """Check if a file should be ignored from the sitemap.
-
-    Prepared for future expansion to read from an ENV TOML ignore list.
-    """
-    return path.name in ("404.html", "500.html")
+    """Check if a file should be ignored from the sitemap."""
+    if path.name in ("404.html", "500.html"):
+        log.debug("Sitemap: Ignoring error page %s", path)
+        return True
+    return False
 
 
 def build_sitemap_tree(target_dir: Path, base_url: str) -> etree._ElementTree:
@@ -35,6 +35,7 @@ def build_sitemap_tree(target_dir: Path, base_url: str) -> etree._ElementTree:
     for html_file in target_dir.rglob("*.html"):
         parts = html_file.parts
         if DEFAULT_LANG not in parts:
+            log.debug("Sitemap: Skipping non-default lang file %s", html_file)
             continue
 
         if _is_ignored(html_file):
@@ -45,12 +46,21 @@ def build_sitemap_tree(target_dir: Path, base_url: str) -> etree._ElementTree:
         except ValueError:
             continue
 
+        # Convert to POSIX path for URLs
+        url_path = rel_path.as_posix()
+
+        # Remove the default lang (e.g. 'en-us') from the URL path
+        lang_prefix = f"{DEFAULT_LANG}/"
+        if url_path.startswith(lang_prefix):
+            url_path = url_path[len(lang_prefix):]
+        url_path = url_path.replace(f"/{lang_prefix}", "/")
+
         mtime = html_file.stat().st_mtime
         lastmod = datetime.fromtimestamp(mtime, tz=UTC).strftime("%Y-%m-%d")
 
         url_node = etree.SubElement(urlset, QMap("url"))
         loc_node = etree.SubElement(url_node, QMap("loc"))
-        loc_node.text = f"{base_url}{rel_path.as_posix()}"
+        loc_node.text = f"{base_url}{url_path}"
 
         lastmod_node = etree.SubElement(url_node, QMap("lastmod"))
         lastmod_node.text = lastmod

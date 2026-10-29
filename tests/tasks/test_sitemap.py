@@ -30,7 +30,7 @@ async def test_generate_sitemap(tmp_path: Path) -> None:
     content = sitemap_xml.read_text(encoding="utf-8")
 
     # Verify inclusions and exclusions
-    assert "https://docs.test.com/sles/15/en-us/index.html" in content
+    assert "https://docs.test.com/sles/15/index.html" in content
     assert "de-de" not in content
     assert "404.html" not in content
     assert "500.html" not in content
