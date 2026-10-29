@@ -62,6 +62,10 @@ async def generate_sitemap(target_dir: Path, base_url: str) -> Path:
     :param base_url: The base website URL (e.g. 'https://documentation.suse.com').
     :return: Path to the generated sitemap.xml.
     """
+    if not target_dir.exists():
+        log.warning("Target directory %s does not exist. Skipping sitemap.", target_dir)
+        return target_dir / "sitemap.xml"
+
     log.info("Generating sitemap.xml in %s", target_dir)
 
     # Offload the blocking filesystem traversal to a thread
