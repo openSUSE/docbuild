@@ -42,7 +42,6 @@ from .cmd_metadata import metadata
 from .cmd_portal import portal
 from .cmd_publish import publish
 from .cmd_repo import repo
-from .cmd_sitemap import sitemap
 from .console import console, console_err
 from .context import DocBuildContext
 from .defaults import DEFAULT_APP_CONFIG, DEFAULT_ENV_CONFIG
@@ -573,5 +572,3 @@ cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
 cli.add_command(publish)
-
-cli.add_command(sitemap)

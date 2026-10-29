@@ -1,1 +1,1 @@
-Added a sitemap generator that automatically creates a ``sitemap.xml`` post-build and can be triggered via a new ``--sitemap`` flag.
+Added a sitemap generator using the :command:`build sitemap` that automatically creates a :file:`sitemap.xml` post-build and can be triggered via a new ``--sitemap`` flag.

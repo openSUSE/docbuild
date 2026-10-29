@@ -2,78 +2,76 @@
 
 import asyncio
 from datetime import UTC, datetime
+from functools import partial
 import logging
 from pathlib import Path
 
 from lxml import etree
 
+from docbuild.constants import DEFAULT_LANG
+
 log = logging.getLogger(__name__)
 
 SITEMAP_NS = "http://www.sitemaps.org/schemas/sitemap/0.9"
 NSMAP = {None: SITEMAP_NS}
+QMap = partial(etree.QName, SITEMAP_NS)
 
 
-def _build_sitemap_tree(target_dir: Path, base_url: str) -> etree._ElementTree:
+def _is_ignored(path: Path) -> bool:
+    """Check if a file should be ignored from the sitemap.
+
+    Prepared for future expansion to read from an ENV TOML ignore list.
+    """
+    return path.name in ("404.html", "500.html")
+
+
+def build_sitemap_tree(target_dir: Path, base_url: str) -> etree._ElementTree:
     """Traverse directory and build the XML tree synchronously."""
-    urlset = etree.Element(f"{{{SITEMAP_NS}}}urlset", nsmap=NSMAP)
+    urlset = etree.Element(QMap("urlset"), nsmap=NSMAP)
 
-    # Ensure base_url ends with a slash for clean concatenation
     if not base_url.endswith("/"):
         base_url += "/"
 
-    # Traverse target directory for html files
-    # The issue specifies excluding languages other than English.
-    # We look for files containing '/en-us/' in their path.
     for html_file in target_dir.rglob("*.html"):
-        # Basic filtering: ensure it's in the en-us tree and skip common error pages
         parts = html_file.parts
-        if "en-us" not in parts:
-            continue
-        if html_file.name in ("404.html", "500.html"):
+        if DEFAULT_LANG not in parts:
             continue
 
-        # Calculate relative path to form the URL
+        if _is_ignored(html_file):
+            continue
+
         try:
             rel_path = html_file.relative_to(target_dir)
         except ValueError:
             continue
 
-        # Get file modification time
         mtime = html_file.stat().st_mtime
         lastmod = datetime.fromtimestamp(mtime, tz=UTC).strftime("%Y-%m-%d")
 
-        # Create <url> node
-        url_node = etree.SubElement(urlset, f"{{{SITEMAP_NS}}}url")
-
-        loc_node = etree.SubElement(url_node, f"{{{SITEMAP_NS}}}loc")
-        # Replace Windows backslashes if any, and append to base URL
+        url_node = etree.SubElement(urlset, QMap("url"))
+        loc_node = etree.SubElement(url_node, QMap("loc"))
         loc_node.text = f"{base_url}{rel_path.as_posix()}"
 
-        lastmod_node = etree.SubElement(url_node, f"{{{SITEMAP_NS}}}lastmod")
+        lastmod_node = etree.SubElement(url_node, QMap("lastmod"))
         lastmod_node.text = lastmod
 
     return etree.ElementTree(urlset)
 
 
 async def generate_sitemap(target_dir: Path, base_url: str) -> Path:
-    """Generate a sitemap.xml in the root of the target directory.
-
-    :param target_dir: The root distribution directory (target_base_dir).
-    :param base_url: The base website URL (e.g. 'https://documentation.suse.com').
-    :return: Path to the generated sitemap.xml.
-    """
+    """Generate a sitemap.xml in the root of the target directory."""
+    # Target directories are normally created by Pydantic during real runs.
+    # This graceful exit is purely for mocked unit tests where the filesystem isn't touched.
     if not target_dir.exists():
         log.warning("Target directory %s does not exist. Skipping sitemap.", target_dir)
         return target_dir / "sitemap.xml"
 
     log.info("Generating sitemap.xml in %s", target_dir)
 
-    # Offload the blocking filesystem traversal to a thread
-    tree = await asyncio.to_thread(_build_sitemap_tree, target_dir, base_url)
+    tree = await asyncio.to_thread(build_sitemap_tree, target_dir, base_url)
 
     sitemap_path = target_dir / "sitemap.xml"
 
-    # Write to disk
     def _write() -> None:
         tree.write(
             str(sitemap_path),

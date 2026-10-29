@@ -1,12 +1,12 @@
 """CLI command to generate a sitemap."""
 
 import asyncio
-from pathlib import Path
 
 import click
 
-from ..tasks.sitemap import generate_sitemap
-from .context import DocBuildContext
+from ...tasks.sitemap import generate_sitemap
+from ..console import console
+from ..context import DocBuildContext
 
 
 @click.command(
@@ -20,15 +20,13 @@ def sitemap(ctx: click.Context) -> None:
     context: DocBuildContext = ctx.obj
     env = context.envconfig
 
-    if not env:
-        click.secho("Environment configuration is missing.", fg="red")
-        ctx.exit(1)
+    assert env is not None, "Environment configuration is missing."
 
-    target_base_dir = Path(env.paths.target.target_base_dir)
-    base_url = str(getattr(env, "canonical_url_domain", "https://documentation.suse.com/"))
+    target_base_dir = env.paths.target.target_base_dir
+    base_url = str(env.canonical_url_domain)
 
     async def main() -> int:
-        click.secho(f"Generating sitemap.xml in {target_base_dir}...", fg="green")
+        console.print(f"Generating sitemap.xml in {target_base_dir}...", style="green")
         await generate_sitemap(target_base_dir, base_url)
         return 0
 
