@@ -9,13 +9,22 @@ docbuild.utils.concurrency.TaskFailedError
       :parts: 1
 
 
-   Exception raised when a task fails during processing.
+   Exception wrapper for a task that failed during processing.
 
-   This wrapper preserves the context of a failure in concurrent processing pipelines.
-   Since results may be returned out of order or aggregated later, wrapping the
-   exception allows the caller to link a failure back to the specific input item
-   that caused it.
+   Concurrent processing can produce results out of order, making it
+   important to retain the input item associated with a failed operation.
+   This exception stores both the original item and the exception raised
+   while processing it.
 
-   :param item: The item that was being processed.
-   :param original_exception: The exception that caused the failure.
+   :param item: The item that was being processed when the failure occurred.
+   :param original_exception: The exception raised while processing
+       ``item``.
+
+   Example:
+       >>> error = TaskFailedError(42, ValueError("invalid item"))
+       >>> error.item
+       42
+       >>> error.original_exception
+       ValueError('invalid item')
+
 

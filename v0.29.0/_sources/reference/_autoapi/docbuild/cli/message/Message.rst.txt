@@ -1,0 +1,35 @@
+docbuild.cli.message.Message
+============================
+
+.. py:class:: docbuild.cli.message.Message
+
+   A reusable CLI label with a semantic style and optional symbol.
+
+
+   .. py:method:: __str__() -> str
+
+      Return the plain label without styling or decoration.
+
+
+
+   .. py:method:: render(*, console: rich.console.Console | None = None, symbols: bool | None = None) -> rich.text.Text
+
+      Build styled text, omitting an unencodable symbol if needed.
+
+      When combining a message with other output on the same line, pass
+      ``console`` and print the returned text; Rich otherwise starts a new
+      line before rendering the message.
+
+      :param console: Optional console used to check whether the destination
+          encoding can represent the symbol.
+      :param symbols: Whether to include the symbol. When ``None``, the
+          shared :func:`get_app_symbols` setting is used.
+      :returns: Styled text containing the label and optional symbol.
+
+
+
+   .. py:method:: __rich_console__(console: rich.console.Console, options: rich.console.ConsoleOptions) -> collections.abc.Iterator[rich.text.Text]
+
+      Render using the encoding of Rich's destination console.
+
+

@@ -1,0 +1,218 @@
+docbuild.utils.concurrency
+==========================
+
+.. py:module:: docbuild.utils.concurrency
+
+.. autoapi-nested-parse::
+
+   Concurrency utilities using producer-consumer patterns.
+
+   This module provides helpers for managing concurrent asyncio tasks with
+   strict concurrency limits, backpressure handling, and exception tracking.
+
+   The producer-consumer pipeline supports both synchronous and asynchronous
+   iterables as input and uses asyncio tasks to process items concurrently.
+   Results are yielded as workers complete, so result order is not guaranteed.
+
+   The main public components are :class:`TaskFailedError` and
+   :func:`run_parallel`. The lower-level :func:`producer`, :func:`worker`, and
+   :func:`run_all` functions implement the underlying queue-based pipeline.
+
+
+
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/concurrency/TaskFailedError
+
+.. autoapisummary::
+
+   docbuild.utils.concurrency.TaskFailedError
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/concurrency/sentinel
+
+.. autoapisummary::
+
+   docbuild.utils.concurrency.sentinel
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.utils.concurrency.producer
+   docbuild.utils.concurrency.worker
+   docbuild.utils.concurrency.run_all
+   docbuild.utils.concurrency.run_parallel
+   docbuild.utils.concurrency.sample_worker
+
+
+Module Contents
+---------------
+
+.. py:function:: producer[T](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], input_queue: asyncio.Queue[T | Sentinel], num_workers: int) -> None
+   :async:
+
+
+   Feed items into the input queue and signal workers when finished.
+
+   The producer accepts either a regular iterable or an asynchronous
+   iterable. Items are added to the input queue as they become available.
+   Once input processing finishes, one :data:`SENTINEL` is added for each
+   worker so that every worker can detect the end of the input stream.
+
+   Sentinel insertion uses :meth:`asyncio.Queue.put_nowait` during cleanup
+   so that the producer does not block indefinitely if the queue is full.
+
+   :param items: Iterable or asynchronous iterable containing the items
+       to process.
+   :param input_queue: Queue into which input items are placed for workers.
+   :param num_workers: Number of workers that will consume from
+       ``input_queue``. This determines how many sentinels are attempted.
+
+
+.. py:function:: worker[T, R](worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue[T | Sentinel], result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel]) -> None
+   :async:
+
+
+   Process items from the input queue and place results in the result queue.
+
+   Each worker waits for an item from ``input_queue``, invokes ``worker_fn``
+   with that item, and places the resulting value into ``result_queue``.
+   Workers terminate when they receive :data:`SENTINEL` or when their task
+   is cancelled.
+
+   Exceptions raised by ``worker_fn`` are wrapped in
+   :class:`TaskFailedError` and placed into the result queue when possible.
+   This allows the remaining items to continue processing instead of
+   terminating the complete pipeline because of one failed item.
+
+   :param worker_fn: Asynchronous callable used to process each input item.
+   :param input_queue: Queue from which items are consumed.
+   :param result_queue: Queue into which successful results and
+       :class:`TaskFailedError` instances are placed.
+
+
+.. py:function:: run_all[T, R](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[[T], collections.abc.Awaitable[R]], input_queue: asyncio.Queue[T | Sentinel], result_queue: asyncio.Queue[R | TaskFailedError[T] | Sentinel], limit: int, *, name: str | None = None) -> None
+   :async:
+
+
+   Run the producer and workers as a coordinated task group.
+
+   This function creates one producer and ``limit`` worker tasks and manages
+   their lifecycle using :class:`asyncio.TaskGroup`. Once all producer and
+   worker tasks have completed, a :data:`SENTINEL` is placed in the result
+   queue to signal the consumer that no further results will be produced.
+
+   :param items: Iterable or asynchronous iterable containing the items
+       to process.
+   :param worker_fn: Asynchronous callable used to process each item.
+   :param input_queue: Queue used to pass input items from the producer
+       to the workers.
+   :param result_queue: Queue used to pass worker results to the consumer.
+   :param limit: Maximum number of workers to run concurrently.
+   :param name: Optional name prefix used when naming the asyncio tasks.
+
+
+.. py:function:: run_parallel[T, R, **P](items: collections.abc.Iterable[T] | collections.abc.AsyncIterable[T], worker_fn: collections.abc.Callable[Concatenate[T, P], collections.abc.Awaitable[R]], limit: int, *worker_args: P, name: str | None = None, **worker_kwargs: P) -> collections.abc.AsyncIterator[R | TaskFailedError[T]]
+   :async:
+
+
+   Process items concurrently with bounded parallelism.
+
+   ``run_parallel`` implements a producer/worker/consumer pipeline in which
+   a single producer feeds items to a bounded input queue and a fixed number
+   of workers process those items concurrently. The caller consumes results
+   directly by iterating over the returned asynchronous iterator.
+
+   The three pipeline stages operate concurrently. Backpressure propagates
+   through the queues: a slow consumer can stall workers, and stalled
+   workers can in turn stall the producer.
+
+   Results are yielded in completion order rather than input order. If
+   ``worker_fn`` raises an exception for an item, the exception is wrapped
+   in :class:`TaskFailedError` and yielded as a result. This allows
+   processing of other items to continue after an individual failure.
+
+   The number of concurrently running workers is controlled by ``limit``.
+   Input and result queues are bounded to prevent an unbounded number of
+   items from accumulating in memory.
+
+   The function is suitable for I/O-bound workloads where workers spend
+   significant time awaiting external resources. For CPU-bound work,
+   consider using a :class:`concurrent.futures.ProcessPoolExecutor` with
+   :meth:`asyncio.loop.run_in_executor`.
+
+   Result ordering is not guaranteed.
+
+   :param items: Iterable or asynchronous iterable containing the items to
+       process.
+   :param worker_fn: Asynchronous callable invoked as
+       ``worker_fn(item, *worker_args, **worker_kwargs)`` for each item.
+       The callable must be safe to invoke concurrently from ``limit``
+       workers.
+   :param limit: Maximum number of workers running concurrently. Must be
+       greater than or equal to 1.
+   :param worker_args: Additional positional arguments passed to
+       ``worker_fn`` for every item.
+   :param name: Optional name prefix used when naming the asyncio tasks.
+   :param worker_kwargs: Additional keyword arguments passed to
+       ``worker_fn`` for every item.
+   :raises ValueError: If ``limit`` is less than 1.
+   :yields: Successful results in completion order. Failed items are
+       yielded as :class:`TaskFailedError` instances instead of their
+       original exceptions being raised.
+
+   Example:
+       >>> async def double(value: int) -> int:
+       ...     return value * 2
+       >>> async for result in run_parallel(range(3), double, limit=2):
+       ...     print(result)
+       0
+       2
+       4
+
+   A failed item is returned as a :class:`TaskFailedError`:
+
+       >>> async def process(value: int) -> int:
+       ...     if value == 2:
+       ...         raise ValueError("invalid value")
+       ...     return value * 2
+       >>> async for result in run_parallel(range(3), process, limit=2):
+       ...     if isinstance(result, TaskFailedError):
+       ...         print(result.item)
+       ...     else:
+       ...         print(result)
+       0
+       2
+       1
+       4
+
+
+
+.. py:function:: sample_worker(num: int) -> int
+   :async:
+
+
+   Process a number after simulating an asynchronous I/O operation.
+
+   The example intentionally raises an exception for selected input
+   values to demonstrate how :func:`run_parallel` reports failures.
+
+   :param num: Number to process.
+   :return: The input number multiplied by two.
+   :raises ValueError: When ``num`` is one of the values configured
+       to simulate a failure.
+
+

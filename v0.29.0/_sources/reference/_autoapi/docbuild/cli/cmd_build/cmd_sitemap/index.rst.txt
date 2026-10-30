@@ -1,0 +1,27 @@
+docbuild.cli.cmd_build.cmd_sitemap
+==================================
+
+.. py:module:: docbuild.cli.cmd_build.cmd_sitemap
+
+.. autoapi-nested-parse::
+
+   CLI command to generate a sitemap.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_build.cmd_sitemap.sitemap
+
+
+Module Contents
+---------------
+
+.. py:function:: sitemap(ctx: click.Context) -> None
+
+   Generate a sitemap.xml in the target distribution directory.
+
+

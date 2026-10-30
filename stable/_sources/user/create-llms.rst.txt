@@ -47,7 +47,7 @@ To generate the Markdown files for an existing build, do the following:
      .. code-block:: console
         :caption: Pass a custom ENV config file
 
-        docbuild --env-config env.toml llms
+        $ docbuild --env-config env.toml llms
 
    * In :file:`env.{role}.toml`, where ``{role}`` is the environment role such as ``devel`` or ``production``, set the options listed in the section above. Store the file in a standard location.
      Run :command:`docbuild llms` from the directory that contains the file. The default role is ``production``, so the default file name is :file:`env.production.toml`.
@@ -59,9 +59,9 @@ To generate the Markdown files for an existing build, do the following:
      .. code-block:: console
         :caption: Pass the settings on the command line
 
-        docbuild -C paths.target.target_base_dir=/path/to/builds \
-                 -C build.build_llmstxt=true \
-                 llms
+        $ docbuild -C paths.target.target_base_dir=/path/to/builds \
+             -C build.build_llmstxt=true \
+             llms
 
 #. Check the output directory.
    It contains the Markdown files and :file:`llms.txt` in the ``llmstxt_dir`` subdirectory.

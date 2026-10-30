@@ -32,9 +32,9 @@ docbuild.models.lifecycle.LifecycleFlag
 
 
 
-   .. py:attribute:: hidden
+   .. py:attribute:: unpublished
 
-      Hidden lifecycle state.
+      Unpublished lifecycle state: only shown on internal staging instances.
 
 
 
@@ -50,7 +50,7 @@ docbuild.models.lifecycle.LifecycleFlag
 
       Convert a string to a LifecycleFlag object.
 
-      The string accepts the values 'supported', 'beta', 'hidden',
+      The string accepts the values 'supported', 'beta', 'unpublished',
       'unsupported', or a combination of them separated by a comma or pipe.
       Additionally, the class knows the values "unknown".
       An empty string, "", is equivalent to "unknown".

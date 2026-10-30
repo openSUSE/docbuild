@@ -1,0 +1,41 @@
+docbuild.utils.pidlock
+======================
+
+.. py:module:: docbuild.utils.pidlock
+
+.. autoapi-nested-parse::
+
+   PID file locking utility.
+
+   Provides a context-manager-based process-safe lock using fcntl to ensure
+   only one process can hold a lock for a given resource path. The lock file
+   is created automatically and removed on exit.
+
+
+
+Exceptions
+----------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/pidlock/LockAcquisitionError
+
+.. autoapisummary::
+
+   docbuild.utils.pidlock.LockAcquisitionError
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/pidlock/PidFileLock
+
+.. autoapisummary::
+
+   docbuild.utils.pidlock.PidFileLock
+
+

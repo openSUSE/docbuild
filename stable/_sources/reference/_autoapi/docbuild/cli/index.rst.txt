@@ -31,6 +31,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /reference/_autoapi/docbuild/cli/alias/index
    /reference/_autoapi/docbuild/cli/callback/index
    /reference/_autoapi/docbuild/cli/cmd_build/index
    /reference/_autoapi/docbuild/cli/cmd_c14n/index
@@ -41,11 +42,13 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_llms/index
    /reference/_autoapi/docbuild/cli/cmd_metadata/index
    /reference/_autoapi/docbuild/cli/cmd_portal/index
+   /reference/_autoapi/docbuild/cli/cmd_publish/index
    /reference/_autoapi/docbuild/cli/cmd_repo/index
    /reference/_autoapi/docbuild/cli/completion/index
    /reference/_autoapi/docbuild/cli/console/index
    /reference/_autoapi/docbuild/cli/context/index
    /reference/_autoapi/docbuild/cli/defaults/index
+   /reference/_autoapi/docbuild/cli/message/index
    /reference/_autoapi/docbuild/cli/theme/index
 
 

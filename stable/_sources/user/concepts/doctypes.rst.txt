@@ -23,7 +23,7 @@ The fields in the doctype have the following meanings (without any slashes):
 * **DOCSET** (optional): The docset, usually the version or release of a product such as ``15-SP6``, ``16-GA`` etc.
   You can omit this field if the docset is not relevant or you can use ``*`` to match all docsets.
   If you specify multiple docsets, separate them with commas (e.g., ``15-SP6,16-GA``).
-* **LIFECYCLES** (optional): The lifecycle of the document that can have the values of ``supported``, ``beta``, ``unsupported``, or ``hidden``.
+* **LIFECYCLES** (optional): The lifecycle of the document that can have the values of ``supported``, ``beta``, ``unsupported``, or ``unpublished``.
   You can omit this field if the lifecycle is not relevant or you can use ``@*`` to match all lifecycles.
   If you specify multiple lifecycles, separate them with commas (e.g., ``@supported,beta``).
 * **LANGS** (optional): The language of the document, such as ``en-us``, ``de-de``, etc.
