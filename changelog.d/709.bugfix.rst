@@ -1,0 +1,1 @@
+Fix ENV configuration discovery. An autouse pytest fixture isolates CLI tests from local user and system configurations by redirecting configuration path lookups to an isolated temporary directory per test.
