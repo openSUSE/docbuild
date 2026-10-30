@@ -13,8 +13,8 @@ def ensure_writeable_directory(path: Path) -> Path:
     Behavior:
 
     1. Expands user paths (e.g., ``~/data`` -> ``/home/user/data``).
-     2. If path DOES NOT exist: It attempts to create it (including parents),
-         letting the filesystem enforce permissions.
+    2. If path DOES NOT exist: It attempts to create it (including parents),
+       letting the filesystem enforce permissions.
     3. If path DOES exist (or was just created): It checks if it's a
        directory and has R/W/X permissions.
 

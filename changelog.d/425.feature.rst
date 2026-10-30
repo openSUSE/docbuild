@@ -1,1 +1,0 @@
-Optimize Git worktree creation during builds by grouping deliverables that share the same repository and branch, significantly reducing I/O overhead and Git lock contention.

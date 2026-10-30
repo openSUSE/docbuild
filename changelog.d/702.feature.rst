@@ -1,1 +1,0 @@
-Add ``-n`` / ``--dry-run`` option to ``docbuild publish run`` to simulate publishing without making changes.

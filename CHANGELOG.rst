@@ -21,6 +21,56 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.29.0
+==============
+
+Bug Fixes
+---------
+
+- Directory validation now attempts to create missing directories directly,
+  instead of rejecting paths based on a parent-directory permission precheck.
+  Creation failures now report the underlying filesystem error. (:gh:`692`)
+- Renamed the ``hidden`` lifecycle to ``unpublished`` to match the portal schema, and keep unpublished releases out of ``homepage.json``. (:gh:`701`)
+- Fixed ENV configuration discovery. An autouse pytest fixture isolates CLI tests from local user and system configurations by redirecting configuration path lookups to an isolated temporary directory per test. (:gh:`709`)
+
+
+Improved Documentation
+----------------------
+
+- Documented array values for ``--set-env`` as comma-separated items enclosed in square brackets. (:gh:`697`)
+- Added missing prompt for console code blocks. Additionally, add option ``copybutton_here_doc_delimiter = "EOF"`` to
+  support HERE scripts. (:gh:`698`)
+- Improved docstrings for concurrency utilities, documenting parameters, return values, exceptions, and usage examples. (:gh:`710`)
+
+
+Features
+--------
+
+- Implemented on-the-fly HTML canonicals and hreflang links by dynamically injecting available translations as XSLT parameters into the DAPS build command. (:gh:`13`)
+- Added a sitemap generator using the :command:`build sitemap` that automatically creates a :file:`sitemap.xml` post-build and can be triggered via a new ``--sitemap`` flag. (:gh:`44`)
+- Optimized Git worktree creation during builds by grouping deliverables that share the same repository and branch, significantly reducing I/O overhead and Git lock contention. (:gh:`425`)
+- Added :command:`docbuild publish run` command to publish built documentation to a remote destination via ``rsync --files-from``. (:gh:`582`)
+- Added ``ls`` as an alias for ``list`` in the ``cache``, ``config``, ``portal``, and ``repo`` command groups. (:gh:`598`)
+- Introduced a shared :class:`~docbuild.cli.message.Message` abstraction for consistent CLI status labels and optional symbols, and adopted it in the :command:`config validate`, :command:`doctor`, and :command:`cache` commands. Symbols can be disabled with the new top-level ``symbols`` application configuration option. (:gh:`671`)
+- Added ``-n`` / ``--dry-run`` option to :command:`docbuild publish run` to simulate publishing without making changes. (:gh:`702`)
+
+
+Code Refactoring
+----------------
+
+- Added tests for manifest metadata validation and error handling. (:gh:`705`)
+
+
+Security
+--------
+
+- setuptools: Windows path escape via :file:`namespace_packages.txt` during legacy wheel installation Description.
+
+  * CVSS:4.0/AV:L/AC:H/AT:P/PR:L/UI:A/VC:N/VI:L/VA:L/SC:N/SI:N/SA:N
+  * GHSA-xmj3-9gf7-h52w
+  * No CVE yet (:gh:`694`)
+
+
 Version 0.28.0
 ==============
 
