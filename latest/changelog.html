@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.28.1.dev17+g4d2049b33.d20261030</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.28.1.dev18+g5b523f67c</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=ffff3b71"></script>
+    <script src="_static/documentation_options.js?v=ca973eda"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.28.0" />
+  <meta name="docsearch:version" content="0.29.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -448,43 +448,43 @@
 and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
 <a class="reference external" href="https://github.com/openSUSE/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
-<section id="version-latest">
-<h2>Version latest<a class="headerlink" href="#version-latest" title="Link to this heading">#</a></h2>
+<section id="version-0-29-0">
+<h2>Version 0.29.0<a class="headerlink" href="#version-0-29-0" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Directory validation now attempts to create missing directories directly,
 instead of rejecting paths based on a parent-directory permission precheck.
 Creation failures now report the underlying filesystem error. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/692">GH #692</a>)</p></li>
-<li><p>Rename the <code class="docutils literal notranslate"><span class="pre">hidden</span></code> lifecycle to <code class="docutils literal notranslate"><span class="pre">unpublished</span></code> to match the portal schema, and keep unpublished releases out of <code class="docutils literal notranslate"><span class="pre">homepage.json</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/701">GH #701</a>)</p></li>
-<li><p>Fix ENV configuration discovery. An autouse pytest fixture isolates CLI tests from local user and system configurations by redirecting configuration path lookups to an isolated temporary directory per test. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/709">GH #709</a>)</p></li>
+<li><p>Renamed the <code class="docutils literal notranslate"><span class="pre">hidden</span></code> lifecycle to <code class="docutils literal notranslate"><span class="pre">unpublished</span></code> to match the portal schema, and keep unpublished releases out of <code class="docutils literal notranslate"><span class="pre">homepage.json</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/701">GH #701</a>)</p></li>
+<li><p>Fixed ENV configuration discovery. An autouse pytest fixture isolates CLI tests from local user and system configurations by redirecting configuration path lookups to an isolated temporary directory per test. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/709">GH #709</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">
 <h3>Improved Documentation<a class="headerlink" href="#improved-documentation" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Document array values for <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> as comma-separated items enclosed in square brackets. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/697">GH #697</a>)</p></li>
+<li><p>Documented array values for <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> as comma-separated items enclosed in square brackets. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/697">GH #697</a>)</p></li>
 <li><p>Added missing prompt for console code blocks. Additionally, add option <code class="docutils literal notranslate"><span class="pre">copybutton_here_doc_delimiter</span> <span class="pre">=</span> <span class="pre">&quot;EOF&quot;</span></code> to
 support HERE scripts. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/698">GH #698</a>)</p></li>
-<li><p>Improve docstrings for concurrency utilities, documenting parameters, return values, exceptions, and usage examples. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/710">GH #710</a>)</p></li>
+<li><p>Improved docstrings for concurrency utilities, documenting parameters, return values, exceptions, and usage examples. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/710">GH #710</a>)</p></li>
 </ul>
 </section>
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Implement on-the-fly HTML canonicals and hreflang links by dynamically injecting available translations as XSLT parameters into the DAPS build command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/13">GH #13</a>)</p></li>
+<li><p>Implemented on-the-fly HTML canonicals and hreflang links by dynamically injecting available translations as XSLT parameters into the DAPS build command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/13">GH #13</a>)</p></li>
 <li><p>Added a sitemap generator using the <strong class="command">build sitemap</strong> that automatically creates a <code class="file docutils literal notranslate"><span class="pre">sitemap.xml</span></code> post-build and can be triggered via a new <code class="docutils literal notranslate"><span class="pre">--sitemap</span></code> flag. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/44">GH #44</a>)</p></li>
-<li><p>Optimize Git worktree creation during builds by grouping deliverables that share the same repository and branch, significantly reducing I/O overhead and Git lock contention. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/425">GH #425</a>)</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">publish</span> <span class="pre">run</span></code> command to publish built documentation to a remote destination via <code class="docutils literal notranslate"><span class="pre">rsync</span> <span class="pre">--files-from</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/582">GH #582</a>)</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">ls</span></code> as an alias for <code class="docutils literal notranslate"><span class="pre">list</span></code> in the <code class="docutils literal notranslate"><span class="pre">cache</span></code>, <code class="docutils literal notranslate"><span class="pre">config</span></code>, <code class="docutils literal notranslate"><span class="pre">portal</span></code>, and <code class="docutils literal notranslate"><span class="pre">repo</span></code> command groups. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/598">GH #598</a>)</p></li>
+<li><p>Optimized Git worktree creation during builds by grouping deliverables that share the same repository and branch, significantly reducing I/O overhead and Git lock contention. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/425">GH #425</a>)</p></li>
+<li><p>Added <strong class="command">docbuild publish run</strong> command to publish built documentation to a remote destination via <code class="docutils literal notranslate"><span class="pre">rsync</span> <span class="pre">--files-from</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/582">GH #582</a>)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">ls</span></code> as an alias for <code class="docutils literal notranslate"><span class="pre">list</span></code> in the <code class="docutils literal notranslate"><span class="pre">cache</span></code>, <code class="docutils literal notranslate"><span class="pre">config</span></code>, <code class="docutils literal notranslate"><span class="pre">portal</span></code>, and <code class="docutils literal notranslate"><span class="pre">repo</span></code> command groups. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/598">GH #598</a>)</p></li>
 <li><p>Introduced a shared <a class="reference internal" href="reference/_autoapi/docbuild/cli/message/Message.html#docbuild.cli.message.Message" title="docbuild.cli.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> abstraction for consistent CLI status labels and optional symbols, and adopted it in the <strong class="command">config validate</strong>, <strong class="command">doctor</strong>, and <strong class="command">cache</strong> commands. Symbols can be disabled with the new top-level <code class="docutils literal notranslate"><span class="pre">symbols</span></code> application configuration option. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/671">GH #671</a>)</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">-n</span></code> / <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> option to <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">publish</span> <span class="pre">run</span></code> to simulate publishing without making changes. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/702">GH #702</a>)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">-n</span></code> / <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> option to <strong class="command">docbuild publish run</strong> to simulate publishing without making changes. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/702">GH #702</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
 <h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Add tests for manifest metadata validation and error handling. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/705">GH #705</a>)</p></li>
+<li><p>Added tests for manifest metadata validation and error handling. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/705">GH #705</a>)</p></li>
 </ul>
 </section>
 <section id="security">
@@ -1696,7 +1696,7 @@ these are renamed:</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-latest">Version latest</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-29-0">Version 0.29.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-documentation">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
