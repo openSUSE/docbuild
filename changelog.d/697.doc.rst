@@ -1,1 +1,0 @@
-Document array values for ``--set-env`` as comma-separated items enclosed in square brackets.

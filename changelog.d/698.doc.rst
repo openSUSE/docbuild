@@ -1,2 +1,0 @@
-Added missing prompt for console code blocks. Additionally, add option ``copybutton_here_doc_delimiter = "EOF"`` to
-support HERE scripts.

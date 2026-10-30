@@ -1,3 +1,0 @@
-Directory validation now attempts to create missing directories directly,
-instead of rejecting paths based on a parent-directory permission precheck.
-Creation failures now report the underlying filesystem error.

@@ -1,1 +1,0 @@
-Add ``ls`` as an alias for ``list`` in the ``cache``, ``config``, ``portal``, and ``repo`` command groups.

@@ -1,1 +1,0 @@
-Add ``docbuild publish run`` command to publish built documentation to a remote destination via ``rsync --files-from``.
