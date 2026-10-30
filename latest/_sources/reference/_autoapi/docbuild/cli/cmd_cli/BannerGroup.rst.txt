@@ -22,6 +22,12 @@ docbuild.cli.cmd_cli.BannerGroup
 
 
 
+   .. py:method:: parse_args(ctx: click.Context, args: list[str]) -> list[str]
+
+      Keep parsed subcommand arguments available during CLI initialization.
+
+
+
    .. py:method:: format_help(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
       Format and print help output with banner prefix.
