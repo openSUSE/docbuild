@@ -18,6 +18,7 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_build/cmd_dir/index
    /reference/_autoapi/docbuild/cli/cmd_build/cmd_index/index
    /reference/_autoapi/docbuild/cli/cmd_build/cmd_run/index
+   /reference/_autoapi/docbuild/cli/cmd_build/cmd_sitemap/index
 
 
 Functions
