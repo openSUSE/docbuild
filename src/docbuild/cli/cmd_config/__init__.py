@@ -2,13 +2,16 @@
 
 import click
 
+from ...cli.alias import AliasGroup
 from .init import init_config
 from .list import list_config
 from .theme import theme_cmd
 from .validate import validate
 
 
-@click.group(name="config", help="Manage and view docbuild configuration.")
+@click.group(
+    cls=AliasGroup, name="config", help="Manage and view docbuild configuration."
+)
 @click.pass_context
 def config(ctx: click.Context) -> None:
     """Subcommand to manage the configuration files and their content."""
@@ -16,6 +19,6 @@ def config(ctx: click.Context) -> None:
 
 
 config.add_command(init_config)
-config.add_command(list_config)
+config.add_command(list_config, aliases=["ls"])
 config.add_command(theme_cmd)
 config.add_command(validate)

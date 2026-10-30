@@ -5,6 +5,7 @@ from pathlib import Path
 
 import click
 
+from ...cli.alias import AliasGroup
 from ...constants import CACHE_FILE_EXT
 from ...models.doctype import Doctype
 from ..callback import validate_doctypes
@@ -101,7 +102,7 @@ def get_prune_confirmation_msg(cache_type: str, doctypes: tuple[Doctype]) -> str
     return f"Are you sure you want to delete {target_str}?"
 
 
-@click.group(help=__doc__)
+@click.group(cls=AliasGroup, help=__doc__)
 def cache() -> None:
     """Subcommand group for cache management."""
     pass
@@ -121,7 +122,7 @@ def cache_dir(ctx: click.Context) -> None:
     console.print(f"[header]JSON Cache Dir:[/] {paths.json_cache_dir}")
 
 
-@cache.command(name="list")
+@cache.command(name="list", aliases=["ls"])
 @click.argument(
     "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
 )
