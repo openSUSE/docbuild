@@ -1,0 +1,1 @@
+Added a "Live" progress view for building deliverables, which displays a progress bar alongside real-time logging output without breaking the terminal layout. It can be enabled using the new :option:`--live` or :option:`-L` flag in the :command:`build run` command.

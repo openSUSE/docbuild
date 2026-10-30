@@ -14,6 +14,7 @@ from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
 from ...tasks.sitemap import generate_sitemap
 from ...utils.contextmgr import make_timer
+from ...utils.display import LiveProgressManager
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
 from ..completion import complete_doctypes
@@ -78,6 +79,7 @@ from ..context import DocBuildContext
     "--sitemap/--no-sitemap", is_flag=True, default=True, show_default=True,
     help="Generate a sitemap.xml in the target root after building.",
 )
+@click.option("-L", "--live", is_flag=True, default=False, help="Enable live progress view.")
 @click.pass_context
 @requires_system_tools()
 def run(
@@ -86,6 +88,7 @@ def run(
     skip_repo_update: bool,
     skip_metadata: bool,
     sitemap: bool,
+    live: bool,
 ) -> None:
     """Run the build pipeline for deliverables.
 
@@ -188,7 +191,11 @@ def run(
                     await generate_sitemap(target_base_dir, base_url)
                 return res
 
-            result = asyncio.run(main())
+            if live:
+                with LiveProgressManager(title="Building Deliverables").start():
+                    result = asyncio.run(main())
+            else:
+                result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
             console.print(f"Elapsed time {t.elapsed:0.2f}s")

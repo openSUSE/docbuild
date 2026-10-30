@@ -15,6 +15,7 @@ import yaml
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
+from ...utils.display import get_live_manager
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
 from ..metadata.prebuilt import read_json_ld
@@ -362,28 +363,42 @@ async def process(
     root = await parse_portal_config(main_portal_config)
     global_semaphore = asyncio.Semaphore(max_workers)
 
-    tasks = [
-        asyncio.create_task(
-            process_doctype(
-                root,
-                dt,
-                repo_dir,
-                tmp_repo_dir,
-                tmp_build_base_dir,
-                target_base_dir,
-                target_dir_dyn,
-                max_workers,
-                global_semaphore,
-                daps_tmpls,
-                skip_repo_update=skip_repo_update,
-                build_llmstxt=build_llmstxt,
-                llmstxt_dir=llmstxt_dir,
-                rsync_options=rsync_options,
-            ),
-            name=f"build:{dt}",
-        )
-        for dt in doctypes
-    ]
+    manager = get_live_manager()
+    if manager and hasattr(manager, "init_task"):
+        manager.progress.update(manager.init_task, visible=False)
+
+    overall_task = manager.progress.add_task(f"[bold white]Overall Progress ({len(doctypes)} items)", total=len(doctypes)) if manager else None
+
+    tasks = []
+    for dt in doctypes:
+
+        async def _wrapped_process(dt: "Doctype" = dt) -> list:
+            # Register individual task right before execution so UI stays clean
+            dt_ui = str(dt).replace("@unknown", "")
+            task_id = manager.progress.add_task(f"[cyan]{dt_ui}", total=100) if manager else None
+
+            if manager and task_id is not None:
+                manager.progress.update(task_id, advance=10)
+
+            res = await process_doctype(
+                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn,
+                max_workers, global_semaphore, daps_tmpls, skip_repo_update=skip_repo_update,
+                build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir, rsync_options=rsync_options,
+            )
+
+            if manager:
+                if task_id is not None:
+                    if not res: # Success
+                        # Hide successful items to save space
+                        manager.progress.update(task_id, visible=False)
+                    else: # Failed
+                        status = f"[red]{dt_ui} ❌"
+                        manager.progress.update(task_id, completed=100, description=status)
+                if overall_task is not None:
+                    manager.progress.advance(overall_task)
+            return res
+
+        tasks.append(asyncio.create_task(_wrapped_process(), name=f"build:{dt}"))
     results_per_doctype = await asyncio.gather(*tasks)
 
     all_failed = [d for failed_list in results_per_doctype for d in failed_list]
