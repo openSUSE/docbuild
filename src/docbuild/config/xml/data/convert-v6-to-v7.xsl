@@ -106,6 +106,7 @@
       <product xml:id="sle-rt" series="s.pas" family="f.linux" rank="04080" />
       <product xml:id="sles-sap" series="s.pas" family="f.linux" rank="00050" />
       <product xml:id="sles" series="s.pas" family="f.linux" rank="00080" />
+      <product xml:id="sles4nvidia" series="s.pas" family="f.linux" rank="00080" />
       <product xml:id="sle-vmdp" series="s.pas" family="f.linux" rank="04120" />
       <product xml:id="smart" series="s.pas" family="f.linux" rank="0"/>
       <product xml:id="smt" series="s.pas" family="f.linux" rank="04330" />
