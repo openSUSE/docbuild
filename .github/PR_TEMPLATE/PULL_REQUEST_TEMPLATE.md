@@ -1,7 +1,8 @@
 ### Description
 
-<!-- Please provide a clear and concise summary of your changes. -->
-<!-- What does this PR do? Why is it needed? -->
+<!-- Please provide a clear and concise summary of your changes.
+     What does this PR do? Why is it needed?
+-->
 
 ### Related Issues
 
@@ -9,12 +10,14 @@
 
 ### Quality Checklist
 
-<!-- Please check all that apply. PRs that do not meet these requirements may be closed. -->
+<!-- Please check all that apply. PRs that do not meet these requirements may be closed. 
+     Find details in our Developer Guide at https://opensuse.github.io/docbuild/latest/developer/
+-->
 
-- [ ] I have run `uvx ruff check --fix` and my code is properly formatted.
-- [ ] I have run `pytest` locally and all tests are passing.
+- [ ] I have run Ruff and my code is properly formatted.
+- [ ] I have [run the test suite](https://opensuse.github.io/docbuild/latest/developer/run-testsuite.html) locally and all tests are passing.
 - [ ] I have added or updated necessary unit tests.
-- [ ] I have added a Sphinx-formatted changelog entry in the `changelog.d/` directory.
+- [ ] I have added a Sphinx-formatted [changelog entry](https://opensuse.github.io/docbuild/latest/developer/add-newsfragments.html) in the `changelog.d/` directory.
 
 ### Contributor Commitment
 
