@@ -1,24 +1,8 @@
 # syntax=docker/dockerfile:1
 #
-# Build with Docker or Podman:
-#   docker build -f docker/Dockerfile -t docbuild:leap16 .
-#   podman build -f docker/Dockerfile -t docbuild:leap16 .
-# Match host ownership for bind mounts with rootful Docker (without userns remapping):
-#   docker build -f docker/Dockerfile --build-arg APP_UID="$(id -u)" --build-arg APP_GID="$(id -g)" --build-arg APP_HOME="$HOME" -t docbuild:local .
-# Run a dependency check:
-#   podman run --rm docbuild:leap16 doctor
+# Build with Docker:
+#   ./docker/build.sh
 #
-# Reuse host configuration, cache, and state with rootless Podman:
-#   mkdir -p "$HOME/.config/docbuild" "$HOME/.cache/docbuild" "$HOME/.local/state/docbuild"
-#   podman run --rm \
-#     --userns=keep-id:uid=1000,gid=1000 \
-#     -v "$HOME/.config/docbuild:$HOME/.config/docbuild:ro,Z" \
-#     -v "$HOME/.cache/docbuild:$HOME/.cache/docbuild:Z" \
-#     -v "$HOME/.local/state/docbuild:$HOME/.local/state/docbuild:Z" \
-#     docbuild:leap16 config list --flat --env
-# keep-id maps the host user to app (UID/GID 1000) without changing host ownership.
-# :Z applies a private SELinux label; use :z for directories shared by containers.
-# The host shell expands $HOME; pass the same path as APP_HOME when building the image.
 
 
 ARG OPENSUSE_VERSION=16.0
@@ -33,7 +17,7 @@ FROM registry.opensuse.org/opensuse/leap:${OPENSUSE_VERSION} AS base
 
 # Documentation:Tools supplies DAPS 4 and SUSE's DocBook stylesheets.
 RUN zypper --non-interactive addrepo \
-    https://download.opensuse.org/repositories/Documentation:/Tools/16.0/ \
+    https://download.opensuse.org/repositories/Documentation:/Tools/${OPENSUSE_VERSION}/ \
     Documentation_Tools && \
   zypper --gpg-auto-import-keys --non-interactive refresh && \
   zypper --non-interactive install --no-recommends \
