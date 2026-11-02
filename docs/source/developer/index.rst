@@ -11,22 +11,23 @@ This guide provides all the necessary information for contributing to the projec
    design
    async-pipeline
    directory-overview
+   project-dependencies
 
 .. toctree::
    :maxdepth: 2
    :caption: Tasks
 
-   project-dependencies
+   forking-project
    prepare-environment
    install-vscode
    develop-project
-   create-pullrequests
    run-testsuite
    update-package
    bump-version
    update-project
    add-newsfragments
    build-changelog
+   submit-pullrequests
    create-release
    trigger-actions
    maintain-ghactions/index
