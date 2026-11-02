@@ -51,8 +51,7 @@ The function uses these :command:`docker run` options and mounts:
    or data in bind-mounted host directories.
 * ``-it`` keeps standard input open and allocates a terminal for interactive
    use.
-* ``--init`` runs a small init process to forward signals and reap orphaned
-   child processes.
+* ``--init`` runs a small init process to forward signals and reap orphaned child processes.
 * ``--network=host`` shares the host network stack. Use it only when the
    container needs host networking; otherwise, Docker's default network provides
    more isolation.
