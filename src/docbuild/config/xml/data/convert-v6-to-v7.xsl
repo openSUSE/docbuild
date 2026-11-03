@@ -73,6 +73,22 @@
    <xsl:key name="productCategoryLangKey" match="product/category/language" use="concat(ancestor::product[1]/@productid, '|', @lang)" />
   <!-- Define a key to group prebuilt deliverable languages by docset and @lang -->
   <xsl:key name="prebuiltLangKey" match="external/link[not(starts-with(language/url/@href, 'https://')) and not(starts-with(language/url/@href, 'external-tree')) and not(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]/language[not(starts-with(@lang, 'en'))]" use="concat(generate-id(ancestor::docset[1]), '|', @lang)" />
+  <!-- Define a key to look up existing release notes DC deliverables by docset and DC name -->
+  <xsl:key name="releasenotesDcKey"
+           match="product[@productid='releasenotes']/docset/builddocs/language[@lang='en-us']/deliverable"
+           use="concat(ancestor::docset[1]/@setid, '|', normalize-space(dc))" />
+  <!-- Define a key to group /releasenotes/ links by their target release notes docset -->
+  <xsl:key name="releasenotesDocsetLinkKey"
+           match="external/link[starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')]"
+           use="substring-before(substring-after(concat('/', language[1]/url[1]/@href), '/releasenotes/'), '/')" />
+  <!-- Define a key to deduplicate /releasenotes/ links by target docset|version -->
+  <xsl:key name="releasenotesTargetKey"
+           match="external/link[starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/')]"
+           use="concat(
+                  substring-before(substring-after(concat('/', language[1]/url[1]/@href), '/releasenotes/'), '/'),
+                  '|',
+                  substring-before(concat(substring-after(substring-after(concat('/', language[1]/url[1]/@href), '/releasenotes/'), '/'), '/'), '/')
+                )" />
 
 
 <!-- ======== Variables -->
@@ -95,7 +111,28 @@
       <product xml:id="container" series="s.pas" family="f.linux" rank="04130" idabbrev="cont" />
       <product xml:id="compliance" series="s.pas" family="f.linux" rank="04130" idabbrev="comp" />
       <product xml:id="liberty" series="s.pas" family="f.linux" rank="00060" idabbrev="lib" />
-      <product xml:id="releasenotes" series="s.rn" family="f.linux" idabbrev="rn" rank="0"/>
+      <product xml:id="releasenotes" series="s.rn" family="f.linux" idabbrev="rn" rank="0">
+        <!-- Legacy (prebuilt) release notes mapped from update_legacy_releasnotes -->
+        <legacy docset="sle-ha" versions=" 11-SP3 11-SP4 12 12-SP1 12-SP2 12-SP3 12-SP4 12-SP5 15 15-SP1 15-SP2 15-SP3 15-SP4 15-SP5 15-SP6 15-SP7 "/>
+        <legacy docset="sle-ha-geo" versions=" 11-SP3-GEO 11-SP4-GEO 12-GEO 12-SP1-GEO 12-SP2-GEO 12-SP3-GEO 12-SP4-GEO 12-SP5-GEO "/>
+        <legacy docset="sle-hpc" versions=" 12 15 15-SP1 15-SP2 15-SP3 15-SP4 15-SP5 15-SP6 15-SP7 "/>
+        <legacy docset="sle-micro" versions=" 5.1 5.2 5.3 5.4 5.5 "/>
+        <legacy docset="sle-pos" versions=" 10-SP2 11-SP3 12-SP2 "/>
+        <legacy docset="sle-rt" versions=" 10-SP2 10-SP3 11-SP3 11-SP4 12-SP1 12-SP2 12-SP3 12-SP4 12-SP5 15-SP1 15-SP2 15-SP3 15-SP4 15-SP5 15-SP6 15-SP7 "/>
+        <legacy docset="sles-sap" versions=" 11-SP4 12 12-SP1 12-SP2 12-SP3 12-SP4 12-SP5 15 15-SP1 15-SP2 15-SP3 15-SP4 15-SP5 15-SP6 15-SP7 "/>
+        <legacy docset="sle-sdk" versions=" 11-SP3 11-SP4 12 12-SP1 12-SP2 12-SP3 12-SP4 12-SP5 "/>
+        <legacy docset="smt" versions=" 11-SP3 "/>
+        <legacy docset="suse-caasp" versions=" 1.0 2.0 3.0 4 4.5 "/>
+        <legacy docset="suse-cap" versions=" 1 2.0 "/>
+        <legacy docset="ses" versions=" 3 4 5 6 7 7.1 "/>
+        <legacy docset="suma-proxy" versions=" 2.1 3.0 3.1 3.2 4.0 4.1 4.2 4.3 5.0 "/>
+        <legacy docset="suma-retail" versions=" 3.1 "/>
+        <legacy docset="suma" versions=" 2.1 3.0 3.1 3.2 4.0 4.1 4.2 4.3 5.0 5.1 5.2 "/>
+        <legacy docset="soc" versions=" 7 8 9 "/>
+        <legacy docset="sles" versions=" 12-SP5 15-SP4 15-SP5 15-SP6 15-SP7 "/>
+        <legacy docset="multi-linux-manager-proxy" versions=" 5.1 5.2 "/>
+        <legacy docset="multi-linux-manager" versions=" 5.1 5.2 "/>
+      </product>
       <product xml:id="sbp" series="s.sbp" family="f.linux" rank="0" />
       <product xml:id="ses" series="s.pas" family="f.linux" rank="04160" />
       <product xml:id="sled" series="s.pas" family="f.linux" rank="04100" />
@@ -817,24 +854,35 @@
   </xsl:template>
 
   <!-- /releasenotes/&lt;docset&gt;/&lt;version&gt;/ points to the internal release
-       notes deliverable, e.g. rn.sle-ha.dc-releasenotes_sle-ha_16.0 -->
+       notes deliverable, e.g. rn.sle-ha.dc-releasenotes_sle-ha_16.0, or stays
+       as a prebuilt deliverable when found in the legacy mapping table. -->
   <xsl:template match="link" mode="releasenotes-xref">
     <xsl:variable name="href" select="language[1]/url[1]/@href"/>
     <xsl:variable name="rest" select="substring-after(concat('/', $href), '/releasenotes/')"/>
     <xsl:variable name="rn.docset" select="substring-before($rest, '/')"/>
     <xsl:variable name="rn.version" select="substring-before(concat(substring-after($rest, '/'), '/'), '/')"/>
-    <xsl:variable name="rn.abbrev" select="$config/product[@xml:id='releasenotes']/@idabbrev"/>
-    <xsl:variable name="rn.id">
-      <xsl:call-template name="generate.id">
-        <xsl:with-param name="product.idabbrev" select="$rn.abbrev"/>
-        <xsl:with-param name="docset" select="$rn.docset"/>
-        <xsl:with-param name="dc" select="concat('DC-releasenotes_', $rn.docset, '_', $rn.version)"/>
-      </xsl:call-template>
-    </xsl:variable>
+    <xsl:variable name="rn.product" select="$config/product[@xml:id='releasenotes']"/>
+    <xsl:variable name="is.legacy" select="boolean($rn.product/legacy[@docset = $rn.docset and contains(@versions, concat(' ', $rn.version, ' '))])"/>
 
-    <deliverable type="xref">
-      <xref linkend="{$rn.id}"/>
-    </deliverable>
+    <xsl:choose>
+      <xsl:when test="$is.legacy">
+        <xsl:apply-templates select="." mode="builddocs"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="rn.abbrev" select="$rn.product/@idabbrev"/>
+        <xsl:variable name="rn.id">
+          <xsl:call-template name="generate.id">
+            <xsl:with-param name="product.idabbrev" select="$rn.abbrev"/>
+            <xsl:with-param name="docset" select="$rn.docset"/>
+            <xsl:with-param name="dc" select="concat('DC-releasenotes_', $rn.docset, '_', $rn.version)"/>
+          </xsl:call-template>
+        </xsl:variable>
+
+        <deliverable type="xref">
+          <xref linkend="{$rn.id}"/>
+        </deliverable>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template name="generate-external-link-id">
@@ -1068,6 +1116,47 @@
             <xsl:attribute name="sitemap">false</xsl:attribute>
           </xsl:if>
           <xsl:apply-templates />
+          <xsl:if test="ancestor::product/@productid = 'releasenotes' and @lang = 'en-us'">
+            <xsl:variable name="rn.docset" select="ancestor::docset/@setid"/>
+            <xsl:variable name="rn.product" select="$config/product[@xml:id='releasenotes']"/>
+            <xsl:variable name="rn.abbrev" select="$rn.product/@idabbrev"/>
+            <xsl:for-each select="key('releasenotesDocsetLinkKey', $rn.docset)[
+                                    generate-id() = generate-id(
+                                      key(
+                                        'releasenotesTargetKey',
+                                        concat(
+                                          $rn.docset,
+                                          '|',
+                                          substring-before(concat(substring-after(substring-after(concat('/', language[1]/url[1]/@href), '/releasenotes/'), '/'), '/'), '/')
+                                        )
+                                      )[1]
+                                    )
+                                  ]">
+              <xsl:variable name="href" select="language[1]/url[1]/@href"/>
+              <xsl:variable name="rest" select="substring-after(concat('/', $href), '/releasenotes/')"/>
+              <xsl:variable name="rn.version" select="substring-before(concat(substring-after($rest, '/'), '/'), '/')"/>
+              <xsl:variable name="is.legacy" select="boolean($rn.product/legacy[@docset = $rn.docset and contains(@versions, concat(' ', $rn.version, ' '))])"/>
+              <xsl:variable name="dc.name" select="concat('DC-releasenotes_', $rn.docset, '_', $rn.version)"/>
+
+              <xsl:if test="not($is.legacy) and not(key('releasenotesDcKey', concat($rn.docset, '|', $dc.name)))">
+                <xsl:variable name="rn.id">
+                  <xsl:call-template name="generate.id">
+                    <xsl:with-param name="product.idabbrev" select="$rn.abbrev"/>
+                    <xsl:with-param name="docset" select="$rn.docset"/>
+                    <xsl:with-param name="dc" select="$dc.name"/>
+                  </xsl:call-template>
+                </xsl:variable>
+                <deliverable type="dc">
+                  <xsl:attribute name="xml:id">
+                    <xsl:value-of select="$rn.id"/>
+                  </xsl:attribute>
+                  <dc file="{$dc.name}">
+                    <format epub="0" single-html="0" html="1" pdf="0"/>
+                  </dc>
+                </deliverable>
+              </xsl:if>
+            </xsl:for-each>
+          </xsl:if>
           <xsl:if test="starts-with(@lang, 'en')">
             <xsl:apply-templates select="../../external/link[(starts-with(language/url/@href, '/releasenotes/') or starts-with(language/url/@href, 'releasenotes/'))]" mode="releasenotes-xref"/>
           </xsl:if>
