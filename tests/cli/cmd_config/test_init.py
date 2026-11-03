@@ -166,6 +166,9 @@ def test_config_theme_cmd_with_active_config(mock_logging, mock_env, mock_app, r
         "lang": "white",
         "product": "dim white",
         "docset": "blue",
+        "succeeded": "bold green",
+        "skipped": "yellow",
+        "failed": "bold red",
     }
     mock_ctx.appconfigfiles = [Path("custom_app.toml")]
     mock_ctx.appconfig_from_defaults = False

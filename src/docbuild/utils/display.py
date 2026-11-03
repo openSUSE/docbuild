@@ -68,9 +68,9 @@ class LiveLogHandler(logging.Handler):
 class ItemState(StrEnum):
     """Final outcome of a single item, storing its Rich markup prefix."""
 
-    SUCCEEDED = "[green]✔"
-    SKIPPED = "[yellow]↷"
-    FAILED = "[red]✘"
+    SUCCEEDED = "[succeeded]✔"
+    SKIPPED = "[skipped]↷"
+    FAILED = "[failed]✘"
 
 
 def format_status(counts: Counter[ItemState]) -> str:
@@ -112,9 +112,6 @@ class Item:
 
     state: ItemState | None = None
 
-    def set_state(self, state: ItemState) -> None:
-        """Set the outcome state for this item."""
-        self.state = state
 
     def skip(self) -> None:
         """Mark the item as skipped."""
@@ -239,8 +236,6 @@ class LiveProgressManager:
         )
 
         # Add the log buffer and split layout
-        from rich.panel import Panel
-        from rich.text import Text
 
         self.log_buffer = []
         self.max_log_lines = 10
@@ -298,7 +293,6 @@ class LiveProgressManager:
 
     def update_logs(self) -> None:
         """Update the log panel with the latest buffered lines."""
-        from rich.text import Text
         log_text = Text("\n").join(self.log_buffer)
         self.layout.renderables[1] = Panel(log_text, title="Live Logs", border_style="dim")
         self.live.refresh()

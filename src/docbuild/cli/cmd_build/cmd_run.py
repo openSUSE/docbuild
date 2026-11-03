@@ -4,6 +4,7 @@ See :ref:`concept-doctype-syntax`
 """
 
 import asyncio
+from contextlib import nullcontext
 import math
 from pathlib import Path
 
@@ -181,6 +182,7 @@ def run(
             name="build:build",
         )
 
+    result = 1
     t = None
     try:
         with timer() as t:
@@ -191,10 +193,8 @@ def run(
                     await generate_sitemap(target_base_dir, base_url)
                 return res
 
-            if live:
-                with LiveProgressManager(title="Building Deliverables").start():
-                    result = asyncio.run(main())
-            else:
+            manager_ctx = LiveProgressManager(console=console, disable=False) if live else nullcontext()
+            with manager_ctx:
                 result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
