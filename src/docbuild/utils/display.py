@@ -45,9 +45,9 @@ class LiveLogHandler(logging.Handler):
             # Color code based on level
             color = "white"
             if record.levelno >= logging.ERROR:
-                color = "red"
+                color = "error"
             elif record.levelno >= logging.WARNING:
-                color = "yellow"
+                color = "warning"
             elif record.levelno == logging.DEBUG:
                 color = "dim"
             elif any(word in msg.lower() for word in ["success", "done", "finished"]):

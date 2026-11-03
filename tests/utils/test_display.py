@@ -45,6 +45,6 @@ def test_live_log_handler_buffers_messages() -> None:
     # Check that it triggered the UI update
     mock_manager.update_logs.assert_called_once()
 
-    # Check that error logs are colored red
+    # Check that error logs use the semantic error tag
     buffered_text: Text = handler.log_buffer[0]
-    assert "red" in buffered_text.style or buffered_text.style == "red"
+    assert "error" in buffered_text.style or buffered_text.style == "error"
