@@ -364,42 +364,43 @@ async def process(
     global_semaphore = asyncio.Semaphore(max_workers)
 
     manager = get_live_manager()
-    if manager and hasattr(manager, "init_task"):
-        manager.progress.update(manager.init_task, visible=False)
-
-    overall_task = manager.progress.add_task(f"[bold white]Overall Progress ({len(doctypes)} items)", total=len(doctypes)) if manager else None
+    stage_cm = manager.stage("Building deliverables", total=len(doctypes)) if manager else None
+    stage = stage_cm.__enter__() if stage_cm else None
 
     tasks = []
     for dt in doctypes:
 
         async def _wrapped_process(dt: "Doctype" = dt) -> list:
+            """Process a single doctype within the build stage."""
             # Register individual task right before execution so UI stays clean
             dt_ui = str(dt).replace("@unknown", "")
-            task_id = manager.progress.add_task(f"[cyan]{dt_ui}", total=100) if manager else None
 
-            if manager and task_id is not None:
-                manager.progress.update(task_id, advance=10)
+            item_cm = stage.item(dt_ui) if stage else None
+            item = item_cm.__enter__() if item_cm else None
 
-            res = await process_doctype(
-                root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn,
-                max_workers, global_semaphore, daps_tmpls, skip_repo_update=skip_repo_update,
-                build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir, rsync_options=rsync_options,
-            )
+            try:
+                res = await process_doctype(
+                    root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn,
+                    max_workers, global_semaphore, daps_tmpls, skip_repo_update=skip_repo_update,
+                    build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir, rsync_options=rsync_options,
+                )
+                # In docbuild, process_doctype returns a list of failures. Non-empty means failed.
+                if item and res:
+                    item.fail()
+            except BaseException:
+                if item_cm:
+                    item_cm.__exit__(None, None, None)
+                raise
+            else:
+                if item_cm:
+                    item_cm.__exit__(None, None, None)
 
-            if manager:
-                if task_id is not None:
-                    if not res: # Success
-                        # Hide successful items to save space
-                        manager.progress.update(task_id, visible=False)
-                    else: # Failed
-                        status = f"[red]{dt_ui} ❌"
-                        manager.progress.update(task_id, completed=100, description=status)
-                if overall_task is not None:
-                    manager.progress.advance(overall_task)
             return res
 
         tasks.append(asyncio.create_task(_wrapped_process(), name=f"build:{dt}"))
     results_per_doctype = await asyncio.gather(*tasks)
+    if stage_cm:
+        stage_cm.__exit__(None, None, None)
 
     all_failed = [d for failed_list in results_per_doctype for d in failed_list]
 
