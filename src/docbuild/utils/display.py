@@ -6,6 +6,7 @@ import contextvars
 from dataclasses import dataclass
 from enum import StrEnum
 import logging
+from logging.handlers import QueueListener
 from typing import Self
 
 from rich.console import Console, Group, RenderableType
@@ -243,6 +244,8 @@ class LiveProgressManager:
 
         # Override the live display to render the Group instead of just the progress bar
         self.live = Live(self.layout, console=console, refresh_per_second=4)
+        self._original_listener: QueueListener | None = None
+        self._live_handler: LiveLogHandler | None = None
 
     @property
     def failed(self) -> bool:
@@ -252,12 +255,33 @@ class LiveProgressManager:
     def __enter__(self) -> Self:
         """Start the live view."""
         self._token = ACTIVE_LIVE_MANAGER.set(self)
+
+        # Intercept docbuild logs
+        from docbuild.logging import _LOGGING_STATE
+        self._original_listener = _LOGGING_STATE["listener"].get()
+        if self._original_listener:
+            self._original_listener.stop()
+
+        self._live_handler = LiveLogHandler(self, max_lines=self.max_log_lines)
+        self._live_handler.setLevel(logging.INFO)
+        logging.getLogger().addHandler(self._live_handler)
+
         self.live.start()
         return self
 
     def __exit__(self, *exc_info: object) -> None:
         """Stop the live view."""
         self.live.stop()
+
+        # Restore original logging
+        if self._live_handler:
+            logging.getLogger().removeHandler(self._live_handler)
+            self._live_handler = None
+
+        if self._original_listener:
+            self._original_listener.start()
+            self._original_listener = None
+
         if hasattr(self, "_token"):
             ACTIVE_LIVE_MANAGER.reset(self._token)
 

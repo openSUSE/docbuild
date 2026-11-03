@@ -9,6 +9,7 @@ from pathlib import Path
 from lxml import etree
 
 from docbuild.constants import DEFAULT_LANG
+from docbuild.utils.display import get_live_manager
 
 log = logging.getLogger(__name__)
 
@@ -77,20 +78,32 @@ async def generate_sitemap(target_dir: Path, base_url: str) -> Path:
         return target_dir / "sitemap.xml"
 
     log.info("Generating sitemap.xml in %s", target_dir)
+    manager = get_live_manager()
+    stage_cm = manager.stage("Generating Sitemap", total=1) if manager else None
+    stage = stage_cm.__enter__() if stage_cm else None
+    item_cm = stage.item("sitemap.xml") if stage else None
+    if item_cm:
+        item_cm.__enter__()
 
-    tree = await asyncio.to_thread(build_sitemap_tree, target_dir, base_url)
+    try:
+        tree = await asyncio.to_thread(build_sitemap_tree, target_dir, base_url)
 
-    sitemap_path = target_dir / "sitemap.xml"
+        sitemap_path = target_dir / "sitemap.xml"
 
-    def _write() -> None:
-        tree.write(
-            str(sitemap_path),
-            encoding="utf-8",
-            xml_declaration=True,
-            pretty_print=True
-        )
+        def _write() -> None:
+            tree.write(
+                str(sitemap_path),
+                encoding="utf-8",
+                xml_declaration=True,
+                pretty_print=True
+            )
 
-    await asyncio.to_thread(_write)
-    log.info("Successfully wrote sitemap with base URL: %s", base_url)
+        await asyncio.to_thread(_write)
+        log.info("Successfully wrote sitemap with base URL: %s", base_url)
+    finally:
+        if item_cm:
+            item_cm.__exit__(None, None, None)
+        if stage_cm:
+            stage_cm.__exit__(None, None, None)
 
     return sitemap_path
