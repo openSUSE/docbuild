@@ -2,6 +2,7 @@
 
 import asyncio
 from collections.abc import Sequence
+from contextlib import nullcontext
 import hashlib
 import logging
 from pathlib import Path
@@ -302,26 +303,29 @@ async def process(
 
     # --- Phase 2: Build Task Pipeline (aiostream) ---
     manager = get_live_manager()
-    stage_cm = manager.stage("Metadata Validation & Git Fetch", total=len(deliverables_to_build)) if manager else None
-    stage_cm.__enter__() if stage_cm else None
-    try:
-        all_failed_deliverables = await execute_build_pipeline(
-            deliverables_to_build,
-        repo_dir,
-        tmp_repo_dir,
-        meta_cache_dir,
-        prebuilt_dir,
-        dapsmetatmpl,
-        daps_list_srcfiles_tmpl,
-        skip_repo_update,
-        env_config_hash,
-        max_workers,
-        exitfirst,
+    stage_context = (
+        manager.stage(
+            "Metadata Validation & Git Fetch",
+            total=len(deliverables_to_build),
+        )
+        if manager is not None
+        else nullcontext()
     )
 
-    finally:
-        if stage_cm:
-            stage_cm.__exit__(None, None, None)
+    with stage_context:
+        all_failed_deliverables = await execute_build_pipeline(
+            deliverables_to_build,
+            repo_dir,
+            tmp_repo_dir,
+            meta_cache_dir,
+            prebuilt_dir,
+            dapsmetatmpl,
+            daps_list_srcfiles_tmpl,
+            skip_repo_update,
+            env_config_hash,
+            max_workers,
+            exitfirst,
+        )
 
     if exitfirst and all_failed_deliverables:
         console_err.print(f"[error]Exiting early due to failed deliverable:[/] {all_failed_deliverables[0].full_id}")

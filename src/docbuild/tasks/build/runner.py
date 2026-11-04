@@ -1,6 +1,7 @@
 """Runner for the build task."""
 
 import asyncio
+from contextlib import nullcontext
 import logging
 import os
 from pathlib import Path
@@ -364,43 +365,49 @@ async def process(
     global_semaphore = asyncio.Semaphore(max_workers)
 
     manager = get_live_manager()
-    stage_cm = manager.stage("Building deliverables", total=len(doctypes)) if manager else None
-    stage = stage_cm.__enter__() if stage_cm else None
+    stage_context = (
+        manager.stage("Building deliverables", total=len(doctypes))
+        if manager is not None
+        else nullcontext()
+    )
 
-    tasks = []
-    for dt in doctypes:
+    with stage_context as stage:
+        async def _wrapped_process(dt: "Doctype") -> list:
+            label = str(dt).replace("@unknown", "")
+            item_context = (
+                stage.item(label) if stage is not None else nullcontext()
+            )
 
-        async def _wrapped_process(dt: "Doctype" = dt) -> list:
-            """Process a single doctype within the build stage."""
-            # Register individual task right before execution so UI stays clean
-            dt_ui = str(dt).replace("@unknown", "")
-
-            item_cm = stage.item(dt_ui) if stage else None
-            item = item_cm.__enter__() if item_cm else None
-
-            try:
-                res = await process_doctype(
-                    root, dt, repo_dir, tmp_repo_dir, tmp_build_base_dir, target_base_dir, target_dir_dyn,
-                    max_workers, global_semaphore, daps_tmpls, skip_repo_update=skip_repo_update,
-                    build_llmstxt=build_llmstxt, llmstxt_dir=llmstxt_dir, rsync_options=rsync_options,
+            with item_context as item:
+                failed = await process_doctype(
+                    root,
+                    dt,
+                    repo_dir,
+                    tmp_repo_dir,
+                    tmp_build_base_dir,
+                    target_base_dir,
+                    target_dir_dyn,
+                    max_workers,
+                    global_semaphore,
+                    daps_tmpls,
+                    skip_repo_update=skip_repo_update,
+                    build_llmstxt=build_llmstxt,
+                    llmstxt_dir=llmstxt_dir,
+                    rsync_options=rsync_options,
                 )
-                # In docbuild, process_doctype returns a list of failures. Non-empty means failed.
-                if item and res:
+                if item is not None and failed:
                     item.fail()
-            except BaseException:
-                if item_cm:
-                    item_cm.__exit__(None, None, None)
-                raise
-            else:
-                if item_cm:
-                    item_cm.__exit__(None, None, None)
+                return failed
 
-            return res
+        async with asyncio.TaskGroup() as task_group:
+            tasks = [
+                task_group.create_task(
+                    _wrapped_process(dt), name=f"build:{dt}"
+                )
+                for dt in doctypes
+            ]
 
-        tasks.append(asyncio.create_task(_wrapped_process(), name=f"build:{dt}"))
-    results_per_doctype = await asyncio.gather(*tasks)
-    if stage_cm:
-        stage_cm.__exit__(None, None, None)
+    results_per_doctype = [task.result() for task in tasks]
 
     all_failed = [d for failed_list in results_per_doctype for d in failed_list]
 

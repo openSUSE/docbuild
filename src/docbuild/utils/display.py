@@ -48,15 +48,13 @@ class LiveLogHandler(logging.Handler):
         try:
             msg = self.format(record)
             # Color code based on level
-            color = "white"
-            if record.levelno >= logging.ERROR:
-                color = "error"
-            elif record.levelno >= logging.WARNING:
-                color = "warning"
-            elif record.levelno == logging.DEBUG:
-                color = "dim"
-            elif any(word in msg.lower() for word in ["success", "done", "finished"]):
-                color = "green"
+            color = {
+                logging.DEBUG: "dim",
+                logging.INFO: "white",
+                logging.WARNING: "warning",
+                logging.ERROR: "error",
+                logging.CRITICAL: "error",
+            }.get(record.levelno, "white")
 
             text = Text(msg, style=color)
             self.log_buffer.append(text)
