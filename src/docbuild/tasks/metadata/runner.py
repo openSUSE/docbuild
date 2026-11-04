@@ -3,6 +3,7 @@
 import asyncio
 from collections.abc import Sequence
 from contextlib import nullcontext
+from functools import partial
 import hashlib
 import logging
 from pathlib import Path
@@ -192,6 +193,49 @@ async def resolve_translation_metadata(
     return final_deliverables
 
 
+async def _process_single_deliverable(
+    deliverable: Deliverable,
+    *args: object,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
+    prebuilt_dir: Path,
+    dapsmetatmpl: str,
+    daps_list_srcfiles_tmpl: str,
+    skip_repo_update: bool,
+    env_config_hash: str,
+) -> tuple[bool, Deliverable]:
+    """Worker function to process a single deliverable and report to the live UI."""
+    manager = get_live_manager()
+    stage = manager._active if manager else None
+    item_context = stage.item(deliverable.full_id) if stage else nullcontext()
+
+    with item_context as item:
+        try:
+            if current_task := asyncio.current_task():
+                current_task.set_name(f"metadata:{deliverable.full_id}")
+
+            res = await process_deliverable(
+                deliverable,
+                repo_dir,
+                tmp_repo_dir,
+                meta_cache_dir,
+                prebuilt_dir=prebuilt_dir,
+                dapstmpl=dapsmetatmpl,
+                daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+                skip_repo_update=skip_repo_update,
+                env_config_hash=env_config_hash,
+            )
+            if item is not None and not res[0]:
+                item.fail()
+            return res
+        except Exception as e:
+            log.error("Error in task for %s: %s", deliverable.full_id, e)
+            if item is not None:
+                item.fail()
+            return False, deliverable
+
+
 async def execute_build_pipeline(
     deliverables_to_build: list[Deliverable],
     repo_dir: Path,
@@ -217,30 +261,20 @@ async def execute_build_pipeline(
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(final_deliverables))
 
-    async def process_deliverable_wrapper(
-        deliverable: Deliverable, *args: object
-    ) -> tuple[bool, Deliverable]:
-        try:
-            if current_task := asyncio.current_task():
-                current_task.set_name(f"metadata:{deliverable.full_id}")
-
-            return await process_deliverable(
-                deliverable,
-                repo_dir,
-                tmp_repo_dir,
-                meta_cache_dir,
-                prebuilt_dir=prebuilt_dir,
-                dapstmpl=dapsmetatmpl,
-                daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
-                skip_repo_update=skip_repo_update,
-                env_config_hash=env_config_hash,
-            )
-        except Exception as e:
-            log.error("Error in task for %s: %s", deliverable.full_id, e)
-            return False, deliverable
+    worker = partial(
+        _process_single_deliverable,
+        repo_dir=repo_dir,
+        tmp_repo_dir=tmp_repo_dir,
+        meta_cache_dir=meta_cache_dir,
+        prebuilt_dir=prebuilt_dir,
+        dapsmetatmpl=dapsmetatmpl,
+        daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+        skip_repo_update=skip_repo_update,
+        env_config_hash=env_config_hash,
+    )
 
     pipeline = stream.iterate(final_deliverables) | pipe.map(
-        process_deliverable_wrapper, task_limit=worker_limit, ordered=True
+        worker, task_limit=worker_limit, ordered=True
     )
 
     all_failed_deliverables: list[Deliverable] = []

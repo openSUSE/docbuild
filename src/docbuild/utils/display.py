@@ -257,12 +257,22 @@ class LiveProgressManager:
         # Intercept docbuild logs
         from docbuild.logging import _LOGGING_STATE
         self._original_listener = _LOGGING_STATE["listener"].get()
-        if self._original_listener:
-            self._original_listener.stop()
 
         self._live_handler = LiveLogHandler(self, max_lines=self.max_log_lines)
         self._live_handler.setLevel(logging.INFO)
-        logging.getLogger().addHandler(self._live_handler)
+        self._muted_handlers = []
+
+        if self._original_listener:
+            # Mute terminal output but keep listener pulling logs
+            for h in self._original_listener.handlers:
+                if h.__class__.__name__ == "StreamHandler":
+                    self._muted_handlers.append((h, h.level))
+                    h.setLevel(logging.CRITICAL + 1)
+
+            # Inject LiveLogHandler directly into the running listener
+            self._original_listener.handlers = tuple([*list(self._original_listener.handlers), self._live_handler])
+        else:
+            logging.getLogger("docbuild").addHandler(self._live_handler)
 
         self.live.start()
         return self
@@ -271,14 +281,15 @@ class LiveProgressManager:
         """Stop the live view."""
         self.live.stop()
 
-        # Restore original logging
-        if self._live_handler:
-            logging.getLogger().removeHandler(self._live_handler)
-            self._live_handler = None
-
         if self._original_listener:
-            self._original_listener.start()
-            self._original_listener = None
+            # Remove LiveLogHandler and unmute terminal
+            self._original_listener.handlers = tuple(h for h in self._original_listener.handlers if h is not self._live_handler)
+            for h, lvl in self._muted_handlers:
+                h.setLevel(lvl)
+        elif self._live_handler:
+            logging.getLogger("docbuild").removeHandler(self._live_handler)
+
+        self._live_handler = None
 
         if hasattr(self, "_token"):
             ACTIVE_LIVE_MANAGER.reset(self._token)
