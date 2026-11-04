@@ -255,7 +255,8 @@ async def execute_build_pipeline(
     else:
         git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
         manager = get_live_manager()
-        repo_stage = manager.stage("1/4 Clone repos…", total=len(git_deliverables)) if manager else nullcontext()
+        unique_repos = {d.git.url for d in git_deliverables if d.git and d.git.url}
+        repo_stage = manager.stage("1/4 Clone repos…", total=len(unique_repos)) if manager else nullcontext()
         with repo_stage as r_stage:
             try:
                 await update_repositories(git_deliverables, repo_dir)
