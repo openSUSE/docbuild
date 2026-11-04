@@ -289,16 +289,25 @@ async def execute_build_pipeline(
 
     all_failed_deliverables: list[Deliverable] = []
 
-    try:
-        # Evaluate the pipeline and collect results
-        async with pipeline.stream() as streamer:
-            async for success, deliverable in streamer:
-                if not success:
-                    all_failed_deliverables.append(deliverable)
-                    if exitfirst:
-                        break
-    except Exception as e:
-        log.error("Task failed unexpectedly: %s", e)
+    manager = get_live_manager()
+    stage_context = (
+        manager.stage(
+            "2/4 Metadata Validation…", total=len(final_deliverables)
+        )
+        if manager is not None
+        else nullcontext()
+    )
+    with stage_context:
+        try:
+            # Evaluate the pipeline and collect results
+            async with pipeline.stream() as streamer:
+                async for success, deliverable in streamer:
+                    if not success:
+                        all_failed_deliverables.append(deliverable)
+                        if exitfirst:
+                            break
+        except Exception as e:
+            log.error("Task failed unexpectedly: %s", e)
 
     return all_failed_deliverables
 
@@ -346,30 +355,19 @@ async def process(
     deliverables_to_build = gather_build_tasks(stitchnode, doctypes)
 
     # --- Phase 2: Build Task Pipeline (aiostream) ---
-    manager = get_live_manager()
-    stage_context = (
-        manager.stage(
-            "2/4 Metadata Validation…",
-            total=len(deliverables_to_build),
-        )
-        if manager is not None
-        else nullcontext()
+    all_failed_deliverables = await execute_build_pipeline(
+        deliverables_to_build,
+        repo_dir,
+        tmp_repo_dir,
+        meta_cache_dir,
+        prebuilt_dir,
+        dapsmetatmpl,
+        daps_list_srcfiles_tmpl,
+        skip_repo_update,
+        env_config_hash,
+        max_workers,
+        exitfirst,
     )
-
-    with stage_context:
-        all_failed_deliverables = await execute_build_pipeline(
-            deliverables_to_build,
-            repo_dir,
-            tmp_repo_dir,
-            meta_cache_dir,
-            prebuilt_dir,
-            dapsmetatmpl,
-            daps_list_srcfiles_tmpl,
-            skip_repo_update,
-            env_config_hash,
-            max_workers,
-            exitfirst,
-        )
 
     if exitfirst and all_failed_deliverables:
         console_err.print(f"[error]Exiting early due to failed deliverable:[/] {all_failed_deliverables[0].full_id}")
