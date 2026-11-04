@@ -81,7 +81,7 @@ async def generate_sitemap(target_dir: Path, base_url: str) -> Path:
     log.info("Generating sitemap.xml in %s", target_dir)
     manager = get_live_manager()
     stage_context = (
-        manager.stage("Generating Sitemap", total=1)
+        manager.stage("4/4 Sitemap", total=1)
         if manager is not None
         else nullcontext()
     )

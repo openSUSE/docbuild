@@ -339,7 +339,7 @@ async def process(
     manager = get_live_manager()
     stage_context = (
         manager.stage(
-            "Metadata Validation & Git Fetch",
+            "2/4 Metadata Validation…",
             total=len(deliverables_to_build),
         )
         if manager is not None

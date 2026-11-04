@@ -366,14 +366,14 @@ async def process(
 
     manager = get_live_manager()
     stage_context = (
-        manager.stage("Building deliverables", total=len(doctypes))
+        manager.stage("3/4 Building deliverables…", total=sum(len(dt.deliverables) for dt in doctypes if getattr(dt, "deliverables", [])) or 1)
         if manager is not None
         else nullcontext()
     )
 
     with stage_context as stage:
         async def _wrapped_process(dt: "Doctype") -> list:
-            label = str(dt).replace("@unknown", "")
+            label = dt.name if hasattr(dt, "name") else str(dt)
             item_context = (
                 stage.item(label) if stage is not None else nullcontext()
             )
