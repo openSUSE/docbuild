@@ -198,14 +198,33 @@ class LiveProgressManager:
         return any(stage.failed for stage in self.stages)
 
     def __enter__(self) -> Self:
-        """Start the live view."""
+        """Start the live view and mute terminal logs."""
         self._token = ACTIVE_LIVE_MANAGER.set(self)
+
+        # Mute standard terminal logging so it doesn't fight rich.Live
+        import logging
+        try:
+            from docbuild.logging import _LOGGING_STATE
+            self._muted_handlers = []
+            if (listener_var := _LOGGING_STATE.get("listener")) and (listener := listener_var.get()):
+                for h in listener.handlers:
+                    if h.__class__.__name__ == "StreamHandler":
+                        self._muted_handlers.append((h, h.level))
+                        h.setLevel(logging.CRITICAL + 1)
+        except ImportError:
+            pass
+
         self.live.start()
         return self
 
     def __exit__(self, *exc_info: object) -> None:
-        """Stop the live view."""
+        """Stop the live view and restore terminal logs."""
         self.live.stop()
+
+        # Restore terminal logging
+        for h, lvl in getattr(self, "_muted_handlers", []):
+            h.setLevel(lvl)
+
         if hasattr(self, "_token"):
             ACTIVE_LIVE_MANAGER.reset(self._token)
 

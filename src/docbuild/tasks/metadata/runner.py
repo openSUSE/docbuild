@@ -254,7 +254,17 @@ async def execute_build_pipeline(
         log.info("Skipping repository updates as requested.")
     else:
         git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
-        await update_repositories(git_deliverables, repo_dir)
+        manager = get_live_manager()
+        repo_stage = manager.stage("1/4 Clone repos…", total=len(git_deliverables)) if manager else nullcontext()
+        with repo_stage as r_stage:
+            try:
+                await update_repositories(git_deliverables, repo_dir)
+            except Exception as e:
+                if r_stage:
+                    r_stage.fail()
+                log.error("Failed to update repositories: %s", e)
+                if exitfirst:
+                    return deliverables_to_build # Return all as failed to abort
 
     # --- Translation Metadata Git Checks ---
     final_deliverables = await resolve_translation_metadata(deliverables_to_build, repo_dir)
