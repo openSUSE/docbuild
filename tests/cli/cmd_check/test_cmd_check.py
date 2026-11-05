@@ -50,3 +50,23 @@ def test_check_files_reports_missing_files(mock_task, runner: CliRunner, context
 
     assert result.exit_code == 1
     assert "DC-fake" in result.output
+
+
+@patch("docbuild.cli.cmd_check.__init__.check_repository_files", new_callable=AsyncMock)
+def test_check_files_groups_by_repo_branch(mock_task, runner: CliRunner, context_with_paths):
+    """Files are grouped under a REPO/BRANCH node; repo-less files stay direct (#695)."""
+    mock_task.return_value = {
+        "sles/16.0/en-us": [
+            FileCheckResult("sles/16.0/en-us", "DC-a", "found", repo="gh://mock/repo", branch="main"),
+            FileCheckResult("sles/16.0/en-us", "DC-b", "error", repo="gh://mock/repo", branch="main"),
+            FileCheckResult("sles/16.0/en-us", "DC-prebuilt", "found", is_prebuilt=True),
+        ]
+    }
+
+    result = runner.invoke(check_files, ["--all"], obj=context_with_paths)
+
+    assert result.exit_code == 1
+    assert "gh://mock/repo/main" in result.output
+    assert "DC-a" in result.output
+    assert "DC-b" in result.output
+    assert "DC-prebuilt" in result.output

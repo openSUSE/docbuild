@@ -81,25 +81,41 @@ def check_files(  # noqa: C901
     total_errors = 0
     total_xrefs = 0
 
-    # Build the Rich UI output
+    # Build the Rich UI output:
+    #
+    #   PRODUCT/DOCSET/LANG
+    #   +-- REPO/BRANCH
+    #       +-- LIST OF DELIVERABLES
+    #
+    # Files without a repository (prebuilt, xrefs, skipped without a git
+    # remote) are listed directly under the doctype node.
     for doctype_str, files in results.items():
         if not files:
             continue
 
         tree = Tree(f"[bold]{doctype_str}[/bold]")
+        repo_nodes: dict[tuple[str, str], Tree] = {}
         for f in files:
             if f.status == "found":
-                tree.add(f"{f.dcfile} [success]✓ OK[/]")
+                line = f"{f.dcfile} [success]✓ OK[/]"
                 total_found += 1
             elif f.status == "skipped":
-                tree.add(f"{f.dcfile} [skipped]⏭️ (Skipped)[/]")
+                line = f"{f.dcfile} [skipped]⏭️ (Skipped)[/]"
                 total_skipped += 1
             elif f.status == "xref":
-                tree.add(f"{f.dcfile} [xref]🔗 (xref)[/]")
+                line = f"{f.dcfile} [xref]🔗 (xref)[/]"
                 total_xrefs += 1
             else:
-                tree.add(f"{f.dcfile} [error]🔴[/]")
+                line = f"{f.dcfile} [error]🔴[/]"
                 total_errors += 1
+
+            if f.repo and f.branch:
+                key = (f.repo, f.branch)
+                if key not in repo_nodes:
+                    repo_nodes[key] = tree.add(f"{f.repo}/{f.branch}")
+                repo_nodes[key].add(line)
+            else:
+                tree.add(line)
 
         console.print(tree)
 

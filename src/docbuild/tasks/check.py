@@ -1,7 +1,6 @@
 """Logic for checking DC file availability in remote repositories."""
 
 from collections.abc import Sequence
-import dataclasses
 from dataclasses import dataclass
 import logging
 from pathlib import Path
@@ -10,6 +9,7 @@ from typing import Literal
 from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
+from docbuild.models.lifecycle import LifecycleFlag
 from docbuild.tasks.metadata.deliverables import get_deliverable_from_doctype
 from docbuild.tasks.portal import parse_portal_config
 from docbuild.utils.git import ManagedGitRepo
@@ -25,6 +25,10 @@ class FileCheckResult:
     dcfile: str
     status: Literal["found", "skipped", "error", "xref"]
     is_prebuilt: bool = False
+    repo: str | None = None
+    """Repository the file was collected from (as configured), if any."""
+    branch: str | None = None
+    """Branch the file was collected from, if any."""
 
 
 def _safe_get(obj: object, attr_name: str, default: object | None = None) -> object | None:
@@ -59,9 +63,14 @@ async def check_repository_files(  # noqa: C901
     repo_queries = {}
 
     for dt in doctypes:
-        # Check string representation of lifecycle to safely handle Enums
-        if str(getattr(dt, "lifecycle", "unknown")) == "unknown":
-            dt = dataclasses.replace(dt, lifecycle="supported")
+        # No lifecycle requested means "unknown" (the Doctype default), but
+        # for a file check the common case is "supported" (see #695). Note
+        # that "unknown" stays intentional elsewhere: it means "any
+        # lifecycle" when matching deliverables (lifecycle_xpath_segment).
+        # The previous check compared str(LifecycleFlag) which is
+        # "LifecycleFlag.unknown", so it never matched.
+        if dt.lifecycle == LifecycleFlag.unknown:
+            dt = dt.model_copy(update={"lifecycle": LifecycleFlag.supported})
 
         # Extract the base doctype (e.g., 'sles/16.0@supported') by stripping the language tail
         dt_base = str(dt).rsplit('/', 1)[0]
@@ -160,7 +169,9 @@ async def check_repository_files(  # noqa: C901
             log.error("Repository inaccessible: %s", url)
             for _, group_key, _, display_name, is_default_lang in items:
                 status = "error" if is_default_lang else "skipped"
-                results[group_key].append(FileCheckResult(group_key, str(display_name), status))
+                results[group_key].append(
+                    FileCheckResult(group_key, str(display_name), status, repo=str(url), branch=str(branch))
+                )
             continue
 
         available_files = await repo_handler.ls_tree(branch)
@@ -177,6 +188,8 @@ async def check_repository_files(  # noqa: C901
             found = (check_path in available_files) or (str(target_dcfile) in available_files)
             status = "found" if found else ("error" if is_default_lang else "skipped")
 
-            results[group_key].append(FileCheckResult(group_key, str(display_name), status))
+            results[group_key].append(
+                FileCheckResult(group_key, str(display_name), status, repo=str(url), branch=str(branch))
+            )
 
     return results

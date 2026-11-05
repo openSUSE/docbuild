@@ -1,0 +1,3 @@
+``docbuild check files`` now groups deliverables under the repository and
+branch they were collected from, and falls back to the ``supported``
+lifecycle when none was requested instead of showing ``unknown``.
