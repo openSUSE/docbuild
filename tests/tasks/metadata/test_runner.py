@@ -368,6 +368,8 @@ class TestProcess:
         expected = ["2/4 Metadata Validation…"]
         if not skip_repo_update:
             expected.insert(0, "1/4 Clone repos…")
+        else:
+            expected.insert(0, "1/4 Clone repos… (skipped)")
         assert [stage.name for stage in manager.stages] == expected
         assert manager._active is None
 

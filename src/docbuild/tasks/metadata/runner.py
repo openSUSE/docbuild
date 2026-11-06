@@ -207,6 +207,7 @@ async def _process_single_deliverable(
 ) -> tuple[bool, Deliverable]:
     """Worker function to process a single deliverable and report to the live UI."""
     manager = get_live_manager()
+
     stage = manager._active if manager else None
     item_context = stage.item(deliverable.full_id) if stage else nullcontext()
 
@@ -250,8 +251,13 @@ async def execute_build_pipeline(
     exitfirst: bool,
 ) -> list[Deliverable]:
     """Phase 2: Build Task Pipeline (aiostream)."""
+    manager = get_live_manager()
+
     if skip_repo_update:
         log.info("Skipping repository updates as requested.")
+        if manager:
+            with manager.stage("1/4 Clone repos… (skipped)", total=0):
+                pass
     else:
         git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
         manager = get_live_manager()
