@@ -306,6 +306,95 @@ def test_read_and_project_json_invalid_schema(tmp_path, deliverable, caplog):
 
 
 @pytest.mark.parametrize(
+    ("treatment", "include_xref_description", "expected_description"),
+    [
+        (None, True, "Enterprise Linux<p>Version guide</p>"),
+        ("append", True, "Enterprise Linux<p>Version guide</p>"),
+        ("prepend", True, "<p>Version guide</p>Enterprise Linux"),
+        ("replace", True, "<p>Version guide</p>"),
+        (None, False, "Enterprise Linux"),
+    ],
+)
+def test_synthetic_docset_xref_description_treatment(
+    treatment: str | None,
+    include_xref_description: bool,
+    expected_description: str,
+) -> None:
+    """Use product title and xref description for synthetic docset links."""
+    xml_string = """
+    <docservconfig>
+        <product xml:id="sles">
+            <name>SUSE Linux Enterprise Server</name>
+            <descriptions>
+                <desc lang="en-us"><title>Enterprise Linux</title></desc>
+            </descriptions>
+            <docset xml:id="sles.16.1" path="16.1">
+                <name>16.1</name>
+                <resources>
+                    <locale lang="en-us">
+                        <deliverable type="xref">
+                            <xref linkend="sles.16.1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </docservconfig>
+    """
+    root = etree.fromstring(xml_string)
+    deliverable_node = root.find(".//deliverable")
+    assert deliverable_node is not None
+    xref_node = deliverable_node.find("xref")
+    assert xref_node is not None
+    if include_xref_description:
+        attributes = {"treatment": treatment} if treatment else {}
+        descriptions_node = etree.SubElement(
+            xref_node, "descriptions", **attributes
+        )
+        description_node = etree.SubElement(
+            descriptions_node, "desc", lang="en-us"
+        )
+        etree.SubElement(description_node, "p").text = "Version guide"
+
+    document = manifest_pkg.create_synthetic_document(Deliverable(deliverable_node))
+
+    assert document.docs[0].title == "16.1"
+    assert document.docs[0].description == expected_description
+
+
+def test_synthetic_document_falls_back_to_default_language_description() -> None:
+    """Use the default language when the referencing language is unavailable."""
+    xml_string = """
+    <docservconfig>
+        <product xml:id="sles">
+            <name>SUSE Linux Enterprise Server</name>
+            <descriptions>
+                <desc lang="fr-fr"><title>Description française</title></desc>
+                <desc lang="en-us"><title>English description</title></desc>
+            </descriptions>
+            <docset xml:id="sles.16.1" path="16.1">
+                <name>16.1</name>
+                <resources>
+                    <locale lang="de-de">
+                        <deliverable type="xref">
+                            <xref linkend="sles.16.1"/>
+                        </deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </docservconfig>
+    """
+    root = etree.fromstring(xml_string)
+    deliverable_node = root.find(".//deliverable")
+    assert deliverable_node is not None
+
+    document = manifest_pkg.create_synthetic_document(Deliverable(deliverable_node))
+
+    assert document.docs[0].description == "English description"
+
+
+@pytest.mark.parametrize(
     ("treatment", "docset_lang", "expected_lang", "expected_description"),
     [
         ("append", "en-us", "en-us", "<p>global</p><p>local</p>"),

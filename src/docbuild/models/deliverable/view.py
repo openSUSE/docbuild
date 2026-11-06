@@ -266,7 +266,46 @@ class DeliverableXMLView:
 
     def desc(self) -> Generator[etree._Element, None, None]:
         """Yield product ``<desc>`` elements."""
-        yield from self.product_node.xpath("descriptions/desc")
+        yield from self.product_node.findall("descriptions/desc")
+
+    def target_product_description_titles(self) -> Generator[tuple[LanguageCode, str], None, None]:
+        """Yield language/title pairs for descriptions on the xref's target product."""
+        target = self.final_target_node
+        if target is None:
+            return
+
+        if self.target_type == "product":
+            product = target
+        elif self.target_type == "docset":
+            product = target.getparent()
+        else:
+            return
+
+        if product is None:
+            return
+
+        for desc_node in product.findall("descriptions/desc"):
+            lang = desc_node.get("lang")
+            title = (desc_node.findtext("title") or "").strip()
+            if lang and title:
+                yield LanguageCode(language=lang), title
+
+    def xref_desc(self) -> Generator[etree._Element, None, None]:
+        """Yield description elements nested under this deliverable's xref."""
+        if self.xref_node is not None:
+            if (descriptions := self.xref_node.find("descriptions")) is not None:
+                yield from descriptions.findall("desc")
+
+    @cached_property
+    def xref_description_treatment(self) -> Literal["append", "prepend", "replace"]:
+        """Return the xref description treatment, defaulting to ``append``."""
+        descriptions = (
+            self.xref_node.find("descriptions") if self.xref_node is not None else None
+        )
+        treatment = descriptions.get("treatment") if descriptions is not None else None
+        if treatment in ("prepend", "replace"):
+            return treatment
+        return "append"
 
     # -- Location and repository
     def branch(self) -> str | None:
