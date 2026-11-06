@@ -237,7 +237,7 @@ async def _process_single_deliverable(
             return False, deliverable
 
 
-async def execute_build_pipeline(
+async def execute_build_pipeline(  # noqa: C901
     deliverables_to_build: list[Deliverable],
     repo_dir: Path,
     tmp_repo_dir: Path,
@@ -249,6 +249,7 @@ async def execute_build_pipeline(
     env_config_hash: str,
     max_workers: int,
     exitfirst: bool,
+    skip_metadata: bool = False,
 ) -> list[Deliverable]:
     """Phase 2: Build Task Pipeline (aiostream)."""
     manager = get_live_manager()
@@ -297,6 +298,13 @@ async def execute_build_pipeline(
     all_failed_deliverables: list[Deliverable] = []
 
     manager = get_live_manager()
+
+    if skip_metadata:
+        if manager:
+            with manager.stage("2/4 Metadata Validation… (skipped)", total=0):
+                pass
+        return []
+
     stage_context = (
         manager.stage(
             "2/4 Metadata Validation…", total=len(final_deliverables)
@@ -335,6 +343,7 @@ async def process(
     exitfirst: bool = False,
     skip_repo_update: bool = False,
     full_categories: bool = False,
+    skip_metadata: bool = False,
 ) -> int:
     """Asynchronous entry point for metadata retrieval."""
     stitchnode: etree._ElementTree = await parse_portal_config(
@@ -374,6 +383,7 @@ async def process(
         env_config_hash,
         max_workers,
         exitfirst,
+        skip_metadata=skip_metadata,
     )
 
     if exitfirst and all_failed_deliverables:
