@@ -345,6 +345,34 @@ class TestExecuteBuildPipeline:
 class TestProcess:
     """Tests for the main process() orchestration function."""
 
+    @pytest.mark.parametrize("skip_repo_update", [False, True])
+    async def test_live_stages_are_sequential(
+        self, runner_kwargs: dict[str, object], skip_repo_update: bool
+    ) -> None:
+        """Repository fetching must finish before the metadata stage starts."""
+        from docbuild.utils.display import LiveProgressManager
+
+        tree = etree.ElementTree(etree.Element("portal"))
+        manager = LiveProgressManager(disable=True)
+        with (
+            patch.object(runner_pkg, "get_live_manager", return_value=manager),
+            patch.object(runner_pkg, "parse_portal_config", new_callable=AsyncMock, return_value=tree),
+            patch.object(runner_pkg, "gather_build_tasks", return_value=[]),
+            patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
+            patch.object(runner_pkg, "store_productdocset_json"),
+            patch.object(runner_pkg, "generate_homepage"),
+        ):
+            result = await process(**runner_kwargs, skip_repo_update=skip_repo_update)
+
+        assert result == 0
+        expected = ["2/4 Metadata Validation…"]
+        if not skip_repo_update:
+            expected.insert(0, "1/4 Clone repos…")
+        else:
+            expected.insert(0, "1/4 Clone repos… (skipped)")
+        assert [stage.name for stage in manager.stages] == expected
+        assert manager._active is None
+
     @pytest.fixture
     def runner_kwargs(self, tmp_path: Path) -> dict[str, object]:
         return {

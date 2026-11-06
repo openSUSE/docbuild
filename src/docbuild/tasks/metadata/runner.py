@@ -2,6 +2,8 @@
 
 import asyncio
 from collections.abc import Sequence
+from contextlib import nullcontext
+from functools import partial
 import hashlib
 import logging
 from pathlib import Path
@@ -16,6 +18,7 @@ from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
 from docbuild.tasks.portal import parse_portal_config
+from docbuild.utils.display import get_live_manager
 from docbuild.utils.git import ManagedGitRepo
 
 from .daps import process_deliverable
@@ -190,7 +193,51 @@ async def resolve_translation_metadata(
     return final_deliverables
 
 
-async def execute_build_pipeline(
+async def _process_single_deliverable(
+    deliverable: Deliverable,
+    *args: object,
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
+    prebuilt_dir: Path,
+    dapsmetatmpl: str,
+    daps_list_srcfiles_tmpl: str,
+    skip_repo_update: bool,
+    env_config_hash: str,
+) -> tuple[bool, Deliverable]:
+    """Worker function to process a single deliverable and report to the live UI."""
+    manager = get_live_manager()
+
+    stage = manager._active if manager else None
+    item_context = stage.item(deliverable.full_id) if stage else nullcontext()
+
+    with item_context as item:
+        try:
+            if current_task := asyncio.current_task():
+                current_task.set_name(f"metadata:{deliverable.full_id}")
+
+            res = await process_deliverable(
+                deliverable,
+                repo_dir,
+                tmp_repo_dir,
+                meta_cache_dir,
+                prebuilt_dir=prebuilt_dir,
+                dapstmpl=dapsmetatmpl,
+                daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+                skip_repo_update=skip_repo_update,
+                env_config_hash=env_config_hash,
+            )
+            if item is not None and not res[0]:
+                item.fail()
+            return res
+        except Exception as e:
+            log.error("Error in task for %s: %s", deliverable.full_id, e)
+            if item is not None:
+                item.fail()
+            return False, deliverable
+
+
+async def execute_build_pipeline(  # noqa: C901
     deliverables_to_build: list[Deliverable],
     repo_dir: Path,
     tmp_repo_dir: Path,
@@ -202,57 +249,80 @@ async def execute_build_pipeline(
     env_config_hash: str,
     max_workers: int,
     exitfirst: bool,
+    skip_metadata: bool = False,
 ) -> list[Deliverable]:
     """Phase 2: Build Task Pipeline (aiostream)."""
+    manager = get_live_manager()
+
     if skip_repo_update:
         log.info("Skipping repository updates as requested.")
+        if manager:
+            with manager.stage("1/4 Clone repos… (skipped)", total=0):
+                pass
     else:
         git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
-        await update_repositories(git_deliverables, repo_dir)
+        manager = get_live_manager()
+        unique_repos = {d.git.url for d in git_deliverables if d.git and d.git.url}
+        repo_stage = manager.stage("1/4 Clone repos…", total=len(unique_repos)) if manager else nullcontext()
+        with repo_stage as r_stage:
+            try:
+                await update_repositories(git_deliverables, repo_dir)
+            except Exception as e:
+                if r_stage:
+                    r_stage.fail()
+                log.error("Failed to update repositories: %s", e)
+                if exitfirst:
+                    return deliverables_to_build # Return all as failed to abort
 
     # --- Translation Metadata Git Checks ---
     final_deliverables = await resolve_translation_metadata(deliverables_to_build, repo_dir)
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(final_deliverables))
 
-    async def process_deliverable_wrapper(
-        deliverable: Deliverable, *args: object
-    ) -> tuple[bool, Deliverable]:
-        try:
-            if current_task := asyncio.current_task():
-                current_task.set_name(f"metadata:{deliverable.full_id}")
-
-            return await process_deliverable(
-                deliverable,
-                repo_dir,
-                tmp_repo_dir,
-                meta_cache_dir,
-                prebuilt_dir=prebuilt_dir,
-                dapstmpl=dapsmetatmpl,
-                daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
-                skip_repo_update=skip_repo_update,
-                env_config_hash=env_config_hash,
-            )
-        except Exception as e:
-            log.error("Error in task for %s: %s", deliverable.full_id, e)
-            return False, deliverable
+    worker = partial(
+        _process_single_deliverable,
+        repo_dir=repo_dir,
+        tmp_repo_dir=tmp_repo_dir,
+        meta_cache_dir=meta_cache_dir,
+        prebuilt_dir=prebuilt_dir,
+        dapsmetatmpl=dapsmetatmpl,
+        daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
+        skip_repo_update=skip_repo_update,
+        env_config_hash=env_config_hash,
+    )
 
     pipeline = stream.iterate(final_deliverables) | pipe.map(
-        process_deliverable_wrapper, task_limit=worker_limit, ordered=True
+        worker, task_limit=worker_limit, ordered=True
     )
 
     all_failed_deliverables: list[Deliverable] = []
 
-    try:
-        # Evaluate the pipeline and collect results
-        async with pipeline.stream() as streamer:
-            async for success, deliverable in streamer:
-                if not success:
-                    all_failed_deliverables.append(deliverable)
-                    if exitfirst:
-                        break
-    except Exception as e:
-        log.error("Task failed unexpectedly: %s", e)
+    manager = get_live_manager()
+
+    if skip_metadata:
+        if manager:
+            with manager.stage("2/4 Metadata Validation… (skipped)", total=0):
+                pass
+        return []
+
+    stage_context = (
+        manager.stage(
+            "2/4 Metadata Validation…", total=len(final_deliverables)
+        )
+        if manager is not None
+        else nullcontext()
+    )
+    with stage_context:
+        try:
+            # Evaluate the pipeline and collect results
+            async with pipeline.stream() as streamer:
+                async for success, deliverable in streamer:
+                    if not success:
+                        all_failed_deliverables.append(deliverable)
+                        if exitfirst:
+                            break
+        except Exception as e:
+            log.error("Task failed unexpectedly: %s", e)
 
     return all_failed_deliverables
 
@@ -273,6 +343,7 @@ async def process(
     exitfirst: bool = False,
     skip_repo_update: bool = False,
     full_categories: bool = False,
+    skip_metadata: bool = False,
 ) -> int:
     """Asynchronous entry point for metadata retrieval."""
     stitchnode: etree._ElementTree = await parse_portal_config(
@@ -312,6 +383,7 @@ async def process(
         env_config_hash,
         max_workers,
         exitfirst,
+        skip_metadata=skip_metadata,
     )
 
     if exitfirst and all_failed_deliverables:
