@@ -59,7 +59,7 @@ class Product(BaseProductEnum):
     sle_rt = "SUSE Linux Enterprise Real Time"
     sles_sap = "SUSE Linux Enterprise Server for SAP applications"
     sles = "SUSE Linux Enterprise Server"
-    sles4nvidia = "SUSE Linux Enterprise Server for NVIDIA"
+    sles_nvidia = "SUSE Linux Enterprise Server for NVIDIA"
     sle_vmdp = "SUSE Linux Enterprise Virtual Machine Driver Pack"
     smart = "SUSE Smart Docs"
     smt = "SUSE Linux Enterprise Subscription Management Tool"
