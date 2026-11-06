@@ -1072,7 +1072,8 @@ div {
         ds.gated.attr?,
         ds.deliverable.xref.type.attr,
         ds.sitemap.attr?,
-        ds.id.attr?
+        ds.id.attr?,
+        ds.category.attr?
       ),
       #
       ds.subdir?,
