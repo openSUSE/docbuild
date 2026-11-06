@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.xml.semantic_xpath &#8212; Docbuild Documentation 0.29.1.dev5+g81a803ee1.d20261105</title>
+    <title>docbuild.config.xml.semantic_xpath &#8212; Docbuild Documentation 0.29.1.dev11+ga4f47e1d7.d20261106</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=d7ade995"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=d0d79778"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -676,19 +676,19 @@ for ambiguous siblings.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.xpath_literal" title="docbuild.config.xml.semantic_xpath.xpath_literal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpath_literal</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.xpath_literal" title="docbuild.config.xml.semantic_xpath.xpath_literal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpath_literal</span></code></a>(value) → str</p></td>
 <td><p>Return <code class="docutils literal notranslate"><span class="pre">value</span></code> as a safely escaped XPath string literal.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.position_among_same_tag_siblings" title="docbuild.config.xml.semantic_xpath.position_among_same_tag_siblings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position_among_same_tag_siblings</span></code></a>(→ int)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.position_among_same_tag_siblings" title="docbuild.config.xml.semantic_xpath.position_among_same_tag_siblings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">position_among_same_tag_siblings</span></code></a>(node) → int</p></td>
 <td><p>Return the 1-based position among same-tag siblings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.is_unique_among_same_tag_siblings" title="docbuild.config.xml.semantic_xpath.is_unique_among_same_tag_siblings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_among_same_tag_siblings</span></code></a>(→ bool)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.is_unique_among_same_tag_siblings" title="docbuild.config.xml.semantic_xpath.is_unique_among_same_tag_siblings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unique_among_same_tag_siblings</span></code></a>(node, attr, value) → bool</p></td>
 <td><p>Return whether <code class="docutils literal notranslate"><span class="pre">attr=value</span></code> uniquely identifies <code class="docutils literal notranslate"><span class="pre">node</span></code> among siblings.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.preferred_predicate_attributes" title="docbuild.config.xml.semantic_xpath.preferred_predicate_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preferred_predicate_attributes</span></code></a>(→ tuple[str, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.preferred_predicate_attributes" title="docbuild.config.xml.semantic_xpath.preferred_predicate_attributes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">preferred_predicate_attributes</span></code></a>(node_name) → tuple[str, ...]</p></td>
 <td><p>Return preferred attribute keys for semantic predicates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.semantic_xpath" title="docbuild.config.xml.semantic_xpath.semantic_xpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semantic_xpath</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.semantic_xpath.semantic_xpath" title="docbuild.config.xml.semantic_xpath.semantic_xpath"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semantic_xpath</span></code></a>(node) → str</p></td>
 <td><p>Build a readable absolute XPath for <code class="docutils literal notranslate"><span class="pre">node</span></code>.</p></td>
 </tr>
 </tbody>

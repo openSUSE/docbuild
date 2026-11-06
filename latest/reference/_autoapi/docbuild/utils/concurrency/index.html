@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.concurrency &#8212; Docbuild Documentation 0.29.1.dev5+g81a803ee1.d20261105</title>
+    <title>docbuild.utils.concurrency &#8212; Docbuild Documentation 0.29.1.dev11+ga4f47e1d7.d20261106</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=d7ade995"></script>
+    <script src="../../../../../_static/documentation_options.js?v=d0d79778"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -704,20 +704,17 @@ Results are yielded as workers complete, so result order is not guaranteed.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.producer" title="docbuild.utils.concurrency.producer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">producer</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.producer" title="docbuild.utils.concurrency.producer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">producer</span></code></a>(items, input_queue, num_workers) → None</p></td>
 <td><p>Feed items into the input queue and signal workers when finished.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.worker" title="docbuild.utils.concurrency.worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">worker</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.worker" title="docbuild.utils.concurrency.worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">worker</span></code></a>(worker_fn, input_queue, result_queue) → None</p></td>
 <td><p>Process items from the input queue and place results in the result queue.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.run_all" title="docbuild.utils.concurrency.run_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_all</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.run_all" title="docbuild.utils.concurrency.run_all"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_all</span></code></a>(items, worker_fn, input_queue, result_queue, ...) → None</p></td>
 <td><p>Run the producer and workers as a coordinated task group.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.run_parallel" title="docbuild.utils.concurrency.run_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_parallel</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.run_parallel" title="docbuild.utils.concurrency.run_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_parallel</span></code></a>(items, worker_fn, limit, *worker_args[, name]) → collections.abc.AsyncIterator[R | TaskFailedError[T]]</p></td>
 <td><p>Process items concurrently with bounded parallelism.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.concurrency.sample_worker" title="docbuild.utils.concurrency.sample_worker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_worker</span></code></a>(→ int)</p></td>
-<td><p>Process a number after simulating an asynchronous I/O operation.</p></td>
 </tr>
 </tbody>
 </table>
@@ -876,26 +873,6 @@ original exceptions being raised.</p>
 </div>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="docbuild.utils.concurrency.sample_worker">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.utils.concurrency.</span></span><span class="sig-name descname"><span class="pre">sample_worker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.utils.concurrency.sample_worker" title="Link to this definition">#</a></dt>
-<dd><p>Process a number after simulating an asynchronous I/O operation.</p>
-<p>The example intentionally raises an exception for selected input
-values to demonstrate how <a class="reference internal" href="#docbuild.utils.concurrency.run_parallel" title="docbuild.utils.concurrency.run_parallel"><code class="xref py py-func docutils literal notranslate"><span class="pre">run_parallel()</span></code></a> reports failures.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num</strong> – Number to process.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The input number multiplied by two.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – When <code class="docutils literal notranslate"><span class="pre">num</span></code> is one of the values configured
-to simulate a failure.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </section>
 
@@ -954,7 +931,6 @@ to simulate a failure.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.concurrency.worker"><code class="docutils literal notranslate"><span class="pre">worker()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.concurrency.run_all"><code class="docutils literal notranslate"><span class="pre">run_all()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.concurrency.run_parallel"><code class="docutils literal notranslate"><span class="pre">run_parallel()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.concurrency.sample_worker"><code class="docutils literal notranslate"><span class="pre">sample_worker()</span></code></a></li>
 </ul>
 </li>
 </ul>

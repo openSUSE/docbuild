@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.completion &#8212; Docbuild Documentation 0.29.1.dev5+g81a803ee1.d20261105</title>
+    <title>docbuild.cli.completion &#8212; Docbuild Documentation 0.29.1.dev11+ga4f47e1d7.d20261106</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=d7ade995"></script>
+    <script src="../../../../../_static/documentation_options.js?v=d0d79778"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -680,13 +680,13 @@ configuration falls back to the wildcard <code class="docutils literal notransla
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.completion.collect_docsets" title="docbuild.cli.completion.collect_docsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collect_docsets</span></code></a>(→ set[str])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.completion.collect_docsets" title="docbuild.cli.completion.collect_docsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collect_docsets</span></code></a>(tree, product) → set[str]</p></td>
 <td><p>Return all docset paths of a product found in the portal config.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.completion.load_portal_tree" title="docbuild.cli.completion.load_portal_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_portal_tree</span></code></a>(→ lxml.etree._ElementTree | None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.completion.load_portal_tree" title="docbuild.cli.completion.load_portal_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_portal_tree</span></code></a>(ctx) → lxml.etree._ElementTree | None</p></td>
 <td><p>Load the portal config referenced by the environment config.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.completion.complete_doctypes" title="docbuild.cli.completion.complete_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_doctypes</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.completion.complete_doctypes" title="docbuild.cli.completion.complete_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_doctypes</span></code></a>(ctx, param, incomplete) → list[click.shell_completion.CompletionItem]</p></td>
 <td><p>Complete a doctype (<code class="docutils literal notranslate"><span class="pre">PRODUCT/DOCSETS/LANGS</span></code>) segment by segment.</p></td>
 </tr>
 </tbody>
