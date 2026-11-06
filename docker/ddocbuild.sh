@@ -6,7 +6,7 @@
 # use --network=host only for trusted containers.
 ddocbuild() {
   local cpu_limit=${DDOCBUILD_CPUS:-$(nproc)}
-  local APP_HOME="/home/docserv"
+  local app_home="/home/docserv"
   local mounts=(
     --volume /var/cache/docbuild/:/var/cache/docbuild/
     --volume "${XDG_CONFIG_HOME:-$HOME/.config}/docbuild:${app_home}/.config/docbuild:ro"
