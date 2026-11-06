@@ -14,6 +14,7 @@ ARG UV_VERSION=0.13.5
 # ------- Stage 1: Shared operating system and documentation tools -------
 # Sharing the base keeps the builder and runtime Python libraries compatible.
 FROM registry.opensuse.org/opensuse/leap:${OPENSUSE_VERSION} AS base
+ARG OPENSUSE_VERSION
 
 # Documentation:Tools supplies DAPS 4 and SUSE's DocBook stylesheets.
 RUN zypper --non-interactive addrepo \
