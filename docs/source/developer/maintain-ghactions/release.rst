@@ -45,7 +45,7 @@ expired, revoked, or you need to update it for any reason, follow these steps:
 #. Enter the name ``PAT_DOCBUILD_TOKEN_FOR_TAGS``.
 #. Select an expiration date for the token. It's recommended to set an
    expiration date to enhance security.
-#. Select the scopes ``repo``and ``workflow`` to allow the token to
+#. Select the scopes ``repo`` and ``workflow`` to allow the token to
    push tags and trigger workflows.
 #. Click ::guilabel:`Generate token`.
 #. Copy the generated token and store it securely.
@@ -57,8 +57,7 @@ Updating the PAT in GitHub Secrets
 ----------------------------------
 
 #. Go to the https://github.com/openSUSE/docbuild/settings page of the repository.
-#. In the left sidebar, click :guilabel:`Secrets and variables` >
-    :guilabel:`Actions`.
+#. In the left sidebar, click :guilabel:`Secrets and variables` > :guilabel:`Actions`.
 #. Click the :guilabel:`New repository secret` button.
 #. Enter the name ``PAT_DOCBUILD_TOKEN_FOR_TAGS`` and paste the copied token.
 #. Finish with :guilabel:`Add secret` to save the new token in GitHub Secrets.
