@@ -244,6 +244,26 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:method:: target_product_description_titles() -> collections.abc.Generator[tuple[docbuild.models.language.LanguageCode, str], None, None]
+
+      Yield language/title pairs for descriptions on the xref's target product.
+
+
+
+   .. py:method:: xref_desc() -> collections.abc.Generator[lxml.etree._Element, None, None]
+
+      Yield description elements nested under this deliverable's xref.
+
+
+
+   .. py:property:: xref_description_treatment
+      :type: Literal['append', 'prepend', 'replace']
+
+
+      Return the xref description treatment, defaulting to ``append``.
+
+
+
    .. py:method:: branch() -> str | None
 
       Return branch from current language or ``None`` if missing.
