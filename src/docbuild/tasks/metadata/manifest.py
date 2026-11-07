@@ -11,6 +11,7 @@ from lxml import etree  # type: ignore
 from pydantic import ValidationError
 
 from ...cli.console import console as stdout
+from ...constants import DEFAULT_LANG
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
@@ -31,9 +32,35 @@ log = logging.getLogger(__name__)
 def create_synthetic_document(d: Deliverable) -> Document:
     """Phase 3: Create a synthetic Navigational Link for docset/product xrefs."""
     url = d.xml.target_url or "/"
+    product_descriptions = [
+        Description(lang=lang, description=title)
+        for lang, title in d.xml.target_product_description_titles()
+    ]
+
+    xref_node = d.xml.xref_node
+    xref_descriptions = (
+        list(Description.from_xml_node(xref_node)) if xref_node is not None else []
+    )
+    for description, desc_node in zip(
+        xref_descriptions, d.xml.xref_desc(), strict=True
+    ):
+        if not description.description:
+            description.description = (desc_node.findtext("title") or "").strip()
+
+    descriptions = merge_descriptions_with_treatment(
+        product_descriptions,
+        xref_descriptions,
+        treatment=d.xml.xref_description_treatment,
+    )
+    description_by_lang = {str(desc.lang): desc.description for desc in descriptions}
+    description = description_by_lang.get(
+        str(d.xml.lang), description_by_lang.get(DEFAULT_LANG)
+    )
+
     sdoc = SingleDocument(
         lang=str(d.xml.lang),
         title=d.xml.target_title.strip(),
+        description=description or "",
         format=DocumentFormat(html=url),
         dcfile=f"xref:{url}",  # avoids collision in merge_documents_by_dcfile
     )

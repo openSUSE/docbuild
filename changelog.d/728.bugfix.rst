@@ -1,0 +1,1 @@
+Fixed xref deliverable links to include localized descriptions and honor the xref description treatment.
