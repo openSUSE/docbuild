@@ -597,6 +597,11 @@ def test_store_productdocset_json_filters_categories(
     <docservconfig>
       <categories>
         <category lang="en-us">
+            <language xml:id="cat.first">
+                <title>First</title>
+            </language>
+        </category>
+        <category lang="en-us">
             <language xml:id="cat.referenced">
                 <title>Referenced</title>
             </language>
@@ -610,12 +615,24 @@ def test_store_productdocset_json_filters_categories(
       <product xml:id="sles">
         <name>SUSE Linux Enterprise Server</name>
         <acronym>SLES</acronym>
+        <categories>
+          <category lang="en-us">
+            <language xml:id="cat.sles.local">
+              <title>Local</title>
+            </language>
+          </category>
+        </categories>
         <docset xml:id="sles.15-sp7" path="15-SP7">
           <resources>
              <git remote="https://github.com/SUSE/doc-sle.git"/>
              <locale lang="en-us">
                 <branch>main</branch>
                 <subdir>l10n/sles/en-us</subdir>
+                <deliverable>
+                    <dc file="DC-SLES-local">
+                        <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                </deliverable>
                 <deliverable>
                     <dc file="DC-SLES-deployment">
                         <format html="1" pdf="1" single-html="0"/>
@@ -648,6 +665,21 @@ def test_store_productdocset_json_filters_categories(
     }
     meta_file.write_text(json.dumps(doc_content), encoding="utf-8")
 
+    # A document referencing a local (product-level) category
+    local_doc_content = {
+        "docs": [
+            {
+                "title": "Doc2",
+                "dcfile": "DC-SLES-local",
+                "lang": "en-us",
+            }
+        ],
+        "category": "cat.sles.local",
+    }
+    (deliverable_path / "DC-SLES-local").write_text(
+        json.dumps(local_doc_content), encoding="utf-8"
+    )
+
     # 1. Test default behavior (filtered)
     store_productdocset_json(
         doctypes=[doctype],
@@ -662,8 +694,12 @@ def test_store_productdocset_json_filters_categories(
     merged = json.loads(out_file.read_text(encoding="utf-8"))
 
     assert "categories" in merged
-    assert len(merged["categories"]) == 1
-    assert merged["categories"][0]["categoryId"] == "cat.referenced"
+    # cat.first is filtered out, so ranks must not keep its gap; the local
+    # category is appended after the global one.
+    assert [(c["categoryId"], c["rank"]) for c in merged["categories"]] == [
+        ("cat.referenced", 10),
+        ("cat.sles.local", 20),
+    ]
 
     # 2. Test full_categories=True behavior
     store_productdocset_json(
@@ -678,6 +714,9 @@ def test_store_productdocset_json_filters_categories(
     merged_full = json.loads(out_file.read_text(encoding="utf-8"))
 
     assert "categories" in merged_full
-    assert len(merged_full["categories"]) == 2
-    category_ids = {c["categoryId"] for c in merged_full["categories"]}
-    assert category_ids == {"cat.referenced", "cat.unreferenced"}
+    assert [(c["categoryId"], c["rank"]) for c in merged_full["categories"]] == [
+        ("cat.first", 10),
+        ("cat.referenced", 20),
+        ("cat.unreferenced", 30),
+        ("cat.sles.local", 40),
+    ]

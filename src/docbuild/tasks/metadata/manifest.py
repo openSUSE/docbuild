@@ -347,6 +347,11 @@ def store_productdocset_json(
             categories = [
                 cat for cat in all_categories if cat.id in referenced_category_ids
             ]
+
+        # Re-number without gaps, in steps of 10
+        for idx, cat in enumerate(categories, start=1):
+            cat.rank = idx * 10
+
         configured_languages = configured_languages_from_docset(docsetnode)
         archives = [
             Archive(lang=lang, product=product_id, docset=docset_id)
