@@ -11,6 +11,7 @@ from docbuild.tasks.check import check_repository_files
 def mock_deliverable():
     mock_deli = MagicMock()
     mock_deli.git.return_value.url = "gh://mock/repo"
+    mock_deli.git.return_value.surl = "gh://mock/repo@main"
     mock_deli.branch.return_value = "main"
     mock_deli.subdir.return_value = "."
     mock_deli.lang_is_default.return_value = True
@@ -49,7 +50,9 @@ async def test_check_repository_files_all_found(
     repo_root = tmp_path / "repos"
     prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+    result = await check_repository_files(
+        main_portal_config, repo_root, prebuilt_dir, doctypes=None
+    )
     assert any(r.status == "found" for files in result.values() for r in files)
 
 
@@ -74,7 +77,9 @@ async def test_check_repository_files_missing(
     repo_root = tmp_path / "repos"
     prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+    result = await check_repository_files(
+        main_portal_config, repo_root, prebuilt_dir, doctypes=None
+    )
     assert any(r.status == "error" for files in result.values() for r in files)
 
 
@@ -98,7 +103,9 @@ async def test_process_git_failure(
     repo_root = tmp_path / "repos"
     prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+    result = await check_repository_files(
+        main_portal_config, repo_root, prebuilt_dir, doctypes=None
+    )
     assert any(r.status == "error" for files in result.values() for r in files)
 
 
@@ -133,14 +140,18 @@ async def test_check_repository_files_skips_deliverables_without_git(
     repo_root = tmp_path / "repos"
     prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+    result = await check_repository_files(
+        main_portal_config, repo_root, prebuilt_dir, doctypes=None
+    )
     assert any(r.status == "skipped" for files in result.values() for r in files)
 
 
 @pytest.mark.asyncio
 @patch.object(check, "parse_portal_config", new_callable=AsyncMock)
 @patch.object(check, "get_deliverable_from_doctype")
-async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_config, tmp_path):
+async def test_process_no_deliverables_found(
+    mock_get_deli, mock_parse_portal_config, tmp_path
+):
     """Test path where stitch tree returns no deliverables."""
     mock_parse_portal_config.return_value = MagicMock()
     mock_get_deli.return_value = []  # No deliverables
@@ -150,7 +161,9 @@ async def test_process_no_deliverables_found(mock_get_deli, mock_parse_portal_co
     repo_root = tmp_path / "repos"
     prebuilt_dir = tmp_path / "prebuilt"
 
-    result = await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+    result = await check_repository_files(
+        main_portal_config, repo_root, prebuilt_dir, doctypes=None
+    )
     assert not any(result.values())
 
 
@@ -163,7 +176,9 @@ async def test_process_no_xml_files(mock_parse_portal_config, tmp_path):
     prebuilt_dir = tmp_path / "prebuilt"
 
     with pytest.raises(FileNotFoundError):
-        await check_repository_files(main_portal_config, repo_root, prebuilt_dir, doctypes=None)
+        await check_repository_files(
+            main_portal_config, repo_root, prebuilt_dir, doctypes=None
+        )
 
 
 @pytest.mark.asyncio
@@ -192,3 +207,38 @@ async def test_check_repository_files_with_explicit_doctypes(
         main_portal_config, tmp_path / "repos", prebuilt_dir, doctypes=explicit_doctypes
     )
     assert any(r.status == "found" for files in result.values() for r in files)
+
+
+@pytest.mark.asyncio
+@patch.object(check, "parse_portal_config", new_callable=AsyncMock)
+@patch.object(check, "get_deliverable_from_doctype")
+@patch.object(check, "ManagedGitRepo")
+async def test_check_files_repo_branch_and_supported_fallback(
+    mock_repo_class, mock_get_deli, mock_parse_portal_config, tmp_path, mock_deliverable
+):
+    """Unknown lifecycle falls back to supported and results carry repo/branch (#695)."""
+    mock_parse_portal_config.return_value = MagicMock()
+    mock_get_deli.return_value = [mock_deliverable]
+    mock_deliverable.xml.return_value.lang = "en-us"
+
+    mock_repo = AsyncMock()
+    mock_repo.clone_bare.return_value = True
+    mock_repo.ls_tree.return_value = ["README.md"]
+    mock_repo_class.return_value = mock_repo
+
+    main_portal_config = tmp_path / "config.xml"
+    main_portal_config.write_text("<xml/>")
+
+    # No lifecycle requested -> Doctype defaults to "unknown"
+    result = await check_repository_files(
+        main_portal_config,
+        tmp_path / "repos",
+        tmp_path / "prebuilt",
+        doctypes=[Doctype.from_str("sles/16.0/en-us")],
+    )
+
+    assert "sles/16.0@supported/en-us" in result
+    files = result["sles/16.0@supported/en-us"]
+    assert files[0].status == "found"
+    assert files[0].repo == "gh://mock/repo"
+    assert files[0].branch == "main"
