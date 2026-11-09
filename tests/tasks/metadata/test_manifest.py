@@ -628,7 +628,7 @@ def test_store_productdocset_json_filters_categories(
              <locale lang="en-us">
                 <branch>main</branch>
                 <subdir>l10n/sles/en-us</subdir>
-                <deliverable>
+                <deliverable type="dc" category="cat.sles.local">
                     <dc file="DC-SLES-local">
                         <format html="1" pdf="1" single-html="0"/>
                     </dc>
