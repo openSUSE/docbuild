@@ -1,11 +1,85 @@
+import os
 from pathlib import Path
 import threading
 from unittest.mock import patch
 
+from lxml import etree
 import pytest
 
 from docbuild.tasks import sitemap
 from docbuild.tasks.sitemap import generate_sitemap
+
+
+@pytest.fixture
+def published_html(tmp_path: Path) -> Path:
+    """Create a published tree with nested HTML and unrelated assets."""
+    for name in (
+        "en-us/sles/15/html/guide/index.html",
+        "en-us/sles/15/html/guide/chapter.html",
+        "en-us/sles/15/single-html/book.html",
+        "de-de/sles/15/html/guide/index.html",
+        "en-us/404.html",
+        "en-us/500.html",
+        "en-us/sles/15/book.pdf",
+        "en-us/sles/15/style.css",
+        "en-us/sles/15/upper.HTML",
+        "index.html",
+    ):
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            "<!doctype html><title>Published fixture</title>", encoding="utf-8"
+        )
+        os.utime(path, (1704067200, 1704067200))  # 2024-01-01 UTC
+    (tmp_path / "en-us/empty").mkdir()
+    return tmp_path
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("language_root", [False, True])
+async def test_nested_published_html(published_html: Path, language_root: bool) -> None:
+    """Only eligible English HTML is indexed, with or without progress."""
+    target = published_html / "en-us" if language_root else published_html
+    output = await generate_sitemap(target, "https://docs.test.com")
+    expected = output.read_bytes()
+    updates = []
+    await generate_sitemap(
+        target, "https://docs.test.com", on_progress=lambda *args: updates.append(args)
+    )
+    assert output.read_bytes() == expected
+    tree = etree.fromstring(expected)
+    ns = {"s": sitemap.SITEMAP_NS}
+    assert set(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == {
+        "https://docs.test.com/sles/15/html/guide/index.html",
+        "https://docs.test.com/sles/15/html/guide/chapter.html",
+        "https://docs.test.com/sles/15/single-html/book.html",
+    }
+    assert tree.xpath("s:url/s:lastmod/text()", namespaces=ns) == ["2024-01-01"] * 3
+    assert (
+        "Scanning HTML files",
+        published_html / "en-us/sles/15/html/guide",
+    ) in updates
+
+
+@pytest.mark.asyncio
+async def test_empty_english_directory(tmp_path: Path) -> None:
+    """The presence of en-us alone does not create sitemap entries."""
+    (tmp_path / "en-us").mkdir()
+    output = await generate_sitemap(tmp_path, "https://docs.test.com")
+    assert len(etree.parse(output).getroot()) == 0
+
+
+@pytest.mark.asyncio
+async def test_html_directory_symlink(tmp_path: Path) -> None:
+    """Directory symlinks are not traversed by the existing HTML discovery."""
+    target = tmp_path / "target"
+    (target / "en-us").mkdir(parents=True)
+    prebuilt = tmp_path / "prebuilt"
+    prebuilt.mkdir()
+    (prebuilt / "index.html").write_text("<title>Prebuilt</title>", encoding="utf-8")
+    (target / "en-us/guide").symlink_to(prebuilt, target_is_directory=True)
+    output = await generate_sitemap(target, "https://docs.test.com")
+    assert len(etree.parse(output).getroot()) == 0
 
 
 @pytest.mark.asyncio

@@ -12,6 +12,7 @@ import pytest
 from rich.text import Text
 
 from docbuild.cli.cmd_build import cmd_sitemap
+import docbuild.cli.cmd_cli as cmd_cli
 from docbuild.cli.context import DocBuildContext
 from docbuild.tasks import sitemap as sitemap_tasks
 
@@ -24,6 +25,7 @@ from docbuild.tasks import sitemap as sitemap_tasks
         (True, True, 0),
         (True, False, 1),
         (True, False, 2),
+        (True, False, 3),
     ],
 )
 async def test_progress_disabled(tmp_path, terminal, dumb, verbose):
@@ -129,6 +131,73 @@ def test_sitemap_command_forwards_configuration(tmp_path):
     assert result.exit_code == 0, result.output
     generate.assert_awaited_once_with(tmp_path, "https://docs.test.com", verbose=2)
     assert "Generated sitemap at" in result.output
+
+
+@pytest.mark.parametrize("override", [False, True])
+def test_sitemap_resolves_target_config(tmp_path, monkeypatch, override):
+    """Explicit config selects the target, and --set-env takes precedence."""
+    configured_target = tmp_path / "configured-target"
+    override_target = tmp_path / "override-target"
+    configured_target.mkdir()
+    override_target.mkdir()
+    env_file = tmp_path / "env.toml"
+    env_file.write_text(
+        "[general]\ncanonical_url_domain = 'https://docs.test.com/'\n"
+        f"[paths.target]\ntarget_base_dir = '{configured_target.as_posix()}'\n",
+        encoding="utf-8",
+    )
+    # Model validation creates writable paths. Keep every such path local to
+    # this test, and avoid application logging and PID-lock side effects.
+    paths = {
+        name: str(tmp_path / name)
+        for name in (
+            "repo_dir",
+            "tmp_repo_dir",
+            "base_cache_dir",
+            "base_server_cache_dir",
+            "meta_cache_dir",
+            "json_cache_dir",
+            "runtime_base_dir",
+            "lock_dir",
+        )
+    }
+    paths["tmp"] = {
+        name: str(tmp_path / name)
+        for name in (
+            "tmp_base_dir",
+            "tmp_dir",
+            "tmp_deliverable_dir",
+            "tmp_metadata_dir",
+            "tmp_build_base_dir",
+            "tmp_out_dir",
+            "log_dir",
+        )
+    }
+    monkeypatch.setattr(cmd_cli, "DEFAULT_ENV_CONFIG", {"paths": paths})
+    monkeypatch.setattr(cmd_cli, "CONFIG_PATHS", (tmp_path / "discovery",))
+    args = ["-vvv", "--env-config", str(env_file)]
+    if override:
+        args += ["--set-env", f"paths.target.target_base_dir={override_target}"]
+    context = DocBuildContext()
+    with (
+        patch.object(cmd_cli, "load_app_config"),
+        patch.object(cmd_cli, "setup_logging_from_context"),
+        patch.object(cmd_cli, "PidFileLock"),
+        patch.object(
+            cmd_sitemap, "generate_sitemap_with_progress", new_callable=AsyncMock
+        ) as generate,
+    ):
+        result = CliRunner().invoke(
+            cmd_cli.cli, [*args, "build", "sitemap"], obj=context
+        )
+    assert result.exit_code == 0, result.output
+    assert context.envconfigfiles == (env_file,)
+    assert not context.envconfig_from_defaults
+    generate.assert_awaited_once_with(
+        override_target if override else configured_target,
+        "https://docs.test.com/",
+        verbose=3,
+    )
 
 
 @pytest.mark.asyncio
