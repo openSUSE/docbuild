@@ -1,7 +1,7 @@
 """Task module for generating a sitemap.xml."""
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from datetime import UTC, datetime
 from functools import partial
 import logging
@@ -26,6 +26,34 @@ def _is_ignored(path: Path) -> bool:
     return False
 
 
+def iter_sitemap_html(target_dir: Path) -> Iterator[Path]:
+    """Discover HTML, including an explicitly linked default-language root.
+
+    :param target_dir: Published documentation root.
+    :yields: Logical paths beneath the published root, without resolving URLs.
+    """
+    yield from target_dir.rglob("*.html")
+
+    language_dir = target_dir / DEFAULT_LANG
+    if not language_dir.is_symlink():
+        return
+    try:
+        content_root = language_dir.resolve(strict=True)
+        if not content_root.is_dir() or target_dir.resolve().is_relative_to(content_root):
+            return
+    except (OSError, RuntimeError):
+        # Broken links and symlink cycles are not content roots.
+        return
+
+    # rglob does not recurse into child directory symlinks. Starting from the
+    # explicit language link follows only that root, retaining logical paths.
+    # File links are also excluded from this additional scan so nested links
+    # cannot escape the selected external content tree or introduce aliases.
+    for html_file in language_dir.rglob("*.html"):
+        if not html_file.is_symlink():
+            yield html_file
+
+
 def build_sitemap_tree(
     target_dir: Path,
     base_url: str,
@@ -45,7 +73,7 @@ def build_sitemap_tree(
     if not base_url.endswith("/"):
         base_url += "/"
 
-    for html_file in target_dir.rglob("*.html"):
+    for html_file in iter_sitemap_html(target_dir):
         if on_progress is not None and html_file.parent != current_dir:
             current_dir = html_file.parent
             on_progress("Scanning HTML files", current_dir)

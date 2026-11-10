@@ -114,6 +114,98 @@ async def test_generate_sitemap(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("language_root", [False, True])
+@pytest.mark.parametrize("relative_link", [False, True])
+async def test_symlinked_english_root(tmp_path, language_root, relative_link):
+    """A published language symlink indexes nested HTML using logical paths."""
+    target = tmp_path / "target"
+    target.mkdir()
+    external = tmp_path / "external/en-us"
+    for name in (
+        "sles/16.0/index.html",
+        "sles/16.0/html/page.html",
+        "404.html",
+        "500.html",
+    ):
+        path = external / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("<title>External build</title>", encoding="utf-8")
+        os.utime(path, (1704067200, 1704067200))
+    destination = Path("../external/en-us") if relative_link else external
+    (target / "en-us").symlink_to(destination, target_is_directory=True)
+    # Another published alias must not cause a second traversal.
+    (target / "alias").symlink_to(external, target_is_directory=True)
+    selected = target / "en-us" if language_root else target
+    output = await generate_sitemap(selected, "https://docs.test.com")
+    expected = output.read_bytes()
+    updates = []
+    await generate_sitemap(
+        selected,
+        "https://docs.test.com",
+        on_progress=lambda *args: updates.append(args),
+    )
+    assert output.read_bytes() == expected
+    tree = etree.fromstring(expected)
+    ns = {"s": sitemap.SITEMAP_NS}
+    assert sorted(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == [
+        "https://docs.test.com/sles/16.0/html/page.html",
+        "https://docs.test.com/sles/16.0/index.html",
+    ]
+    assert tree.xpath("s:url/s:lastmod/text()", namespaces=ns) == ["2024-01-01"] * 2
+    for directory in (target / "en-us/sles/16.0", target / "en-us/sles/16.0/html"):
+        assert ("Scanning HTML files", directory) in updates
+
+
+@pytest.mark.asyncio
+async def test_linked_english_root_does_not_follow_nested_links(tmp_path):
+    """Only the selected root link is followed; loops and escapes are skipped."""
+    target = tmp_path / "target"
+    target.mkdir()
+    external = tmp_path / "external/en-us"
+    external.mkdir(parents=True)
+    (external / "index.html").write_text("<title>English</title>", encoding="utf-8")
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "escape.html").touch()
+    (target / "en-us").symlink_to(external, target_is_directory=True)
+    (external / "loop").symlink_to(external, target_is_directory=True)
+    (external / "back").symlink_to(target, target_is_directory=True)
+    (external / "escape").symlink_to(outside, target_is_directory=True)
+    (external / "escape.html").symlink_to(outside / "escape.html")
+    (external / "alias.html").symlink_to(external / "index.html")
+    (external / "broken.html").symlink_to(outside / "missing.html")
+    output = await generate_sitemap(target, "https://docs.test.com")
+    assert etree.parse(output).xpath("//*[local-name()='loc']/text()") == [
+        "https://docs.test.com/index.html"
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "destination", ["missing", "self", "cycle", "target", "ancestor", "file"]
+)
+async def test_invalid_english_root_link(tmp_path, destination):
+    """Invalid links and roots that lead back outside the content are skipped."""
+    target = tmp_path / "target"
+    target.mkdir()
+    link = target / "en-us"
+    destinations = {
+        "missing": tmp_path / "missing",
+        "self": link,
+        "cycle": tmp_path / "cycle",
+        "target": target,
+        "ancestor": tmp_path,
+        "file": tmp_path / "plain-file",
+    }
+    (tmp_path / "plain-file").touch()
+    if destination == "cycle":
+        (tmp_path / "cycle").symlink_to(link)
+    link.symlink_to(destinations[destination], target_is_directory=True)
+    output = await generate_sitemap(target, "https://docs.test.com")
+    assert len(etree.parse(output).getroot()) == 0
+
+
+@pytest.mark.asyncio
 async def test_progress_preserves_sitemap(tmp_path: Path) -> None:
     """Progress includes excluded directories without changing output bytes."""
     for name in (

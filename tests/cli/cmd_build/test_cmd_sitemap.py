@@ -8,6 +8,7 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from click.testing import CliRunner
+from lxml import etree
 import pytest
 from rich.text import Text
 
@@ -15,6 +16,75 @@ from docbuild.cli.cmd_build import cmd_sitemap
 import docbuild.cli.cmd_cli as cmd_cli
 from docbuild.cli.context import DocBuildContext
 from docbuild.tasks import sitemap as sitemap_tasks
+
+
+@pytest.mark.asyncio
+async def test_live_directory_from_symlinked_english(tmp_path):
+    """Real generation through an English symlink reaches the live display."""
+    target = tmp_path / "target"
+    target.mkdir()
+    external = tmp_path / "external/en-us"
+    for name in ("sles/16.0/index.html", "sles/16.0/html/page.html"):
+        path = external / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("<title>External build</title>", encoding="utf-8")
+    (target / "en-us").symlink_to(external, target_is_directory=True)
+    console = MagicMock(is_terminal=True, is_dumb_terminal=False)
+    status = console.status.return_value.__enter__.return_value
+    displayed = Event()
+    worker_finished = Event()
+    build_tree = sitemap_tasks.build_sitemap_tree
+
+    def rendered(text):
+        if text.plain == "Scanning HTML files: en-us/sles/16.0/html":
+            displayed.set()
+
+    status.update.side_effect = rendered
+
+    def traverse(root, base_url, *, on_progress):
+        def report(description, directory):
+            on_progress(description, directory)
+            if directory == target / "en-us/sles/16.0/html":
+                if not displayed.wait(timeout=2):
+                    raise TimeoutError("Live directory was not displayed")
+
+        try:
+            return build_tree(root, base_url, on_progress=report)
+        finally:
+            worker_finished.set()
+
+    with (
+        patch.object(cmd_sitemap, "console_err", console),
+        patch.object(sitemap_tasks, "build_sitemap_tree", side_effect=traverse),
+    ):
+        wrapper = asyncio.create_task(
+            cmd_sitemap.generate_sitemap_with_progress(target, "https://docs.test.com")
+        )
+        try:
+            output = await asyncio.wait_for(wrapper, timeout=5)
+        finally:
+            displayed.set()  # Always release a worker waiting for the display.
+            try:
+                if not wrapper.done():
+                    wrapper.cancel()
+                with suppress(asyncio.CancelledError):
+                    await asyncio.wait_for(wrapper, timeout=2)
+            finally:
+                finished = await asyncio.wait_for(
+                    asyncio.to_thread(worker_finished.wait, 2), timeout=3
+                )
+                assert finished
+
+    locations = etree.parse(output).xpath("//*[local-name()='loc']/text()")
+    assert sorted(locations) == [
+        "https://docs.test.com/sles/16.0/html/page.html",
+        "https://docs.test.com/sles/16.0/index.html",
+    ]
+    console.status.return_value.__exit__.assert_called_once()
+    assert not any(
+        task.get_name() in {"build:sitemap", "build:sitemap:display"}
+        for task in asyncio.all_tasks()
+    )
 
 
 @pytest.mark.asyncio
