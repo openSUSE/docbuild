@@ -108,6 +108,45 @@ def test_subdir_combined(
     assert first_ref_deliverable_with_subdir.subdir == "l10n/sles/de-de/guide"
 
 
+@pytest.mark.parametrize(
+        ("locale_subdir", "dc_subdir", "expected"),
+        [
+                (None, None, ""),
+                ("l10n/sles/de-de", None, "l10n/sles/de-de"),
+                (None, "linux/start/wordpress", "linux/start/wordpress"),
+                (
+                        "l10n/sles/de-de",
+                        "../common/./guide",
+                        "l10n/sles/common/guide",
+                ),
+        ],
+)
+def test_subdir_combinations(
+        locale_subdir: str | None,
+        dc_subdir: str | None,
+        expected: str,
+) -> None:
+        """Test optional locale and DC subdirs are combined and normalized."""
+        locale_subdir_xml = (
+                f"<subdir>{locale_subdir}</subdir>" if locale_subdir is not None else ""
+        )
+        dc_subdir_xml = f"<subdir>{dc_subdir}</subdir>" if dc_subdir is not None else ""
+        xml_content = f"""
+        <locale lang="en-us">
+            {locale_subdir_xml}
+            <deliverable>
+                <dc file="DC-test">
+                    {dc_subdir_xml}
+                </dc>
+            </deliverable>
+        </locale>
+        """
+        node = etree.fromstring(xml_content).find("deliverable")
+        assert node is not None
+
+        assert Deliverable(node).subdir == expected
+
+
 def test_format_attrs_prebuilt_filters_unknown_url_formats() -> None:
     """Test unknown prebuilt URL format values are ignored."""
     xml_prebuilt = """
