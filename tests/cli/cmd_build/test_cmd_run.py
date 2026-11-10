@@ -1,9 +1,16 @@
 """Tests for docbuild build run subcommand."""
 
-from click.testing import CliRunner
+from pathlib import Path
+from unittest.mock import AsyncMock, patch
 
-from docbuild.cli.cmd_build import build
+from click.testing import CliRunner
+import pytest
+
+from docbuild.cli.cmd_build import build, cmd_run
 from docbuild.cli.cmd_build.cmd_run import run
+from docbuild.cli.context import DocBuildContext
+from docbuild.models.config.env import EnvConfig
+from docbuild.utils import sysdeps
 
 
 def test_build_group_registers_run_command():
@@ -30,3 +37,36 @@ def test_build_group_help_shows_run_subcommand():
 
     assert result.exit_code == 0
     assert "run" in result.output
+
+
+@pytest.mark.parametrize(
+    "build_result,options,expected",
+    [
+        (0, [], True),
+        (1, [], False),
+        (0, ["--no-sitemap"], False),
+    ],
+)
+def test_run_sitemap_after_success(build_result, options, expected):
+    """Only successful builds with sitemap enabled use the progress wrapper."""
+    env = EnvConfig.from_dict({})
+    context = DocBuildContext(envconfig=env, verbose=2)
+    with (
+        patch.object(sysdeps, "check_dependencies", return_value=[]),
+        patch.object(cmd_run, "build_process", new_callable=AsyncMock) as process,
+        patch.object(
+            cmd_run, "generate_sitemap_with_progress", new_callable=AsyncMock
+        ) as generate,
+    ):
+        process.return_value = build_result
+        result = CliRunner().invoke(run, ["--skip-metadata", *options], obj=context)
+
+    assert result.exit_code == build_result, result.output
+    if expected:
+        generate.assert_awaited_once_with(
+            Path(env.paths.target.target_base_dir),
+            str(env.general.canonical_url_domain),
+            verbose=2,
+        )
+    else:
+        generate.assert_not_awaited()
