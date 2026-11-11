@@ -12,6 +12,7 @@ from docbuild.models.doctype import Doctype
 import docbuild.tasks.metadata.manifest as manifest_pkg
 from docbuild.tasks.metadata.manifest import (
     configured_languages_from_docset,
+    load_documents_from_deliverables,
     merge_descriptions_with_treatment,
     store_productdocset_json,
 )
@@ -274,6 +275,128 @@ def test_read_and_project_json_projects_xref(tmp_path, lang, category):
     assert meta_file.read_text(encoding="utf-8") == original_json
 
 
+def test_read_and_project_json_keeps_english_formats_for_untranslated_xref(
+    tmp_path: Path,
+) -> None:
+    """Keep the English target format URLs when projecting an untranslated xref."""
+    root = etree.fromstring(
+        """
+        <docservconfig>
+          <product xml:id="sles">
+            <docset xml:id="sles.16.0" path="16.0">
+              <resources>
+                <locale lang="en-us">
+                  <deliverable xml:id="target">
+                    <dc file="DC-SLES-kernel-control-groups">
+                      <format html="1" pdf="1" single-html="0"/>
+                    </dc>
+                  </deliverable>
+                </locale>
+                <locale lang="pt-br">
+                  <deliverable type="xref"><xref linkend="target"/></deliverable>
+                </locale>
+              </resources>
+            </docset>
+          </product>
+        </docservconfig>
+        """
+    )
+    xref = root.find(".//locale[@lang='pt-br']/deliverable")
+    assert xref is not None
+    deliverable = Deliverable(xref)
+
+    metadata = {
+        "docs": [
+            {
+                "lang": "en-us",
+                "default": True,
+                "title": "Understanding Kernel Control Groups",
+                "dcfile": "DC-SLES-kernel-control-groups",
+                "format": {
+                    "html": "/sles/16.0/html/SLES-kernel-control-groups/",
+                    "pdf": "/sles/16.0/pdf/SLES-kernel-control-groups_en.pdf",
+                },
+            }
+        ],
+    }
+    meta_file = tmp_path / "DC-SLES-kernel-control-groups.json"
+    meta_file.write_text(json.dumps(metadata), encoding="utf-8")
+
+    result = manifest_pkg.read_and_project_json(meta_file, deliverable)
+
+    assert result is not None
+    doc = result.docs[0]
+    assert doc.lang == "pt-br"
+    assert doc.default is False
+    assert doc.format.html == "/sles/16.0/html/SLES-kernel-control-groups/"
+    assert doc.format.pdf == "/sles/16.0/pdf/SLES-kernel-control-groups_en.pdf"
+
+
+def test_load_documents_from_translated_dc_loads_localized_formats(
+    tmp_path: Path,
+) -> None:
+    """Include localized format paths when loading a translated DC deliverable."""
+    root = etree.fromstring(
+        """
+        <portal>
+          <product xml:id="sles">
+            <docset xml:id="sles.16" path="16.0">
+              <resources>
+                <locale lang="en-us">
+                  <deliverable xml:id="guide">
+                    <dc file="DC-SLES-guide">
+                      <format html="1" pdf="1"/>
+                    </dc>
+                  </deliverable>
+                </locale>
+                <locale lang="de-de">
+                  <deliverable>
+                    <dc file="DC-SLES-guide">
+                      <format html="1" pdf="1"/>
+                    </dc>
+                  </deliverable>
+                </locale>
+              </resources>
+            </docset>
+          </product>
+        </portal>
+        """
+    )
+    node = root.find(".//locale[@lang='de-de']/deliverable")
+    assert node is not None
+    deliverable = Deliverable(node)
+
+    metadata_file = tmp_path / deliverable.paths.relpath / deliverable.xml.dcfile
+    metadata_file.parent.mkdir(parents=True)
+    expected_pdf = deliverable.paths.pdf_path
+    metadata_file.write_text(
+        json.dumps(
+            {
+                "docs": [
+                    {
+                        "dcfile": "DC-SLES-guide",
+                        "lang": "de-de",
+                        "title": "Handbuch",
+                        "format": {
+                            "html": "/de-de/sles/16.0/html/SLES-guide/",
+                            "pdf": expected_pdf,
+                        },
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = load_documents_from_deliverables([deliverable], tmp_path)
+
+    assert len(result) == 1
+    assert result[0].docs[0].format.pdf == expected_pdf
+    assert (
+        result[0].model_dump(by_alias=True)["docs"][0]["format"]["pdf"] == expected_pdf
+    )
+
+
 def test_read_and_project_json_missing_file(tmp_path, deliverable, caplog):
     meta_file = tmp_path / "missing.json"
 
@@ -289,11 +412,38 @@ def test_read_and_project_json_missing_file(tmp_path, deliverable, caplog):
     )
 
 
-def test_read_and_project_json_invalid_schema(tmp_path, deliverable, caplog):
+@pytest.mark.parametrize(
+    "payload",
+    [{"docs": "not a list"}, [1]],
+    ids=["invalid-docs-field", "non-dict-payload"],
+)
+def test_read_and_project_json_invalid_schema(tmp_path, caplog, payload):
+    root = etree.fromstring(
+        """
+        <docservconfig>
+          <product xml:id="sles">
+            <docset xml:id="sles.16.0" path="16.0">
+              <resources>
+                <locale lang="en-us">
+                  <deliverable xml:id="target" category="cat.security">
+                    <dc file="DC-guide"><format html="1"/></dc>
+                  </deliverable>
+                </locale>
+                <locale lang="de-de">
+                  <deliverable type="xref"><xref linkend="target"/></deliverable>
+                </locale>
+              </resources>
+            </docset>
+          </product>
+        </docservconfig>
+        """
+    )
+    xref = root.find(".//locale[@lang='de-de']/deliverable")
+    assert xref is not None
     meta_file = tmp_path / "invalid.json"
-    meta_file.write_text(json.dumps({"docs": "not a list"}), encoding="utf-8")
+    meta_file.write_text(json.dumps(payload), encoding="utf-8")
 
-    result = manifest_pkg.read_and_project_json(meta_file, deliverable)
+    result = manifest_pkg.read_and_project_json(meta_file, Deliverable(xref))
 
     assert result is None
     assert len(caplog.records) == 1
@@ -303,6 +453,40 @@ def test_read_and_project_json_invalid_schema(tmp_path, deliverable, caplog):
     assert record.getMessage().startswith(
         f"Error processing metadata file {meta_file}:"
     )
+
+
+def test_read_and_project_json_xref_empty_docs(tmp_path: Path) -> None:
+    """Project category without error when an xref target JSON has an empty docs list."""
+    root = etree.fromstring(
+        """
+        <docservconfig>
+          <product xml:id="sles">
+            <docset xml:id="sles.16.0" path="16.0">
+              <resources>
+                <locale lang="en-us">
+                  <deliverable xml:id="target" category="cat.security">
+                    <dc file="DC-guide"><format html="1"/></dc>
+                  </deliverable>
+                </locale>
+                <locale lang="de-de">
+                  <deliverable type="xref"><xref linkend="target"/></deliverable>
+                </locale>
+              </resources>
+            </docset>
+          </product>
+        </docservconfig>
+        """
+    )
+    xref = root.find(".//locale[@lang='de-de']/deliverable")
+    assert xref is not None
+    meta_file = tmp_path / "empty-docs.json"
+    meta_file.write_text(json.dumps({"docs": []}), encoding="utf-8")
+
+    result = manifest_pkg.read_and_project_json(meta_file, Deliverable(xref))
+
+    assert result is not None
+    assert result.docs == []
+    assert result.category == "cat.security"
 
 
 @pytest.mark.parametrize(
@@ -348,12 +532,8 @@ def test_synthetic_docset_xref_description_treatment(
     assert xref_node is not None
     if include_xref_description:
         attributes = {"treatment": treatment} if treatment else {}
-        descriptions_node = etree.SubElement(
-            xref_node, "descriptions", **attributes
-        )
-        description_node = etree.SubElement(
-            descriptions_node, "desc", lang="en-us"
-        )
+        descriptions_node = etree.SubElement(xref_node, "descriptions", **attributes)
+        description_node = etree.SubElement(descriptions_node, "desc", lang="en-us")
         etree.SubElement(description_node, "p").text = "Version guide"
 
     document = manifest_pkg.create_synthetic_document(Deliverable(deliverable_node))

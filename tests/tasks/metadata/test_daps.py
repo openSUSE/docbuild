@@ -1,6 +1,7 @@
 """Unit tests for docbuild.tasks.metadata.daps."""
 
 from collections.abc import Iterator
+import json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
@@ -8,6 +9,7 @@ from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
+from docbuild.models.cache import Cache
 from docbuild.models.deliverable import Deliverable
 import docbuild.tasks.metadata.daps as daps_pkg
 from docbuild.tasks.metadata.daps import (
@@ -127,6 +129,40 @@ def test_update_metadata_json_no_pdf(tmp_path: Path):
         update_metadata_json(outputjson, d)
 
     assert "pdf" not in mock_json_data["docs"][0]["format"]
+
+
+def test_update_metadata_json_removes_stale_formats(tmp_path: Path):
+    """Stale pdf, single-html, and category keys are removed when disabled."""
+    outputjson = tmp_path / "metadata.json"
+    outputjson.write_text("{}", encoding="utf-8")
+
+    d = MagicMock()
+    d.format = {"html": True, "pdf": False, "single-html": False}
+    d.xml.dcfile = "DC-FOO"
+    d.xml.lang = "en-us"
+    d.xml.categoryid = None
+    d.paths.html_path = "/html"
+
+    mock_json_data = {
+        "docs": [
+            {
+                "format": {
+                    "html": "/old",
+                    "pdf": "/old.pdf",
+                    "single-html": "/old.html",
+                },
+                "lang": "",
+            }
+        ],
+        "category": "cat.old",
+    }
+
+    with patch.object(daps_pkg, "edit_json") as mock_edit_json:
+        mock_edit_json.return_value.__enter__.return_value = mock_json_data
+        update_metadata_json(outputjson, d)
+
+    assert mock_json_data["docs"][0]["format"] == {"html": "/html"}
+    assert "category" not in mock_json_data
 
 
 def test_update_metadata_json_with_single_html(tmp_path: Path):
@@ -283,6 +319,143 @@ class TestProcessDeliverable:
         assert success is True
         assert res_deliverable is deliverable
 
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_cache_hit_refreshes_metadata_json(
+        self,
+        mock_managed_git_repo: Mock,
+        mock_get_daps_hashes: AsyncMock,
+        setup_paths: dict,
+        mock_subprocess: AsyncMock,
+    ) -> None:
+        """Refresh deliverable formats in existing metadata on a cache hit."""
+        root = etree.fromstring(
+            """
+            <docservconfig>
+              <product xml:id="sles">
+                <docset xml:id="sles.15-sp7" path="15-SP7">
+                  <resources>
+                    <git remote="https://github.com/SUSE/doc-sle.git"/>
+                    <locale lang="en-us">
+                      <branch>main</branch>
+                      <subdir>l10n/sles/en-us</subdir>
+                      <deliverable xml:id="guide" category="cat.security">
+                        <dc file="DC-SLES-deployment">
+                          <format html="1" pdf="1"/>
+                        </dc>
+                      </deliverable>
+                    </locale>
+                    <locale lang="de-de">
+                      <branch>main</branch>
+                      <subdir>l10n/sles/de-de</subdir>
+                      <deliverable category="cat.security">
+                        <dc file="DC-SLES-deployment">
+                          <format html="1" pdf="1"/>
+                        </dc>
+                      </deliverable>
+                    </locale>
+                  </resources>
+                </docset>
+              </product>
+            </docservconfig>
+            """
+        )
+        node = root.find(".//locale[@lang='de-de']/deliverable")
+        assert node is not None
+        deliverable = Deliverable(node)
+
+        mock_get_daps_hashes.return_value = {"source.xml": "source-hash"}
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.create_worktree.return_value = None
+
+        assert deliverable.git is not None
+        (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        outputdir = setup_paths["meta_cache_dir"] / deliverable.paths.relpath
+        outputdir.mkdir(parents=True)
+        outputjson = outputdir / deliverable.xml.dcfile
+        outputjson.write_text(
+            json.dumps({"docs": [{"format": {"html": "/html"}}]}),
+            encoding="utf-8",
+        )
+        cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
+        Cache("env-hash", {"source.xml": "source-hash"}).to_json(cache_file)
+
+        success, result = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+            skip_repo_update=True,
+            env_config_hash="env-hash",
+        )
+
+        assert success is True
+        assert result is deliverable
+        updated_data = json.loads(outputjson.read_text(encoding="utf-8"))
+        assert updated_data["docs"][0]["format"]["pdf"] == deliverable.paths.pdf_path
+        assert updated_data["category"] == "cat.security"
+        mock_subprocess.assert_not_awaited()
+
+    @patch.object(daps_pkg, "get_daps_hashes", new_callable=AsyncMock)
+    @patch.object(daps_pkg, "ManagedGitRepo")
+    async def test_cache_hash_match_rebuilds_when_outputjson_missing(
+        self,
+        mock_managed_git_repo: Mock,
+        mock_get_daps_hashes: AsyncMock,
+        deliverable: Deliverable,
+        setup_paths: dict,
+        mock_subprocess: AsyncMock,
+    ) -> None:
+        """Run DAPS when cache hashes match but the metadata JSON file is missing."""
+        mock_get_daps_hashes.return_value = {"source.xml": "source-hash"}
+        mock_repo_instance = AsyncMock()
+        mock_managed_git_repo.return_value = mock_repo_instance
+        mock_repo_instance.create_worktree.return_value = None
+
+        assert deliverable.git is not None
+        (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
+
+        outputdir = setup_paths["meta_cache_dir"] / deliverable.paths.relpath
+        outputdir.mkdir(parents=True)
+        outputjson = outputdir / deliverable.xml.dcfile
+        cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
+        Cache("env-hash", {"source.xml": "source-hash"}).to_json(cache_file)
+
+        async def fake_daps(*_args: object, **_kwargs: object) -> AsyncMock:
+            outputjson.write_text(
+                json.dumps({"docs": [{"format": {}}]}),
+                encoding="utf-8",
+            )
+            proc = AsyncMock()
+            proc.communicate.return_value = (b"", b"")
+            proc.returncode = 0
+            return proc
+
+        mock_subprocess.side_effect = fake_daps
+
+        success, result = await process_deliverable(
+            deliverable=deliverable,
+            repo_dir=setup_paths["repo_dir"],
+            tmp_repo_dir=setup_paths["tmp_repo_dir"],
+            meta_cache_dir=setup_paths["meta_cache_dir"],
+            prebuilt_dir=Path("/tmp/prebuilt"),
+            dapstmpl="daps --dc-file={dcfile} --output={output}",
+            daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
+            skip_repo_update=True,
+            env_config_hash="env-hash",
+        )
+
+        assert success is True
+        assert result is deliverable
+        mock_subprocess.assert_awaited_once()
+        updated_data = json.loads(outputjson.read_text(encoding="utf-8"))
+        assert updated_data["docs"][0]["format"]["pdf"] == deliverable.paths.pdf_path
+
     @patch.object(daps_pkg, "ManagedGitRepo")
     async def test_create_worktree_failure(
         self,
@@ -296,7 +469,9 @@ class TestProcessDeliverable:
         mock_repo_instance = AsyncMock()
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.clone_bare.return_value = True
-        mock_repo_instance.create_worktree.side_effect = RuntimeError("git clone failed")
+        mock_repo_instance.create_worktree.side_effect = RuntimeError(
+            "git clone failed"
+        )
 
         assert deliverable.git is not None
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
@@ -379,8 +554,7 @@ async def test_get_daps_hashes_success(template: str) -> None:
     mock_result = MagicMock()
     mock_result.returncode = 0
     mock_result.stdout = (
-        "/tmp/worktree/file1.xml:hash1\n"
-        "/tmp/worktree/subdir/file2.xml:hash2\n"
+        "/tmp/worktree/file1.xml:hash1\n/tmp/worktree/subdir/file2.xml:hash2\n"
     )
 
     with patch.object(daps_pkg, "run_command", return_value=mock_result) as mock_run:
@@ -388,7 +562,7 @@ async def test_get_daps_hashes_success(template: str) -> None:
 
         mock_run.assert_called_once_with(
             ["daps", "-d", str(dcfile_path), "list-srcfiles", "--hashes"],
-            cwd=worktree_dir
+            cwd=worktree_dir,
         )
         assert result == {
             "file1.xml": "hash1",
@@ -406,7 +580,9 @@ async def test_get_daps_hashes_failure():
     mock_result.stderr = "Command failed"
 
     with patch.object(daps_pkg, "run_command", return_value=mock_result):
-        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        result = await get_daps_hashes(
+            worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles"
+        )
         assert result == {}
 
 
@@ -420,5 +596,7 @@ async def test_get_daps_hashes_malformed_output():
     mock_result.stdout = "\nmalformed_line\n/tmp/worktree/valid.xml:hash1\n"
 
     with patch.object(daps_pkg, "run_command", return_value=mock_result):
-        result = await get_daps_hashes(worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles")
+        result = await get_daps_hashes(
+            worktree_dir, dcfile_path, "daps -d {dcfile} list-srcfiles"
+        )
         assert result == {"valid.xml": "hash1"}

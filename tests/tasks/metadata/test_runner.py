@@ -16,7 +16,6 @@ from docbuild.tasks.metadata.runner import (
     gather_build_tasks,
     get_deliverable_worker_limit,
     process,
-    resolve_effective_dcfile,
     resolve_single_translation,
 )
 
@@ -60,14 +59,14 @@ class TestGatherBuildTasks:
         # Create normal deliverable
         d1 = SortableMock(spec=Deliverable)
         d1.full_id = "d1"
+        d1.lang_is_default = True
         d1.xml.is_xref = False
-        d1.xml.lang = "en-us"
 
         # Create xref pointing to a deliverable
         d2 = SortableMock(spec=Deliverable)
         d2.full_id = "d2"
+        d2.lang_is_default = True
         d2.xml.is_xref = True
-        d2.xml.lang = "en-us"
         target_elem = etree.Element("deliverable")
         d2.xml.final_target_node = target_elem
 
@@ -101,6 +100,7 @@ class TestTranslationMetadataChecks:
 
         :return: Factory callable that generates the ElementTree.
         """
+
         def _factory(*deliverables: str) -> etree._ElementTree:
             """Construct an ElementTree with specified deliverable elements.
 
@@ -134,7 +134,7 @@ class TestTranslationMetadataChecks:
 
         return _factory
 
-    def test_resolve_effective_dcfile_from_xref(
+    def test_dcfile_from_xref(
         self, make_translation_xml: TranslationXmlFactory
     ) -> None:
         """Verify dcfile resolution when deliverable references an existing doc via xref.
@@ -146,39 +146,45 @@ class TestTranslationMetadataChecks:
         assert node is not None
 
         deliverable = Deliverable(_node=node)
-        assert resolve_effective_dcfile(deliverable) == "DC-test"
+        assert deliverable.xml.dcfile == "DC-test"
 
-    def test_resolve_effective_dcfile_explicit(
-        self, make_translation_xml: TranslationXmlFactory
-    ) -> None:
+    def test_dcfile_explicit(self, make_translation_xml: TranslationXmlFactory) -> None:
         """Verify dcfile resolution for an explicitly declared dc file.
 
         :param make_translation_xml: Factory fixture creating portal ElementTree instances.
         """
-        tree = make_translation_xml('<deliverable><dc file="DC-explicit"/></deliverable>')
+        tree = make_translation_xml(
+            '<deliverable><dc file="DC-explicit"/></deliverable>'
+        )
         node = tree.find(".//locale[@lang='de-de']/deliverable")
         assert node is not None
 
         deliverable = Deliverable(_node=node)
-        assert resolve_effective_dcfile(deliverable) == "DC-explicit"
+        assert deliverable.xml.dcfile == "DC-explicit"
 
-    def test_resolve_effective_dcfile_broken_xref(
+    def test_dcfile_broken_xref(
         self, make_translation_xml: TranslationXmlFactory
     ) -> None:
         """Verify dcfile resolution returns None when xref points to an unresolvable ID.
 
         :param make_translation_xml: Factory fixture creating portal ElementTree instances.
         """
-        tree = make_translation_xml('<deliverable><xref linkend="missing"/></deliverable>')
+        tree = make_translation_xml(
+            '<deliverable><xref linkend="missing"/></deliverable>'
+        )
         node = tree.find(".//locale[@lang='de-de']/deliverable")
         assert node is not None
 
         deliverable = Deliverable(_node=node)
-        assert resolve_effective_dcfile(deliverable) is None
+        assert deliverable.xml.dcfile is None
 
-    def test_fallback_to_english_xref(self, make_translation_xml: TranslationXmlFactory) -> None:
+    def test_fallback_to_english_xref(
+        self, make_translation_xml: TranslationXmlFactory
+    ) -> None:
         """Verify explicit translations safely convert into xrefs on failure."""
-        tree = make_translation_xml('<deliverable><dc file="DC-explicit"/></deliverable>')
+        tree = make_translation_xml(
+            '<deliverable><dc file="DC-explicit"/></deliverable>'
+        )
         node = tree.find(".//locale[@lang='de-de']/deliverable")
         assert node is not None
         d_explicit = Deliverable(_node=node)
@@ -191,16 +197,56 @@ class TestTranslationMetadataChecks:
         en_d.append(etree.Element("dc", file="DC-explicit"))
         en_locale.append(en_d)
 
-        fallback_to_english_xref(d_explicit, "DC-explicit", "l10n/de/DC-explicit")
+        assert (
+            fallback_to_english_xref(d_explicit, "DC-explicit", "l10n/de/DC-explicit")
+            is True
+        )
 
         # The <dc> should be gone, replaced by <xref linkend="explicit-blueprint">
-        assert d_explicit.xml.node.find("dc") is None
-        assert d_explicit.xml.node.find("xref").get("linkend") == "explicit-blueprint"
+        updated = Deliverable(_node=node)
+        assert updated.xml.kind == "xref"
+        assert updated.xml.is_dc is False
+        assert updated.xml.is_xref is True
+        assert updated.xml.target_id == "explicit-blueprint"
 
+    def test_fallback_to_english_xref_no_blueprint(
+        self, make_translation_xml: TranslationXmlFactory
+    ) -> None:
+        """Verify explicit translation is untouched when no English blueprint exists."""
+        tree = make_translation_xml('<deliverable><dc file="DC-orphan"/></deliverable>')
+        node = tree.find(".//locale[@lang='de-de']/deliverable")
+        assert node is not None
+        d_explicit = Deliverable(_node=node)
+
+        assert (
+            fallback_to_english_xref(d_explicit, "DC-orphan", "l10n/de/DC-orphan")
+            is False
+        )
+        updated = Deliverable(_node=node)
+        assert updated.xml.is_dc is True
+        assert updated.xml.is_xref is False
+        assert updated.xml.dcfile == "DC-orphan"
+
+    @pytest.mark.parametrize("category", ["cat.security", None])
     @patch("docbuild.tasks.metadata.runner.ManagedGitRepo", autospec=True)
-    async def test_resolve_single_translation_found(self, mock_repo_class: Mock, make_translation_xml: TranslationXmlFactory, tmp_path: Path) -> None:
+    async def test_resolve_single_translation_found(
+        self,
+        mock_repo_class: Mock,
+        category: str | None,
+        make_translation_xml: TranslationXmlFactory,
+        tmp_path: Path,
+    ) -> None:
         """Verify xrefs are dropped when the localized DC file exists."""
-        tree = make_translation_xml('<deliverable><xref linkend="doc1"/></deliverable>')
+        tree = make_translation_xml(
+            '<deliverable type="xref"><xref linkend="doc1"/></deliverable>'
+        )
+        target_deliv = tree.find(".//locale[@lang='en-us']/deliverable")
+        assert target_deliv is not None
+        if category is not None:
+            target_deliv.set("category", category)
+        target_dc = target_deliv.find("dc")
+        assert target_dc is not None
+        etree.SubElement(target_dc, "format", html="1", pdf="1")
         node = tree.find(".//locale[@lang='de-de']/deliverable")
         assert node is not None
         d_xref = Deliverable(_node=node)
@@ -215,12 +261,23 @@ class TestTranslationMetadataChecks:
         result = await resolve_single_translation(d_xref, tmp_path, cache)
 
         assert result is not None
-        assert result.xml.node.find("xref") is None
-        assert result.xml.node.find("dc").get("file") == "DC-test"
+        assert result.xml.kind == "dc"
+        assert result.xml.is_xref is False
+        assert result.xml.is_dc is True
+        assert result.xml.xref_node is None
+        assert result.xml.dcfile == "DC-test"
+        assert result.xml.categoryid == category
+        assert result.format["html"] is True
+        assert result.format["pdf"] is True
         assert cache == {("git@test", "translations"): ["l10n/de/DC-test"]}
 
     @patch("docbuild.tasks.metadata.runner.ManagedGitRepo", autospec=True)
-    async def test_resolve_single_translation_missing(self, mock_repo_class: Mock, make_translation_xml: TranslationXmlFactory, tmp_path: Path) -> None:
+    async def test_resolve_single_translation_missing(
+        self,
+        mock_repo_class: Mock,
+        make_translation_xml: TranslationXmlFactory,
+        tmp_path: Path,
+    ) -> None:
         """Verify missing translations are skipped (xrefs stay xrefs)."""
         tree = make_translation_xml('<deliverable><xref linkend="doc1"/></deliverable>')
         node = tree.find(".//locale[@lang='de-de']/deliverable")
@@ -236,7 +293,60 @@ class TestTranslationMetadataChecks:
         result = await resolve_single_translation(d_xref, tmp_path, {})
 
         assert result is None  # Skipped!
-        assert d_xref.xml.node.find("xref") is not None  # Kept as xref
+        assert d_xref.xml.xref_node is not None  # Kept as xref
+
+    @patch("docbuild.tasks.metadata.runner.ManagedGitRepo", autospec=True)
+    async def test_missing_explicit_translation_is_skipped_after_fallback(
+        self,
+        mock_repo_class: Mock,
+        make_translation_xml: TranslationXmlFactory,
+        tmp_path: Path,
+    ) -> None:
+        """Do not process a stale Deliverable after rewriting it as an xref."""
+        tree = make_translation_xml('<deliverable><dc file="DC-test"/></deliverable>')
+        target_dc = tree.find(".//locale[@lang='en-us']/deliverable/dc")
+        assert target_dc is not None
+        etree.SubElement(target_dc, "format", html="1", pdf="1")
+        node = tree.find(".//locale[@lang='de-de']/deliverable")
+        assert node is not None
+        explicit = Deliverable(_node=node)
+        explicit.git = Mock(url="git@test")
+
+        mock_repo = AsyncMock()
+        mock_repo.ls_tree.return_value = []
+        mock_repo_class.return_value = mock_repo
+
+        result = await resolve_single_translation(explicit, tmp_path, {})
+
+        assert result is None
+        updated = Deliverable(_node=node)
+        assert updated.xml.kind == "xref"
+        assert updated.xml.is_dc is False
+        assert updated.xml.is_xref is True
+        assert updated.format["pdf"] is True
+
+    @patch("docbuild.tasks.metadata.runner.ManagedGitRepo", autospec=True)
+    async def test_missing_orphan_explicit_translation_kept_when_no_blueprint(
+        self,
+        mock_repo_class: Mock,
+        make_translation_xml: TranslationXmlFactory,
+        tmp_path: Path,
+    ) -> None:
+        """Return the deliverable unchanged when no English blueprint matches."""
+        tree = make_translation_xml('<deliverable><dc file="DC-orphan"/></deliverable>')
+        node = tree.find(".//locale[@lang='de-de']/deliverable")
+        assert node is not None
+        explicit = Deliverable(_node=node)
+        explicit.git = Mock(url="git@test")
+
+        mock_repo = AsyncMock()
+        mock_repo.ls_tree.return_value = []
+        mock_repo_class.return_value = mock_repo
+
+        result = await resolve_single_translation(explicit, tmp_path, {})
+
+        assert result is explicit
+        assert explicit.xml.is_dc is True
 
 
 class TestExecuteBuildPipeline:
@@ -245,20 +355,23 @@ class TestExecuteBuildPipeline:
     @patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock)
     @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     async def test_success_with_deliverables(
-        self, mock_process_deliverable: AsyncMock, mock_update_repositories: AsyncMock, tmp_path: Path
+        self,
+        mock_process_deliverable: AsyncMock,
+        mock_update_repositories: AsyncMock,
+        tmp_path: Path,
     ) -> None:
         """Verify pipeline processes deliverables cleanly."""
         d1 = SortableMock(spec=Deliverable)
         d1.full_id = "d1"
-        d1.xml.lang = "en-us"
+        d1.lang_is_default = True
+        d1.has_git_repo = True
         d1.xml.is_xref = False
-        d1.xml.git_remote.return_value = "https://github.com/foo/bar.git"
 
         d2 = SortableMock(spec=Deliverable)
         d2.full_id = "d2"
-        d2.xml.lang = "en-us"
+        d2.lang_is_default = True
+        d2.has_git_repo = False
         d2.xml.is_xref = False
-        d2.xml.git_remote.return_value = None
 
         mock_process_deliverable.side_effect = [(True, d1), (True, d2)]
 
@@ -284,15 +397,18 @@ class TestExecuteBuildPipeline:
     @patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock)
     @patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock)
     async def test_exitfirst_stops_on_first_failure(
-        self, mock_process_deliverable: AsyncMock, mock_update_repositories: AsyncMock, tmp_path: Path
+        self,
+        mock_process_deliverable: AsyncMock,
+        mock_update_repositories: AsyncMock,
+        tmp_path: Path,
     ) -> None:
         """Verify exitfirst halts processing immediately on first failure."""
         d1 = SortableMock(spec=Deliverable)
-        d1.xml.lang = "en-us"
+        d1.lang_is_default = True
         d1.xml.is_xref = False
 
         d2 = SortableMock(spec=Deliverable)
-        d2.xml.lang = "en-us"
+        d2.lang_is_default = True
         d2.xml.is_xref = False
 
         # First fails, second succeeds
@@ -321,7 +437,7 @@ class TestExecuteBuildPipeline:
         """Verify pipeline handles generic exceptions gracefully."""
         mock_d = SortableMock(spec=Deliverable)
         mock_d.full_id = "fail_mock"
-        mock_d.xml.lang = "en-us"
+        mock_d.lang_is_default = True
         mock_d.xml.is_xref = False
         mock_process_deliverable.side_effect = Exception("Simulated DAPS failure")
 
@@ -413,11 +529,15 @@ class TestProcess:
         (tmp_path / "portal.xml").write_text(xml_string)
 
         import docbuild.tasks.metadata.runner as runner_pkg
-        with patch.object(runner_pkg, "store_productdocset_json"), \
-             patch.object(runner_pkg, "generate_homepage"), \
-             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
-             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
 
+        with (
+            patch.object(runner_pkg, "store_productdocset_json"),
+            patch.object(runner_pkg, "generate_homepage"),
+            patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
+            patch.object(
+                runner_pkg, "process_deliverable", new_callable=AsyncMock
+            ) as mock_pd,
+        ):
             mock_pd.return_value = (True, Mock())
 
             result = await process(**runner_kwargs)  # type: ignore
@@ -451,12 +571,16 @@ class TestProcess:
         (tmp_path / "portal.xml").write_text(xml_string)
 
         import docbuild.tasks.metadata.runner as runner_pkg
-        with patch.object(runner_pkg, "store_productdocset_json"), \
-             patch.object(runner_pkg, "generate_homepage"), \
-             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
-             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd, \
-             patch.object(runner_pkg, "console_err") as mock_cerr:
 
+        with (
+            patch.object(runner_pkg, "store_productdocset_json"),
+            patch.object(runner_pkg, "generate_homepage"),
+            patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
+            patch.object(
+                runner_pkg, "process_deliverable", new_callable=AsyncMock
+            ) as mock_pd,
+            patch.object(runner_pkg, "console_err") as mock_cerr,
+        ):
             failed_d = Mock()
             failed_d.full_id = "fail-doc"
             mock_pd.return_value = (False, failed_d)
@@ -497,11 +621,15 @@ class TestProcess:
         runner_kwargs["doctypes"] = [provided_doctype]
 
         import docbuild.tasks.metadata.runner as runner_pkg
-        with patch.object(runner_pkg, "store_productdocset_json"), \
-             patch.object(runner_pkg, "generate_homepage"), \
-             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
-             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
 
+        with (
+            patch.object(runner_pkg, "store_productdocset_json"),
+            patch.object(runner_pkg, "generate_homepage"),
+            patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
+            patch.object(
+                runner_pkg, "process_deliverable", new_callable=AsyncMock
+            ) as mock_pd,
+        ):
             mock_pd.return_value = (True, Mock())
 
             result = await process(**runner_kwargs)  # type: ignore
