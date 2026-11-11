@@ -1,0 +1,1 @@
+Improved Markdown output generated for LLMs by converting HTML tables and images into native Markdown, formatting DocBook and Antora admonitions as blockquotes, fixing heading number spacing, and removing leftover HTML artifacts and empty list markers.
