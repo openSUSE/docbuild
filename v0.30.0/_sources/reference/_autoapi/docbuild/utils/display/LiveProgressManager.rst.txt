@@ -1,0 +1,51 @@
+docbuild.utils.display.LiveProgressManager
+==========================================
+
+.. py:class:: docbuild.utils.display.LiveProgressManager(console: rich.console.Console | None = None, *, disable: bool = False, name_width: int = 28)
+
+   Live view showing one progress bar per stage; stages run sequentially.
+
+   With ``disable=True`` nothing is rendered, but outcomes are still tracked.
+
+
+   .. py:property:: failed
+      :type: bool
+
+
+      Return True if any stage recorded a failure.
+
+
+
+   .. py:method:: __enter__() -> Self
+
+      Start the live view and mute terminal logs.
+
+
+
+   .. py:method:: __exit__(*exc_info: object) -> None
+
+      Stop the live view and restore terminal logs.
+
+
+
+   .. py:method:: __aenter__() -> Self
+      :async:
+
+
+      Start the live view from an async context.
+
+
+
+   .. py:method:: __aexit__(*exc_info: object) -> None
+      :async:
+
+
+      Stop the live view from an async context.
+
+
+
+   .. py:method:: stage(name: str, total: int | None = None) -> collections.abc.Iterator[Stage]
+
+      Open a stage; only one stage may be active at a time.
+
+

@@ -1,0 +1,34 @@
+docbuild.models.homepage
+========================
+
+.. py:module:: docbuild.models.homepage
+
+.. autoapi-nested-parse::
+
+   Pydantic models for the Portal Homepage JSON.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/models/homepage/ProductFamily
+   /reference/_autoapi/docbuild/models/homepage/ProductDescription
+   /reference/_autoapi/docbuild/models/homepage/DocsetLink
+   /reference/_autoapi/docbuild/models/homepage/ProductItem
+   /reference/_autoapi/docbuild/models/homepage/CategoryItem
+   /reference/_autoapi/docbuild/models/homepage/Homepage
+
+.. autoapisummary::
+
+   docbuild.models.homepage.ProductFamily
+   docbuild.models.homepage.ProductDescription
+   docbuild.models.homepage.DocsetLink
+   docbuild.models.homepage.ProductItem
+   docbuild.models.homepage.CategoryItem
+   docbuild.models.homepage.Homepage
+
+

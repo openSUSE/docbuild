@@ -1,0 +1,35 @@
+docbuild.cli.cmd_llms
+=====================
+
+.. py:module:: docbuild.cli.cmd_llms
+
+.. autoapi-nested-parse::
+
+   CLI command to retroactively generate Markdown and llms.txt files.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_llms.llms
+
+
+Module Contents
+---------------
+
+.. py:function:: llms(context: docbuild.cli.context.DocBuildContext) -> None
+
+   Generate Markdown and llms.txt files for an existing build directory.
+
+   This command scans the target base directory configured in your environment
+   (defined as 'paths.target.target_base_dir' in env.toml), cleans the HTML
+   files found within, converts them to Markdown, and generates the root
+   llms.txt index file.
+
+   It also automatically injects the <link rel="alternate"> tags into the
+   existing HTML files pointing to the new Markdown counterparts.
+
+

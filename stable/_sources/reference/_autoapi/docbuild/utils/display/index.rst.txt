@@ -1,0 +1,56 @@
+docbuild.utils.display
+======================
+
+.. py:module:: docbuild.utils.display
+
+.. autoapi-nested-parse::
+
+   Reusable Live UI components for DocBuild.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/utils/display/ItemState
+   /reference/_autoapi/docbuild/utils/display/MofNColumn
+   /reference/_autoapi/docbuild/utils/display/StageProgress
+   /reference/_autoapi/docbuild/utils/display/Item
+   /reference/_autoapi/docbuild/utils/display/Stage
+   /reference/_autoapi/docbuild/utils/display/LiveProgressManager
+
+.. autoapisummary::
+
+   docbuild.utils.display.ItemState
+   docbuild.utils.display.MofNColumn
+   docbuild.utils.display.StageProgress
+   docbuild.utils.display.Item
+   docbuild.utils.display.Stage
+   docbuild.utils.display.LiveProgressManager
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.utils.display.get_live_manager
+   docbuild.utils.display.format_status
+
+
+Module Contents
+---------------
+
+.. py:function:: get_live_manager() -> LiveProgressManager | None
+
+   Get the active live progress manager.
+
+
+.. py:function:: format_status(counts: collections.Counter[ItemState]) -> str
+
+   Render outcome counts with fixed-width numbers to avoid jitter.
+
+

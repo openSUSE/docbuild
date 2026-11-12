@@ -1,0 +1,19 @@
+docbuild.utils.display.StageProgress
+====================================
+
+.. py:class:: docbuild.utils.display.StageProgress(*columns: Union[str, ProgressColumn], console: Optional[rich.console.Console] = None, auto_refresh: bool = True, refresh_per_second: float = 10, speed_estimate_period: float = 30.0, transient: bool = False, redirect_stdout: bool = True, redirect_stderr: bool = True, get_time: Optional[GetTimeCallable] = None, disable: bool = False, expand: bool = False)
+
+   Bases: :py:obj:`rich.progress.Progress`
+
+   .. autoapi-inheritance-diagram:: docbuild.utils.display.StageProgress
+      :parts: 1
+
+
+   Progress that renders the current item on a line below each stage.
+
+
+   .. py:method:: get_renderables() -> collections.abc.Iterator[rich.console.RenderableType]
+
+      Yield each stage row followed by its running items.
+
+

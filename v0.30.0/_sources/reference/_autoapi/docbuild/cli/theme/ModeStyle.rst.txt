@@ -1,0 +1,23 @@
+docbuild.cli.theme.ModeStyle
+============================
+
+.. py:class:: docbuild.cli.theme.ModeStyle
+
+   Style definitions for dark and light terminal backgrounds.
+
+   See also https://rich.readthedocs.io/en/stable/appendix/colors.html
+
+
+   .. py:attribute:: dark
+      :type:  str
+
+      Style string for dark terminal backgrounds.
+
+
+
+   .. py:attribute:: light
+      :type:  str
+
+      Style string for light terminal backgrounds.
+
+

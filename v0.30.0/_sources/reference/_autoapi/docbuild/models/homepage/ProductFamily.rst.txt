@@ -1,0 +1,13 @@
+docbuild.models.homepage.ProductFamily
+======================================
+
+.. py:class:: docbuild.models.homepage.ProductFamily(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+   .. autoapi-inheritance-diagram:: docbuild.models.homepage.ProductFamily
+      :parts: 1
+
+
+   Represents a product family on the homepage.
+

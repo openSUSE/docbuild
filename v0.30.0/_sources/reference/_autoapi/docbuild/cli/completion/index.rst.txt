@@ -1,0 +1,69 @@
+docbuild.cli.completion
+=======================
+
+.. py:module:: docbuild.cli.completion
+
+.. autoapi-nested-parse::
+
+   Shell completion helpers for the docbuild CLI.
+
+   Click provides completion for subcommands and options out of the box. This
+   module adds value completion for the ``DOCTYPES`` arguments, segment by
+   segment (``PRODUCT/DOCSETS/LANGS``):
+
+   * products come from the :class:`~docbuild.models.product.Product` enum,
+   * docsets are read from the portal config of the environment,
+   * languages come from :data:`~docbuild.constants.ALLOWED_LANGUAGES`.
+
+   Completion must never break the shell: any problem while loading the
+   configuration falls back to the wildcard ``*``.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.completion.collect_docsets
+   docbuild.cli.completion.load_portal_tree
+   docbuild.cli.completion.complete_doctypes
+
+
+Module Contents
+---------------
+
+.. py:function:: collect_docsets(tree: lxml.etree._ElementTree | lxml.etree._Element, product: str) -> set[str]
+
+   Return all docset paths of a product found in the portal config.
+
+   :param tree: The parsed portal config.
+   :param product: The product acronym, for example ``sles``.
+   :return: The set of docset paths, for example ``{"15-SP7", "16.0"}``.
+   :raise ValueError: If ``product`` is not a valid product.
+
+
+.. py:function:: load_portal_tree(ctx: click.Context) -> lxml.etree._ElementTree | None
+
+   Load the portal config referenced by the environment config.
+
+   During completion, the main ``cli`` callback does not run, so the
+   environment config is loaded here. ``--env-config`` and ``--set-env``
+   from the command line are honored.
+
+   :param ctx: The Click context of the command being completed.
+   :return: The parsed portal config, or ``None`` if it cannot be loaded.
+
+
+.. py:function:: complete_doctypes(ctx: click.Context, param: click.Parameter, incomplete: str) -> list[click.shell_completion.CompletionItem]
+
+   Complete a doctype (``PRODUCT/DOCSETS/LANGS``) segment by segment.
+
+   Used as ``shell_complete`` callback for ``DOCTYPES`` arguments.
+
+   :param ctx: The Click context of the command being completed.
+   :param param: The parameter being completed.
+   :param incomplete: The value typed so far.
+   :return: The matching completion items.
+
+

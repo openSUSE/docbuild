@@ -1,0 +1,66 @@
+docbuild.models.config.env.EnvRsync
+===================================
+
+.. py:class:: docbuild.models.config.env.EnvRsync(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+   .. autoapi-inheritance-diagram:: docbuild.models.config.env.EnvRsync
+      :parts: 1
+
+
+   Configure exclusions for syncing built deliverables.
+
+
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+
+   .. py:attribute:: exclude
+      :type:  list[str]
+      :value: None
+
+
+      Base exclusion patterns, replacing the built-in defaults when supplied.
+
+
+
+   .. py:attribute:: exclude_extra
+      :type:  list[str]
+      :value: None
+
+
+      Additional patterns that extend the selected base exclusion list.
+
+
+
+   .. py:method:: validate_patterns(patterns: list[str]) -> list[str]
+      :classmethod:
+
+
+      Reject blank or repeated patterns without rewriting rsync syntax.
+
+      :param patterns: User-supplied exclusion patterns.
+      :return: The unchanged patterns.
+      :raises ValueError: If a pattern is blank or occurs more than once.
+
+
+
+   .. py:method:: validate_combined_patterns() -> Self
+
+      Reject additional patterns already present in the base list.
+
+      :return: The unchanged configuration.
+      :raises ValueError: If the two lists contain the same pattern.
+
+
+
+   .. py:method:: to_options() -> docbuild.utils.sync.RsyncOptions
+
+      Create rsync options with the combined exclusions.
+
+      :return: Options ready to pass to the rsync utility.
+
+

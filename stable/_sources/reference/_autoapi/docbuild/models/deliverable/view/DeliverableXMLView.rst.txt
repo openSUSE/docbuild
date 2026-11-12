@@ -98,6 +98,12 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:method:: default_deliverable_nodes() -> collections.abc.Generator[lxml.etree._Element, None, None]
+
+      Yield ``<deliverable>`` elements from the docset's default locale.
+
+
+
    .. py:property:: lang
       :type: docbuild.models.language.LanguageCode
 
@@ -178,6 +184,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:property:: dc_node
+      :type: lxml.etree._Element | None
+
+
+      Return the child <dc> element if present.
+
+
+
    .. py:property:: is_dc
       :type: bool
 
@@ -241,6 +255,26 @@ docbuild.models.deliverable.view.DeliverableXMLView
    .. py:method:: desc() -> collections.abc.Generator[lxml.etree._Element, None, None]
 
       Yield product ``<desc>`` elements.
+
+
+
+   .. py:method:: target_product_description_titles() -> collections.abc.Generator[tuple[docbuild.models.language.LanguageCode, str], None, None]
+
+      Yield language/title pairs for descriptions on the xref's target product.
+
+
+
+   .. py:method:: xref_desc() -> collections.abc.Generator[lxml.etree._Element, None, None]
+
+      Yield description elements nested under this deliverable's xref.
+
+
+
+   .. py:property:: xref_description_treatment
+      :type: Literal['append', 'prepend', 'replace']
+
+
+      Return the xref description treatment, defaulting to ``append``.
 
 
 

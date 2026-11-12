@@ -1,0 +1,27 @@
+docbuild.cli.cmd_build.cmd_index
+================================
+
+.. py:module:: docbuild.cli.cmd_build.cmd_index
+
+.. autoapi-nested-parse::
+
+   CLI command for building index pages from metadata.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_build.cmd_index.index
+
+
+Module Contents
+---------------
+
+.. py:function:: index(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, ...], keep_index: bool) -> None
+
+   Generate index HTML pages for deliverables using Jinja templates.
+
+

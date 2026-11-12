@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.29.0</title>
+    <title>docbuild.cli.cmd_cli &#8212; Docbuild Documentation 0.30.0</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../_static/documentation_options.js?v=fcb1757e"></script>
+    <script src="../../../../../_static/documentation_options.js?v=a7ea5d77"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.29.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.30.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.29.0" />
+  <meta name="docsearch:version" content="0.30.0" />
   
     
     <script src="../../../../../_static/searchtools.js"></script>
@@ -566,6 +566,15 @@
 <li class="toctree-l4"><a class="reference internal" href="../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/display/index.html">docbuild.utils.display</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/ItemState.html">docbuild.utils.display.ItemState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/MofNColumn.html">docbuild.utils.display.MofNColumn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/StageProgress.html">docbuild.utils.display.StageProgress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/Item.html">docbuild.utils.display.Item</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/Stage.html">docbuild.utils.display.Stage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/display/LiveProgressManager.html">docbuild.utils.display.LiveProgressManager</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
 </ul>
@@ -683,34 +692,34 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.setup_console" title="docbuild.cli.cmd_cli.setup_console"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_console</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.setup_console" title="docbuild.cli.cmd_cli.setup_console"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_console</span></code></a>() → None</p></td>
 <td><p>Configure the rich console.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_theme_overrides" title="docbuild.cli.cmd_cli.apply_theme_overrides"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_theme_overrides</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_theme_overrides" title="docbuild.cli.cmd_cli.apply_theme_overrides"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_theme_overrides</span></code></a>(context) → None</p></td>
 <td><p>Apply theme overrides from application config to the rich console.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_message_settings" title="docbuild.cli.cmd_cli.apply_message_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_message_settings</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_message_settings" title="docbuild.cli.cmd_cli.apply_message_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_message_settings</span></code></a>(context) → None</p></td>
 <td><p>Apply message settings from application config.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.handle_validation_error" title="docbuild.cli.cmd_cli.handle_validation_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_validation_error</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.handle_validation_error" title="docbuild.cli.cmd_cli.handle_validation_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_validation_error</span></code></a>(e, model_class, config_files, ...) → None</p></td>
 <td><p>Format validation errors and exit the CLI.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_app_config" title="docbuild.cli.cmd_cli.load_app_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_app_config</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_app_config" title="docbuild.cli.cmd_cli.load_app_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_app_config</span></code></a>(ctx, app_config, max_workers[, ...]) → None</p></td>
 <td><p>Load and validate Application configuration.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(→ list[str])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.parse_key" title="docbuild.cli.cmd_cli.parse_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_key</span></code></a>(key) → list[str]</p></td>
 <td><p>Parse dot-separated key path, respecting quoted/bracketed/escaped segments.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.apply_override" title="docbuild.cli.cmd_cli.apply_override"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_override</span></code></a>(config, override) → None</p></td>
 <td><p>Parse and apply a single KEY=VALUE override to the configuration dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_env_config" title="docbuild.cli.cmd_cli.load_env_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_env_config</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.load_env_config" title="docbuild.cli.cmd_cli.load_env_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_env_config</span></code></a>(ctx, env_config, env_overrides[, ...]) → None</p></td>
 <td><p>Load and validate Environment configuration.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.setup_logging_from_context" title="docbuild.cli.cmd_cli.setup_logging_from_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging_from_context</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.setup_logging_from_context" title="docbuild.cli.cmd_cli.setup_logging_from_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_logging_from_context</span></code></a>(context, verbose) → None</p></td>
 <td><p>Extract logging configuration from context and set it up.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.cli" title="docbuild.cli.cmd_cli.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_cli.cli" title="docbuild.cli.cmd_cli.cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cli</span></code></a>(ctx, verbose, dry_run, debug, app_config, ...) → None</p></td>
 <td><p>Acts as a main entry point for CLI tool.</p></td>
 </tr>
 </tbody>

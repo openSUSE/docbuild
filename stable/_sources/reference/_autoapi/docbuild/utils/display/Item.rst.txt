@@ -1,0 +1,19 @@
+docbuild.utils.display.Item
+===========================
+
+.. py:class:: docbuild.utils.display.Item
+
+   Handle for one item; it succeeds unless skipped, failed, or raising.
+
+
+   .. py:method:: skip() -> None
+
+      Mark the item as skipped.
+
+
+
+   .. py:method:: fail() -> None
+
+      Mark the item as failed without raising.
+
+

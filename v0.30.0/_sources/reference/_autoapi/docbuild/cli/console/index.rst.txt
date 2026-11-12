@@ -1,0 +1,42 @@
+docbuild.cli.console
+====================
+
+.. py:module:: docbuild.cli.console
+
+.. autoapi-nested-parse::
+
+   Centralized Rich console instances for docbuild CLI output and errors.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   docbuild.cli.console.console
+   docbuild.cli.console.console_err
+   docbuild.cli.console.console_out
+
+
+Module Contents
+---------------
+
+.. py:data:: console
+   :type:  rich.console.Console
+
+   Shared Rich console for standard output.
+
+
+.. py:data:: console_err
+   :type:  rich.console.Console
+
+   Shared Rich console for standard error and diagnostics.
+
+
+.. py:data:: console_out
+   :type:  rich.console.Console
+
+   Alias for `console` when explicit stdout/stderr symmetry is preferred.
+
+

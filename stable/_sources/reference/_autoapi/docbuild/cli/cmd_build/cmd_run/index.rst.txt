@@ -22,7 +22,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: run(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, ...], skip_repo_update: bool, skip_metadata: bool, sitemap: bool) -> None
+.. py:function:: run(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype, ...], skip_repo_update: bool, skip_metadata: bool, sitemap: bool, live: bool) -> None
 
    Run the build pipeline for deliverables.
 

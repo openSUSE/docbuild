@@ -1,0 +1,24 @@
+docbuild.models.envroles
+========================
+
+.. py:module:: docbuild.models.envroles
+
+.. autoapi-nested-parse::
+
+   Environment roles for the docbuild application.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/models/envroles/EnvRole
+
+.. autoapisummary::
+
+   docbuild.models.envroles.EnvRole
+
+

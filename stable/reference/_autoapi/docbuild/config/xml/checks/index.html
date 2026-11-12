@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.29.0</title>
+    <title>docbuild.config.xml.checks &#8212; Docbuild Documentation 0.30.0</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=fcb1757e"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=a7ea5d77"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.29.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'v0.30.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.29.0" />
+  <meta name="docsearch:version" content="0.30.0" />
   
     
     <script src="../../../../../../_static/searchtools.js"></script>
@@ -566,6 +566,15 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/decorators/RegistryDecorator.html">docbuild.utils.decorators.RegistryDecorator</a></li>
 </ul>
 </details></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/display/index.html">docbuild.utils.display</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/ItemState.html">docbuild.utils.display.ItemState</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/MofNColumn.html">docbuild.utils.display.MofNColumn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/StageProgress.html">docbuild.utils.display.StageProgress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/Item.html">docbuild.utils.display.Item</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/Stage.html">docbuild.utils.display.Stage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../utils/display/LiveProgressManager.html">docbuild.utils.display.LiveProgressManager</a></li>
+</ul>
+</details></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../utils/doc/index.html">docbuild.utils.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../utils/doc/SafeDict.html">docbuild.utils.doc.SafeDict</a></li>
 </ul>
@@ -686,58 +695,58 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.docset_id" title="docbuild.config.xml.checks.docset_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">docset_id</span></code></a>(→ str)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.docset_id" title="docbuild.config.xml.checks.docset_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">docset_id</span></code></a>(node) → str</p></td>
 <td><p>Return a stable docset identifier for error messages.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.dc_identifier" title="docbuild.config.xml.checks.dc_identifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dc_identifier</span></code></a>(→ str)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.dc_identifier" title="docbuild.config.xml.checks.dc_identifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dc_identifier</span></code></a>(deliverable) → str</p></td>
 <td><p>Return a DC identifier from legacy or current schema representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_dc_in_language" title="docbuild.config.xml.checks.check_dc_in_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_dc_in_language</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_dc_in_language" title="docbuild.config.xml.checks.check_dc_in_language"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_dc_in_language</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Make sure each DC appears only once within a language.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_format_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_format_in_extralinks</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_format_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_format_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_format_in_extralinks</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check that format attributes in extralinks are unique.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_url_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_url_in_extralinks</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_duplicated_url_in_extralinks" title="docbuild.config.xml.checks.check_duplicated_url_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_duplicated_url_in_extralinks</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check that url attributes in extralinks are unique within each language.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_enabled_format" title="docbuild.config.xml.checks.check_enabled_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_enabled_format</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_enabled_format" title="docbuild.config.xml.checks.check_enabled_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_enabled_format</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check if at least one format is enabled.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="docbuild.config.xml.checks.check_format_subdeliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_format_subdeliverable</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_format_subdeliverable" title="docbuild.config.xml.checks.check_format_subdeliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_format_subdeliverable</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Make sure that deliverables with subdeliverables have only HTML formats enabled.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="docbuild.config.xml.checks.check_lang_code_in_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_desc</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_desc" title="docbuild.config.xml.checks.check_lang_code_in_desc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_desc</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Ensure that each language code appears only once within &lt;desc&gt;.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="docbuild.config.xml.checks.check_lang_code_in_docset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_docset</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_docset" title="docbuild.config.xml.checks.check_lang_code_in_docset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_docset</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Ensure that each language code appears only once within &lt;docset&gt;.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_lang_code_in_extralinks" title="docbuild.config.xml.checks.check_lang_code_in_extralinks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_lang_code_in_extralinks</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Ensure that each language code appears only once within <code class="docutils literal notranslate"><span class="pre">external/link/url</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_subdeliverable_in_deliverable" title="docbuild.config.xml.checks.check_subdeliverable_in_deliverable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_subdeliverable_in_deliverable</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check that subdeliverables within a deliverable are unique.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_git_remote_for_dc_deliverables" title="docbuild.config.xml.checks.check_git_remote_for_dc_deliverables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_git_remote_for_dc_deliverables</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_git_remote_for_dc_deliverables" title="docbuild.config.xml.checks.check_git_remote_for_dc_deliverables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_git_remote_for_dc_deliverables</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Ensure DAPS/DC deliverables keep a sibling <code class="docutils literal notranslate"><span class="pre">&lt;git&gt;</span></code> resource.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="docbuild.config.xml.checks.check_unsupported_language_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_unsupported_language_code</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_unsupported_language_code" title="docbuild.config.xml.checks.check_unsupported_language_code"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_unsupported_language_code</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check for language codes that match the portal format but are not supported.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_spotlight_target" title="docbuild.config.xml.checks.check_spotlight_target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_spotlight_target</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_spotlight_target" title="docbuild.config.xml.checks.check_spotlight_target"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_spotlight_target</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check that spotlight elements point to a valid target.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.build_id_map" title="docbuild.config.xml.checks.build_id_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_id_map</span></code></a>(→ dict[str, lxml.etree._Element])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.build_id_map" title="docbuild.config.xml.checks.build_id_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_id_map</span></code></a>(tree) → dict[str, lxml.etree._Element]</p></td>
 <td><p>Map all elements in the tree by their <code class="docutils literal notranslate"><span class="pre">xml:id</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.has_circular_reference" title="docbuild.config.xml.checks.has_circular_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_circular_reference</span></code></a>(→ bool)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.has_circular_reference" title="docbuild.config.xml.checks.has_circular_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_circular_reference</span></code></a>(deliv, target, id_map) → bool</p></td>
 <td><p>Return True if deliv's reference to target forms a circular dependency.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_reference_nesting" title="docbuild.config.xml.checks.check_reference_nesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_reference_nesting</span></code></a>(...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_reference_nesting" title="docbuild.config.xml.checks.check_reference_nesting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_reference_nesting</span></code></a>(deliv, target, linkend, id_map) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Validate nesting constraints when pointing to another reference deliverable.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_deliverable_reference" title="docbuild.config.xml.checks.check_deliverable_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_deliverable_reference</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.config.xml.checks.check_deliverable_reference" title="docbuild.config.xml.checks.check_deliverable_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_deliverable_reference</span></code></a>(tree) → collections.abc.Iterator[CheckResult]</p></td>
 <td><p>Check deliverable reference targets and nesting constraints.</p></td>
 </tr>
 </tbody>

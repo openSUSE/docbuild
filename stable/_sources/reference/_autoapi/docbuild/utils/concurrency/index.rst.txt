@@ -55,7 +55,6 @@ Functions
    docbuild.utils.concurrency.worker
    docbuild.utils.concurrency.run_all
    docbuild.utils.concurrency.run_parallel
-   docbuild.utils.concurrency.sample_worker
 
 
 Module Contents
@@ -199,20 +198,5 @@ Module Contents
        1
        4
 
-
-
-.. py:function:: sample_worker(num: int) -> int
-   :async:
-
-
-   Process a number after simulating an asynchronous I/O operation.
-
-   The example intentionally raises an exception for selected input
-   values to demonstrate how :func:`run_parallel` reports failures.
-
-   :param num: Number to process.
-   :return: The input number multiplied by two.
-   :raises ValueError: When ``num`` is one of the values configured
-       to simulate a failure.
 
 

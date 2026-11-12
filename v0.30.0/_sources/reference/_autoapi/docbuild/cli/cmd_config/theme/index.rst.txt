@@ -1,0 +1,29 @@
+docbuild.cli.cmd_config.theme
+=============================
+
+.. py:module:: docbuild.cli.cmd_config.theme
+
+.. autoapi-nested-parse::
+
+   CLI interface to preview theme presets and active styling.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_config.theme.theme_cmd
+
+
+Module Contents
+---------------
+
+.. py:function:: theme_cmd(ctx: click.Context, preset: str) -> None
+
+   Preview built-in theme presets and the active theme configuration.
+
+   Displays visual showcase tables with live rendering of each semantic token.
+
+
