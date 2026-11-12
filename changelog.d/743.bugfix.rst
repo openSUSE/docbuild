@@ -1,2 +1,0 @@
-Combine locale-level and DC-level subdirectories and normalize the resulting
-path.

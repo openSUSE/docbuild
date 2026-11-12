@@ -1,1 +1,0 @@
-Rename ``sles4nvidia`` to ``sles-nvidia``.
