@@ -4,30 +4,34 @@ from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 from click.testing import CliRunner
-import pytest
 
 from docbuild.cli.cmd_cli import cli
 
 
-@pytest.mark.parametrize("command", (["build", "llms"], ["llms"]))
-def test_llms_disabled(command: list[str]) -> None:
+def test_llms_disabled() -> None:
     """Test the llms command exits safely when disabled in config."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["-C", "build.build_llmstxt=false", *command])
+    result = runner.invoke(cli, ["-C", "build.build_llmstxt=false", "build", "llms"])
 
     assert result.exit_code == 0
     assert "LLMs generation is disabled" in result.output
 
 
-@pytest.mark.parametrize("command", (["build", "llms"], ["llms"]))
-def test_llms_missing_target_dir(command: list[str], tmp_path: Path) -> None:
+def test_llms_missing_target_dir(tmp_path: Path) -> None:
     """Test the llms command fails if target directory does not exist."""
     runner = CliRunner()
     fake_dir = tmp_path / "does_not_exist"
 
     result = runner.invoke(
         cli,
-        ["-C", "build.build_llmstxt=true", "-C", f"paths.target.target_base_dir={fake_dir}", *command],
+        [
+            "-C",
+            "build.build_llmstxt=true",
+            "-C",
+            f"paths.target.target_base_dir={fake_dir}",
+            "build",
+            "llms",
+        ],
     )
 
     assert result.exit_code == 1
@@ -102,13 +106,3 @@ def test_build_group_help_lists_llms() -> None:
 
     assert result.exit_code == 0
     assert "llms" in result.output
-
-
-def test_llms_hidden_alias_still_available() -> None:
-    """Test the legacy top-level llms spelling still runs but is not listed."""
-    runner = CliRunner()
-    result = runner.invoke(cli, ["-C", "build.build_llmstxt=false", "llms"])
-
-    assert result.exit_code == 0
-    assert "LLMs generation is disabled" in result.output
-    assert "llms" not in runner.invoke(cli, ["--help"]).output

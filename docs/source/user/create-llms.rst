@@ -5,12 +5,7 @@ Creating Markdown for AI Tools
 
 AI assistants and LLM crawlers often read web pages poorly.
 Pages full of navigation menus, scripts, and layout markup waste their limited context on noise.
-``docbuild build llms`` gives them a cleaner version of your documentation.
-
-.. note::
-
-   The former top-level spelling :command:`docbuild llms` still works as
-   an alias for :command:`docbuild build llms`.
+:command:`docbuild build llms` gives them a cleaner version of your documentation.
 
 Why build Markdown files?
 -------------------------
