@@ -248,6 +248,11 @@ class Repo:
             or raw_data.get("gh_repo")
         )
 
+        # Initialize fallback defaults before match so static analyzers see guaranteed
+        # bindings on every path without introducing a redundant dummy assignment.
+        service = raw_data.get("gh_schema") or "gh"
+        url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
+
         match raw_data:
             case {
                 "https_schema": https_schema,
@@ -259,9 +264,6 @@ class Repo:
                 url = f"{https_schema}://{https_host}/{org}/{repo}.git"
             case {"ssh_schema": "git@", "ssh_host": ssh_host} if ssh_host:
                 service = self._MAP_URL2SERVICE.get(f"https://{ssh_host}", "gh")
-                url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
-            case _:
-                service = raw_data.get("gh_schema") or "gh"
                 url = f"{self._MAP_SERVICE2URL.get(service, self.DEFAULT_HOST)}/{org}/{repo}.git"
 
         result = {

@@ -107,7 +107,7 @@ def run(  # noqa: C901
     env = context.envconfig
 
     timer = make_timer("build")
-    result = 1  # Default exit code for interruption or error
+    result: int = 1  # Default exit code for interruption or error
 
     # Paths for Metadata & Build
     main_portal_config = env.paths.main_portal_config
@@ -182,7 +182,6 @@ def run(  # noqa: C901
             llmstxt_dir=env.paths.llmstxt_dir,
         )
 
-    result = 1
     t = None
     try:
         with timer() as t:
