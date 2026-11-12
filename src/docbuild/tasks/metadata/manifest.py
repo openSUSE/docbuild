@@ -77,19 +77,20 @@ def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
             log.error("Empty metadata file %s", actual_file)
             return None
 
+        # This yields a Document model with a single translation in its .docs list
+        document = Document.model_validate(loaded_doc_data)
+
         # 3. If this was an xref, project the JSON metadata into the referencing language
         if d.xml.is_xref:
-            if "docs" in loaded_doc_data and len(loaded_doc_data["docs"]) > 0:
-                loaded_doc_data["docs"][0]["lang"] = str(d.xml.lang)
-                loaded_doc_data["docs"][0]["default"] = str(d.xml.lang) == "en-us"
+            if document.docs:
+                document.docs[0].lang = str(d.xml.lang)
+                document.docs[0].default = d.lang_is_default
 
-            # Override category if the xref node explicitly sets one
-            xref_cat = d.xml.xref_node.get("category") if d.xml.xref_node is not None else None
-            if xref_cat:
-                loaded_doc_data["category"] = xref_cat
+            # Override category if the xref or target sets one
+            if category := d.xml.categoryid:
+                document.category = category
 
-        # This yields a Document model with a single translation in its .docs list
-        return Document.model_validate(loaded_doc_data)
+        return document
 
     except (json.JSONDecodeError, ValidationError, OSError) as e:
         log.error("Error processing metadata file %s: %s", actual_file, e)

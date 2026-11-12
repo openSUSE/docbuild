@@ -1,0 +1,1 @@
+Localized deliverables now inherit output format settings from their English reference so generated metadata manifests include translated PDF URLs.

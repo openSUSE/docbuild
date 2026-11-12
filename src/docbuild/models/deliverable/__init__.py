@@ -8,9 +8,10 @@
     If the XML is invalid, behavior is undefined and may raise exceptions.
 """
 
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from functools import cached_property, total_ordering
-from typing import ClassVar, Literal
+from typing import ClassVar, Literal, Self
 
 from lxml import etree  # type: ignore[import]
 
@@ -88,8 +89,12 @@ class Deliverable:
     @cached_property
     def lang_is_default(self) -> bool:
         """Return ``True`` when the language node is marked as default."""
-        content: str = self._node.getparent().attrib.get("lang", "")
-        return content == DEFAULT_LANG
+        return self.xml.lang == DEFAULT_LANG
+
+    @property
+    def default_deliverables(self) -> Iterator[Self]:
+        """Yield all deliverables defined in the docset's default locale."""
+        return (type(self)(node) for node in self.xml.default_deliverable_nodes())
 
     @cached_property
     def branch(self) -> str:
