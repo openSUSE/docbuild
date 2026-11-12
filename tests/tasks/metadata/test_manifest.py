@@ -809,3 +809,46 @@ def test_store_productdocset_json_filters_categories(
         ("cat.unreferenced", 30),
         ("cat.sles.local", 40),
     ]
+
+
+def test_store_productdocset_json_unsupported_docset(tmp_path: Path) -> None:
+    """Unsupported docsets should generate a JSON manifest with an empty documents list."""
+    xml_string = """
+    <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+        <product xml:id="sles">
+            <name>SUSE Linux Enterprise Server</name>
+            <descriptions>
+                <description lang="en-us" default="true"><p>SLES description</p></description>
+            </descriptions>
+            <docset xml:id="sles.15-sp3" path="15-SP3" lifecycle="unsupported">
+                <resources>
+                    <locale lang="en-us" default="true">
+                        <branch>main</branch>
+                        <deliverable xml:id="doc1"><dc file="DC-1"/></deliverable>
+                    </locale>
+                </resources>
+            </docset>
+        </product>
+    </portal>
+    """
+
+    stitchnode = etree.ElementTree(etree.fromstring(xml_string.encode("utf-8")))
+    meta_cache_dir = tmp_path / "meta"
+    json_cache_dir = tmp_path / "json"
+    meta_cache_dir.mkdir()
+    json_cache_dir.mkdir()
+
+    doctype = Doctype.from_str("sles/15-SP3@unsupported/*")
+    store_productdocset_json(
+        doctypes=[doctype],
+        stitchnode=stitchnode,
+        meta_cache_dir=meta_cache_dir,
+        json_cache_dir=json_cache_dir,
+    )
+
+    out_file = json_cache_dir / "sles" / "15-SP3.json"
+    assert out_file.exists()
+    data = json.loads(out_file.read_text(encoding="utf-8"))
+
+    assert data["lifecycle"] == "unsupported"
+    assert data["documents"] == []

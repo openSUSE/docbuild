@@ -15,6 +15,7 @@ from ...constants import DEFAULT_LANG
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...models.language import LanguageCode
+from ...models.lifecycle import LifecycleFlag
 from ...models.manifest import (
     Archive,
     Category,
@@ -304,6 +305,7 @@ def store_productdocset_json(
     2.  Deliverables are grouped by the product and docset they belong to.
     3.  For each group, the corresponding ``DC-*.json`` metadata files are loaded
         from the cache into :class:`~docbuild.models.manifest.Document` models.
+        (Unsupported docsets skip document loading and produce an empty list.)
     4.  These per-language documents are merged into unified document entries.
     5.  A final :class:`~docbuild.models.manifest.Manifest` is assembled with
         all associated data (descriptions, categories, etc.) and written to
@@ -331,22 +333,27 @@ def store_productdocset_json(
         assert product_id and docset_id
 
         deliverables_in_group = list(group)
-
-        # 3. Load the corresponding DC-*.json files from cache for this group
-        documents = load_documents_from_deliverables(deliverables_in_group, meta_cache_dir)
-        if not documents:
-            log.warning("No valid metadata files found for %s/%s", product_id, docset_id)
-            continue
-
-        # 4. Merge the per-language documents into unified entries by dcfile
-        merged_documents = merge_documents_by_dcfile(documents)
-
-        # 5. Extract shared manifest data (descriptions, categories, etc.)
-        # We can get this from the first deliverable in the group
         first_deliv = deliverables_in_group[0]
         productnode = first_deliv.xml.product_node
         docsetnode = first_deliv.xml.docset_node
 
+        is_unsupported = LifecycleFlag.unsupported in LifecycleFlag.from_str(
+            docsetnode.attrib.get("lifecycle", "")
+        )
+
+        if is_unsupported:
+            merged_documents = []
+        else:
+            # 3. Load the corresponding DC-*.json files from cache for this group
+            documents = load_documents_from_deliverables(deliverables_in_group, meta_cache_dir)
+            if not documents:
+                log.warning("No valid metadata files found for %s/%s", product_id, docset_id)
+                continue
+
+            # 4. Merge the per-language documents into unified entries by dcfile
+            merged_documents = merge_documents_by_dcfile(documents)
+
+        # 5. Extract shared manifest data (descriptions, categories, etc.)
         product_descriptions = list(Description.from_xml_node(productnode))
         docset_descriptions = list(Description.from_xml_node(docsetnode))
         descriptions_node = docsetnode.find("descriptions")

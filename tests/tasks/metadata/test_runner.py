@@ -4,7 +4,7 @@ from collections.abc import Callable
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
-from lxml import etree
+from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.models.deliverable import Deliverable
@@ -62,6 +62,7 @@ class TestGatherBuildTasks:
         d1.full_id = "d1"
         d1.xml.is_xref = False
         d1.xml.lang = "en-us"
+        d1.xml.docset_node.attrib.get.return_value = "supported"
 
         # Create xref pointing to a deliverable
         d2 = SortableMock(spec=Deliverable)
@@ -70,6 +71,7 @@ class TestGatherBuildTasks:
         d2.xml.lang = "en-us"
         target_elem = etree.Element("deliverable")
         d2.xml.final_target_node = target_elem
+        d2.xml.docset_node.attrib.get.return_value = "supported"
 
         mock_get_deliverables.return_value = [d1, d2]
 
@@ -77,6 +79,7 @@ class TestGatherBuildTasks:
         with patch.object(runner_pkg, "Deliverable") as mock_deliverable:
             d_target = SortableMock(spec=Deliverable)
             d_target.full_id = "target"
+            d_target.xml.docset_node.attrib.get.return_value = "supported"
             mock_deliverable.return_value = d_target
 
             result = gather_build_tasks(empty_xml_root, [doctype])
@@ -511,3 +514,53 @@ class TestProcess:
             mock_pd.assert_awaited_once()
             args, _ = mock_pd.call_args
             assert args[0].xml.deliverableid == "doc2"
+
+
+    async def test_unsupported_docsets_are_not_built(
+        self,
+        runner_kwargs: dict[str, object],
+        tmp_path: Path,
+    ) -> None:
+        """Verify deliverables in unsupported docsets (and xrefs to them) are skipped."""
+        xml_string = """
+        <portal xmlns:xml="http://www.w3.org/XML/1998/namespace">
+            <product xml:id="sles">
+              <name>SUSE Linux Enterprise Server</name>
+              <docset xml:id="sles.15-sp3" path="15-SP3" lifecycle="unsupported">
+                <resources>
+                  <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable xml:id="doc-unsupported"><dc file="DC-1"/></deliverable>
+                  </locale>
+                </resources>
+              </docset>
+              <docset xml:id="sles.15-sp6" path="15-SP6" lifecycle="supported">
+                <resources>
+                  <locale lang="en-us">
+                    <branch>main</branch>
+                    <deliverable xml:id="doc-supported"><dc file="DC-2"/></deliverable>
+                    <xref target="doc-unsupported"/>
+                  </locale>
+                </resources>
+              </docset>
+            </product>
+        </portal>
+        """
+        (tmp_path / "portal.xml").write_text(xml_string)
+
+        runner_kwargs["doctypes"] = [Doctype.from_str("sles/*")]
+
+        import docbuild.tasks.metadata.runner as runner_pkg
+        with patch.object(runner_pkg, "store_productdocset_json"), \
+             patch.object(runner_pkg, "generate_homepage"), \
+             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
+             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
+
+            mock_pd.return_value = (True, Mock())
+
+            result = await process(**runner_kwargs)  # type: ignore
+
+            assert result == 0
+            mock_pd.assert_awaited_once()
+            args, _ = mock_pd.call_args
+            assert args[0].xml.deliverableid == "doc-supported"
