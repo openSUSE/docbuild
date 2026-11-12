@@ -1,7 +1,7 @@
 """Reusable Live UI components for DocBuild."""
 from collections import Counter
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 import contextvars
 from dataclasses import dataclass
 from enum import StrEnum
@@ -203,7 +203,7 @@ class LiveProgressManager:
 
         # Mute standard terminal logging so it doesn't fight rich.Live
         import logging
-        try:
+        with suppress(ImportError):
             from docbuild.logging import _LOGGING_STATE
             self._muted_handlers = []
             if (listener_var := _LOGGING_STATE.get("listener")) and (listener := listener_var.get()):
@@ -211,8 +211,6 @@ class LiveProgressManager:
                     if h.__class__.__name__ == "StreamHandler":
                         self._muted_handlers.append((h, h.level))
                         h.setLevel(logging.CRITICAL + 1)
-        except ImportError:
-            pass
 
         self.live.start()
         return self

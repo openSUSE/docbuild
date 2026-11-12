@@ -21,6 +21,44 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.30.0
+==============
+
+Bug Fixes
+---------
+
+- Fixed xref deliverable links to include localized descriptions and honor the xref description treatment. (:gh:`728`)
+- Category ranks in generated JSON manifests are now assigned sequentially in steps of 10, so filtered categories no longer leave gaps. (:gh:`734`)
+- Rename ``sles4nvidia`` to ``sles-nvidia``. (:gh:`735`)
+- Localized deliverables now inherit output format settings from their English reference so generated metadata manifests include translated PDF URLs. (:gh:`742`)
+- Combine locale-level and DC-level subdirectories and normalize the resulting
+  path. (:gh:`743`)
+
+
+Improved Documentation
+----------------------
+
+- Clarified the pull request guide with a fork-based workflow and a cross-reference to development environment setup. (:gh:`726`)
+
+
+Features
+--------
+
+- Added a "Live" progress view for building deliverables, which displays a progress bar alongside real-time logging output without breaking the terminal layout. It can be enabled using the new ``--live`` or ``-L`` options in the :command:`build run` command. (:gh:`154`)
+- :command:`docbuild check files` now groups deliverables under the repository and
+  branch they were collected from, and falls back to the ``supported``
+  lifecycle when none was requested instead of showing ``unknown``. (:gh:`695`)
+- Introduce new product ``sles4nvidia`` (:gh:`727`)
+- Allowed ``category`` attribute in xref deliverable. (:gh:`737`)
+
+
+Infrastructure
+--------------
+
+- Add :file:`CONTRIBUTING.md` and PR template to set contributor expectations. (:gh:`718`)
+- Avoid :exc:`~pytest.PytestDeprecationWarning` (:gh:`745`)
+
+
 Version 0.29.0
 ==============
 

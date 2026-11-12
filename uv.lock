@@ -411,13 +411,13 @@ dev = [
     { name = "docformatter", specifier = ">=1.7.8" },
     { name = "ipython", specifier = ">=9.18.1" },
     { name = "myst-parser", specifier = ">=5.1.0" },
-    { name = "pydata-sphinx-theme", specifier = ">=0.23.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.24.0" },
     { name = "pyrefly", specifier = ">=1.4.0" },
     { name = "pyright", specifier = ">=1.1.411" },
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
-    { name = "pytest-datadir", specifier = ">=1.6.0" },
+    { name = "pytest-datadir", specifier = ">=1.9.0" },
     { name = "ruff", specifier = ">=0.17.0" },
     { name = "setuptools-scm", specifier = ">=10.3.4" },
     { name = "sphinx", specifier = ">=9.1.0" },
@@ -434,13 +434,13 @@ devel = [
     { name = "docformatter", specifier = ">=1.7.8" },
     { name = "ipython", specifier = ">=9.18.1" },
     { name = "myst-parser", specifier = ">=5.1.0" },
-    { name = "pydata-sphinx-theme", specifier = ">=0.23.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.24.0" },
     { name = "pyrefly", specifier = ">=1.4.0" },
     { name = "pyright", specifier = ">=1.1.411" },
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
-    { name = "pytest-datadir", specifier = ">=1.6.0" },
+    { name = "pytest-datadir", specifier = ">=1.9.0" },
     { name = "ruff", specifier = ">=0.17.0" },
     { name = "setuptools-scm", specifier = ">=10.3.4" },
     { name = "sphinx", specifier = ">=9.1.0" },
@@ -455,7 +455,7 @@ devel = [
 ]
 docs = [
     { name = "myst-parser", specifier = ">=5.1.0" },
-    { name = "pydata-sphinx-theme", specifier = ">=0.23.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.24.0" },
     { name = "setuptools-scm", specifier = ">=10.3.4" },
     { name = "sphinx", specifier = ">=9.1.0" },
     { name = "sphinx-autoapi", specifier = ">=3.9.0" },
@@ -472,11 +472,11 @@ formatting = [
 ]
 github-action = [
     { name = "myst-parser", specifier = ">=5.1.0" },
-    { name = "pydata-sphinx-theme", specifier = ">=0.23.0" },
+    { name = "pydata-sphinx-theme", specifier = ">=0.24.0" },
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
-    { name = "pytest-datadir", specifier = ">=1.6.0" },
+    { name = "pytest-datadir", specifier = ">=1.9.0" },
     { name = "setuptools-scm", specifier = ">=10.3.4" },
     { name = "sphinx", specifier = ">=9.1.0" },
     { name = "sphinx-autoapi", specifier = ">=3.9.0" },
@@ -492,7 +492,7 @@ tests = [
     { name = "pytest", specifier = ">=9.2.0" },
     { name = "pytest-asyncio", specifier = ">=1.4.0" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
-    { name = "pytest-datadir", specifier = ">=1.6.0" },
+    { name = "pytest-datadir", specifier = ">=1.9.0" },
 ]
 typing = [
     { name = "pyrefly", specifier = ">=1.4.0" },
@@ -1122,7 +1122,7 @@ wheels = [
 
 [[package]]
 name = "pydata-sphinx-theme"
-version = "0.23.0"
+version = "0.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "accessible-pygments" },
@@ -1134,9 +1134,9 @@ dependencies = [
     { name = "requests" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/54/24/efb184268dc958ea894821b8643954be7746f67cdd2c08f8f47f9b0c4735/pydata_sphinx_theme-0.23.0.tar.gz", hash = "sha256:f9e647e0bb3f1d8eaa6d866248812711211313627cc4ae76b5f88a17a4be38ce", size = 5015474, upload-time = "2026-10-08T08:52:13.975Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/69/08/ef36c71c85ccd574233bb35e04a9695efecc5d54cb2edae839a5bc58f8ca/pydata_sphinx_theme-0.24.0.tar.gz", hash = "sha256:bc9050daac696ab62c817e324ef29ee43720c2e6068fde809c76a52d4c788ac2", size = 5020159, upload-time = "2026-11-02T13:42:05.276Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/a9/187b2aa8ea213d72c13ce3627e605d922d697c470532d67b5b707d944b2c/pydata_sphinx_theme-0.23.0-py3-none-any.whl", hash = "sha256:7bf56f1eda7b03c62719dd0dd3b50035c8bfb72caf4faefa5ac46400a82e408f", size = 6214022, upload-time = "2026-10-08T08:52:11.881Z" },
+    { url = "https://files.pythonhosted.org/packages/f2/3b/f99ccbf185b910e7303ddb20849f83eb0995c0ffc983b4b5e10eda1ca7b6/pydata_sphinx_theme-0.24.0-py3-none-any.whl", hash = "sha256:195bc167ab1dcf0b31037e26f145f60461dc9cbb1eb2011283565567ee4fb6e5", size = 3217864, upload-time = "2026-11-02T13:42:03.147Z" },
 ]
 
 [[package]]
@@ -1225,14 +1225,14 @@ wheels = [
 
 [[package]]
 name = "pytest-datadir"
-version = "1.8.0"
+version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pytest" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/46/db060b291999ca048edd06d6fa9ee95945d088edc38b1172c59eeb46ec45/pytest_datadir-1.8.0.tar.gz", hash = "sha256:7a15faed76cebe87cc91941dd1920a9a38eba56a09c11e9ddf1434d28a0f78eb", size = 11848, upload-time = "2025-07-30T13:52:12.518Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/8b/0f3460b1223d3053d355347445bc6d1a85cdc50f1fe80b17bb2b25b2e854/pytest_datadir-1.9.0.tar.gz", hash = "sha256:1e81f37069571fe283b58d8c14386898b62e54543654b6b5335d74313c16b1af", size = 13081, upload-time = "2026-11-03T14:28:15.899Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/7a/33895863aec26ac3bb5068a73583f935680d6ab6af2a9567d409430c3ee1/pytest_datadir-1.8.0-py3-none-any.whl", hash = "sha256:5c677bc097d907ac71ca418109adc3abe34cf0bddfe6cf78aecfbabd96a15cf0", size = 6512, upload-time = "2025-07-30T13:52:11.525Z" },
+    { url = "https://files.pythonhosted.org/packages/35/5d/042a244ff485e2956e1bd548eb9a8ee186a1a9fd4dfc44a3683b62f1bf01/pytest_datadir-1.9.0-py3-none-any.whl", hash = "sha256:e8b071cc486deee3cc5d8fc24c41735396d1ced2e75bbb85d15b6e67b8b41acb", size = 6463, upload-time = "2026-11-03T14:28:14.747Z" },
 ]
 
 [[package]]

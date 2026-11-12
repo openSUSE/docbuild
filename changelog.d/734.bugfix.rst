@@ -1,1 +1,0 @@
-Category ranks in generated JSON manifests are now assigned sequentially in steps of 10, so filtered categories no longer leave gaps.

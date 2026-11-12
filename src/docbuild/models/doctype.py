@@ -3,7 +3,6 @@
 from collections.abc import Iterator
 from itertools import product
 import re
-from re import Pattern
 from typing import ClassVar, Self, cast
 
 from lxml import etree  # type: ignore
@@ -94,7 +93,7 @@ class Doctype(BaseModel):
     # Pre-compile regex for efficiency
     # The regex contains non-capturing groups on purpose
     # This leads to None in the result if that group isn't matched
-    _DOCTYPE_REGEX: ClassVar[Pattern] = re.compile(
+    _DOCTYPE_REGEX: ClassVar[re.Pattern] = re.compile(
         r"^"                                 # start
         r"(?:/?([^/@]+|\*))?"                # optional product (group 1)
         r"/(?:([^/@]+|\*))?"                 # optional docset (group 2)

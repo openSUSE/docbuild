@@ -1,1 +1,0 @@
-Clarified the pull request guide with a fork-based workflow and a cross-reference to development environment setup.

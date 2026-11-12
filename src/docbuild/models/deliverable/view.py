@@ -9,7 +9,7 @@ from typing import Literal, cast
 
 from lxml import etree  # type: ignore
 
-from ...constants import XML_ID
+from ...constants import DEFAULT_LANG, XML_ID
 from ...models.language import LanguageCode
 from ...utils.convert import convert2bool
 from ..repo import Repo
@@ -27,12 +27,12 @@ class DeliverableXMLView:
     @cached_property
     def product_node(self) -> etree._Element:
         """Return the ancestor ``<product>`` element."""
-        return self.node.getparent().getparent().getparent().getparent()
+        return cast(etree._Element, self.node.xpath("ancestor::product[1]")[0])
 
     @cached_property
     def docset_node(self) -> etree._Element:
         """Return the ancestor ``<docset>`` element."""
-        return cast(etree._Element, self.node.getparent().getparent().getparent())
+        return cast(etree._Element, self.node.xpath("ancestor::docset[1]")[0])
 
     # -- Identity fields
     @cached_property
@@ -90,7 +90,12 @@ class DeliverableXMLView:
     @cached_property
     def locale_en(self) -> etree._Element | None:
         """Return the English locale node (``<locale lang="en-us">``) or None if absent."""
-        return self.docset_node.find("resources/locale[@lang='en-us']")
+        return self.docset_node.find(f"resources/locale[@lang='{DEFAULT_LANG}']")
+
+    def default_deliverable_nodes(self) -> Generator[etree._Element, None, None]:
+        """Yield ``<deliverable>`` elements from the docset's default locale."""
+        if self.locale_en is not None:
+            yield from self.locale_en.findall("deliverable")
 
     @cached_property
     def lang(self) -> LanguageCode:
@@ -100,12 +105,17 @@ class DeliverableXMLView:
     @cached_property
     def dcfile(self) -> str | None:
         """Return the DC filename, or ``None`` if absent."""
-        if (dcnode := self.node.find("dc")) is not None:
+        if (dcnode := self.dc_node) is not None:
             return dcnode.attrib.get("file")
 
-        if self.is_xref and (target := self.final_target_node) is not None and target is not self.node:
-            if (dcnode := target.find("dc")) is not None:
-                return dcnode.attrib.get("file")
+        if (
+            self.is_xref
+            and (target := self.final_target_node) is not None
+            and target is not self.node
+        ):
+            target_view = DeliverableXMLView(target)
+            if not target_view.is_xref:
+                return target_view.dcfile
 
         return None
 
@@ -158,13 +168,16 @@ class DeliverableXMLView:
     def translations(self) -> set[str]:
         """Return a set of all language codes available for this deliverable."""
         d_id = self.xml_id
-        if self.docset_node is None or not d_id:
+        if not d_id:
             return {str(self.lang)}
 
         # Always include the base language
         langs = {str(self.lang)}
 
-        for deliv_node in self.docset_node.xpath(f"resources/locale[@lang!='en-us']/deliverable[xref[@linkend='{d_id}']]"):
+        for deliv_node in self.docset_node.xpath(
+            f"resources/locale[@lang!='{DEFAULT_LANG}']"
+            f"/deliverable[xref[@linkend='{d_id}']]"
+        ):
             # We must look at the parent <locale> to get the 'lang' attribute
             parent_loc = deliv_node.getparent()
             if loc_lang := parent_loc.get("lang"):
@@ -188,15 +201,26 @@ class DeliverableXMLView:
             return True
 
         # Fallback 2: if it's a translated reference, check if the English target is prebuilt
-        if self.is_xref and (target := self.final_target_node) is not None and target is not self.node:
-            return target.find("prebuilt") is not None or target.get("type") == "prebuilt"
+        if (
+            self.is_xref
+            and (target := self.final_target_node) is not None
+            and target is not self.node
+        ):
+            return (
+                target.find("prebuilt") is not None or target.get("type") == "prebuilt"
+            )
 
         return False
 
     @cached_property
+    def dc_node(self) -> etree._Element | None:
+        """Return the child <dc> element if present."""
+        return self.node.find("dc")
+
+    @cached_property
     def is_dc(self) -> bool:
         """Return True if the deliverable is marked as DC."""
-        return self.node.find("dc") is not None
+        return self.dc_node is not None
 
     @cached_property
     def xref_node(self) -> etree._Element | None:
@@ -269,7 +293,9 @@ class DeliverableXMLView:
         """Yield product ``<desc>`` elements."""
         yield from self.product_node.findall("descriptions/desc")
 
-    def target_product_description_titles(self) -> Generator[tuple[LanguageCode, str], None, None]:
+    def target_product_description_titles(
+        self,
+    ) -> Generator[tuple[LanguageCode, str], None, None]:
         """Yield language/title pairs for descriptions on the xref's target product."""
         target = self.final_target_node
         if target is None:
@@ -317,7 +343,7 @@ class DeliverableXMLView:
     def branch_from_fallback_locale(self) -> str | None:
         """Return branch from fallback locale lookup or ``None`` if missing."""
         node = self.node.getparent().xpath(
-            "ancestor::resources/locale[@lang!='en-us']/branch",
+            f"ancestor::resources/locale[@lang!='{DEFAULT_LANG}']/branch",
         )
         if len(node) > 0 and node[0].text is not None:
             return node[0].text.strip()
@@ -374,9 +400,8 @@ class DeliverableXMLView:
                 attrs[url_format] = "1"
         return attrs
 
-    def format_attrs(self) -> dict[
-            Literal["epub", "html", "pdf", "single-html"], bool
-        ] | None:
+    def format_attrs(self) -> dict[Literal["epub", "html", "pdf", "single-html"],
+                                   bool] | None:
         """Return deliverable output formats as a boolean dict.
 
         Extracts format attributes from the XML element, converts their
@@ -394,7 +419,7 @@ class DeliverableXMLView:
             raw_attrs = self._dc_format_attrs()
         elif self.is_prebuilt:
             raw_attrs = self._prebuilt_format_attrs(expected_formats)
-        #else:
+        # else:
         #    raw_attrs = None
 
         # Return None if no format attributes found
@@ -402,10 +427,7 @@ class DeliverableXMLView:
             return None
 
         # Convert attribute values to booleans, defaulting missing keys to False
-        return {
-            fmt: convert2bool(raw_attrs.get(fmt, "0"))
-            for fmt in expected_formats
-        }
+        return {fmt: convert2bool(raw_attrs.get(fmt, "0")) for fmt in expected_formats}
 
     # -- Dunder methods
     def __str__(self) -> str:
@@ -542,10 +564,8 @@ class DeliverableXMLView:
     @cached_property
     def docset_version(self) -> str:
         """Return the docset version."""
-        if self.docset_node is not None:
-            node = self.docset_node.findtext("version", default="")
-            return node.strip() if node else ""
-        return ""
+        node = self.docset_node.findtext("version", default="")
+        return node.strip() if node else ""
 
     @cached_property
     def target_type(self) -> Literal["product", "docset", "deliverable"] | None:
@@ -568,7 +588,9 @@ class DeliverableXMLView:
 
         if tag == "docset":
             prod = target.getparent()
-            p_path = (prod.get("path") or prod.get(XML_ID) or "") if prod is not None else ""
+            p_path = (
+                (prod.get("path") or prod.get(XML_ID) or "") if prod is not None else ""
+            )
             ds_path = target.get("path") or target.get(XML_ID) or ""
             return f"/{p_path}/{ds_path}/" if p_path else f"/{ds_path}/"
 
@@ -583,8 +605,19 @@ class DeliverableXMLView:
 
         tag = self.target_type
         if tag == "product":
-            return target.findtext("name") or target.get("path") or target.get(XML_ID) or ""
+            return (
+                target.findtext("name")
+                or target.get("path")
+                or target.get(XML_ID)
+                or ""
+            )
         if tag == "docset":
-            return target.findtext("name") or target.findtext("version") or target.get("path") or target.get(XML_ID) or ""
+            return (
+                target.findtext("name")
+                or target.findtext("version")
+                or target.get("path")
+                or target.get(XML_ID)
+                or ""
+            )
 
         return target.findtext("title") or ""

@@ -13,7 +13,7 @@ from lxml import etree  # type: ignore
 
 from docbuild.cli.console import console, console_err
 from docbuild.config.xml.portal import PortalConfig
-from docbuild.constants import DEFAULT_DELIVERABLES, DEFAULT_LANG, XML_ID
+from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
@@ -85,7 +85,7 @@ def gather_build_tasks(
             build_tasks[d.full_id] = d
         else:
             # Include translation xrefs so Phase 2 can check them against Git
-            if d.xml.lang != DEFAULT_LANG:
+            if not d.lang_is_default:
                 build_tasks[d.full_id] = d
 
             target = d.xml.final_target_node
@@ -110,35 +110,63 @@ def generate_homepage(stitchnode: etree._ElementTree, json_cache_dir: Path) -> N
         log.error("Failed to generate homepage.json: %s", e)
 
 
-def resolve_effective_dcfile(d: Deliverable) -> str | None:
-    """Extract the target DC filename, resolving xrefs if necessary."""
-    if not d.xml.is_xref:
-        return d.xml.dcfile
-
-    target = d.xml.final_target_node
-    if is_deliverable_node(target):
-        return Deliverable(_node=target).xml.dcfile
-    return None
-
-
-def fallback_to_english_xref(d: Deliverable, dcfile: str, dcpath: str) -> None:
+def fallback_to_english_xref(d: Deliverable, dcfile: str, dcpath: str) -> bool:
     """Convert an explicit translation into an xref fallback to English."""
-    # 2. DC file is missing: Explicit translation falls back to English xref
-    dc_node = d.xml.node.find("dc")
-    if dc_node is not None:
-        d.xml.node.remove(dc_node)
+    target_id = next(
+        (
+            en_d.xml.xml_id
+            for en_d in d.default_deliverables
+            if en_d.xml.is_dc and en_d.xml.dcfile == dcfile and en_d.xml.xml_id
+        ),
+        None,
+    )
 
-    en_locale = d.xml.locale_en
-    if en_locale is not None:
-        for en_d in en_locale.findall("deliverable"):
-            en_dc = en_d.find("dc")
-            if en_dc is not None and en_dc.get("file") == dcfile:
-                if target_id := en_d.get(XML_ID):
-                    d.xml.node.append(etree.Element("xref", linkend=target_id))
-                    log.info("Missing translated DC file %s for %s. Falling back to English blueprint (skipped).", dcpath, d.full_id)
-                    return
+    if target_id:
+        if (dc_node := d.xml.dc_node) is not None:
+            d.xml.node.remove(dc_node)
+        d.xml.node.set("type", "xref")
+        etree.SubElement(d.xml.node, "xref", linkend=target_id)
+        log.info(
+            "Missing translated DC file %s for %s. Falling back to English blueprint (skipped).",
+            dcpath,
+            d.full_id,
+        )
+        return True
 
-    log.warning("Missing translated DC file %s for %s, but no English blueprint found.", dcpath, d.full_id)
+    log.warning(
+        "Missing translated DC file %s for %s, but no English blueprint found.",
+        dcpath,
+        d.full_id,
+    )
+    return False
+
+
+def promote_xref_to_dc(d: Deliverable, dcfile: str, dcpath: str) -> Deliverable:
+    """Convert a translated xref deliverable into a DC deliverable."""
+    fmt = d.format
+    category = d.xml.categoryid
+
+    if (xref_node := d.xml.xref_node) is not None:
+        d.xml.node.remove(xref_node)
+    d.xml.node.set("type", "dc")
+
+    dc_elem = etree.SubElement(d.xml.node, "dc", file=dcfile)
+    etree.SubElement(
+        dc_elem,
+        "format",
+        {key: "1" if enabled else "0" for key, enabled in fmt.items()},
+    )
+
+    if category:
+        d.xml.node.set("category", category)
+
+    resolved = Deliverable(_node=d.xml.node)
+    log.info(
+        "Found translated DC file %s for %s. Dropped xref to extract localized metadata.",
+        dcpath,
+        resolved.full_id,
+    )
+    return resolved
 
 
 async def resolve_single_translation(
@@ -149,7 +177,7 @@ async def resolve_single_translation(
     """Check Git for a translated DC file and return the Deliverable to build (if any)."""
     fallback_return = None if d.xml.is_xref else d
 
-    if d.xml.lang == DEFAULT_LANG:
+    if d.lang_is_default:
         return fallback_return
 
     repo_url = d.git.url if d.git else None
@@ -158,7 +186,7 @@ async def resolve_single_translation(
     if not repo_url or not branch:
         return fallback_return
 
-    dcfile = resolve_effective_dcfile(d)
+    dcfile = d.xml.dcfile
     if not dcfile:
         return fallback_return
 
@@ -172,20 +200,19 @@ async def resolve_single_translation(
 
     if dcpath in available_files:
         if d.xml.is_xref:
-            # 3. Drop xref pointer and run DAPS on the translated DC file
-            xref_node = d.xml.node.find("xref")
-            if xref_node is not None:
-                d.xml.node.remove(xref_node)
-            d.xml.node.append(etree.Element("dc", file=dcfile))
-            d = Deliverable(_node=d.xml.node)
-            log.info("Found translated DC file %s for %s. Dropped xref to extract localized metadata.", dcpath, d.full_id)
+            return promote_xref_to_dc(d, dcfile, dcpath)
         return d
 
     # Missing localized DC file path:
     if not d.xml.is_xref:
-        fallback_to_english_xref(d, dcfile, dcpath)
+        if fallback_to_english_xref(d, dcfile, dcpath):
+            return None
     else:
-        log.info("Missing translated DC file %s for %s. Inheriting English blueprint (skipped).", dcpath, d.full_id)
+        log.info(
+            "Missing translated DC file %s for %s. Inheriting English blueprint (skipped).",
+            dcpath,
+            d.full_id,
+        )
 
     return fallback_return
 
@@ -273,7 +300,7 @@ async def execute_build_pipeline(  # noqa: C901
             with manager.stage("1/4 Clone repos… (skipped)", total=0):
                 pass
     else:
-        git_deliverables = [d for d in deliverables_to_build if d.xml.git_remote() is not None]
+        git_deliverables = [d for d in deliverables_to_build if d.has_git_repo]
         manager = get_live_manager()
         unique_repos = {d.git.url for d in git_deliverables if d.git and d.git.url}
         repo_stage = manager.stage("1/4 Clone repos…", total=len(unique_repos)) if manager else nullcontext()

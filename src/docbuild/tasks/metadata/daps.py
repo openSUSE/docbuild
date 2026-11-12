@@ -94,13 +94,19 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
         doc["format"]["html"] = deliverable.paths.html_path
         if fmt.get("pdf"):
             doc["format"]["pdf"] = deliverable.paths.pdf_path
+        else:
+            doc["format"].pop("pdf", None)
         if fmt.get("single-html"):
             doc["format"]["single-html"] = deliverable.paths.singlehtml_path
+        else:
+            doc["format"].pop("single-html", None)
         doc["lang"] = str(deliverable.xml.lang)
         # Keep category at the document level, not per translated doc entry.
         doc.pop("category", None)
         if category := deliverable.xml.categoryid:
             jsonconfig["category"] = category
+        else:
+            jsonconfig.pop("category", None)
 
 
 async def process_deliverable(    # noqa: C901
@@ -210,7 +216,11 @@ async def process_deliverable(    # noqa: C901
             new_cache = Cache(env_config_hash=env_config_hash, file_hashes=current_file_hashes)
 
             # If the hashes match, SKIP!
-            if old_cache.combined_hash == new_cache.combined_hash:
+            if (
+                old_cache.combined_hash == new_cache.combined_hash
+                and outputjson.is_file()
+            ):
+                update_metadata_json(outputjson, deliverable)
                 log.info("Cache hit for %s! Skipping DAPS execution.", deliverable.full_id)
                 return True, deliverable
 

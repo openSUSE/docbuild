@@ -24,7 +24,6 @@ def cmd_list(ctx: click.Context) -> None:
     context: DocBuildContext = ctx.obj
     env = context.envconfig
 
-    repo_dir = env.paths.repo_dir
     repo_dir = env.paths.repo_dir.resolve()
     if not repo_dir.exists():
         console_err.print(
