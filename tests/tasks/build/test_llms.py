@@ -2,22 +2,22 @@
 
 from pathlib import Path
 import re
-from types import SimpleNamespace
 
 from justhtml import JustHTML
-from justhtml.dom import Text
+from justhtml.dom import Element, Text
 import pytest
 
 from docbuild.tasks.build.llms import (
     AntoraHTMLCleaner,
     DocBookHTMLCleaner,
     HTMLCleaner,
-    _get_attrs,
-    _replace_node,
     clean_and_convert,
     detect_generator,
+    get_attrs,
+    get_classes,
     get_cleaner,
     inject_llms_links,
+    replace_node,
 )
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -61,8 +61,8 @@ def test_clean_and_convert_daps_book() -> None:
     assert "<table" not in md
     assert "<img" not in md
     assert (
-        "![The Boot Screen on Machines with a Traditional BIOS](images/install_boot.png)"
-        in md
+        "![The Boot Screen on Machines with a Traditional BIOS]"
+        "(images/install_boot.png)" in md
     )
     assert not re.findall(r"^\s*-\s*$", md, re.M)
 
@@ -107,7 +107,7 @@ def test_heading_number_spacing_and_admonition_fallbacks() -> None:
   <div class="admonitionblock"></div>
   <table></table>
   <img alt="no-src">
-  <table><tr><td>A | B</td><td><img src="icon.png" alt="icon"></td></tr><tr><td>Only1</td></tr></table>
+  <table><tr><td>A | B</td><td><img src="img/figure 1.png" alt="icon"></td></tr><tr><td>Only1</td></tr></table>
 </body>
 </html>"""
     md = clean_and_convert(html)
@@ -115,22 +115,44 @@ def test_heading_number_spacing_and_admonition_fallbacks() -> None:
     assert "- Nested paragraph item" in md
     assert "> **Caution:**" in md
     assert "> **Important:** Important text" in md
-    assert r"| A \| B | ![icon](icon.png) |" in md
+    assert "|  |  |" in md
+    assert r"| A \| B | ![icon](img/figure%201.png) |" in md
     assert "| Only1 |  |" in md
 
 
 def test_helper_edge_cases() -> None:
     """Test attribute extraction and node replacement edge cases."""
-    assert _get_attrs(SimpleNamespace(attrs=None)) == {}
-    assert _get_attrs(SimpleNamespace(attrs=[("id", "main"), ("disabled", None)])) == {
+    assert get_attrs(Text("text")) == {}
+    assert get_attrs(Element("div", None, "html")) == {}
+    assert get_attrs(Element("div", {"id": "main", "disabled": None}, "html")) == {
         "id": "main",
         "disabled": "",
     }
+    assert get_classes(Element("div", {"class": "one two"}, "html")) == ["one", "two"]
     cleaner = HTMLCleaner(
         tags_to_strip=["div"], ids_to_strip=None, classes_to_strip=None
     )
-    assert not cleaner.should_strip(SimpleNamespace(name=None))
-    _replace_node(Text("orphan"), None)
+    assert not cleaner.should_strip(Text("text"))
+    replace_node(Text("orphan"), None)
+
+
+def test_replace_node_updates_parent_links() -> None:
+    """Test replace_node updates parent and children links on replace and remove."""
+    parent = Element("div", {}, "html")
+    original = Element("span", {}, "html")
+    parent.append_child(original)
+
+    replacement = Text("replacement")
+    replace_node(original, replacement)
+
+    assert parent.children == [replacement]
+    assert original.parent is None
+    assert replacement.parent is parent
+
+    replace_node(replacement, None)
+
+    assert parent.children == []
+    assert replacement.parent is None
 
 
 def test_inject_llms_links_with_head() -> None:

@@ -3,27 +3,25 @@
 from html import escape
 import re
 from typing import Final
+from urllib.parse import quote
 
 from justhtml import JustHTML
 from justhtml.dom import Element, Node, NodeType, Text
 
 
-def _get_attrs(node: object) -> dict[str, str]:
+def get_attrs(node: NodeType) -> dict[str, str]:
     """Extract attributes from a DOM node as a string dictionary."""
-    raw_attrs = getattr(node, "attrs", None)
-    if raw_attrs is None:
+    if not isinstance(node, Node) or node.attrs is None:
         return {}
-    if isinstance(raw_attrs, list):
-        return {str(k): str(v or "") for k, v in raw_attrs}
-    return {str(k): str(v or "") for k, v in dict(raw_attrs).items()}
+    return {key: value or "" for key, value in node.attrs.items()}
 
 
-def _get_classes(node: object) -> list[str]:
+def get_classes(node: NodeType) -> list[str]:
     """Return the list of CSS classes on a DOM node."""
-    return _get_attrs(node).get("class", "").split()
+    return get_attrs(node).get("class", "").split()
 
 
-def _is_empty_removable(node: NodeType) -> bool:
+def is_empty_removable(node: NodeType) -> bool:
     """Check if an anchor or list item is empty and should be removed."""
     if not isinstance(node, Node) or node.name.lower() not in {"a", "li"}:
         return False
@@ -32,7 +30,7 @@ def _is_empty_removable(node: NodeType) -> bool:
     return not (node.query("img") or node.query("table"))
 
 
-def _unwrap_li_paragraphs(node: Node) -> None:
+def unwrap_li_paragraphs(node: Node) -> None:
     """Convert leading paragraph wrappers in list items to inline spans."""
     children = node.children
     if not children:
@@ -50,7 +48,7 @@ def _unwrap_li_paragraphs(node: Node) -> None:
     first = children[0]
     first_tag = str(getattr(first, "name", "")).lower()
     if first_tag == "div" and any(
-        c in {"paragraph", "para"} for c in _get_classes(first)
+        c in {"paragraph", "para"} for c in get_classes(first)
     ):
         first.name = "span"
         for sub in getattr(first, "children", None) or []:
@@ -61,7 +59,7 @@ def _unwrap_li_paragraphs(node: Node) -> None:
         first.name = "span"
 
 
-def _convert_antora_admonition(node: Node) -> None:
+def convert_antora_admonition(node: Node) -> None:
     """Convert Antora table-based admonition blocks into blockquotes."""
     content_td = node.query_one("td.content")
     if content_td is None:
@@ -70,12 +68,12 @@ def _convert_antora_admonition(node: Node) -> None:
     label = "Note"
     icon_el = node.query_one("td.icon i")
     title_el = node.query_one("td.icon .title")
-    if icon_el and _get_attrs(icon_el).get("title"):
-        label = _get_attrs(icon_el)["title"].strip()
+    if icon_el and get_attrs(icon_el).get("title"):
+        label = get_attrs(icon_el)["title"].strip()
     elif title_el and title_el.to_text(strip=True):
         label = title_el.to_text(strip=True)
     else:
-        for cls in _get_classes(node):
+        for cls in get_classes(node):
             if cls in {"note", "tip", "warning", "important", "caution"}:
                 label = cls.capitalize()
                 break
@@ -98,11 +96,11 @@ def _convert_antora_admonition(node: Node) -> None:
         child.parent = node
 
 
-def _convert_docbook_admonition(node: Node) -> None:
+def convert_docbook_admonition(node: Node) -> None:
     """Convert DocBook admonition divs into blockquotes with bold titles."""
     node.name = "blockquote"
     for child in node.children or []:
-        if "admon-title" in _get_classes(child):
+        if "admon-title" in get_classes(child):
             child.name = "p"
             strong = Element("strong", {}, "html")
             for sub in list(child.children or []):
@@ -111,7 +109,7 @@ def _convert_docbook_admonition(node: Node) -> None:
             strong.parent = child
 
 
-def _normalize_node(node: NodeType) -> None:
+def normalize_node(node: NodeType) -> None:
     """Normalize text spacing, headings, list items, and admonitions."""
     if isinstance(node, Text):
         if isinstance(node.data, str) and "\xa0" in node.data:
@@ -119,22 +117,22 @@ def _normalize_node(node: NodeType) -> None:
         return
 
     tag = node.name.lower()
-    classes = _get_classes(node)
+    classes = get_classes(node)
 
     if tag == "span" and any(c in {"title-number", "number"} for c in classes):
         text = node.to_text(strip=False)
         if text and not text[-1].isspace():
             node.append_child(Text(" "))
     elif tag == "li":
-        _unwrap_li_paragraphs(node)
+        unwrap_li_paragraphs(node)
     elif tag == "div":
         if "admonitionblock" in classes:
-            _convert_antora_admonition(node)
+            convert_antora_admonition(node)
         elif "admonition" in classes:
-            _convert_docbook_admonition(node)
+            convert_docbook_admonition(node)
 
 
-def _format_table_cell(cell: Node, placeholders: dict[str, str]) -> str:
+def format_table_cell(cell: Node, placeholders: dict[str, str]) -> str:
     """Convert a table cell DOM node into a single-line Markdown string."""
     text: str = cell.to_markdown()
     for key, val in placeholders.items():
@@ -143,41 +141,57 @@ def _format_table_cell(cell: Node, placeholders: dict[str, str]) -> str:
     return re.sub(r"(?<!\\)\|", r"\|", collapsed)
 
 
-def _table_to_markdown(table: Node, placeholders: dict[str, str]) -> str:
+def table_to_markdown(table: Node, placeholders: dict[str, str]) -> str:
     """Convert an HTML table DOM node into a GFM pipe table."""
     rows: list[list[str]] = []
+    has_header = bool(table.query("thead"))
+
     for tr in table.query("tr"):
         cells = [
-            _format_table_cell(c, placeholders)
-            for c in (tr.children or [])
-            if isinstance(c, Node) and c.name.lower() in {"th", "td"}
+            format_table_cell(cell, placeholders)
+            for cell in (tr.children or [])
+            if isinstance(cell, Node) and cell.name.lower() in {"th", "td"}
         ]
         if cells:
+            if not rows:
+                has_header = has_header or any(
+                    isinstance(cell, Node) and cell.name.lower() == "th"
+                    for cell in (tr.children or [])
+                )
             rows.append(cells)
 
     if not rows:
         return ""
 
-    num_cols = max(len(r) for r in rows)
-    padded = [r + [""] * (num_cols - len(r)) for r in rows]
+    num_cols = max(len(row) for row in rows)
+    padded = [row + [""] * (num_cols - len(row)) for row in rows]
 
-    header = "| " + " | ".join(padded[0]) + " |"
-    sep = "| " + " | ".join(["---"] * num_cols) + " |"
-    body = ["| " + " | ".join(r) + " |" for r in padded[1:]]
-    return "\n".join([header, sep, *body])
+    if has_header:
+        header = padded[0]
+        body = padded[1:]
+    else:
+        header = [""] * num_cols
+        body = padded
+
+    header_line = "| " + " | ".join(header) + " |"
+    separator = "| " + " | ".join(["---"] * num_cols) + " |"
+    body_lines = ["| " + " | ".join(row) + " |" for row in body]
+    return "\n".join([header_line, separator, *body_lines])
 
 
-def _img_to_markdown(img: Node) -> str:
+def img_to_markdown(img: Node) -> str:
     """Convert an HTML img DOM node into a Markdown image string."""
-    attrs = _get_attrs(img)
+    attrs = get_attrs(img)
     src = attrs.get("src", "").strip()
     if not src:
         return ""
+
+    src = quote(src, safe="/:?&=#%")
     alt = " ".join(attrs.get("alt", "").split())
     return f"![{alt}]({src})"
 
 
-def _replace_node(target: NodeType, replacement: NodeType | None) -> None:
+def replace_node(target: NodeType, replacement: NodeType | None) -> None:
     """Replace or remove a DOM node in its parent's children list."""
     parent = target.parent
     children = getattr(parent, "children", None)
@@ -190,33 +204,35 @@ def _replace_node(target: NodeType, replacement: NodeType | None) -> None:
         replacement.parent = parent
         children[idx] = replacement
 
+    target.parent = None
 
-def _replace_tables_and_images(root: Node) -> dict[str, str]:
+
+def replace_tables_and_images(root: Node) -> dict[str, str]:
     """Replace img and table DOM nodes with Markdown placeholder tokens."""
     placeholders: dict[str, str] = {}
     counter = 0
 
     for img in list(root.query("img")):
-        md_img = _img_to_markdown(img)
+        md_img = img_to_markdown(img)
         if md_img:
             key = f"DOCBUILDMDIMG{counter}END"
             counter += 1
             placeholders[key] = md_img
-            _replace_node(img, Text(key))
+            replace_node(img, Text(key))
         else:
-            _replace_node(img, None)
+            replace_node(img, None)
 
     for table in reversed(list(root.query("table"))):
-        md_table = _table_to_markdown(table, placeholders)
+        md_table = table_to_markdown(table, placeholders)
         if md_table:
             key = f"DOCBUILDMDTBL{counter}END"
             counter += 1
             placeholders[key] = md_table
             p_node = Element("p", {}, "html")
             p_node.append_child(Text(key))
-            _replace_node(table, p_node)
+            replace_node(table, p_node)
         else:
-            _replace_node(table, None)
+            replace_node(table, None)
 
     return placeholders
 
@@ -255,14 +271,13 @@ class HTMLCleaner:
         self.ids_to_strip = frozenset(ids_to_strip or [])
         self.classes_to_strip = frozenset(classes_to_strip or [])
 
-    def should_strip(self, node: object) -> bool:
+    def should_strip(self, node: NodeType) -> bool:
         """Determine if a DOM node should be stripped."""
-        node_name = getattr(node, "name", None)
-        if not node_name:
+        if not isinstance(node, Node):
             return False
 
-        tag = str(node_name).lower()
-        attrs = _get_attrs(node)
+        tag = node.name.lower()
+        attrs = get_attrs(node)
         node_id = attrs.get("id", "")
         node_classes = attrs.get("class", "").split()
 
@@ -280,12 +295,14 @@ class HTMLCleaner:
                 child = children[i]
                 if self.should_strip(child):
                     children.pop(i)
+                    child.parent = None
                 else:
                     self.clean(child)
-                    if _is_empty_removable(child):
+                    if is_empty_removable(child):
                         children.pop(i)
+                        child.parent = None
 
-        _normalize_node(node)
+        normalize_node(node)
 
 
 class DocBookHTMLCleaner(HTMLCleaner):
@@ -352,7 +369,7 @@ def detect_generator(doc: JustHTML) -> str | None:
     target_generators: Final[tuple[str, ...]] = ("daps", "docbook", "antora")
 
     for meta in doc.query("meta"):
-        attrs = _get_attrs(meta)
+        attrs = get_attrs(meta)
         name = attrs.get("name", "").lower()
 
         if name == "generator":
@@ -383,7 +400,7 @@ def clean_and_convert(html_content: str) -> str:
 
     # Mutate the DOM tree in place
     cleaner.clean(doc.root)
-    placeholders = _replace_tables_and_images(doc.root)
+    placeholders = replace_tables_and_images(doc.root)
 
     md: str = doc.to_markdown()
     for key, val in placeholders.items():
