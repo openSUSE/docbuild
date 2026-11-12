@@ -37,6 +37,7 @@ def test_clean_and_convert_daps_article() -> None:
     assert not doc.query("aside")
 
     md = clean_and_convert(daps_html)
+    assert md.lstrip().startswith("# Identifying Operating Systems")
     assert "<table" not in md
     assert "<img" not in md
     assert "| Attribute | Meaning | Value |" in md
@@ -58,6 +59,7 @@ def test_clean_and_convert_daps_book() -> None:
     assert not doc.query("aside")
 
     md = clean_and_convert(daps_html)
+    assert md.lstrip().startswith("# 8 Boot parameters")
     assert "<table" not in md
     assert "<img" not in md
     assert (

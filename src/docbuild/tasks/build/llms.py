@@ -313,13 +313,32 @@ class DocBookHTMLCleaner(HTMLCleaner):
         super().__init__(
             tags_to_strip=["nav", "header", "footer", "aside"],
             ids_to_strip=[
+                "_bypass-block",
+                "_header",
+                "_header-wrap",
+                "_logo",
+                "_fixed-header-wrap",
+                "_fixed-header",
+                "_toc-bubble-wrap",
+                "_toc-area",
+                "_nav-area",
+                "_toolbar",
+                "_find-area",
+                "_footer",
+                "_footer-wrap",
+                "_bottom-pagination",
                 "_side-toc-overall",
                 "_side-toc-page",
+                "_document-overview",
+                "_open-document-overview",
                 "navbar",
                 "toc",
                 "_mainnav",
                 "_unfold-side-toc-page",
                 "_open-side-toc-overall",
+                "_print-button",
+                "_share-mail",
+                "_share-print",
                 "searchUnifyChatbot",
                 "qualtrics_container",
             ],
@@ -331,6 +350,12 @@ class DocBookHTMLCleaner(HTMLCleaner):
                 "crumbs",
                 "bottom-pagination",
                 "side-toc",
+                "side-title",
+                "bubble-container",
+                "bubble-title",
+                "book-title",
+                "big-version-info",
+                "version-info",
                 "permalink",
                 "icon-editsource",
                 "icon-reportbug",
@@ -338,8 +363,19 @@ class DocBookHTMLCleaner(HTMLCleaner):
                 "symbol",
                 "date",
                 "titlepage-revhistory",
+                "share",
+                "docsurvey-wrapper",
             ],
         )
+
+    def clean(self, node: NodeType) -> None:
+        """Scope body to #_content when present and clean the DOM tree."""
+        if isinstance(node, Node) and node.name.lower() == "body":
+            content = node.query_one("#_content")
+            if content is not None:
+                node.children = [content]
+                content.parent = node
+        super().clean(node)
 
 
 class AntoraHTMLCleaner(HTMLCleaner):
