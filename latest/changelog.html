@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.29.1.dev19+g896d458f5.d20261112</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.29.1.dev20+gcbcc1630c</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
 
-    <script src="_static/documentation_options.js?v=19358d8e"></script>
+    <script src="_static/documentation_options.js?v=90a12c6d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.29.0" />
+  <meta name="docsearch:version" content="0.30.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -448,8 +448,8 @@
 and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <p>Changes for the upcoming release can be found in the
 <a class="reference external" href="https://github.com/openSUSE/docbuild/tree/main/changelog.d">“changelog.d” directory</a> of the repository.</p>
-<section id="version-latest">
-<h2>Version latest<a class="headerlink" href="#version-latest" title="Link to this heading">#</a></h2>
+<section id="version-0-30-0">
+<h2>Version 0.30.0<a class="headerlink" href="#version-0-30-0" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
 <h3>Bug Fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -470,7 +470,7 @@ path. (<a class="extlink-gh reference external" href="https://github.com/openSUS
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Added a “Live” progress view for building deliverables, which displays a progress bar alongside real-time logging output without breaking the terminal layout. It can be enabled using the new <code class="xref std std-option docutils literal notranslate"><span class="pre">--live</span></code> or <code class="xref std std-option docutils literal notranslate"><span class="pre">-L</span></code> flag in the <strong class="command">build run</strong> command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/154">GH #154</a>)</p></li>
+<li><p>Added a “Live” progress view for building deliverables, which displays a progress bar alongside real-time logging output without breaking the terminal layout. It can be enabled using the new <code class="docutils literal notranslate"><span class="pre">--live</span></code> or <code class="docutils literal notranslate"><span class="pre">-L</span></code> options in the <strong class="command">build run</strong> command. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/154">GH #154</a>)</p></li>
 <li><p><strong class="command">docbuild check files</strong> now groups deliverables under the repository and
 branch they were collected from, and falls back to the <code class="docutils literal notranslate"><span class="pre">supported</span></code>
 lifecycle when none was requested instead of showing <code class="docutils literal notranslate"><span class="pre">unknown</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/695">GH #695</a>)</p></li>
@@ -481,8 +481,8 @@ lifecycle when none was requested instead of showing <code class="docutils liter
 <section id="infrastructure">
 <h3>Infrastructure<a class="headerlink" href="#infrastructure" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Add CONTRIBUTING.md and PR template to set contributor expectations. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/718">GH #718</a>)</p></li>
-<li><p>Avoid PytestDeprecationWarning (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/745">GH #745</a>)</p></li>
+<li><p>Add <code class="file docutils literal notranslate"><span class="pre">CONTRIBUTING.md</span></code> and PR template to set contributor expectations. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/718">GH #718</a>)</p></li>
+<li><p>Avoid <code class="xref py py-exc docutils literal notranslate"><span class="pre">PytestDeprecationWarning</span></code> (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/745">GH #745</a>)</p></li>
 </ul>
 </section>
 </section>
@@ -1734,7 +1734,7 @@ these are renamed:</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-latest">Version latest</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-0-30-0">Version 0.30.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bug-fixes">Bug Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#improved-documentation">Improved Documentation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
