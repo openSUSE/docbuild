@@ -66,6 +66,14 @@ docbuild.models.deliverable.Deliverable
 
 
 
+   .. py:property:: default_deliverables
+      :type: collections.abc.Iterator[Self]
+
+
+      Yield all deliverables defined in the docset's default locale.
+
+
+
    .. py:property:: branch
       :type: str
 

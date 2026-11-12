@@ -98,6 +98,12 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
 
+   .. py:method:: default_deliverable_nodes() -> collections.abc.Generator[lxml.etree._Element, None, None]
+
+      Yield ``<deliverable>`` elements from the docset's default locale.
+
+
+
    .. py:property:: lang
       :type: docbuild.models.language.LanguageCode
 
@@ -175,6 +181,14 @@ docbuild.models.deliverable.view.DeliverableXMLView
 
 
       Return True if the deliverable is marked as prebuilt.
+
+
+
+   .. py:property:: dc_node
+      :type: lxml.etree._Element | None
+
+
+      Return the child <dc> element if present.
 
 
 
