@@ -1,6 +1,7 @@
 """Runner for the build task."""
 
 import asyncio
+from contextlib import nullcontext
 import logging
 import os
 from pathlib import Path
@@ -15,6 +16,7 @@ import yaml
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
+from ...utils.display import get_live_manager
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
 from ..metadata.prebuilt import read_json_ld
@@ -309,6 +311,12 @@ async def process_doctype(
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
 
+    manager = get_live_manager()
+    stage = manager._active if manager else None
+    if stage is not None and deliverables:
+        current_total = stage._total or 0
+        stage.set_total(current_total + len(deliverables))
+
     if skip_repo_update:
         log.info("Skipping repository updates for %s as requested.", repo_dir)
     else:
@@ -324,18 +332,31 @@ async def process_doctype(
             else:
                 d.resolved_translations = {str(getattr(d.xml, "lang", "en-us"))}
 
+    manager = get_live_manager()
+    stage = manager._active if manager else None
+
     async def build_single(d: Deliverable, worktree_dir: Path) -> tuple[bool, Deliverable]:
-        return await process_single_deliverable(
-            d,
-            worktree_dir,
-            tmp_build_base_dir,
-            target_base_dir,
-            target_dir_dyn,
-            daps_tmpls,
-            build_llmstxt,
-            llmstxt_dir,
-            rsync_options=rsync_options,
-        )
+        item_ctx = stage.item(d.full_id) if stage else nullcontext()
+        with item_ctx as item:
+            try:
+                success, deliverable = await process_single_deliverable(
+                    d,
+                    worktree_dir,
+                    tmp_build_base_dir,
+                    target_base_dir,
+                    target_dir_dyn,
+                    daps_tmpls,
+                    build_llmstxt,
+                    llmstxt_dir,
+                    rsync_options=rsync_options,
+                )
+                if item and not success:
+                    item.fail()
+                return success, deliverable
+            except Exception:
+                if item:
+                    item.fail()
+                raise
 
     return await process_with_shared_worktrees(
         deliverables, repo_dir, tmp_repo_dir, max_workers, semaphore, build_single
@@ -362,9 +383,19 @@ async def process(
     root = await parse_portal_config(main_portal_config)
     global_semaphore = asyncio.Semaphore(max_workers)
 
-    tasks = [
-        asyncio.create_task(
-            process_doctype(
+    manager = get_live_manager()
+    stage_context = (
+        manager.stage("3/4 Building deliverables…", total=sum(len(dt.deliverables) for dt in doctypes if getattr(dt, "deliverables", [])) or 1)
+        if manager is not None
+        else nullcontext()
+    )
+
+    with stage_context as stage:
+        if stage is not None:
+            stage.set_total(0)
+
+        async def _wrapped_process(dt: "Doctype") -> list:
+            return await process_doctype(
                 root,
                 dt,
                 repo_dir,
@@ -379,12 +410,17 @@ async def process(
                 build_llmstxt=build_llmstxt,
                 llmstxt_dir=llmstxt_dir,
                 rsync_options=rsync_options,
-            ),
-            name=f"build:{dt}",
-        )
-        for dt in doctypes
-    ]
-    results_per_doctype = await asyncio.gather(*tasks)
+            )
+
+        async with asyncio.TaskGroup() as task_group:
+            tasks = [
+                task_group.create_task(
+                    _wrapped_process(dt), name=f"build:{dt}"
+                )
+                for dt in doctypes
+            ]
+
+    results_per_doctype = [task.result() for task in tasks]
 
     all_failed = [d for failed_list in results_per_doctype for d in failed_list]
 

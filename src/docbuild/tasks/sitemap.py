@@ -1,6 +1,7 @@
 """Task module for generating a sitemap.xml."""
 
 import asyncio
+from contextlib import nullcontext
 from datetime import UTC, datetime
 from functools import partial
 import logging
@@ -9,6 +10,7 @@ from pathlib import Path
 from lxml import etree
 
 from docbuild.constants import DEFAULT_LANG
+from docbuild.utils.display import get_live_manager
 
 log = logging.getLogger(__name__)
 
@@ -77,20 +79,30 @@ async def generate_sitemap(target_dir: Path, base_url: str) -> Path:
         return target_dir / "sitemap.xml"
 
     log.info("Generating sitemap.xml in %s", target_dir)
-
-    tree = await asyncio.to_thread(build_sitemap_tree, target_dir, base_url)
-
-    sitemap_path = target_dir / "sitemap.xml"
-
-    def _write() -> None:
-        tree.write(
-            str(sitemap_path),
-            encoding="utf-8",
-            xml_declaration=True,
-            pretty_print=True
+    manager = get_live_manager()
+    stage_context = (
+        manager.stage("4/4 Sitemap", total=1)
+        if manager is not None
+        else nullcontext()
+    )
+    with stage_context as stage:
+        item_context = (
+            stage.item("sitemap.xml") if stage is not None else nullcontext()
         )
+        with item_context:
+            tree = await asyncio.to_thread(build_sitemap_tree, target_dir, base_url)
 
-    await asyncio.to_thread(_write)
-    log.info("Successfully wrote sitemap with base URL: %s", base_url)
+            sitemap_path = target_dir / "sitemap.xml"
+
+            def _write() -> None:
+                tree.write(
+                    str(sitemap_path),
+                    encoding="utf-8",
+                    xml_declaration=True,
+                    pretty_print=True
+                )
+
+            await asyncio.to_thread(_write)
+            log.info("Successfully wrote sitemap with base URL: %s", base_url)
 
     return sitemap_path
