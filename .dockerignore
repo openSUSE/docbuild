@@ -12,13 +12,23 @@ build
 *.pyd
 
 # Development files
+.agents/
 contrib/
 tmp/
+.tmp/
 .env
 .env.local
+.pytest.ini
+.pytest_cache/
+.ruff.toml
+.ruff_cache/
+.versions.json
 *.log
-coverage
+coverage*
 .venv
+ty.toml
+.opencode/
+.github/
 
 
 # IDE files
@@ -37,6 +47,7 @@ docs/
 changelog.d/
 *.rst
 *.md
+!README.md
 
 # Test files
 tests/

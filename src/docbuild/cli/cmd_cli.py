@@ -560,6 +560,7 @@ def cli(
         )
         handle_validation_error(e, current_model, files, verbose, ctx)
 
+    log.debug("Calling docbuild with: %s", " ".join(sys.argv))
     # --- PHASE 3: Setup Concurrency Lock ---
     # (Remains outside the try block as it has its own specialized error handling)
     env_config_path = (context.envconfigfiles or [None])[0]
