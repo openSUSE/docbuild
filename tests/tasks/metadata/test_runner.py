@@ -60,6 +60,7 @@ class TestGatherBuildTasks:
         # Create normal deliverable
         d1 = SortableMock(spec=Deliverable)
         d1.full_id = "d1"
+        d1.lang_is_default = True
         d1.xml.is_xref = False
         d1.xml.lang = "en-us"
         d1.xml.docset_node.attrib.get.return_value = "supported"
