@@ -234,6 +234,9 @@ DOCBOOK_NS: Final[str] = "http://docbook.org/ns/docbook"
 XLINK_NS: Final[str] = "http://www.w3.org/1999/xlink"
 """The XML namespace URI for XLink attributes."""
 
+SITEMAP_NS: Final[str] = "http://www.sitemaps.org/schemas/sitemap/0.9"
+"""The XML namespace URI for sitemap elements."""
+
 
 @dataclass(frozen=True)
 class DependencySpec:

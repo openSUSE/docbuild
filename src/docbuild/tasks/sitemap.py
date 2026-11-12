@@ -9,11 +9,10 @@ from pathlib import Path
 
 from lxml import etree
 
-from docbuild.constants import DEFAULT_LANG
+from docbuild.constants import DEFAULT_LANG, SITEMAP_NS
 
 log = logging.getLogger(__name__)
 
-SITEMAP_NS = "http://www.sitemaps.org/schemas/sitemap/0.9"
 NSMAP = {None: SITEMAP_NS}
 QMap = partial(etree.QName, SITEMAP_NS)
 
@@ -43,6 +42,7 @@ def iter_sitemap_html(target_dir: Path) -> Iterator[Path]:
             return
     except (OSError, RuntimeError):
         # Broken links and symlink cycles are not content roots.
+        log.warning("Sitemap: Skipping broken or cyclic symlink %s", language_dir)
         return
 
     # rglob does not recurse into child directory symlinks. Starting from the

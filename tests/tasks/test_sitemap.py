@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 import threading
@@ -6,6 +7,7 @@ from unittest.mock import patch
 from lxml import etree
 import pytest
 
+from docbuild.constants import SITEMAP_NS
 from docbuild.tasks import sitemap
 from docbuild.tasks.sitemap import generate_sitemap
 
@@ -48,7 +50,7 @@ async def test_nested_published_html(published_html: Path, language_root: bool) 
     )
     assert output.read_bytes() == expected
     tree = etree.fromstring(expected)
-    ns = {"s": sitemap.SITEMAP_NS}
+    ns = {"s": SITEMAP_NS}
     assert set(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == {
         "https://docs.test.com/sles/15/html/guide/index.html",
         "https://docs.test.com/sles/15/html/guide/chapter.html",
@@ -146,7 +148,7 @@ async def test_symlinked_english_root(tmp_path, language_root, relative_link):
     )
     assert output.read_bytes() == expected
     tree = etree.fromstring(expected)
-    ns = {"s": sitemap.SITEMAP_NS}
+    ns = {"s": SITEMAP_NS}
     assert sorted(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == [
         "https://docs.test.com/sles/16.0/html/page.html",
         "https://docs.test.com/sles/16.0/index.html",
@@ -184,7 +186,7 @@ async def test_linked_english_root_does_not_follow_nested_links(tmp_path):
 @pytest.mark.parametrize(
     "destination", ["missing", "self", "cycle", "target", "ancestor", "file"]
 )
-async def test_invalid_english_root_link(tmp_path, destination):
+async def test_invalid_english_root_link(tmp_path, destination, caplog):
     """Invalid links and roots that lead back outside the content are skipped."""
     target = tmp_path / "target"
     target.mkdir()
@@ -203,6 +205,15 @@ async def test_invalid_english_root_link(tmp_path, destination):
     link.symlink_to(destinations[destination], target_is_directory=True)
     output = await generate_sitemap(target, "https://docs.test.com")
     assert len(etree.parse(output).getroot()) == 0
+    warnings = [
+        record.getMessage()
+        for record in caplog.records
+        if record.name == sitemap.__name__ and record.levelno == logging.WARNING
+    ]
+    if destination in {"missing", "self", "cycle"}:
+        assert warnings == [f"Sitemap: Skipping broken or cyclic symlink {link}"]
+    else:
+        assert warnings == []
 
 
 @pytest.mark.asyncio
