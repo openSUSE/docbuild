@@ -62,14 +62,14 @@ class TestGatherBuildTasks:
         d1.full_id = "d1"
         d1.xml.is_xref = False
         d1.xml.lang = "en-us"
-        d1.xml.docset_node.attrib.get.return_value = "supported"
+        d1.lifecycle = []
 
         # Create xref pointing to a deliverable
         d2 = SortableMock(spec=Deliverable)
         d2.full_id = "d2"
         d2.xml.is_xref = True
         d2.xml.lang = "en-us"
-        d2.xml.docset_node.attrib.get.return_value = "supported"
+        d2.lifecycle = []
         target_elem = etree.Element("deliverable")
         d2.xml.final_target_node = target_elem
 
@@ -79,7 +79,7 @@ class TestGatherBuildTasks:
         with patch.object(runner_pkg, "Deliverable") as mock_deliverable:
             d_target = SortableMock(spec=Deliverable)
             d_target.full_id = "target"
-            d_target.xml.docset_node.attrib.get.return_value = "supported"
+            d_target.lifecycle = []
             mock_deliverable.return_value = d_target
 
             result = gather_build_tasks(empty_xml_root, [doctype])

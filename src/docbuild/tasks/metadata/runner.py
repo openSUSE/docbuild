@@ -78,7 +78,7 @@ def gather_build_tasks(
     build_tasks: dict[str, Deliverable] = {}
 
     for d in initial_deliverables:
-        if is_unsupported_deliverable(d):
+        if LifecycleFlag.unsupported in d.lifecycle:
             continue
 
         if not d.xml.is_xref:
@@ -91,7 +91,7 @@ def gather_build_tasks(
             target = d.xml.final_target_node
             if is_deliverable_node(target):
                 target_d = Deliverable(_node=target)
-                if not is_unsupported_deliverable(target_d):
+                if LifecycleFlag.unsupported not in target_d.lifecycle:
                     build_tasks[target_d.full_id] = target_d
 
     return sorted(build_tasks.values())

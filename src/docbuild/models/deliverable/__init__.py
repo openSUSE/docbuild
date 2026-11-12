@@ -16,6 +16,7 @@ from lxml import etree  # type: ignore[import]
 
 from ...constants import DEFAULT_LANG
 from ...utils.convert import convert2bool
+from ..lifecycle import LifecycleFlag
 from ..metadata import Metadata
 from ..repo import Repo
 from .paths import DeliverablePaths
@@ -135,6 +136,11 @@ class Deliverable:
             "epub",
         )
         return {fmt: convert2bool(attrs[fmt]) for fmt in expected if fmt in attrs}
+
+    @cached_property
+    def lifecycle(self) -> LifecycleFlag:
+        """Return the lifecycle of the containing docset."""
+        return LifecycleFlag.from_str(self.xml.docset_node.get("lifecycle") or "")
 
     @property
     def metafile(self) -> str | None:
