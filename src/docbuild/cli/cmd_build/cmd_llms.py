@@ -7,8 +7,8 @@ import sys
 
 import click
 
-from ..tasks.build.runner import generate_llmstxt
-from .context import DocBuildContext
+from ...tasks.build.runner import generate_llmstxt
+from ..context import DocBuildContext
 
 log = logging.getLogger(__name__)
 

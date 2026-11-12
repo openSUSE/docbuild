@@ -32,12 +32,12 @@ from ..models.config.env import EnvConfig
 from ..utils.errors import format_pydantic_error, format_toml_error
 from ..utils.pidlock import LockAcquisitionError, PidFileLock
 from .cmd_build import build
+from .cmd_build.cmd_llms import llms as build_llms
 from .cmd_c14n import c14n
 from .cmd_cache import cache
 from .cmd_check import cmd_check
 from .cmd_config import config
 from .cmd_doctor import doctor
-from .cmd_llms import llms
 from .cmd_metadata import metadata
 from .cmd_portal import portal
 from .cmd_publish import publish
@@ -584,7 +584,15 @@ cli.add_command(cache)
 cli.add_command(config)
 cli.add_command(cmd_check)
 cli.add_command(doctor)
-cli.add_command(llms)
+# openSUSE/docbuild#761: `llms` now lives under `build`. Keep the old
+# top-level spelling working as a hidden alias so existing scripts do not break.
+assert build_llms.callback is not None
+llms_alias = click.command(
+    name="llms",
+    hidden=True,
+    help="Alias for docbuild build llms.",
+)(build_llms.callback)
+cli.add_command(llms_alias)
 cli.add_command(repo)
 cli.add_command(metadata)
 cli.add_command(portal)
