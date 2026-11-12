@@ -60,7 +60,6 @@ class TestGatherBuildTasks:
         # Create normal deliverable
         d1 = SortableMock(spec=Deliverable)
         d1.full_id = "d1"
-        d1.lang_is_default = True
         d1.xml.is_xref = False
         d1.xml.lang = "en-us"
         d1.xml.docset_node.attrib.get.return_value = "supported"
@@ -70,9 +69,9 @@ class TestGatherBuildTasks:
         d2.full_id = "d2"
         d2.xml.is_xref = True
         d2.xml.lang = "en-us"
+        d2.xml.docset_node.attrib.get.return_value = "supported"
         target_elem = etree.Element("deliverable")
         d2.xml.final_target_node = target_elem
-        d2.xml.docset_node.attrib.get.return_value = "supported"
 
         mock_get_deliverables.return_value = [d1, d2]
 
