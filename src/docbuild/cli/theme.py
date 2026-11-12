@@ -10,6 +10,11 @@ from rich.theme import Theme
 
 
 class ThemeTag(StrEnum):
+    """Semantic tags for UI elements."""
+
+    SUCCEEDED = "succeeded"
+    SKIPPED = "skipped"
+    FAILED = "failed"
     """Semantic style tags used across docbuild CLI."""
 
     HEADER = "header"
@@ -42,6 +47,9 @@ class ModeStyle:
 # For available colors, see:
 # https://rich.readthedocs.io/en/stable/appendix/colors.html
 THEME_STYLES: dict[ThemeTag, ModeStyle] = {
+    ThemeTag.SUCCEEDED: ModeStyle(dark="bold green", light="bold dark_green"),
+    ThemeTag.SKIPPED: ModeStyle(dark="yellow", light="yellow"),
+    ThemeTag.FAILED: ModeStyle(dark="bold red", light="bold red"),
     ThemeTag.HEADER: ModeStyle(dark="bold sky_blue2", light="bold blue"),
     ThemeTag.ERROR: ModeStyle(dark="bold red", light="bold red"),
     ThemeTag.WARNING: ModeStyle(dark="bold yellow", light="bold dark_goldenrod"),

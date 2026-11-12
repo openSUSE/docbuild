@@ -4,6 +4,7 @@ from collections.abc import Generator
 from dataclasses import dataclass, field
 from functools import cached_property
 import logging
+import posixpath
 from typing import Literal, cast
 
 from lxml import etree  # type: ignore
@@ -324,8 +325,11 @@ class DeliverableXMLView:
 
     def subdir(self) -> str:
         """Return combined subdirectory (locale-level + deliverable-level) or empty string."""
-        parts = self.node.xpath("parent::*/subdir/text() | subdir/text()")
-        return "/".join(p.strip() for p in parts)
+        parts = self.node.xpath(
+            "parent::*/subdir/text() | subdir/text() | dc/subdir/text()"
+        )
+        path = "/".join(part.strip() for part in parts if part.strip())
+        return posixpath.normpath(path) if path else ""
 
     def git_remote(self) -> Repo | str | None:
         """Return git remote URL from sibling ``<git>`` node."""

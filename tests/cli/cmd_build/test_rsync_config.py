@@ -25,6 +25,7 @@ def test_build_uses_env_exclusions(settings, expected):
     """The CLI must forward defaults, extensions, and explicit replacements."""
     context = DocBuildContext(envconfig=EnvConfig.from_dict({"rsync": settings}))
     with (
+        patch("docbuild.cli.cmd_build.cmd_run.LiveProgressManager"),
         patch.object(sysdeps, "check_dependencies", return_value=[]),
         patch.object(cmd_build, "build_process", new_callable=AsyncMock) as build_process,
     ):

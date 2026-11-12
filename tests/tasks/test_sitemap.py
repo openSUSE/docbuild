@@ -10,6 +10,7 @@ import pytest
 from docbuild.constants import SITEMAP_NS
 from docbuild.tasks import sitemap
 from docbuild.tasks.sitemap import generate_sitemap
+from docbuild.utils.display import ItemState, LiveProgressManager, get_live_manager
 
 
 @pytest.fixture
@@ -291,3 +292,52 @@ async def test_traversal_failure_propagates(tmp_path: Path) -> None:
     ):
         with pytest.raises(OSError, match="scan failed"):
             await generate_sitemap(tmp_path, "https://docs.test.com")
+
+
+@pytest.mark.asyncio
+async def test_live_manager_preserves_sitemap_progress(published_html: Path) -> None:
+    """Shared stage tracking preserves sitemap output and progress callbacks."""
+    output = await generate_sitemap(published_html, "https://docs.test.com")
+    expected = output.read_bytes()
+    updates = []
+
+    with LiveProgressManager(disable=True) as manager:
+        await generate_sitemap(
+            published_html,
+            "https://docs.test.com",
+            on_progress=lambda *update: updates.append(update),
+        )
+        assert get_live_manager() is manager
+
+    assert output.read_bytes() == expected
+    assert updates[0] == ("Scanning HTML files", published_html)
+    assert (
+        "Scanning HTML files",
+        published_html / "en-us/sles/15/html/guide",
+    ) in updates
+    assert updates[-1] == ("Writing sitemap.xml", published_html)
+    assert len(manager.stages) == 1
+    stage = manager.stages[0]
+    assert stage.name == "4/4 Sitemap"
+    assert stage.counts == {ItemState.SUCCEEDED: 1}
+    assert stage.running == {}
+    assert not manager.failed
+    assert get_live_manager() is None
+
+
+@pytest.mark.asyncio
+async def test_live_manager_records_sitemap_failure(tmp_path: Path) -> None:
+    """Traversal failures propagate and mark the shared sitemap item as failed."""
+    with LiveProgressManager(disable=True) as manager:
+        with patch.object(
+            sitemap, "build_sitemap_tree", side_effect=OSError("scan failed")
+        ):
+            with pytest.raises(OSError, match="scan failed"):
+                await generate_sitemap(tmp_path, "https://docs.test.com")
+
+    assert len(manager.stages) == 1
+    assert manager.stages[0].counts == {ItemState.FAILED: 1}
+    assert manager.stages[0].running == {}
+    assert manager.failed
+    assert not (tmp_path / "sitemap.xml").exists()
+    assert get_live_manager() is None
