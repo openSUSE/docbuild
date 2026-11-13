@@ -10,7 +10,7 @@
 * :class:`~docbuild.cli.cmd_check`: Check the documentation for issues.
 * :class:`~docbuild.cli.cmd_doctor`: Check system dependencies for docbuild.
 * :class:`~docbuild.cli.cmd_cache`: Cache management for docbuild.
-* :class:`~docbuild.cli.cmd_llms`: LLMs management for docbuild.
+* :class:`~docbuild.cli.cmd_build.cmd_llms`: LLMs management for docbuild.
 
 Additional modules:
 * :class:`~docbuild.cli.context`: Context for the docbuild CLI commands.

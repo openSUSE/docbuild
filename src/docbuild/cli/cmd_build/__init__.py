@@ -4,6 +4,7 @@ import click
 
 from .cmd_dir import dir_cmd
 from .cmd_index import index
+from .cmd_llms import llms
 from .cmd_run import run
 from .cmd_sitemap import sitemap
 
@@ -23,5 +24,6 @@ def build(ctx: click.Context) -> None:
 # Add subcommands
 build.add_command(dir_cmd)
 build.add_command(index)
+build.add_command(llms)
 build.add_command(run)
 build.add_command(sitemap)

@@ -1,0 +1,2 @@
+The ``llms`` command is now available as :command:`docbuild build llms`, grouped
+alongside the other build-related commands.
