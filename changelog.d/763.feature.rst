@@ -1,0 +1,1 @@
+Improved the ``tools/migrate-config.sh`` migration script, which now also accepts a Docserv config directory, enables XInclude output by default, and provides the schema in the output directory, and updated its documentation accordingly.
