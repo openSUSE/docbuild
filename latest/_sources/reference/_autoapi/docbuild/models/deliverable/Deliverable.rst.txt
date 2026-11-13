@@ -114,6 +114,14 @@ docbuild.models.deliverable.Deliverable
 
 
 
+   .. py:property:: lifecycle
+      :type: docbuild.models.lifecycle.LifecycleFlag
+
+
+      Return the lifecycle of the containing docset.
+
+
+
    .. py:property:: metafile
       :type: str | None
 
