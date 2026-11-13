@@ -143,4 +143,3 @@ within the portal configuration:
     </deliverable>
 
 See :ref:`create-xrefs` for full details.
-

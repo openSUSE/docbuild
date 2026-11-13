@@ -1,0 +1,3 @@
+Added live status showing the current HTML directory while generating a sitemap
+with :command:`docbuild build sitemap` or :command:`docbuild build run`.
+Animation is disabled for non-interactive terminals and verbose logging.
