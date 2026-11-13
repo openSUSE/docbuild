@@ -169,6 +169,8 @@ extlinks = {
     "gh": (f"{gh_repo_url}/issues/%s", "GH #%s"),
     # Linking to a GH pull request:
     "pr": (f"{gh_repo_url}/pull/%s", "PR #%s"),
+    # Linking to the Gitlab repository containing the XML config
+    "gl_xmlconfig": (f"{xml_config_repo}%s", "%s"),
 }
 
 
