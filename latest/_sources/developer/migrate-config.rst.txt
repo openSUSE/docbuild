@@ -16,60 +16,200 @@ Therefore, the old Docserv config is not compatible with the new Portal Schema
 anymore and needs to be migrated. The migration process can be done by a
 migration XSLT stylesheet.
 
-You have two options how the result can look like:
 
-* A directory with multiple files.
+The Migration Process
+----------------------
 
-  This is the recommended approach if you want to organize your configuration
-  in a modular way and split the configuration into multiple files.
-  It allows for better tracking of changes and easier collaboration.
-  Files are referenced by XInclude elements and resolved during the validation
-  process.
+The migration process is as follows:
 
-* A single configuration file.
+#. Run the migration script with the stitchfile or the configuration directory as input.
 
-  This is useful if you want to debug the whole file, want to search for
-  specific entries or values, or just prefer a single file.
+#. Validate the converted configuration.
+   Although the migration stylesheet attempts to convert the configuration accurately, some manual adjustments may still be required.
+
+#. Fix any issues found during validation.
 
 
-.. _migration-prerequisites:
 
-Pre-requisites
---------------
+.. _migration-req-commands:
 
-Before starting the migration process, ensure you have the following tools installed:
+Required Commands
+-----------------
 
-* :command:`xmllint`
-* :command:`xsltproc`
-* :command:`jing`
+Before starting the migration process, ensure you have the following commands installed:
 
-Furthermore, you need a Docserv stitchfile:
+* :command:`jing`: Used for validating the Portal configuration against the Portal RNC schema.
+* :command:`xmllint`: Used for reading the Docserv XML files.
+* :command:`xsltproc`: Used for applying the XSLT stylesheet to convert the configuration.
+* :command:`xmlstarlet`: Used for detecting the right XML root elements.
 
-* Copy it with :command:`scp` from the Docserv server to your local machine.
+The migration script will not work correctly if any of these commands are missing and responds with an error message.
 
-  The Docserv stitchfile, typically located at
-  :file:`/tmp/docserv-stitch-${{DATE}}.xml` (whereas ``${DATE}`` is the
-  ISO date of the stitchfile creation in the YYYY-MM-DD format).
+
+.. _migration-docserv-input:
+
+Docserv Input Data
+------------------
+
+Additionally, make sure you have access to the Docserv stitchfile before starting the migration process.
+
+Use one of the following methods:
+
+* Copy it from the Docserv server using :command:`scp`.
+
+  The Docserv stitchfile, typically located at :file:`/tmp/docserv-stitch-${{DATE}}.xml` (whereas ``${DATE}`` is the ISO date of the stitchfile creation in the YYYY-MM-DD format).
 
 * Create it locally by following the instructions in :ref:`prepare-stitchfile`.
 
+* Point to your local copy of the :gl_xmlconfig:`Gitlab repository <-/tree/main/config.d>` containing the :file:`config.d` directory.
+
+
+.. _migration-script:
+
+Using the migration script
+--------------------------
+
+.. topic:: Command Synopsis
+
+   .. parsed-literal::
+
+      migrate-config.sh [OPTIONS] [DOCSERV_STITCHFILE|CONFIGD_DIR]
+
+
+The migration script requires one of the following inputs:
+
+* A Docserv stitchfile (e.g., :file:`/tmp/docserv-stitch-YYYY-MM-DD.xml`).
+
+  Converting the stitchfile to the new Portal Schema is done by passing it to the migration script:
+
+  .. code-block:: console
+    :caption: Using the stitchfile
+    :name: migrate-config-stitchfile
+
+    $ tools/migrate-config.sh /tmp/docserv-stitch-YYYY-MM-DD.xml
+
+* A Docserv config directory (e.g., :file:`config.d/`).
+  The migration script will create a stitchfile automatically from the directory before processing it.
+
+  Converting the configuration directory to the new Portal Schema is done by passing it to the migration script:
+
+  .. code-block:: console
+    :caption: Using the configuration directory
+    :name: migrate-config-example
+
+    $ tools/migrate-config.sh $SUSEDOC_DOCSERVCONFIG/config.d/
+
+
+Either way, by default, the migration script produces the converted configuration in the :file:`output/` directory.
+
+
+.. _migration-options:
+
+Available options
+-----------------
+
+In most cases, the default options are sufficient for the migration process. The converted configuration will be placed in the :file:`output/` directory. Each product will have its configuration stored in a separate subdirectory within :file:`output/`, xinclude processing is enabled by default, and the Portal schema is copied next to the main configuration file. You can override these defaults using the available command-line options described below.
+
+
+.. program:: migrate-config.sh
+
+.. rubric:: Output options
+
+.. option:: -d DIR, --dir DIR
+
+   Output directory (Default: :file:`output/`).
+   Use a trailing slash to mark it as a directory.
+
+.. option:: -o FILE, --output FILE
+
+   Name of the output file (Default: :file:`portal.xml`).
+
+.. option:: -X, --with-xinclude
+
+   Enable xinclude processing. Generates a Portal configuration file with XIncludes statements referencing other files (Default).
+
+.. option:: --without-xinclude
+
+   Disable xinclude processing. Generates a single Portal configuration file without processing XIncludes.
+
+.. rubric:: Schema options
+
+.. option:: -s FILE, --schema FILE
+
+   Schema file in RNC or RNG format (Default: :file:`portal-config.rnc`).
+   How the file is used depends on the schema mode, see :ref:`migration-schema-handling`.
+
+.. option:: -S MODE, --schema-mode MODE
+
+   How to provide the schema in the output directory. ``MODE`` is one of:
+
+   * ``copy`` - Copy the schema file (Default).
+   * ``link`` - Create an absolute symbolic link to the schema file.
+   * ``none`` - Do not provide a schema file.
+
+.. rubric:: General options
+
+.. option:: -h, --help
+
+   Show the help message.
+
+
+If you use the default options (or pass :option:`--with-xinclude`), the :file:`output/` directory contains these files and subdirectories:
+
+.. code-block:: text
+
+  output/
+  ├── categories/
+  ├── categories.xml
+  ├── [...]
+  ├── portal.xml
+  ├── portal-config.rnc
+  └── [...]
+
+
+.. _migration-schema-handling:
+
+Schema handling
+---------------
+
+The main configuration file contains an ``<?xml-model?>`` processing instruction that references the schema. Editors and validators use it to find the schema. The schema options control both this reference and the schema file in the output directory:
+
+* With the schema modes ``copy`` and ``link``:
+
+  * If you pass :option:`--schema`, the file must exist, otherwise the script stops with an error.
+  * If you omit :option:`--schema`, the :file:`portal-config.rnc` from the docbuild repository is used.
+  * The schema is placed next to the main configuration file, and the processing instruction references it by its file name only.
+  * If the schema already is in the output directory, it is left untouched.
+
+* With the schema mode ``none``, the value of :option:`--schema` is written unchanged into the processing instruction. It can also be a URL or a path that only exists on the target system.
+
+For example, to link a custom schema instead of copying the default one:
+
+.. code-block:: console
+
+   $ tools/migrate-config.sh --schema-mode link --schema ~/schemas/custom.rnc config.d/
+
+.. note::
+
+   Only the main configuration file carries the ``<?xml-model?>`` processing instruction, not the files referenced by XIncludes.
+   Schemas that use ``include`` or ``external`` to reference other schema files are not supported, as only the schema file itself is copied or linked.
 
 
 .. _prepare-stitchfile:
 
-Preparing the Docserv Stitchfile
---------------------------------
+Manually Creating the Docserv Stitchfile
+----------------------------------------
 
 .. note::
 
-   The steps below is what the command :command:`docserv-stitch` does on
-   the Docserv server to create the stitchfile. Of course, the script is
-   more complex and takes care of validation and other checks, but the above steps are the core of the stitchfile creation process.
+   This section explains how to manually prepare the Docserv stitchfile.
+   The recommended approach is to use the migration script as described in
+   :ref:`migrate-config`, but if you need to create the stitchfile manually, follow the steps below.
 
-   As such, make sure your Docserv configs are valid.
+   The steps below are a simplified version of what the command :command:`docserv-stitch` does on the Docserv server to create the stitchfile.
 
+   Make sure your Docserv configs are valid.
 
-If you don't have access to the Docserv server or prefer to create the stitchfile locally, follow these steps to prepare it:
 
 #. Clone the Docserv config repo if you haven't already:
 
@@ -112,172 +252,3 @@ If you don't have access to the Docserv server or prefer to create the stitchfil
    .. code-block:: console
 
       $ printf "</docservconfig>\n" >> "$stitchfile"
-
-
-.. _convert-stitchfile:
-
-Converting the Stitchfile
--------------------------
-
-To convert the stitchfile to the new Portal Schema format, use:
-
-* the command :command:`xsltproc` to run the XSLT transformation,
-* some of the available XSLT parameters to customize the output as needed (see :ref:`available-xslt-parameters`),
-* the migration XSLT stylesheet located at :file:`src/docbuild/config/xml/data/convert-v6-to-v7.xsl`, and
-* the stitchfile you prepared in the :ref:`previous section <prepare-stitchfile>`.
-
-
-.. _available-xslt-parameters:
-
-Available XSLT Parameters
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The migration XSLT stylesheet accepts the following XSLT parameters:
-
-* ``cat.prefix`` (default ``cat.``)
-
-  The prefix for category IDs.
-
-* ``schemafile`` (default empty)
-
-  The path to the new Portal Schema file (e.g., :file:`portal-config.rnc`).
-  The stylesheet recognize the format (RNC or RNG) and changes the ``<?xml-model?>`` PI accordingly.
-
-* ``outputfile`` (default :file:`portal.xml`)
-
-  The name of the main configuration file.
-
-* ``outputdir`` (default :file:`output/`)
-
-  The base directory where the output file(s) will be saved.
-  If you want to use the current directory, use ``./``.
-
-* ``use.xincludes`` (default ``false``)
-
-  A boolean parameter that determines whether to use XInclude elements in the output.
-  Set it to ``true`` to create a directory with multiple files, or use the
-  default to create a single configuration file.
-
-* ``schemaversion`` (default latest)
-
-  The version of the new Portal Schema to target. This is used to determine the necessary transformations to apply during the migration process.
-
-
-.. _create-config-file-with-multiple-files:
-
-Creating Multiple Files
-~~~~~~~~~~~~~~~~~~~~~~~
-
-To create a directory with multiple files, do the following:
-
-#. Run the XSLT transformation with the following command:
-
-   .. code-block:: console
-
-      $ xsltproc --stringparam outputfile portal.xml \
-        --stringparam outputdir "$HOME/.config/docbuild/config.d/" \
-        --param use.xincludes 'true()' \
-        src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile
-
-   This will create all files in the :file:`$HOME/.config/docbuild/config.d/` directory, with the main
-   configuration file named :file:`portal.xml` and additional files for
-   each category as needed.
-
-#. Copy the generated files to the desired location.
-
-#. Adjust the env configuration to point to the main configuration file,
-   use the variable :literal:`paths.config_dir` and :literal:`paths.main_portal_config`.
-
-
-.. _create-single-config-file:
-
-Creating a Single File
-~~~~~~~~~~~~~~~~~~~~~~
-
-To create a single configuration file, do the following:
-
-#. Run the XSLT transformation with the following command:
-
-   .. code-block:: console
-
-      $ xsltproc --stringparam schemafile "portal-config.rnc" \
-        --stringparam outputfile portal-$(date --iso-8601).xml \
-        --stringparam outputdir "./" \
-        src/docbuild/config/xml/data/convert-v6-to-v7.xsl $stitchfile
-
-   This will create a file named :file:`portal-<DATE>.xml` in the current directory.
-
-#. Copy the generated output file to the desired location.
-
-#. Adjust the env configuration to point to the main configuration file,
-   use the variable :literal:`paths.config_dir` and :literal:`paths.main_portal_config`.
-
-
-.. _migrate-internal-references:
-
-Migration of Internal References
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In version 6 of the Portal Schema, internal cross-references were grouped in an
-``<internal>`` element under ``<docset>``:
-
-.. code-block:: xml
-
-   <docset lifecycle="supported" setid="ai">
-     <version>Artificial Intelligence</version>
-     <internal>
-       <ref product="trd" docset="clearml" dc="DC-rc_suse-ai_clearml" titleformat="title subtitle"/>
-     </internal>
-   </docset>
-
-In version 7, ``<internal>`` is removed. The migration stylesheet converts these
-references as follows:
-
-* Every ``<internal>/ref`` is transformed into a ``<deliverable type="xref">`` containing an ``<xref>`` inside ``<locale>``.
-* Docsets that contain only internal references (no DAPS ``builddocs`` and no ``external`` links) now generate a ``<resources>`` block containing a default ``<locale lang="en-us">`` with ``<branch>main</branch>``.
-* Multi-part legacy references (``product``, ``docset``, ``dc``) are joined into a single dot-separated identifier in ``xref/@linkend`` (for example, ``trd.clearml.dc-rc_suse-ai_clearml``).
-
-
-Validating with Jing
-~~~~~~~~~~~~~~~~~~~~
-
-The easiest way to validate the Portal configuration file against the schema is using the command :command:`docbuild portal validate`, see :ref:`validate-portal`.
-
-If you prefer to validate the configuration file against the schema using
-:command:`jing`, use the following steps:
-
-#. Copy the RNC schema file to the configuration directory:
-
-   .. code-block:: console
-
-      # cd $PATH_TO_DOCBUILD_GITHUB_REPO
-      $ cp src/docbuild/config/xml/data/portal-config.rnc $HOME/.config/docbuild/config.d/
-
-#. Create a symbolic link to the RNC schema file in the configuration directory:
-
-   .. code-block:: console
-
-      $ ln -s ../portal-config.rnc "$HOME/.config/docbuild/config.d/portal-config.rnc"
-
-#. Set the appropriate Java system property for XInclude support:
-
-   .. code-block:: console
-
-      $ XINCLUDE_PROP="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration"
-
-#. Set the environment variable for your operating system:
-
-   .. code-block:: console
-
-      # For openSUSE
-      $ export ADDITIONAL_FLAGS="$XINCLUDE_PROP"
-      # For Debian/Ubuntu
-      $ export JAVA_ARGS="$XINCLUDE_PROP"
-      # For Fedora/RHEL/CentOS
-      $ export JAVA_OPTS="$XINCLUDE_PROP"
-
-#. Validate the configuration file against the schema using :command:`jing`:
-
-   .. code-block:: console
-
-      $ jing -c ~/.config/docbuild/config.d/portal-config.rnc ~/.config/docbuild/config.d/portal.xml

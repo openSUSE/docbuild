@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.30.1.dev1+gfd7f0a5a3.d20261112</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.30.1.dev5+g3bb875dbc.d20261113</title>
   
   
   
@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0a0e13a7" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=28e77c6c"></script>
+    <script src="../_static/documentation_options.js?v=0c1dbdbd"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -50,7 +50,7 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'developer/migrate-config';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://opensuse.github.io/docbuild/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -113,7 +113,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -212,14 +212,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -259,7 +259,7 @@
   
 
   
-    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
       <span class="fa-solid fa-outdent"></span>
     </button>
   
@@ -273,7 +273,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
@@ -337,14 +337,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -465,7 +465,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -501,48 +501,171 @@ a massive overhaul.</p>
 <p>Therefore, the old Docserv config is not compatible with the new Portal Schema
 anymore and needs to be migrated. The migration process can be done by a
 migration XSLT stylesheet.</p>
-<p>You have two options how the result can look like:</p>
-<ul>
-<li><p>A directory with multiple files.</p>
-<p>This is the recommended approach if you want to organize your configuration
-in a modular way and split the configuration into multiple files.
-It allows for better tracking of changes and easier collaboration.
-Files are referenced by XInclude elements and resolved during the validation
-process.</p>
-</li>
-<li><p>A single configuration file.</p>
-<p>This is useful if you want to debug the whole file, want to search for
-specific entries or values, or just prefer a single file.</p>
-</li>
-</ul>
-<section id="pre-requisites">
-<span id="migration-prerequisites"></span><h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading">#</a></h2>
-<p>Before starting the migration process, ensure you have the following tools installed:</p>
+<section id="the-migration-process">
+<h2>The Migration Process<a class="headerlink" href="#the-migration-process" title="Link to this heading">#</a></h2>
+<p>The migration process is as follows:</p>
+<ol class="arabic simple">
+<li><p>Run the migration script with the stitchfile or the configuration directory as input.</p></li>
+<li><p>Validate the converted configuration.
+Although the migration stylesheet attempts to convert the configuration accurately, some manual adjustments may still be required.</p></li>
+<li><p>Fix any issues found during validation.</p></li>
+</ol>
+</section>
+<section id="required-commands">
+<span id="migration-req-commands"></span><h2>Required Commands<a class="headerlink" href="#required-commands" title="Link to this heading">#</a></h2>
+<p>Before starting the migration process, ensure you have the following commands installed:</p>
 <ul class="simple">
-<li><p><strong class="command">xmllint</strong></p></li>
-<li><p><strong class="command">xsltproc</strong></p></li>
-<li><p><strong class="command">jing</strong></p></li>
+<li><p><strong class="command">jing</strong>: Used for validating the Portal configuration against the Portal RNC schema.</p></li>
+<li><p><strong class="command">xmllint</strong>: Used for reading the Docserv XML files.</p></li>
+<li><p><strong class="command">xsltproc</strong>: Used for applying the XSLT stylesheet to convert the configuration.</p></li>
+<li><p><strong class="command">xmlstarlet</strong>: Used for detecting the right XML root elements.</p></li>
 </ul>
-<p>Furthermore, you need a Docserv stitchfile:</p>
+<p>The migration script will not work correctly if any of these commands are missing and responds with an error message.</p>
+</section>
+<section id="docserv-input-data">
+<span id="migration-docserv-input"></span><h2>Docserv Input Data<a class="headerlink" href="#docserv-input-data" title="Link to this heading">#</a></h2>
+<p>Additionally, make sure you have access to the Docserv stitchfile before starting the migration process.</p>
+<p>Use one of the following methods:</p>
 <ul>
-<li><p>Copy it with <strong class="command">scp</strong> from the Docserv server to your local machine.</p>
-<p>The Docserv stitchfile, typically located at
-<code class="file docutils literal notranslate"><span class="pre">/tmp/docserv-stitch-$</span><em><span class="pre">{DATE</span></em><span class="pre">}.xml</span></code> (whereas <code class="docutils literal notranslate"><span class="pre">${DATE}</span></code> is the
-ISO date of the stitchfile creation in the YYYY-MM-DD format).</p>
+<li><p>Copy it from the Docserv server using <strong class="command">scp</strong>.</p>
+<p>The Docserv stitchfile, typically located at <code class="file docutils literal notranslate"><span class="pre">/tmp/docserv-stitch-$</span><em><span class="pre">{DATE</span></em><span class="pre">}.xml</span></code> (whereas <code class="docutils literal notranslate"><span class="pre">${DATE}</span></code> is the ISO date of the stitchfile creation in the YYYY-MM-DD format).</p>
 </li>
-<li><p>Create it locally by following the instructions in <a class="reference internal" href="#prepare-stitchfile"><span class="std std-ref">Preparing the Docserv Stitchfile</span></a>.</p></li>
+<li><p>Create it locally by following the instructions in <a class="reference internal" href="#prepare-stitchfile"><span class="std std-ref">Manually Creating the Docserv Stitchfile</span></a>.</p></li>
+<li><p>Point to your local copy of the <a class="extlink-gl_xmlconfig reference external" href="https://gitlab.suse.de/susedoc/docserv-config-/tree/main/config.d">Gitlab repository</a> containing the <code class="file docutils literal notranslate"><span class="pre">config.d</span></code> directory.</p></li>
 </ul>
 </section>
-<section id="preparing-the-docserv-stitchfile">
-<span id="prepare-stitchfile"></span><h2>Preparing the Docserv Stitchfile<a class="headerlink" href="#preparing-the-docserv-stitchfile" title="Link to this heading">#</a></h2>
+<section id="using-the-migration-script">
+<span id="migration-script"></span><h2>Using the migration script<a class="headerlink" href="#using-the-migration-script" title="Link to this heading">#</a></h2>
+<aside class="topic">
+<p class="topic-title">Command Synopsis</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">migrate</span><span class="o">-</span><span class="n">config</span><span class="o">.</span><span class="n">sh</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="p">[</span><span class="n">DOCSERV_STITCHFILE</span><span class="o">|</span><span class="n">CONFIGD_DIR</span><span class="p">]</span>
+</pre></div>
+</div>
+</aside>
+<p>The migration script requires one of the following inputs:</p>
+<ul>
+<li><p>A Docserv stitchfile (e.g., <code class="file docutils literal notranslate"><span class="pre">/tmp/docserv-stitch-YYYY-MM-DD.xml</span></code>).</p>
+<p>Converting the stitchfile to the new Portal Schema is done by passing it to the migration script:</p>
+<div class="literal-block-wrapper docutils container" id="migrate-config-stitchfile">
+<div class="code-block-caption"><span class="caption-text">Using the stitchfile</span><a class="headerlink" href="#migrate-config-stitchfile" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>tools/migrate-config.sh<span class="w"> </span>/tmp/docserv-stitch-YYYY-MM-DD.xml
+</pre></div>
+</div>
+</div>
+</li>
+<li><p>A Docserv config directory (e.g., <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>).
+The migration script will create a stitchfile automatically from the directory before processing it.</p>
+<p>Converting the configuration directory to the new Portal Schema is done by passing it to the migration script:</p>
+<div class="literal-block-wrapper docutils container" id="migrate-config-example">
+<div class="code-block-caption"><span class="caption-text">Using the configuration directory</span><a class="headerlink" href="#migrate-config-example" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>tools/migrate-config.sh<span class="w"> </span><span class="nv">$SUSEDOC_DOCSERVCONFIG</span>/config.d/
+</pre></div>
+</div>
+</div>
+</li>
+</ul>
+<p>Either way, by default, the migration script produces the converted configuration in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory.</p>
+</section>
+<section id="available-options">
+<span id="migration-options"></span><h2>Available options<a class="headerlink" href="#available-options" title="Link to this heading">#</a></h2>
+<p>In most cases, the default options are sufficient for the migration process. The converted configuration will be placed in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory. Each product will have its configuration stored in a separate subdirectory within <code class="file docutils literal notranslate"><span class="pre">output/</span></code>, xinclude processing is enabled by default, and the Portal schema is copied next to the main configuration file. You can override these defaults using the available command-line options described below.</p>
+<p class="rubric">Output options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-d">
+<span id="cmdoption-migrate-config.sh-dir"></span><span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"> <span class="pre">DIR</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--dir</span></span><span class="sig-prename descclassname"> <span class="pre">DIR</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-d" title="Link to this definition">#</a></dt>
+<dd><p>Output directory (Default: <code class="file docutils literal notranslate"><span class="pre">output/</span></code>).
+Use a trailing slash to mark it as a directory.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-o">
+<span id="cmdoption-migrate-config.sh-output"></span><span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--output</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-o" title="Link to this definition">#</a></dt>
+<dd><p>Name of the output file (Default: <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code>).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-X">
+<span id="cmdoption-migrate-config.sh-with-xinclude"></span><span class="sig-name descname"><span class="pre">-X</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--with-xinclude</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-migrate-config.sh-X" title="Link to this definition">#</a></dt>
+<dd><p>Enable xinclude processing. Generates a Portal configuration file with XIncludes statements referencing other files (Default).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-without-xinclude">
+<span class="sig-name descname"><span class="pre">--without-xinclude</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-migrate-config.sh-without-xinclude" title="Link to this definition">#</a></dt>
+<dd><p>Disable xinclude processing. Generates a single Portal configuration file without processing XIncludes.</p>
+</dd></dl>
+
+<p class="rubric">Schema options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-s">
+<span id="cmdoption-migrate-config.sh-schema"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-s" title="Link to this definition">#</a></dt>
+<dd><p>Schema file in RNC or RNG format (Default: <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code>).
+How the file is used depends on the schema mode, see <a class="reference internal" href="#migration-schema-handling"><span class="std std-ref">Schema handling</span></a>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-S">
+<span id="cmdoption-migrate-config.sh-schema-mode"></span><span class="sig-name descname"><span class="pre">-S</span></span><span class="sig-prename descclassname"> <span class="pre">MODE</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema-mode</span></span><span class="sig-prename descclassname"> <span class="pre">MODE</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-S" title="Link to this definition">#</a></dt>
+<dd><p>How to provide the schema in the output directory. <code class="docutils literal notranslate"><span class="pre">MODE</span></code> is one of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">copy</span></code> - Copy the schema file (Default).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">link</span></code> - Create an absolute symbolic link to the schema file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">none</span></code> - Do not provide a schema file.</p></li>
+</ul>
+</dd></dl>
+
+<p class="rubric">General options</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-migrate-config.sh-h">
+<span id="cmdoption-migrate-config.sh-help"></span><span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--help</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-migrate-config.sh-h" title="Link to this definition">#</a></dt>
+<dd><p>Show the help message.</p>
+</dd></dl>
+
+<p>If you use the default options (or pass <a class="reference internal" href="#cmdoption-migrate-config.sh-X"><code class="xref std std-option docutils literal notranslate"><span class="pre">--with-xinclude</span></code></a>), the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory contains these files and subdirectories:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>output/
+├── categories/
+├── categories.xml
+├── [...]
+├── portal.xml
+├── portal-config.rnc
+└── [...]
+</pre></div>
+</div>
+</section>
+<section id="schema-handling">
+<span id="migration-schema-handling"></span><h2>Schema handling<a class="headerlink" href="#schema-handling" title="Link to this heading">#</a></h2>
+<p>The main configuration file contains an <code class="docutils literal notranslate"><span class="pre">&lt;?xml-model?&gt;</span></code> processing instruction that references the schema. Editors and validators use it to find the schema. The schema options control both this reference and the schema file in the output directory:</p>
+<ul class="simple">
+<li><p>With the schema modes <code class="docutils literal notranslate"><span class="pre">copy</span></code> and <code class="docutils literal notranslate"><span class="pre">link</span></code>:</p>
+<ul>
+<li><p>If you pass <a class="reference internal" href="#cmdoption-migrate-config.sh-s"><code class="xref std std-option docutils literal notranslate"><span class="pre">--schema</span></code></a>, the file must exist, otherwise the script stops with an error.</p></li>
+<li><p>If you omit <a class="reference internal" href="#cmdoption-migrate-config.sh-s"><code class="xref std std-option docutils literal notranslate"><span class="pre">--schema</span></code></a>, the <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code> from the docbuild repository is used.</p></li>
+<li><p>The schema is placed next to the main configuration file, and the processing instruction references it by its file name only.</p></li>
+<li><p>If the schema already is in the output directory, it is left untouched.</p></li>
+</ul>
+</li>
+<li><p>With the schema mode <code class="docutils literal notranslate"><span class="pre">none</span></code>, the value of <a class="reference internal" href="#cmdoption-migrate-config.sh-s"><code class="xref std std-option docutils literal notranslate"><span class="pre">--schema</span></code></a> is written unchanged into the processing instruction. It can also be a URL or a path that only exists on the target system.</p></li>
+</ul>
+<p>For example, to link a custom schema instead of copying the default one:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>tools/migrate-config.sh<span class="w"> </span>--schema-mode<span class="w"> </span>link<span class="w"> </span>--schema<span class="w"> </span>~/schemas/custom.rnc<span class="w"> </span>config.d/
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The steps below is what the command <strong class="command">docserv-stitch</strong> does on
-the Docserv server to create the stitchfile. Of course, the script is
-more complex and takes care of validation and other checks, but the above steps are the core of the stitchfile creation process.</p>
-<p>As such, make sure your Docserv configs are valid.</p>
+<p>Only the main configuration file carries the <code class="docutils literal notranslate"><span class="pre">&lt;?xml-model?&gt;</span></code> processing instruction, not the files referenced by XIncludes.
+Schemas that use <code class="docutils literal notranslate"><span class="pre">include</span></code> or <code class="docutils literal notranslate"><span class="pre">external</span></code> to reference other schema files are not supported, as only the schema file itself is copied or linked.</p>
 </div>
-<p>If you don’t have access to the Docserv server or prefer to create the stitchfile locally, follow these steps to prepare it:</p>
+</section>
+<section id="manually-creating-the-docserv-stitchfile">
+<span id="prepare-stitchfile"></span><h2>Manually Creating the Docserv Stitchfile<a class="headerlink" href="#manually-creating-the-docserv-stitchfile" title="Link to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section explains how to manually prepare the Docserv stitchfile.
+The recommended approach is to use the migration script as described in
+<a class="reference internal" href="#migrate-config"><span class="std std-ref">Migrating old Docserv Config to new Portal Config</span></a>, but if you need to create the stitchfile manually, follow the steps below.</p>
+<p>The steps below are a simplified version of what the command <strong class="command">docserv-stitch</strong> does on the Docserv server to create the stitchfile.</p>
+<p>Make sure your Docserv configs are valid.</p>
+</div>
 <ol class="arabic">
 <li><p>Clone the Docserv config repo if you haven’t already:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
@@ -582,141 +705,6 @@ more complex and takes care of validation and other checks, but the above steps 
 </li>
 </ol>
 </section>
-<section id="converting-the-stitchfile">
-<span id="convert-stitchfile"></span><h2>Converting the Stitchfile<a class="headerlink" href="#converting-the-stitchfile" title="Link to this heading">#</a></h2>
-<p>To convert the stitchfile to the new Portal Schema format, use:</p>
-<ul class="simple">
-<li><p>the command <strong class="command">xsltproc</strong> to run the XSLT transformation,</p></li>
-<li><p>some of the available XSLT parameters to customize the output as needed (see <a class="reference internal" href="#available-xslt-parameters"><span class="std std-ref">Available XSLT Parameters</span></a>),</p></li>
-<li><p>the migration XSLT stylesheet located at <code class="file docutils literal notranslate"><span class="pre">src/docbuild/config/xml/data/convert-v6-to-v7.xsl</span></code>, and</p></li>
-<li><p>the stitchfile you prepared in the <a class="reference internal" href="#prepare-stitchfile"><span class="std std-ref">previous section</span></a>.</p></li>
-</ul>
-<section id="available-xslt-parameters">
-<span id="id1"></span><h3>Available XSLT Parameters<a class="headerlink" href="#available-xslt-parameters" title="Link to this heading">#</a></h3>
-<p>The migration XSLT stylesheet accepts the following XSLT parameters:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">cat.prefix</span></code> (default <code class="docutils literal notranslate"><span class="pre">cat.</span></code>)</p>
-<p>The prefix for category IDs.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">schemafile</span></code> (default empty)</p>
-<p>The path to the new Portal Schema file (e.g., <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code>).
-The stylesheet recognize the format (RNC or RNG) and changes the <code class="docutils literal notranslate"><span class="pre">&lt;?xml-model?&gt;</span></code> PI accordingly.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputfile</span></code> (default <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code>)</p>
-<p>The name of the main configuration file.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outputdir</span></code> (default <code class="file docutils literal notranslate"><span class="pre">output/</span></code>)</p>
-<p>The base directory where the output file(s) will be saved.
-If you want to use the current directory, use <code class="docutils literal notranslate"><span class="pre">./</span></code>.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">use.xincludes</span></code> (default <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p>
-<p>A boolean parameter that determines whether to use XInclude elements in the output.
-Set it to <code class="docutils literal notranslate"><span class="pre">true</span></code> to create a directory with multiple files, or use the
-default to create a single configuration file.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">schemaversion</span></code> (default latest)</p>
-<p>The version of the new Portal Schema to target. This is used to determine the necessary transformations to apply during the migration process.</p>
-</li>
-</ul>
-</section>
-<section id="creating-multiple-files">
-<span id="create-config-file-with-multiple-files"></span><h3>Creating Multiple Files<a class="headerlink" href="#creating-multiple-files" title="Link to this heading">#</a></h3>
-<p>To create a directory with multiple files, do the following:</p>
-<ol class="arabic">
-<li><p>Run the XSLT transformation with the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xsltproc<span class="w"> </span>--stringparam<span class="w"> </span>outputfile<span class="w"> </span>portal.xml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--stringparam<span class="w"> </span>outputdir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.config/docbuild/config.d/&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--param<span class="w"> </span>use.xincludes<span class="w"> </span><span class="s1">&#39;true()&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>src/docbuild/config/xml/data/convert-v6-to-v7.xsl<span class="w"> </span><span class="nv">$stitchfile</span>
-</pre></div>
-</div>
-<p>This will create all files in the <code class="file docutils literal notranslate"><span class="pre">$HOME/.config/docbuild/config.d/</span></code> directory, with the main
-configuration file named <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code> and additional files for
-each category as needed.</p>
-</li>
-<li><p>Copy the generated files to the desired location.</p></li>
-<li><p>Adjust the env configuration to point to the main configuration file,
-use the variable <code class="docutils literal notranslate"><span class="pre">paths.config_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.main_portal_config</span></code>.</p></li>
-</ol>
-</section>
-<section id="creating-a-single-file">
-<span id="create-single-config-file"></span><h3>Creating a Single File<a class="headerlink" href="#creating-a-single-file" title="Link to this heading">#</a></h3>
-<p>To create a single configuration file, do the following:</p>
-<ol class="arabic">
-<li><p>Run the XSLT transformation with the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xsltproc<span class="w"> </span>--stringparam<span class="w"> </span>schemafile<span class="w"> </span><span class="s2">&quot;portal-config.rnc&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--stringparam<span class="w"> </span>outputfile<span class="w"> </span>portal-<span class="k">$(</span>date<span class="w"> </span>--iso-8601<span class="k">)</span>.xml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--stringparam<span class="w"> </span>outputdir<span class="w"> </span><span class="s2">&quot;./&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>src/docbuild/config/xml/data/convert-v6-to-v7.xsl<span class="w"> </span><span class="nv">$stitchfile</span>
-</pre></div>
-</div>
-<p>This will create a file named <code class="file docutils literal notranslate"><span class="pre">portal-&lt;DATE&gt;.xml</span></code> in the current directory.</p>
-</li>
-<li><p>Copy the generated output file to the desired location.</p></li>
-<li><p>Adjust the env configuration to point to the main configuration file,
-use the variable <code class="docutils literal notranslate"><span class="pre">paths.config_dir</span></code> and <code class="docutils literal notranslate"><span class="pre">paths.main_portal_config</span></code>.</p></li>
-</ol>
-</section>
-<section id="migration-of-internal-references">
-<span id="migrate-internal-references"></span><h3>Migration of Internal References<a class="headerlink" href="#migration-of-internal-references" title="Link to this heading">#</a></h3>
-<p>In version 6 of the Portal Schema, internal cross-references were grouped in an
-<code class="docutils literal notranslate"><span class="pre">&lt;internal&gt;</span></code> element under <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>:</p>
-<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;docset</span><span class="w"> </span><span class="na">lifecycle=</span><span class="s">&quot;supported&quot;</span><span class="w"> </span><span class="na">setid=</span><span class="s">&quot;ai&quot;</span><span class="nt">&gt;</span>
-<span class="w">  </span><span class="nt">&lt;version&gt;</span>Artificial<span class="w"> </span>Intelligence<span class="nt">&lt;/version&gt;</span>
-<span class="w">  </span><span class="nt">&lt;internal&gt;</span>
-<span class="w">    </span><span class="nt">&lt;ref</span><span class="w"> </span><span class="na">product=</span><span class="s">&quot;trd&quot;</span><span class="w"> </span><span class="na">docset=</span><span class="s">&quot;clearml&quot;</span><span class="w"> </span><span class="na">dc=</span><span class="s">&quot;DC-rc_suse-ai_clearml&quot;</span><span class="w"> </span><span class="na">titleformat=</span><span class="s">&quot;title subtitle&quot;</span><span class="nt">/&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/internal&gt;</span>
-<span class="nt">&lt;/docset&gt;</span>
-</pre></div>
-</div>
-<p>In version 7, <code class="docutils literal notranslate"><span class="pre">&lt;internal&gt;</span></code> is removed. The migration stylesheet converts these
-references as follows:</p>
-<ul class="simple">
-<li><p>Every <code class="docutils literal notranslate"><span class="pre">&lt;internal&gt;/ref</span></code> is transformed into a <code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;</span></code> containing an <code class="docutils literal notranslate"><span class="pre">&lt;xref&gt;</span></code> inside <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code>.</p></li>
-<li><p>Docsets that contain only internal references (no DAPS <code class="docutils literal notranslate"><span class="pre">builddocs</span></code> and no <code class="docutils literal notranslate"><span class="pre">external</span></code> links) now generate a <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code> block containing a default <code class="docutils literal notranslate"><span class="pre">&lt;locale</span> <span class="pre">lang=&quot;en-us&quot;&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt;main&lt;/branch&gt;</span></code>.</p></li>
-<li><p>Multi-part legacy references (<code class="docutils literal notranslate"><span class="pre">product</span></code>, <code class="docutils literal notranslate"><span class="pre">docset</span></code>, <code class="docutils literal notranslate"><span class="pre">dc</span></code>) are joined into a single dot-separated identifier in <code class="docutils literal notranslate"><span class="pre">xref/&#64;linkend</span></code> (for example, <code class="docutils literal notranslate"><span class="pre">trd.clearml.dc-rc_suse-ai_clearml</span></code>).</p></li>
-</ul>
-</section>
-<section id="validating-with-jing">
-<h3>Validating with Jing<a class="headerlink" href="#validating-with-jing" title="Link to this heading">#</a></h3>
-<p>The easiest way to validate the Portal configuration file against the schema is using the command <strong class="command">docbuild portal validate</strong>, see <a class="reference internal" href="../user/portal-config/validate-portal.html#validate-portal"><span class="std std-ref">Validating the Portal Configuration</span></a>.</p>
-<p>If you prefer to validate the configuration file against the schema using
-<strong class="command">jing</strong>, use the following steps:</p>
-<ol class="arabic">
-<li><p>Copy the RNC schema file to the configuration directory:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$PATH_TO_DOCBUILD_GITHUB_REPO</span>
-<span class="gp">$ </span>cp<span class="w"> </span>src/docbuild/config/xml/data/portal-config.rnc<span class="w"> </span><span class="nv">$HOME</span>/.config/docbuild/config.d/
-</pre></div>
-</div>
-</li>
-<li><p>Create a symbolic link to the RNC schema file in the configuration directory:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ln<span class="w"> </span>-s<span class="w"> </span>../portal-config.rnc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.config/docbuild/config.d/portal-config.rnc&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set the appropriate Java system property for XInclude support:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">XINCLUDE_PROP</span><span class="o">=</span><span class="s2">&quot;-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Set the environment variable for your operating system:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>For<span class="w"> </span>openSUSE
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">ADDITIONAL_FLAGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
-<span class="gp"># </span>For<span class="w"> </span>Debian/Ubuntu
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_ARGS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
-<span class="gp"># </span>For<span class="w"> </span>Fedora/RHEL/CentOS
-<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">JAVA_OPTS</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$XINCLUDE_PROP</span><span class="s2">&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p>Validate the configuration file against the schema using <strong class="command">jing</strong>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>jing<span class="w"> </span>-c<span class="w"> </span>~/.config/docbuild/config.d/portal-config.rnc<span class="w"> </span>~/.config/docbuild/config.d/portal.xml
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-</section>
 </section>
 
 
@@ -754,7 +742,7 @@ references as follows:</p>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
@@ -766,16 +754,13 @@ references as follows:</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-requisites">Pre-requisites</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparing-the-docserv-stitchfile">Preparing the Docserv Stitchfile</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#converting-the-stitchfile">Converting the Stitchfile</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-xslt-parameters">Available XSLT Parameters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-multiple-files">Creating Multiple Files</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-single-file">Creating a Single File</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-of-internal-references">Migration of Internal References</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validating-with-jing">Validating with Jing</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-migration-process">The Migration Process</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-commands">Required Commands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#docserv-input-data">Docserv Input Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-migration-script">Using the migration script</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-options">Available options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#schema-handling">Schema handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#manually-creating-the-docserv-stitchfile">Manually Creating the Docserv Stitchfile</a></li>
 </ul>
   </nav></div>
 
@@ -817,8 +802,8 @@ references as follows:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -851,7 +836,7 @@ references as follows:</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>
