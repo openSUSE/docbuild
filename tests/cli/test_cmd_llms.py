@@ -37,7 +37,7 @@ def test_llms_missing_target_dir(tmp_path: Path) -> None:
     )
 
     assert result.exit_code == 1
-    assert "does not exist or is not a directory" in result.output
+    assert "is not a directory" in result.output
 
 
 @patch("docbuild.cli.cmd_build.cmd_llms.generate_llmstxt", new_callable=AsyncMock)
