@@ -17,6 +17,7 @@ from docbuild.constants import DEFAULT_DELIVERABLES
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
+from docbuild.models.lifecycle import LifecycleFlag
 from docbuild.tasks.portal import parse_portal_config
 from docbuild.utils.display import get_live_manager
 from docbuild.utils.git import ManagedGitRepo
@@ -56,6 +57,12 @@ def is_deliverable_node(node: etree._Element | object | None) -> bool:
         return True
 
 
+def is_unsupported_deliverable(d: Deliverable) -> bool:
+    """Return True if the deliverable's parent docset has an unsupported lifecycle."""
+    lifecycle_str = d.xml.docset_node.attrib.get("lifecycle", "")
+    return LifecycleFlag.unsupported in LifecycleFlag.from_str(lifecycle_str)
+
+
 def gather_build_tasks(
     stitchnode: etree._ElementTree, doctypes: Sequence[Doctype]
 ) -> list[Deliverable]:
@@ -64,11 +71,16 @@ def gather_build_tasks(
 
     initial_deliverables: list[Deliverable] = []
     for dt in resolved_doctypes:
+        if LifecycleFlag.unsupported in dt.lifecycle:
+            continue
         initial_deliverables.extend(get_deliverable_from_doctype(stitchnode, dt))
 
     build_tasks: dict[str, Deliverable] = {}
 
     for d in initial_deliverables:
+        if LifecycleFlag.unsupported in d.lifecycle:
+            continue
+
         if not d.xml.is_xref:
             build_tasks[d.full_id] = d
         else:
@@ -79,7 +91,8 @@ def gather_build_tasks(
             target = d.xml.final_target_node
             if is_deliverable_node(target):
                 target_d = Deliverable(_node=target)
-                build_tasks[target_d.full_id] = target_d
+                if LifecycleFlag.unsupported not in target_d.lifecycle:
+                    build_tasks[target_d.full_id] = target_d
 
     return sorted(build_tasks.values())
 

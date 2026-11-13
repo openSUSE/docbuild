@@ -1,0 +1,1 @@
+Skip building deliverables for unsupported docsets while still generating their JSON manifests with an empty documents list.
