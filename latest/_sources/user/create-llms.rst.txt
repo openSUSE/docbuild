@@ -5,7 +5,7 @@ Creating Markdown for AI Tools
 
 AI assistants and LLM crawlers often read web pages poorly.
 Pages full of navigation menus, scripts, and layout markup waste their limited context on noise.
-``docbuild llms`` gives them a cleaner version of your documentation.
+:command:`docbuild build llms` gives them a cleaner version of your documentation.
 
 Why build Markdown files?
 -------------------------
@@ -47,10 +47,10 @@ To generate the Markdown files for an existing build, do the following:
      .. code-block:: console
         :caption: Pass a custom ENV config file
 
-        $ docbuild --env-config env.toml llms
+        $ docbuild --env-config env.toml build llms
 
    * In :file:`env.{role}.toml`, where ``{role}`` is the environment role such as ``devel`` or ``production``, set the options listed in the section above. Store the file in a standard location.
-     Run :command:`docbuild llms` from the directory that contains the file. The default role is ``production``, so the default file name is :file:`env.production.toml`.
+     Run :command:`docbuild build llms` from the directory that contains the file. The default role is ``production``, so the default file name is :file:`env.production.toml`.
 
    * On the command line, pass each setting with ``-C``/ ``--set-env`` as a ``KEY=VALUE`` pair.
      You do not need an ENV config file for this.
@@ -61,7 +61,7 @@ To generate the Markdown files for an existing build, do the following:
 
         $ docbuild -C paths.target.target_base_dir=/path/to/builds \
              -C build.build_llmstxt=true \
-             llms
+             build llms
 
 #. Check the output directory.
    It contains the Markdown files and :file:`llms.txt` in the ``llmstxt_dir`` subdirectory.

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Markdown for AI Tools &#8212; Docbuild Documentation 0.30.1.dev6+g704d9cce1.d20261113</title>
+    <title>Creating Markdown for AI Tools &#8212; Docbuild Documentation 0.30.1.dev7+g01c01a378.d20261113</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=43629fba"></script>
+    <script src="../_static/documentation_options.js?v=2c6085a6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -492,7 +492,7 @@
 <span id="cmd-llms"></span><h1>Creating Markdown for AI Tools<a class="headerlink" href="#creating-markdown-for-ai-tools" title="Link to this heading">#</a></h1>
 <p>AI assistants and LLM crawlers often read web pages poorly.
 Pages full of navigation menus, scripts, and layout markup waste their limited context on noise.
-<code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">llms</span></code> gives them a cleaner version of your documentation.</p>
+<strong class="command">docbuild build llms</strong> gives them a cleaner version of your documentation.</p>
 <section id="why-build-markdown-files">
 <h2>Why build Markdown files?<a class="headerlink" href="#why-build-markdown-files" title="Link to this heading">#</a></h2>
 <p>The command converts each built HTML page into a plain Markdown file that keeps only the content.
@@ -530,13 +530,13 @@ A relative path is resolved against <code class="docutils literal notranslate"><
 <li><p>In an arbitrary file (like <code class="file docutils literal notranslate"><span class="pre">env.toml</span></code>), set the options listed in the section above. docbuild does not search for this name by default, so pass it with <code class="docutils literal notranslate"><span class="pre">--env-config</span> <span class="pre">env.toml</span></code> and run:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Pass a custom ENV config file</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>env.toml<span class="w"> </span>llms
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>--env-config<span class="w"> </span>env.toml<span class="w"> </span>build<span class="w"> </span>llms
 </pre></div>
 </div>
 </div>
 </li>
 <li><p>In <code class="file docutils literal notranslate"><span class="pre">env.</span><em><span class="pre">role</span></em><span class="pre">.toml</span></code>, where <code class="docutils literal notranslate"><span class="pre">{role}</span></code> is the environment role such as <code class="docutils literal notranslate"><span class="pre">devel</span></code> or <code class="docutils literal notranslate"><span class="pre">production</span></code>, set the options listed in the section above. Store the file in a standard location.
-Run <strong class="command">docbuild llms</strong> from the directory that contains the file. The default role is <code class="docutils literal notranslate"><span class="pre">production</span></code>, so the default file name is <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code>.</p></li>
+Run <strong class="command">docbuild build llms</strong> from the directory that contains the file. The default role is <code class="docutils literal notranslate"><span class="pre">production</span></code>, so the default file name is <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code>.</p></li>
 <li><p>On the command line, pass each setting with <code class="docutils literal notranslate"><span class="pre">-C</span></code>/ <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> as a <code class="docutils literal notranslate"><span class="pre">KEY=VALUE</span></code> pair.
 You do not need an ENV config file for this.
 If you also have an env config file, the <code class="docutils literal notranslate"><span class="pre">-C</span></code> values override it for that run.</p>
@@ -544,7 +544,7 @@ If you also have an env config file, the <code class="docutils literal notransla
 <div class="code-block-caption"><span class="caption-text">Pass the settings on the command line</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span>paths.target.target_base_dir<span class="o">=</span>/path/to/builds<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-C<span class="w"> </span>build.build_llmstxt<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>llms
+<span class="w">     </span>build<span class="w"> </span>llms
 </pre></div>
 </div>
 </div>

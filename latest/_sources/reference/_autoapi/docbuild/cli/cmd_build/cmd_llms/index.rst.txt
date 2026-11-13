@@ -1,7 +1,7 @@
-docbuild.cli.cmd_llms
-=====================
+docbuild.cli.cmd_build.cmd_llms
+===============================
 
-.. py:module:: docbuild.cli.cmd_llms
+.. py:module:: docbuild.cli.cmd_build.cmd_llms
 
 .. autoapi-nested-parse::
 
@@ -14,7 +14,7 @@ Functions
 
 .. autoapisummary::
 
-   docbuild.cli.cmd_llms.llms
+   docbuild.cli.cmd_build.cmd_llms.llms
 
 
 Module Contents
