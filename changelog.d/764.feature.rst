@@ -1,0 +1,1 @@
+Allow passing specific doctypes to ``docbuild build llms`` (and add an ``--all`` flag) to limit HTML-to-Markdown conversion to specific products or docsets.

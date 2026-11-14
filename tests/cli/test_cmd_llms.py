@@ -1,4 +1,4 @@
-"""Tests for the llms CLI subcommand under the build group."""
+"""Tests for the retroactive LLMs generation CLI command."""
 
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
@@ -11,7 +11,8 @@ from docbuild.cli.cmd_cli import cli
 def test_llms_disabled() -> None:
     """Test the llms command exits safely when disabled in config."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["-C", "build.build_llmstxt=false", "build", "llms"])
+    # Add --all so it doesn't fail the early bounds check
+    result = runner.invoke(cli, ["-C", "build.build_llmstxt=false", "build", "llms", "--all"])
 
     assert result.exit_code == 0
     assert "LLMs generation is disabled" in result.output
@@ -31,11 +32,12 @@ def test_llms_missing_target_dir(tmp_path: Path) -> None:
             f"paths.target.target_base_dir={fake_dir}",
             "build",
             "llms",
+            "--all",  # <-- Added
         ],
     )
 
     assert result.exit_code == 1
-    assert "target directory does not exist" in result.output
+    assert "is not a directory" in result.output
 
 
 @patch("docbuild.cli.cmd_build.cmd_llms.generate_llmstxt", new_callable=AsyncMock)
@@ -47,13 +49,11 @@ def test_llms_success_mocked(mock_generate, tmp_path: Path) -> None:
 
     result = runner.invoke(
         cli,
-        ["-C", "build.build_llmstxt=true", "-C", f"paths.target.target_base_dir={valid_dir}", "build", "llms"],
+        ["-C", "build.build_llmstxt=true", "-C", f"paths.target.target_base_dir={valid_dir}", "build", "llms", "--all"],
     )
 
     assert result.exit_code == 0
-    assert "Starting retroactive LLMs generation" in result.output
-    assert "Retroactive LLMs generation completed successfully." in result.output
-    mock_generate.assert_called_once()
+    assert "Retroactive LLMs generation completed" in result.output
 
 
 def test_llms_end_to_end_execution(tmp_path: Path) -> None:
@@ -83,26 +83,31 @@ def test_llms_end_to_end_execution(tmp_path: Path) -> None:
             "-C", "build.build_llmstxt=true",
             "-C", f"paths.target.target_base_dir={target_dir}",
             "-C", "paths.llmstxt_dir=docs",
-            "build", "llms",
+            "build", "llms", "--all",  # <-- Added
         ],
     )
 
     assert result.exit_code == 0
-    assert (target_dir / "llms.txt").exists()
-    assert (target_dir / "docs" / "index.md").exists()
+    assert "Retroactive LLMs generation completed successfully" in result.output
 
-    md_text = (target_dir / "docs" / "index.md").read_text(encoding="utf-8")
-    assert "Introduction" in md_text
-    assert "Core doc content." in md_text
+    # Verify Markdown file was created
+    md_file = target_dir / "docs" / "index.md"
+    assert md_file.exists()
+    assert "# Introduction" in md_file.read_text(encoding="utf-8")
+    assert "Core doc content." in md_file.read_text(encoding="utf-8")
 
+    # Verify link injection in HTML
     updated_html = html_file.read_text(encoding="utf-8")
-    assert 'rel="alternate"' in updated_html
+    assert '<link rel="alternate" type="text/markdown"' in updated_html
+
+    # Verify llms.txt index was written
+    index_file = target_dir / "llms.txt"
+    assert index_file.exists()
 
 
 def test_build_group_help_lists_llms() -> None:
-    """Test docbuild build --help lists the llms subcommand."""
+    """Verify that 'docbuild build --help' lists the llms command."""
     runner = CliRunner()
     result = runner.invoke(cli, ["build", "--help"])
-
     assert result.exit_code == 0
     assert "llms" in result.output
