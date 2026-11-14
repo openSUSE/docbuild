@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.30.1.dev8+g6c23b6d97.d20261113</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.30.1.dev9+g6e56b1167.d20261114</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=2464f826"></script>
+    <script src="../_static/documentation_options.js?v=66ca6ad9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -565,10 +565,26 @@ The migration script will create a stitchfile automatically from the directory b
 </li>
 </ul>
 <p>Either way, by default, the migration script produces the converted configuration in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory.</p>
+<p>The <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory protects the original configuration from being overwritten. To use a standard location for the converted configuration, specify it with the <a class="reference internal" href="#cmdoption-migrate-config.sh-d"><code class="xref std std-option docutils literal notranslate"><span class="pre">--dir</span></code></a> or <a class="reference internal" href="#cmdoption-migrate-config.sh-d"><code class="xref std std-option docutils literal notranslate"><span class="pre">-d</span></code></a> option:</p>
+<div class="literal-block-wrapper docutils container" id="migrate-std-output">
+<div class="code-block-caption"><span class="caption-text">Specifying the standard output directory</span><a class="headerlink" href="#migrate-std-output" title="Link to this code">#</a></div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>tools/migrate-config.sh<span class="w"> </span>-d<span class="w"> </span>~/.config/docbuild/config.d/<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/tmp/docserv-stitch-YYYY-MM-DD.xml
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use the <a class="reference internal" href="#cmdoption-migrate-config.sh-d"><code class="xref std std-option docutils literal notranslate"><span class="pre">--dir</span></code></a> or <a class="reference internal" href="#cmdoption-migrate-config.sh-d"><code class="xref std std-option docutils literal notranslate"><span class="pre">-d</span></code></a> options, any file will
+be overwritten in the specified output location.</p>
+</div>
 </section>
 <section id="available-options">
 <span id="migration-options"></span><h2>Available options<a class="headerlink" href="#available-options" title="Link to this heading">#</a></h2>
-<p>In most cases, the default options are sufficient for the migration process. The converted configuration will be placed in the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory. Each product will have its configuration stored in a separate subdirectory within <code class="file docutils literal notranslate"><span class="pre">output/</span></code>, xinclude processing is enabled by default, and the Portal schema is copied next to the main configuration file. You can override these defaults using the available command-line options described below.</p>
+<p>The default options are sufficient for most migrations.
+The script writes the converted configuration to <code class="file docutils literal notranslate"><span class="pre">output/</span></code>, with each product in a separate subdirectory.
+It uses XIncludes and copies the Portal schema next to the main configuration file.</p>
+<p>Use the options below to change these defaults.</p>
 <p class="rubric">Output options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-migrate-config.sh-d">
@@ -598,14 +614,14 @@ Use a trailing slash to mark it as a directory.</p>
 <p class="rubric">Schema options</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-migrate-config.sh-s">
-<span id="cmdoption-migrate-config.sh-schema"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema</span></span><span class="sig-prename descclassname"> <span class="pre">FILE</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-s" title="Link to this definition">#</a></dt>
+<span id="cmdoption-migrate-config.sh-schema"></span><span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;FILE&gt;</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;FILE&gt;</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-s" title="Link to this definition">#</a></dt>
 <dd><p>Schema file in RNC or RNG format (Default: <code class="file docutils literal notranslate"><span class="pre">portal-config.rnc</span></code>).
 How the file is used depends on the schema mode, see <a class="reference internal" href="#migration-schema-handling"><span class="std std-ref">Schema handling</span></a>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-migrate-config.sh-S">
-<span id="cmdoption-migrate-config.sh-schema-mode"></span><span class="sig-name descname"><span class="pre">-S</span></span><span class="sig-prename descclassname"> <span class="pre">MODE</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema-mode</span></span><span class="sig-prename descclassname"> <span class="pre">MODE</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-S" title="Link to this definition">#</a></dt>
+<span id="cmdoption-migrate-config.sh-schema-mode"></span><span class="sig-name descname"><span class="pre">-S</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;MODE&gt;</span></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--schema-mode</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;MODE&gt;</span></span><a class="headerlink" href="#cmdoption-migrate-config.sh-S" title="Link to this definition">#</a></dt>
 <dd><p>How to provide the schema in the output directory. <code class="docutils literal notranslate"><span class="pre">MODE</span></code> is one of:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">copy</span></code> - Copy the schema file (Default).</p></li>
@@ -623,14 +639,19 @@ How the file is used depends on the schema mode, see <a class="reference interna
 
 <p>If you use the default options (or pass <a class="reference internal" href="#cmdoption-migrate-config.sh-X"><code class="xref std std-option docutils literal notranslate"><span class="pre">--with-xinclude</span></code></a>), the <code class="file docutils literal notranslate"><span class="pre">output/</span></code> directory contains these files and subdirectories:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>output/
-├── categories/
-├── categories.xml
-├── [...]
-├── portal.xml
-├── portal-config.rnc
-└── [...]
+├── categories/          (1)
+├── categories.xml       (1)
+├── portal.xml           (2)
+├── portal-config.rnc    (3)
+└── [...]                (4)
 </pre></div>
 </div>
+<ol class="arabic simple">
+<li><p>Category descriptions.</p></li>
+<li><p>Main Portal configuration.</p></li>
+<li><p>Portal schema, either as link or as regular file.</p></li>
+<li><p>Other files and directories generated by the migration script.</p></li>
+</ol>
 </section>
 <section id="schema-handling">
 <span id="migration-schema-handling"></span><h2>Schema handling<a class="headerlink" href="#schema-handling" title="Link to this heading">#</a></h2>
