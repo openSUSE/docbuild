@@ -1,0 +1,2 @@
+
+Added the global ``-A`` / ``--set-app`` command-line option to override application configuration values. The option supports the same ``KEY=VALUE`` syntax and dotted-key handling as ``--set-env``.
