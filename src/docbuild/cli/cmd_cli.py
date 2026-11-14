@@ -520,7 +520,13 @@ def cli(
         # --- PHASE 1: Load Application Config ---
         current_model = AppConfig
         current_files = (app_config,) if app_config else None
-        load_app_config(ctx, app_config, max_workers, skip_validation, app_overrides)
+        load_app_config(
+            ctx,
+            app_config,
+            max_workers,
+            skip_validation,
+            app_overrides=app_overrides,
+        )
         apply_theme_overrides(context)
 
         # --- PHASE 2: Load Environment Config ---
