@@ -71,6 +71,12 @@ class DeliverableXMLView:
         return node.strip() if node is not None else ""
 
     @cached_property
+    def maintainers(self) -> list[str]:
+        """Return list of maintainer contact emails for this product."""
+        contacts = self.product_node.xpath("maintainers/contact/text()")
+        return [str(c).strip() for c in contacts if str(c).strip()]
+
+    @cached_property
     def docset_id(self) -> str:
         """Return the docset real ID (``<docset xml:id=…>``)."""
         return self.docset_node.get(XML_ID)
@@ -133,7 +139,6 @@ class DeliverableXMLView:
     def identifier(self) -> str:
         """Return the fully qualified deliverable identifier string."""
         return f"{self.product_docset}/{self.lang}:{self.deliverableid}"
-
 
     @cached_property
     def target_id(self) -> str | None:
@@ -370,7 +375,9 @@ class DeliverableXMLView:
         return None
 
     # -- Output formats
-    def _xref_format_attrs(self, expected_formats: tuple[str, ...]) -> dict[str, str] | None:
+    def _xref_format_attrs(
+        self, expected_formats: tuple[str, ...]
+    ) -> dict[str, str] | None:
         """Return raw format attributes from the linked deliverable."""
         if (target := self.final_target_node) is not None and target is not self.node:
             if target.find("dc") is not None:
@@ -379,7 +386,9 @@ class DeliverableXMLView:
                 return self._prebuilt_format_attrs(expected_formats, source_node=target)
         return None
 
-    def _dc_format_attrs(self, source_node: etree._Element | None = None) -> dict[str, str] | None:
+    def _dc_format_attrs(
+        self, source_node: etree._Element | None = None
+    ) -> dict[str, str] | None:
         """Return raw format attributes from ``dc/format`` in the given node."""
         node = (source_node if source_node is not None else self.node).find("dc/format")
         return node.attrib if node is not None else None
@@ -400,8 +409,9 @@ class DeliverableXMLView:
                 attrs[url_format] = "1"
         return attrs
 
-    def format_attrs(self) -> dict[Literal["epub", "html", "pdf", "single-html"],
-                                   bool] | None:
+    def format_attrs(
+        self,
+    ) -> dict[Literal["epub", "html", "pdf", "single-html"], bool] | None:
         """Return deliverable output formats as a boolean dict.
 
         Extracts format attributes from the XML element, converts their

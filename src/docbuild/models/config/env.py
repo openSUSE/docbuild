@@ -95,6 +95,18 @@ runtime during the build process.
         "rsync": {
             "exclude": DEFAULT_RSYNC_EXCLUDES,
             "exclude_extra": []
+        },
+        // Mail notification settings. Corresponds to the EnvMail model.
+        "mail": {
+            "admin_emails": [],
+            "sender": "docbuild-noreply@suse.com",
+            "smtp_host": "localhost",
+            "smtp_port": 25,
+            "smtp_tls": false,
+            "smtp_starttls": false,
+            "timeout": 30.0,
+            "smtp_user": null,
+            "smtp_password_env": null
         }
     }
 """
@@ -197,7 +209,7 @@ class EnvBuildDaps(BaseModel):
         default="daps",
         title="DAPS Command",
         description="The base daps command executable.",
-        examples=["daps"]
+        examples=["daps"],
     )
     "The base command used for DAPS execution."
 
@@ -205,7 +217,7 @@ class EnvBuildDaps(BaseModel):
         default="{build.daps.command} --builddir={{builddir}} -d {{dcfile}} metadata --output {{output}}",
         title="DAPS Metadata Subcommand",
         description="The daps metadata command for extracting info.",
-        examples=["daps metadata"]
+        examples=["daps metadata"],
     )
     "The command used to extract DAPS metadata."
 
@@ -254,7 +266,9 @@ class EnvBuildContainer(BaseModel):
         default="registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest",
         title="Container Image",
         description="The container registry path or image name.",
-        examples=["registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"]
+        examples=[
+            "registry.opensuse.org/documentation/containers/15.6/opensuse-daps-toolchain:latest"
+        ],
     )
     "The container image used for the build environment."
 
@@ -315,7 +329,9 @@ class EnvGeneral(BaseModel):
     "The default language code."
 
     languages: list[LanguageCode] = Field(
-        default_factory=lambda: [LanguageCode(language=lang) for lang in ALLOWED_LANGUAGES],
+        default_factory=lambda: [
+            LanguageCode(language=lang) for lang in ALLOWED_LANGUAGES
+        ],
         title="Supported Languages",
         description="A list of all language codes supported by this documentation instance.",
         examples=[["en-us", "de-de", "fr-fr"]],
@@ -512,7 +528,7 @@ class EnvPaths(BaseModel):
         description="Path of the main Portal XML configuration file.",
         examples=[
             "/etc/docbuild/config.d/portal.xml",
-            " ~/.config/docbuild/config.d/portal.xml"
+            " ~/.config/docbuild/config.d/portal.xml",
         ],
     )
     "Path to the main portal XML configuration file."
@@ -526,7 +542,7 @@ class EnvPaths(BaseModel):
         ),
         examples=[
             "/etc/docbuild/portal-config.rnc",
-            " ~/.config/docbuild/portal-config.rnc"
+            " ~/.config/docbuild/portal-config.rnc",
         ],
     )
     "Path to the portal RELAX NG (RNC) schema file."
@@ -655,8 +671,12 @@ class EnvXslt(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     common: dict[str, Any] = Field(default_factory=dict, title="Common XSLT Parameters")
-    html: dict[str, Any] = Field(default_factory=dict, title="HTML-specific XSLT Parameters")
-    pdf: dict[str, Any] = Field(default_factory=dict, title="PDF-specific XSLT Parameters")
+    html: dict[str, Any] = Field(
+        default_factory=dict, title="HTML-specific XSLT Parameters"
+    )
+    pdf: dict[str, Any] = Field(
+        default_factory=dict, title="PDF-specific XSLT Parameters"
+    )
 
 
 class SSHEndpoint(BaseModel):
@@ -844,6 +864,83 @@ class EnvRsync(BaseModel):
         return RsyncOptions(exclude=[*self.exclude, *self.exclude_extra])
 
 
+class EnvMail(BaseModel):
+    """Configuration for email notifications on build failure."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    admin_emails: list[str] = Field(
+        default_factory=list,
+        title="Admin Emails",
+        description="List of administrator email addresses for run-wide failure digests.",
+        examples=[["admin@example.com"]],
+    )
+    "Administrator email addresses receiving full failure digests."
+
+    sender: str = Field(
+        default="docbuild-noreply@suse.com",
+        title="Sender Address",
+        description="The 'From' email address used for notification emails.",
+        examples=["docbuild@suse.com"],
+    )
+    "Sender email address."
+
+    smtp_host: str = Field(
+        default="localhost",
+        title="SMTP Host",
+        description="Hostname or IP address of the SMTP server.",
+        examples=["smtp.example.com"],
+    )
+    "SMTP server hostname."
+
+    smtp_port: int = Field(
+        default=25,
+        title="SMTP Port",
+        description="Port of the SMTP server (e.g. 25, 465, or 587).",
+        examples=[25, 587],
+        ge=1,
+        le=65535,
+    )
+    "SMTP server port."
+
+    smtp_tls: bool = Field(
+        default=False,
+        title="Use TLS",
+        description="Connect using direct SSL/TLS encryption (typically port 465).",
+    )
+    "Whether to use direct SSL/TLS."
+
+    smtp_starttls: bool = Field(
+        default=False,
+        title="Use STARTTLS",
+        description="Upgrade an unencrypted connection to TLS via STARTTLS (typically port 587).",
+    )
+    "Whether to upgrade connection via STARTTLS."
+
+    timeout: float = Field(
+        default=30.0,
+        title="Timeout",
+        description="SMTP connection and command timeout in seconds.",
+        gt=0,
+    )
+    "Timeout in seconds for SMTP operations."
+
+    smtp_user: str | None = Field(
+        default=None,
+        title="SMTP User",
+        description="Username for SMTP authentication (optional).",
+    )
+    "Optional username for SMTP authentication."
+
+    smtp_password_env: str | None = Field(
+        default=None,
+        title="SMTP Password Environment Variable",
+        description="Name of the environment variable containing the SMTP password.",
+        examples=["DOCBUILD_SMTP_PASSWORD"],
+    )
+    "Environment variable name holding SMTP password for secure access."
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -892,6 +989,13 @@ class EnvConfig(BaseModel):
     )
     """Transfer exclusions for built deliverables."""
 
+    mail: EnvMail = Field(
+        default_factory=EnvMail,
+        title="Mail Configuration",
+        description="Settings for email notifications on build failure.",
+    )
+    "Settings for email notifications on build failure."
+
     # --- Placeholder Resolution ---
     @model_validator(mode="before")
     @classmethod
@@ -903,7 +1007,7 @@ class EnvConfig(BaseModel):
             except (
                 PlaceholderResolutionError,
                 CircularReferenceError,
-                PlaceholderSyntaxError
+                PlaceholderSyntaxError,
             ) as e:
                 raise ValueError(f"Configuration placeholder error: {e}") from e
         return data
