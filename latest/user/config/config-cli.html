@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Setting Env Keys on the Command Line &#8212; Docbuild Documentation 0.30.1.dev9+g6e56b1167.d20261114</title>
+    <title>Setting Config Keys on the Command Line &#8212; Docbuild Documentation 0.30.1.dev10+g7ea3ea911.d20261114</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=66ca6ad9"></script>
+    <script src="../../_static/documentation_options.js?v=812497e6"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -403,7 +403,7 @@
 <li class="toctree-l2"><a class="reference internal" href="init.html">Creating Starter Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="view.html">Viewing the Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="validate.html">Validating Configuration</a></li>
-<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Setting Env Keys on the Command Line</a></li>
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">Setting Config Keys on the Command Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="theme.html">Configuring the Terminal Theme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi-configs.html">Using Multiple Environment Configurations</a></li>
 </ul>
@@ -474,7 +474,7 @@
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Working with Docbuild configs</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Setting Env Keys on the Command Line</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Setting Config Keys on the Command Line</span></li>
   </ul>
 </nav>
 </div>
@@ -491,17 +491,20 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="setting-env-keys-on-the-command-line">
-<span id="config-overwriting-cli"></span><h1>Setting Env Keys on the Command Line<a class="headerlink" href="#setting-env-keys-on-the-command-line" title="Link to this heading">#</a></h1>
-<p>To temporarily override environment configuration options directly from the command line use the <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> option. This avoids having to create or modify TOML files for quick adjustments.</p>
+  <section id="setting-config-keys-on-the-command-line">
+<span id="config-overwriting-cli"></span><h1>Setting Config Keys on the Command Line<a class="headerlink" href="#setting-config-keys-on-the-command-line" title="Link to this heading">#</a></h1>
+<p>To temporarily override configuration options directly from the command line use the <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> option for environment configuration and the <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-app</span></code> option for application configuration. This avoids having to create or modify TOML files for quick adjustments.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">key=value</span></code> syntax, and use dot notation for nested options:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.canonical_url_domain=https://doc.example.net&quot;</span><span class="w"> </span>-C<span class="w"> </span>paths.root_config_dir<span class="o">=</span>/etc/docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
+
+<span class="gp">$ </span>docbuild<span class="w"> </span>-A<span class="w"> </span><span class="nv">max_workers</span><span class="o">=</span><span class="m">4</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--app
 </pre></div>
 </div>
-<p>Options passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected environment configuration file.</p>
+<p>Options passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> and via <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-app</span></code> have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected configuration files.</p>
+<p>Everything below applies to both options; the examples use <code class="docutils literal notranslate"><span class="pre">-C</span></code>, replace it with <code class="docutils literal notranslate"><span class="pre">-A</span></code> to override application configuration instead.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Values passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> are subject to the same validation rules as configuration files when validation runs. The <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">list</span></code> command skips validation unless you pass <code class="docutils literal notranslate"><span class="pre">--validate</span></code>.</p>
+<p>Values passed via <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> and via <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-app</span></code> are subject to the same validation rules as configuration files when validation runs. The <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">list</span></code> command skips validation unless you pass <code class="docutils literal notranslate"><span class="pre">--validate</span></code>.</p>
 </div>
 <section id="handling-keys-with-dots">
 <h2>Handling Keys with Dots<a class="headerlink" href="#handling-keys-with-dots" title="Link to this heading">#</a></h2>
