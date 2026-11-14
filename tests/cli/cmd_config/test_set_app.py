@@ -217,3 +217,27 @@ class TestSetAppWithConfigCommands:
         args, kwargs = mock_app.call_args
         app_overrides = kwargs.get("app_overrides", args[4] if len(args) > 4 else None)
         assert app_overrides == ("max_workers=4",)
+    @patch.object(cmd_cli_module, "load_app_config")
+    @patch.object(cmd_cli_module, "load_env_config")
+    @patch.object(cmd_cli_module, "setup_logging")
+    def test_set_app_long_option_is_supported(
+        self, mock_logging, mock_env, mock_app, runner
+    ):
+        """Test that the long --set-app option is accepted by the CLI."""
+        mock_ctx = MagicMock()
+        mock_ctx.appconfigfiles = [Path("app.toml")]
+        mock_ctx.envconfigfiles = [Path("env.toml")]
+        mock_ctx.envconfig_from_defaults = False
+
+        result = runner.invoke(
+            cli,
+            ["--set-app", "max_workers=4", "config", "validate"],
+            obj=mock_ctx,
+        )
+
+        assert result.exit_code == 0, result.output
+        args, kwargs = mock_app.call_args
+        app_overrides = kwargs.get(
+            "app_overrides", args[4] if len(args) > 4 else None
+        )
+        assert app_overrides == ("max_workers=4",)
