@@ -1,6 +1,7 @@
 """CLI command to retroactively generate Markdown and llms.txt files."""
 
 import asyncio
+from itertools import product
 import logging
 from pathlib import Path
 import sys
@@ -17,41 +18,50 @@ from ..context import DocBuildContext
 log = logging.getLogger(__name__)
 
 
-def _resolve_targets(target_base: Path, target_dir_dyn: str, doctypes: tuple[Doctype, ...]) -> set[Path]:
+def resolve_targets(target_base: Path, target_dir_dyn: str, doctypes: tuple[Doctype, ...]) -> set[Path]:
     """Resolve specific directories to process based on doctypes or --all flag."""
     if not doctypes:
         return {target_base}
 
     targets_to_process: set[Path] = set()
-    missing_doctypes: list[str] = []
 
     # Prepare the template string to correctly construct directory paths
     dyn_template = normalize_runtime_placeholders(target_dir_dyn)
 
     for dt in doctypes:
-        prod_str = dt.product.acronym if dt.product else "*"
-        docsets = dt.docset if dt.docset and "*" not in dt.docset else ["*"]
-        langs = [lang.language for lang in dt.langs] if dt.langs else ["*"]
-
         found_match = False
-        for ds in docsets:
-            for lang in langs:
-                # Use the dynamic template to build the expected relative path string
-                search_path = dyn_template.format(lang=lang, language=lang, product=prod_str, version=ds, docset=ds)
 
-                # Glob the target base with our dynamic path
-                for match in target_base.glob(search_path):
-                    if match.is_dir():
-                        targets_to_process.add(match)
-                        found_match = True
+        # Fallback to single wildcard if docset or langs are omitted to ensure product() executes
+        docsets = dt.docset if dt.docset else ["*"]
+        langs = dt.langs if dt.langs else ["*"]
+
+        for ds, lang in product(docsets, langs):
+            # Support both object and string representations robustly
+            lang_str = lang.language if hasattr(lang, "language") else str(lang)
+            prod_str = dt.product.acronym if dt.product else "*"
+
+            # Provide both common template aliases for safety across configs
+            target_suffix = dyn_template.format(
+                product=prod_str,
+                docset=ds,
+                version=ds,
+                lang=lang_str,
+                language=lang_str,
+            )
+
+            target_pattern = str(Path(target_suffix) / "html")
+
+            for match in target_base.glob(target_pattern):
+                found_match = True
+                if not match.is_dir():
+                    log.warning("Skipping non-directory match: %s", match)
+                    continue
+
+                targets_to_process.add(match)
+                log.debug("Adding target directory: %s", match)
 
         if not found_match:
-            missing_doctypes.append(str(dt))
-
-    if missing_doctypes:
-        msg = f"No matching directories found for: {', '.join(missing_doctypes)}"
-        log.warning(msg)
-        click.echo(msg)
+            log.warning("No matching directories found for doctype: %s", dt)
 
     return targets_to_process
 
@@ -82,7 +92,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
         click.echo(msg, err=True)
         sys.exit(1)
 
-    if not doctypes and not all_docs:
+    if not (doctypes or all_docs):
         msg = "You must provide at least one doctype or use the --all flag to process the entire directory."
         log.error(msg)
         click.echo(msg, err=True)
@@ -106,7 +116,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
         log.info(msg)
         click.echo(msg)
-        click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'.")
+        click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'." )
         sys.exit(0)
 
     # Note: Pydantic validates target_base exists, but we ensure it's a directory here
@@ -116,7 +126,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
         click.echo(msg, err=True)
         sys.exit(1)
 
-    targets_to_process = _resolve_targets(
+    targets_to_process = resolve_targets(
         target_base=target_base,
         target_dir_dyn=target_dir_dyn,
         doctypes=() if all_docs else doctypes
