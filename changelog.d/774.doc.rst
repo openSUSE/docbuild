@@ -1,0 +1,1 @@
+Explain the default output directory and show how to choose the standard location.
