@@ -425,6 +425,8 @@ def get_cleaner(doc: JustHTML) -> HTMLCleaner:
             return AntoraHTMLCleaner()
         case "daps" | "docbook":
             return DocBookHTMLCleaner()
+        case None if doc.query_one("main#_content article.documentation") is not None:
+            return DocBookHTMLCleaner()
         case _:
             return HTMLCleaner(None, None, None)
 
