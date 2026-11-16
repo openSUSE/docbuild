@@ -63,6 +63,11 @@ def llms(context: DocBuildContext) -> None:
 
             class DummyXML:
                 title = f"Documentation Index for {target_dest.name}"
+                categoryid: str | None = None
+                product_id = ""
+                docset_version = ""
+                docset_path = ""
+                lang = ""
 
             self.xml = DummyXML()
 
