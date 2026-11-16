@@ -41,7 +41,7 @@ class Deliverable:
     _meta: Metadata | None = None
 
     # -- "Private" methods for internal use in properties
-    #def _base_format_path(self, fmt: str) -> str:
+    # def _base_format_path(self, fmt: str) -> str:
     #    """Return the base path for a specific output format."""
     #    return self.paths.base_format_path(fmt)
 
@@ -146,6 +146,11 @@ class Deliverable:
     def lifecycle(self) -> LifecycleFlag:
         """Return the lifecycle of the containing docset."""
         return LifecycleFlag.from_str(self.xml.docset_node.get("lifecycle") or "")
+
+    @property
+    def maintainers(self) -> list[str]:
+        """Return list of maintainer contact emails for this deliverable's product."""
+        return self.xml.maintainers
 
     @property
     def metafile(self) -> str | None:

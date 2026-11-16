@@ -8,6 +8,7 @@ from pathlib import Path
 
 from aiostream import pipe, stream
 
+from ..mail import FailureCollector, FailureRecord
 from ..models.deliverable import Deliverable
 from ..utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ..utils.git import ManagedGitRepo
@@ -20,7 +21,9 @@ async def _safe_process_one(
     d: Deliverable,
     wt_dir: Path,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[
+        [Deliverable, Path], Awaitable[tuple[bool, Deliverable]]
+    ],
 ) -> tuple[bool, Deliverable]:
     """Safely process a single deliverable using the provided function and semaphore."""
     try:
@@ -40,19 +43,42 @@ async def _process_group(
     tmp_repo_dir: Path,
     build_limit: int,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[
+        [Deliverable, Path], Awaitable[tuple[bool, Deliverable]]
+    ],
+    failure_collector: FailureCollector | None = None,
 ) -> list[Deliverable]:
     """Process a single repository group within an isolated worktree."""
     group_key, group_deliverables = group_item
     repo_url, branch = group_key
     safe_prefix = f"wt_{group_deliverables[0].make_safe_name(group_deliverables[0].full_id)}_grp{len(group_deliverables)}_"
 
-    async with PersistentOnErrorTemporaryDirectory(dir=tmp_repo_dir, prefix=safe_prefix) as wt_dir:
+    async with PersistentOnErrorTemporaryDirectory(
+        dir=tmp_repo_dir, prefix=safe_prefix
+    ) as wt_dir:
         mg = ManagedGitRepo(repo_url, repo_dir)
         try:
             await mg.create_worktree(wt_dir, branch)
         except Exception as e:
-            log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
+            log.error(
+                "Failed to create worktree for %s branch %s: %s", repo_url, branch, e
+            )
+            if failure_collector is not None:
+                for d in group_deliverables:
+                    failure_collector.add(
+                        FailureRecord(
+                            product_id=d.xml.product_id or "",
+                            docset=d.xml.docset_path or "",
+                            lang=str(d.xml.lang),
+                            stage="git worktree",
+                            error=f"Failed to create worktree: {e}",
+                            maintainers=tuple(d.maintainers),
+                            repo_url=repo_url,
+                            branch=branch,
+                            dcfile=d.xml.dcfile,
+                            title=d.xml.productname,
+                        )
+                    )
             return group_deliverables
 
         async def process_mapped(d: Deliverable) -> tuple[bool, Deliverable]:
@@ -83,7 +109,10 @@ async def process_with_shared_worktrees(
     tmp_repo_dir: Path,
     max_workers: int,
     semaphore: asyncio.Semaphore,
-    process_single_func: Callable[[Deliverable, Path], Awaitable[tuple[bool, Deliverable]]],
+    process_single_func: Callable[
+        [Deliverable, Path], Awaitable[tuple[bool, Deliverable]]
+    ],
+    failure_collector: FailureCollector | None = None,
 ) -> list[Deliverable]:
     """Group deliverables by repo/branch and create a shared Git worktree per group.
 
@@ -95,8 +124,24 @@ async def process_with_shared_worktrees(
     for d in deliverables:
         # Prevent failure on deliverables missing Git config
         if not getattr(d, "git", None) or not getattr(d.git, "url", None):
-            log.error("Deliverable %s is missing Git remote configuration. Skipping.", d.full_id)
+            log.error(
+                "Deliverable %s is missing Git remote configuration. Skipping.",
+                d.full_id,
+            )
             failed.append(d)
+            if failure_collector is not None:
+                failure_collector.add(
+                    FailureRecord(
+                        product_id=d.xml.product_id or "",
+                        docset=d.xml.docset_path or "",
+                        lang=str(d.xml.lang),
+                        stage="git config",
+                        error="Deliverable is missing Git remote configuration.",
+                        maintainers=tuple(d.maintainers),
+                        dcfile=d.xml.dcfile,
+                        title=d.xml.productname,
+                    )
+                )
             continue
         groups[(d.git.url, d.branch)].append(d)
 
@@ -106,9 +151,17 @@ async def process_with_shared_worktrees(
     group_limit = get_deliverable_worker_limit(max_workers, len(groups))
     build_limit = get_deliverable_worker_limit(max_workers, len(deliverables))
 
-    async def mapped_process_group(item: tuple[tuple[str, str], list[Deliverable]]) -> list[Deliverable]:
+    async def mapped_process_group(
+        item: tuple[tuple[str, str], list[Deliverable]],
+    ) -> list[Deliverable]:
         return await _process_group(
-            item, repo_dir, tmp_repo_dir, build_limit, semaphore, process_single_func
+            item,
+            repo_dir,
+            tmp_repo_dir,
+            build_limit,
+            semaphore,
+            process_single_func,
+            failure_collector,
         )
 
     pipeline = stream.iterate(list(groups.items())) | pipe.map(

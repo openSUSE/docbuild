@@ -1,0 +1,1 @@
+Add email notifications on documentation build failure with product maintainer routing, run-wide admin digests, and fail-safe SMTP delivery.
