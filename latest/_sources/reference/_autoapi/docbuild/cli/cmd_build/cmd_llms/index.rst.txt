@@ -14,13 +14,19 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_build.cmd_llms.resolve_targets
    docbuild.cli.cmd_build.cmd_llms.llms
 
 
 Module Contents
 ---------------
 
-.. py:function:: llms(context: docbuild.cli.context.DocBuildContext) -> None
+.. py:function:: resolve_targets(target_base: pathlib.Path, target_dir_dyn: str, doctypes: tuple[docbuild.models.doctype.Doctype, ...]) -> set[pathlib.Path]
+
+   Resolve specific directories to process based on doctypes or --all flag.
+
+
+.. py:function:: llms(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...], all_docs: bool) -> None
 
    Generate Markdown and llms.txt files for an existing build directory.
 
@@ -29,7 +35,7 @@ Module Contents
    files found within, converts them to Markdown, and generates the root
    llms.txt index file.
 
-   It also automatically injects the <link rel="alternate"> tags into the
-   existing HTML files pointing to the new Markdown counterparts.
+   You can limit the conversion to specific products or docsets by passing
+   doctypes (e.g., sles/15-SP3). Use --all to process the entire target directory.
 
 

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev10+g7ea3ea911.d20261114</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev12+g9977ab5ed.d20261117</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=812497e6"></script>
+    <script src="_static/documentation_options.js?v=6107cf27"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -470,6 +470,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>The <code class="docutils literal notranslate"><span class="pre">llms</span></code> command is now available as <strong class="command">docbuild build llms</strong>, grouped
 alongside the other build-related commands. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/761">GH #761</a>)</p></li>
 <li><p>Improved the <code class="docutils literal notranslate"><span class="pre">tools/migrate-config.sh</span></code> migration script, which now also accepts a Docserv config directory, enables XInclude output by default, and provides the schema in the output directory, and updated its documentation accordingly. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/763">GH #763</a>)</p></li>
+<li><p>Allow passing specific doctypes to <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">llms</span></code> (and add an <code class="docutils literal notranslate"><span class="pre">--all</span></code> flag) to limit HTML-to-Markdown conversion to specific products or docsets. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/764">GH #764</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
