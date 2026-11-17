@@ -5,21 +5,42 @@ See :ref:`concept-doctype-syntax`
 
 import asyncio
 from contextlib import nullcontext
+from datetime import UTC, datetime
 import math
 from pathlib import Path
 
 import click
 
 from ...models.doctype import Doctype
+from ...models.run import BuildRunState, RunOutcome
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
 from ...tasks.sitemap import generate_sitemap
 from ...utils.contextmgr import make_timer
 from ...utils.display import ACTIVE_LIVE_MANAGER, LiveProgressManager
+from ...utils.run_id import get_next_run_id
 from ..callback import validate_doctypes
 from ..completion import complete_doctypes
 from ..console import console, console_err
 from ..context import DocBuildContext
+
+CANCELLED_EXIT_CODE = 130
+
+
+def finalize_run_state(run_state: BuildRunState, exit_code: int) -> None:
+    """Set the final outcome and persist a completed build run."""
+    if (
+        run_state.overall_outcome == RunOutcome.CANCELLED
+        or exit_code == CANCELLED_EXIT_CODE
+    ):
+        outcome = RunOutcome.CANCELLED
+    elif exit_code == 0:
+        outcome = RunOutcome.SUCCESS
+    else:
+        outcome = RunOutcome.FAILED
+
+    run_state.finish(outcome=outcome)
+    run_state.save()
 
 
 @click.command(
@@ -62,26 +83,39 @@ from ..context import DocBuildContext
     * docbuild build run "sles/@beta,supported/de-de"
       Same as the previous one, but with comma as the separator between
       the lifecycle states.
-    """
+    """,
 )
 @click.argument(
     "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
 )
 @click.option(
-    "-S", "--skip-repo-update", is_flag=True, default=False, show_default=True,
+    "-S",
+    "--skip-repo-update",
+    is_flag=True,
+    default=False,
+    show_default=True,
     help="Skip updating git repositories before processing.",
 )
 @click.option(
-    "-M", "--skip-metadata", is_flag=True, default=False, show_default=True,
+    "-M",
+    "--skip-metadata",
+    is_flag=True,
+    default=False,
+    show_default=True,
     help="Skip generating metadata (runs before build by default).",
 )
 @click.option(
-    "--sitemap/--no-sitemap", is_flag=True, default=True, show_default=True,
+    "--sitemap/--no-sitemap",
+    is_flag=True,
+    default=True,
+    show_default=True,
     help="Generate a sitemap.xml in the target root after building.",
 )
-@click.option("-L", "--live", is_flag=True, default=False, help="Enable live progress view.")
+@click.option(
+    "-L", "--live", is_flag=True, default=False, help="Enable live progress view."
+)
 @click.pass_context
-#@requires_system_tools()
+# @requires_system_tools()
 def run(  # noqa: C901
     ctx: click.Context,
     doctypes: tuple[Doctype, ...],
@@ -106,6 +140,24 @@ def run(  # noqa: C901
     assert context.envconfig is not None
     env = context.envconfig
 
+    role_str = str(
+        env.general.role.value
+        if hasattr(env.general.role, "value")
+        else env.general.role
+    )
+    run_id, run_dir = get_next_run_id(role=role_str)
+    run_state = BuildRunState(
+        run_id=run_id,
+        run_id_str=f"build-{run_id}",
+        role=role_str,
+        environment=env.general.name,
+        start_time=datetime.now(UTC),
+        run_dir=run_dir,
+    )
+    console.print(
+        f"[header]Build Run ID:[/] [bold cyan]{run_state.run_id_str}[/] [dim]({run_dir})[/]"
+    )
+
     timer = make_timer("build")
     result: int = 1  # Default exit code for interruption or error
 
@@ -123,10 +175,20 @@ def run(  # noqa: C901
     dapsmetatmpl = str(env.build.daps.meta)
     daps_list_srcfiles_tmpl = str(env.build.daps.list_srcfiles)
     daps_tmpls = {
-        "html": getattr(env.build.daps, "html", "daps -d {{dcfile}} --builddir {{builddir}} html"),
-        "pdf": getattr(env.build.daps, "pdf", "daps -d {{dcfile}} --builddir {{builddir}} pdf"),
-        "single-html": getattr(env.build.daps, "single_html", "daps -d {{dcfile}} --builddir {{builddir}} single-html"),
-        "epub": getattr(env.build.daps, "epub", "daps -d {{dcfile}} --builddir {{builddir}} epub"),
+        "html": getattr(
+            env.build.daps, "html", "daps -d {{dcfile}} --builddir {{builddir}} html"
+        ),
+        "pdf": getattr(
+            env.build.daps, "pdf", "daps -d {{dcfile}} --builddir {{builddir}} pdf"
+        ),
+        "single-html": getattr(
+            env.build.daps,
+            "single_html",
+            "daps -d {{dcfile}} --builddir {{builddir}} single-html",
+        ),
+        "epub": getattr(
+            env.build.daps, "epub", "daps -d {{dcfile}} --builddir {{builddir}} epub"
+        ),
     }
 
     max_workers = context.appconfig.max_workers if context.appconfig else 1
@@ -161,7 +223,10 @@ def run(  # noqa: C901
             )
 
             if meta_result != 0:
-                console_err.print("[error]Metadata generation failed. Aborting build.[/]")
+                console_err.print(
+                    "[error]Metadata generation failed. Aborting build.[/]"
+                )
+                finalize_run_state(run_state, meta_result)
                 return meta_result
 
             build_skip_repo = True
@@ -180,11 +245,13 @@ def run(  # noqa: C901
             rsync_options=env.rsync.to_options(),
             build_llmstxt=env.build.build_llmstxt,
             llmstxt_dir=env.paths.llmstxt_dir,
+            run_state=run_state,
         )
 
     t = None
     try:
         with timer() as t:
+
             async def main() -> int:
                 res = await run_pipeline()
                 if res == 0 and sitemap:
@@ -192,7 +259,11 @@ def run(  # noqa: C901
                     await generate_sitemap(target_base_dir, base_url)
                 return res
 
-            manager_ctx = LiveProgressManager(console=console, disable=False) if live else nullcontext()
+            manager_ctx = (
+                LiveProgressManager(console=console, disable=False)
+                if live
+                else nullcontext()
+            )
             with manager_ctx as mgr:
                 try:
                     result = asyncio.run(main())
@@ -200,11 +271,12 @@ def run(  # noqa: C901
                     if mgr and hasattr(mgr, "stop"):
                         mgr.stop()
                     console.print("\n[yellow]Build cancelled by user.[/]")
-                    result = 130
+                    result = CANCELLED_EXIT_CODE
     except (KeyboardInterrupt, asyncio.CancelledError):
         console.print("\n[yellow]Build cancelled by user.[/]")
-        result = 130
+        result = CANCELLED_EXIT_CODE
     finally:
+        finalize_run_state(run_state, result)
         if t and not math.isnan(t.elapsed):
             console.print(f"Elapsed time {t.elapsed:0.2f}s")
 

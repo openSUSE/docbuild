@@ -2,6 +2,7 @@
 
 import asyncio
 from contextlib import nullcontext
+from datetime import UTC, datetime
 import logging
 import os
 from pathlib import Path
@@ -16,6 +17,7 @@ import yaml
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
+from ...models.run import BuildRunState, DeliverableStatus
 from ...utils.display import get_live_manager
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
@@ -85,7 +87,9 @@ async def process_single_html_file(
 
         if not only_md:
             md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-            llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+            llms_txt_rel_to_html = Path(
+                os.path.relpath(target_dest / "llms.txt", html_file.parent)
+            ).as_posix()
 
             new_html = await asyncio.to_thread(
                 inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
@@ -106,6 +110,7 @@ async def generate_llmstxt(
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
+    max_workers: int = 10,
     only_md: bool = False,
 ) -> None:
     """Generate LLMs text and inject markdown links into HTML files concurrently."""
@@ -165,7 +170,9 @@ async def generate_llmstxt(
                 only_md=only_md,
             )
 
-        pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
+        pipeline = stream.iterate(html_files) | pipe.map(
+            process_file, ordered=False, task_limit=max_workers
+        )
 
         async with pipeline.stream() as streamer:
             async for result in streamer:
@@ -199,10 +206,14 @@ async def build_format(
 
     # Inject canonicals and hreflangs for HTML outputs via DAPS
     if args and args[0] == "daps" and fmt in ("html", "single-html"):
-        translations = getattr(deliverable, "resolved_translations", deliverable.xml.translations)
+        translations = getattr(
+            deliverable, "resolved_translations", deliverable.xml.translations
+        )
         if translations:
             hreflangs = " ".join(sorted(translations))
-            args.extend(["--stringparam", shlex.quote(f"canonicals.hreflangs={hreflangs}")])
+            args.extend(
+                ["--stringparam", shlex.quote(f"canonicals.hreflangs={hreflangs}")]
+            )
             log.debug("Injecting canonicals.hreflangs=%s", hreflangs)
 
     log.info("Building %s for %s...", fmt, deliverable.full_id)
@@ -214,9 +225,10 @@ async def build_format(
             log.info(" -> Artifacts stored in: %s", build_dir)
             return True, process.stdout
 
-        output = "\n".join(
-            text for text in (process.stdout, process.stderr) if text
-        ) or "No output captured."
+        output = (
+            "\n".join(text for text in (process.stdout, process.stderr) if text)
+            or "No output captured."
+        )
         log.error(
             "Failed to build %s for %s (exit code %s):\n%s",
             fmt,
@@ -230,7 +242,7 @@ async def build_format(
         return False, str(e)
 
 
-async def process_single_deliverable(
+async def process_single_deliverable(  # noqa: C901
     deliverable: Deliverable,
     worktree_dir: Path,
     tmp_build_base_dir: Path,
@@ -240,6 +252,8 @@ async def process_single_deliverable(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    run_state: BuildRunState | None = None,
+    max_workers: int = 10,
 ) -> tuple[bool, Deliverable]:
     """Build and sync formats for a single deliverable using an existing worktree."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
@@ -248,8 +262,11 @@ async def process_single_deliverable(
 
     for fmt, is_enabled in deliverable.format.items():
         if is_enabled:
+            fmt_start = datetime.now(UTC)
             # Fixed string formatting template (removed double braces)
-            tmpl = daps_tmpls.get(fmt, "daps -d {dcfile} --builddir {builddir} {format}")
+            tmpl = daps_tmpls.get(
+                fmt, "daps -d {dcfile} --builddir {builddir} {format}"
+            )
 
             deliverable_build_dir = Path(
                 tempfile.mkdtemp(
@@ -259,10 +276,28 @@ async def process_single_deliverable(
                 )
             )
 
-            fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
+            fmt_success, output = await build_format(
+                deliverable, fmt, cwd, deliverable_build_dir, tmpl
+            )
 
             if not fmt_success:
                 success = False
+                if run_state is not None:
+                    run_state.record_deliverable(
+                        product=deliverable.xml.product_id or "unknown",
+                        docset=deliverable.xml.docset_path or "unknown",
+                        lang=str(deliverable.xml.lang),
+                        format=fmt,
+                        status=DeliverableStatus.FAILED,
+                        stage="daps build",
+                        error=output.strip() if output else "DAPS command failed",
+                        dcfile=deliverable.xml.dcfile,
+                        title=deliverable.xml.productname,
+                        repo_url=deliverable.git.url if deliverable.git else None,
+                        branch=deliverable.branch,
+                        start_time=fmt_start,
+                        end_time=datetime.now(UTC),
+                    )
             else:
                 # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
                 target_suffix = render_target_suffix(target_dir_dyn, deliverable)
@@ -281,9 +316,33 @@ async def process_single_deliverable(
                         options=rsync_options,
                     )
                     if fmt == "html":
-                        await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
+                        await generate_llmstxt(
+                            deliverable,
+                            target_dest,
+                            build_llmstxt,
+                            llmstxt_dir,
+                            max_workers=max_workers,
+                        )
                     if sync_result.returncode == 0:
-                        log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
+                        log.info(
+                            "Successfully synced %s for %s", fmt, deliverable.full_id
+                        )
+                        if run_state is not None:
+                            run_state.record_deliverable(
+                                product=deliverable.xml.product_id or "unknown",
+                                docset=deliverable.xml.docset_path or "unknown",
+                                lang=str(deliverable.xml.lang),
+                                format=fmt,
+                                status=DeliverableStatus.SUCCESS,
+                                dcfile=deliverable.xml.dcfile,
+                                title=deliverable.xml.productname,
+                                repo_url=deliverable.git.url
+                                if deliverable.git
+                                else None,
+                                branch=deliverable.branch,
+                                start_time=fmt_start,
+                                end_time=datetime.now(UTC),
+                            )
                     else:
                         log.error(
                             "Failed to sync %s for %s to %s:\n%s",
@@ -293,16 +352,89 @@ async def process_single_deliverable(
                             sync_result.stderr,
                         )
                         success = False
+                        if run_state is not None:
+                            run_state.record_deliverable(
+                                product=deliverable.xml.product_id or "unknown",
+                                docset=deliverable.xml.docset_path or "unknown",
+                                lang=str(deliverable.xml.lang),
+                                format=fmt,
+                                status=DeliverableStatus.FAILED,
+                                stage="rsync",
+                                error=sync_result.stderr.strip()
+                                if sync_result.stderr
+                                else "rsync failed",
+                                dcfile=deliverable.xml.dcfile,
+                                title=deliverable.xml.productname,
+                                repo_url=deliverable.git.url
+                                if deliverable.git
+                                else None,
+                                branch=deliverable.branch,
+                                start_time=fmt_start,
+                                end_time=datetime.now(UTC),
+                            )
                 except Exception as e:
-                    log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
+                    log.error(
+                        "Exception occurred while syncing %s for %s: %s",
+                        fmt,
+                        deliverable.full_id,
+                        e,
+                    )
                     success = False
+                    if run_state is not None:
+                        run_state.record_deliverable(
+                            product=deliverable.xml.product_id or "unknown",
+                            docset=deliverable.xml.docset_path or "unknown",
+                            lang=str(deliverable.xml.lang),
+                            format=fmt,
+                            status=DeliverableStatus.FAILED,
+                            stage="rsync",
+                            error=str(e),
+                            dcfile=deliverable.xml.dcfile,
+                            title=deliverable.xml.productname,
+                            repo_url=deliverable.git.url if deliverable.git else None,
+                            branch=deliverable.branch,
+                            start_time=fmt_start,
+                            end_time=datetime.now(UTC),
+                        )
 
     return success, deliverable
 
 
+def _register_deliverables_in_run_state(
+    deliverables: list[Deliverable],
+    run_state: BuildRunState,
+) -> None:
+    """Pre-register deliverables in run_state as SKIPPED or UNSTARTED."""
+    for d in deliverables:
+        prod = d.xml.product_id or "unknown"
+        docset = d.xml.docset_path or "unknown"
+        lang = str(d.xml.lang)
+        if not d.xml.is_dc:
+            run_state.record_deliverable(
+                product=prod,
+                docset=docset,
+                lang=lang,
+                status=DeliverableStatus.SKIPPED,
+                dcfile=d.xml.dcfile,
+                title=d.xml.productname,
+            )
+        else:
+            for fmt, enabled in d.format.items():
+                if enabled:
+                    run_state.record_deliverable(
+                        product=prod,
+                        docset=docset,
+                        lang=lang,
+                        format=fmt,
+                        status=DeliverableStatus.UNSTARTED,
+                        dcfile=d.xml.dcfile,
+                        title=d.xml.productname,
+                        repo_url=d.git.url if d.git else None,
+                        branch=d.branch,
+                    )
 
-async def process_doctype(
 
+async def process_doctype(  # noqa: C901
     root: etree._ElementTree,
     doctype: Doctype,
     repo_dir: Path,
@@ -318,11 +450,17 @@ async def process_doctype(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    run_state: BuildRunState | None = None,
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using grouped aiostream pipelines."""
-    deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
+    raw_deliverables: list[Deliverable] = await asyncio.to_thread(
+        get_deliverable_from_doctype, root, doctype
+    )
 
-    deliverables = [deli for deli in deliverables if deli.xml.is_dc]
+    if run_state is not None:
+        _register_deliverables_in_run_state(raw_deliverables, run_state)
+
+    deliverables = [deli for deli in raw_deliverables if deli.xml.is_dc]
     deliverables.sort()
 
     manager = get_live_manager()
@@ -349,7 +487,9 @@ async def process_doctype(
     manager = get_live_manager()
     stage = manager._active if manager else None
 
-    async def build_single(d: Deliverable, worktree_dir: Path) -> tuple[bool, Deliverable]:
+    async def build_single(
+        d: Deliverable, worktree_dir: Path
+    ) -> tuple[bool, Deliverable]:
         item_ctx = stage.item(d.full_id) if stage else nullcontext()
         with item_ctx as item:
             try:
@@ -363,6 +503,8 @@ async def process_doctype(
                     build_llmstxt,
                     llmstxt_dir,
                     rsync_options=rsync_options,
+                    run_state=run_state,
+                    max_workers=max_workers,
                 )
                 if item and not success:
                     item.fail()
@@ -373,7 +515,13 @@ async def process_doctype(
                 raise
 
     return await process_with_shared_worktrees(
-        deliverables, repo_dir, tmp_repo_dir, max_workers, semaphore, build_single
+        deliverables,
+        repo_dir,
+        tmp_repo_dir,
+        max_workers,
+        semaphore,
+        build_single,
+        run_state=run_state,
     )
 
 
@@ -392,6 +540,7 @@ async def process(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    run_state: BuildRunState | None = None,
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
@@ -399,7 +548,15 @@ async def process(
 
     manager = get_live_manager()
     stage_context = (
-        manager.stage("3/4 Building deliverables…", total=sum(len(dt.deliverables) for dt in doctypes if getattr(dt, "deliverables", [])) or 1)
+        manager.stage(
+            "3/4 Building deliverables…",
+            total=sum(
+                len(dt.deliverables)
+                for dt in doctypes
+                if getattr(dt, "deliverables", [])
+            )
+            or 1,
+        )
         if manager is not None
         else nullcontext()
     )
@@ -424,13 +581,12 @@ async def process(
                 build_llmstxt=build_llmstxt,
                 llmstxt_dir=llmstxt_dir,
                 rsync_options=rsync_options,
+                run_state=run_state,
             )
 
         async with asyncio.TaskGroup() as task_group:
             tasks = [
-                task_group.create_task(
-                    _wrapped_process(dt), name=f"build:{dt}"
-                )
+                task_group.create_task(_wrapped_process(dt), name=f"build:{dt}")
                 for dt in doctypes
             ]
 

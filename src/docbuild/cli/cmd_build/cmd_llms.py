@@ -18,7 +18,9 @@ from ..context import DocBuildContext
 log = logging.getLogger(__name__)
 
 
-def resolve_targets(target_base: Path, target_dir_dyn: str, doctypes: tuple[Doctype, ...]) -> set[Path]:
+def resolve_targets(
+    target_base: Path, target_dir_dyn: str, doctypes: tuple[Doctype, ...]
+) -> set[Path]:
     """Resolve specific directories to process based on doctypes or --all flag."""
     if not doctypes:
         return {target_base}
@@ -71,15 +73,26 @@ def resolve_targets(target_base: Path, target_dir_dyn: str, doctypes: tuple[Doct
     "doctypes", nargs=-1, callback=validate_doctypes, shell_complete=complete_doctypes
 )
 @click.option(
-    "--all", "all_docs", is_flag=True, default=False,
-    help="Traverse the complete target directory regardless of doctypes."
+    "--all",
+    "all_docs",
+    is_flag=True,
+    default=False,
+    help="Traverse the complete target directory regardless of doctypes.",
 )
 @click.option(
-    "-m", "--only-md", is_flag=True, default=False,
-    help="Generate Markdown and llms.txt files without modifying the original HTML files."
+    "-m",
+    "--only-md",
+    is_flag=True,
+    default=False,
+    help="Generate Markdown and llms.txt files without modifying the original HTML files.",
 )
 @click.pass_obj
-def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool, only_md: bool) -> None:
+def llms(
+    context: DocBuildContext,
+    doctypes: tuple[Doctype, ...],
+    all_docs: bool,
+    only_md: bool,
+) -> None:
     """Generate Markdown and llms.txt files for an existing build directory.
 
     This command scans the target base directory configured in your environment
@@ -114,13 +127,19 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
 
     # Resolve llmstxt_dir: if absolute, keep it; if relative, base it on target_base
     configured_llms_dir = Path(context.envconfig.paths.llmstxt_dir)
-    llmstxt_dir = configured_llms_dir if configured_llms_dir.is_absolute() else target_base / configured_llms_dir
+    llmstxt_dir = (
+        configured_llms_dir
+        if configured_llms_dir.is_absolute()
+        else target_base / configured_llms_dir
+    )
 
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
         log.info(msg)
         click.echo(msg)
-        click.echo("To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'." )
+        click.echo(
+            "To run this command, either update your env.toml or pass '-C build.build_llmstxt=true'."
+        )
         sys.exit(0)
 
     # Note: Pydantic validates target_base exists, but we ensure it's a directory here
@@ -133,7 +152,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
     targets_to_process = resolve_targets(
         target_base=target_base,
         target_dir_dyn=target_dir_dyn,
-        doctypes=() if all_docs else doctypes
+        doctypes=() if all_docs else doctypes,
     )
 
     if not targets_to_process:
@@ -155,6 +174,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
             self.xml = DummyXML()
 
     # Process all resolved targets
+    max_workers = context.appconfig.max_workers if context.appconfig else 10
     try:
         for target_dest in targets_to_process:
             msg = f"Starting retroactive LLMs generation in: {target_dest}"
@@ -169,6 +189,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
                     target_dest=target_dest,
                     build_llmstxt=build_llmstxt,
                     llmstxt_dir=str(llmstxt_dir),
+                    max_workers=max_workers,
                     only_md=only_md,
                 )
             )
