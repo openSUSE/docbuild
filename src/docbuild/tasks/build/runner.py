@@ -2,6 +2,7 @@
 
 import asyncio
 from contextlib import nullcontext
+import fnmatch
 import logging
 import os
 from pathlib import Path
@@ -103,6 +104,8 @@ async def generate_llmstxt(
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
+    llms_exclude: list[str] | None = None,
+    llms_exclude_extra: list[str] | None = None,
 ) -> None:
     """Generate LLMs text and inject markdown links into HTML files concurrently."""
     if not build_llmstxt or isinstance(target_dest, str):
@@ -145,7 +148,16 @@ async def generate_llmstxt(
         url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
         domain = canonical_domain.rstrip("/")
 
-        html_files = list(target_dest.rglob("*.html"))
+        raw_html_files = list(target_dest.rglob("*.html"))
+        html_files = []
+
+        exclude_patterns = (llms_exclude or []) + (llms_exclude_extra or [])
+
+        for file in raw_html_files:
+            if any(fnmatch.fnmatch(file.name, pattern) for pattern in exclude_patterns):
+                log.debug("Skipping ignored file during LLM generation: %s", file)
+                continue
+            html_files.append(file)
 
         async def process_file(html_file: Path) -> str | None:
             return await process_single_html_file(
