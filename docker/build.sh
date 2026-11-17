@@ -2,6 +2,11 @@
 
 set -eu
 
+LOCAL_UID=$(id -u)
+LOCAL_GID=$(id -g)
+APP_HOME=${APP_HOME:-$HOME}
+
+
 image=${1:-docbuild:leap160}
 case $0 in
   */*) script_path=$0 ;;
@@ -19,12 +24,20 @@ repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
 
 cd "$repo_root"
 
-DOCKER_BUILDKIT=1 docker build \
+echo "Using the following variables for the build:
+  APP_UID="${APP_UID:-$LOCAL_UID}"
+  APP_GID="${APP_GID:-$LOCAL_GID}"
+  APP_HOME="${APP_HOME}"
+"
+
+export DOCKER_BUILDKIT=1
+
+sudo -E docker build \
   -f docker/Dockerfile \
-  --build-arg APP_UID="$(id -u)" \
-  --build-arg APP_GID="$(id -g)" \
-  --build-arg APP_HOME="${HOME:?must be set}" \
+  --build-arg APP_UID="${APP_UID:-$LOCAL_UID}" \
+  --build-arg APP_GID="${APP_GID:-$LOCAL_GID}" \
+  --build-arg APP_HOME="${APP_HOME}" \
   -t "$image" \
   .
 
-docker run --rm -it "$image" doctor
+sudo -E docker run --rm -it "$image" doctor

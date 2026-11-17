@@ -15,7 +15,7 @@ ddocbuild() {
     --volume "$PWD:$PWD"
   )
 
-  docker run --rm -it \
+  sudo -E docker run --rm -it \
      --cpus="$cpu_limit" \
      --init \
      --network=host \
