@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev13+gd21c3ac2c.d20261117</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev14+g11eb8bc65.d20261117</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=c3bf194f"></script>
+    <script src="_static/documentation_options.js?v=d3ea9be5"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -457,6 +457,8 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Fixed DAPS builds with multiple translation languages by preserving hreflang parameter quoting.
 Fixed Markdown frontmatter generation by serializing assigned category IDs instead of XML elements.
 Build failures now report stdout, stderr, and exit codes, and JSON-LD diagnostics identify the affected HTML file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/776">GH #776</a>)</p></li>
+<li><p>Fixed unwanted navigation content in Markdown converted from DAPS HTML without generator metadata (command <strong class="command">docbuild build llms</strong>).
+Skip links, site logos, breadcrumbs, and duplicate navigation titles are now removed while document headings and images are preserved. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/777">GH #777</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">
