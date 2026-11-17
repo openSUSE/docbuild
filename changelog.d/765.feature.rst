@@ -1,0 +1,1 @@
+Added the ``-m`` / ``--only-md`` option to the ``docbuild build llms`` command, allowing users to generate Markdown and ``llms.txt`` files without modifying the original HTML source files.

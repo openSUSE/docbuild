@@ -41,6 +41,7 @@ async def process_single_html_file(
     url_docset: str,
     static_title: str,
     frontmatter_base: dict[str, Any],
+    only_md: bool = False,
 ) -> str | None:
     """Process a single HTML file: extract metadata, write Markdown with frontmatter, and inject links."""
     if llmstxt_dir in html_file.parts:
@@ -82,16 +83,18 @@ async def process_single_html_file(
         md_file.parent.mkdir(parents=True, exist_ok=True)
         await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
 
-        md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-        llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+        if not only_md:
+            md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
+            llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
 
-        new_html = await asyncio.to_thread(
-            inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
-        )
-        await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
+            new_html = await asyncio.to_thread(
+                inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
+            )
+            await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
 
         index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
         return f"- [{html_file.name}]({index_entry})"
+
     except Exception as e:
         log.error("Failed processing %s: %s", html_file, e)
         return None
@@ -103,6 +106,7 @@ async def generate_llmstxt(
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
+    only_md: bool = False,
 ) -> None:
     """Generate LLMs text and inject markdown links into HTML files concurrently."""
     if not build_llmstxt or isinstance(target_dest, str):
@@ -158,6 +162,7 @@ async def generate_llmstxt(
                 url_docset=url_docset,
                 static_title=static_title,
                 frontmatter_base=frontmatter_base,
+                only_md=only_md,
             )
 
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
