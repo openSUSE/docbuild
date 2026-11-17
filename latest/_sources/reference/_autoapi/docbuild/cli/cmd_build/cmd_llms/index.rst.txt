@@ -26,7 +26,7 @@ Module Contents
    Resolve specific directories to process based on doctypes or --all flag.
 
 
-.. py:function:: llms(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...], all_docs: bool) -> None
+.. py:function:: llms(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...], all_docs: bool, only_md: bool) -> None
 
    Generate Markdown and llms.txt files for an existing build directory.
 
