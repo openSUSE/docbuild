@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev16+gdb285efbb.d20261118</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev17+g67f2be581.d20261118</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=3e55c594"></script>
+    <script src="_static/documentation_options.js?v=bb8643d1"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -478,6 +478,7 @@ alongside the other build-related commands. (<a class="extlink-gh reference exte
 <li><p>Allow passing specific doctypes to <code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">llms</span></code> (and add an <code class="docutils literal notranslate"><span class="pre">--all</span></code> flag) to limit HTML-to-Markdown conversion to specific products or docsets. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/764">GH #764</a>)</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">-m</span></code> / <code class="docutils literal notranslate"><span class="pre">--only-md</span></code> option to the <strong class="command">docbuild build llms</strong> command, allowing users to generate Markdown and <cite>:file:llms.txt</cite> files without modifying the original HTML source files. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/765">GH #765</a>)</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">[llms]</span></code> configuration section to exclude specific HTML files from Markdown conversion. The <code class="docutils literal notranslate"><span class="pre">exclude</span></code> list defaults to ignoring the GPL license page (<code class="file docutils literal notranslate"><span class="pre">doc-gfdl-license.html</span></code>), and users can append custom rules via <code class="docutils literal notranslate"><span class="pre">exclude-extra</span></code>. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/778">GH #778</a>)</p></li>
+<li><p>Revised the YAML frontmatter for LLM-generated Markdown files by removing the <code class="docutils literal notranslate"><span class="pre">generator</span></code> and <code class="docutils literal notranslate"><span class="pre">deliverable_id</span></code> keys to reduce token noise. Replaced the condensed <code class="docutils literal notranslate"><span class="pre">build_date</span></code> with specific <code class="docutils literal notranslate"><span class="pre">dateCreated</span></code>, <code class="docutils literal notranslate"><span class="pre">dateModified</span></code>, and <code class="docutils literal notranslate"><span class="pre">datePublished</span></code> fields directly extracted from the HTML’s JSON-LD metadata. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/779">GH #779</a>)</p></li>
 </ul>
 </section>
 <section id="code-refactoring">
