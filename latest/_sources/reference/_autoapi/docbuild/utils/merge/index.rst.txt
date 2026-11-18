@@ -19,6 +19,7 @@ Functions
    docbuild.utils.merge.dedup_doctypes
    docbuild.utils.merge.split_wildcard_docset
    docbuild.utils.merge.merge_doctypes
+   docbuild.utils.merge.merge_and_deduplicate_lists
 
 
 Module Contents
@@ -83,5 +84,13 @@ Module Contents
        - ``foo/1/en-us + foo/2/*`` => ``foo/1/en-us', 'foo/2/*``
        - ``foo/1/en-us,de-de + foo/2/*`` => ``foo/1/en-us,de-de, foo/2/*``
 
+
+
+.. py:function:: merge_and_deduplicate_lists(*lists: list[str] | None) -> list[str]
+
+   Merge multiple lists into a single list, removing duplicates while preserving order.
+
+   :param lists: Variable number of lists (or None) to merge.
+   :return: A single merged and deduplicated list.
 
 

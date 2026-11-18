@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Markdown for AI Tools &#8212; Docbuild Documentation 0.30.1.dev15+g90a6ae8df.d20261117</title>
+    <title>Creating Markdown for AI Tools &#8212; Docbuild Documentation 0.30.1.dev16+gdb285efbb.d20261118</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9592cef6"></script>
+    <script src="../_static/documentation_options.js?v=3e55c594"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -521,9 +521,21 @@ A relative path is resolved against <code class="docutils literal notranslate"><
 </li>
 </ul>
 </section>
+<section id="excluding-files-from-llm-output">
+<h2>Excluding files from LLM output<a class="headerlink" href="#excluding-files-from-llm-output" title="Link to this heading">#</a></h2>
+<p>Some files, like the GPL license page, add unnecessary noise for AI tools. You can exclude files from the Markdown generation using the <code class="docutils literal notranslate"><span class="pre">[llms]</span></code> section in your ENV config.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[llms].exclude</span></code>: An array of filenames or shell glob patterns (<code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">?</span></code>) to ignore. The default includes <code class="file docutils literal notranslate"><span class="pre">doc-gfdl-license.html</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[llms].exclude-extra</span></code>: An array of additional files to ignore.</p></li>
+</ul>
+<p>If you want to ignore new files for your specific project, it is recommended to add them to <code class="docutils literal notranslate"><span class="pre">[llms].exclude-extra</span></code> rather than overwriting the default <code class="docutils literal notranslate"><span class="pre">exclude</span></code> list.</p>
+<p>docbuild merges <code class="docutils literal notranslate"><span class="pre">exclude</span></code> and <code class="docutils literal notranslate"><span class="pre">exclude_extra</span></code> into a single list, placing  <code class="docutils literal notranslate"><span class="pre">exclude</span></code> items first followed by <code class="docutils literal notranslate"><span class="pre">exclude_extra</span></code>. Any duplicate patterns are removed while preserving their original order.</p>
+</section>
 <section id="running-the-command">
 <h2>Running the command<a class="headerlink" href="#running-the-command" title="Link to this heading">#</a></h2>
-<p>To generate the Markdown files for an existing build, do the following:</p>
+<p>To generate the Markdown files for an existing build, you can run the command against your entire target directory, or you can pass specific doctypes (like <code class="docutils literal notranslate"><span class="pre">sles/15-SP6/en-us</span></code>) to only process specific products.
+(Use the <code class="docutils literal notranslate"><span class="pre">--all</span></code> flag to process the entire directory).</p>
+<p>Do the following:</p>
 <ol class="arabic">
 <li><p>Provide the settings in the way you prefer:</p>
 <ul>
@@ -611,6 +623,7 @@ If you enable <code class="docutils literal notranslate"><span class="pre">build
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-build-markdown-files">Why build Markdown files?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#excluding-files-from-llm-output">Excluding files from LLM output</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-command">Running the command</a></li>
 </ul>
   </nav></div>

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.utils.merge &#8212; Docbuild Documentation 0.30.1.dev15+g90a6ae8df.d20261117</title>
+    <title>docbuild.utils.merge &#8212; Docbuild Documentation 0.30.1.dev16+gdb285efbb.d20261118</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../_static/documentation_options.js?v=9592cef6"></script>
+    <script src="../../../../../_static/documentation_options.js?v=3e55c594"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -694,6 +694,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.utils.merge.merge_doctypes" title="docbuild.utils.merge.merge_doctypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_doctypes</span></code></a>(*doctypes) → list[docbuild.models.doctype.Doctype]</p></td>
 <td><p>Merge a list of Doctype instances into a minimal set of non-redundant entries.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.utils.merge.merge_and_deduplicate_lists" title="docbuild.utils.merge.merge_and_deduplicate_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_and_deduplicate_lists</span></code></a>(*lists) → list[str]</p></td>
+<td><p>Merge multiple lists into a single list, removing duplicates while preserving order.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -793,6 +796,20 @@ if overlap exists.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.utils.merge.merge_and_deduplicate_lists">
+<span class="sig-prename descclassname"><span class="pre">docbuild.utils.merge.</span></span><span class="sig-name descname"><span class="pre">merge_and_deduplicate_lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">lists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.utils.merge.merge_and_deduplicate_lists" title="Link to this definition">#</a></dt>
+<dd><p>Merge multiple lists into a single list, removing duplicates while preserving order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lists</strong> – Variable number of lists (or None) to merge.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A single merged and deduplicated list.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -850,6 +867,7 @@ if overlap exists.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.dedup_doctypes"><code class="docutils literal notranslate"><span class="pre">dedup_doctypes()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.split_wildcard_docset"><code class="docutils literal notranslate"><span class="pre">split_wildcard_docset()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.merge_doctypes"><code class="docutils literal notranslate"><span class="pre">merge_doctypes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.utils.merge.merge_and_deduplicate_lists"><code class="docutils literal notranslate"><span class="pre">merge_and_deduplicate_lists()</span></code></a></li>
 </ul>
 </li>
 </ul>
