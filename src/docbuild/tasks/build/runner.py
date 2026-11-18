@@ -69,11 +69,11 @@ async def process_single_html_file(
         frontmatter.update(frontmatter_base)
         frontmatter["source_url"] = base_url
 
-        # Only inject build_date if dateModified is present in JSON-LD
-        if ld_data and "dateModified" in ld_data:
-            raw_date = ld_data["dateModified"]
-            if raw_date:
-                frontmatter["build_date"] = raw_date.split("T")[0]
+        # Inject specific date metadata from JSON-LD if present
+        if ld_data:
+            for d_key in ("dateCreated", "dateModified", "datePublished"):
+                if ld_data.get(d_key):
+                    frontmatter[d_key] = ld_data[d_key]
 
         # Use yaml.safe_dump for secure serialization
         yaml_block = yaml.safe_dump(
@@ -137,12 +137,8 @@ async def generate_llmstxt(
             "language": language,
             "categories": categories,
         }
-        frontmatter_base: dict[str, Any] = {"deliverable_id": deliverable.full_id}
+        frontmatter_base: dict[str, Any] = {}
         frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
-
-        # Only inject 'generator: daps' if this is an actual DAPS build (not a prebuilt)
-        if not getattr(deliverable, "is_prebuilt", False):
-            frontmatter_base["generator"] = "daps"
 
         url_product_id = d_xml.product_id or "unknown"
         if hasattr(deliverable, "make_safe_name"):
