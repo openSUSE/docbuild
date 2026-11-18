@@ -74,8 +74,12 @@ def resolve_targets(target_base: Path, target_dir_dyn: str, doctypes: tuple[Doct
     "--all", "all_docs", is_flag=True, default=False,
     help="Traverse the complete target directory regardless of doctypes."
 )
+@click.option(
+    "-m", "--only-md", is_flag=True, default=False,
+    help="Generate Markdown and llms.txt files without modifying the original HTML files."
+)
 @click.pass_obj
-def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool) -> None:
+def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool, only_md: bool) -> None:
     """Generate Markdown and llms.txt files for an existing build directory.
 
     This command scans the target base directory configured in your environment
@@ -142,6 +146,11 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
 
             class DummyXML:
                 title = f"Documentation Index for {target_dest.name}"
+                categoryid: str | None = None
+                product_id = ""
+                docset_version = ""
+                docset_path = ""
+                lang = ""
 
             self.xml = DummyXML()
 
@@ -162,6 +171,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
                     llmstxt_dir=str(llmstxt_dir),
                     llms_exclude=context.envconfig.llms.exclude,
                     llms_exclude_extra=context.envconfig.llms.exclude_extra,
+                    only_md=only_md,
                 )
             )
             completion_msg = f"Retroactive LLMs generation completed successfully for {target_dest.name}."

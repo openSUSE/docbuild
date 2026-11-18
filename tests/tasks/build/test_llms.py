@@ -23,6 +23,53 @@ from docbuild.tasks.build.llms import (
 DATA_DIR = Path(__file__).parent / "data"
 
 
+@pytest.mark.parametrize(
+        "generator_meta",
+        ["", '<meta name="generator" content="DAPS 4.0">'],
+        ids=["without-generator", "with-generator"],
+)
+def test_clean_and_convert_daps_page_chrome(generator_meta: str) -> None:
+        """Remove DAPS navigation chrome while preserving document content."""
+        html = f"""<!DOCTYPE html>
+        <html>
+            <head>{generator_meta}<title>Introduction to Valkey</title></head>
+            <body>
+                <div class="bypass-block">
+                    <a href="#_content">Jump to content</a>
+                    <a href="#_bottom-pagination">Jump to page navigation</a>
+                </div>
+                <header id="_mainnav">
+                    <img src="static/images/logo.svg" alt="Logo">
+                </header>
+                <div class="crumbs">
+                    <a class="crumb" href="index.html">Introduction to Valkey</a>
+                </div>
+                <main id="_content">
+                    <nav id="_side-toc-overall" class="side-toc">
+                        <div class="side-title">Introduction to Valkey</div>
+                    </nav>
+                    <article class="documentation">
+                        <h1>Introduction to Valkey</h1>
+                        <p>Install and configure Valkey.</p>
+                        <img src="images/valkey.png" alt="Valkey architecture">
+                    </article>
+                </main>
+                <footer>Site footer</footer>
+            </body>
+        </html>"""
+
+        assert isinstance(get_cleaner(JustHTML(html, sanitize=False)), DocBookHTMLCleaner)
+        md = clean_and_convert(html)
+
+        assert md.lstrip().startswith("# Introduction to Valkey")
+        assert md.count("Introduction to Valkey") == 1
+        assert "Install and configure Valkey." in md
+        assert "![Valkey architecture](images/valkey.png)" in md
+        assert "Jump to" not in md
+        assert "static/images/logo.svg" not in md
+        assert "Site footer" not in md
+
+
 def test_clean_and_convert_daps_article() -> None:
     """Ensure DAPS article HTML strips navbars and converts tables cleanly."""
     daps_html = (DATA_DIR / "daps_article.html").read_text(encoding="utf-8")

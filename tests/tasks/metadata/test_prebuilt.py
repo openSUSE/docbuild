@@ -7,7 +7,41 @@ from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.models.deliverable import Deliverable
-from docbuild.tasks.metadata.prebuilt import extract_prebuilt_metadata
+from docbuild.tasks.metadata.prebuilt import extract_prebuilt_metadata, read_json_ld
+
+
+@pytest.mark.parametrize("raw_html", [False, True], ids=["file", "raw-html"])
+@pytest.mark.parametrize(
+    ("content", "message"),
+    [
+        ("<html><head></head></html>", "No JSON-LD block found in"),
+        (
+            '<script type="application/ld+json">invalid JSON</script>',
+            "Failed to parse JSON-LD from",
+        ),
+    ],
+    ids=["missing", "malformed"],
+)
+def test_read_json_ld_logs_source_path(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    raw_html: bool,
+    content: str,
+    message: str,
+) -> None:
+    """Identify the HTML source in missing and malformed JSON-LD diagnostics."""
+    html_file = tmp_path / "index.html"
+    if not raw_html:
+        html_file.write_text(content, encoding="utf-8")
+
+    with caplog.at_level("DEBUG", logger="docbuild.tasks.metadata.prebuilt"):
+        if raw_html:
+            result = read_json_ld(content, source_path=html_file)
+        else:
+            result = read_json_ld(html_file)
+
+    assert result == {}
+    assert f"{message} {html_file}" in caplog.text
 
 
 @pytest.fixture

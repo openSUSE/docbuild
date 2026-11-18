@@ -47,28 +47,60 @@ async def test_build_format_no_dcfile(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_build_format_failure(tmp_path: Path) -> None:
-    """Test handling of a failed daps subprocess."""
+@pytest.mark.parametrize(
+    ("stdout", "stderr", "expected"),
+    [
+        ("", "Build crashed", "Build crashed"),
+        ("Validation failed", "", "Validation failed"),
+        (
+            "Validation details\nInvalid document",
+            "Build crashed",
+            "Validation details\nInvalid document\nBuild crashed",
+        ),
+        ("", "", "No output captured."),
+    ],
+    ids=["stderr", "stdout", "both-streams", "no-output"],
+)
+async def test_build_format_failure(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    stdout: str,
+    stderr: str,
+    expected: str,
+) -> None:
+    """Include all captured DAPS diagnostics and the failure exit code."""
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = "DC-test"
     mock_d.xml.translations = {"en-us"}
 
     with patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run:
-        mock_run.return_value = Mock(returncode=1, stdout="", stderr="Build crashed")
+        mock_run.return_value = Mock(returncode=1, stdout=stdout, stderr=stderr)
 
         success, err = await build_format(
             mock_d, "html", tmp_path, tmp_path, "daps -d {dcfile} --builddir {builddir} html"
         )
         assert success is False
-        assert err == "Build crashed"
+        assert err == expected
+        assert expected in caplog.text
+        assert "exit code 1" in caplog.text
 
 
 @pytest.mark.asyncio
-async def test_build_format_default_template_has_no_runtime_braces() -> None:
+@pytest.mark.parametrize(
+    ("translations", "expected_parameter"),
+    [
+        ({"en-us"}, "canonicals.hreflangs=en-us"),
+        ({"en-us", "de-de"}, "'canonicals.hreflangs=de-de en-us'"),
+    ],
+    ids=["single-language", "multiple-languages"],
+)
+async def test_build_format_default_template_has_no_runtime_braces(
+    translations: set[str], expected_parameter: str
+) -> None:
     """Verify build templates receive runtime values."""
     mock_d = Mock(spec=Deliverable, full_id="test:DC")
     mock_d.xml.dcfile = "DC-test"
-    mock_d.xml.translations = {"en-us"}
+    mock_d.xml.translations = translations
     cwd = Path(".")
     build_dir = Path("build")
     template = str(DEFAULT_ENV_CONFIG["build"]["daps"]["html"]).replace(
@@ -96,7 +128,7 @@ async def test_build_format_default_template_has_no_runtime_braces() -> None:
             "DC-test",
             "html",
                 "--stringparam",
-                "canonicals.hreflangs=en-us",
+                expected_parameter,
             ],
         cwd=cwd,
     )
@@ -260,8 +292,36 @@ async def test_process_entry_point(tmp_path: Path) -> None:
         assert result == 1
 
 
+@pytest.fixture
+def llms_deliverable() -> Deliverable:
+        """Return an XML-backed deliverable for LLM frontmatter tests."""
+        root = etree.fromstring("""
+                <portal schemaversion="7.0">
+                    <product xml:id="sles">
+                        <name>SUSE Linux Enterprise Server</name>
+                        <docset xml:id="sles-16.1" path="16.1">
+                            <version>16.1</version>
+                            <resources>
+                                <locale lang="en-us">
+                                    <branch>main</branch>
+                                    <deliverable xml:id="test-deliverable">
+                                        <dc file="DC-test"><format html="1"/></dc>
+                                    </deliverable>
+                                </locale>
+                            </resources>
+                        </docset>
+                    </product>
+                </portal>
+        """)
+        node = root.find(".//deliverable")
+        assert node is not None
+        return Deliverable(node)
+
+
 @pytest.mark.asyncio
-async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> None:
+async def test_generate_llmstxt_yaml_frontmatter_extraction(
+        tmp_path: Path, llms_deliverable: Deliverable
+) -> None:
     """Test YAML frontmatter extraction, relative path URL building, and date handling."""
     target_dir = tmp_path / "target"
     target_dir.mkdir()
@@ -285,12 +345,8 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> N
     </html>"""
     html_file.write_text(html_content, encoding="utf-8")
 
-    class DummyDeliverable:
-        full_id = "test_deliverable"
-        xml = None
-
     await generate_llmstxt(
-        deliverable=DummyDeliverable(),
+        deliverable=llms_deliverable,
         target_dest=target_dir,
         build_llmstxt=True,
         llmstxt_dir="docs",
@@ -308,12 +364,86 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(tmp_path: Path) -> N
 
     assert data["title"] == "Dynamic Chapter Title"
     assert data["description"] == "Dynamic chapter description."
-    assert data["source_url"] == "https://doc.example.com/unknown/unknown/html/books/chapter.html"
+    assert data["source_url"] == (
+        "https://doc.example.com/sles/16.1/html/books/chapter.html"
+    )
+    assert data["product"] == "sles"
+    assert data["version"] == "16.1"
+    assert data["language"] == "en-us"
     assert data["build_date"] == "2026-02-15"
 
 
 @pytest.mark.asyncio
-async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+        ("category", "expected"),
+        [
+                ("administration", ["administration"]),
+                ("administration security", ["administration", "security"]),
+                (None, []),
+        ],
+        ids=["single", "multiple", "missing"],
+)
+async def test_generate_llmstxt_assigned_categories(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    category: str | None,
+    expected: list[str],
+) -> None:
+        """Serialize assigned category IDs, not product category XML elements."""
+        root = etree.fromstring("""
+                <docservconfig>
+                    <product xml:id="sles">
+                        <categories>
+                            <category>
+                                <language xml:id="administration"><title>Administration</title></language>
+                                <language xml:id="security"><title>Security</title></language>
+                                <language xml:id="unused"><title>Unused</title></language>
+                            </category>
+                        </categories>
+                        <docset xml:id="sles-16.1" path="16.1">
+                            <resources>
+                                <locale lang="en-us">
+                                    <branch>main</branch>
+                                    <deliverable><dc file="DC-test"/></deliverable>
+                                </locale>
+                            </resources>
+                        </docset>
+                    </product>
+                </docservconfig>
+        """)
+        node = root.find(".//deliverable")
+        assert node is not None
+        if category is not None:
+                node.set("category", category)
+        html_file = tmp_path / "index.html"
+        html_file.write_text(
+                "<html><head><title>Test</title></head><body>Content</body></html>",
+                encoding="utf-8",
+        )
+
+        caplog.set_level("DEBUG", logger="docbuild.tasks.metadata.prebuilt")
+        await generate_llmstxt(
+            deliverable=Deliverable(node),
+            target_dest=tmp_path,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+        )
+
+        content = (tmp_path / "docs" / "index.md").read_text(encoding="utf-8")
+        data = yaml.safe_load(content.split("---")[1])
+        if expected:
+                assert data["categories"] == expected
+        else:
+                assert "categories" not in data
+        assert "docs/index.md" in html_file.read_text(encoding="utf-8")
+        assert "docs/index.md" in (tmp_path / "llms.txt").read_text(encoding="utf-8")
+        assert f"No JSON-LD block found in {html_file}" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_frontmatter_omits_missing_date(
+    tmp_path: Path, llms_deliverable: Deliverable
+) -> None:
     """Test that build_date is omitted from frontmatter if dateModified is absent."""
     target_dir = tmp_path / "target"
     target_dir.mkdir()
@@ -332,12 +462,8 @@ async def test_generate_llmstxt_frontmatter_omits_missing_date(tmp_path: Path) -
     </html>"""
     html_file.write_text(html_content, encoding="utf-8")
 
-    class DummyDeliverable:
-        full_id = "test_deliverable"
-        xml = None
-
     await generate_llmstxt(
-        deliverable=DummyDeliverable(),
+        deliverable=llms_deliverable,
         target_dest=target_dir,
         build_llmstxt=True,
         llmstxt_dir="docs",

@@ -43,6 +43,7 @@ async def process_single_html_file(
     url_docset: str,
     static_title: str,
     frontmatter_base: dict[str, Any],
+    only_md: bool = False,
 ) -> str | None:
     """Process a single HTML file: extract metadata, write Markdown with frontmatter, and inject links."""
     if llmstxt_dir in html_file.parts:
@@ -53,7 +54,7 @@ async def process_single_html_file(
         md_content = await asyncio.to_thread(clean_and_convert, html_content)
 
         # 2. Extract JSON-LD from already loaded string content (no double disk read)
-        ld_data = read_json_ld(html_content)
+        ld_data = read_json_ld(html_content, source_path=html_file)
 
         dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
@@ -84,16 +85,18 @@ async def process_single_html_file(
         md_file.parent.mkdir(parents=True, exist_ok=True)
         await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
 
-        md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-        llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
+        if not only_md:
+            md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
+            llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
 
-        new_html = await asyncio.to_thread(
-            inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
-        )
-        await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
+            new_html = await asyncio.to_thread(
+                inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
+            )
+            await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
 
         index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
         return f"- [{html_file.name}]({index_entry})"
+
     except Exception as e:
         log.error("Failed processing %s: %s", html_file, e)
         return None
@@ -107,9 +110,10 @@ async def generate_llmstxt(
     canonical_domain: str = "https://documentation.suse.com",
     llms_exclude: list[str] | None = None,
     llms_exclude_extra: list[str] | None = None,
+    only_md: bool = False,
 ) -> None:
     """Generate LLMs text and inject markdown links into HTML files concurrently."""
-    if not build_llmstxt or isinstance(target_dest, str):
+    if not build_llmstxt:
         return
 
     try:
@@ -117,14 +121,14 @@ async def generate_llmstxt(
         llms_dest = target_dest / llmstxt_dir
         llms_dest.mkdir(parents=True, exist_ok=True)
 
-        d_xml = getattr(deliverable, "xml", None)
-        static_title = getattr(d_xml, "title", deliverable.full_id) if d_xml else deliverable.full_id
+        d_xml = deliverable.xml
+        static_title = getattr(d_xml, "title", deliverable.full_id)
         index_lines = [f"# {static_title}", ""]
 
-        categories = list(d_xml.categories() or []) if d_xml and hasattr(d_xml, "categories") else []
-        product = getattr(d_xml, "product_name", getattr(d_xml, "product_id", "")) if d_xml else ""
-        version = getattr(d_xml, "docset_version", getattr(d_xml, "docset_path", "")) if d_xml else ""
-        language = str(getattr(d_xml, "lang", "")) if d_xml else ""
+        categories = (d_xml.categoryid or "").split()
+        product = d_xml.product_id
+        version = d_xml.docset_version
+        language = str(d_xml.lang)
 
         # Use dictionary comprehension to filter empty keys (reduces C901 complexity)
         raw_attrs = {
@@ -140,13 +144,13 @@ async def generate_llmstxt(
         if not getattr(deliverable, "is_prebuilt", False):
             frontmatter_base["generator"] = "daps"
 
-        url_product_id = getattr(d_xml, "product_id", "unknown") if d_xml else "unknown"
+        url_product_id = d_xml.product_id or "unknown"
         if hasattr(deliverable, "make_safe_name"):
             url_product = deliverable.make_safe_name(url_product_id)
         else:
             url_product = url_product_id.replace("/", "_")
 
-        url_docset = getattr(d_xml, "docset_path", "unknown") if d_xml else "unknown"
+        url_docset = d_xml.docset_path or "unknown"
         domain = canonical_domain.rstrip("/")
 
         raw_html_files = list(target_dest.rglob("*.html"))
@@ -171,6 +175,7 @@ async def generate_llmstxt(
                 url_docset=url_docset,
                 static_title=static_title,
                 frontmatter_base=frontmatter_base,
+                only_md=only_md,
             )
 
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
@@ -210,7 +215,7 @@ async def build_format(
         translations = getattr(deliverable, "resolved_translations", deliverable.xml.translations)
         if translations:
             hreflangs = " ".join(sorted(translations))
-            args.extend(["--stringparam", f"canonicals.hreflangs={hreflangs}"])
+            args.extend(["--stringparam", shlex.quote(f"canonicals.hreflangs={hreflangs}")])
             log.debug("Injecting canonicals.hreflangs=%s", hreflangs)
 
     log.info("Building %s for %s...", fmt, deliverable.full_id)
@@ -222,8 +227,17 @@ async def build_format(
             log.info(" -> Artifacts stored in: %s", build_dir)
             return True, process.stdout
 
-        log.error("Failed to build %s for %s:\n%s", fmt, deliverable.full_id, process.stderr)
-        return False, process.stderr
+        output = "\n".join(
+            text for text in (process.stdout, process.stderr) if text
+        ) or "No output captured."
+        log.error(
+            "Failed to build %s for %s (exit code %s):\n%s",
+            fmt,
+            deliverable.full_id,
+            process.returncode,
+            output,
+        )
+        return False, output
     except Exception as e:
         log.error("Error executing daps for %s: %s", deliverable.full_id, e)
         return False, str(e)
