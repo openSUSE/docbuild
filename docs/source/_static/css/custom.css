@@ -19,6 +19,20 @@ html {
     line-height: 1.25;
 }
 
+.homepage-nav-card .sd-card-title .sd-octicon {
+    margin-inline-end: 0.35em;
+}
+
+.navbar-header-items .bd-navbar-elements .nav-link .sd-octicon {
+    margin-inline-end: 0.35em;
+}
+
+.navbar-header-items .bd-navbar-elements .nav-item + .nav-item .nav-link {
+    border-inline-start: 1px solid var(--pst-color-border);
+    margin-inline-start: 0.25rem;
+    padding-inline-start: 0.75rem;
+}
+
 /* Makes the text bigger in Mermaid-Diagrammen */
 .mermaid text {
     font-size: 14pt !important;

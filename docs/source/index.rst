@@ -10,12 +10,19 @@
 :Built:   |today|
 :Source:  |gh_repo|
 
-|project| is a command-line utility written in :ref:`python <project-deps>`,
+|project| is a command-line utility written in :ref:`Python <project-deps>`,
 :doc:`designed <developer/design>` to :term:`concurrently <Concurrency>` build
-SUSE documentation with the help of :ref:`portal configs <portal-config>`.
+SUSE documentation with the help of :ref:`Portal Configs <portal-config>`.
 
 .. grid:: 2
    :gutter: 3
+
+   .. grid-item-card:: :octicon:`rocket;1.25em` Quick Start
+      :link: user/install 
+      :link-type: doc
+      :class-card: homepage-nav-card
+
+      Start here to learn about how to install |project|!
 
    .. grid-item-card:: :octicon:`person;1.25em` User Guide
       :link: user/index
