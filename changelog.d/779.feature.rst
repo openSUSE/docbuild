@@ -1,0 +1,1 @@
+Revised the YAML frontmatter for LLM-generated Markdown files by removing the ``generator`` and ``deliverable_id`` keys to reduce token noise. Replaced the condensed ``build_date`` with specific ``dateCreated``, ``dateModified``, and ``datePublished`` fields directly extracted from the HTML's JSON-LD metadata.
