@@ -169,6 +169,8 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
                     target_dest=target_dest,
                     build_llmstxt=build_llmstxt,
                     llmstxt_dir=str(llmstxt_dir),
+                    llms_exclude=context.envconfig.llms.exclude,
+                    llms_exclude_extra=context.envconfig.llms.exclude_extra,
                     only_md=only_md,
                 )
             )

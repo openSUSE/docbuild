@@ -35,10 +35,25 @@ Before you run the command, make sure you have the following:
     The default is :file:`docs`.
     A relative path is resolved against ``target_base_dir``.
 
+Excluding files from LLM output
+-------------------------------
+
+Some files, like the GPL license page, add unnecessary noise for AI tools. You can exclude files from the Markdown generation using the ``[llms]`` section in your ENV config.
+
+* ``[llms].exclude``: An array of filenames or shell glob patterns (``*``, ``?``) to ignore. The default includes :file:`doc-gfdl-license.html`.
+* ``[llms].exclude-extra``: An array of additional files to ignore. 
+
+If you want to ignore new files for your specific project, it is recommended to add them to ``[llms].exclude-extra`` rather than overwriting the default ``exclude`` list.
+
+|project| merges ``exclude`` and ``exclude_extra`` into a single list, placing  ``exclude`` items first followed by ``exclude_extra``. Any duplicate patterns are removed while preserving their original order.
+
 Running the command
 -------------------
 
-To generate the Markdown files for an existing build, do the following:
+To generate the Markdown files for an existing build, you can run the command against your entire target directory, or you can pass specific doctypes (like ``sles/15-SP6/en-us``) to only process specific products. 
+(Use the ``--all`` flag to process the entire directory).
+
+Do the following:
 
 #. Provide the settings in the way you prefer:
 

@@ -844,6 +844,27 @@ class EnvRsync(BaseModel):
         return RsyncOptions(exclude=[*self.exclude, *self.exclude_extra])
 
 
+class EnvLlms(BaseModel):
+    """Configuration for retroactive LLMs generation."""
+
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    exclude: list[str] = Field(
+        default_factory=lambda: ["doc-gfdl-license.html"],
+        title="Exclude Files",
+        description="List of default filenames or glob patterns to exclude from LLM conversion.",
+    )
+    "Default files excluded from LLM generation."
+
+    exclude_extra: list[str] = Field(
+        default_factory=list,
+        alias="exclude-extra",
+        title="Extra Exclude Files",
+        description="Additional files or glob patterns to exclude.",
+    )
+    "Additional files excluded from LLM generation."
+
+
 class EnvConfig(BaseModel):
     """Root model for the environment configuration (env.toml)."""
 
@@ -891,6 +912,13 @@ class EnvConfig(BaseModel):
         description="Exclusions applied when syncing built deliverables to the target.",
     )
     """Transfer exclusions for built deliverables."""
+
+    llms: EnvLlms = Field(
+        default_factory=EnvLlms,
+        title="LLMs Configuration",
+        description="Settings for LLM generation.",
+    )
+    "LLM generation settings."
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")
