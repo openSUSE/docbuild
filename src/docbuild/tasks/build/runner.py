@@ -60,14 +60,13 @@ async def process_single_html_file(
         dynamic_desc = ld_data.get("description", "") if ld_data else ""
 
         rel_path = html_file.relative_to(target_dest)
-        base_url = f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
+        f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
 
         frontmatter = {"title": dynamic_title}
         if dynamic_desc:
             frontmatter["description"] = dynamic_desc
 
         frontmatter.update(frontmatter_base)
-        frontmatter["source_url"] = base_url
 
         # Inject specific date metadata from JSON-LD if present
         if ld_data:
@@ -77,7 +76,7 @@ async def process_single_html_file(
 
         # Use yaml.safe_dump for secure serialization
         yaml_block = yaml.safe_dump(
-            frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True
+            frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")
         )
         final_md_content = f"---\n{yaml_block}---\n\n{md_content}"
 

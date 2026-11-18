@@ -364,9 +364,7 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
 
     assert data["title"] == "Dynamic Chapter Title"
     assert data["description"] == "Dynamic chapter description."
-    assert data["source_url"] == (
-        "https://doc.example.com/sles/16.1/html/books/chapter.html"
-    )
+    assert "source_url" not in data
     assert data["product"] == "sles"
     assert data["version"] == "16.1"
     assert data["language"] == "en-us"
