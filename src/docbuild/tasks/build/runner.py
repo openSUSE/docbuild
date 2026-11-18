@@ -18,6 +18,7 @@ from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.display import get_live_manager
+from ...utils.merge import merge_and_deduplicate_lists
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
 from ..metadata.prebuilt import read_json_ld
@@ -151,7 +152,7 @@ async def generate_llmstxt(
         raw_html_files = list(target_dest.rglob("*.html"))
         html_files = []
 
-        exclude_patterns = (llms_exclude or []) + (llms_exclude_extra or [])
+        exclude_patterns = merge_and_deduplicate_lists(llms_exclude, llms_exclude_extra)
 
         for file in raw_html_files:
             if any(fnmatch.fnmatch(file.name, pattern) for pattern in exclude_patterns):

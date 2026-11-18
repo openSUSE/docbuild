@@ -188,3 +188,17 @@ def merge_doctypes(*doctypes: Doctype) -> list[Doctype]:  # noqa: C901
         result = dedup_doctypes(new_result)
 
     return dedup_doctypes(result)
+
+
+def merge_and_deduplicate_lists(*lists: list[str] | None) -> list[str]:
+    """Merge multiple lists into a single list, removing duplicates while preserving order.
+
+    :param lists: Variable number of lists (or None) to merge.
+    :return: A single merged and deduplicated list.
+    """
+    merged: list[str] = []
+    for lst in lists:
+        if lst:
+            merged.extend(lst)
+
+    return list(dict.fromkeys(merged))

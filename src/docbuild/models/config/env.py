@@ -916,7 +916,7 @@ class EnvConfig(BaseModel):
     llms: EnvLlms = Field(
         default_factory=EnvLlms,
         title="LLMs Configuration",
-        description="Settings for LLM generation exclusions.",
+        description="Settings for LLM generation.",
     )
     "LLM generation settings."
 
