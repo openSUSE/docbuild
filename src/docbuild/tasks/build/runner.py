@@ -2,189 +2,30 @@
 
 import asyncio
 from contextlib import nullcontext
-import fnmatch
 import logging
-import os
 from pathlib import Path
 import shlex
 import tempfile
-from typing import Any, Literal
+from typing import Literal
 
-from aiostream import pipe, stream
 from lxml import etree  # type: ignore
-import yaml
+
+from docbuild.tasks.build.llms.generator import generate_llmstxt
 
 from ...config.app import normalize_runtime_placeholders
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.display import get_live_manager
-from ...utils.merge import merge_and_deduplicate_lists
 from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
-from ..metadata.prebuilt import read_json_ld
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype
 from ..portal import parse_portal_config
 from ..publish import render_target_suffix
 from ..translations import resolve_actual_translations
 from ..worktrees import process_with_shared_worktrees
-from .llms import clean_and_convert, inject_llms_links
 
 log = logging.getLogger(__name__)
-
-
-async def process_single_html_file(
-    html_file: Path,
-    target_dest: Path,
-    llms_dest: Path,
-    llmstxt_dir: str,
-    domain: str,
-    url_product: str,
-    url_docset: str,
-    static_title: str,
-    frontmatter_base: dict[str, Any],
-    only_md: bool = False,
-) -> str | None:
-    """Process a single HTML file: extract metadata, write Markdown with frontmatter, and inject links."""
-    if llmstxt_dir in html_file.parts:
-        return None
-    try:
-        # 1. Read HTML content once
-        html_content = await asyncio.to_thread(html_file.read_text, encoding="utf-8")
-        md_content = await asyncio.to_thread(clean_and_convert, html_content)
-
-        # 2. Extract JSON-LD from already loaded string content (no double disk read)
-        ld_data = read_json_ld(html_content, source_path=html_file)
-
-        dynamic_title = ld_data.get("name", static_title) if ld_data else static_title
-        dynamic_desc = ld_data.get("description", "") if ld_data else ""
-
-        rel_path = html_file.relative_to(target_dest)
-        f"{domain}/{url_product}/{url_docset}/html/{rel_path.as_posix()}"
-
-        frontmatter = {"title": dynamic_title}
-        if dynamic_desc:
-            frontmatter["description"] = dynamic_desc
-
-        frontmatter.update(frontmatter_base)
-
-        # Inject specific date metadata from JSON-LD if present
-        if ld_data:
-            for d_key in ("dateCreated", "dateModified", "datePublished"):
-                if ld_data.get(d_key):
-                    frontmatter[d_key] = ld_data[d_key]
-
-        # Use yaml.safe_dump for secure serialization
-        yaml_block = yaml.safe_dump(
-            frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")
-        )
-        final_md_content = f"---\n{yaml_block}---\n\n{md_content}"
-
-        md_file = llms_dest / rel_path.with_suffix(".md")
-        md_file.parent.mkdir(parents=True, exist_ok=True)
-        await asyncio.to_thread(md_file.write_text, final_md_content, encoding="utf-8")
-
-        if not only_md:
-            md_rel_to_html = Path(os.path.relpath(md_file, html_file.parent)).as_posix()
-            llms_txt_rel_to_html = Path(os.path.relpath(target_dest / "llms.txt", html_file.parent)).as_posix()
-
-            new_html = await asyncio.to_thread(
-                inject_llms_links, html_content, md_rel_to_html, llms_txt_rel_to_html
-            )
-            await asyncio.to_thread(html_file.write_text, new_html, encoding="utf-8")
-
-        index_entry = Path(os.path.relpath(md_file, target_dest)).as_posix()
-        return f"- [{html_file.name}]({index_entry})"
-
-    except Exception as e:
-        log.error("Failed processing %s: %s", html_file, e)
-        return None
-
-
-async def generate_llmstxt(
-    deliverable: Deliverable,
-    target_dest: Path | str,
-    build_llmstxt: bool,
-    llmstxt_dir: str,
-    canonical_domain: str = "https://documentation.suse.com",
-    llms_exclude: list[str] | None = None,
-    llms_exclude_extra: list[str] | None = None,
-    only_md: bool = False,
-) -> None:
-    """Generate LLMs text and inject markdown links into HTML files concurrently."""
-    if not build_llmstxt:
-        return
-
-    try:
-        log.info("Generating LLMs text for %s...", deliverable.full_id)
-        llms_dest = target_dest / llmstxt_dir
-        llms_dest.mkdir(parents=True, exist_ok=True)
-
-        d_xml = deliverable.xml
-        static_title = getattr(d_xml, "title", deliverable.full_id)
-        index_lines = [f"# {static_title}", ""]
-
-        categories = (d_xml.categoryid or "").split()
-        product = d_xml.product_id
-        version = d_xml.docset_version
-        language = str(d_xml.lang)
-
-        # Use dictionary comprehension to filter empty keys (reduces C901 complexity)
-        raw_attrs = {
-            "product": product,
-            "version": version,
-            "language": language,
-            "categories": categories,
-        }
-        frontmatter_base: dict[str, Any] = {}
-        frontmatter_base.update({k: v for k, v in raw_attrs.items() if v})
-
-        url_product_id = d_xml.product_id or "unknown"
-        if hasattr(deliverable, "make_safe_name"):
-            url_product = deliverable.make_safe_name(url_product_id)
-        else:
-            url_product = url_product_id.replace("/", "_")
-
-        url_docset = d_xml.docset_path or "unknown"
-        domain = canonical_domain.rstrip("/")
-
-        raw_html_files = list(target_dest.rglob("*.html"))
-        html_files = []
-
-        exclude_patterns = merge_and_deduplicate_lists(llms_exclude, llms_exclude_extra)
-
-        for file in raw_html_files:
-            if any(fnmatch.fnmatch(file.name, pattern) for pattern in exclude_patterns):
-                log.debug("Skipping ignored file during LLM generation: %s", file)
-                continue
-            html_files.append(file)
-
-        async def process_file(html_file: Path) -> str | None:
-            return await process_single_html_file(
-                html_file=html_file,
-                target_dest=target_dest,
-                llms_dest=llms_dest,
-                llmstxt_dir=llmstxt_dir,
-                domain=domain,
-                url_product=url_product,
-                url_docset=url_docset,
-                static_title=static_title,
-                frontmatter_base=frontmatter_base,
-                only_md=only_md,
-            )
-
-        pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
-
-        async with pipeline.stream() as streamer:
-            async for result in streamer:
-                if result:
-                    index_lines.append(result)
-
-        llms_index = target_dest / "llms.txt"
-        llms_index.write_text(chr(10).join(index_lines) + chr(10), encoding="utf-8")
-        log.info("Finished generating llms.txt for %s", deliverable.full_id)
-    except Exception as ex:
-        log.error("Failed to generate LLMs text for %s: %s", deliverable.full_id, ex)
 
 
 async def build_format(
@@ -289,7 +130,12 @@ async def process_single_deliverable(
                         options=rsync_options,
                     )
                     if fmt == "html":
-                        await generate_llmstxt(deliverable, target_dest, build_llmstxt, llmstxt_dir)
+                        await generate_llmstxt(
+                            deliverable=deliverable,
+                            target_dest=target_dest,
+                            build_llmstxt=build_llmstxt,
+                            llmstxt_dir=llmstxt_dir
+                        )
                     if sync_result.returncode == 0:
                         log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
                     else:
@@ -308,9 +154,7 @@ async def process_single_deliverable(
     return success, deliverable
 
 
-
 async def process_doctype(
-
     root: etree._ElementTree,
     doctype: Doctype,
     repo_dir: Path,
