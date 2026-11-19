@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<docset xmlns:xi="http://www.w3.org/2001/XInclude" lifecycle="supported" xml:id="sles.16.1" path="16.1">
+  <version>16.1</version>
+  <canonical>sles/16.1</canonical>
+  <descriptions treatment="append">
+    <desc lang="en-us">
+        <p>
+          The default view of this page is the ‘Table of Contents’ sorting
+          order. To search for a particular document, you can narrow down the
+          results using the ‘Filter as you type’ option. It dynamically
+          filters the document titles and descriptions for what you enter.
+        </p>
+    </desc>
+  </descriptions>
+  <resources>
+    <git remote="https://github.com/SUSE/doc-modular.git"/>
+    <locale lang="en-us" sitemap="false">
+      <branch>main</branch>
+      <!--*************** about ***************-->
+      <deliverable type="dc" xml:id="sles.16.1.dc-sle-comparison" category="cat.about">
+        <dc file="DC-SLE-comparison">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <deliverable type="dc" xml:id="sles.16.1.dc-sle-os-identification" category="cat.about">
+        <dc file="DC-SLE-os-identification">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** update-upgrade ***************-->
+      <deliverable type="dc" xml:id="sles.16.1.dc-sles-klp" category="cat.update-upgrade">
+        <dc file="DC-SLES-klp">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+      <!--*************** administration ***************-->
+      <deliverable type="dc" xml:id="sles.16.1.dc-sles-ansible-roles" category="cat.administration">
+        <dc file="DC-SLES-ansible-roles">
+          <format html="1" pdf="1" single-html="0"/>
+        </dc>
+      </deliverable>
+    </locale>
+  </resources>
+</docset>

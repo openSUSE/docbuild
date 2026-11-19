@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="portal-config.rnc" type="application/relax-ng-compact-syntax"?>
+<portal xmlns:xi="http://www.w3.org/2001/XInclude" schemaversion="7.0">
+  <xi:include href="categories.xml"/>
+  <productfamilies>
+    <item xml:id="f.linux">Linux</item>
+    <item xml:id="f.cn">Cloud Native</item>
+    <item xml:id="f.suse-edge">SUSE Edge</item>
+    <item xml:id="f.suse-ai">SUSE AI</item>
+  </productfamilies>
+  <series>
+    <item xml:id="s.pas">Products &amp; Solutions</item>
+    <item xml:id="s.sbp">SUSE Best Practices</item>
+    <item xml:id="s.trd">Technical References</item>
+    <item xml:id="s.rn">Release Notes</item>
+  </series>
+  <xi:include href="sles/sles.xml"/>
+  <!-- Add more products here... -->
+</portal>
