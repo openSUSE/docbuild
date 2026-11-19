@@ -154,7 +154,7 @@ After you have created the :term:`VENV`, it's recommended to activate it before 
 
    $ source .venv/bin/activate && source devel/activate-aliases.sh
 
-The file :file:`devel/activate-aliases.sh` contains some shell aliases that makes working with the virtual environment more convenient.
+The file :file:`devel/activate-aliases.sh` contains some shell aliases that make working with the virtual environment more convenient.
 
 
 .. _qs-show-portal:

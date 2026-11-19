@@ -5,14 +5,6 @@ Installing docbuild
 
 To install the docbuild tool, follow these steps:
 
-#. **Clone the repository**
-
-   Open your terminal and run the following command to clone the docbuild repository from GitHub:
-
-   .. code-block:: console
-
-      $ git clone https://github.com/openSUSE/docbuild.git
-      $ cd docbuild
 
 #. :ref:`qs-prepare-installation` - Prepare your environment for installation.
 
