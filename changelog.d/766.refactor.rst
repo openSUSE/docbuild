@@ -1,1 +1,0 @@
-Refactored the build tasks for better maintainability. :file:`llms.py` has been converted into a package (``llms/``) with logically separated modules (``dom``, ``markdown``, ``cleaners``, and ``core``). Additionally, :file:`runner.py` was simplified by extracting the LLM text generation logic into its own dedicated :file:`llms/generator.py` file.

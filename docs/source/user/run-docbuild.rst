@@ -8,7 +8,7 @@ If you have installed the docbuild tool from the source code, run it using
 
    $ uv run docbuild --help
 
-In case you have installed different Python versions using :command:`uv python install` (see :ref:`prepare-installation`), specify the Python version to use with the ``-P``/``--python <VERSION>`` option:
+In case you have installed different Python versions using :command:`uv python install` (see :ref:`qs-prepare-installation`), specify the Python version to use with the ``-P``/``--python <VERSION>`` option:
 
 .. code-block:: console
 
