@@ -1,0 +1,1 @@
+Added a Quick Start card to the documentation landing-page grid and improved navigation by spacing icons from their labels and separating top-level links with vertical dividers.
