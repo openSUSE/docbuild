@@ -2,7 +2,7 @@
 
 import asyncio
 from collections.abc import Callable, Iterator
-from contextlib import nullcontext
+from contextlib import nullcontext, suppress
 from datetime import UTC, datetime
 from functools import partial
 import logging
@@ -33,18 +33,24 @@ def iter_sitemap_html(target_dir: Path) -> Iterator[Path]:
     :param target_dir: Published documentation root.
     :yields: Logical paths beneath the published root, without resolving URLs.
     """
-    yield from target_dir.rglob("*.html")
-
     language_dir = target_dir / DEFAULT_LANG
-    if not language_dir.is_symlink():
-        return
-    try:
-        content_root = language_dir.resolve(strict=True)
-        if not content_root.is_dir() or target_dir.resolve().is_relative_to(content_root):
-            return
-    except (OSError, RuntimeError):
-        # Broken links and symlink cycles are not content roots.
-        log.warning("Sitemap: Skipping broken or cyclic symlink %s", language_dir)
+    content_root = None
+    if language_dir.is_symlink():
+        try:
+            resolved = language_dir.resolve(strict=True)
+            if resolved.is_dir() and not target_dir.resolve().is_relative_to(resolved):
+                content_root = resolved
+        except (OSError, RuntimeError):
+            log.warning("Sitemap: Skipping broken or cyclic symlink %s", language_dir)
+
+    for html_file in target_dir.rglob("*.html"):
+        if content_root is not None:
+            with suppress(OSError, RuntimeError):
+                if html_file.resolve().is_relative_to(content_root):
+                    continue
+        yield html_file
+
+    if content_root is None:
         return
 
     # rglob does not recurse into child directory symlinks. Starting from the
@@ -98,7 +104,7 @@ def build_sitemap_tree(
         # Remove the default lang (e.g. 'en-us') from the URL path
         lang_prefix = f"{DEFAULT_LANG}/"
         if url_path.startswith(lang_prefix):
-            url_path = url_path[len(lang_prefix):]
+            url_path = url_path[len(lang_prefix) :]
         url_path = url_path.replace(f"/{lang_prefix}", "/")
 
         mtime = html_file.stat().st_mtime
@@ -134,14 +140,10 @@ async def generate_sitemap(
     log.info("Generating sitemap.xml in %s", target_dir)
     manager = get_live_manager()
     stage_context = (
-        manager.stage("4/4 Sitemap", total=1)
-        if manager is not None
-        else nullcontext()
+        manager.stage("4/4 Sitemap", total=1) if manager is not None else nullcontext()
     )
     with stage_context as stage:
-        item_context = (
-            stage.item("sitemap.xml") if stage is not None else nullcontext()
-        )
+        item_context = stage.item("sitemap.xml") if stage is not None else nullcontext()
         with item_context:
             tree = await asyncio.to_thread(
                 build_sitemap_tree, target_dir, base_url, on_progress=on_progress
@@ -156,7 +158,7 @@ async def generate_sitemap(
                     str(sitemap_path),
                     encoding="utf-8",
                     xml_declaration=True,
-                    pretty_print=True
+                    pretty_print=True,
                 )
 
             await asyncio.to_thread(_write)

@@ -52,11 +52,11 @@ async def test_nested_published_html(published_html: Path, language_root: bool) 
     assert output.read_bytes() == expected
     tree = etree.fromstring(expected)
     ns = {"s": SITEMAP_NS}
-    assert set(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == {
-        "https://docs.test.com/sles/15/html/guide/index.html",
+    assert sorted(tree.xpath("s:url/s:loc/text()", namespaces=ns)) == [
         "https://docs.test.com/sles/15/html/guide/chapter.html",
+        "https://docs.test.com/sles/15/html/guide/index.html",
         "https://docs.test.com/sles/15/single-html/book.html",
-    }
+    ]
     assert tree.xpath("s:url/s:lastmod/text()", namespaces=ns) == ["2024-01-01"] * 3
     assert (
         "Scanning HTML files",
@@ -159,6 +159,61 @@ async def test_symlinked_english_root(tmp_path, language_root, relative_link):
         assert ("Scanning HTML files", directory) in updates
 
 
+def test_internally_linked_english_root(tmp_path):
+    """Publish internal content once through its logical language path."""
+    target = tmp_path / "target"
+    content = target / "archive/en-us"
+    content.mkdir(parents=True)
+    page = content / "index.html"
+    page.touch()
+    language = target / "en-us"
+    language.symlink_to(content, target_is_directory=True)
+    other = target / "product/en-us"
+    other.mkdir(parents=True)
+    (other / "chapter.html").touch()
+    (other / "alias.html").symlink_to(page)
+    (content / "alias.html").symlink_to(page)
+    (content / "loop").symlink_to(content, target_is_directory=True)
+    outside = tmp_path / "outside.html"
+    outside.touch()
+    (content / "outside.html").symlink_to(outside)
+
+    assert sorted(sitemap.iter_sitemap_html(target)) == sorted(
+        [
+            language / "index.html",
+            other / "chapter.html",
+            content / "outside.html",
+        ]
+    )
+    tree = sitemap.build_sitemap_tree(target, "https://docs.test.com")
+    assert sorted(tree.xpath("//*[local-name()='loc']/text()")) == [
+        "https://docs.test.com/archive/outside.html",
+        "https://docs.test.com/index.html",
+        "https://docs.test.com/product/chapter.html",
+    ]
+
+
+@pytest.mark.parametrize("error", [OSError, RuntimeError])
+def test_candidate_resolution_failure(tmp_path, monkeypatch, error):
+    """Keep a normal scan result when its containment check fails."""
+    content = tmp_path / "external"
+    content.mkdir()
+    target = tmp_path / "target"
+    target.mkdir()
+    (target / "en-us").symlink_to(content, target_is_directory=True)
+    page = target / "page.html"
+    page.touch()
+    resolve = Path.resolve
+
+    def resolve_candidate(path, strict=False):
+        if path == page:
+            raise error("cannot resolve candidate")
+        return resolve(path, strict=strict)
+
+    monkeypatch.setattr(Path, "resolve", resolve_candidate)
+    assert list(sitemap.iter_sitemap_html(target)) == [page]
+
+
 @pytest.mark.asyncio
 async def test_linked_english_root_does_not_follow_nested_links(tmp_path):
     """Only the selected root link is followed; loops and escapes are skipped."""
@@ -191,6 +246,9 @@ async def test_invalid_english_root_link(tmp_path, destination, caplog):
     """Invalid links and roots that lead back outside the content are skipped."""
     target = tmp_path / "target"
     target.mkdir()
+    other = target / "product/en-us"
+    other.mkdir(parents=True)
+    (other / "index.html").touch()
     link = target / "en-us"
     destinations = {
         "missing": tmp_path / "missing",
@@ -205,7 +263,9 @@ async def test_invalid_english_root_link(tmp_path, destination, caplog):
         (tmp_path / "cycle").symlink_to(link)
     link.symlink_to(destinations[destination], target_is_directory=True)
     output = await generate_sitemap(target, "https://docs.test.com")
-    assert len(etree.parse(output).getroot()) == 0
+    assert etree.parse(output).xpath("//*[local-name()='loc']/text()") == [
+        "https://docs.test.com/product/index.html"
+    ]
     warnings = [
         record.getMessage()
         for record in caplog.records
