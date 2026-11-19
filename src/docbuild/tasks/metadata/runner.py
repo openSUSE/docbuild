@@ -19,7 +19,7 @@ from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
 from docbuild.models.lifecycle import LifecycleFlag
 from docbuild.tasks.portal import parse_portal_config
-from docbuild.utils.display import get_live_manager
+from docbuild.utils.display import Stage, get_live_manager
 from docbuild.utils.git import ManagedGitRepo
 
 from .daps import process_deliverable
@@ -31,9 +31,7 @@ log = logging.getLogger(__name__)
 stdout = console
 
 
-def get_deliverable_worker_limit(
-    max_workers: int, deliverable_count: int
-) -> int:
+def get_deliverable_worker_limit(max_workers: int, deliverable_count: int) -> int:
     """Resolve the concurrency limit for deliverable processing."""
     if deliverable_count <= 0:
         return 1
@@ -67,7 +65,9 @@ def gather_build_tasks(
     stitchnode: etree._ElementTree, doctypes: Sequence[Doctype]
 ) -> list[Deliverable]:
     """Phase 1: Partition tasks and discover dependencies."""
-    resolved_doctypes = [dt for doctype in doctypes for dt in doctype.iter_doctypes(stitchnode.getroot())]
+    resolved_doctypes = [
+        dt for doctype in doctypes for dt in doctype.iter_doctypes(stitchnode.getroot())
+    ]
 
     initial_deliverables: list[Deliverable] = []
     for dt in resolved_doctypes:
@@ -266,6 +266,7 @@ async def _process_single_deliverable(
                 daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
                 skip_repo_update=skip_repo_update,
                 env_config_hash=env_config_hash,
+                on_status=partial(stage.rename_item, item) if stage else None,
             )
             if item is not None and not res[0]:
                 item.fail()
@@ -277,7 +278,34 @@ async def _process_single_deliverable(
             return False, deliverable
 
 
-async def execute_build_pipeline(  # noqa: C901
+class _RepositoryUpdateError(Exception):
+    """Unexpected failure setting up or running the repository batch."""
+
+
+async def _update_stage_repositories(
+    deliverables: list[Deliverable],
+    repo_dir: Path,
+    skip_repo_update: bool,
+    stage: Stage | None,
+) -> None:
+    """Update unique repositories after portal discovery."""
+    if skip_repo_update:
+        log.info("Skipping repository updates as requested.")
+        if stage:
+            stage.set_total(stage.counts.total())
+        return
+
+    git_deliverables = [d for d in deliverables if d.has_git_repo]
+    if stage:
+        urls = {d.git.url for d in git_deliverables if d.git}
+        stage.set_total(stage.counts.total() + len(urls))
+    try:
+        await update_repositories(git_deliverables, repo_dir)
+    except Exception as exc:
+        raise _RepositoryUpdateError(str(exc)) from exc
+
+
+async def execute_build_pipeline(
     deliverables_to_build: list[Deliverable],
     repo_dir: Path,
     tmp_repo_dir: Path,
@@ -291,31 +319,57 @@ async def execute_build_pipeline(  # noqa: C901
     exitfirst: bool,
     skip_metadata: bool = False,
 ) -> list[Deliverable]:
-    """Phase 2: Build Task Pipeline (aiostream)."""
+    """Update repositories and run the metadata workers."""
     manager = get_live_manager()
+    try:
+        with (
+            manager.stage("1/4 Metadata & repositories")
+            if manager
+            else nullcontext() as stage
+        ):
+            await _update_stage_repositories(
+                deliverables_to_build, repo_dir, skip_repo_update, stage
+            )
+    except _RepositoryUpdateError as exc:
+        log.error("Failed to update repositories: %s", exc)
+        if exitfirst:
+            return deliverables_to_build
 
-    if skip_repo_update:
-        log.info("Skipping repository updates as requested.")
-        if manager:
-            with manager.stage("1/4 Clone repos… (skipped)", total=0):
-                pass
-    else:
-        git_deliverables = [d for d in deliverables_to_build if d.has_git_repo]
-        manager = get_live_manager()
-        unique_repos = {d.git.url for d in git_deliverables if d.git and d.git.url}
-        repo_stage = manager.stage("1/4 Clone repos…", total=len(unique_repos)) if manager else nullcontext()
-        with repo_stage as r_stage:
-            try:
-                await update_repositories(git_deliverables, repo_dir)
-            except Exception as e:
-                if r_stage:
-                    r_stage.fail()
-                log.error("Failed to update repositories: %s", e)
-                if exitfirst:
-                    return deliverables_to_build # Return all as failed to abort
+    return await _validate_metadata(
+        deliverables_to_build,
+        repo_dir,
+        tmp_repo_dir,
+        meta_cache_dir,
+        prebuilt_dir,
+        dapsmetatmpl,
+        daps_list_srcfiles_tmpl,
+        skip_repo_update,
+        env_config_hash,
+        max_workers,
+        exitfirst,
+        skip_metadata,
+    )
 
+
+async def _validate_metadata(
+    deliverables_to_build: list[Deliverable],
+    repo_dir: Path,
+    tmp_repo_dir: Path,
+    meta_cache_dir: Path,
+    prebuilt_dir: Path,
+    dapsmetatmpl: str,
+    daps_list_srcfiles_tmpl: str,
+    skip_repo_update: bool,
+    env_config_hash: str,
+    max_workers: int,
+    exitfirst: bool,
+    skip_metadata: bool = False,
+) -> list[Deliverable]:
+    """Run Stage 2 metadata workers."""
     # --- Translation Metadata Git Checks ---
-    final_deliverables = await resolve_translation_metadata(deliverables_to_build, repo_dir)
+    final_deliverables = await resolve_translation_metadata(
+        deliverables_to_build, repo_dir
+    )
 
     worker_limit = get_deliverable_worker_limit(max_workers, len(final_deliverables))
 
@@ -346,9 +400,7 @@ async def execute_build_pipeline(  # noqa: C901
         return []
 
     stage_context = (
-        manager.stage(
-            "2/4 Metadata Validation…", total=len(final_deliverables)
-        )
+        manager.stage("2/4 Metadata Validation…", total=len(final_deliverables))
         if manager is not None
         else nullcontext()
     )
@@ -386,32 +438,53 @@ async def process(
     skip_metadata: bool = False,
 ) -> int:
     """Asynchronous entry point for metadata retrieval."""
-    stitchnode: etree._ElementTree = await parse_portal_config(
-        Path(main_portal_config).expanduser()
+    manager = get_live_manager()
+    stage_context = (
+        manager.stage("1/4 Metadata & repositories") if manager else nullcontext()
     )
+    try:
+        with stage_context as stage:
+            with (
+                stage.item(f"Parsing {Path(main_portal_config).name}")
+                if stage
+                else nullcontext()
+            ):
+                stitchnode: etree._ElementTree = await parse_portal_config(
+                    Path(main_portal_config).expanduser()
+                )
 
-    tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
+            tmp_metadata_dir.mkdir(parents=True, exist_ok=True)
 
-    stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
+            stitchfilename = tmp_metadata_dir / "stitched-metadata.xml"
 
-    stitch_xml_str = etree.tostring(
-        stitchnode, pretty_print=True, encoding="unicode"
-    )
-    stitchfilename.write_text(stitch_xml_str)
+            stitch_xml_str = etree.tostring(
+                stitchnode, pretty_print=True, encoding="unicode"
+            )
+            stitchfilename.write_text(stitch_xml_str)
 
-    # Create a hash of the entire stitched configuration to detect env/config changes
-    env_config_hash = hashlib.sha256(stitch_xml_str.encode("utf-8")).hexdigest()
+            # Create a hash of the entire stitched configuration to detect env/config changes
+            env_config_hash = hashlib.sha256(stitch_xml_str.encode("utf-8")).hexdigest()
 
-    log.info("Stitched metadata XML written to %s", str(stitchfilename))
+            log.info("Stitched metadata XML written to %s", str(stitchfilename))
 
-    if not doctypes:
-        doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES, default_lang="*")]
+            if not doctypes:
+                doctypes = [Doctype.from_str(DEFAULT_DELIVERABLES, default_lang="*")]
 
-    # --- Phase 1: Task Partitioning & Dependency Discovery ---
-    deliverables_to_build = gather_build_tasks(stitchnode, doctypes)
+            # --- Phase 1: Task Partitioning & Dependency Discovery ---
+            deliverables_to_build = gather_build_tasks(stitchnode, doctypes)
+            await _update_stage_repositories(
+                deliverables_to_build, repo_dir, skip_repo_update, stage
+            )
+    except _RepositoryUpdateError as exc:
+        log.error("Failed to update repositories: %s", exc)
+        if exitfirst and deliverables_to_build:
+            console_err.print(
+                f"[error]Exiting early due to failed deliverable:[/] {deliverables_to_build[0].full_id}"
+            )
+            return 1
 
     # --- Phase 2: Build Task Pipeline (aiostream) ---
-    all_failed_deliverables = await execute_build_pipeline(
+    all_failed_deliverables = await _validate_metadata(
         deliverables_to_build,
         repo_dir,
         tmp_repo_dir,
@@ -427,7 +500,9 @@ async def process(
     )
 
     if exitfirst and all_failed_deliverables:
-        console_err.print(f"[error]Exiting early due to failed deliverable:[/] {all_failed_deliverables[0].full_id}")
+        console_err.print(
+            f"[error]Exiting early due to failed deliverable:[/] {all_failed_deliverables[0].full_id}"
+        )
         return 1
 
     # --- Phase 3: Reference Resolution & Manifest Assembly ---
@@ -443,7 +518,9 @@ async def process(
     await asyncio.to_thread(generate_homepage, stitchnode, json_cache_dir)
 
     if all_failed_deliverables:
-        console_err.print(f"[error]Found {len(all_failed_deliverables)} failed deliverables:[/]")
+        console_err.print(
+            f"[error]Found {len(all_failed_deliverables)} failed deliverables:[/]"
+        )
         for d in all_failed_deliverables:
             console_err.print(f"- {d.full_id}")
         return 1

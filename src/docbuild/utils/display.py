@@ -1,4 +1,5 @@
 """Reusable Live UI components for DocBuild."""
+
 from collections import Counter
 from collections.abc import Iterator
 from contextlib import contextmanager, suppress
@@ -23,11 +24,13 @@ from rich.progress import (
 from rich.table import Column
 from rich.text import Text
 
-ACTIVE_LIVE_MANAGER = contextvars.ContextVar('ACTIVE_LIVE_MANAGER', default=None)
+ACTIVE_LIVE_MANAGER = contextvars.ContextVar("ACTIVE_LIVE_MANAGER", default=None)
+
 
 def get_live_manager() -> "LiveProgressManager | None":
     """Get the active live progress manager."""
     return ACTIVE_LIVE_MANAGER.get()
+
 
 class ItemState(StrEnum):
     """Final outcome of a single item, storing its Rich markup prefix."""
@@ -36,9 +39,11 @@ class ItemState(StrEnum):
     SKIPPED = "[skipped]↷"
     FAILED = "[failed]✘"
 
+
 def format_status(counts: Counter[ItemState]) -> str:
     """Render outcome counts with fixed-width numbers to avoid jitter."""
     return "| ".join(f"{s} {counts[s]:>3}[/]" for s in ItemState)
+
 
 class MofNColumn(ProgressColumn):
     """Show 'completed/total' with the slash at a fixed position."""
@@ -55,6 +60,7 @@ class MofNColumn(ProgressColumn):
             style="progress.download",
         )
 
+
 class StageProgress(Progress):
     """Progress that renders the current item on a line below each stage."""
 
@@ -64,6 +70,7 @@ class StageProgress(Progress):
             yield self.make_tasks_table([task])
             if item := task.fields.get("item"):
                 yield Text(f"  {item}", style="dim")
+
 
 @dataclass(slots=True)
 class Item:
@@ -78,6 +85,7 @@ class Item:
     def fail(self) -> None:
         """Mark the item as failed without raising."""
         self.state = ItemState.FAILED
+
 
 class Stage:
     """Tracks outcomes and running items of one stage in a progress task."""
@@ -130,6 +138,11 @@ class Stage:
                 self.counts[item.state] += 1
             self.refresh(advance=int(item.state is not None))
 
+    def rename_item(self, item: Item, name: str) -> None:
+        """Update a running item's label without advancing progress."""
+        self.running[id(item)] = name
+        self.refresh()
+
     def refresh(self, advance: int = 0) -> None:
         """Push current counts and running items to the progress task."""
         shown = ", ".join(list(self.running.values())[: self.MAX_SHOWN])
@@ -158,6 +171,7 @@ class Stage:
         task = self._progress.tasks[self._task_id]
         if task.finished_time is None:
             task.finished_time = task.elapsed
+
 
 class LiveProgressManager:
     """Live view showing one progress bar per stage; stages run sequentially.
@@ -203,10 +217,14 @@ class LiveProgressManager:
 
         # Mute standard terminal logging so it doesn't fight rich.Live
         import logging
+
         with suppress(ImportError):
             from docbuild.logging import _LOGGING_STATE
+
             self._muted_handlers = []
-            if (listener_var := _LOGGING_STATE.get("listener")) and (listener := listener_var.get()):
+            if (listener_var := _LOGGING_STATE.get("listener")) and (
+                listener := listener_var.get()
+            ):
                 for h in listener.handlers:
                     if h.__class__.__name__ == "StreamHandler":
                         self._muted_handlers.append((h, h.level))

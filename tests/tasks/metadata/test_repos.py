@@ -20,10 +20,7 @@ class TestUpdateRepositories:
         """Verify update_repositories returns True when all repos clone successfully."""
         mock_deliverable = Mock(spec=Deliverable)
         mock_repo = Mock(spec=Repo)
-        mock_repo.configure_mock(
-            url="gh://SUSE/doc-test",
-            name="SUSE/doc-test"
-        )
+        mock_repo.configure_mock(url="gh://SUSE/doc-test", name="SUSE/doc-test")
         mock_deliverable.git = mock_repo
         mock_clone_bare.return_value = True
 
@@ -40,8 +37,7 @@ class TestUpdateRepositories:
         mock_deliverable = Mock(spec=Deliverable)
         mock_repo = Mock(spec=Repo)
         mock_repo.configure_mock(
-            url="gh://SUSE/non-existent-repo",
-            name="SUSE/non-existent-repo"
+            url="gh://SUSE/non-existent-repo", name="SUSE/non-existent-repo"
         )
         mock_deliverable.git = mock_repo
         mock_clone_bare.return_value = False
@@ -51,3 +47,32 @@ class TestUpdateRepositories:
         mock_clone_bare.assert_awaited_once()
         assert result is False
         assert "Failed to update" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_concurrent_repo_items(tmp_path, monkeypatch):
+    """Shared repositories get one live item and one outcome per URL."""
+    import asyncio
+
+    from docbuild.utils.display import ItemState, LiveProgressManager
+
+    docs = []
+    for name in ("first", "second", "first"):
+        doc = Mock(spec=Deliverable)
+        doc.git = Repo(f"https://github.com/SUSE/{name}.git")
+        docs.append(doc)
+
+    both_running = asyncio.Event()
+    with LiveProgressManager(disable=True) as manager, manager.stage("repos") as stage:
+
+        async def clone(repo):
+            if len(stage.running) == 2:
+                both_running.set()
+            await asyncio.wait_for(both_running.wait(), timeout=2)
+            return repo.remote_url == docs[0].git.url
+
+        monkeypatch.setattr(repos_pkg.ManagedGitRepo, "clone_bare", clone)
+        assert not await update_repositories(docs, tmp_path)
+
+    assert stage.counts == {ItemState.SUCCEEDED: 1, ItemState.FAILED: 1}
+    assert not stage.running

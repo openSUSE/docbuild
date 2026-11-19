@@ -1,6 +1,7 @@
 """DAPS command construction and deliverable processing."""
 
 import asyncio
+from collections.abc import Callable
 import json
 import logging
 from pathlib import Path
@@ -19,9 +20,7 @@ log = logging.getLogger(__name__)
 
 
 async def get_daps_hashes(
-    worktree_dir: Path,
-    dcfile_path: Path,
-    daps_list_srcfiles_tmpl: str
+    worktree_dir: Path, dcfile_path: Path, daps_list_srcfiles_tmpl: str
 ) -> dict[str, str]:
     """Run daps list-srcfiles --hashes and parse the output.
 
@@ -109,7 +108,7 @@ def update_metadata_json(outputjson: Path, deliverable: Deliverable) -> None:
             jsonconfig.pop("category", None)
 
 
-async def process_deliverable(    # noqa: C901
+async def process_deliverable(  # noqa: C901
     deliverable: Deliverable,
     repo_dir: Path,
     tmp_repo_dir: Path,
@@ -120,6 +119,7 @@ async def process_deliverable(    # noqa: C901
     daps_list_srcfiles_tmpl: str,
     skip_repo_update: bool = False,
     env_config_hash: str = "",
+    on_status: Callable[[str], None] | None = None,
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable asynchronously.
 
@@ -137,7 +137,10 @@ async def process_deliverable(    # noqa: C901
     log.info("> Processing deliverable: %s", deliverable.full_id)
 
     if not deliverable.xml.dcfile:
-        log.info("Deliverable %s is prebuilt. Extracting metadata from Antora HTML...", deliverable.full_id)
+        log.info(
+            "Deliverable %s is prebuilt. Extracting metadata from Antora HTML...",
+            deliverable.full_id,
+        )
 
         try:
             # 1. Run the extractor
@@ -150,7 +153,9 @@ async def process_deliverable(    # noqa: C901
             # Use HTML basename for uniqueness, fallback to deliverable ID if missing
             html_url = meta_dict.get("docs", [{}])[0].get("format", {}).get("html", "")
             if html_url:
-                json_filename = Path(html_url.lstrip("/")).name.replace(".html", ".json")
+                json_filename = Path(html_url.lstrip("/")).name.replace(
+                    ".html", ".json"
+                )
             else:
                 json_filename = f"{deliverable._node.get('id', 'prebuilt')}.json"
 
@@ -159,11 +164,18 @@ async def process_deliverable(    # noqa: C901
             with open(outputjson, "w", encoding="utf-8") as f:
                 json.dump(meta_dict, f, indent=2)
 
-            log.debug("Successfully extracted and saved prebuilt metadata for %s", deliverable.full_id)
+            log.debug(
+                "Successfully extracted and saved prebuilt metadata for %s",
+                deliverable.full_id,
+            )
             return True, deliverable
 
         except Exception as e:
-            log.error("Failed to extract metadata for prebuilt deliverable %s: %s", deliverable.full_id, e)
+            log.error(
+                "Failed to extract metadata for prebuilt deliverable %s: %s",
+                deliverable.full_id,
+                e,
+            )
             return False, deliverable
 
     bare_repo_path = repo_dir / deliverable.git.slug
@@ -194,12 +206,17 @@ async def process_deliverable(    # noqa: C901
                         f"Failed to ensure bare repository for {deliverable.full_id}"
                     )
 
+            if on_status:
+                on_status(f"Creating worktree for {deliverable.full_id}")
             try:
                 await mg.create_worktree(worktree_dir, deliverable.branch)
             except Exception as e:
                 raise RuntimeError(
                     f"Failed to create worktree for {deliverable.full_id}: {e}"
                 ) from e
+            finally:
+                if on_status:
+                    on_status(deliverable.full_id)
 
             full_dcfile_path = (
                 Path(worktree_dir) / deliverable.subdir / deliverable.xml.dcfile
@@ -213,7 +230,9 @@ async def process_deliverable(    # noqa: C901
             current_file_hashes = await get_daps_hashes(
                 Path(worktree_dir), full_dcfile_path, daps_list_srcfiles_tmpl
             )
-            new_cache = Cache(env_config_hash=env_config_hash, file_hashes=current_file_hashes)
+            new_cache = Cache(
+                env_config_hash=env_config_hash, file_hashes=current_file_hashes
+            )
 
             # If the hashes match, SKIP!
             if (
@@ -221,7 +240,9 @@ async def process_deliverable(    # noqa: C901
                 and outputjson.is_file()
             ):
                 update_metadata_json(outputjson, deliverable)
-                log.info("Cache hit for %s! Skipping DAPS execution.", deliverable.full_id)
+                log.info(
+                    "Cache hit for %s! Skipping DAPS execution.", deliverable.full_id
+                )
                 return True, deliverable
 
             log.info("Cache miss for %s. Running full build...", deliverable.full_id)

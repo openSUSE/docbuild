@@ -475,9 +475,14 @@ class TestProcess:
 
         tree = etree.ElementTree(etree.Element("portal"))
         manager = LiveProgressManager(disable=True)
+
+        async def parse(path):
+            assert list(manager.stages[0].running.values()) == ["Parsing portal.xml"]
+            return tree
+
         with (
-            patch.object(runner_pkg, "get_live_manager", return_value=manager),
-            patch.object(runner_pkg, "parse_portal_config", new_callable=AsyncMock, return_value=tree),
+            manager,
+            patch.object(runner_pkg, "parse_portal_config", side_effect=parse),
             patch.object(runner_pkg, "gather_build_tasks", return_value=[]),
             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
             patch.object(runner_pkg, "store_productdocset_json"),
@@ -486,13 +491,32 @@ class TestProcess:
             result = await process(**runner_kwargs, skip_repo_update=skip_repo_update)
 
         assert result == 0
-        expected = ["2/4 Metadata Validation…"]
-        if not skip_repo_update:
-            expected.insert(0, "1/4 Clone repos…")
-        else:
-            expected.insert(0, "1/4 Clone repos… (skipped)")
-        assert [stage.name for stage in manager.stages] == expected
+        assert [stage.name for stage in manager.stages] == [
+            "1/4 Metadata & repositories",
+            "2/4 Metadata Validation…",
+        ]
+        assert manager.stages[0].counts.total() == 1
         assert manager._active is None
+
+    @pytest.mark.parametrize("live", [False, True])
+    async def test_parse_failure(self, runner_kwargs, live):
+        from contextlib import nullcontext
+
+        from docbuild.utils.display import ItemState, LiveProgressManager
+
+        with (
+            LiveProgressManager(disable=True) if live else nullcontext() as manager,
+            patch.object(
+                runner_pkg, "parse_portal_config", side_effect=ValueError("bad XML")
+            ),
+            pytest.raises(ValueError, match="bad XML"),
+        ):
+            await process(**runner_kwargs)
+
+        if manager:
+            (stage,) = manager.stages
+            assert stage.counts == {ItemState.FAILED: 1}
+            assert not stage.running
 
     @pytest.fixture
     def runner_kwargs(self, tmp_path: Path) -> dict[str, object]:
@@ -645,7 +669,6 @@ class TestProcess:
             args, _ = mock_pd.call_args
             assert args[0].xml.deliverableid == "doc2"
 
-
     async def test_unsupported_docsets_are_not_built(
         self,
         runner_kwargs: dict[str, object],
@@ -681,11 +704,15 @@ class TestProcess:
         runner_kwargs["doctypes"] = [Doctype.from_str("sles/*")]
 
         import docbuild.tasks.metadata.runner as runner_pkg
-        with patch.object(runner_pkg, "store_productdocset_json"), \
-             patch.object(runner_pkg, "generate_homepage"), \
-             patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock), \
-             patch.object(runner_pkg, "process_deliverable", new_callable=AsyncMock) as mock_pd:
 
+        with (
+            patch.object(runner_pkg, "store_productdocset_json"),
+            patch.object(runner_pkg, "generate_homepage"),
+            patch.object(runner_pkg, "update_repositories", new_callable=AsyncMock),
+            patch.object(
+                runner_pkg, "process_deliverable", new_callable=AsyncMock
+            ) as mock_pd,
+        ):
             mock_pd.return_value = (True, Mock())
 
             result = await process(**runner_kwargs)  # type: ignore
