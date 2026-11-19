@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev18+g97db889bf.d20261119</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev19+gfb4c035b4.d20261119</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=e53fcc46"></script>
+    <script src="_static/documentation_options.js?v=f5e39855"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -486,6 +486,7 @@ alongside the other build-related commands. (<a class="extlink-gh reference exte
 <h3>Code Refactoring<a class="headerlink" href="#code-refactoring" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix CodeQL issues in code (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/757">GH #757</a>)</p></li>
+<li><p>Refactored the build tasks for better maintainability. <code class="file docutils literal notranslate"><span class="pre">llms.py</span></code> has been converted into a package (<code class="docutils literal notranslate"><span class="pre">llms/</span></code>) with logically separated modules (<code class="docutils literal notranslate"><span class="pre">dom</span></code>, <code class="docutils literal notranslate"><span class="pre">markdown</span></code>, <code class="docutils literal notranslate"><span class="pre">cleaners</span></code>, and <code class="docutils literal notranslate"><span class="pre">core</span></code>). Additionally, <code class="file docutils literal notranslate"><span class="pre">runner.py</span></code> was simplified by extracting the LLM text generation logic into its own dedicated <code class="file docutils literal notranslate"><span class="pre">llms/generator.py</span></code> file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/766">GH #766</a>)</p></li>
 </ul>
 </section>
 </section>
