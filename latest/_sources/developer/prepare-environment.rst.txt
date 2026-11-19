@@ -64,7 +64,7 @@ Setting up the development environment
 
 The following steps are recommended to set up your development environment:
 
-#. Follow the steps in :ref:`prepare-installation` and :ref:`installing-docbuild`.
+#. Follow the steps in :ref:`qs-prepare-installation` and :ref:`qs-install-docbuild`.
 
 #. If you haven't created a virtual environment, do so:
 
