@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<categories xmlns:xi="http://www.w3.org/2001/XInclude">
+  <category lang="en-us">
+    <language xml:id="cat.about">
+      <title>About</title>
+    </language>
+    <language xml:id="cat.initial-config">
+      <title>Initial configuration</title>
+    </language>
+    <language xml:id="cat.update-upgrade">
+      <title>Update &amp; Upgrade</title>
+    </language>
+    <language xml:id="cat.administration">
+      <title>Administration</title>
+    </language>
+    <language xml:id="cat.additional-doc">
+      <title>Additional documentation</title>
+    </language>
+  </category>
+  <!-- Add additional translated category elements here.
+       For example, German:
+    <category lang="de-de">
+      <language linkend="cat.about">
+        <title>Über</title>
+      </language>
+      [... more translations ...]
+    </category>
+  -->
+</categories>

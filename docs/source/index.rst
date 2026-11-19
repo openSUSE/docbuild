@@ -18,11 +18,11 @@ SUSE documentation with the help of :ref:`Portal Configs <portal-config>`.
    :gutter: 3
 
    .. grid-item-card:: :octicon:`rocket;1.25em` Quick Start
-      :link: user/install 
+      :link: quickstart/index
       :link-type: doc
       :class-card: homepage-nav-card
 
-      Start here to learn about how to install |project|!
+      Build your first example deliverable with |project|.
 
    .. grid-item-card:: :octicon:`person;1.25em` User Guide
       :link: user/index
@@ -66,6 +66,7 @@ SUSE documentation with the help of :ref:`Portal Configs <portal-config>`.
    :maxdepth: 2
    :caption: Contents
 
+   quickstart/index
    user/index
    developer/index
    reference/index
