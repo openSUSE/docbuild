@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 
 async def process_single_html_file(
     html_file: Path,
-    target_dest: Path | str,
+    target_base_dir: Path,
     llms_dest: Path,
     llmstxt_dir: str,
     domain: str,
@@ -33,7 +33,7 @@ async def process_single_html_file(
     if not html_file.exists():
         return None
 
-    rel_path = html_file.relative_to(target_dest)
+    rel_path = html_file.relative_to(target_base_dir)
     md_file = llms_dest / rel_path.with_suffix(".md")
     md_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -73,41 +73,42 @@ async def process_single_html_file(
     full_md = f"---\n{yaml_block}---\n\n{md_content}"
     md_file.write_text(full_md, encoding="utf-8")
 
-    md_rel_path = f"/{llmstxt_dir}/{rel_path.with_suffix('.md').as_posix()}"
+    md_abs_path = f"/{llmstxt_dir}/{rel_path.with_suffix('.md').as_posix()}"
 
     if not only_md:
-        llmstxt_rel_path = f"/{llmstxt_dir}/llms.txt"
-        updated_html = inject_llms_links(html_content, md_rel_path, llmstxt_rel_path)
+        llmstxt_abs_path = f"/{llmstxt_dir}/llms.txt"
+        updated_html = inject_llms_links(html_content, md_abs_path, llmstxt_abs_path)
         html_file.write_text(updated_html, encoding="utf-8")
 
-    return f"- [{frontmatter.get('title', rel_path.stem)}]({md_rel_path})"
+    return f"- [{frontmatter.get('title', rel_path.stem)}]({md_abs_path})"
 
 
 async def generate_llmstxt(
     deliverable: Deliverable,
-    target_dest: Path | str,
+    target_base_dir: Path | str,
     build_llmstxt: bool,
     llmstxt_dir: str,
     canonical_domain: str = "https://documentation.suse.com",
     llms_exclude: list[str] | None = None,
     llms_exclude_extra: list[str] | None = None,
     only_md: bool = False,
+    html_dir: Path | str | None = None,
 ) -> None:
     """Generate Markdown and llms.txt files from the HTML output directory."""
     if not build_llmstxt:
         log.debug("Skipping llms.txt generation, disabled by configuration.")
         return
 
-    target_dest = Path(target_dest)
-    if not (target_dest.exists() and target_dest.is_dir()):
+    target_base_dir = Path(target_base_dir)
+    if not (target_base_dir.exists() and target_base_dir.is_dir()):
         log.warning(
             "Target directory %s does not exist, skipping llms.txt generation.",
-            target_dest,
+            target_base_dir,
         )
         return
 
-    log.info("Generating LLM Markdown files in %s", target_dest / llmstxt_dir)
-    llms_dest = target_dest / llmstxt_dir
+    log.info("Generating LLM Markdown files in %s", target_base_dir / llmstxt_dir)
+    llms_dest = target_base_dir / llmstxt_dir
     llms_dest.mkdir(parents=True, exist_ok=True)
     domain = canonical_domain.rstrip("/")
 
@@ -144,8 +145,10 @@ async def generate_llmstxt(
 
         exclude_patterns = merge_and_deduplicate_lists(llms_exclude, llms_exclude_extra)
 
+        scan_dir = Path(html_dir) if html_dir else target_base_dir
+
         html_files = []
-        for file in target_dest.rglob("*.html"):
+        for file in scan_dir.rglob("*.html"):
             if any(fnmatch.fnmatch(file.name, p) for p in exclude_patterns):
                 log.debug("Skipping ignored file during LLM generation: %s", file)
                 continue
@@ -154,7 +157,7 @@ async def generate_llmstxt(
         async def process_file(html_file: Path) -> str | None:
             return await process_single_html_file(
                 html_file=html_file,
-                target_dest=target_dest,
+                target_base_dir=target_base_dir,
                 llms_dest=llms_dest,
                 llmstxt_dir=llmstxt_dir,
                 domain=domain,
@@ -172,7 +175,7 @@ async def generate_llmstxt(
                 if result:
                     index_lines.append(result)
 
-        llms_txt = target_dest / "llms.txt"
+        llms_txt = target_base_dir / "llms.txt"
         llms_txt.write_text("\n".join(index_lines) + "\n", encoding="utf-8")
         log.info("Successfully generated %s", llms_txt)
 

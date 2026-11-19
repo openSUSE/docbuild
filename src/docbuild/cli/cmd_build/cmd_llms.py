@@ -166,7 +166,7 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
             asyncio.run(
                 generate_llmstxt(
                     deliverable=dummy_deliverable,  # type: ignore
-                    target_dest=target_dest,
+                    target_base_dir=target_dest,
                     build_llmstxt=build_llmstxt,
                     llmstxt_dir=str(llmstxt_dir),
                     llms_exclude=context.envconfig.llms.exclude,

@@ -346,12 +346,12 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
     html_file.write_text(html_content, encoding="utf-8")
 
     await generate_llmstxt(
-        deliverable=llms_deliverable,
-        target_dest=target_dir,
-        build_llmstxt=True,
-        llmstxt_dir="docs",
-        canonical_domain="https://doc.example.com",
-    )
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+            canonical_domain="https://doc.example.com",
+        )
 
     md_file = target_dir / "docs" / "books" / "chapter.md"
     assert md_file.exists()
@@ -424,7 +424,7 @@ async def test_generate_llmstxt_assigned_categories(
         caplog.set_level("DEBUG", logger="docbuild.tasks.metadata.prebuilt")
         await generate_llmstxt(
             deliverable=Deliverable(node),
-            target_dest=tmp_path,
+            target_base_dir=tmp_path,
             build_llmstxt=True,
             llmstxt_dir="docs",
         )
@@ -463,11 +463,11 @@ async def test_generate_llmstxt_frontmatter_omits_missing_date(
     html_file.write_text(html_content, encoding="utf-8")
 
     await generate_llmstxt(
-        deliverable=llms_deliverable,
-        target_dest=target_dir,
-        build_llmstxt=True,
-        llmstxt_dir="docs",
-    )
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+        )
 
     md_file = target_dir / "docs" / "index.md"
     assert md_file.exists()
