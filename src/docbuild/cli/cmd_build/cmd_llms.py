@@ -10,7 +10,7 @@ import click
 
 from ...config.app import normalize_runtime_placeholders
 from ...models.doctype import Doctype
-from ...tasks.build.runner import generate_llmstxt
+from ...tasks.build.llms.generator import generate_llmstxt
 from ..callback import validate_doctypes
 from ..completion import complete_doctypes
 from ..context import DocBuildContext

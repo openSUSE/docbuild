@@ -7,16 +7,20 @@ from justhtml import JustHTML
 from justhtml.dom import Element, Text
 import pytest
 
-from docbuild.tasks.build.llms import (
+from docbuild.tasks.build.llms.cleaners import (
     AntoraHTMLCleaner,
     DocBookHTMLCleaner,
     HTMLCleaner,
+)
+from docbuild.tasks.build.llms.core import (
     clean_and_convert,
     detect_generator,
-    get_attrs,
-    get_classes,
     get_cleaner,
     inject_llms_links,
+)
+from docbuild.tasks.build.llms.dom import (
+    get_attrs,
+    get_classes,
     replace_node,
 )
 
