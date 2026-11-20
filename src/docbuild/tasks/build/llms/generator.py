@@ -111,14 +111,20 @@ async def generate_llmstxt(
     language = str(d_xml.lang)
     subdir = deliverable.subdir or ""
 
-    # Reconstruct exact logical path
-    deliverable_route = f"{language}/{d_xml.product_id}/{d_xml.docset_version}/html/{subdir}".strip("/")
-
     # Resolve actual HTML directory using a single fallback chain
-    default_html_path = Path(target_base_dir) / deliverable_route
+    fallback_route = f"{language}/{d_xml.product_id}/{d_xml.docset_version}/html/{subdir}".strip("/")
+    default_html_path = Path(target_base_dir) / fallback_route
+
     scan_dir = Path(html_dir) if html_dir else Path(
         getattr(getattr(deliverable, "paths", None), "html", default_html_path)
     )
+
+    try:
+        # Dynamically deduce the route directly from the filesystem path (fixes CLI retro-generation)
+        deliverable_route = str(scan_dir.relative_to(target_base_dir))
+    except ValueError:
+        # Fallback if scan_dir is outside target_base_dir (e.g., temporary isolated build dirs)
+        deliverable_route = fallback_route
 
     if not scan_dir.exists():
         log.warning("HTML directory %s does not exist, skipping.", scan_dir)
