@@ -396,7 +396,7 @@ requires-dist = [
     { name = "aiostream", specifier = ">=0.8.0" },
     { name = "click", specifier = ">=8.5.0" },
     { name = "jinja2", specifier = ">=3.1.6,<4.0.0" },
-    { name = "justhtml", specifier = ">=3.16.0" },
+    { name = "justhtml", specifier = ">=3.17.1" },
     { name = "lxml", specifier = ">=6.1.3" },
     { name = "platformdirs", specifier = ">=4.14.3" },
     { name = "pydantic", specifier = ">=2.13.4" },
@@ -642,11 +642,11 @@ wheels = [
 
 [[package]]
 name = "justhtml"
-version = "3.16.0"
+version = "3.17.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/49/15/e46c6ffe3988d2c265bea933ed068c56c26ab6947c1e235cba2bae84b802/justhtml-3.16.0.tar.gz", hash = "sha256:600c95a6a9b766cffe50688a6335617fbcc33ef47f364317e92d6b8dd7a25ce9", size = 980187, upload-time = "2026-10-26T22:23:22.402Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1d/44/9aa491139db1e708b2bbe971d0d39e75267e96b7813e72cc80e7b9242dca/justhtml-3.17.1.tar.gz", hash = "sha256:6cd82e832562dc4e1bfaa4ec605ea7bbb3abd9d7862ad93e45b2d2972d3f3088", size = 986209, upload-time = "2026-11-14T10:37:53.796Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/41/b6/c47694ec99f90cd544f0bd6ee7e3d7195fbf53ebf9d1203008d58c2afddc/justhtml-3.16.0-py3-none-any.whl", hash = "sha256:b7d02cff6ad712bdb58e1ebbcca8b8402dea61d1b5f92ee3b44db6b0b58ca68e", size = 177184, upload-time = "2026-10-26T22:23:20.881Z" },
+    { url = "https://files.pythonhosted.org/packages/46/f5/1464ed99b632f2497a1a4bd32df72965914b37611007ab9e00f084a022ff/justhtml-3.17.1-py3-none-any.whl", hash = "sha256:91f9840a44231cbf5af8fa420d5a8b80635c5d77b9c897a4b22a9c78b93d44e3", size = 177383, upload-time = "2026-11-14T10:37:51.93Z" },
 ]
 
 [[package]]
