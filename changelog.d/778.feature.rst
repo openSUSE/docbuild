@@ -1,1 +1,0 @@
-Added the ``[llms]`` configuration section to exclude specific HTML files from Markdown conversion. The ``exclude`` list defaults to ignoring the GPL license page (:file:`doc-gfdl-license.html`), and users can append custom rules via ``exclude-extra``.

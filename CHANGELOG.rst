@@ -21,6 +21,66 @@ Changes for the upcoming release can be found in the
 
 .. towncrier release notes start
 
+Version 0.31.0
+==============
+
+Bug Fixes
+---------
+
+- Skipped building deliverables for unsupported docsets while still generating their JSON manifests with an empty documents list. (:gh:`751`)
+- Fixed DAPS builds with multiple translation languages by preserving hreflang parameter quoting.
+  Fixed Markdown frontmatter generation by serializing assigned category IDs instead of XML elements.
+  Build failures now report stdout, stderr, and exit codes, and JSON-LD diagnostics identify the affected HTML file. (:gh:`776`)
+- Fixed unwanted navigation content in Markdown converted from DAPS HTML without generator metadata (command :command:`docbuild build llms`).
+  Skip links, site logos, breadcrumbs, and duplicate navigation titles are now removed while document headings and images are preserved. (:gh:`777`)
+- Fixed duplicate ``<link rel="alternate">`` tags injected into HTML headers during retroactive LLM generation. Replaced relative paths with absolute web URLs to properly route automated AI crawlers. (:gh:`786`)
+- Fixed an issue where retroactive LLM generation placed Markdown files directly into the root ``/docs/`` directory instead of preserving the ``language/product/docset/html`` output hierarchy. (:gh:`787`)
+
+
+Improved Documentation
+----------------------
+
+- Explained the default output directory and show how to choose the standard location. (:gh:`774`)
+- Added a Quick Start card to the documentation landing-page grid and improved navigation by spacing icons from their labels and separating top-level links with vertical dividers. (:gh:`783`)
+- Added a new Quick Start Guide. (:gh:`789`)
+
+
+Features
+--------
+
+- Improved Markdown output generated for LLMs by converting HTML tables and images into native Markdown, formatting DocBook and Antora admonitions as blockquotes, fixing heading number spacing, and removing leftover HTML artifacts and empty list markers. (:gh:`675`)
+- Added the global ``-A`` / ``--set-app`` command-line option to override application configuration values. The option supports the same ``KEY=VALUE`` syntax and dotted-key handling as ``--set-env``. (:gh:`681`)
+- Added live status showing the current HTML directory while generating a sitemap
+  with :command:`docbuild build sitemap` or :command:`docbuild build run`.
+  Animation is disabled for non-interactive terminals and verbose logging. (:gh:`713`)
+- The ``llms`` command is now available as :command:`docbuild build llms`, grouped
+  alongside the other build-related commands. (:gh:`761`)
+- Improved the ``tools/migrate-config.sh`` migration script, which now also accepts a Docserv config directory, enables XInclude output by default, and provides the schema in the output directory, and updated its documentation accordingly. (:gh:`763`)
+- Allowed passing specific doctypes to ``docbuild build llms`` (and add an ``--all`` flag) to limit HTML-to-Markdown conversion to specific products or docsets. (:gh:`764`)
+- Added the ``-m`` / ``--only-md`` option to the :command:`docbuild build llms` command, allowing users to generate Markdown and `:file:llms.txt` files without modifying the original HTML source files. (:gh:`765`)
+- Added the ``[llms]`` configuration section to exclude specific HTML files from Markdown conversion. The ``exclude`` list defaults to ignoring the GPL license page (:file:`doc-gfdl-license.html`), and users can append custom rules via ``exclude-extra``. (:gh:`778`)
+- Revised the YAML frontmatter for LLM-generated Markdown files by removing the ``generator`` and ``deliverable_id`` keys to reduce token noise. Replaced the condensed ``build_date`` with specific ``dateCreated``, ``dateModified``, and ``datePublished`` fields directly extracted from the HTML's JSON-LD metadata. (:gh:`779`)
+
+
+Infrastructure
+--------------
+
+- Several dependency updates:
+
+  * `Bump myst-parser from 5.1.0 to 5.2.0 (#791) <https://github.com/openSUSE/docbuild/pull/791>`_
+  * `Bump soupsieve from 2.9 to 4.0 (#771) <https://github.com/openSUSE/docbuild/pull/771>`_
+  * `Bump github/codeql-action from 4.38.0 to 4.39.1 (#725) <https://github.com/openSUSE/docbuild/pull/725>`_
+  * `Bump pytest-datadir from 1.8.0 to 1.9.0 (#759) <https://github.com/openSUSE/docbuild/pull/759>`_
+  * `Bump pydata-sphinx-theme from 0.23.0 to 0.24.0 (#758) <https://github.com/openSUSE/docbuild/pull/758>`_
+
+
+Code Refactoring
+----------------
+
+- Fixed CodeQL issues in code (:gh:`757`)
+- Refactored the build tasks for better maintainability. :file:`llms.py` has been converted into a package (``llms/``) with logically separated modules (``dom``, ``markdown``, ``cleaners``, and ``core``). Additionally, :file:`runner.py` was simplified by extracting the LLM text generation logic into its own dedicated :file:`llms/generator.py` file. (:gh:`766`)
+
+
 Version 0.30.0
 ==============
 

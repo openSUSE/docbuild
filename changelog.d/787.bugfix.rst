@@ -1,1 +1,0 @@
-Fixed an issue where retroactive LLM generation placed Markdown files directly into the root ``/docs/`` directory instead of preserving the ``language/product/docset/html`` output hierarchy.

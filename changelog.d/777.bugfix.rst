@@ -1,2 +1,0 @@
-Fixed unwanted navigation content in Markdown converted from DAPS HTML without generator metadata (command :command:`docbuild build llms`).
-Skip links, site logos, breadcrumbs, and duplicate navigation titles are now removed while document headings and images are preserved.

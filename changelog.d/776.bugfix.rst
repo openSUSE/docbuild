@@ -1,3 +1,0 @@
-Fixed DAPS builds with multiple translation languages by preserving hreflang parameter quoting.
-Fixed Markdown frontmatter generation by serializing assigned category IDs instead of XML elements.
-Build failures now report stdout, stderr, and exit codes, and JSON-LD diagnostics identify the affected HTML file.
