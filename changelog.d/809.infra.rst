@@ -1,0 +1,1 @@
+Added an Epic issue template with a prefilled ``Epic: `` title, a required goal, and optional success criteria. Related work can be tracked in sub-issues.
