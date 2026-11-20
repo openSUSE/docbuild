@@ -24,7 +24,6 @@ async def process_single_html_file(
     llms_route_prefix: str,
     deliverable_route: str,
     static_title: str,
-    frontmatter_base: dict[str, Any],
     only_md: bool = False,
 ) -> str | None:
     """Process an HTML file to generate Markdown and update HTML with link tags."""
@@ -55,12 +54,18 @@ async def process_single_html_file(
         ld_data = {}
 
     frontmatter = {"title": static_title, "description": ""}
+
+    # Dynamically extract product and version from the logical file path 
+    # (Format: en-us/sles/16.1/html/...)
+    path_parts = full_rel_path.parts
+    if len(path_parts) >= 3 and path_parts[3] == "html":
+        frontmatter["product"] = path_parts[1]
+        frontmatter["version"] = path_parts[2]
+        
     if ld_data and "name" in ld_data:
         frontmatter["title"] = ld_data["name"]
     if ld_data and "description" in ld_data:
         frontmatter["description"] = ld_data["description"]
-
-    frontmatter.update(frontmatter_base)
 
     if ld_data:
         for d_key in ("dateCreated", "dateModified", "datePublished"):
@@ -130,13 +135,22 @@ async def generate_llmstxt(
         log.warning("HTML directory %s does not exist, skipping.", scan_dir)
         return
 
+    # Extract real product/version from the route if XML is missing them (e.g. retroactive CLI run)
+    route_parts = Path(deliverable_route).parts
+    real_product = d_xml.product_id
+    real_version = d_xml.docset_version
+
+    if real_product == "unknown" and len(route_parts) > 1:
+        real_product = route_parts[1]
+    if real_version == "unknown" and len(route_parts) > 2:
+        real_version = route_parts[2]
+
     frontmatter_base = {
         k: v for k, v in {
-            "product": d_xml.product_id,
-            "version": d_xml.docset_version,
-            "language": language,
+            "product": real_product,
+            "version": real_version,
             "categories": (d_xml.categoryid or "").split(),
-        }.items() if v
+        }.items() if v and v != "unknown"
     }
 
     try:
@@ -166,7 +180,6 @@ async def generate_llmstxt(
                 llms_route_prefix=llms_route_prefix,
                 deliverable_route=deliverable_route,
                 static_title=static_title,
-                frontmatter_base=frontmatter_base,
                 only_md=only_md,
             )
 

@@ -1,0 +1,1 @@
+Fixed the YAML frontmatter in LLM Markdown files to correctly extract and display the ``product`` and ``version`` values during retroactive builds (``docbuild build llms``). The redundant ``language`` key has been completely removed from the output.
