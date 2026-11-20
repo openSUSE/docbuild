@@ -13,13 +13,13 @@ import click
 from ...models.doctype import Doctype
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
-from ...tasks.sitemap import generate_sitemap
 from ...utils.contextmgr import make_timer
 from ...utils.display import ACTIVE_LIVE_MANAGER, LiveProgressManager
 from ..callback import validate_doctypes
 from ..completion import complete_doctypes
 from ..console import console, console_err
 from ..context import DocBuildContext
+from .cmd_sitemap import generate_sitemap_with_progress
 
 
 @click.command(
@@ -189,7 +189,9 @@ def run(  # noqa: C901
                 res = await run_pipeline()
                 if res == 0 and sitemap:
                     base_url = str(env.general.canonical_url_domain)
-                    await generate_sitemap(target_base_dir, base_url)
+                    await generate_sitemap_with_progress(
+                        target_base_dir, base_url, verbose=context.verbose
+                    )
                 return res
 
             manager_ctx = LiveProgressManager(console=console, disable=False) if live else nullcontext()
