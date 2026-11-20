@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev22+g1f4fc4b34.d20261120</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.30.1.dev23+g287abd799.d20261120</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=d0417b1b"></script>
+    <script src="_static/documentation_options.js?v=1244131a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -473,6 +473,8 @@ Fixed Markdown frontmatter generation by serializing assigned category IDs inste
 Build failures now report stdout, stderr, and exit codes, and JSON-LD diagnostics identify the affected HTML file. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/776">GH #776</a>)</p></li>
 <li><p>Fixed unwanted navigation content in Markdown converted from DAPS HTML without generator metadata (command <strong class="command">docbuild build llms</strong>).
 Skip links, site logos, breadcrumbs, and duplicate navigation titles are now removed while document headings and images are preserved. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/777">GH #777</a>)</p></li>
+<li><p>Fixed duplicate <code class="docutils literal notranslate"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;alternate&quot;&gt;</span></code> tags injected into HTML headers during retroactive LLM generation. Replaced relative paths with absolute web URLs to properly route automated AI crawlers. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/786">GH #786</a>)</p></li>
+<li><p>Fixed an issue where retroactive LLM generation placed Markdown files directly into the root <code class="docutils literal notranslate"><span class="pre">/docs/</span></code> directory instead of preserving the <code class="docutils literal notranslate"><span class="pre">language/product/docset/html</span></code> output hierarchy. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/787">GH #787</a>)</p></li>
 </ul>
 </section>
 <section id="improved-documentation">
