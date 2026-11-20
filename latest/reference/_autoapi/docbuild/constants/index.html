@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.constants &#8212; Docbuild Documentation 0.30.1.dev20+g821e4da44.d20261119</title>
+    <title>docbuild.constants &#8212; Docbuild Documentation 0.30.1.dev22+g1f4fc4b34.d20261120</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../_static/documentation_options.js?v=5d68886a"></script>
+    <script src="../../../../_static/documentation_options.js?v=d0417b1b"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -819,10 +819,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.XLINK_NS" title="docbuild.constants.XLINK_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></p></td>
 <td><p>The XML namespace URI for XLink attributes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.RUNTIME_PLACEHOLDERS" title="docbuild.constants.RUNTIME_PLACEHOLDERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RUNTIME_PLACEHOLDERS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.SITEMAP_NS" title="docbuild.constants.SITEMAP_NS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SITEMAP_NS</span></code></a></p></td>
+<td><p>The XML namespace URI for sitemap elements.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.RUNTIME_PLACEHOLDERS" title="docbuild.constants.RUNTIME_PLACEHOLDERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RUNTIME_PLACEHOLDERS</span></code></a></p></td>
 <td><p>Set of placeholder names that are resolved at runtime by the build system.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.constants.ESCAPE_REGEX" title="docbuild.constants.ESCAPE_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ESCAPE_REGEX</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.constants.ESCAPE_REGEX" title="docbuild.constants.ESCAPE_REGEX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ESCAPE_REGEX</span></code></a></p></td>
 <td><p>Regex to identify escape sequences and runtime placeholders.</p></td>
 </tr>
 </tbody>
@@ -1142,6 +1145,12 @@ per XDG Base Directory Specification.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="docbuild.constants.SITEMAP_NS">
+<span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">SITEMAP_NS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http://www.sitemaps.org/schemas/sitemap/0.9'</span></span><a class="headerlink" href="#docbuild.constants.SITEMAP_NS" title="Link to this definition">#</a></dt>
+<dd><p>The XML namespace URI for sitemap elements.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="docbuild.constants.RUNTIME_PLACEHOLDERS">
 <span class="sig-prename descclassname"><span class="pre">docbuild.constants.</span></span><span class="sig-name descname"><span class="pre">RUNTIME_PLACEHOLDERS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#frozenset" title="(in Python v3.15)"><span class="pre">frozenset</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#docbuild.constants.RUNTIME_PLACEHOLDERS" title="Link to this definition">#</a></dt>
 <dd><p>Set of placeholder names that are resolved at runtime by the build system.</p>
@@ -1251,6 +1260,7 @@ per XDG Base Directory Specification.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XINCLUDE_NS"><code class="docutils literal notranslate"><span class="pre">XINCLUDE_NS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.DOCBOOK_NS"><code class="docutils literal notranslate"><span class="pre">DOCBOOK_NS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.XLINK_NS"><code class="docutils literal notranslate"><span class="pre">XLINK_NS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.SITEMAP_NS"><code class="docutils literal notranslate"><span class="pre">SITEMAP_NS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.RUNTIME_PLACEHOLDERS"><code class="docutils literal notranslate"><span class="pre">RUNTIME_PLACEHOLDERS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.constants.ESCAPE_REGEX"><code class="docutils literal notranslate"><span class="pre">ESCAPE_REGEX</span></code></a></li>
 </ul>

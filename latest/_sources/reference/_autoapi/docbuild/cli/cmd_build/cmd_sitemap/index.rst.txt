@@ -14,11 +14,24 @@ Functions
 
 .. autoapisummary::
 
+   docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress
    docbuild.cli.cmd_build.cmd_sitemap.sitemap
 
 
 Module Contents
 ---------------
+
+.. py:function:: generate_sitemap_with_progress(target_dir: pathlib.Path, base_url: str, *, verbose: int = 0) -> pathlib.Path
+   :async:
+
+
+   Generate a sitemap with transient status on interactive terminals.
+
+   :param target_dir: Root of the published documentation.
+   :param base_url: Canonical URL prefix for sitemap entries.
+   :param verbose: Disable animation when verbose logs are enabled.
+   :returns: Path returned by sitemap generation.
+
 
 .. py:function:: sitemap(ctx: click.Context) -> None
 

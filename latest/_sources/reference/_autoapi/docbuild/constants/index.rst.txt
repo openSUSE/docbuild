@@ -57,6 +57,7 @@ Attributes
    docbuild.constants.XINCLUDE_NS
    docbuild.constants.DOCBOOK_NS
    docbuild.constants.XLINK_NS
+   docbuild.constants.SITEMAP_NS
    docbuild.constants.RUNTIME_PLACEHOLDERS
    docbuild.constants.ESCAPE_REGEX
 
@@ -408,6 +409,14 @@ Module Contents
 
 
    The XML namespace URI for XLink attributes.
+
+
+.. py:data:: SITEMAP_NS
+   :type:  Final[str]
+   :value: 'http://www.sitemaps.org/schemas/sitemap/0.9'
+
+
+   The XML namespace URI for sitemap elements.
 
 
 .. py:data:: RUNTIME_PLACEHOLDERS

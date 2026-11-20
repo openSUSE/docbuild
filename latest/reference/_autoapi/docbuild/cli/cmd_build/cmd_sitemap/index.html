@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_build.cmd_sitemap &#8212; Docbuild Documentation 0.30.1.dev20+g821e4da44.d20261119</title>
+    <title>docbuild.cli.cmd_build.cmd_sitemap &#8212; Docbuild Documentation 0.30.1.dev22+g1f4fc4b34.d20261120</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=5d68886a"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=d0417b1b"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -696,7 +696,10 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.cmd_sitemap.sitemap" title="docbuild.cli.cmd_build.cmd_sitemap.sitemap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sitemap</span></code></a>(ctx) → None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress" title="docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_sitemap_with_progress</span></code></a>(target_dir, base_url, *) → pathlib.Path</p></td>
+<td><p>Generate a sitemap with transient status on interactive terminals.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#docbuild.cli.cmd_build.cmd_sitemap.sitemap" title="docbuild.cli.cmd_build.cmd_sitemap.sitemap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sitemap</span></code></a>(ctx) → None</p></td>
 <td><p>Generate a sitemap.xml in the target distribution directory.</p></td>
 </tr>
 </tbody>
@@ -705,6 +708,24 @@
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.cmd_sitemap.</span></span><span class="sig-name descname"><span class="pre">generate_sitemap_with_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress" title="Link to this definition">#</a></dt>
+<dd><p>Generate a sitemap with transient status on interactive terminals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_dir</strong> – Root of the published documentation.</p></li>
+<li><p><strong>base_url</strong> – Canonical URL prefix for sitemap entries.</p></li>
+<li><p><strong>verbose</strong> – Disable animation when verbose logs are enabled.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path returned by sitemap generation.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_build.cmd_sitemap.sitemap">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.cmd_sitemap.</span></span><span class="sig-name descname"><span class="pre">sitemap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.cmd_sitemap.sitemap" title="Link to this definition">#</a></dt>
@@ -763,6 +784,7 @@
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.cmd_sitemap.generate_sitemap_with_progress"><code class="docutils literal notranslate"><span class="pre">generate_sitemap_with_progress()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docbuild.cli.cmd_build.cmd_sitemap.sitemap"><code class="docutils literal notranslate"><span class="pre">sitemap()</span></code></a></li>
 </ul>
 </li>
