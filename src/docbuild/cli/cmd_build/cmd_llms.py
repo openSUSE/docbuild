@@ -141,16 +141,18 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
 
     # Dummy deliverable object expected by generate_llmstxt
     class DummyDeliverable:
+        subdir = ""
+
         def __init__(self, target_dest: Path) -> None:
             self.full_id = f"retroactive_build_{target_dest.name}"
 
             class DummyXML:
                 title = f"Documentation Index for {target_dest.name}"
                 categoryid: str | None = None
-                product_id = ""
-                docset_version = ""
-                docset_path = ""
-                lang = ""
+                product_id = "unknown"
+                docset_version = "unknown"
+                docset_path = "unknown"
+                lang = "unknown"
 
             self.xml = DummyXML()
 

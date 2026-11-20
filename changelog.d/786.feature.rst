@@ -1,1 +1,0 @@
-Fixed an issue where retroactive LLM generation injected duplicate ``<link rel="alternate">`` tags into HTML headers on repeated builds. Replaced relative URLs with absolute paths for Markdown and :file:`llms.txt` routing to improve compatibility with automated AI crawlers.

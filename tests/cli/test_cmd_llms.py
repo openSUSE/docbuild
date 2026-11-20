@@ -74,7 +74,8 @@ def test_llms_end_to_end_execution(tmp_path: Path) -> None:
     <main><h1>Introduction</h1><p>Core doc content.</p></main>
 </body>
 </html>"""
-    html_file = target_dir / "index.html"
+    html_file = target_dir / "unknown" / "unknown" / "unknown" / "html" / "index.html"
+    html_file.parent.mkdir(parents=True, exist_ok=True)
     html_file.write_text(sample_html, encoding="utf-8")
 
     result = runner.invoke(
@@ -90,8 +91,8 @@ def test_llms_end_to_end_execution(tmp_path: Path) -> None:
     assert result.exit_code == 0
     assert "Retroactive LLMs generation completed successfully" in result.output
 
-    # Verify Markdown file was created
-    md_file = target_dir / "docs" / "index.md"
+    # Verify Markdown file was created (uses the strict "unknown" fallback route)
+    md_file = target_dir / "docs" / "unknown" / "unknown" / "unknown" / "html" / "index.md"
     assert md_file.exists()
     assert "# Introduction" in md_file.read_text(encoding="utf-8")
     assert "Core doc content." in md_file.read_text(encoding="utf-8")
@@ -100,8 +101,8 @@ def test_llms_end_to_end_execution(tmp_path: Path) -> None:
     updated_html = html_file.read_text(encoding="utf-8")
     assert '<link rel="alternate" type="text/markdown"' in updated_html
 
-    # Verify llms.txt index was written
-    index_file = target_dir / "llms.txt"
+    # Verify llms.txt index was written (inside llmstxt_dir)
+    index_file = target_dir / "docs" / "llms.txt"
     assert index_file.exists()
 
 
