@@ -1,0 +1,1 @@
+Fixed duplicate ``<link rel="alternate">`` tags injected into HTML headers during retroactive LLM generation. Replaced relative paths with absolute web URLs to properly route automated AI crawlers.

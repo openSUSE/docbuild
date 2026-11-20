@@ -132,9 +132,10 @@ async def process_single_deliverable(
                     if fmt == "html":
                         await generate_llmstxt(
                             deliverable=deliverable,
-                            target_dest=target_dest,
+                            target_base_dir=target_base_dir,
                             build_llmstxt=build_llmstxt,
-                            llmstxt_dir=llmstxt_dir
+                            llmstxt_dir=llmstxt_dir,
+                            html_dir=target_dest
                         )
                     if sync_result.returncode == 0:
                         log.info("Successfully synced %s for %s", fmt, deliverable.full_id)

@@ -112,10 +112,6 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
     target_dir_dyn = context.envconfig.paths.target.target_dir_dyn
     build_llmstxt = context.envconfig.build.build_llmstxt
 
-    # Resolve llmstxt_dir: if absolute, keep it; if relative, base it on target_base
-    configured_llms_dir = Path(context.envconfig.paths.llmstxt_dir)
-    llmstxt_dir = configured_llms_dir if configured_llms_dir.is_absolute() else target_base / configured_llms_dir
-
     if not build_llmstxt:
         msg = "LLMs generation is disabled in configuration (build.build_llmstxt = false)."
         log.info(msg)
@@ -141,16 +137,18 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
 
     # Dummy deliverable object expected by generate_llmstxt
     class DummyDeliverable:
+        subdir = ""
+
         def __init__(self, target_dest: Path) -> None:
             self.full_id = f"retroactive_build_{target_dest.name}"
 
             class DummyXML:
                 title = f"Documentation Index for {target_dest.name}"
                 categoryid: str | None = None
-                product_id = ""
-                docset_version = ""
-                docset_path = ""
-                lang = ""
+                product_id = "unknown"
+                docset_version = "unknown"
+                docset_path = "unknown"
+                lang = "unknown"
 
             self.xml = DummyXML()
 
@@ -166,12 +164,13 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
             asyncio.run(
                 generate_llmstxt(
                     deliverable=dummy_deliverable,  # type: ignore
-                    target_dest=target_dest,
+                    target_base_dir=target_base,
                     build_llmstxt=build_llmstxt,
-                    llmstxt_dir=str(llmstxt_dir),
+                    llmstxt_dir=context.envconfig.paths.llmstxt_dir,
                     llms_exclude=context.envconfig.llms.exclude,
                     llms_exclude_extra=context.envconfig.llms.exclude_extra,
                     only_md=only_md,
+                    html_dir=target_dest,
                 )
             )
             completion_msg = f"Retroactive LLMs generation completed successfully for {target_dest.name}."

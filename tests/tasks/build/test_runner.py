@@ -327,8 +327,8 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
     target_dir.mkdir()
 
     # Create nested HTML file to verify rel_path.as_posix() in URL
-    html_file = target_dir / "books" / "chapter.html"
-    html_file.parent.mkdir(parents=True)
+    html_file = target_dir / "en-us" / "sles" / "16.1" / "html" / "books" / "chapter.html"
+    html_file.parent.mkdir(parents=True, exist_ok=True)
 
     html_content = """<!DOCTYPE html>
     <html>
@@ -346,14 +346,14 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
     html_file.write_text(html_content, encoding="utf-8")
 
     await generate_llmstxt(
-        deliverable=llms_deliverable,
-        target_dest=target_dir,
-        build_llmstxt=True,
-        llmstxt_dir="docs",
-        canonical_domain="https://doc.example.com",
-    )
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+            canonical_domain="https://doc.example.com",
+        )
 
-    md_file = target_dir / "docs" / "books" / "chapter.md"
+    md_file = target_dir / "docs" / "en-us" / "sles" / "16.1" / "html" / "books" / "chapter.md"
     assert md_file.exists()
 
     content = md_file.read_text(encoding="utf-8")
@@ -401,6 +401,7 @@ async def test_generate_llmstxt_assigned_categories(
                             </category>
                         </categories>
                         <docset xml:id="sles-16.1" path="16.1">
+                        <version>16.1</version>
                             <resources>
                                 <locale lang="en-us">
                                     <branch>main</branch>
@@ -415,7 +416,8 @@ async def test_generate_llmstxt_assigned_categories(
         assert node is not None
         if category is not None:
                 node.set("category", category)
-        html_file = tmp_path / "index.html"
+        html_file = tmp_path / "en-us" / "sles" / "16.1" / "html" / "index.html"
+        html_file.parent.mkdir(parents=True, exist_ok=True)
         html_file.write_text(
                 "<html><head><title>Test</title></head><body>Content</body></html>",
                 encoding="utf-8",
@@ -424,19 +426,19 @@ async def test_generate_llmstxt_assigned_categories(
         caplog.set_level("DEBUG", logger="docbuild.tasks.metadata.prebuilt")
         await generate_llmstxt(
             deliverable=Deliverable(node),
-            target_dest=tmp_path,
+            target_base_dir=tmp_path,
             build_llmstxt=True,
             llmstxt_dir="docs",
         )
 
-        content = (tmp_path / "docs" / "index.md").read_text(encoding="utf-8")
+        content = (tmp_path / "docs" / "en-us" / "sles" / "16.1" / "html" / "index.md").read_text(encoding="utf-8")
         data = yaml.safe_load(content.split("---")[1])
         if expected:
                 assert data["categories"] == expected
         else:
                 assert "categories" not in data
-        assert "docs/index.md" in html_file.read_text(encoding="utf-8")
-        assert "docs/index.md" in (tmp_path / "llms.txt").read_text(encoding="utf-8")
+        assert "/docs/en-us/sles/16.1/html/index.md" in html_file.read_text(encoding="utf-8")
+        assert "/docs/en-us/sles/16.1/html/index.md" in (tmp_path / "docs" / "llms.txt").read_text(encoding="utf-8")
         assert f"No JSON-LD block found in {html_file}" in caplog.text
 
 
@@ -448,7 +450,8 @@ async def test_generate_llmstxt_frontmatter_omits_missing_date(
     target_dir = tmp_path / "target"
     target_dir.mkdir()
 
-    html_file = target_dir / "index.html"
+    html_file = target_dir / "en-us" / "sles" / "16.1" / "html" / "index.html"
+    html_file.parent.mkdir(parents=True, exist_ok=True)
     html_content = """<!DOCTYPE html>
     <html>
     <head>
@@ -463,13 +466,13 @@ async def test_generate_llmstxt_frontmatter_omits_missing_date(
     html_file.write_text(html_content, encoding="utf-8")
 
     await generate_llmstxt(
-        deliverable=llms_deliverable,
-        target_dest=target_dir,
-        build_llmstxt=True,
-        llmstxt_dir="docs",
-    )
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+        )
 
-    md_file = target_dir / "docs" / "index.md"
+    md_file = target_dir / "docs" / "en-us" / "sles" / "16.1" / "html" / "index.md"
     assert md_file.exists()
 
     content = md_file.read_text(encoding="utf-8")

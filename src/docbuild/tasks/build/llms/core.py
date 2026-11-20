@@ -11,7 +11,7 @@ from docbuild.tasks.build.llms.cleaners import (
     DocBookHTMLCleaner,
     HTMLCleaner,
 )
-from docbuild.tasks.build.llms.dom import get_attrs
+from docbuild.tasks.build.llms.dom import get_attrs, replace_node
 from docbuild.tasks.build.llms.markdown import replace_tables_and_images
 
 
@@ -62,7 +62,7 @@ def clean_and_convert(html_content: str) -> str:
 
 
 def inject_llms_links(
-    html_content: str, md_rel_path: str, llmstxt_rel_path: str
+    html_content: str, md_abs_path: str, llmstxt_abs_path: str
 ) -> str:
     """Inject alternate markdown link tags into the <head> of an HTML document."""
     doc = JustHTML(html_content, sanitize=False)
@@ -76,17 +76,31 @@ def inject_llms_links(
             target_parent.children = []
         target_parent.children.insert(0, head)
 
-    safe_md_path = escape(md_rel_path, quote=True)
-    safe_llms_path = escape(llmstxt_rel_path, quote=True)
+    # Clean existing tags to prevent duplicates
+    for link in list(head.query("link")):
+        attrs = get_attrs(link)
+        link_type = attrs.get("type", "")
+        link_href = attrs.get("href", "")
+
+        # Remove existing text/markdown links and text/plain llms.txt fallbacks
+        if link_type == "text/markdown" or (link_type == "text/plain" and "llms.txt" in link_href):
+            replace_node(link, None)
+
+    safe_md_path = escape(md_abs_path, quote=True)
+    safe_llms_path = escape(llmstxt_abs_path, quote=True)
 
     md_markup = f'<link rel="alternate" type="text/markdown" href="{safe_md_path}">'
     llms_markup = f'<link rel="alternate" type="text/markdown" href="{safe_llms_path}">'
+    fallback_markup = f'<link rel="index" type="text/plain" href="{safe_llms_path}">'
 
     parsed_md = JustHTML(md_markup, fragment=True, sanitize=False).root
     parsed_llms = JustHTML(llms_markup, fragment=True, sanitize=False).root
+    parsed_fallback = JustHTML(fallback_markup, fragment=True, sanitize=False).root
 
-    if parsed_md.children and parsed_llms.children:
+    if parsed_md.children and parsed_llms.children and parsed_fallback.children:
         head.append_child(parsed_md.children[0])
         head.append_child(parsed_llms.children[0])
+        head.append_child(parsed_fallback.children[0])
 
     return doc.to_html()
+
