@@ -4,7 +4,6 @@ import fnmatch
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 from aiostream import pipe, stream
 from bs4 import BeautifulSoup
@@ -24,6 +23,7 @@ async def process_single_html_file(
     llms_route_prefix: str,
     deliverable_route: str,
     static_title: str,
+    categories: list[str] | None = None,
     only_md: bool = False,
 ) -> str | None:
     """Process an HTML file to generate Markdown and update HTML with link tags."""
@@ -54,23 +54,20 @@ async def process_single_html_file(
         ld_data = {}
 
     frontmatter = {"title": static_title, "description": ""}
+    if categories:
+        frontmatter["categories"] = categories
 
-    # Dynamically extract product and version from the logical file path 
+    # Dynamically extract product and version from the logical file path
     # (Format: en-us/sles/16.1/html/...)
     path_parts = full_rel_path.parts
     if len(path_parts) >= 3 and path_parts[3] == "html":
         frontmatter["product"] = path_parts[1]
         frontmatter["version"] = path_parts[2]
-        
-    if ld_data and "name" in ld_data:
-        frontmatter["title"] = ld_data["name"]
-    if ld_data and "description" in ld_data:
-        frontmatter["description"] = ld_data["description"]
 
     if ld_data:
-        for d_key in ("dateCreated", "dateModified", "datePublished"):
-            if ld_data.get(d_key):
-                frontmatter[d_key] = ld_data[d_key]
+        frontmatter["title"] = ld_data.get("name", frontmatter["title"])
+        frontmatter["description"] = ld_data.get("description", "")
+        frontmatter.update({k: ld_data[k] for k in ("dateCreated", "dateModified", "datePublished") if ld_data.get(k)})
 
     yaml_block = yaml.safe_dump(
         frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")
@@ -116,42 +113,21 @@ async def generate_llmstxt(
     language = str(d_xml.lang)
     subdir = deliverable.subdir or ""
 
-    # Resolve actual HTML directory using a single fallback chain
+    # Resolve actual HTML directory (html_dir overrides deliverable.paths.html, which overrides fallback)
     fallback_route = f"{language}/{d_xml.product_id}/{d_xml.docset_version}/html/{subdir}".strip("/")
-    default_html_path = Path(target_base_dir) / fallback_route
+    deliv_paths = getattr(deliverable, "paths", None)
 
-    scan_dir = Path(html_dir) if html_dir else Path(
-        getattr(getattr(deliverable, "paths", None), "html", default_html_path)
-    )
+    scan_dir = Path(html_dir or getattr(deliv_paths, "html", Path(target_base_dir) / fallback_route))
 
-    try:
-        # Dynamically deduce the route directly from the filesystem path (fixes CLI retro-generation)
-        deliverable_route = str(scan_dir.relative_to(target_base_dir))
-    except ValueError:
-        # Fallback if scan_dir is outside target_base_dir (e.g., temporary isolated build dirs)
-        deliverable_route = fallback_route
+    # Dynamically deduce the route directly from the filesystem path, with a direct string fallback
+    deliverable_route = str(scan_dir.relative_to(target_base_dir)) if scan_dir.is_relative_to(target_base_dir) else fallback_route
 
     if not scan_dir.exists():
         log.warning("HTML directory %s does not exist, skipping.", scan_dir)
         return
 
-    # Extract real product/version from the route if XML is missing them (e.g. retroactive CLI run)
-    route_parts = Path(deliverable_route).parts
-    real_product = d_xml.product_id
-    real_version = d_xml.docset_version
-
-    if real_product == "unknown" and len(route_parts) > 1:
-        real_product = route_parts[1]
-    if real_version == "unknown" and len(route_parts) > 2:
-        real_version = route_parts[2]
-
-    frontmatter_base = {
-        k: v for k, v in {
-            "product": real_product,
-            "version": real_version,
-            "categories": (d_xml.categoryid or "").split(),
-        }.items() if v and v != "unknown"
-    }
+    # Extract categories safely
+    categories = (getattr(d_xml, "categoryid", "") or "").split()
 
     try:
         index_lines = [
@@ -180,6 +156,7 @@ async def generate_llmstxt(
                 llms_route_prefix=llms_route_prefix,
                 deliverable_route=deliverable_route,
                 static_title=static_title,
+                categories=categories,
                 only_md=only_md,
             )
 

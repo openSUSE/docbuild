@@ -367,7 +367,7 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
     assert "source_url" not in data
     assert data["product"] == "sles"
     assert data["version"] == "16.1"
-    assert data["language"] == "en-us"
+    assert "language" not in data
     assert data["dateModified"] == "2026-02-15T12:00:00Z"
     assert "generator" not in data
     assert "deliverable_id" not in data
