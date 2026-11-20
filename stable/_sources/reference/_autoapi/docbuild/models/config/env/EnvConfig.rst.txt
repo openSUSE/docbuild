@@ -72,6 +72,15 @@ docbuild.models.config.env.EnvConfig
 
 
 
+   .. py:attribute:: llms
+      :type:  EnvLlms
+      :value: None
+
+
+      LLM generation settings.
+
+
+
    .. py:method:: from_dict(data: dict[str, Any]) -> Self
       :classmethod:
 

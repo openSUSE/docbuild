@@ -5,7 +5,7 @@ Creating Markdown for AI Tools
 
 AI assistants and LLM crawlers often read web pages poorly.
 Pages full of navigation menus, scripts, and layout markup waste their limited context on noise.
-``docbuild llms`` gives them a cleaner version of your documentation.
+:command:`docbuild build llms` gives them a cleaner version of your documentation.
 
 Why build Markdown files?
 -------------------------
@@ -35,10 +35,25 @@ Before you run the command, make sure you have the following:
     The default is :file:`docs`.
     A relative path is resolved against ``target_base_dir``.
 
+Excluding files from LLM output
+-------------------------------
+
+Some files, like the GPL license page, add unnecessary noise for AI tools. You can exclude files from the Markdown generation using the ``[llms]`` section in your ENV config.
+
+* ``[llms].exclude``: An array of filenames or shell glob patterns (``*``, ``?``) to ignore. The default includes :file:`doc-gfdl-license.html`.
+* ``[llms].exclude-extra``: An array of additional files to ignore. 
+
+If you want to ignore new files for your specific project, it is recommended to add them to ``[llms].exclude-extra`` rather than overwriting the default ``exclude`` list.
+
+|project| merges ``exclude`` and ``exclude_extra`` into a single list, placing  ``exclude`` items first followed by ``exclude_extra``. Any duplicate patterns are removed while preserving their original order.
+
 Running the command
 -------------------
 
-To generate the Markdown files for an existing build, do the following:
+To generate the Markdown files for an existing build, you can run the command against your entire target directory, or you can pass specific doctypes (like ``sles/15-SP6/en-us``) to only process specific products. 
+(Use the ``--all`` flag to process the entire directory).
+
+Do the following:
 
 #. Provide the settings in the way you prefer:
 
@@ -47,10 +62,10 @@ To generate the Markdown files for an existing build, do the following:
      .. code-block:: console
         :caption: Pass a custom ENV config file
 
-        $ docbuild --env-config env.toml llms
+        $ docbuild --env-config env.toml build llms
 
    * In :file:`env.{role}.toml`, where ``{role}`` is the environment role such as ``devel`` or ``production``, set the options listed in the section above. Store the file in a standard location.
-     Run :command:`docbuild llms` from the directory that contains the file. The default role is ``production``, so the default file name is :file:`env.production.toml`.
+     Run :command:`docbuild build llms` from the directory that contains the file. The default role is ``production``, so the default file name is :file:`env.production.toml`.
 
    * On the command line, pass each setting with ``-C``/ ``--set-env`` as a ``KEY=VALUE`` pair.
      You do not need an ENV config file for this.
@@ -61,7 +76,7 @@ To generate the Markdown files for an existing build, do the following:
 
         $ docbuild -C paths.target.target_base_dir=/path/to/builds \
              -C build.build_llmstxt=true \
-             llms
+             build llms
 
 #. Check the output directory.
    It contains the Markdown files and :file:`llms.txt` in the ``llmstxt_dir`` subdirectory.

@@ -1,0 +1,5 @@
+<map id="inheritance71c6969a5e" name="inheritance71c6969a5e">
+<area shape="rect" id="node1" href="#docbuild.cli.alias.AliasGroup" target="_top" title="Register aliases while keeping canonical command names authoritative." alt="" coords="262,5,354,33"/>
+<area shape="rect" id="node2" title="A group is a command that nests other commands (or more groups)." alt="" coords="142,5,214,33"/>
+<area shape="rect" id="node3" title="Commands are the basic building block of command line interfaces in" alt="" coords="5,5,94,33"/>
+</map>

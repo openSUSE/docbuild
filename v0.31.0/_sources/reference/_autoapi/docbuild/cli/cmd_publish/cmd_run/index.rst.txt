@@ -1,0 +1,27 @@
+docbuild.cli.cmd_publish.cmd_run
+================================
+
+.. py:module:: docbuild.cli.cmd_publish.cmd_run
+
+.. autoapi-nested-parse::
+
+   Publish documentation deliverables to a remote server.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_publish.cmd_run.run
+
+
+Module Contents
+---------------
+
+.. py:function:: run(context: docbuild.cli.context.DocBuildContext, doctypes: tuple[docbuild.models.doctype.Doctype, ...] | list[docbuild.models.doctype.Doctype], *, with_server_files: bool, dry_run: bool, yes: bool) -> None
+
+   Run the publish command.
+
+

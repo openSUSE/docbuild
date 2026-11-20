@@ -81,7 +81,7 @@ Module Contents
       status code after handling the error.
 
 
-.. py:function:: load_app_config(ctx: click.Context, app_config: pathlib.Path, max_workers: str | None, skip_validation: bool = False) -> None
+.. py:function:: load_app_config(ctx: click.Context, app_config: pathlib.Path, max_workers: str | None, skip_validation: bool = False, app_overrides: tuple[str, ...] = ()) -> None
 
    Load and validate Application configuration.
 
@@ -121,14 +121,14 @@ Module Contents
 
 
 
-.. py:function:: apply_override(config: dict[str, Any], override: str) -> None
+.. py:function:: apply_override(config: dict[str, Any], override: str, param_hint: str = '-C / --set-env') -> None
 
    Parse and apply a single KEY=VALUE override to the configuration dictionary.
 
-   Processes a command-line override string (e.g., from ``--set-env``) and merges
-   it into the configuration dictionary. The key is parsed to support nested keys
-   with dots, and the value is automatically converted to its appropriate type
-   (boolean, integer, float, or string).
+   Processes a command-line override string (e.g., from ``--set-env`` or
+   ``--set-app``) and merges it into the configuration dictionary. The key is
+   parsed to support nested keys with dots, and the value is automatically
+   converted to its appropriate type (boolean, integer, float, or string).
 
    Type conversion behavior:
    - ``true``/``false`` (case-insensitive) → ``bool``
@@ -166,7 +166,7 @@ Module Contents
    Extract logging configuration from context and set it up.
 
 
-.. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, max_workers: str | None, env_overrides: tuple[str, ...], **kwargs: dict) -> None
+.. py:function:: cli(ctx: click.Context, verbose: int, dry_run: bool, debug: bool, app_config: pathlib.Path, env_config: pathlib.Path, max_workers: str | None, env_overrides: tuple[str, ...], app_overrides: tuple[str, ...], **kwargs: dict) -> None
 
    Acts as a main entry point for CLI tool.
 
@@ -180,6 +180,7 @@ Module Contents
    :param app_config: Filename to the application TOML config file.
    :param env_config: Filename to a environment's TOML config file.
    :param env_overrides: A tuple of key-value strings to override env config.
+   :param app_overrides: A tuple of key-value strings to override app config.
    :param kwargs: Additional keyword arguments.
 
 

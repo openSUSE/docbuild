@@ -17,7 +17,7 @@ docbuild.cli
    * :class:`~docbuild.cli.cmd_check`: Check the documentation for issues.
    * :class:`~docbuild.cli.cmd_doctor`: Check system dependencies for docbuild.
    * :class:`~docbuild.cli.cmd_cache`: Cache management for docbuild.
-   * :class:`~docbuild.cli.cmd_llms`: LLMs management for docbuild.
+   * :class:`~docbuild.cli.cmd_build.cmd_llms`: LLMs management for docbuild.
 
    Additional modules:
    * :class:`~docbuild.cli.context`: Context for the docbuild CLI commands.
@@ -39,7 +39,6 @@ Submodules
    /reference/_autoapi/docbuild/cli/cmd_cli/index
    /reference/_autoapi/docbuild/cli/cmd_config/index
    /reference/_autoapi/docbuild/cli/cmd_doctor/index
-   /reference/_autoapi/docbuild/cli/cmd_llms/index
    /reference/_autoapi/docbuild/cli/cmd_metadata/index
    /reference/_autoapi/docbuild/cli/cmd_portal/index
    /reference/_autoapi/docbuild/cli/cmd_publish/index

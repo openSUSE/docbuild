@@ -1,0 +1,37 @@
+docbuild.cli.alias.AliasGroup
+=============================
+
+.. py:class:: docbuild.cli.alias.AliasGroup(*args: Any, **kwargs: Any)
+
+   Bases: :py:obj:`click.Group`
+
+   .. autoapi-inheritance-diagram:: docbuild.cli.alias.AliasGroup
+      :parts: 1
+
+
+   Register aliases while keeping canonical command names authoritative.
+
+
+   .. py:method:: add_command(cmd: click.Command, name: str | None = None, aliases: str | collections.abc.Sequence[str] = ()) -> None
+
+      Register a command with one alias or a sequence of aliases.
+
+
+
+   .. py:method:: command(*args: Any, aliases: str | collections.abc.Sequence[str] = (), **kwargs: Any) -> collections.abc.Callable[[collections.abc.Callable[..., Any]], click.Command]
+
+      Decorate a subcommand, optionally registering alternative names.
+
+
+
+   .. py:method:: get_command(ctx: click.Context, cmd_name: str) -> click.Command | None
+
+      Look up canonical commands before resolving aliases.
+
+
+
+   .. py:method:: format_commands(ctx: click.Context, formatter: click.HelpFormatter) -> None
+
+      Show each visible command once, with its effective aliases.
+
+

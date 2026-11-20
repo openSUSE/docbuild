@@ -1,0 +1,41 @@
+docbuild.cli.cmd_publish
+========================
+
+.. py:module:: docbuild.cli.cmd_publish
+
+.. autoapi-nested-parse::
+
+   Publish documentation deliverables to a remote destination.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /reference/_autoapi/docbuild/cli/cmd_publish/cmd_run/index
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.cmd_publish.publish
+
+
+Package Contents
+----------------
+
+.. py:function:: publish(ctx: click.Context) -> None
+
+   Subcommand group for publish operations.
+
+
+
+
+   :param ctx: The Click context object.
+
+

@@ -1,0 +1,104 @@
+docbuild.cli.message
+====================
+
+.. py:module:: docbuild.cli.message
+
+.. autoapi-nested-parse::
+
+   Reusable status messages for consistent docbuild CLI output.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   docbuild.cli.message.OK
+   docbuild.cli.message.ERROR
+   docbuild.cli.message.WARNING
+   docbuild.cli.message.INFO
+   docbuild.cli.message.VALID
+   docbuild.cli.message.INVALID
+   docbuild.cli.message.SKIPPED
+   docbuild.cli.message.MISSING
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/message/Message
+
+.. autoapisummary::
+
+   docbuild.cli.message.Message
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   docbuild.cli.message.set_app_symbols
+   docbuild.cli.message.get_app_symbols
+
+
+Module Contents
+---------------
+
+.. py:function:: set_app_symbols(enabled: bool) -> None
+
+   Set the application-config default for status symbols.
+
+
+.. py:function:: get_app_symbols() -> bool
+
+   Return whether status symbols are enabled.
+
+   Symbols are enabled by default. The application configuration can change
+   the default through :func:`set_app_symbols`.
+
+
+.. py:data:: OK
+
+   Successful operation.
+
+
+.. py:data:: ERROR
+
+   Failed operation.
+
+
+.. py:data:: WARNING
+
+   Non-fatal problem or caution.
+
+
+.. py:data:: INFO
+
+   Informational label.
+
+
+.. py:data:: VALID
+
+   Valid configuration or input.
+
+
+.. py:data:: INVALID
+
+   Invalid configuration or input.
+
+
+.. py:data:: SKIPPED
+
+   Operation intentionally not performed.
+
+
+.. py:data:: MISSING
+
+   Required item that was not found.
+
+

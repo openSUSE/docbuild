@@ -1,0 +1,39 @@
+docbuild.utils.display.Stage
+============================
+
+.. py:class:: docbuild.utils.display.Stage(name: str, progress: rich.progress.Progress, task_id: rich.progress.TaskID, total: int | None = None)
+
+   Tracks outcomes and running items of one stage in a progress task.
+
+
+   .. py:property:: failed
+      :type: bool
+
+
+      Return True if at least one item failed.
+
+
+
+   .. py:method:: set_total(total: int | None) -> None
+
+      Update the stage's total item count.
+
+
+
+   .. py:method:: item(name: str) -> collections.abc.Iterator[Item]
+
+      Track one item; an exception marks it FAILED and propagates.
+
+
+
+   .. py:method:: refresh(advance: int = 0) -> None
+
+      Push current counts and running items to the progress task.
+
+
+
+   .. py:method:: close(*, aborted: bool = False) -> None
+
+      Finalize the stage row in the progress display.
+
+

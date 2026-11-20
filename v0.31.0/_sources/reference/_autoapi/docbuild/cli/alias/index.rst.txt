@@ -1,0 +1,24 @@
+docbuild.cli.alias
+==================
+
+.. py:module:: docbuild.cli.alias
+
+.. autoapi-nested-parse::
+
+   Small Click group supporting aliases for docbuild subcommands.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/cli/alias/AliasGroup
+
+.. autoapisummary::
+
+   docbuild.cli.alias.AliasGroup
+
+

@@ -1,0 +1,19 @@
+docbuild.utils.display.MofNColumn
+=================================
+
+.. py:class:: docbuild.utils.display.MofNColumn(digits: int = 3)
+
+   Bases: :py:obj:`rich.progress.ProgressColumn`
+
+   .. autoapi-inheritance-diagram:: docbuild.utils.display.MofNColumn
+      :parts: 1
+
+
+   Show 'completed/total' with the slash at a fixed position.
+
+
+   .. py:method:: render(task: rich.progress.Task) -> rich.text.Text
+
+      Render right-aligned completed and left-aligned total.
+
+

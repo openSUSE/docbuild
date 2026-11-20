@@ -1,0 +1,13 @@
+docbuild.utils.display.ItemState
+================================
+
+.. py:class:: docbuild.utils.display.ItemState
+
+   Bases: :py:obj:`enum.StrEnum`
+
+   .. autoapi-inheritance-diagram:: docbuild.utils.display.ItemState
+      :parts: 1
+
+
+   Final outcome of a single item, storing its Rich markup prefix.
+

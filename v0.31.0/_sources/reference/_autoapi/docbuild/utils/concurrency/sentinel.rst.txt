@@ -1,0 +1,41 @@
+docbuild.utils.concurrency.sentinel
+===================================
+
+.. py:class:: docbuild.utils.concurrency.sentinel(name: str, /, repr: str | None = None)
+
+   Sentinel type used for internal queue signaling.
+
+   Instances of this class are used to signal workers that no more items
+   are available for processing. The class intentionally cannot be
+   subclassed.
+
+   The :data:`SENTINEL` instance is used throughout this module instead of
+   creating additional sentinel instances.
+
+   Example:
+       >>> SENTINEL is sentinel("SENTINEL")
+       False
+       >>> repr(SENTINEL)
+       'SENTINEL'
+
+
+
+   .. py:method:: __init_subclass__() -> None
+      :classmethod:
+
+
+      Prevent subclassing of :class:`sentinel`.
+
+      :raises TypeError: Always raised when an attempt is made to subclass
+          :class:`sentinel`.
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Return the configured representation of the sentinel.
+
+      :return: The string representation configured when the sentinel
+          was initialized.
+
+

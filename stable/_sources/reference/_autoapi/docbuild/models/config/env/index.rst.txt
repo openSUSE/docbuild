@@ -124,6 +124,7 @@ Classes
    /reference/_autoapi/docbuild/models/config/env/SSHEndpoint
    /reference/_autoapi/docbuild/models/config/env/EnvRemote
    /reference/_autoapi/docbuild/models/config/env/EnvRsync
+   /reference/_autoapi/docbuild/models/config/env/EnvLlms
    /reference/_autoapi/docbuild/models/config/env/EnvConfig
 
 .. autoapisummary::
@@ -139,6 +140,7 @@ Classes
    docbuild.models.config.env.SSHEndpoint
    docbuild.models.config.env.EnvRemote
    docbuild.models.config.env.EnvRsync
+   docbuild.models.config.env.EnvLlms
    docbuild.models.config.env.EnvConfig
 
 

@@ -1,0 +1,30 @@
+docbuild.utils.concurrency.TaskFailedError
+==========================================
+
+.. py:exception:: docbuild.utils.concurrency.TaskFailedError[T](item: T, original_exception: Exception)
+
+   Bases: :py:obj:`Exception`
+
+   .. autoapi-inheritance-diagram:: docbuild.utils.concurrency.TaskFailedError
+      :parts: 1
+
+
+   Exception wrapper for a task that failed during processing.
+
+   Concurrent processing can produce results out of order, making it
+   important to retain the input item associated with a failed operation.
+   This exception stores both the original item and the exception raised
+   while processing it.
+
+   :param item: The item that was being processed when the failure occurred.
+   :param original_exception: The exception raised while processing
+       ``item``.
+
+   Example:
+       >>> error = TaskFailedError(42, ValueError("invalid item"))
+       >>> error.item
+       42
+       >>> error.original_exception
+       ValueError('invalid item')
+
+

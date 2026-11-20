@@ -1,0 +1,5 @@
+<map id="inheritance76b17b067a" name="inheritance76b17b067a">
+<area shape="rect" id="node1" title="Add to an Rich renderable to make it render in Jupyter notebook." alt="" coords="5,5,109,33"/>
+<area shape="rect" id="node2" title="Renders an auto&#45;updating progress bar(s)." alt="" coords="157,5,234,33"/>
+<area shape="rect" id="node3" href="#docbuild.utils.display.StageProgress" target="_top" title="Progress that renders the current item on a line below each stage." alt="" coords="282,5,396,33"/>
+</map>
