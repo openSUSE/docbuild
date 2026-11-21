@@ -9,7 +9,6 @@ from enum import StrEnum
 from typing import Self
 
 from rich.console import Console, RenderableType
-from rich.live import Live
 from rich.markup import escape
 from rich.progress import (
     BarColumn,
@@ -121,7 +120,7 @@ class Stage:
         """Track one item; an exception marks it FAILED and propagates."""
         item = Item()
         self.running[id(item)] = name
-        self.refresh()
+        self.refresh(render=True)
         try:
             yield item
             if item.state is None:
@@ -141,9 +140,9 @@ class Stage:
     def rename_item(self, item: Item, name: str) -> None:
         """Update a running item's label without advancing progress."""
         self.running[id(item)] = name
-        self.refresh()
+        self.refresh(render=True)
 
-    def refresh(self, advance: int = 0) -> None:
+    def refresh(self, advance: int = 0, *, render: bool = False) -> None:
         """Push current counts and running items to the progress task."""
         shown = ", ".join(list(self.running.values())[: self.MAX_SHOWN])
         if (hidden := len(self.running) - self.MAX_SHOWN) > 0:
@@ -153,6 +152,7 @@ class Stage:
             advance=advance,
             status=format_status(self.counts),
             item=shown,
+            refresh=render,
         )
 
     def close(self, *, aborted: bool = False) -> None:
@@ -202,9 +202,9 @@ class LiveProgressManager:
             TimeElapsedColumn(),
             console=console,
             disable=disable,
+            refresh_per_second=4,
         )
-        # Reverted back to just using the progress bar in the Live view (no logs panel)
-        self.live = Live(self._progress, console=console, refresh_per_second=4)
+        self.live = self._progress.live
 
     @property
     def failed(self) -> bool:

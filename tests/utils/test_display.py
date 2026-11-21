@@ -8,8 +8,8 @@ def test_live_manager_singleton_context() -> None:
     assert get_live_manager() is None
 
     with (
-        patch("docbuild.utils.display.Live.start") as mock_start,
-        patch("docbuild.utils.display.Live.stop") as mock_stop,
+        patch("rich.live.Live.start") as mock_start,
+        patch("rich.live.Live.stop") as mock_stop,
     ):
         with LiveProgressManager() as manager:
             # Inside the context, the manager should be available globally
@@ -92,3 +92,22 @@ def test_rename_concurrent_items():
 
     assert stage.counts == {ItemState.FAILED: 1, ItemState.SUCCEEDED: 1}
     assert not stage.running
+
+
+def test_short_item_labels_render_before_periodic_refresh():
+    """A fast metadata operation emits its label while it is still running."""
+    from io import StringIO
+
+    from rich.console import Console
+
+    output = StringIO()
+    manager = LiveProgressManager(console=Console(file=output, force_terminal=True))
+    manager.live.auto_refresh = False
+    with (
+        manager,
+        manager.stage("Metadata") as stage,
+        stage.item("Parsing portal.xml") as item,
+    ):
+        assert "Parsing portal.xml" in output.getvalue()
+        stage.rename_item(item, "Creating worktree for guide")
+        assert "Creating worktree for guide" in output.getvalue()
