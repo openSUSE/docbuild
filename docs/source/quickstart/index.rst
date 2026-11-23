@@ -14,23 +14,32 @@ Before you begin...
 
 Make sure your environment meets these requirements before you start. Follow this check list:
 
-#. Use Linux or macOS. Windows is not supported. If you are using Windows, consider using a virtual machine or WSL (Windows Subsystem for Linux). However, this path is currently untested.
-#. Reserve sufficient disk space for the build process and the generated deliverables.
-#. Install Git and make sure you can access the source repository used by the
-   sample. For openSUSE, run:
+.. steps::
 
-   .. code-block:: console
+   .. step:: Use supported operating systems
 
-      $ sudo zypper install git
+      Use Linux or macOS. Windows is not supported. If you are using Windows, consider using a virtual machine or WSL (Windows Subsystem for Linux). However, this path is currently untested.
 
-#. Install :term:`DAPS` and its system dependencies either from your system package manager or by following the `DAPS installation
-   guide <https://opensuse.github.io/daps/>`_. DAPS is required to build this
-   sample. For openSUSE, run:
+   .. step:: Reserve disk space
 
-   .. code-block:: console
+      Reserve sufficient disk space for the build process and the generated deliverables.
 
-      $ sudo zypper install daps
+   .. step:: Install Git
 
+      Install Git and make sure you can access the source repository used by the
+      sample. For openSUSE, run:
+
+      .. code-block:: console
+
+         $ sudo zypper install git
+
+   .. step:: Install DAPS
+
+      Install :term:`DAPS` and its system dependencies either from your system package manager or by following the `DAPS installation guide <https://opensuse.github.io/daps/>`_. DAPS is required to build this sample. For openSUSE, run:
+
+      .. code-block:: console
+
+         $ sudo zypper install daps
 
 ..
    Perhaps we should consider to describe a Docker/Podman solution here.
@@ -59,51 +68,55 @@ It is highly recommended to use the `package and project manager uv <https://doc
 to install the docbuild tool. This ensures that all dependencies are managed correctly and that
 the installation is reproducible across different environments.
 
-#. **Install uv**
+.. steps::
 
-   There are different methods to install :command:`uv`. Preferably use your systems package manager, otherwise follow the uv documentation about `how to install uv <https://docs.astral.sh/uv/getting-started/installation/>`_.
+   .. step:: Install uv
 
-   For (open)SUSE Linux run the following command in your terminal:
+      There are different methods to install :command:`uv`. Preferably use your systems package manager, otherwise follow the uv documentation about `how to install uv <https://docs.astral.sh/uv/getting-started/installation/>`_.
 
-   .. code-block:: console
+      For (open)SUSE Linux run the following command in your terminal:
 
-      $ sudo zypper install python313-uv
+      .. code-block:: console
 
-#. **Check the installation**
+         $ sudo zypper install python313-uv
 
-   After the installation, verify that :command:`uv` is installed and in your PATH by running:
+   .. step:: Check the installation
 
-   .. code-block:: console
+      After the installation, verify that :command:`uv` is installed and in your PATH by running:
 
-      $ type uv
-      uv is hashed (/path/to/uv)
-      $ uv --version
-      ...
+      .. code-block:: console
 
-   You should see the version of :command:`uv` printed in the terminal.
+         $ type uv
+         uv is hashed (/path/to/uv)
+         $ uv --version
+         ...
 
-#. **Check the available Python versions**
+      You should see the version of :command:`uv` printed in the terminal.
 
-   As of the time of writing, the docbuild tool requires Python 3.12 or higher.
-   If you have a higher version of Python installed, use that version. Most Linux distributions provide multiple Python versions, so you can choose the one that meets the requirement.
+   .. step:: Check the available Python versions
 
-   To list your currently installed Python versions run:
+      As of the time of writing, the docbuild tool requires Python 3.12 or higher.
+      If you have a higher version of Python installed, use that version. Most Linux distributions provide multiple Python versions, so you can choose the one that meets the requirement.
 
-   .. code-block:: console
+      To list your currently installed Python versions run:
 
-      $ uv python list --only-installed
-      cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14
-      cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3.13
-      cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3 -> python3.13
-      ...
+      .. code-block:: console
 
-#. Only if your system does not provide Python 3.12 or higher, install one using uv:
+         $ uv python list --only-installed
+         cpython-3.14.4-linux-x86_64-gnu     /usr/bin/python3.14
+         cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3.13
+         cpython-3.13.13-linux-x86_64-gnu    /usr/bin/python3 -> python3.13
+         ...
 
-   .. code-block:: console
+   .. step:: If necessary, install Python
 
-      $ uv python install 3.13
+      Only if your system does not provide Python 3.12 or higher, install one using |uv|:
 
-   This downloads and installs Python 3.13 in the directory :file:`~/.local/share/uv/python/<VERSION>`.
+      .. code-block:: console
+
+         $ uv python install 3.13
+
+      This downloads and installs Python 3.13 in the directory :file:`~/.local/share/uv/python/<VERSION>`.
 
 
 .. _qs-install-docbuild:
@@ -111,36 +124,38 @@ the installation is reproducible across different environments.
 Installing docbuild
 -------------------
 
-#. **Create a virtual environment**
+.. steps::
 
-   It is recommended to create a virtual environment to isolate the docbuild
-   tool and its dependencies from your system Python environment.
-   Run the following command:
+   .. step:: Create a virtual environment
 
-   .. code-block:: console
+      It is recommended to create a virtual environment to isolate the docbuild
+      tool and its dependencies from your system Python environment.
+      Run the following command:
 
-      $ uv venv --python 3.13 --prompt "venv313"
+      .. code-block:: console
 
-   Use the Python version that is available on your system or the one you installed with :command:`uv`.
+          $ uv venv --python 3.13 --prompt "venv313"
 
-   This will create a virtual environment in the directory :file:`.venv`.
+      Use the Python version that is available on your system or the one you installed with :command:`uv`.
 
-#. **Install dependencies**
+      This will create a virtual environment in the directory :file:`.venv`.
 
-   Ensure you have Python 3.12 or higher installed, then install the required dependencies:
+   .. step:: Install dependencies
 
-   .. code-block:: console
+      Ensure you have Python 3.12 or higher installed, then install the required dependencies:
 
-      $ uv sync --dev --frozen
-      Resolved 29 packages in 586ms
-      Built docbuild @ file:///.../docbuild
-      Installed 15 packages in 2.11s
+      .. code-block:: console
 
-   The ``--frozen`` flag is used here to ensure that :command:`uv` installs dependencies
-   exactly as specified in the :file:`uv.lock` file. This is crucial for
-   **reproducible builds** and maintaining a **consistent environment** across
-   different machines or deployments, as it prevents :command:`uv` from attempting to
-   resolve and potentially update dependency versions.
+          $ uv sync --dev --frozen
+          Resolved 29 packages in 586ms
+          Built docbuild @ file:///.../docbuild
+          Installed 15 packages in 2.11s
+
+      The ``--frozen`` flag is used here to ensure that :command:`uv` installs dependencies
+      exactly as specified in the :file:`uv.lock` file. This is crucial for
+      **reproducible builds** and maintaining a **consistent environment** across
+      different machines or deployments, as it prevents :command:`uv` from attempting to
+      resolve and potentially update dependency versions.
 
 
 .. _qs-activate-venv:
