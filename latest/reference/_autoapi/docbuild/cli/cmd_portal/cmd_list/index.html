@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_portal.cmd_list &#8212; Docbuild Documentation 0.31.1.dev2+gf0616de2d.d20261123</title>
+    <title>docbuild.cli.cmd_portal.cmd_list &#8212; Docbuild Documentation 0.31.1.dev3+gf6ea495e1.d20261123</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=ddfb758e"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=c41d76e6"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -751,84 +751,296 @@
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.matches_doctype">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">matches_doctype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.matches_doctype" title="Link to this definition">#</a></dt>
 <dd><p>Check if a generated deliverable matches the requested doctype queries.</p>
+<p>The lifecycle is not part of the check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prod</strong> – Product ID. An empty string is treated as <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p></li>
+<li><p><strong>doc</strong> – Docset path. An empty string is treated as <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p></li>
+<li><p><strong>lang</strong> – Language code, for example <code class="docutils literal notranslate"><span class="pre">en-us</span></code>.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to match against.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if one of the doctypes matches or if none are given.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the values do not form a valid doctype.</p>
+</dd>
+</dl>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wanted</span> <span class="o">=</span> <span class="p">[</span><span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/*/en-us&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matches_doctype</span><span class="p">(</span><span class="s2">&quot;sles&quot;</span><span class="p">,</span> <span class="s2">&quot;15-SP6&quot;</span><span class="p">,</span> <span class="s2">&quot;en-us&quot;</span><span class="p">,</span> <span class="n">wanted</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matches_doctype</span><span class="p">(</span><span class="s2">&quot;smart&quot;</span><span class="p">,</span> <span class="s2">&quot;15-SP6&quot;</span><span class="p">,</span> <span class="s2">&quot;en-us&quot;</span><span class="p">,</span> <span class="n">wanted</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.expand_deliverables">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">expand_deliverables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliverables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.15)"><span class="pre">collections.abc.Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.expand_deliverables" title="Link to this definition">#</a></dt>
 <dd><p>Project English blueprints to translated locales and filter by doctype.</p>
+<p>An English deliverable is also listed for each of its translations,
+unless that language has its own deliverable with the same ID.
+The deliverables stay in the same order as in the XML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliverables</strong> – Deliverables in XML order.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to filter by. Nothing is filtered if empty.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pairs of language and deliverable, for example
+<code class="docutils literal notranslate"><span class="pre">(&quot;en-us&quot;,</span> <span class="pre">deliverable)</span></code>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If a deliverable does not form a valid doctype while
+filtering.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.parse_doctypes">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">parse_doctypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.console.Console</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.parse_doctypes" title="Link to this definition">#</a></dt>
 <dd><p>Parse raw CLI arguments into Doctype objects with default fallbacks.</p>
+<p>An argument without a slash selects all docsets of that product.
+The language is <code class="docutils literal notranslate"><span class="pre">en-us</span></code> if none is given.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doctypes</strong> – Doctype strings from the command line.</p></li>
+<li><p><strong>console</strong> – Console to print parsing errors to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed doctypes, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if there are no arguments.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.6.x)"><strong>click.Abort</strong></a> – If an argument is not a valid doctype.</p>
+</dd>
+</dl>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">parse_doctypes</span><span class="p">((</span><span class="s2">&quot;sles&quot;</span><span class="p">,),</span> <span class="n">Console</span><span class="p">())]</span>
+<span class="go">[&#39;sles/*@unknown/en-us&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.get_display_name">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">get_display_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.get_display_name" title="Link to this definition">#</a></dt>
 <dd><p>Determine the main display name for a deliverable.</p>
+<p>Prebuilt deliverables show their title, others show their ID and DC file.
+An xref with no ID and no DC file shows its link target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+<li><p><strong>lang</strong> – Language the deliverable is listed under, for example
+<code class="docutils literal notranslate"><span class="pre">en-us</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The name to show. It ends in <code class="docutils literal notranslate"><span class="pre">[en-us</span> <span class="pre">blueprint]</span></code> if <code class="docutils literal notranslate"><span class="pre">lang</span></code>
+differs from the language of the deliverable.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.append_translations">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">append_translations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.tree.Tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.append_translations" title="Link to this definition">#</a></dt>
 <dd><p>Append translation metadata to the deliverable branch.</p>
+<p>Nothing is added if there are no other languages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliv_branch</strong> – Tree branch to add the line to.</p></li>
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+<li><p><strong>lang</strong> – Language to leave out of the list, for example <code class="docutils literal notranslate"><span class="pre">en-us</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.append_formats">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">append_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.tree.Tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.append_formats" title="Link to this definition">#</a></dt>
 <dd><p>Append output formats metadata to the deliverable branch.</p>
+<p>Only enabled formats are listed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliv_branch</strong> – Tree branch to add the line to.</p></li>
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.append_categories">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">append_categories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.tree.Tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.append_categories" title="Link to this definition">#</a></dt>
 <dd><p>Append category metadata to the deliverable branch.</p>
+<p>Nothing is added if the deliverable has no category.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliv_branch</strong> – Tree branch to add the line to.</p></li>
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.append_repo">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">append_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deliv_branch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.tree.Tree</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.append_repo" title="Link to this definition">#</a></dt>
 <dd><p>Append repository metadata to the deliverable branch.</p>
+<p>Nothing is added if the deliverable has no repository. A remote repository
+URL that cannot be parsed is shown as it is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deliv_branch</strong> – Tree branch to add the line to.</p></li>
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+<li><p><strong>repo_format</strong> – <code class="docutils literal notranslate"><span class="pre">long</span></code> shows the full URL, any other value shows
+the short form.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.build_deliverable_tree">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">build_deliverable_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deliv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">lang</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rich.tree.Tree</span></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.build_deliverable_tree" title="Link to this definition">#</a></dt>
 <dd><p>Build a Tree node for a deliverable and append requested metadata.</p>
+<p>URLs of prebuilt deliverables are always added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – Text of the node.</p></li>
+<li><p><strong>deliv</strong> – The deliverable.</p></li>
+<li><p><strong>lang</strong> – Language the deliverable is listed under, for example
+<code class="docutils literal notranslate"><span class="pre">en-us</span></code>.</p></li>
+<li><p><strong>show_trans</strong> – Show the translations.</p></li>
+<li><p><strong>show_formats</strong> – Show the output formats.</p></li>
+<li><p><strong>show_categories</strong> – Show the category.</p></li>
+<li><p><strong>repo_format</strong> – Show the repository as <code class="docutils literal notranslate"><span class="pre">short</span></code> or <code class="docutils literal notranslate"><span class="pre">long</span></code>.
+Not shown if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The updated tree node.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.group_into_hierarchy">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">group_into_hierarchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.group_into_hierarchy" title="Link to this definition">#</a></dt>
 <dd><p>Group deliverables into a nested dictionary while preserving insertion order.</p>
+<p>A missing product or docset is grouped as <code class="docutils literal notranslate"><span class="pre">unknown-product</span></code> or
+<code class="docutils literal notranslate"><span class="pre">unknown-docset</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>items</strong> – Pairs of language and deliverable.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Deliverables grouped by language, product, and docset.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.print_hierarchy">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">print_hierarchy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.console.Console</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.print_hierarchy" title="Link to this definition">#</a></dt>
 <dd><p>Render and print the nested hierarchy as a Rich Tree.</p>
+<p>Each language gets its own tree. Languages, products, and docsets are
+sorted, but deliverables keep their XML order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> – Pairs of language and deliverable.</p></li>
+<li><p><strong>console</strong> – Console to print to.</p></li>
+<li><p><strong>show_trans</strong> – Show the translations.</p></li>
+<li><p><strong>show_formats</strong> – Show the output formats.</p></li>
+<li><p><strong>show_categories</strong> – Show the category.</p></li>
+<li><p><strong>repo_format</strong> – Show the repository as <code class="docutils literal notranslate"><span class="pre">short</span></code> or <code class="docutils literal notranslate"><span class="pre">long</span></code>.
+Not shown if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.print_flat">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">print_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../../models/deliverable/Deliverable.html#docbuild.models.deliverable.Deliverable" title="docbuild.models.deliverable.Deliverable"><span class="pre">docbuild.models.deliverable.Deliverable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.console.Console</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.print_flat" title="Link to this definition">#</a></dt>
 <dd><p>Render and print the deliverables as a flat list.</p>
+<p>The order is the same as in <a class="reference internal" href="#docbuild.cli.cmd_portal.cmd_list.print_hierarchy" title="docbuild.cli.cmd_portal.cmd_list.print_hierarchy"><code class="xref py py-func docutils literal notranslate"><span class="pre">print_hierarchy()</span></code></a>. Requested details
+are printed below each deliverable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>items</strong> – Pairs of language and deliverable.</p></li>
+<li><p><strong>console</strong> – Console to print to.</p></li>
+<li><p><strong>show_trans</strong> – Show the translations.</p></li>
+<li><p><strong>show_formats</strong> – Show the output formats.</p></li>
+<li><p><strong>show_categories</strong> – Show the category.</p></li>
+<li><p><strong>repo_format</strong> – Show the repository as <code class="docutils literal notranslate"><span class="pre">short</span></code> or <code class="docutils literal notranslate"><span class="pre">long</span></code>.
+Not shown if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">validate_docsets_against_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lxml.etree._ElementTree</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">lxml.etree._Element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.console.Console</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.validate_docsets_against_xml" title="Link to this definition">#</a></dt>
 <dd><p>Dynamically validate that provided docsets exist for their respective products.</p>
+<p>Doctypes with a wildcard product or docset are not checked.
+All errors are printed before aborting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doctypes</strong> – Doctypes to check.</p></li>
+<li><p><strong>tree</strong> – The parsed portal config.</p></li>
+<li><p><strong>console</strong> – Console to print errors to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.6.x)"><strong>click.Abort</strong></a> – If any docset does not exist.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_portal.cmd_list.async_list_cmd">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_portal.cmd_list.</span></span><span class="sig-name descname"><span class="pre">async_list_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../context/DocBuildContext.html#docbuild.cli.context.DocBuildContext" title="docbuild.cli.context.DocBuildContext"><span class="pre">docbuild.cli.context.DocBuildContext</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">console</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">rich.console.Console</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_trans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_formats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_portal.cmd_list.async_list_cmd" title="Link to this definition">#</a></dt>
 <dd><p>Async worker to fetch the XML, parse Doctypes, and build the tree.</p>
+<p>Deliverables are read in all languages first, because translations
+come from the English ones. The language filter is applied afterwards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – Context with the loaded environment config.</p></li>
+<li><p><strong>doctypes</strong> – Doctype strings from the command line.</p></li>
+<li><p><strong>console</strong> – Console to print to.</p></li>
+<li><p><strong>show_trans</strong> – Show the translations.</p></li>
+<li><p><strong>show_formats</strong> – Show the output formats.</p></li>
+<li><p><strong>show_categories</strong> – Show the category.</p></li>
+<li><p><strong>repo_format</strong> – Show the repository as <code class="docutils literal notranslate"><span class="pre">short</span></code> or <code class="docutils literal notranslate"><span class="pre">long</span></code>.
+Not shown if <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>flat</strong> – Print a flat list instead of a tree.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.6.x)"><strong>click.Abort</strong></a> – If a doctype or docset is invalid, or if the portal
+config cannot be loaded.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -852,6 +1064,9 @@ Format: PRODUCT/DOCSETS[&#64;LIFECYCLES]/LANGS</p>
 <li><p><strong>repo</strong> – Show repository origin (short or long).</p></li>
 <li><p><strong>flat</strong> – Display a flat list instead of a hierarchy tree.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.6.x)"><strong>click.Abort</strong></a> – If the arguments or the portal config are invalid.</p>
 </dd>
 </dl>
 </dd></dl>
