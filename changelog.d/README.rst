@@ -1,4 +1,3 @@
-
 The ``changelog.d`` Directory
 =============================
 
