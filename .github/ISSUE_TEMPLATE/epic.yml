@@ -1,0 +1,26 @@
+name: Epic
+description: Propose and track a larger body of related work.
+title: "Epic: "
+type: task
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the outcome this Epic should deliver. Use sub-issues to track the related work.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Epic Goal
+      description: What larger outcome should this work achieve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: success_criteria
+    attributes:
+      label: Success Criteria
+      description: Optional. Add a measurable outcome only if it is not already clear from the Epic Goal or sub-issues.
+    validations:
+      required: false
