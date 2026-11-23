@@ -20,7 +20,25 @@ from ..completion import collect_docsets, complete_doctypes
 
 
 def matches_doctype(prod: str, doc: str, lang: str, doctypes: Sequence[Doctype] | None) -> bool:
-    """Check if a generated deliverable matches the requested doctype queries."""
+    """Check if a generated deliverable matches the requested doctype queries.
+
+    The lifecycle is not part of the check.
+
+    :param prod: Product ID. An empty string is treated as ``*``.
+    :param doc: Docset path. An empty string is treated as ``*``.
+    :param lang: Language code, for example ``en-us``.
+    :param doctypes: Doctypes to match against.
+    :return: ``True`` if one of the doctypes matches or if none are given.
+    :raises ValueError: If the values do not form a valid doctype.
+
+    .. code-block:: pycon
+
+        >>> wanted = [Doctype.from_str("sles/*/en-us")]
+        >>> matches_doctype("sles", "15-SP6", "en-us", wanted)
+        True
+        >>> matches_doctype("smart", "15-SP6", "en-us", wanted)
+        False
+    """
     if not doctypes:
         return True
     dt_str = f"{prod or '*'}/{doc or '*'}/{lang}"
@@ -32,7 +50,19 @@ def expand_deliverables(
     deliverables: list[Deliverable],
     doctypes: Sequence[Doctype] | None = None,
 ) -> list[tuple[str, Deliverable]]:
-    """Project English blueprints to translated locales and filter by doctype."""
+    """Project English blueprints to translated locales and filter by doctype.
+
+    An English deliverable is also listed for each of its translations,
+    unless that language has its own deliverable with the same ID.
+    The deliverables stay in the same order as in the XML.
+
+    :param deliverables: Deliverables in XML order.
+    :param doctypes: Doctypes to filter by. Nothing is filtered if empty.
+    :return: Pairs of language and deliverable, for example
+        ``("en-us", deliverable)``.
+    :raises ValueError: If a deliverable does not form a valid doctype while
+        filtering.
+    """
     # Pass 1: Identify explicit native overrides to prevent blueprint collision
     native_keys = {
         (str(d.xml.lang), d.xml.product_id or "", d.xml.docset_path or "", d.xml.deliverableid or "")
@@ -66,7 +96,21 @@ def expand_deliverables(
 
 
 def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype] | None:
-    """Parse raw CLI arguments into Doctype objects with default fallbacks."""
+    """Parse raw CLI arguments into Doctype objects with default fallbacks.
+
+    An argument without a slash selects all docsets of that product.
+    The language is ``en-us`` if none is given.
+
+    :param doctypes: Doctype strings from the command line.
+    :param console: Console to print parsing errors to.
+    :return: The parsed doctypes, or ``None`` if there are no arguments.
+    :raises click.Abort: If an argument is not a valid doctype.
+
+    .. code-block:: pycon
+
+        >>> [str(dt) for dt in parse_doctypes(("sles",), Console())]
+        ['sles/*@unknown/en-us']
+    """
     if not doctypes:
         return None
 
@@ -85,7 +129,17 @@ def parse_doctypes(doctypes: tuple[str, ...], console: Console) -> list[Doctype]
 
 
 def get_display_name(deliv: Deliverable, lang: str) -> str:
-    """Determine the main display name for a deliverable."""
+    """Determine the main display name for a deliverable.
+
+    Prebuilt deliverables show their title, others show their ID and DC file.
+    An xref with no ID and no DC file shows its link target.
+
+    :param deliv: The deliverable.
+    :param lang: Language the deliverable is listed under, for example
+        ``en-us``.
+    :return: The name to show. It ends in ``[en-us blueprint]`` if ``lang``
+        differs from the language of the deliverable.
+    """
     d_id = deliv.xml.deliverableid
     dc_file = deliv.xml.dcfile
 
@@ -109,14 +163,27 @@ def get_display_name(deliv: Deliverable, lang: str) -> str:
 
 
 def append_translations(deliv_branch: Tree, deliv: Deliverable, lang: str) -> None:
-    """Append translation metadata to the deliverable branch."""
+    """Append translation metadata to the deliverable branch.
+
+    Nothing is added if there are no other languages.
+
+    :param deliv_branch: Tree branch to add the line to.
+    :param deliv: The deliverable.
+    :param lang: Language to leave out of the list, for example ``en-us``.
+    """
     other_langs = sorted(other_lang for other_lang in deliv.xml.translations if other_lang != lang)
     if other_langs:
         deliv_branch.add(f"Translations: {', '.join(other_langs)}")
 
 
 def append_formats(deliv_branch: Tree, deliv: Deliverable) -> None:
-    """Append output formats metadata to the deliverable branch."""
+    """Append output formats metadata to the deliverable branch.
+
+    Only enabled formats are listed.
+
+    :param deliv_branch: Tree branch to add the line to.
+    :param deliv: The deliverable.
+    """
     if attrs := deliv.xml.format_attrs():
         fmt_names = {"pdf": "PDF", "html": "HTML", "single-html": "Single-HTML", "epub": "EPUB"}
         available = [fmt_names.get(k, k.upper()) for k, v in attrs.items() if v]
@@ -125,13 +192,28 @@ def append_formats(deliv_branch: Tree, deliv: Deliverable) -> None:
 
 
 def append_categories(deliv_branch: Tree, deliv: Deliverable) -> None:
-    """Append category metadata to the deliverable branch."""
+    """Append category metadata to the deliverable branch.
+
+    Nothing is added if the deliverable has no category.
+
+    :param deliv_branch: Tree branch to add the line to.
+    :param deliv: The deliverable.
+    """
     if cat_title := deliv.xml.category_title:
         deliv_branch.add(f"Category: {cat_title}")
 
 
 def append_repo(deliv_branch: Tree, deliv: Deliverable, repo_format: str) -> None:
-    """Append repository metadata to the deliverable branch."""
+    """Append repository metadata to the deliverable branch.
+
+    Nothing is added if the deliverable has no repository. A remote repository
+    URL that cannot be parsed is shown as it is.
+
+    :param deliv_branch: Tree branch to add the line to.
+    :param deliv: The deliverable.
+    :param repo_format: ``long`` shows the full URL, any other value shows
+        the short form.
+    """
     repo = deliv.xml.git_remote()
     if repo:
         if isinstance(repo, str):
@@ -151,7 +233,21 @@ def build_deliverable_tree(
     show_categories: bool,
     repo_format: str | None,
 ) -> Tree:
-    """Build a Tree node for a deliverable and append requested metadata."""
+    """Build a Tree node for a deliverable and append requested metadata.
+
+    URLs of prebuilt deliverables are always added.
+
+    :param title: Text of the node.
+    :param deliv: The deliverable.
+    :param lang: Language the deliverable is listed under, for example
+        ``en-us``.
+    :param show_trans: Show the translations.
+    :param show_formats: Show the output formats.
+    :param show_categories: Show the category.
+    :param repo_format: Show the repository as ``short`` or ``long``.
+        Not shown if ``None``.
+    :return: The updated tree node.
+    """
     deliv_branch = Tree(title)
 
     if deliv.xml.is_prebuilt:
@@ -172,7 +268,14 @@ def build_deliverable_tree(
 
 
 def group_into_hierarchy(items: list[tuple[str, Deliverable]]) -> dict[str, dict[str, dict[str, list[Deliverable]]]]:
-    """Group deliverables into a nested dictionary while preserving insertion order."""
+    """Group deliverables into a nested dictionary while preserving insertion order.
+
+    A missing product or docset is grouped as ``unknown-product`` or
+    ``unknown-docset``.
+
+    :param items: Pairs of language and deliverable.
+    :return: Deliverables grouped by language, product, and docset.
+    """
     hierarchy: dict[str, dict[str, dict[str, list[Deliverable]]]] = {}
     for lang, deliv in items:
         prod = deliv.xml.product_id or "unknown-product"
@@ -197,7 +300,19 @@ def print_hierarchy(
     show_categories: bool,
     repo_format: str | None,
 ) -> None:
-    """Render and print the nested hierarchy as a Rich Tree."""
+    """Render and print the nested hierarchy as a Rich Tree.
+
+    Each language gets its own tree. Languages, products, and docsets are
+    sorted, but deliverables keep their XML order.
+
+    :param items: Pairs of language and deliverable.
+    :param console: Console to print to.
+    :param show_trans: Show the translations.
+    :param show_formats: Show the output formats.
+    :param show_categories: Show the category.
+    :param repo_format: Show the repository as ``short`` or ``long``.
+        Not shown if ``None``.
+    """
     hierarchy = group_into_hierarchy(items)
 
     for lang, products in sorted(hierarchy.items()):
@@ -235,7 +350,19 @@ def print_flat(
     show_categories: bool,
     repo_format: str | None,
 ) -> None:
-    """Render and print the deliverables as a flat list."""
+    """Render and print the deliverables as a flat list.
+
+    The order is the same as in :func:`print_hierarchy`. Requested details
+    are printed below each deliverable.
+
+    :param items: Pairs of language and deliverable.
+    :param console: Console to print to.
+    :param show_trans: Show the translations.
+    :param show_formats: Show the output formats.
+    :param show_categories: Show the category.
+    :param repo_format: Show the repository as ``short`` or ``long``.
+        Not shown if ``None``.
+    """
     hierarchy = group_into_hierarchy(items)
 
     for lang, products in sorted(hierarchy.items()):
@@ -262,7 +389,16 @@ def print_flat(
 def validate_docsets_against_xml(
     doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
 ) -> None:
-    """Dynamically validate that provided docsets exist for their respective products."""
+    """Dynamically validate that provided docsets exist for their respective products.
+
+    Doctypes with a wildcard product or docset are not checked.
+    All errors are printed before aborting.
+
+    :param doctypes: Doctypes to check.
+    :param tree: The parsed portal config.
+    :param console: Console to print errors to.
+    :raises click.Abort: If any docset does not exist.
+    """
     errors = []
 
     for dt in doctypes:
@@ -296,7 +432,23 @@ async def async_list_cmd(
     repo_format: str | None,
     flat: bool,
 ) -> None:
-    """Async worker to fetch the XML, parse Doctypes, and build the tree."""
+    """Async worker to fetch the XML, parse Doctypes, and build the tree.
+
+    Deliverables are read in all languages first, because translations
+    come from the English ones. The language filter is applied afterwards.
+
+    :param ctx: Context with the loaded environment config.
+    :param doctypes: Doctype strings from the command line.
+    :param console: Console to print to.
+    :param show_trans: Show the translations.
+    :param show_formats: Show the output formats.
+    :param show_categories: Show the category.
+    :param repo_format: Show the repository as ``short`` or ``long``.
+        Not shown if ``None``.
+    :param flat: Print a flat list instead of a tree.
+    :raises click.Abort: If a doctype or docset is invalid, or if the portal
+        config cannot be loaded.
+    """
     parsed_doctypes = parse_doctypes(doctypes, console)
 
     # 2. Get XML Tree
@@ -382,11 +534,13 @@ def list_cmd(
     :param categories: Show categories metadata.
     :param repo: Show repository origin (short or long).
     :param flat: Display a flat list instead of a hierarchy tree.
+    :raises click.Abort: If the arguments or the portal config are invalid.
 
     """ # noqa: D301
     console = shared_console
 
     async def main() -> None:
+        """Run the list command as a named task."""
         await asyncio.create_task(
             async_list_cmd(ctx, doctypes, console, trans, formats, categories, repo, flat),
             name="portal-list",
