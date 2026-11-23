@@ -493,7 +493,7 @@ class TestProcess:
         assert result == 0
         assert [stage.name for stage in manager.stages] == [
             "1/4 Metadata & repositories",
-            "2/4 Metadata Validation…",
+            "Build metadata",
         ]
         assert manager.stages[0].counts.total() == 1
         assert manager._active is None
@@ -721,3 +721,25 @@ class TestProcess:
             mock_pd.assert_awaited_once()
             args, _ = mock_pd.call_args
             assert args[0].xml.deliverableid == "doc-supported"
+
+
+async def test_live_metadata_counts(tmp_path, monkeypatch):
+    from docbuild.utils.display import ItemState, LiveProgressManager
+
+    docs = [Mock(full_id=name) for name in ("fresh", "cached", "failed")]
+
+    async def build(doc, *args, on_skip, **kwargs):
+        if doc.full_id == "cached":
+            on_skip()
+        return doc.full_id != "failed", doc
+
+    monkeypatch.setattr(
+        runner_pkg, "resolve_translation_metadata", AsyncMock(return_value=docs)
+    )
+    monkeypatch.setattr(runner_pkg, "process_deliverable", build)
+    with LiveProgressManager(disable=True) as manager:
+        failed = await execute_build_pipeline(
+            docs, tmp_path, tmp_path, tmp_path, tmp_path, "", "", True, "", 3, False
+        )
+    assert failed == [docs[2]]
+    assert manager.stages[-1].counts == dict.fromkeys(ItemState, 1)

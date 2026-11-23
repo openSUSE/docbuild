@@ -266,6 +266,7 @@ async def _process_single_deliverable(
                 daps_list_srcfiles_tmpl=daps_list_srcfiles_tmpl,
                 skip_repo_update=skip_repo_update,
                 env_config_hash=env_config_hash,
+                on_skip=item.skip if item else None,
                 on_status=partial(stage.rename_item, item) if stage else None,
             )
             if item is not None and not res[0]:
@@ -278,8 +279,8 @@ async def _process_single_deliverable(
             return False, deliverable
 
 
-class _RepositoryUpdateError(Exception):
-    """Unexpected failure setting up or running the repository batch."""
+class RepositoryUpdateError(Exception):
+    """One or more repositories could not be updated."""
 
 
 async def _update_stage_repositories(
@@ -299,10 +300,8 @@ async def _update_stage_repositories(
     if stage:
         urls = {d.git.url for d in git_deliverables if d.git}
         stage.set_total(stage.counts.total() + len(urls))
-    try:
-        await update_repositories(git_deliverables, repo_dir)
-    except Exception as exc:
-        raise _RepositoryUpdateError(str(exc)) from exc
+    if not await update_repositories(git_deliverables, repo_dir):
+        raise RepositoryUpdateError("Repository update failed")
 
 
 async def execute_build_pipeline(
@@ -330,7 +329,7 @@ async def execute_build_pipeline(
             await _update_stage_repositories(
                 deliverables_to_build, repo_dir, skip_repo_update, stage
             )
-    except _RepositoryUpdateError as exc:
+    except RepositoryUpdateError as exc:
         log.error("Failed to update repositories: %s", exc)
         if exitfirst:
             return deliverables_to_build
@@ -395,12 +394,12 @@ async def _validate_metadata(
 
     if skip_metadata:
         if manager:
-            with manager.stage("2/4 Metadata Validation… (skipped)", total=0):
+            with manager.stage("Build metadata (skipped)", total=0):
                 pass
         return []
 
     stage_context = (
-        manager.stage("2/4 Metadata Validation…", total=len(final_deliverables))
+        manager.stage("Build metadata", total=len(final_deliverables))
         if manager is not None
         else nullcontext()
     )
@@ -475,7 +474,7 @@ async def process(
             await _update_stage_repositories(
                 deliverables_to_build, repo_dir, skip_repo_update, stage
             )
-    except _RepositoryUpdateError as exc:
+    except RepositoryUpdateError as exc:
         log.error("Failed to update repositories: %s", exc)
         if exitfirst and deliverables_to_build:
             console_err.print(

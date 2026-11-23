@@ -1,5 +1,6 @@
 """Unit tests for docbuild.tasks.metadata.repos."""
 
+import asyncio
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -52,8 +53,6 @@ class TestUpdateRepositories:
 @pytest.mark.asyncio
 async def test_concurrent_repo_items(tmp_path, monkeypatch):
     """Shared repositories get one live item and one outcome per URL."""
-    import asyncio
-
     from docbuild.utils.display import ItemState, LiveProgressManager
 
     docs = []
@@ -76,3 +75,18 @@ async def test_concurrent_repo_items(tmp_path, monkeypatch):
 
     assert stage.counts == {ItemState.SUCCEEDED: 1, ItemState.FAILED: 1}
     assert not stage.running
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("error", [OSError, TypeError, asyncio.CancelledError])
+async def test_clone_exception(tmp_path, monkeypatch, error):
+    doc = Mock(spec=Deliverable)
+    doc.git = Repo("https://github.com/SUSE/doc-test.git")
+    monkeypatch.setattr(
+        repos_pkg.ManagedGitRepo, "clone_bare", AsyncMock(side_effect=error)
+    )
+    if error is OSError:
+        assert not await update_repositories([doc], tmp_path)
+    else:
+        with pytest.raises(error):
+            await update_repositories([doc], tmp_path)

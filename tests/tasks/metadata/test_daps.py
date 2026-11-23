@@ -382,6 +382,7 @@ class TestProcessDeliverable:
         cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
         Cache("env-hash", {"source.xml": "source-hash"}).to_json(cache_file)
 
+        on_skip = Mock()
         success, result = await process_deliverable(
             deliverable=deliverable,
             repo_dir=setup_paths["repo_dir"],
@@ -392,8 +393,10 @@ class TestProcessDeliverable:
             daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
             skip_repo_update=True,
             env_config_hash="env-hash",
+            on_skip=on_skip,
         )
 
+        on_skip.assert_called_once_with()
         assert success is True
         assert result is deliverable
         updated_data = json.loads(outputjson.read_text(encoding="utf-8"))

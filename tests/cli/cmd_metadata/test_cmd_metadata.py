@@ -66,9 +66,7 @@ def test_metadata_command_with_flags(runner, tmp_path, mock_generate_metadata):
     context.envconfig = mock_env
 
     result = runner.invoke(
-        metadata,
-        ["run", "--exitfirst", "--skip-repo-update"],
-        obj=context
+        metadata, ["run", "--exitfirst", "--skip-repo-update"], obj=context
     )
 
     assert result.exit_code == 0
@@ -78,11 +76,11 @@ def test_metadata_command_with_flags(runner, tmp_path, mock_generate_metadata):
     assert kwargs["skip_repo_update"] is True
 
 
-
 def test_metadata_dir_default_json(runner):
     from unittest.mock import MagicMock
 
     from docbuild.cli.context import DocBuildContext
+
     context = DocBuildContext()
     mock_env = MagicMock()
     mock_env.paths.json_cache_dir = "/fake/json/dir"
@@ -93,10 +91,12 @@ def test_metadata_dir_default_json(runner):
     assert result.exit_code == 0
     assert "/fake/json/dir" in result.output
 
+
 def test_metadata_dir_meta_flag(runner):
     from unittest.mock import MagicMock
 
     from docbuild.cli.context import DocBuildContext
+
     context = DocBuildContext()
     mock_env = MagicMock()
     mock_env.paths.meta_cache_dir = "/fake/meta/dir"
@@ -107,11 +107,28 @@ def test_metadata_dir_meta_flag(runner):
     assert result.exit_code == 0
     assert "/fake/meta/dir" in result.output
 
+
 def test_metadata_dir_missing_config(runner):
     from docbuild.cli.context import DocBuildContext
+
     context = DocBuildContext()
     context.envconfig = None
 
     result = runner.invoke(metadata, ["dir"], obj=context)
 
     assert result.exit_code != 0
+
+
+@pytest.mark.parametrize("flags", [[], ["--live"], ["-L"]])
+def test_metadata_live_context(runner, monkeypatch, flags):
+    from docbuild.utils.display import get_live_manager
+
+    async def process(**kwargs):
+        assert (get_live_manager() is not None) == bool(flags)
+        return 0
+
+    monkeypatch.setattr(cmd_metadata_module, "process", process)
+    context = DocBuildContext()
+    context.envconfig = MagicMock()
+    assert runner.invoke(metadata, ["run", *flags], obj=context).exit_code == 0
+    assert get_live_manager() is None

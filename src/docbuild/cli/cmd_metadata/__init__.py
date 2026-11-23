@@ -1,6 +1,7 @@
 """Extracts metadata from deliverables."""
 
 import asyncio
+from contextlib import nullcontext
 import math
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import click
 from ...models.doctype import Doctype
 from ...tasks.metadata.runner import process
 from ...utils.contextmgr import make_timer
+from ...utils.display import LiveProgressManager
 from ..callback import validate_doctypes
 from ..completion import complete_doctypes
 from ..console import console as stdout, console_err
@@ -44,12 +46,16 @@ def metadata() -> None:
     show_default=True,
     help="Skip updating git repositories before processing.",
 )
+@click.option(
+    "-L", "--live", is_flag=True, default=False, help="Enable live progress view."
+)
 @click.pass_context
 def run_cmd(
     ctx: click.Context,
     doctypes: tuple[Doctype],
     exitfirst: bool,
     skip_repo_update: bool,
+    live: bool,
 ) -> None:
     """Extract metadata from deliverables.
 
@@ -110,7 +116,8 @@ def run_cmd(
                     name="metadata",
                 )
 
-            result = asyncio.run(main())
+            with LiveProgressManager(console=stdout) if live else nullcontext():
+                result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
             stdout.print(f"Elapsed time {t.elapsed:0.2f}s")

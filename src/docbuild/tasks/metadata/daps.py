@@ -119,6 +119,7 @@ async def process_deliverable(  # noqa: C901
     daps_list_srcfiles_tmpl: str,
     skip_repo_update: bool = False,
     env_config_hash: str = "",
+    on_skip: Callable[[], None] | None = None,
     on_status: Callable[[str], None] | None = None,
 ) -> tuple[bool, Deliverable]:
     """Process a single deliverable asynchronously.
@@ -243,6 +244,8 @@ async def process_deliverable(  # noqa: C901
                 log.info(
                     "Cache hit for %s! Skipping DAPS execution.", deliverable.full_id
                 )
+                if on_skip:
+                    on_skip()
                 return True, deliverable
 
             log.info("Cache miss for %s. Running full build...", deliverable.full_id)
