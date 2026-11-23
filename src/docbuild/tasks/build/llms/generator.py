@@ -10,10 +10,19 @@ from bs4 import BeautifulSoup
 import yaml
 
 from docbuild.models.deliverable import Deliverable
+from docbuild.models.product import Product
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
 log = logging.getLogger(__name__)
+
+
+def resolve_product_name(acronym: str) -> str:
+    """Resolve a product acronym (e.g. 'sles') to its full display name."""
+    try:
+        return str(Product(acronym))
+    except ValueError:
+        return acronym
 
 
 async def process_single_html_file(
@@ -60,8 +69,8 @@ async def process_single_html_file(
     # Dynamically extract product and version from the logical file path
     # (Format: en-us/sles/16.1/html/...)
     path_parts = full_rel_path.parts
-    if len(path_parts) >= 3 and path_parts[3] == "html":
-        frontmatter["product"] = path_parts[1]
+    if len(path_parts) > 3 and path_parts[3] == "html":
+        frontmatter["product"] = resolve_product_name(path_parts[1])
         frontmatter["version"] = path_parts[2]
 
     if ld_data:
