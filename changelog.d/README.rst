@@ -16,54 +16,66 @@ On release, those news fragments are compiled into our :file:`CHANGELOG.rst`.
 
 We recommend to follow the steps to make a smooth integration of your changes after you have created a new pull request (PR):
 
-#. Make yourself familiar with the syntax of the news fragments. Each filename follows the syntax::
+.. steps::
 
-    <ISSUE>.<TYPE>.rst
+   .. step:: Learn the news fragment syntax
 
-   where ``<ISSUE>`` is the GitHub pull request or issue number.
-   If you have changes that are not associated with an issue or pull request,
-   start with a ``+`` (plus) sign and a short description
-   The ``<TYPE>`` is one of:
+      Each filename follows this syntax::
 
-   * ``breaking``: describes a change that breaks backward compatibility.
-   * ``bugfix``: fixes a reported bug.
-   * ``deprecation``: informs about deprecation or removed features.
-   * ``doc``: improves documentation.
-   * ``feature``: adds new user facing features.
-   * ``refactor``: refactors code without changing the user facing API.
-   * ``removal``: removes obsolete or deprecated features.
-   * ``infra``: improves the infrastructure, e.g. build or test system.
-   * ``security``: informs about security related issues.
+         <ISSUE>.<TYPE>.rst
 
-   For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
+      where ``<ISSUE>`` is the GitHub pull request or issue number.
+      If you have changes that are not associated with an issue or pull request,
+      start with a ``+`` (plus) sign and a short description.
+      The ``<TYPE>`` is one of:
 
-#. Create the new file with the following command, for example for a feature in issue 123:
+      * ``breaking``: describes a change that breaks backward compatibility.
+      * ``bugfix``: fixes a reported bug.
+      * ``deprecation``: informs about deprecation or removed features.
+      * ``doc``: improves documentation.
+      * ``feature``: adds new user facing features.
+      * ``refactor``: refactors code without changing the user facing API.
+      * ``removal``: removes obsolete or deprecated features.
+      * ``infra``: improves the infrastructure, e.g. build or test system.
+      * ``security``: informs about security related issues.
 
-   .. code-block:: shell
-      :caption: Create a new newsfragment file
-      :name: towncrier-create
+      For example, these are valid filenames: ``123.feature.rst``, ``456.bugfix.rst``, ``+add-json.feature.rst`` etc.
 
-      towncrier create 123.feature.rst
+   .. step:: Create a news fragment file
 
-   The file is created in the :file:`changelog.d/` directory.
+      Create the new file with the following command, for example for a feature in issue 123:
 
-#. Open the file and describe your changes in RST format.
+      .. code-block:: shell
+         :caption: Create a new newsfragment file
+         :name: towncrier-create
 
-   * Prefer simple past tense or constructions with "now".
-   * Wrap symbols like modules, functions, or classes into double backticks
-     to render them in a ``monospace font``.
+         towncrier create 123.feature.rst
 
-   Try to keep the description short.
+      The file is created in the :file:`changelog.d/` directory.
 
-#. Check your changes::
+   .. step:: Write the change description
 
-     towncrier check
+      Open the file and describe your changes in RST format.
 
-#. Optionally, build a draft version of the changelog file with the command::
+      * Prefer simple past tense or constructions with "now".
+      * Wrap symbols like modules, functions, or classes into double backticks
+        to render them in a ``monospace font``.
 
-    towncrier build --draft
+      Try to keep the description short.
 
-#. Commit all your changes and push it.
+   .. step:: Check your changes
+
+      .. code-block:: console
+
+         $ towncrier check
+
+   .. step:: Build a draft changelog (optional)
+
+      .. code-block:: console
+
+         $ towncrier build --draft
+
+   .. step:: Commit and push your changes
 
 
 This finishes your steps.

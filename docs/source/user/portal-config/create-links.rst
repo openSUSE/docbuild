@@ -7,48 +7,56 @@ For some products, additional resources may be required. These can be
 links to partners or supporting resources outside of the portal.
 
 As these resources are *external* from a portal point of view, use
-the ``<external>`` element. Follow this procedure:
+the ``<external>`` element:
 
-#. Find for a product and release the file in your configuration directory.
+.. steps::
 
-#. Find the release (``<docset>``) where you want the deliverable to appear.
-   After the ``</resources>`` end tag, add the following structure:
+    .. step:: Find the product and release configuration file
 
-   .. code-block:: xml
-      :name: external-ref-deliverable
-      :caption: Links to external Resource
+    .. step:: Add the external link to the release
 
-      <external>
-        <link>
-          <url href="https://www.example.com/product/" format="html" />
-          <descriptions>
-            <desc lang="en-us">
-              <p>How to ...</p>
-            </desc>
-          </descriptions>
-        </link>
-      </external>
+         Find the release (``<docset>``) where you want the deliverable to appear.
+         After the ``</resources>`` end tag, add the following structure:
 
-#. Change the link in the ``<url href="...">`` element.
+         .. code-block:: xml
+             :name: external-ref-deliverable
+             :caption: Links to external Resource
 
-   Depending on the target format, you can set the ``format``
-   attribute. The allowed formats are ``html``, ``single-html``, ``pdf``,
-   ``epub``, ``zip``, ``tar``, and ``other``.
+             <external>
+                <link>
+                   <url href="https://www.example.com/product/" format="html" />
+                   <descriptions>
+                      <desc lang="en-us">
+                         <p>How to ...</p>
+                      </desc>
+                   </descriptions>
+                </link>
+             </external>
 
-   The ``<link>`` element also accepts optional attributes:
+    .. step:: Set the link URL and options
 
-   * ``category``: assign a category ID to group the link under a specific section.
-   * ``gated``: set to ``true`` if the target resource requires authentication.
-   * ``titleformat``: specify how titles are displayed.
+         Change the link in the ``<url href="...">`` element.
 
-#. Add your description in the ``<desc>`` element.
+         Depending on the target format, you can set the ``format``
+         attribute. The allowed formats are ``html``, ``single-html``, ``pdf``,
+         ``epub``, ``zip``, ``tar``, and ``other``.
 
-   The child elements are a limited set of HTML.
+         The ``<link>`` element also accepts optional attributes:
 
-#. Optionally, add additional translations for the link.
+         * ``category``: assign a category ID to group the link under a specific section.
+         * ``gated``: set to ``true`` if the target resource requires authentication.
+         * ``titleformat``: specify how titles are displayed.
 
-   Use an ``<desc lang="...">`` element for each language. Change the
-   language in the ``lang`` attribute.
+    .. step:: Add a description
+
+         Add your description in the ``<desc>`` element.
+
+         The child elements are a limited set of HTML.
+
+    .. step:: Add translations (optional)
+
+         Use an ``<desc lang="...">`` element for each language. Change the
+         language in the ``lang`` attribute.
 
 .. seealso::
 

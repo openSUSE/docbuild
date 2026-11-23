@@ -6,61 +6,64 @@ Creating Cross-References
 Some products may be related to other resources: products, releases, or other
 deliverables. To avoid replication, use a cross-reference.
 
-To create such cross-reference follow this procedure:
+To create a cross-reference:
 
-#. Find the deliverable you want to link to and copy the ID. For example,
-   our ID would be ``nas.1.0.overview``.
+.. steps::
 
-#. Find the release (``<docset>``) where you want the deliverable to appear.
-   Inside the ``<locale>`` tag, add the following structure:
+   .. step:: Find the target deliverable
 
-   .. code-block:: xml
-      :name: xref-deliverable
-      :caption: Links to another Deliverable
+      Find the deliverable you want to link to and copy its ID. For example,
+      our ID would be ``nas.1.0.overview``.
 
-      <locale lang="en-us">
-         <!-- [... other deliverables ...] -->
-         <deliverable type="xref">
-            <xref linkend="nas.1.0.overview" />
-         </deliverable>
-      </locale>
+   .. step:: Add the cross-reference to the target release
 
-   Within the list of deliverables, you are free to place the
-   cross-reference anywhere.
+      Find the release (``<docset>``) where you want the deliverable to appear.
+      Inside the ``<locale>`` tag, add the following structure:
 
-#. Optionally, customize the cross-reference:
+      .. code-block:: xml
+         :name: xref-deliverable
+         :caption: Links to another Deliverable
 
-   * To group the reference under a specific heading on the page, add a
-     ``category`` attribute to the ``<xref>`` element (e.g.
-     ``category="cat.nas"``). If omitted, the category is inherited from the
-     target deliverable.
-   * To control how the title is displayed, set the ``titleformat``
-     attribute on ``<xref>``. Allowed values are ``title`` (default) or
-     ``title docset`` (which appends the product and version of the referenced target).
-   * To provide a custom description instead of inheriting the target's
-     description, add a ``<descriptions>`` child element inside ``<xref>``:
+         <locale lang="en-us">
+            <!-- [... other deliverables ...] -->
+            <deliverable type="xref">
+               <xref linkend="nas.1.0.overview" />
+            </deliverable>
+         </locale>
 
-     .. code-block:: xml
-        :caption: Cross-Reference with Custom Title Format and Description
+      Within the list of deliverables, you are free to place the
+      cross-reference anywhere.
 
-        <deliverable type="xref">
-           <xref linkend="nas.1.0.overview" category="cat.nas" titleformat="title docset">
-              <descriptions>
-                 <desc lang="en-us">
-                    <p>Overview of NAS architecture and deployment options.</p>
-                 </desc>
-              </descriptions>
-           </xref>
-        </deliverable>
+   .. step:: (Optionally) customize the cross-reference
 
-   The parent ``<deliverable type="xref">`` element also accepts optional
-   attributes:
+      * To group the reference under a specific heading on the page, add a
+        ``category`` attribute to the ``<xref>`` element (e.g.
+        ``category="cat.nas"``). If omitted, the category is inherited from the
+        target deliverable.
+      * To control how the title is displayed, set the ``titleformat``
+        attribute on ``<xref>``. Allowed values are ``title`` (default) or
+        ``title docset`` (which appends the product and version of the referenced target).
+      * To provide a custom description instead of inheriting the target's
+        description, add a ``<descriptions>`` child element inside ``<xref>``:
 
-   * ``xml:id``: Assign an ID if this reference needs to be targeted by
-     translated releases.
-   * ``gated``: Set to ``"true"`` if access requires authentication.
-   * ``sitemap``: Set to ``"false"`` to omit this deliverable from the sitemap.
+        .. code-block:: xml
+           :caption: Cross-Reference with Custom Title Format and Description
 
+           <deliverable type="xref">
+              <xref linkend="nas.1.0.overview" category="cat.nas" titleformat="title docset">
+                 <descriptions>
+                    <desc lang="en-us">
+                       <p>Overview of NAS architecture and deployment options.</p>
+                    </desc>
+                 </descriptions>
+              </xref>
+           </deliverable>
+
+      The parent ``<deliverable type="xref">`` element also accepts optional
+      attributes:
+
+      * ``gated``: Set to ``"true"`` if access requires authentication.
+      * ``sitemap``: Set to ``"false"`` to omit this deliverable from the sitemap.
 
 Valid Target Types
 ------------------

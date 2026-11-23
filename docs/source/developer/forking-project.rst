@@ -6,18 +6,30 @@ Forking the Project
 
 Prepare a branch for your contribution:
 
-#. On the GitHub project, find a bug or feature you want to work on and ask to be assigned to it.
+.. steps::
 
-#. `Create a fork <https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo>`_ of the repository under your GitHub account.
+   .. step:: Find an issue to work on
 
-#. `Clone your fork <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>`_ to your local machine.
+      On the GitHub project, find a bug or feature you want to work on and ask to be assigned to it.
 
-#. In your local repository, create a new branch for your changes.
+   .. step:: Create a fork
 
-   It's recommended to use the issue number and a descriptive name for the branch that reflects the changes you plan to make.
+      `Create a fork <https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo>`_ of the repository under your GitHub account.
 
-#. `Configure a remote upstream <https://docs.github.com/en/pull-requests/how-tos/work-with-forks/configuring-a-remote-repository-for-a-fork>`_ repository to keep your fork in sync with the original repository:
+   .. step:: Clone your fork
 
-   .. code-block:: console
+      `Clone your fork <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>`_ to your local machine.
 
-      $ git remote add upstream https://github.com/opensuse/docbuild.git
+   .. step:: Create a branch for your changes
+
+      In your local repository, create a new branch for your changes.
+
+      It's recommended to use the issue number and a descriptive name for the branch that reflects the changes you plan to make.
+
+   .. step:: Configure an upstream remote
+
+      `Configure a remote upstream <https://docs.github.com/en/pull-requests/how-tos/work-with-forks/configuring-a-remote-repository-for-a-fork>`_ repository to keep your fork in sync with the original repository:
+
+      .. code-block:: console
+
+         $ git remote add upstream https://github.com/opensuse/docbuild.git

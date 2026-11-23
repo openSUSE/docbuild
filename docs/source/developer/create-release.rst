@@ -16,27 +16,40 @@ Ensure the the following pre-requisites are met before starting the release proc
 
 Follow these steps:
 
-#. Create a new branch named ``release/<VERSION>``, where ``<VERSION>`` is the version number you are releasing (e.g., ``release/1.0.0``).
-#. :ref:`Bump the version <bump-version>`.
-#. :ref:`Update the project <update-project>`.
-#. :ref:`Build the changelog <build-changelog>`.
-#. :ref:`Build the documentation <build-docs>`.
-#. Optionally, look for Ruff issues:
+.. steps::
 
-   .. code-block:: console
+   .. step:: Create a release branch
 
-      $ ruff check .
+      Create a new branch named ``release/<VERSION>``, where ``<VERSION>`` is the version number you are releasing (e.g., ``release/1.0.0``).
 
-#. In your current branch, push the branch to the remote repository:
+   .. step:: :ref:`Bump the version <bump-version>`
 
-   .. code-block:: console
+   .. step:: :ref:`Update the project <update-project>`
 
-      $ git push -u origin HEAD
+   .. step:: :ref:`Build the changelog <build-changelog>`
 
-#. Wait for the CI to pass.
+   .. step:: :ref:`Build the documentation <build-docs>`
 
-   * If it fails, fix the issues and commit again.
-   * If the CI passes, (squash-)merge your release branch into the main branch.
-     The GitHub Action workflow will automatically create a new release based on the name of the release branch.
+   .. step:: Check for Ruff issues (optional)
+
+      .. code-block:: console
+
+         $ ruff check .
+
+   .. step:: Push the release branch
+
+      In your current branch, push the branch to the remote repository:
+
+      .. code-block:: console
+
+         $ git push -u origin HEAD
+
+   .. step:: Wait for CI and merge the release branch
+
+      Wait for the CI to pass.
+
+      * If it fails, fix the issues and commit again.
+      * If the CI passes, (squash-)merge your release branch into the main branch.
+        The GitHub Action workflow will automatically create a new release based on the name of the release branch.
 
 Find the new release in the GitHub repository under the |gh_release| section.

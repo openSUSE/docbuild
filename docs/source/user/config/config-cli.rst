@@ -9,8 +9,8 @@ Use ``key=value`` syntax, and use dot notation for nested options:
 
 .. code-block:: console
 
-     $ docbuild -C "general.canonical_url_domain=https://doc.example.net" -C paths.root_config_dir=/etc/docbuild config list --env
-
+     $ docbuild -C "general.canonical_url_domain=https://doc.example.net" \
+       -C paths.root_config_dir=/etc/docbuild config list --env
      $ docbuild -A max_workers=4 config list --app
 
 Options passed via ``-C`` or ``--set-env`` and via ``-A`` or ``--set-app`` have the highest priority and overwrite the corresponding settings loaded from the built-in defaults and selected configuration files.

@@ -1,0 +1,1 @@
+Applied steps/step directive for all procedures in all guides.

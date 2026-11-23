@@ -25,29 +25,49 @@ Adding a new config key
 
 To add a new configuration key ``new_app_feature``, follow these steps:
 
-#. Decide if you want to add the new key at the root level or introduce
-   a new section for it.
+.. steps::
 
-#. Edit the example file :file:`etc/docbuild/app.example.toml` and add
-   your new key.
+   .. step:: Choose where the new key belongs
 
-#.  Adjust the appropriate model in :mod:`docbuild.models.config.app`:
+      Decide if you want to add the new key at the root level or introduce
+      a new section for it.
 
-    #. Locate the correct Pydantic model class that corresponds to the
-       section of the configuration where your new key belongs.
+   .. step:: Add the key to the example configuration
 
-    #. Add a new field to the model class with the same name as the new key,
-       its expected datatype, and add a :func:`~pydantic.Field` definition.
+      Edit the example file :file:`etc/docbuild/app.example.toml` and add
+      your new key.
 
-    #. Decide if you need a custom validator for the new key.
+   .. step:: Update the Pydantic model
 
-#. Integrate the key ``new_app_feature`` into
-   :data:`~docbuild.cli.defaults.DEFAULT_APP_CONFIG`.
+      Adjust the appropriate model in :mod:`docbuild.models.config.app`:
 
-#. Access the value of the new configuration key through the environment
-   configuration object in your code.
+      #. Locate the correct model class
 
-#. Write tests.
+         Find the Pydantic model class that corresponds to the section of the configuration where your new key belongs.
 
-#. Decide if this is something you need to document in the user or
-   developer documentation.
+      #. Add a field for the new key
+
+         Add a field with the same name as the new key, its expected datatype, and a :func:`~pydantic.Field` definition.
+
+      #. Decide whether a custom validator is needed
+
+         If your new key requires custom validation logic, implement a validator method in the Pydantic model.
+
+   .. step:: Integrate the key into the default configuration
+
+      Integrate ``new_app_feature`` into
+      :data:`~docbuild.cli.defaults.DEFAULT_APP_CONFIG`.
+
+   .. step:: Access the new configuration value
+
+      Access the value of the new configuration key through the environment
+      configuration object in your code.
+
+   .. step:: Write tests
+
+      Write tests for the new configuration key.
+
+   .. step:: Document the new key if needed
+
+      Decide if this is something you need to document in the user or
+      developer documentation.

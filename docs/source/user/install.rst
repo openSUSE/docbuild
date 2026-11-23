@@ -5,14 +5,23 @@ Installing docbuild
 
 To install the docbuild tool, follow these steps:
 
+.. steps::
 
-#. :ref:`qs-prepare-installation` - Prepare your environment for installation.
+   .. step::
 
-#. :ref:`qs-install-docbuild` - Install the docbuild tool itself.
+      :ref:`qs-prepare-installation` - Prepare your environment for installation.
 
-#. :ref:`get-xml-config` - Get the XML configuration files required for building documentation.
+   .. step::
 
-#. :ref:`config-docbuild` - Configure the docbuild tool to suit your needs.
+      :ref:`qs-install-docbuild` - Install the docbuild tool itself.
+
+   .. step::
+
+      :ref:`get-xml-config` - Get the XML configuration files required for building documentation.
+
+   .. step::
+
+      :ref:`config-docbuild` - Configure the docbuild tool to suit your needs.
 
 
 
