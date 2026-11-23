@@ -1,1 +1,1 @@
-Improved the docstrings of the ``docbuild cache`` module.
+Improved the docstrings of the :command:`docbuild cache` module.
