@@ -246,7 +246,7 @@ def build_deliverable_tree(
     :param show_categories: Show the category.
     :param repo_format: Show the repository as ``short`` or ``long``.
         Not shown if ``None``.
-    :return: The new node.
+    :return: The updated tree node.
     """
     deliv_branch = Tree(title)
 
