@@ -1,0 +1,1 @@
+Convert Antora and DocBook admonition boxes to GitHub-flavored Markdown alert syntax (e.g., ``> [!NOTE]``, ``> [!TIP]``, ``> [!WARNING]``) in LLM Markdown output.

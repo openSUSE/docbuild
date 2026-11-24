@@ -93,6 +93,10 @@ def test_clean_and_convert_daps_article() -> None:
     assert "<img" not in md
     assert "| Attribute | Meaning | Value |" in md
     assert "| `NAME` | Full name of the distribution | SLES |" in md
+    assert (
+        "> [!NOTE]\n> **Different content for SUSE Linux 16.0 and SUSE Linux Micro 6.2**"
+        in md
+    )
     assert not re.findall(r"^\s*-\s*$", md, re.M)
 
 
@@ -136,7 +140,7 @@ def test_clean_and_convert_antora() -> None:
     md = clean_and_convert(antora_html)
     assert "<table" not in md
     assert "[](#" not in md
-    assert "> **Warning:** After you set the Rancher Server URL" in md
+    assert "> [!WARNING]\n> After you set the Rancher Server URL" in md
     assert not re.findall(r"^\s*-\s*$", md, re.M)
 
 
@@ -166,8 +170,8 @@ def test_heading_number_spacing_and_admonition_fallbacks() -> None:
     md = clean_and_convert(html)
     assert "## 1 What is node fencing?" in md
     assert "- Nested paragraph item" in md
-    assert "> **Caution:**" in md
-    assert "> **Important:** Important text" in md
+    assert "> [!CAUTION]\n> Plain text content" in md
+    assert "> [!IMPORTANT]\n> Important text" in md
     assert "|  |  |" in md
     assert r"| A \| B | ![icon](img/figure%201.png) |" in md
     assert "| Only1 |  |" in md
