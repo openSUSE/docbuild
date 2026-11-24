@@ -35,7 +35,18 @@ def index(
     doctypes: tuple[Doctype, ...],
     keep_index: bool,
 ) -> None:
-    r"""Generate index HTML pages for deliverables using Jinja templates."""
+    """Generate index HTML pages for deliverables using Jinja templates.
+
+    \f
+
+    The pages are built from the JSON metadata cache with the
+    :file:`index.html.jinja` template.
+
+    :param ctx: The Click context that holds the environment config.
+    :param doctypes: Doctypes to build the index pages for.
+    :param keep_index: Rename an existing :file:`index.html` to
+        :file:`index.html.bak` instead of overwriting it.
+    """  # noqa: D301
     context: DocBuildContext = ctx.obj
     assert context.envconfig is not None
     env_config: EnvConfig = context.envconfig
