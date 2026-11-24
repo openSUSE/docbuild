@@ -7,14 +7,58 @@ from pathlib import Path
 
 from aiostream import pipe, stream
 from bs4 import BeautifulSoup
+from rich.markup import escape
 import yaml
 
+from docbuild.cli.console import console_err
+from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.product import Product
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
 log = logging.getLogger(__name__)
+
+
+EXPECTED_LD_FIELDS = (
+    "name",
+    "description",
+    "dateCreated",
+    "dateModified",
+    "datePublished",
+)
+
+
+def warn_metadata(msg: str) -> None:
+    """Log a metadata warning and print it with a Rich WARNING label."""
+    log.warning(msg)
+    console_err.print(WARNING.render(console=console_err), escape(msg))
+
+
+def extract_json_ld(soup: BeautifulSoup, html_file: Path) -> dict:
+    """Extract and validate JSON-LD metadata from an HTML document."""
+    ld_script = soup.find("script", type="application/ld+json")
+    if not (ld_script and ld_script.string):
+        warn_metadata(f"No JSON-LD block found in {html_file}")
+        return {}
+
+    try:
+        parsed = json.loads(ld_script.string)
+    except json.JSONDecodeError as exc:
+        warn_metadata(f"Invalid JSON-LD in {html_file}: {exc}")
+        return {}
+
+    if not isinstance(parsed, dict):
+        warn_metadata(f"JSON-LD block in {html_file} is not a JSON object.")
+        return {}
+
+    missing_fields = [field for field in EXPECTED_LD_FIELDS if not parsed.get(field)]
+    if missing_fields:
+        warn_metadata(
+            f"Missing JSON-LD field(s) {', '.join(missing_fields)} in {html_file}"
+        )
+
+    return parsed
 
 
 def resolve_product_name(acronym: str) -> str:
@@ -53,14 +97,7 @@ async def process_single_html_file(
 
     html_content = html_file.read_text(encoding="utf-8")
     soup = BeautifulSoup(html_content, "html.parser")
-    ld_script = soup.find("script", type="application/ld+json")
-    if ld_script and ld_script.string:
-        ld_data = json.loads(ld_script.string)
-    else:
-        logging.getLogger("docbuild.tasks.metadata.prebuilt").debug(
-            "No JSON-LD block found in %s", html_file
-        )
-        ld_data = {}
+    ld_data = extract_json_ld(soup, html_file)
 
     frontmatter = {"title": static_title, "description": ""}
     if categories:
@@ -76,7 +113,13 @@ async def process_single_html_file(
     if ld_data:
         frontmatter["title"] = ld_data.get("name", frontmatter["title"])
         frontmatter["description"] = ld_data.get("description", "")
-        frontmatter.update({k: ld_data[k] for k in ("dateCreated", "dateModified", "datePublished") if ld_data.get(k)})
+        frontmatter.update(
+            {
+                k: ld_data[k]
+                for k in ("dateCreated", "dateModified", "datePublished")
+                if ld_data.get(k)
+            }
+        )
 
     yaml_block = yaml.safe_dump(
         frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")
