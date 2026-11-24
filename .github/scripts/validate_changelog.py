@@ -43,6 +43,10 @@ def validate_newsfragment(files: list[pathlib.Path], valid_types: list[str]) -> 
 
     all_valid = True
     for file_path in files:
+        if file_path.parts[-2:] == ("changelog.d", "README.rst"):
+            print(f"Skipping non-newsfragment: {file_path}")
+            continue
+
         filename = file_path.name
         if not pattern.match(filename):
             all_valid = False
