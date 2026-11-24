@@ -1,6 +1,7 @@
 """Core orchestration for HTML to Markdown conversion."""
 
 from html import escape
+import re
 from typing import Final
 
 from justhtml import JustHTML
@@ -58,6 +59,12 @@ def clean_and_convert(html_content: str) -> str:
     md: str = doc.to_markdown()
     for key, val in placeholders.items():
         md = md.replace(key, val)
+    md = re.sub(
+        r"^(>\s*)\\\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\\\](?:\n>)?\n",
+        r"\1[!\2]\n",
+        md,
+        flags=re.MULTILINE,
+    )
     return md
 
 

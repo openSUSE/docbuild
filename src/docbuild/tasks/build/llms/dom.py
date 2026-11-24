@@ -1,6 +1,10 @@
 """DOM manipulation utilities for LLM Markdown conversion."""
 
+import re
+
 from justhtml.dom import Element, Node, NodeType, Text
+
+GFM_ADMONITION_TYPES = {"note", "tip", "important", "warning", "caution"}
 
 
 def get_attrs(node: NodeType) -> dict[str, str]:
@@ -53,54 +57,66 @@ def unwrap_li_paragraphs(node: Node) -> None:
         first.name = "span"
 
 
+def resolve_admonition_type(node: Node, fallback: str = "note") -> str:
+    """Return the uppercase GitHub alert type for an admonition node."""
+    for cls in get_classes(node):
+        if cls.lower() in GFM_ADMONITION_TYPES:
+            return cls.upper()
+    return fallback.upper() if fallback.lower() in GFM_ADMONITION_TYPES else "NOTE"
+
+
 def convert_antora_admonition(node: Node) -> None:
-    """Convert Antora table-based admonition blocks into blockquotes."""
+    """Convert Antora table-based admonition blocks into GitHub alert blockquotes."""
     content_td = node.query_one("td.content")
     if content_td is None:
         return
 
-    label = "Note"
+    fallback = "note"
     icon_el = node.query_one("td.icon i")
     title_el = node.query_one("td.icon .title")
     if icon_el and get_attrs(icon_el).get("title"):
-        label = get_attrs(icon_el)["title"].strip()
+        fallback = get_attrs(icon_el)["title"].strip()
     elif title_el and title_el.to_text(strip=True):
-        label = title_el.to_text(strip=True)
-    else:
-        for cls in get_classes(node):
-            if cls in {"note", "tip", "warning", "important", "caution"}:
-                label = cls.capitalize()
-                break
+        fallback = title_el.to_text(strip=True)
+
+    alert_type = resolve_admonition_type(node, fallback=fallback)
 
     node.name = "blockquote"
-    strong = Element("strong", {}, "html")
-    strong.append_child(Text(f"{label}: "))
+    marker = Element("p", {}, "html")
+    marker.append_child(Text(f"[!{alert_type}]"))
 
-    first_p = content_td.query_one("p")
-    if first_p is not None and first_p.children is not None:
-        first_p.children.insert(0, strong)
-        strong.parent = first_p
-        node.children = list(content_td.children or [])
-    else:
-        p_node = Element("p", {}, "html")
-        p_node.append_child(strong)
-        node.children = [p_node, *(content_td.children or [])]
-
+    node.children = [marker, *(content_td.children or [])]
     for child in node.children:
         child.parent = node
 
 
 def convert_docbook_admonition(node: Node) -> None:
-    """Convert DocBook admonition divs into blockquotes with bold titles."""
+    """Convert DocBook admonition divs into GitHub alert blockquotes."""
+    alert_type = resolve_admonition_type(node)
     node.name = "blockquote"
-    for child in node.children or []:
+
+    new_children: list[NodeType] = []
+    marker = Element("p", {}, "html")
+    marker.append_child(Text(f"[!{alert_type}]"))
+    new_children.append(marker)
+
+    prefix_pattern = re.compile(rf"^{alert_type}\s*:?\s*", re.IGNORECASE)
+
+    for child in list(node.children or []):
         if "admon-title" in get_classes(child):
-            child.name = "p"
-            strong = Element("strong", {}, "html")
-            for sub in list(child.children or []):
-                strong.append_child(sub)
-            child.children = [strong]
-            strong.parent = child
+            title_text = prefix_pattern.sub("", child.to_text(strip=True)).strip()
+            if title_text:
+                p_title = Element("p", {}, "html")
+                strong = Element("strong", {}, "html")
+                strong.append_child(Text(title_text))
+                p_title.append_child(strong)
+                new_children.append(p_title)
+        else:
+            new_children.append(child)
+
+    node.children = new_children
+    for child in node.children:
+        child.parent = node
 
 
 def normalize_node(node: NodeType) -> None:
