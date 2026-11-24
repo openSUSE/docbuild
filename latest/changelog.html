@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.31.1.dev8+g66610e2bf.d20261124</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.31.1.dev9+g92fe41c70.d20261124</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=f4b1c1bb"></script>
+    <script src="_static/documentation_options.js?v=2026d5b5"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -475,6 +475,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed the YAML frontmatter in LLM Markdown files to correctly extract and display the <code class="docutils literal notranslate"><span class="pre">product</span></code> and <code class="docutils literal notranslate"><span class="pre">version</span></code> values during retroactive builds (<code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">llms</span></code>). The redundant <code class="docutils literal notranslate"><span class="pre">language</span></code> key has been completely removed from the output. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/799">GH #799</a>)</p></li>
+<li><p>Convert Antora and DocBook admonition boxes to GitHub-flavored Markdown alert syntax (e.g., <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!NOTE]</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!TIP]</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!WARNING]</span></code>) in LLM Markdown output. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/801">GH #801</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">
