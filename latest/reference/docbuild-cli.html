@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; Docbuild Documentation 0.31.1.dev9+g92fe41c70.d20261124</title>
+    <title>docbuild CLI &#8212; Docbuild Documentation 0.31.1.dev10+g950e4d9b3.d20261124</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=2026d5b5"></script>
+    <script src="../_static/documentation_options.js?v=a746dab4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -970,6 +970,11 @@ doctypes (e.g., sles/15-SP3). Use –all to process the entire target directory.
 <section id="docbuild-cache-dir">
 <h4>dir<a class="headerlink" href="#docbuild-cache-dir" title="Link to this heading">#</a></h4>
 <p>Display the path of the cache directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context that holds the environment config.</p>
+</dd>
+</dl>
 <p class="rubric">Usage</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>cache<span class="w"> </span>dir<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
@@ -979,6 +984,18 @@ doctypes (e.g., sles/15-SP3). Use –all to process the entire target directory.
 <h4>list<a class="headerlink" href="#docbuild-cache-list" title="Link to this heading">#</a></h4>
 <p>List cache files.</p>
 <p>Optionally pass DOCTYPEs (e.g., sles/15-SP5/en-us) to filter the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context that holds the environment config.</p>
+</dd>
+<dt class="field-even">param doctypes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Doctypes to filter the list. All files are listed if
+empty.</p>
+</dd>
+<dt class="field-odd">param cache_type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Which cache to list: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p>
+</dd>
+</dl>
 <p class="rubric">Usage</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>cache<span class="w"> </span>list<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DOCTYPES<span class="o">]</span>...
 </pre></div>
@@ -1007,6 +1024,24 @@ doctypes (e.g., sles/15-SP3). Use –all to process the entire target directory.
 <h4>prune<a class="headerlink" href="#docbuild-cache-prune" title="Link to this heading">#</a></h4>
 <p>Remove cache files.</p>
 <p>Removes all caches by default. Pass DOCTYPEs to remove specific caches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context that holds the environment config.</p>
+</dd>
+<dt class="field-even">param doctypes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Doctypes to limit the pruning to. For the JSON cache,
+only the product is used, so all docsets of that product are removed.</p>
+</dd>
+<dt class="field-odd">param cache_type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Which cache to prune: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p>
+</dd>
+<dt class="field-even">param yes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Skip the confirmation prompt.</p>
+</dd>
+<dt class="field-odd">raises click.Abort<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If the user does not confirm.</p>
+</dd>
+</dl>
 <p class="rubric">Usage</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>cache<span class="w"> </span>prune<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>DOCTYPES<span class="o">]</span>...
 </pre></div>

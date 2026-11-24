@@ -33,30 +33,90 @@ Package Contents
 
    Expand doctypes into concrete metadata cache directory paths.
 
+   The metadata cache is stored as ``<meta_dir>/<lang>/<product>/<docset>``.
+   One path is built for each combination of product, docset, and language.
+   Wildcards (``*``) are not expanded, so a doctype like ``sles/*/*`` does not
+   match any directory.
+
+   :param meta_dir: The metadata cache directory.
+   :param doctypes: Doctypes to build the paths for.
+   :return: The directory paths, for example ``<meta_dir>/en-us/sles/15-SP6``.
+       If no doctypes are given, only ``meta_dir`` itself is returned.
+
 
 .. py:function:: expand_json_paths(json_dir: pathlib.Path, doctypes: tuple[docbuild.models.doctype.Doctype]) -> list[pathlib.Path]
 
    Expand doctypes into concrete json cache directory paths.
+
+   The JSON cache is stored as ``<json_dir>/<product>/<docset>.json``, so only
+   the product of each doctype is used. Docsets and languages are ignored.
+
+   :param json_dir: The JSON cache directory.
+   :param doctypes: Doctypes to build the paths for.
+   :return: One product directory for each doctype, for example
+       ``<json_dir>/sles``.
+       If no doctypes are given, only ``json_dir`` itself is returned.
+
+   .. code-block:: pycon
+
+       >>> doctype = Doctype.from_str("sles/15-SP6/en-us")
+       >>> [str(p) for p in expand_json_paths(Path("/cache"), (doctype,))]
+       ['/cache/sles']
 
 
 .. py:function:: delete_cache_files(targets: list[pathlib.Path], extension: str) -> int
 
    Delete cache files in the given target directories.
 
+   Subdirectories are searched as well. Missing directories are skipped.
+
+   :param targets: Directories to search.
+   :param extension: Glob pattern of the files to delete, for example
+       ``*.json``.
+   :return: The number of deleted files.
+   :raises OSError: If a file cannot be deleted.
+
 
 .. py:function:: print_cache_listing(directory: pathlib.Path, title: str, target_paths: list[pathlib.Path], extension: str) -> None
 
    Print cache files for a specific cache type.
+
+   The files are sorted and shown relative to ``directory``. A warning is
+   printed instead if ``directory`` does not exist or no files are found.
+
+   :param directory: The cache directory to list.
+   :param title: Heading of the listing, for example ``Meta Cache``.
+   :param target_paths: Directories inside ``directory`` to search.
+   :param extension: Glob pattern of the files to list, for example
+       ``*.json``.
 
 
 .. py:function:: gather_prune_targets(cache_type: str, doctypes: tuple[docbuild.models.doctype.Doctype], meta_dir: pathlib.Path, json_dir: pathlib.Path) -> tuple[list[pathlib.Path], list[pathlib.Path]]
 
    Gather directories to prune for meta and json caches.
 
+   Only directories that exist are returned.
+
+   :param cache_type: Which cache to prune: ``meta``, ``json``, or ``all``.
+   :param doctypes: Doctypes to limit the pruning to. If empty, the whole
+       cache directory is used.
+   :param meta_dir: The metadata cache directory.
+   :param json_dir: The JSON cache directory.
+   :return: The metadata directories and the JSON directories to prune.
+
 
 .. py:function:: get_prune_confirmation_msg(cache_type: str, doctypes: tuple[docbuild.models.doctype.Doctype]) -> str
 
    Format the confirmation message for pruning.
+
+   :param cache_type: Which cache to prune: ``meta``, ``json``, or ``all``.
+   :param doctypes: Doctypes that limit the pruning.
+   :return: The question to ask before deleting the files.
+
+   .. code-block:: pycon
+
+       >>> get_prune_confirmation_msg("json", ())
+       'Are you sure you want to delete ALL json cache files?'
 
 
 .. py:function:: cache() -> None
@@ -69,6 +129,11 @@ Package Contents
    Display the path of the cache directories.
 
 
+
+
+   :param ctx: The Click context that holds the environment config.
+
+
 .. py:function:: cache_list(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], cache_type: str) -> None
 
    List cache files.
@@ -76,10 +141,28 @@ Package Contents
    Optionally pass DOCTYPEs (e.g., sles/15-SP5/en-us) to filter the list.
 
 
+
+
+   :param ctx: The Click context that holds the environment config.
+   :param doctypes: Doctypes to filter the list. All files are listed if
+       empty.
+   :param cache_type: Which cache to list: ``meta``, ``json``, or ``all``.
+
+
 .. py:function:: cache_prune(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], cache_type: str, yes: bool) -> None
 
    Remove cache files.
 
    Removes all caches by default. Pass DOCTYPEs to remove specific caches.
+
+
+
+
+   :param ctx: The Click context that holds the environment config.
+   :param doctypes: Doctypes to limit the pruning to. For the JSON cache,
+       only the product is used, so all docsets of that product are removed.
+   :param cache_type: Which cache to prune: ``meta``, ``json``, or ``all``.
+   :param yes: Skip the confirmation prompt.
+   :raises click.Abort: If the user does not confirm.
 
 

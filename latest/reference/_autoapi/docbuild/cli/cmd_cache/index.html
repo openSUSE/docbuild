@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_cache &#8212; Docbuild Documentation 0.31.1.dev9+g92fe41c70.d20261124</title>
+    <title>docbuild.cli.cmd_cache &#8212; Docbuild Documentation 0.31.1.dev10+g950e4d9b3.d20261124</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../_static/documentation_options.js?v=2026d5b5"></script>
+    <script src="../../../../../_static/documentation_options.js?v=a746dab4"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -733,36 +733,131 @@
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.expand_meta_paths">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">expand_meta_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.expand_meta_paths" title="Link to this definition">#</a></dt>
 <dd><p>Expand doctypes into concrete metadata cache directory paths.</p>
+<p>The metadata cache is stored as <code class="docutils literal notranslate"><span class="pre">&lt;meta_dir&gt;/&lt;lang&gt;/&lt;product&gt;/&lt;docset&gt;</span></code>.
+One path is built for each combination of product, docset, and language.
+Wildcards (<code class="docutils literal notranslate"><span class="pre">*</span></code>) are not expanded, so a doctype like <code class="docutils literal notranslate"><span class="pre">sles/*/*</span></code> does not
+match any directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meta_dir</strong> – The metadata cache directory.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to build the paths for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The directory paths, for example <code class="docutils literal notranslate"><span class="pre">&lt;meta_dir&gt;/en-us/sles/15-SP6</span></code>.
+If no doctypes are given, only <code class="docutils literal notranslate"><span class="pre">meta_dir</span></code> itself is returned.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.expand_json_paths">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">expand_json_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.expand_json_paths" title="Link to this definition">#</a></dt>
 <dd><p>Expand doctypes into concrete json cache directory paths.</p>
+<p>The JSON cache is stored as <code class="docutils literal notranslate"><span class="pre">&lt;json_dir&gt;/&lt;product&gt;/&lt;docset&gt;.json</span></code>, so only
+the product of each doctype is used. Docsets and languages are ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_dir</strong> – The JSON cache directory.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to build the paths for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One product directory for each doctype, for example
+<code class="docutils literal notranslate"><span class="pre">&lt;json_dir&gt;/sles</span></code>.
+If no doctypes are given, only <code class="docutils literal notranslate"><span class="pre">json_dir</span></code> itself is returned.</p>
+</dd>
+</dl>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">doctype</span> <span class="o">=</span> <span class="n">Doctype</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="s2">&quot;sles/15-SP6/en-us&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">expand_json_paths</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/cache&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">doctype</span><span class="p">,))]</span>
+<span class="go">[&#39;/cache/sles&#39;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.delete_cache_files">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">delete_cache_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.delete_cache_files" title="Link to this definition">#</a></dt>
 <dd><p>Delete cache files in the given target directories.</p>
+<p>Subdirectories are searched as well. Missing directories are skipped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>targets</strong> – Directories to search.</p></li>
+<li><p><strong>extension</strong> – Glob pattern of the files to delete, for example
+<code class="docutils literal notranslate"><span class="pre">*.json</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of deleted files.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#OSError" title="(in Python v3.15)"><strong>OSError</strong></a> – If a file cannot be deleted.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.print_cache_listing">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">print_cache_listing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.print_cache_listing" title="Link to this definition">#</a></dt>
 <dd><p>Print cache files for a specific cache type.</p>
+<p>The files are sorted and shown relative to <code class="docutils literal notranslate"><span class="pre">directory</span></code>. A warning is
+printed instead if <code class="docutils literal notranslate"><span class="pre">directory</span></code> does not exist or no files are found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> – The cache directory to list.</p></li>
+<li><p><strong>title</strong> – Heading of the listing, for example <code class="docutils literal notranslate"><span class="pre">Meta</span> <span class="pre">Cache</span></code>.</p></li>
+<li><p><strong>target_paths</strong> – Directories inside <code class="docutils literal notranslate"><span class="pre">directory</span></code> to search.</p></li>
+<li><p><strong>extension</strong> – Glob pattern of the files to list, for example
+<code class="docutils literal notranslate"><span class="pre">*.json</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.gather_prune_targets">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">gather_prune_targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meta_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.15)"><span class="pre">pathlib.Path</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.gather_prune_targets" title="Link to this definition">#</a></dt>
 <dd><p>Gather directories to prune for meta and json caches.</p>
+<p>Only directories that exist are returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_type</strong> – Which cache to prune: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to limit the pruning to. If empty, the whole
+cache directory is used.</p></li>
+<li><p><strong>meta_dir</strong> – The metadata cache directory.</p></li>
+<li><p><strong>json_dir</strong> – The JSON cache directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The metadata directories and the JSON directories to prune.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.get_prune_confirmation_msg">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">get_prune_confirmation_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.get_prune_confirmation_msg" title="Link to this definition">#</a></dt>
 <dd><p>Format the confirmation message for pruning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cache_type</strong> – Which cache to prune: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes that limit the pruning.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The question to ask before deleting the files.</p>
+</dd>
+</dl>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_prune_confirmation_msg</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="p">())</span>
+<span class="go">&#39;Are you sure you want to delete ALL json cache files?&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -775,6 +870,11 @@
 <dt class="sig sig-object py" id="docbuild.cli.cmd_cache.cache_dir">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">cache_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.cache_dir" title="Link to this definition">#</a></dt>
 <dd><p>Display the path of the cache directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ctx</strong> – The Click context that holds the environment config.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -782,6 +882,16 @@
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">cache_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.cache_list" title="Link to this definition">#</a></dt>
 <dd><p>List cache files.</p>
 <p>Optionally pass DOCTYPEs (e.g., sles/15-SP5/en-us) to filter the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – The Click context that holds the environment config.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to filter the list. All files are listed if
+empty.</p></li>
+<li><p><strong>cache_type</strong> – Which cache to list: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -789,6 +899,20 @@
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_cache.</span></span><span class="sig-name descname"><span class="pre">cache_prune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">doctypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../../models/doctype/Doctype.html#docbuild.models.doctype.Doctype" title="docbuild.models.doctype.Doctype"><span class="pre">docbuild.models.doctype.Doctype</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">yes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_cache.cache_prune" title="Link to this definition">#</a></dt>
 <dd><p>Remove cache files.</p>
 <p>Removes all caches by default. Pass DOCTYPEs to remove specific caches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ctx</strong> – The Click context that holds the environment config.</p></li>
+<li><p><strong>doctypes</strong> – Doctypes to limit the pruning to. For the JSON cache,
+only the product is used, so all docsets of that product are removed.</p></li>
+<li><p><strong>cache_type</strong> – Which cache to prune: <code class="docutils literal notranslate"><span class="pre">meta</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">all</span></code>.</p></li>
+<li><p><strong>yes</strong> – Skip the confirmation prompt.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Abort" title="(in Click v8.6.x)"><strong>click.Abort</strong></a> – If the user does not confirm.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
