@@ -38,3 +38,11 @@ Module Contents
    Generate a sitemap.xml in the target distribution directory.
 
 
+
+
+   The sitemap is written to the target base directory. Its URLs start
+   with the canonical URL domain from the environment config.
+
+   :param ctx: The Click context that holds the environment config.
+
+

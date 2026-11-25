@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild CLI &#8212; Docbuild Documentation 0.31.1.dev10+g950e4d9b3.d20261124</title>
+    <title>docbuild CLI &#8212; Docbuild Documentation 0.31.1.dev11+g1520b6124.d20261125</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=a746dab4"></script>
+    <script src="../_static/documentation_options.js?v=0a5214fc"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -778,6 +778,20 @@ making it ideal for use in scripts.</p>
 <section id="docbuild-build-index">
 <h4>index<a class="headerlink" href="#docbuild-build-index" title="Link to this heading">#</a></h4>
 <p>Generate index HTML pages for deliverables using Jinja templates.</p>
+<p>The pages are built from the JSON metadata cache with the
+<code class="file docutils literal notranslate"><span class="pre">index.html.jinja</span></code> template.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param ctx<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Click context that holds the environment config.</p>
+</dd>
+<dt class="field-even">param doctypes<span class="colon">:</span></dt>
+<dd class="field-even"><p>Doctypes to build the index pages for.</p>
+</dd>
+<dt class="field-odd">param keep_index<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Rename an existing <code class="file docutils literal notranslate"><span class="pre">index.html</span></code> to
+<code class="file docutils literal notranslate"><span class="pre">index.html.bak</span></code> instead of overwriting it.</p>
+</dd>
+</dl>
 <p class="rubric">Usage</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docbuild<span class="w"> </span>build<span class="w"> </span>index<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>DOCTYPES...
 </pre></div>

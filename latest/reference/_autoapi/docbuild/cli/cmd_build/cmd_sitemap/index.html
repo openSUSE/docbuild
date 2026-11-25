@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.cli.cmd_build.cmd_sitemap &#8212; Docbuild Documentation 0.31.1.dev10+g950e4d9b3.d20261124</title>
+    <title>docbuild.cli.cmd_build.cmd_sitemap &#8212; Docbuild Documentation 0.31.1.dev11+g1520b6124.d20261125</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../../_static/documentation_options.js?v=a746dab4"></script>
+    <script src="../../../../../../_static/documentation_options.js?v=0a5214fc"></script>
     <script src="../../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -730,6 +730,13 @@
 <dt class="sig sig-object py" id="docbuild.cli.cmd_build.cmd_sitemap.sitemap">
 <span class="sig-prename descclassname"><span class="pre">docbuild.cli.cmd_build.cmd_sitemap.</span></span><span class="sig-name descname"><span class="pre">sitemap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://click.palletsprojects.com/en/latest/api/#click.Context" title="(in Click v8.6.x)"><span class="pre">click.Context</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#docbuild.cli.cmd_build.cmd_sitemap.sitemap" title="Link to this definition">#</a></dt>
 <dd><p>Generate a sitemap.xml in the target distribution directory.</p>
+<p>The sitemap is written to the target base directory. Its URLs start
+with the canonical URL domain from the environment config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ctx</strong> – The Click context that holds the environment config.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
