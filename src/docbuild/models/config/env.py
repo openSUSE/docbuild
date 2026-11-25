@@ -100,11 +100,14 @@ runtime during the build process.
 """
 
 from copy import deepcopy
+from email.errors import HeaderParseError
+from email.headerregistry import Address
 from pathlib import Path
 import re
-from typing import Annotated, Any, Final, Self
+from typing import Annotated, Any, Final, Literal, Self
 
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     Field,
@@ -275,6 +278,42 @@ class EnvBuild(BaseModel):
 
 
 # --- Configuration Models ---
+
+
+def validate_mailbox(value: str) -> str:
+    """Require one mailbox with a domain for an SMTP envelope address."""
+    value = value.strip()
+    try:
+        address = Address(addr_spec=value)
+    except (HeaderParseError, ValueError) as exc:
+        raise ValueError("Expected a single email address") from exc
+    if not address.username or not address.domain or any(c in value for c in "\r\n"):
+        raise ValueError("Expected a single email address with a domain")
+    return Address(username=address.username, domain=address.domain.lower()).addr_spec
+
+
+Mailbox = Annotated[str, AfterValidator(validate_mailbox)]
+
+
+class EnvMail(BaseModel):
+    """SMTP delivery settings for build failure notifications."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    admin_emails: list[Mailbox] = Field(
+        default_factory=list, description="Run-wide digest recipients."
+    )
+    sender: Mailbox = Field(description="Sender email address.")
+    smtp_host: str = Field(
+        min_length=1, pattern=r"^\S+$", description="SMTP relay hostname."
+    )
+    smtp_port: int = Field(default=587, ge=1, le=65535, description="SMTP relay port.")
+    tls: Literal["starttls", "implicit", "none"] = Field(
+        default="starttls", description="SMTP transport encryption."
+    )
+    timeout: float = Field(
+        default=10, gt=0, allow_inf_nan=False, description="Socket timeout in seconds."
+    )
 
 
 class EnvGeneral(BaseModel):
@@ -876,6 +915,10 @@ class EnvConfig(BaseModel):
         description="General settings like environment name, role, and languages.",
     )
     "General application settings."
+
+    mail: EnvMail | None = Field(
+        default=None, description="Optional SMTP delivery settings."
+    )
 
     paths: EnvPaths = Field(
         default_factory=EnvPaths,

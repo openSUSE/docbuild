@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 
 from docbuild.models.deliverable import Deliverable
+from docbuild.notifications import record_failure
 from docbuild.utils.display import get_live_manager
 from docbuild.utils.git import ManagedGitRepo
 
@@ -59,12 +60,24 @@ async def update_repositories(
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    res = True
-    for repo, result in zip(repos, results, strict=False):
+    failed_urls = {
+        url
+        for url, result in zip(unique_urls, results, strict=True)
+        if result is not True
+    }
+    record_repository_failures(failed_urls, deliverables)
+    for repo, result in zip(repos, results, strict=True):
         if isinstance(result, BaseException):
             raise result
         if not result:
             log.error("Failed to update repository %s", repo.slug)
-            res = False
 
-    return res
+    return not failed_urls
+
+
+def record_repository_failures(urls: set[str], deliverables: list[Deliverable]) -> None:
+    """Attribute failed shared repository updates to their selected deliverables."""
+    if urls:
+        for d in deliverables:
+            if d.git and d.git.url in urls:
+                record_failure("Repository update", f"Could not update {d.git.name}", d)

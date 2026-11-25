@@ -25,6 +25,7 @@ from ...models.manifest import (
     Manifest,
     SingleDocument,
 )
+from ...notifications import record_failure
 from .deliverables import get_deliverable_from_doctype
 
 log = logging.getLogger(__name__)
@@ -68,19 +69,26 @@ def create_synthetic_document(d: Deliverable) -> Document:
     return Document(docs=[sdoc], category=d.xml.categoryid)
 
 
-def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
+def read_and_project_json(
+    actual_file: Path, d: Deliverable, *, source: Deliverable | None = None
+) -> Document | None:
     """Read JSON from disk and project into the referencing language if needed."""
+    owner = d if source is None else source
     try:
         with actual_file.open(encoding="utf-8") as fh:
             loaded_doc_data = json.load(fh)
 
         if not loaded_doc_data:
+            record_failure(
+                "Manifest generation", f"Empty metadata file: {actual_file}", owner
+            )
             log.error("Empty metadata file %s", actual_file)
             return None
 
         # This yields a Document model with a single translation in its .docs list
         document = Document.model_validate(loaded_doc_data)
 
+        owner = d
         # 3. If this was an xref, project the JSON metadata into the referencing language
         if d.xml.is_xref:
             if document.docs:
@@ -94,6 +102,7 @@ def read_and_project_json(actual_file: Path, d: Deliverable) -> Document | None:
         return document
 
     except (json.JSONDecodeError, ValidationError, OSError) as e:
+        record_failure("Manifest generation", e, owner)
         log.error("Error processing metadata file %s: %s", actual_file, e)
         return None
 
@@ -207,7 +216,7 @@ def load_documents_from_deliverables(
         stdout.print(f"  | {actual_file.stem} [{d.xml.lang}]", markup=False)
 
         # 3. Read and project the JSON data
-        doc_model = read_and_project_json(actual_file, d)
+        doc_model = read_and_project_json(actual_file, d, source=target_d)
         if doc_model:
             loaded_docs.append(doc_model)
 

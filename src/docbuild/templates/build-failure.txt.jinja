@@ -1,0 +1,29 @@
+Environment: {{ environment }}
+Finished: {{ finished }}
+
+Build failures:
+{% for f in failures %}
+{% set d = f.deliverable %}
+{% if d %}
+{% set version = d.xml.docset_version or d.xml.docset_path %}
+* {{ [d.xml.product_id, version] | select | join("/") }} — {{ d.xml.dcfile or d.xml.deliverableid or "Deliverable" }}
+{% if d.xml.lang %}
+  Language: {{ d.xml.lang }}
+{% endif %}
+{% if f.format %}
+  Format: {{ f.format }}
+{% endif %}
+{% else %}
+* Run-wide failure
+{% endif %}
+  Stage: {{ f.stage }}
+  Error: {{ f.summary }}
+{% if d and d.git and d.git.name %}
+  Source: {{ d.git.name }}{% if d.xml.branch() %}, branch {{ d.xml.branch() }}{% endif %}
+
+{% endif %}
+
+{% endfor %}
+{% if log_path %}
+Build log: {{ log_path }}
+{% endif %}

@@ -89,6 +89,14 @@ _LOGGING_STATE: dict[str, contextvars.ContextVar] = {
 }
 
 
+def active_log_path() -> Path | None:
+    """Return the current run's file handler destination, when configured."""
+    for handler in _LOGGING_STATE["handlers"].get() or ():
+        if isinstance(handler, logging.FileHandler):
+            return Path(handler.baseFilename)
+    return None
+
+
 def shutdown_logging() -> None:
     """Ensure all logging threads and handlers shut down cleanly."""
     listener = _LOGGING_STATE["listener"].get()

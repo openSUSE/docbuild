@@ -16,6 +16,7 @@ from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.json_ld import JsonLD
 from docbuild.models.product import Product
+from docbuild.notifications import record_failure
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
@@ -237,4 +238,5 @@ async def generate_llmstxt(
         log.info("Successfully generated Markdown for %s", deliverable.full_id)
 
     except Exception as e:
+        record_failure("llms.txt generation", e, deliverable, "html")
         log.error("Failed to generate llms.txt: %s", e)

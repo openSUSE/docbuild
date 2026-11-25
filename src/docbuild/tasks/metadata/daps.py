@@ -9,18 +9,23 @@ import shlex
 
 from docbuild.models.cache import Cache
 from docbuild.models.deliverable import Deliverable
+from docbuild.notifications import record_failure
 
 from ...config.app import normalize_runtime_placeholders
 from ...utils.contextmgr import PersistentOnErrorTemporaryDirectory, edit_json
 from ...utils.git import ManagedGitRepo
-from ...utils.shell import run_command
+from ...utils.shell import run_command, subprocess_env
 from .prebuilt import extract_prebuilt_metadata
 
 log = logging.getLogger(__name__)
 
 
 async def get_daps_hashes(
-    worktree_dir: Path, dcfile_path: Path, daps_list_srcfiles_tmpl: str
+    worktree_dir: Path,
+    dcfile_path: Path,
+    daps_list_srcfiles_tmpl: str,
+    *,
+    deliverable: Deliverable | None = None,
 ) -> dict[str, str]:
     """Run daps list-srcfiles --hashes and parse the output.
 
@@ -35,6 +40,7 @@ async def get_daps_hashes(
     result = await run_command(cmd, cwd=worktree_dir)
 
     if result.returncode != 0:
+        record_failure("Metadata source listing", result.stderr, deliverable)
         log.error("daps list-srcfiles failed: %s", result.stderr)
         return {}
 
@@ -172,6 +178,7 @@ async def process_deliverable(  # noqa: C901
             return True, deliverable
 
         except Exception as e:
+            record_failure("Prebuilt metadata", e, deliverable)
             log.error(
                 "Failed to extract metadata for prebuilt deliverable %s: %s",
                 deliverable.full_id,
@@ -181,6 +188,11 @@ async def process_deliverable(  # noqa: C901
 
     bare_repo_path = repo_dir / deliverable.git.slug
     if not bare_repo_path.is_dir():
+        record_failure(
+            "Repository preparation",
+            f"Bare repository missing: {bare_repo_path}",
+            deliverable,
+        )
         log.error(
             "Bare repository not found for %s at %s",
             deliverable.git.name,
@@ -192,6 +204,8 @@ async def process_deliverable(  # noqa: C901
     outputdir.mkdir(parents=True, exist_ok=True)
     outputjson = outputdir / deliverable.xml.dcfile
 
+    diagnostic = ""
+    stage = "Repository preparation"
     try:
         async with PersistentOnErrorTemporaryDirectory(
             dir=str(tmp_repo_dir),
@@ -207,6 +221,7 @@ async def process_deliverable(  # noqa: C901
                         f"Failed to ensure bare repository for {deliverable.full_id}"
                     )
 
+            stage = "Worktree creation"
             if on_status:
                 on_status(f"Creating worktree for {deliverable.full_id}")
             try:
@@ -219,6 +234,7 @@ async def process_deliverable(  # noqa: C901
                 if on_status:
                     on_status(deliverable.full_id)
 
+            stage = "Metadata generation"
             full_dcfile_path = (
                 Path(worktree_dir) / deliverable.subdir / deliverable.xml.dcfile
             )
@@ -229,7 +245,10 @@ async def process_deliverable(  # noqa: C901
 
             # Fetch current hashes using our new helper with the configured template
             current_file_hashes = await get_daps_hashes(
-                Path(worktree_dir), full_dcfile_path, daps_list_srcfiles_tmpl
+                Path(worktree_dir),
+                full_dcfile_path,
+                daps_list_srcfiles_tmpl,
+                deliverable=deliverable,
             )
             new_cache = Cache(
                 env_config_hash=env_config_hash, file_hashes=current_file_hashes
@@ -259,6 +278,7 @@ async def process_deliverable(  # noqa: C901
 
             daps_proc = await asyncio.create_subprocess_exec(
                 *cmd,
+                env=subprocess_env(),
                 stdin=asyncio.subprocess.DEVNULL,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
@@ -267,6 +287,7 @@ async def process_deliverable(  # noqa: C901
 
             if daps_proc.returncode != 0:
                 log.error("DAPS Error: %s", stderr_data.decode())
+                diagnostic = stderr_data.decode(errors="replace").strip()
                 raise RuntimeError(f"DAPS failed for {deliverable.full_id}")
 
         update_metadata_json(outputjson, deliverable)
@@ -278,5 +299,6 @@ async def process_deliverable(  # noqa: C901
         return True, deliverable
 
     except Exception as e:
+        record_failure(stage, diagnostic or e, deliverable)
         log.error("Error processing %s: %s", deliverable.full_id, str(e))
         return False, deliverable

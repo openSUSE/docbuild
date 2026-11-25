@@ -11,6 +11,7 @@ from pathlib import Path
 import click
 
 from ...models.doctype import Doctype
+from ...notifications import BuildNotifications
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
 from ...utils.contextmgr import make_timer
@@ -132,6 +133,8 @@ def run(  # noqa: C901
     max_workers = context.appconfig.max_workers if context.appconfig else 1
     # console.print(f"Config path: {env.paths.config_dir}")
 
+    notifications = BuildNotifications(env)
+
     async def run_pipeline() -> int:
         manager = ACTIVE_LIVE_MANAGER.get(None)
         build_skip_repo = skip_repo_update
@@ -145,6 +148,7 @@ def run(  # noqa: C901
                 with manager.stage("2/4 Metadata Validation… (skipped)", total=0):
                     pass
         else:
+            notifications.stage = "Metadata generation"
             meta_result = await metadata_process(
                 main_portal_config=main_portal_config,
                 tmp_metadata_dir=tmp_metadata_dir,
@@ -166,6 +170,7 @@ def run(  # noqa: C901
 
             build_skip_repo = True
 
+        notifications.stage = "Build"
         return await build_process(
             main_portal_config=main_portal_config,
             repo_dir=repo_dir,
@@ -188,6 +193,7 @@ def run(  # noqa: C901
             async def main() -> int:
                 res = await run_pipeline()
                 if res == 0 and sitemap:
+                    notifications.stage = "Sitemap"
                     base_url = str(env.general.canonical_url_domain)
                     await generate_sitemap_with_progress(
                         target_base_dir, base_url, verbose=context.verbose
@@ -195,7 +201,7 @@ def run(  # noqa: C901
                 return res
 
             manager_ctx = LiveProgressManager(console=console, disable=False) if live else nullcontext()
-            with manager_ctx as mgr:
+            with notifications, manager_ctx as mgr:
                 try:
                     result = asyncio.run(main())
                 except (KeyboardInterrupt, asyncio.CancelledError):
@@ -203,6 +209,7 @@ def run(  # noqa: C901
                         mgr.stop()
                     console.print("\n[yellow]Build cancelled by user.[/]")
                     result = 130
+                notifications.result = result
     except (KeyboardInterrupt, asyncio.CancelledError):
         console.print("\n[yellow]Build cancelled by user.[/]")
         result = 130

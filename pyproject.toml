@@ -119,6 +119,7 @@ docbuild = "docbuild.__main__:cli"
 [tool.setuptools]
 package-dir = {"" = "src"}
 package-data = { "docbuild" = ["py.typed",
+                               "templates/*.jinja",
                                "config/xml/data/*.rnc",
                                "config/xml/data/*.rng",
                                "config/xml/data/*.xsl",
