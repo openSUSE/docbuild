@@ -6,15 +6,71 @@ import logging
 from pathlib import Path
 
 from aiostream import pipe, stream
-from bs4 import BeautifulSoup
+from justhtml import JustHTML
+from pydantic import ValidationError
+from rich.markup import escape
 import yaml
 
+from docbuild.cli.console import console_err
+from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
+from docbuild.models.json_ld import JsonLD
 from docbuild.models.product import Product
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
 log = logging.getLogger(__name__)
+
+
+EXPECTED_LD_FIELDS = tuple(
+    field.alias or field_name
+    for field_name, field in JsonLD.model_fields.items()
+)
+
+
+def warn_metadata(msg: str) -> None:
+    """Log a metadata warning and print it with a Rich WARNING label."""
+    log.warning(msg)
+    console_err.print(WARNING.render(console=console_err), escape(msg))
+
+
+def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
+    """Extract and validate JSON-LD metadata from an HTML document."""
+    doc = JustHTML(html_content, sanitize=False)
+    ld_script = doc.query_one('script[type="application/ld+json"]')
+    raw_json = ld_script.to_text(strip=True) if ld_script else ""
+    if not raw_json:
+        warn_metadata(f"No JSON-LD block found in {html_file}")
+        return None
+
+    try:
+        parsed = json.loads(raw_json)
+    except json.JSONDecodeError as exc:
+        warn_metadata(f"Invalid JSON-LD in {html_file}: {exc}")
+        return None
+
+    if not isinstance(parsed, dict):
+        warn_metadata(f"JSON-LD block in {html_file} is not a JSON object.")
+        return None
+
+    try:
+        metadata = JsonLD.model_validate(parsed)
+    except ValidationError as exc:
+        details = "; ".join(
+            f"{'.'.join(str(loc) for loc in err['loc'])}: {err['msg']}"
+            for err in exc.errors()
+        )
+        warn_metadata(f"Invalid JSON-LD fields in {html_file}: {details}")
+        return None
+
+    dumped = metadata.model_dump(by_alias=True)
+    missing_fields = [field for field in EXPECTED_LD_FIELDS if not dumped.get(field)]
+    if missing_fields:
+        warn_metadata(
+            f"Missing JSON-LD field(s) {', '.join(missing_fields)} in {html_file}"
+        )
+
+    return metadata
 
 
 def resolve_product_name(acronym: str) -> str:
@@ -52,15 +108,7 @@ async def process_single_html_file(
     md_file.parent.mkdir(parents=True, exist_ok=True)
 
     html_content = html_file.read_text(encoding="utf-8")
-    soup = BeautifulSoup(html_content, "html.parser")
-    ld_script = soup.find("script", type="application/ld+json")
-    if ld_script and ld_script.string:
-        ld_data = json.loads(ld_script.string)
-    else:
-        logging.getLogger("docbuild.tasks.metadata.prebuilt").debug(
-            "No JSON-LD block found in %s", html_file
-        )
-        ld_data = {}
+    ld_data = extract_json_ld(html_content, html_file)
 
     frontmatter = {"title": static_title, "description": ""}
     if categories:
@@ -74,9 +122,15 @@ async def process_single_html_file(
         frontmatter["version"] = path_parts[2]
 
     if ld_data:
-        frontmatter["title"] = ld_data.get("name", frontmatter["title"])
-        frontmatter["description"] = ld_data.get("description", "")
-        frontmatter.update({k: ld_data[k] for k in ("dateCreated", "dateModified", "datePublished") if ld_data.get(k)})
+        frontmatter["title"] = ld_data.name or frontmatter["title"]
+        frontmatter["description"] = ld_data.description or ""
+        for key, value in (
+            ("dateCreated", ld_data.date_created),
+            ("dateModified", ld_data.date_modified),
+            ("datePublished", ld_data.date_published),
+        ):
+            if value:
+                frontmatter[key] = value
 
     yaml_block = yaml.safe_dump(
         frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")

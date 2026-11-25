@@ -443,6 +443,65 @@ async def test_generate_llmstxt_assigned_categories(
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("html_head", "expected_warning"),
+    [
+        ("", "No JSON-LD block found"),
+        (
+            '<script type="application/ld+json">{invalid json</script>',
+            "Invalid JSON-LD",
+        ),
+        (
+            '<script type="application/ld+json">["not", "a", "dict"]</script>',
+            "is not a JSON object",
+        ),
+        (
+            '<script type="application/ld+json">{"name": "Only Name"}</script>',
+            "Missing JSON-LD field(s) description, dateCreated, dateModified, datePublished",
+        ),
+        (
+            '<script type="application/ld+json">{"name": 123}</script>',
+            "Invalid JSON-LD fields",
+        ),
+        (
+            '<script type="application/ld+json">{"name": "Valid", "dateModified": "not-a-date"}</script>',
+            "Invalid JSON-LD fields",
+        ),
+    ],
+    ids=["no-json-ld", "invalid-json-ld", "non-object-json-ld", "missing-fields", "invalid-field-type", "invalid-date-format"],
+)
+async def test_generate_llmstxt_warns_on_missing_or_invalid_json_ld(
+    tmp_path: Path,
+    llms_deliverable: Deliverable,
+    caplog: pytest.LogCaptureFixture,
+    capsys: pytest.CaptureFixture[str],
+    html_head: str,
+    expected_warning: str,
+) -> None:
+    """Warn via logger and Rich stderr when JSON-LD metadata is missing or incomplete."""
+    target_dir = tmp_path / "target"
+    html_file = target_dir / "en-us" / "sles" / "16.1" / "html" / "index.html"
+    html_file.parent.mkdir(parents=True, exist_ok=True)
+    html_file.write_text(
+        f"<!DOCTYPE html><html><head>{html_head}</head><body><h1>Index</h1></body></html>",
+        encoding="utf-8",
+    )
+
+    with caplog.at_level("WARNING", logger="docbuild.tasks.build.llms.generator"):
+        await generate_llmstxt(
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+        )
+
+    assert expected_warning in caplog.text
+    stderr = " ".join(capsys.readouterr().err.split())
+    assert "Warning" in stderr
+    assert expected_warning in stderr
+
+
+@pytest.mark.asyncio
 async def test_generate_llmstxt_frontmatter_omits_missing_date(
     tmp_path: Path, llms_deliverable: Deliverable
 ) -> None:

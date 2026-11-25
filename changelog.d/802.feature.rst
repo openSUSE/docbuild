@@ -1,0 +1,1 @@
+Log missing or invalid JSON-LD metadata fields at ``WARNING`` level and display a Rich ``Warning`` message on stderr during LLM Markdown generation.
