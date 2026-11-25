@@ -22,11 +22,7 @@ async def update_repositories(
     :return: ``True`` if all repositories updated successfully, ``False`` otherwise.
     """
     log.info("Updating Git repositories...")
-    repo_map = {
-        d.git.url: d.git.name
-        for d in deliverables
-        if d.git is not None
-    }
+    repo_map = {d.git.url: d.git.name for d in deliverables if d.git is not None}
     unique_urls = sorted(set(repo_map.keys()))
 
     if not unique_urls:
@@ -49,20 +45,25 @@ async def update_repositories(
                 if item and not res:
                     item.fail()
                 return bool(res)
-            except Exception:
+            except OSError as exc:
+                log.error("Cannot update %s: %s", repo.slug, exc)
                 if item:
                     item.fail()
-                raise
+                return False
 
     tasks = [
-        asyncio.create_task(clone_one(repo), name=f"update:{repo_map.get(repo.remote_url, repo.slug)}")
+        asyncio.create_task(
+            clone_one(repo), name=f"update:{repo_map.get(repo.remote_url, repo.slug)}"
+        )
         for repo in repos
     ]
     results = await asyncio.gather(*tasks, return_exceptions=True)
 
     res = True
     for repo, result in zip(repos, results, strict=False):
-        if isinstance(result, Exception) or not result:
+        if isinstance(result, BaseException):
+            raise result
+        if not result:
             log.error("Failed to update repository %s", repo.slug)
             res = False
 

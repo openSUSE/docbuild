@@ -382,6 +382,7 @@ class TestProcessDeliverable:
         cache_file = outputdir / f"{deliverable.xml.dcfile}.cache.json"
         Cache("env-hash", {"source.xml": "source-hash"}).to_json(cache_file)
 
+        on_skip = Mock()
         success, result = await process_deliverable(
             deliverable=deliverable,
             repo_dir=setup_paths["repo_dir"],
@@ -392,8 +393,10 @@ class TestProcessDeliverable:
             daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
             skip_repo_update=True,
             env_config_hash="env-hash",
+            on_skip=on_skip,
         )
 
+        on_skip.assert_called_once_with()
         assert success is True
         assert result is deliverable
         updated_data = json.loads(outputjson.read_text(encoding="utf-8"))
@@ -469,14 +472,19 @@ class TestProcessDeliverable:
         mock_repo_instance = AsyncMock()
         mock_managed_git_repo.return_value = mock_repo_instance
         mock_repo_instance.clone_bare.return_value = True
-        mock_repo_instance.create_worktree.side_effect = RuntimeError(
-            "git clone failed"
-        )
+        statuses = []
+
+        async def fail_checkout(*args):
+            assert statuses == [f"Creating worktree for {deliverable.full_id}"]
+            raise RuntimeError("git clone failed")
+
+        mock_repo_instance.create_worktree.side_effect = fail_checkout
 
         assert deliverable.git is not None
         (setup_paths["repo_dir"] / deliverable.git.slug).mkdir()
 
         success, res_deliverable = await process_deliverable(
+            on_status=statuses.append,
             deliverable=deliverable,
             repo_dir=setup_paths["repo_dir"],
             tmp_repo_dir=setup_paths["tmp_repo_dir"],
@@ -486,6 +494,10 @@ class TestProcessDeliverable:
             daps_list_srcfiles_tmpl="daps -d {dcfile} list-srcfiles --hashes",
         )
 
+        assert statuses == [
+            f"Creating worktree for {deliverable.full_id}",
+            deliverable.full_id,
+        ]
         assert success is False
         assert res_deliverable is deliverable
         assert any("Error processing" in r.message for r in caplog.records)

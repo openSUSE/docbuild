@@ -1,0 +1,1 @@
+Show live progress for portal XML parsing, repository updates, and metadata worktree creation during builds.
