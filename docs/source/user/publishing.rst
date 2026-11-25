@@ -11,8 +11,9 @@ backup files to filter at this stage.
 
 The local target may later accumulate version-control metadata or temporary
 files. Those should be excluded when transferring the local target to a remote
-server. The current CLI does not provide a :command:`docbuild publish` command;
-configuring ``[remote]`` does not itself upload files.
+server. Use :command:`docbuild publish run` to transfer files to the configured
+``[remote]`` destination. Add ``-L`` or ``--live`` to see progress while
+docbuild collects paths and transfers them with rsync.
 
 The policy below is already applied to the active build-to-local-target transfer.
 It also applies to every Python caller that omits explicit rsync options,
