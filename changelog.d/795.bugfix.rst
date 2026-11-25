@@ -1,0 +1,1 @@
+Preserve symbolic links when generating Markdown for AI tools from HTML builds.

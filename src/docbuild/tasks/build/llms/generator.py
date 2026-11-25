@@ -3,6 +3,7 @@
 import fnmatch
 import json
 import logging
+import os
 from pathlib import Path
 
 from aiostream import pipe, stream
@@ -25,6 +26,34 @@ def resolve_product_name(acronym: str) -> str:
         return acronym
 
 
+def preserve_symlink(
+    html_file: Path,
+    llms_dest: Path,
+    full_rel_path: Path,
+) -> None:
+    """Preserve an HTML symlink as a Markdown symlink in the destination."""
+    raw_target = Path(os.readlink(html_file))
+    if raw_target.suffix in (".html", ".htm"):
+        md_target = raw_target.with_suffix(".md")
+    else:
+        md_target = raw_target
+
+    dest_link = llms_dest / full_rel_path
+    dest_link.parent.mkdir(parents=True, exist_ok=True)
+
+    # Clean up existing destination link and any leftover .md file from prior runs
+    stale_md = llms_dest / full_rel_path.with_suffix(".md")
+    for path_to_clean in {dest_link, stale_md}:
+        if path_to_clean.is_symlink() or path_to_clean.exists():
+            path_to_clean.unlink()
+
+    try:
+        dest_link.symlink_to(md_target)
+        log.debug("Preserved symlink %s -> %s", dest_link, md_target)
+    except OSError as e:
+        log.warning("Failed to create symlink %s -> %s: %s", dest_link, md_target, e)
+
+
 async def process_single_html_file(
     html_file: Path,
     html_dir: Path,
@@ -36,7 +65,7 @@ async def process_single_html_file(
     only_md: bool = False,
 ) -> str | None:
     """Process an HTML file to generate Markdown and update HTML with link tags."""
-    if not html_file.exists():
+    if not (html_file.exists() or html_file.is_symlink()):
         return None
 
     # Determine exact path inside the deliverable (e.g. index.html or folder/page.html)
@@ -47,6 +76,11 @@ async def process_single_html_file(
 
     # Reconstruct the absolute correct logical path (e.g. en-us/sles/16.1/html/DELIV/index.md)
     full_rel_path = Path(deliverable_route) / local_rel_path
+
+    # Preserve symlinks without re-parsing HTML content or overwriting target files
+    if html_file.is_symlink():
+        preserve_symlink(html_file, llms_dest, full_rel_path)
+        return None
 
     md_file = llms_dest / full_rel_path.with_suffix(".md")
     md_file.parent.mkdir(parents=True, exist_ok=True)
