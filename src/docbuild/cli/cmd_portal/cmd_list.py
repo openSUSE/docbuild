@@ -14,7 +14,7 @@ from ...config.xml.list import list_all_deliverables
 from ...constants import DEFAULT_LANG
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
-from ...models.product import Product
+from ...models.product import Product, ProductCatalog
 from ...tasks.portal import parse_portal_config
 from ..completion import collect_docsets, complete_doctypes
 
@@ -386,8 +386,31 @@ def print_flat(
                     console.print(deliv_tree if deliv_tree.children else flat_title)
 
 
+def find_unknown_product_errors(
+    doctypes: list[Doctype],
+    catalog: ProductCatalog,
+) -> list[str]:
+    """Return formatted error messages for product acronyms missing from *catalog*."""
+    found: list[str] = []
+    for dt in doctypes:
+        if dt.product and dt.product != Product.ALL:
+            prod_val = dt.product.acronym
+            if prod_val not in catalog:
+                suggestions = catalog.suggest(prod_val)
+                hint = (
+                    f" Did you mean: {', '.join(repr(s) for s in suggestions)}?"
+                    if suggestions
+                    else ""
+                )
+                found.append(f"* '{prod_val}' is not a known Product.{hint}")
+    return found
+
+
 def validate_docsets_against_xml(
-    doctypes: list[Doctype], tree: etree._ElementTree | etree._Element, console: Console
+    doctypes: list[Doctype],
+    tree: etree._ElementTree | etree._Element,
+    console: Console,
+    catalog: ProductCatalog | None = None,
 ) -> None:
     """Dynamically validate that provided docsets exist for their respective products.
 
@@ -400,6 +423,10 @@ def validate_docsets_against_xml(
     :raises click.Abort: If any docset does not exist.
     """
     errors = []
+
+    errors: list[str] = []
+    if catalog is not None:
+        errors.extend(find_unknown_product_errors(doctypes, catalog))
 
     for dt in doctypes:
         if dt.product and dt.product != Product.ALL and dt.docset and "*" not in dt.docset:

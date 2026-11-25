@@ -9,6 +9,7 @@ from rich.console import Console
 
 from ...cli.context import DocBuildContext
 from ...constants import PORTALLOGGER_NAME
+from ...models.product import ProductCatalog
 from ...tasks.portal import validate_portal_config
 
 # ---- Logger setup
@@ -57,14 +58,19 @@ def validate(
     if not portal_schema:
         portal_schema = context.envconfig.paths.portal_rncschema
 
+    # Only pass a real ProductCatalog so mocked MagicMock envconfigs in tests stay None.
+    raw_catalog = getattr(context.envconfig, "product_catalog", None)
+    catalog = raw_catalog if isinstance(raw_catalog, ProductCatalog) else None
+
     log.debug("Main Portal XML config file: %s", main_portal_config)
     log.debug("Portal schema file: %s", portal_schema)
 
     async def main() -> int:
+        kwargs: dict[str, object] = {"verbose": context.verbose}
+        if catalog is not None:
+            kwargs["catalog"] = catalog
         return await asyncio.create_task(
-            validate_portal_config(
-                main_portal_config, portal_schema, verbose=context.verbose
-            ),
+            validate_portal_config(main_portal_config, portal_schema, **kwargs),  # type: ignore[arg-type]
             name="portal-validate",
         )
 

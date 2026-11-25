@@ -138,6 +138,7 @@ from ...utils.sync import RsyncOptions
 from ..envroles import EnvRole
 from ..language import LanguageCode
 from ..path import AbsolutePath, WritablePath
+from ..product import DEFAULT_PRODUCT_NAMES, ProductCatalog, normalize_product_acronym
 
 # --- Custom Types and Utilities ---
 
@@ -919,6 +920,43 @@ class EnvConfig(BaseModel):
         description="Settings for LLM generation.",
     )
     "LLM generation settings."
+
+    products: dict[str, str] = Field(
+        default_factory=lambda: {
+            k: v for k, v in DEFAULT_PRODUCT_NAMES.items() if k != "*"
+        },
+        title="Allowed Products",
+        description=(
+            "Mapping of product acronyms (e.g. 'sles', 'sle-micro') to full "
+            "product display names. Merged across system, user, and project configs."
+        ),
+    )
+    "Mapping of product acronyms to full product names."
+
+    @field_validator("products")
+    @classmethod
+    def _validate_products(cls, value: dict[str, str]) -> dict[str, str]:
+        """Validate product acronyms and non-empty product names."""
+        normalized: dict[str, str] = {}
+        for raw_acronym, raw_name in value.items():
+            if not isinstance(raw_acronym, str) or not isinstance(raw_name, str):
+                raise ValueError("Product keys and names must be strings.")
+            acronym = normalize_product_acronym(raw_acronym)
+            name = raw_name.strip()
+            if not acronym or acronym == "*":
+                raise ValueError(f"Invalid product acronym: {raw_acronym!r}")
+            if not name:
+                raise ValueError(
+                    f"Product name for acronym {raw_acronym!r} must not be empty."
+                )
+            normalized[acronym] = name
+        return normalized
+
+    @property
+    def product_catalog(self) -> ProductCatalog:
+        """Return an immutable :class:`ProductCatalog` for this environment."""
+        combined = {"*": "*", **self.products}
+        return ProductCatalog.from_mapping(combined)
 
     # --- Placeholder Resolution ---
     @model_validator(mode="before")

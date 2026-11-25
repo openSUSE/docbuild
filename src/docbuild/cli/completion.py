@@ -4,7 +4,7 @@ Click provides completion for subcommands and options out of the box. This
 module adds value completion for the ``DOCTYPES`` arguments, segment by
 segment (``PRODUCT/DOCSETS/LANGS``):
 
-* products come from the :class:`~docbuild.models.product.Product` enum,
+* products come from :class:`~docbuild.models.product.ProductCatalog` (configured via ``[products]`` in ``env.toml``),
 * docsets are read from the portal config of the environment,
 * languages come from :data:`~docbuild.constants.ALLOWED_LANGUAGES`.
 
@@ -27,7 +27,7 @@ from ..constants import ALLOWED_LANGUAGES, CONFIG_PATHS, DEFAULT_ENV_CONFIG_FILE
 from ..models.config.env import EnvConfig
 from ..models.deliverable import Deliverable
 from ..models.doctype import Doctype
-from ..models.product import Product
+from ..models.product import ProductCatalog
 from ..tasks.portal import parse_portal_config
 from .defaults import DEFAULT_ENV_CONFIG
 
@@ -60,16 +60,8 @@ def collect_docsets(
     return docsets
 
 
-def load_portal_tree(ctx: click.Context) -> etree._ElementTree | None:
-    """Load the portal config referenced by the environment config.
-
-    During completion, the main ``cli`` callback does not run, so the
-    environment config is loaded here. ``--env-config`` and ``--set-env``
-    from the command line are honored.
-
-    :param ctx: The Click context of the command being completed.
-    :return: The parsed portal config, or ``None`` if it cannot be loaded.
-    """
+def _load_envconfig(ctx: click.Context) -> EnvConfig | None:
+    """Load and override the environment configuration from Click root params."""
     params = ctx.find_root().params
     try:
         _, raw_envconfig, _ = handle_config(
@@ -85,10 +77,28 @@ def load_portal_tree(ctx: click.Context) -> etree._ElementTree | None:
         for override in params.get("env_overrides") or ():
             apply_override(raw_envconfig, override)  # type: ignore[arg-type]
 
-        envconfig = EnvConfig.from_dict(raw_envconfig)  # type: ignore[arg-type]
+        return EnvConfig.from_dict(raw_envconfig)  # type: ignore[arg-type]
+    except CONFIG_ERRORS as err:  # Completion must never break the shell
+        log.debug("Cannot load environment config for completion: %s", err)
+        return None
+
+
+def load_portal_tree(ctx: click.Context) -> etree._ElementTree | None:
+    """Load the portal config referenced by the environment config.
+
+    During completion, the main ``cli`` callback does not run, so the
+    environment config is loaded here. ``--env-config`` and ``--set-env``
+    from the command line are honored.
+
+    :param ctx: The Click context of the command being completed.
+    :return: The parsed portal config, or ``None`` if it cannot be loaded.
+    """
+    envconfig = _load_envconfig(ctx)
+    if envconfig is None:
+        return None
+    try:
         portal_config = Path(envconfig.paths.main_portal_config).expanduser()
         return asyncio.run(parse_portal_config(portal_config))
-
     except CONFIG_ERRORS as err:  # Completion must never break the shell
         log.debug("Cannot load portal config for completion: %s", err)
         return None
@@ -114,6 +124,14 @@ def _complete_list(
     ]
 
 
+def load_product_catalog(ctx: click.Context) -> ProductCatalog:
+    """Load the configured ProductCatalog for completion, falling back to defaults."""
+    envconfig = _load_envconfig(ctx)
+    if envconfig is None:
+        return ProductCatalog.default()
+    return envconfig.product_catalog
+
+
 def complete_doctypes(
     ctx: click.Context,
     param: click.Parameter,
@@ -132,10 +150,11 @@ def complete_doctypes(
 
     match segments:
         case [product]:
+            catalog = load_product_catalog(ctx)
             return [
-                CompletionItem(item.acronym)
-                for item in Product
-                if item is not Product.ALL and item.acronym.startswith(product)
+                CompletionItem(acronym)
+                for acronym in catalog.acronyms
+                if acronym != "*" and acronym.startswith(product)
             ]
 
         case [product, docsets]:
