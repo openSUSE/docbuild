@@ -13,7 +13,22 @@ from ..theme import ThemeTag
 def print_section(
     title: str, data: dict[str, Any], prefix: str, flat: bool, color: str
 ) -> None:
-    """Print a configuration section in either flat or JSON format."""
+    """Print a configuration section in either flat or JSON format.
+
+    In flat format, each value is printed on its own line as ``key = value``,
+    with dotted keys like ``env.paths.jinja_dir``. In JSON format, a
+    ``# title`` heading is printed first.
+
+    :param title: Heading of the section, only used in JSON format.
+    :param data: The configuration to print.
+    :param prefix: Prefix of the dotted keys, only used in flat format.
+    :param flat: Print in flat format instead of JSON.
+    :param color: Color of the keys, only used in flat format.
+
+    .. code-block:: text
+
+        env.paths.jinja_dir = '/etc/docbuild/jinja-doc-suse-com'
+    """
     if flat:
         for k, v in flatten_dict(data, prefix):
             # Using repr(v) ensures strings are quoted and types like Paths are clear
