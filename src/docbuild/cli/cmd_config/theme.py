@@ -22,7 +22,15 @@ def theme_cmd(ctx: click.Context, preset: str) -> None:
     """Preview built-in theme presets and the active theme configuration.
 
     Displays visual showcase tables with live rendering of each semantic token.
-    """
+
+    \f
+
+    The active theme is only shown if an application configuration file was
+    loaded, not when the defaults are used.
+
+    :param ctx: The Click context that holds the application config.
+    :param preset: Which preset to show: ``dark``, ``light``, or ``all``.
+    """  # noqa: D301
     context = ctx.obj
     presets_to_show = ("dark", "light") if preset == "all" else (preset.lower(),)
 
