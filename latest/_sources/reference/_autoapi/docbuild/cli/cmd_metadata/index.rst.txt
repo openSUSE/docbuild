@@ -27,7 +27,7 @@ Package Contents
    Subcommands for managing and extracting metadata.
 
 
-.. py:function:: run_cmd(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], exitfirst: bool, skip_repo_update: bool) -> None
+.. py:function:: run_cmd(ctx: click.Context, doctypes: tuple[docbuild.models.doctype.Doctype], exitfirst: bool, skip_repo_update: bool, live: bool) -> None
 
    Extract metadata from deliverables.
 

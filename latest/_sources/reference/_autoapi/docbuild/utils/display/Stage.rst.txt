@@ -26,7 +26,13 @@ docbuild.utils.display.Stage
 
 
 
-   .. py:method:: refresh(advance: int = 0) -> None
+   .. py:method:: rename_item(item: Item, name: str) -> None
+
+      Update a running item's label without advancing progress.
+
+
+
+   .. py:method:: refresh(advance: int = 0, *, render: bool = False) -> None
 
       Push current counts and running items to the progress task.
 
