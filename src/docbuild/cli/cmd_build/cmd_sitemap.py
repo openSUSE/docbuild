@@ -32,6 +32,11 @@ async def generate_sitemap_with_progress(
     latest = ("Scanning HTML files", target_dir)
 
     def report_progress(description: str, directory: Path) -> None:
+        """Store the latest progress update for the status display.
+
+        :param description: What the sitemap generation is doing right now.
+        :param directory: The directory that is being scanned.
+        """
         # Coalesce updates so a fast traversal cannot build a display backlog.
         nonlocal latest
         with lock:
@@ -40,6 +45,10 @@ async def generate_sitemap_with_progress(
     with console_err.status(Text("Scanning HTML files: .")) as status:
 
         async def update_display() -> None:
+            """Show the latest progress update every 0.1 seconds.
+
+            It runs until the task is cancelled.
+            """
             while True:
                 with lock:
                     description, directory = latest
@@ -67,7 +76,15 @@ async def generate_sitemap_with_progress(
 )
 @click.pass_context
 def sitemap(ctx: click.Context) -> None:
-    """Generate a sitemap.xml in the target distribution directory."""
+    """Generate a sitemap.xml in the target distribution directory.
+
+    \f
+
+    The sitemap is written to the target base directory. Its URLs start
+    with the canonical URL domain from the environment config.
+
+    :param ctx: The Click context that holds the environment config.
+    """  # noqa: D301
     ctx.ensure_object(DocBuildContext)
     context: DocBuildContext = ctx.obj
     env = context.envconfig
@@ -78,7 +95,10 @@ def sitemap(ctx: click.Context) -> None:
     base_url = str(env.general.canonical_url_domain)
 
     async def main() -> int:
-        """Generate the sitemap."""
+        """Generate the sitemap.
+
+        :return: The exit code, always ``0``.
+        """
         await generate_sitemap_with_progress(
             target_base_dir, base_url, verbose=context.verbose
         )
