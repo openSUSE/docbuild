@@ -21,6 +21,37 @@ def test_live_manager_singleton_context() -> None:
         mock_stop.assert_called_once()
 
 
+def test_disabled_manager_preserves_terminal_logging(monkeypatch):
+    from contextvars import ContextVar
+    from io import StringIO
+    import logging
+    from types import SimpleNamespace
+
+    from rich.console import Console
+
+    from docbuild.logging import _LOGGING_STATE
+
+    output = StringIO()
+    handler = logging.StreamHandler(output)
+    logger = logging.Logger("test")
+    logger.addHandler(handler)
+    listener = SimpleNamespace(handlers=[handler])
+    monkeypatch.setitem(
+        _LOGGING_STATE, "listener", ContextVar("listener", default=listener)
+    )
+
+    with (
+        LiveProgressManager(
+            console=Console(file=output, force_terminal=True), disable=True
+        ) as manager,
+        manager.stage("Metadata") as stage,
+        stage.item("Parsing portal.xml"),
+    ):
+        logger.info("Reading configuration")
+
+    assert output.getvalue() == "Reading configuration\n"
+
+
 def test_item_state_enums():
     """Test the ItemState enum has the correct values."""
     from docbuild.utils.display import ItemState

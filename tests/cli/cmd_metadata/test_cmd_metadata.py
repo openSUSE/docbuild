@@ -124,7 +124,9 @@ def test_metadata_live_context(runner, monkeypatch, flags):
     from docbuild.utils.display import get_live_manager
 
     async def process(**kwargs):
-        assert (get_live_manager() is not None) == bool(flags)
+        manager = get_live_manager()
+        assert manager is not None
+        assert manager.live.is_started == bool(flags)
         return 0
 
     monkeypatch.setattr(cmd_metadata_module, "process", process)

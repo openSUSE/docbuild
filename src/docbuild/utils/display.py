@@ -214,6 +214,8 @@ class LiveProgressManager:
     def __enter__(self) -> Self:
         """Start the live view and mute terminal logs."""
         self._token = ACTIVE_LIVE_MANAGER.set(self)
+        if self._progress.disable:
+            return self
 
         # Mute standard terminal logging so it doesn't fight rich.Live
         import logging
@@ -235,7 +237,8 @@ class LiveProgressManager:
 
     def __exit__(self, *exc_info: object) -> None:
         """Stop the live view and restore terminal logs."""
-        self.live.stop()
+        if not self._progress.disable:
+            self.live.stop()
 
         # Restore terminal logging
         for h, lvl in getattr(self, "_muted_handlers", []):

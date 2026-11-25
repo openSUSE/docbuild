@@ -1,7 +1,6 @@
 """Extracts metadata from deliverables."""
 
 import asyncio
-from contextlib import nullcontext
 import math
 from pathlib import Path
 
@@ -116,7 +115,7 @@ def run_cmd(
                     name="metadata",
                 )
 
-            with LiveProgressManager(console=stdout) if live else nullcontext():
+            with LiveProgressManager(console=stdout, disable=not live):
                 result = asyncio.run(main())
     finally:
         if t and not math.isnan(t.elapsed):
