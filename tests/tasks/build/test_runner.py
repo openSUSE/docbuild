@@ -459,8 +459,16 @@ async def test_generate_llmstxt_assigned_categories(
             '<script type="application/ld+json">{"name": "Only Name"}</script>',
             "Missing JSON-LD field(s) description, dateCreated, dateModified, datePublished",
         ),
+        (
+            '<script type="application/ld+json">{"name": 123}</script>',
+            "Invalid JSON-LD fields",
+        ),
+        (
+            '<script type="application/ld+json">{"name": "Valid", "dateModified": "not-a-date"}</script>',
+            "Invalid JSON-LD fields",
+        ),
     ],
-    ids=["no-json-ld", "invalid-json-ld", "non-object-json-ld", "missing-fields"],
+    ids=["no-json-ld", "invalid-json-ld", "non-object-json-ld", "missing-fields", "invalid-field-type", "invalid-date-format"],
 )
 async def test_generate_llmstxt_warns_on_missing_or_invalid_json_ld(
     tmp_path: Path,
