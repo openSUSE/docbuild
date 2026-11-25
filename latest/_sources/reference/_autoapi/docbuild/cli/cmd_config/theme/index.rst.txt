@@ -27,3 +27,12 @@ Module Contents
    Displays visual showcase tables with live rendering of each semantic token.
 
 
+
+
+   The active theme is only shown if an application configuration file was
+   loaded, not when the defaults are used.
+
+   :param ctx: The Click context that holds the application config.
+   :param preset: Which preset to show: ``dark``, ``light``, or ``all``.
+
+
