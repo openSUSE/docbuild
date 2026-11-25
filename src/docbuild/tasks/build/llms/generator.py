@@ -14,17 +14,17 @@ import yaml
 from docbuild.cli.console import console_err
 from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
-from docbuild.models.json_ld import JsonLD
+from docbuild.models.json_ld import JsonLD, unknown_json_ld_fields
 from docbuild.models.product import Product
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
+from docbuild.utils.errors import format_pydantic_error
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
 log = logging.getLogger(__name__)
 
 
-EXPECTED_LD_FIELDS = tuple(
-    field.alias or field_name
-    for field_name, field in JsonLD.model_fields.items()
+EXPECTED_LD_FIELDS = (
+    "name", "description", "dateCreated", "dateModified", "datePublished"
 )
 
 
@@ -57,10 +57,32 @@ def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
         metadata = JsonLD.model_validate(parsed)
     except ValidationError as exc:
         details = "; ".join(
-            f"{'.'.join(str(loc) for loc in err['loc'])}: {err['msg']}"
-            for err in exc.errors()
+            f"{'.'.join(str(part) for part in error['loc'])}: {error['msg']}"
+            for error in exc.errors()
         )
         warn_metadata(f"Invalid JSON-LD fields in {html_file}: {details}")
+        format_pydantic_error(
+            exc, JsonLD, str(html_file), console=console_err,
+            source_type="HTML file", include_indices=True,
+        )
+        core_fields = set(EXPECTED_LD_FIELDS) | {
+            field_name for field_name, field in JsonLD.model_fields.items()
+            if field.alias in EXPECTED_LD_FIELDS
+        }
+        try:
+            metadata = JsonLD.model_validate(
+                {key: value for key, value in parsed.items() if key in core_fields}
+            )
+        except ValidationError:
+            metadata = None
+
+    unknown_fields = unknown_json_ld_fields(parsed)
+    if unknown_fields:
+        warn_metadata(
+            f"Unknown JSON-LD field(s) {', '.join(unknown_fields)} in {html_file}"
+        )
+
+    if metadata is None:
         return None
 
     dumped = metadata.model_dump(by_alias=True)

@@ -17,14 +17,19 @@ def format_pydantic_error(
     config_file: str,
     verbose: int = 0,
     console: Console | None = None,
+    *,
+    source_type: str = "config file",
+    include_indices: bool = False,
 ) -> None:
     """Centralized formatter for Pydantic ValidationErrors using Rich.
 
     :param error: The caught ValidationError object.
     :param model_class: The Pydantic model class that failed validation.
-    :param config_file: The name/path of the config file being processed.
+    :param config_file: The name/path of the source being processed.
     :param verbose: Verbosity level to control error detail.
     :param console: Optional Rich console object. If None, creates a stderr console.
+    :param source_type: Description of the source, such as "HTML file".
+    :param include_indices: Include list indices in validation paths.
     """
     # Use provided console or fall back to default (Dependency Injection)
     con = console or console_err
@@ -35,7 +40,7 @@ def format_pydantic_error(
     # Header
     header = Text.assemble(
         (f"{error_count} Validation error{'s' if error_count > 1 else ''} ", "error"),
-        ("in config file ", "white"),
+        (f"in {source_type} ", "white"),
         (f"'{config_file}'", "bold cyan"),
         (":", "white")
     )
@@ -53,7 +58,7 @@ def format_pydantic_error(
         clean_loc = [
             str(v) for v in err["loc"]
             if not (isinstance(v, str) and ("[" in v or "-" in v))
-            and not isinstance(v, int)
+            and (include_indices or not isinstance(v, int))
         ]
         loc_path = ".".join(clean_loc)
 

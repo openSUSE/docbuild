@@ -17,6 +17,22 @@ Each HTML page gets a ``<link rel="alternate" type="text/markdown">`` tag, so to
 Use this command when you want AI tools to answer questions about your documentation accurately.
 Readers and human visitors still see the normal HTML site.
 
+JSON-LD metadata
+----------------
+
+|project| checks the JSON-LD metadata embedded in each HTML page and reports
+missing or invalid fields and unknown properties with the source file path.
+Unknown properties can also be legitimate extensions; this check does not
+validate the complete Schema.org vocabulary.
+
+The Markdown frontmatter contains only the title, description, available
+creation, modification and publication dates, and available categories,
+product, and version.
+Invalid article titles, descriptions, or dates cause the command to use its
+fallback title and an empty description.
+Invalid unrelated metadata does not prevent valid frontmatter fields from being
+used.
+
 Requirements
 ------------
 
@@ -41,7 +57,7 @@ Excluding files from LLM output
 Some files, like the GPL license page, add unnecessary noise for AI tools. You can exclude files from the Markdown generation using the ``[llms]`` section in your ENV config.
 
 * ``[llms].exclude``: An array of filenames or shell glob patterns (``*``, ``?``) to ignore. The default includes :file:`doc-gfdl-license.html`.
-* ``[llms].exclude-extra``: An array of additional files to ignore. 
+* ``[llms].exclude-extra``: An array of additional files to ignore.
 
 If you want to ignore new files for your specific project, it is recommended to add them to ``[llms].exclude-extra`` rather than overwriting the default ``exclude`` list.
 
@@ -50,7 +66,7 @@ If you want to ignore new files for your specific project, it is recommended to 
 Running the command
 -------------------
 
-To generate the Markdown files for an existing build, you can run the command against your entire target directory, or you can pass specific doctypes (like ``sles/15-SP6/en-us``) to only process specific products. 
+To generate the Markdown files for an existing build, you can run the command against your entire target directory, or you can pass specific doctypes (like ``sles/15-SP6/en-us``) to only process specific products.
 (Use the ``--all`` flag to process the entire directory).
 
 Do the following:

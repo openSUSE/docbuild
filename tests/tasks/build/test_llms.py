@@ -1,12 +1,15 @@
 """Tests for the LLMs integration module."""
 
+import json
 from pathlib import Path
 import re
 
 from justhtml import JustHTML
 from justhtml.dom import Element, Text
 import pytest
+import yaml
 
+from docbuild.models.json_ld import JsonLDEntity, JsonLDImage
 from docbuild.tasks.build.llms.cleaners import (
     AntoraHTMLCleaner,
     DocBookHTMLCleaner,
@@ -23,8 +26,211 @@ from docbuild.tasks.build.llms.dom import (
     get_classes,
     replace_node,
 )
+from docbuild.tasks.build.llms.generator import (
+    extract_json_ld,
+    process_single_html_file,
+)
 
 DATA_DIR = Path(__file__).parent / "data"
+
+
+def test_extract_json_ld_from_daps_article() -> None:
+    """Extract typed nested metadata from the DAPS article fixture."""
+    html_file = DATA_DIR / "daps_article.html"
+    metadata = extract_json_ld(html_file.read_text(encoding="utf-8"), html_file)
+
+    assert metadata is not None
+    assert metadata.type == ["TechArticle"]
+    assert metadata.name == "Identifying Operating Systems | SUSE Linux"
+    assert isinstance(metadata.author, list)
+    assert isinstance(metadata.author[0], JsonLDEntity)
+    assert metadata.author[0].type == "Corporation"
+    assert metadata.is_part_of is not None
+    assert metadata.is_part_of.name == "Products &amp; Solutions"
+    assert isinstance(metadata.mentions, list)
+    assert metadata.mentions[0].operating_system == "Linux"
+    assert metadata.publisher is not None
+    assert isinstance(metadata.publisher.logo, JsonLDImage)
+    assert metadata.publisher.logo.type == "ImageObject"
+    assert metadata.date_published == "2026-09-17T07:21+02:00"
+
+
+def test_extract_json_ld_from_antora_article() -> None:
+    """Extract typed nested metadata from the Antora article fixture."""
+    html_file = DATA_DIR / "antora_sample.html"
+    metadata = extract_json_ld(html_file.read_text(encoding="utf-8"), html_file)
+
+    assert metadata is not None
+    assert metadata.type == "TechArticle"
+    assert metadata.headline == "Authentication, Permissions and Global Settings"
+    assert isinstance(metadata.author, JsonLDEntity)
+    assert metadata.author.name == "SUSE Product & Solution Documentation Team"
+    assert isinstance(metadata.mentions, list)
+    assert metadata.mentions[0].software_version == "v2.15"
+    assert metadata.mentions[0].application_category == "Cloud Infrastructure"
+    assert metadata.publisher is not None
+    assert isinstance(metadata.publisher.logo, JsonLDImage)
+    assert metadata.publisher.logo.url == "https://www.suse.com/assets/img/suse-white-logo-green.svg"
+
+
+def test_extract_json_ld_with_inline_context_and_image(tmp_path: Path) -> None:
+    """Accept structured JSON-LD contexts and image objects."""
+    payload = {
+        "@context": {"@vocab": "https://schema.org/"},
+        "image": {"@type": "ImageObject", "url": "https://example.com/image.jpg"},
+    }
+    html = f'<script type="application/ld+json">{json.dumps(payload)}</script>'
+
+    metadata = extract_json_ld(html, tmp_path / "article.html")
+
+    assert metadata is not None
+    assert metadata.context == {"@vocab": "https://schema.org/"}
+    assert isinstance(metadata.image, JsonLDImage)
+    assert metadata.image.url == "https://example.com/image.jpg"
+
+
+@pytest.mark.asyncio
+async def test_json_ld_extensions_warn_and_do_not_expand_frontmatter(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Keep extensions while warning about their paths and limiting YAML fields."""
+    html_file = tmp_path / "index.html"
+    payload = {
+        "name": "Article title",
+        "description": "Article description",
+        "dateCreated": "2026-01-02",
+        "dateModified": "2026-02-03",
+        "datePublished": "2026-03-04",
+        "author": {"@type": "Organization", "name": "Docs team"},
+        "mentions": [{"@type": "SoftwareApplication", "name": "Product"}],
+        "publisher": {
+            "@type": "Organization",
+            "name": "Publisher",
+            "logo": {"@type": "ImageObject", "urll": "https://example.com/logo"},
+        },
+        "descripton": "Extension value",
+    }
+    html = (
+        '<html><head><script type="application/ld+json">'
+        f'{json.dumps(payload)}</script></head><body><h1>Article</h1></body></html>'
+    )
+    html_file.write_text(html, encoding="utf-8")
+
+    with caplog.at_level("WARNING", logger="docbuild.tasks.build.llms.generator"):
+        metadata = extract_json_ld(html, html_file)
+        await process_single_html_file(
+            html_file, tmp_path, tmp_path / "docs", "docs", "guides", "Fallback",
+            only_md=True,
+        )
+
+    assert metadata is not None
+    dumped = metadata.model_dump(by_alias=True, exclude_none=True)
+    assert dumped["descripton"] == "Extension value"
+    assert dumped["publisher"]["logo"]["urll"] == "https://example.com/logo"
+    markdown = (tmp_path / "docs/guides/index.md").read_text(encoding="utf-8")
+    frontmatter = yaml.safe_load(markdown.split("---")[1])
+    assert frontmatter == {
+        "title": "Article title",
+        "description": "Article description",
+        "dateCreated": "2026-01-02",
+        "dateModified": "2026-02-03",
+        "datePublished": "2026-03-04",
+    }
+    warnings = [record.getMessage() for record in caplog.records]
+    assert any(str(html_file) in message and "descripton" in message for message in warnings)
+    assert any(
+        str(html_file) in message
+        and all(part in message for part in ("publisher", "logo", "urll"))
+        for message in warnings
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("invalid_field", "invalid_value", "expected_title", "expected_description", "expected_dates"),
+    [
+        ("author", {"@type": "Organization", "name": 42}, "Article title", "Article description", True),
+        ("publisher", {"logo": {"url": 42}}, "Article title", "Article description", True),
+        ("name", 42, "Fallback title", "", False),
+        ("dateModified", "not-a-date", "Fallback title", "", False),
+    ],
+    ids=["invalid-author", "invalid-logo", "invalid-title", "invalid-date"],
+)
+async def test_json_ld_invalid_fields_preserve_or_fallback_frontmatter(
+    tmp_path: Path,
+    caplog: pytest.LogCaptureFixture,
+    invalid_field: str,
+    invalid_value: object,
+    expected_title: str,
+    expected_description: str,
+    expected_dates: bool,
+) -> None:
+    """Preserve core values for invalid nested data and retain core fallback."""
+    payload = {
+        "name": "Article title",
+        "description": "Article description",
+        "dateCreated": "2026-01-02",
+        "dateModified": "2026-02-03",
+        "datePublished": "2026-03-04",
+        invalid_field: invalid_value,
+    }
+    html_file = tmp_path / "index.html"
+    html_file.write_text(
+        '<html><head><script type="application/ld+json">'
+        f'{json.dumps(payload)}</script></head><body><h1>Article</h1></body></html>',
+        encoding="utf-8",
+    )
+
+    with caplog.at_level("WARNING", logger="docbuild.tasks.build.llms.generator"):
+        await process_single_html_file(
+            html_file, tmp_path, tmp_path / "docs", "docs", "guides",
+            "Fallback title", only_md=True,
+        )
+
+    assert any(
+        str(html_file) in record.getMessage() and invalid_field in record.getMessage()
+        for record in caplog.records
+    )
+    markdown = (tmp_path / "docs/guides/index.md").read_text(encoding="utf-8")
+    frontmatter = yaml.safe_load(markdown.split("---")[1])
+    assert frontmatter["title"] == expected_title
+    assert frontmatter["description"] == expected_description
+    dates = {key: value for key, value in frontmatter.items() if key.startswith("date")}
+    assert dates == (
+        {
+            "dateCreated": "2026-01-02",
+            "dateModified": "2026-02-03",
+            "datePublished": "2026-03-04",
+        }
+        if expected_dates else {}
+    )
+
+
+def test_json_ld_reports_unknown_fields_with_invalid_values(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Report unknown properties even when other properties are invalid."""
+    html_file = tmp_path / "article.html"
+    payload = {
+        "name": 42,
+        "descripton": "Typo",
+        "publisher": {"logo": {"url": 42, "urll": "Typo"}},
+    }
+    html = f'<script type="application/ld+json">{json.dumps(payload)}</script>'
+
+    with caplog.at_level("WARNING", logger="docbuild.tasks.build.llms.generator"):
+        assert extract_json_ld(html, html_file) is None
+
+    assert "descripton" in caplog.text
+    assert "publisher.logo.urll" in caplog.text
+
+
+def test_json_ld_invalid_core_field_name_uses_fallback(tmp_path: Path) -> None:
+    """Treat accepted Python field names like their JSON aliases."""
+    payload = {"name": "Title", "date_modified": "invalid"}
+    html = f'<script type="application/ld+json">{json.dumps(payload)}</script>'
+
+    assert extract_json_ld(html, tmp_path / "article.html") is None
 
 
 @pytest.mark.parametrize(

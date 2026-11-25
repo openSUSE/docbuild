@@ -7,7 +7,10 @@ from pathlib import Path
 import re
 from typing import Any
 
+from pydantic import BaseModel, ValidationError
+
 from docbuild.models.deliverable import Deliverable
+from docbuild.models.json_ld import JsonLD, JsonLDEntity, unknown_json_ld_fields
 from docbuild.models.language import LanguageCode
 
 log = logging.getLogger(__name__)
@@ -106,20 +109,79 @@ def extract_entities(json_ld: dict[str, Any] | None, prod_title: str) -> tuple[l
     return tasks, products
 
 
+def _valid_fields(
+    model: type[BaseModel], data: dict[str, Any], names: tuple[str, ...]
+) -> dict[str, Any]:
+    valid: dict[str, Any] = {}
+    for name in names:
+        field = model.model_fields[name]
+        for key in {name, field.alias or name}:
+            if key not in data:
+                continue
+            try:
+                model.model_validate({key: data[key]})
+            except ValidationError:
+                continue
+            valid[key] = data[key]
+    return valid
+
+
+def _prebuilt_projection(data: dict[str, Any]) -> JsonLD:
+    fields = _valid_fields(JsonLD, data, ("headline", "in_language", "date_modified"))
+    names = ("about",) if data.get("about") else ("mentions",)
+    for name in names:
+        value = data.get(name)
+        if isinstance(value, dict):
+            fields[name] = _valid_fields(JsonLDEntity, value, ("name", "software_version"))
+        elif isinstance(value, list):
+            fields[name] = [
+                _valid_fields(JsonLDEntity, item, ("name", "software_version"))
+                for item in value if isinstance(item, dict)
+            ]
+    return JsonLD.model_validate(fields)
+
+
 def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> dict[str, Any]:
     """Extract metadata for a prebuilt (Antora) deliverable."""
     html_url = deliverable.xml.prebuilt_html_url
 
     # Pass deliverable so it can search translated directories
     html_path = find_html_path(prebuilt_dir, deliverable, html_url)
-    json_ld = read_json_ld(html_path)
+    raw_json_ld = read_json_ld(html_path)
+    if not isinstance(raw_json_ld, dict):
+        raw_json_ld = {}
+    try:
+        json_ld = JsonLD.model_validate(raw_json_ld)
+    except ValidationError as exc:
+        for error in exc.errors():
+            location = error["loc"]
+            if location and location[0] in {"dateModified", "date_modified"}:
+                log.warning(
+                    "Invalid date format '%s' in JSON-LD for %s. Falling back to None.",
+                    raw_json_ld.get(location[0]),
+                    html_url,
+                )
+            else:
+                path = ".".join(str(part) for part in location)
+                log.warning(
+                    "Invalid JSON-LD field %s in %s: %s",
+                    path, html_path, error["msg"],
+                )
+        json_ld = _prebuilt_projection(raw_json_ld)
+    unknown_fields = unknown_json_ld_fields(raw_json_ld)
+    if unknown_fields:
+        log.warning(
+            "Unknown JSON-LD field(s) %s in %s",
+            ", ".join(unknown_fields),
+            html_path,
+        )
 
-    in_language = json_ld.get("inLanguage", str(deliverable.xml.lang)) if isinstance(json_ld, dict) else str(deliverable.xml.lang)
+    in_language = json_ld.in_language or str(deliverable.xml.lang)
     lang_code = LanguageCode(language=in_language).language
     is_default = (lang_code == "en-us")
 
-    date_modified_raw = json_ld.get("dateModified") if isinstance(json_ld, dict) else None
-    date_modified = str(date_modified_raw).strip() if date_modified_raw else None
+    date_modified_raw = json_ld.date_modified
+    date_modified = date_modified_raw.strip() if date_modified_raw else None
 
     if date_modified:
         if "T" in date_modified:
@@ -136,8 +198,11 @@ def extract_prebuilt_metadata(deliverable: Deliverable, prebuilt_dir: Path) -> d
             )
             date_modified = None
 
-    headline = json_ld.get("headline") if isinstance(json_ld, dict) else None
-    tasks, products = extract_entities(json_ld, deliverable.xml.prebuilt_title)
+    headline = json_ld.headline
+    tasks, products = extract_entities(
+        json_ld.model_dump(by_alias=True, exclude_none=True),
+        deliverable.xml.prebuilt_title,
+    )
 
     # Extract text from the first valid local description
     desc_text = next(

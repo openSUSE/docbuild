@@ -139,6 +139,131 @@ def test_extract_prebuilt_metadata_success(tmp_path: Path, mock_deliverable: Del
     assert result["products"][0]["versions"] == ["v2.16"]
 
 
+@pytest.mark.parametrize(
+    ("invalid_field", "invalid_value"),
+    [
+        ("author", {"@type": "Organization", "name": 42}),
+        ("publisher", {"logo": {"@type": "ImageObject", "url": 42}}),
+        ("dateCreated", "not-a-date"),
+    ],
+    ids=["invalid-author", "invalid-logo", "invalid-unrelated-date"],
+)
+def test_extract_prebuilt_metadata_ignores_invalid_unrelated_fields(
+    tmp_path: Path,
+    mock_deliverable: Deliverable,
+    invalid_field: str,
+    invalid_value: object,
+) -> None:
+    """Keep prebuilt fields when unrelated JSON-LD metadata is invalid."""
+    html_file = tmp_path / "admission-controller/latest/en/index.html"
+    html_file.parent.mkdir(parents=True)
+    payload = {
+        "@context": "https://schema.org",
+        "@type": ["TechArticle"],
+        "headline": "Rancher guide",
+        "inLanguage": "en",
+        "dateModified": "2026-06-16T00:00:00Z",
+        "author": [{"@type": "Organization", "name": "Docs team"}],
+        "publisher": {"@type": "Organization", "logo": {"url": "https://example.com/logo"}},
+        "mentions": [{
+            "@type": "SoftwareApplication",
+            "name": "SUSE Rancher Manager",
+            "softwareVersion": "v2.16",
+            "operatingSystem": "Linux",
+        }],
+        invalid_field: invalid_value,
+    }
+    html_file.write_text(
+        f'<script type="application/ld+json">{json.dumps(payload)}</script>',
+        encoding="utf-8",
+    )
+
+    result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
+
+    doc = result["docs"][0]
+    assert doc["title"] == "Rancher guide"
+    assert doc["description"] == "Test description for admission controller."
+    assert doc["lang"] == "en-us"
+    assert doc["dateModified"] == "2026-06-16"
+    assert doc["format"]["html"] == "/admission-controller/latest/en/index.html"
+    assert result["tasks"] == ["SUSE Rancher Manager"]
+    assert result["products"][0]["versions"] == ["v2.16"]
+
+
+def test_extract_prebuilt_metadata_fallback_with_invalid_unrelated_field(
+    tmp_path: Path, mock_deliverable: Deliverable, caplog: pytest.LogCaptureFixture
+) -> None:
+    """Keep XML title and date fallback alongside valid nested product data."""
+    html_file = tmp_path / "admission-controller/latest/en/index.html"
+    html_file.parent.mkdir(parents=True)
+    payload = {
+        "headline": "",
+        "inLanguage": "en",
+        "dateModified": "not-a-date",
+        "author": {"name": 42},
+        "about": {"@type": "SoftwareApplication", "name": "Rancher", "softwareVersion": "v2.16"},
+    }
+    html_file.write_text(
+        f'<script type="application/ld+json">{json.dumps(payload)}</script>',
+        encoding="utf-8",
+    )
+
+    with caplog.at_level("WARNING", logger="docbuild.tasks.metadata.prebuilt"):
+        result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
+
+    doc = result["docs"][0]
+    assert doc["title"] == "SUSE Security Admission Controller"
+    assert doc["dateModified"] is None
+    assert doc["description"] == "Test description for admission controller."
+    assert result["tasks"] == ["Rancher"]
+    assert result["products"][0]["versions"] == ["v2.16"]
+    assert "Invalid date format" in caplog.text
+
+
+def test_extract_prebuilt_preserves_valid_nested_fields(
+    tmp_path: Path, mock_deliverable: Deliverable
+) -> None:
+    """An invalid entity property does not discard its name or version."""
+    html_file = tmp_path / "admission-controller/latest/en/index.html"
+    html_file.parent.mkdir(parents=True)
+    payload = {
+        "mentions": [
+            {"name": "Rancher", "softwareVersion": "v2.16", "url": 42},
+            {"name": "Other", "softwareVersion": "v1"},
+        ]
+    }
+    html_file.write_text(
+        f'<script type="application/ld+json">{json.dumps(payload)}</script>',
+        encoding="utf-8",
+    )
+
+    result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
+
+    assert result["tasks"] == ["Rancher", "Other"]
+    assert result["products"][0]["versions"] == ["v2.16", "v1"]
+
+
+def test_extract_prebuilt_preserves_entity_precedence_on_invalid_metadata(
+    tmp_path: Path, mock_deliverable: Deliverable
+) -> None:
+    """An unrelated invalid field does not change about/mentions precedence."""
+    html_file = tmp_path / "admission-controller/latest/en/index.html"
+    html_file.parent.mkdir(parents=True)
+    payload = {
+        "author": {"name": 42},
+        "about": {"@type": "Thing"},
+        "mentions": [{"name": "Rancher"}],
+    }
+    html_file.write_text(
+        f'<script type="application/ld+json">{json.dumps(payload)}</script>',
+        encoding="utf-8",
+    )
+
+    result = extract_prebuilt_metadata(mock_deliverable, tmp_path)
+
+    assert result["tasks"] == []
+
+
 def test_extract_prebuilt_metadata_missing_html(tmp_path: Path, mock_deliverable: Deliverable):
     """Test extraction gracefully handles missing HTML files."""
     result = extract_prebuilt_metadata(mock_deliverable, tmp_path)

@@ -4,6 +4,7 @@ import tomllib
 from typing import Any
 
 from pydantic import BaseModel, Field, IPvAnyAddress, ValidationError, create_model
+import pytest
 from rich.console import Console
 
 from docbuild.constants import DEFAULT_ERROR_LIMIT
@@ -95,6 +96,29 @@ def test_format_pydantic_error_path_cleaning(capsys):
     assert "In 'host':" in captured.err
     # Verify no bracketed pydantic internals leaked in the path part
     assert "[" not in captured.err.split("In '")[1].split("':")[0]
+
+
+def test_format_pydantic_error_html_source_and_list_index(capsys):
+    """Display an HTML source and list indices without changing defaults."""
+
+    class ArticleModel(BaseModel):
+        authors: list[SubModel]
+
+    with pytest.raises(ValidationError) as error:
+        ArticleModel.model_validate({"authors": [{"name": "Valid"}, {"name": 42}]})
+
+    format_pydantic_error(
+        error.value, ArticleModel, "article.html", source_type="HTML file",
+        include_indices=True,
+    )
+    output = capsys.readouterr().err
+    assert "in HTML file 'article.html'" in output
+    assert "authors.1.name" in output
+
+    format_pydantic_error(error.value, ArticleModel, "app.toml")
+    output = capsys.readouterr().err
+    assert "in config file 'app.toml'" in output
+    assert "authors.name" in output
 
 
 def test_format_toml_error_smoke(capsys):
