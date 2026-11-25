@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; Docbuild Documentation 0.31.1.dev13+g10ba954a4.d20261125</title>
+    <title>Change Log &#8212; Docbuild Documentation 0.31.1.dev14+gd99c23a10.d20261125</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="_static/documentation_options.js?v=b059e7c2"></script>
+    <script src="_static/documentation_options.js?v=80ca44d9"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -480,6 +480,7 @@ and adheres to <a class="reference external" href="https://semver.org/spec/v2.0.
 <li><p>Show live progress for portal XML parsing, repository updates, and metadata worktree creation during builds. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/720">GH #720</a>)</p></li>
 <li><p>Fixed the YAML frontmatter in LLM Markdown files to correctly extract and display the <code class="docutils literal notranslate"><span class="pre">product</span></code> and <code class="docutils literal notranslate"><span class="pre">version</span></code> values during retroactive builds (<code class="docutils literal notranslate"><span class="pre">docbuild</span> <span class="pre">build</span> <span class="pre">llms</span></code>). The redundant <code class="docutils literal notranslate"><span class="pre">language</span></code> key has been completely removed from the output. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/799">GH #799</a>)</p></li>
 <li><p>Convert Antora and DocBook admonition boxes to GitHub-flavored Markdown alert syntax (e.g., <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!NOTE]</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!TIP]</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">[!WARNING]</span></code>) in LLM Markdown output. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/801">GH #801</a>)</p></li>
+<li><p>Log missing or invalid JSON-LD metadata fields at <code class="docutils literal notranslate"><span class="pre">WARNING</span></code> level and display a Rich <code class="docutils literal notranslate"><span class="pre">Warning</span></code> message on stderr during LLM Markdown generation. (<a class="extlink-gh reference external" href="https://github.com/openSUSE/docbuild/issues/802">GH #802</a>)</p></li>
 </ul>
 </section>
 <section id="infrastructure">

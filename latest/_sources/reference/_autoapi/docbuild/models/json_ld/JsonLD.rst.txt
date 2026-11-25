@@ -1,0 +1,27 @@
+docbuild.models.json_ld.JsonLD
+==============================
+
+.. py:class:: docbuild.models.json_ld.JsonLD(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+   .. autoapi-inheritance-diagram:: docbuild.models.json_ld.JsonLD
+      :parts: 1
+
+
+   JSON-LD metadata used for an article.
+
+
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+
+   .. py:method:: validate_date(value: str | None) -> str | None
+      :classmethod:
+
+
+      Validate that date fields use ISO 8601 date or datetime format.
+
+

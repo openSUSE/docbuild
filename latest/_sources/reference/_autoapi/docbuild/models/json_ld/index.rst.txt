@@ -1,0 +1,24 @@
+docbuild.models.json_ld
+=======================
+
+.. py:module:: docbuild.models.json_ld
+
+.. autoapi-nested-parse::
+
+   Pydantic model for validating JSON-LD metadata embedded in HTML.
+
+
+
+Classes
+-------
+
+.. toctree::
+   :hidden:
+
+   /reference/_autoapi/docbuild/models/json_ld/JsonLD
+
+.. autoapisummary::
+
+   docbuild.models.json_ld.JsonLD
+
+

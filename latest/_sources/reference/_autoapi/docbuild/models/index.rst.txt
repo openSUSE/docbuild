@@ -21,6 +21,7 @@ Submodules
    /reference/_autoapi/docbuild/models/doctype/index
    /reference/_autoapi/docbuild/models/envroles/index
    /reference/_autoapi/docbuild/models/homepage/index
+   /reference/_autoapi/docbuild/models/json_ld/index
    /reference/_autoapi/docbuild/models/language/index
    /reference/_autoapi/docbuild/models/lifecycle/index
    /reference/_autoapi/docbuild/models/manifest/index
