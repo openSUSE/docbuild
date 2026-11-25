@@ -14,7 +14,7 @@ import yaml
 from docbuild.cli.console import console_err
 from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
-from docbuild.models.json_ld import JSON_LD
+from docbuild.models.json_ld import JsonLD
 from docbuild.models.product import Product
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
@@ -22,12 +22,9 @@ from docbuild.utils.merge import merge_and_deduplicate_lists
 log = logging.getLogger(__name__)
 
 
-EXPECTED_LD_FIELDS = (
-    "name",
-    "description",
-    "dateCreated",
-    "dateModified",
-    "datePublished",
+EXPECTED_LD_FIELDS = tuple(
+    field.alias or field_name
+    for field_name, field in JsonLD.model_fields.items()
 )
 
 
@@ -37,7 +34,7 @@ def warn_metadata(msg: str) -> None:
     console_err.print(WARNING.render(console=console_err), escape(msg))
 
 
-def extract_json_ld(html_content: str, html_file: Path) -> JSON_LD | None:
+def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
     """Extract and validate JSON-LD metadata from an HTML document."""
     doc = JustHTML(html_content, sanitize=False)
     ld_script = doc.query_one('script[type="application/ld+json"]')
@@ -57,7 +54,7 @@ def extract_json_ld(html_content: str, html_file: Path) -> JSON_LD | None:
         return None
 
     try:
-        metadata = JSON_LD.model_validate(parsed)
+        metadata = JsonLD.model_validate(parsed)
     except ValidationError as exc:
         details = "; ".join(
             f"{'.'.join(str(loc) for loc in err['loc'])}: {err['msg']}"

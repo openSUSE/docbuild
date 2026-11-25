@@ -1,14 +1,17 @@
 """Pydantic model for validating JSON-LD metadata embedded in HTML."""
 
-from datetime import date, datetime
+from datetime import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator
 
-NonEmptyString = Annotated[str, StringConstraints(strict=True, min_length=1)]
+NonEmptyString = Annotated[
+    str,
+    StringConstraints(strict=True, strip_whitespace=True, min_length=1),
+]
 
 
-class JSON_LD(BaseModel):  # noqa: N801
+class JsonLD(BaseModel):
     """JSON-LD metadata used for an article."""
 
     model_config = ConfigDict(extra="allow", populate_by_name=True)
@@ -32,8 +35,5 @@ class JSON_LD(BaseModel):  # noqa: N801
     def validate_date(cls, value: str | None) -> str | None:
         """Validate that date fields use ISO 8601 date or datetime format."""
         if value is not None:
-            if "T" in value:
-                datetime.fromisoformat(value)
-            else:
-                date.fromisoformat(value)
+            datetime.fromisoformat(value)
         return value
