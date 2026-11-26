@@ -16,4 +16,14 @@ docbuild.models.product.StrEnumMeta
 
       Access enum members using attribute-style names with underscores.
 
+      Dashes in ``name`` are replaced with underscores first, so the
+      acronym can be used as well.
+
+      :param name: The member name or acronym, for example ``sle-ha``.
+      :return: The matching enum member.
+      :raises KeyError: If no member has this name.
+
+      >>> Product["sle-ha"]
+      <Product.sle_ha: 'SUSE Linux Enterprise High Availability'>
+
 

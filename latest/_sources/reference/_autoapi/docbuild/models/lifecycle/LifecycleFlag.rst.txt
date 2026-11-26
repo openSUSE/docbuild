@@ -55,13 +55,17 @@ docbuild.models.lifecycle.LifecycleFlag
       Additionally, the class knows the values "unknown".
       An empty string, "", is equivalent to "unknown".
 
+      :param value: The lifecycle names, for example ``supported,beta``.
+      :return: The combined flag.
+      :raises ValueError: If one of the names is not a valid lifecycle.
+
       Examples:
       >>> LifecycleFlag.from_str("supported")
-      <LifecycleFlag.supported: 2>
+      <LifecycleFlag.supported: 1>
       >>> LifecycleFlag.from_str("supported,beta")
-      <LifecycleFlag.supported|beta: 6>
+      <LifecycleFlag.supported|beta: 3>
       >>> LifecycleFlag.from_str("beta,supported|beta")
-      <LifecycleFlag.supported|beta: 6>
+      <LifecycleFlag.supported|beta: 3>
       >>> LifecycleFlag.from_str("")
       <LifecycleFlag.unknown: 0>
 
@@ -70,11 +74,18 @@ docbuild.models.lifecycle.LifecycleFlag
 
    .. py:method:: __contains__(other: str | enum.Flag) -> bool
 
-      Return True if self has at least one of same flags set as other.
+      Return True if self has all the flags that are set in other.
+
+      :param other: A flag, or lifecycle names like ``supported|beta``.
+      :return: ``True`` if all flags of ``other`` are set in ``self``.
+          ``False`` if one is missing or ``other`` has another type.
+      :raises ValueError: If ``other`` is a string with an invalid name.
 
       >>> "supported" in LifecycleFlag.beta
       False
-      >>> "supported|beta" in LifecycleFlag.beta
+      >>> "beta" in LifecycleFlag.from_str("supported|beta")
       True
+      >>> "supported|beta" in LifecycleFlag.beta
+      False
 
 

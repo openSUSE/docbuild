@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.product.StrEnumMeta &#8212; Docbuild Documentation 0.31.1.dev14+gd99c23a10.d20261125</title>
+    <title>docbuild.models.product.StrEnumMeta &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../_static/documentation_options.js?v=80ca44d9"></script>
+    <script src="../../../../../_static/documentation_options.js?v=9eca81c0"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -708,6 +708,23 @@
 <dt class="sig sig-object py" id="docbuild.models.product.StrEnumMeta.__getitem__">
 <span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#docbuild.models.product.StrEnumMeta.__getitem__" title="Link to this definition">#</a></dt>
 <dd><p>Access enum members using attribute-style names with underscores.</p>
+<p>Dashes in <code class="docutils literal notranslate"><span class="pre">name</span></code> are replaced with underscores first, so the
+acronym can be used as well.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The member name or acronym, for example <code class="docutils literal notranslate"><span class="pre">sle-ha</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The matching enum member.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#KeyError" title="(in Python v3.15)"><strong>KeyError</strong></a> – If no member has this name.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Product</span><span class="p">[</span><span class="s2">&quot;sle-ha&quot;</span><span class="p">]</span>
+<span class="go">&lt;Product.sle_ha: &#39;SUSE Linux Enterprise High Availability&#39;&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
