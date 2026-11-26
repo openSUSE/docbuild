@@ -64,6 +64,15 @@ docbuild.models.language.LanguageCode
       If you need to check for wildcard logic, use
       :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
 
+      :param other: A :class:`LanguageCode` or a language code string.
+      :return: ``True`` if both have the same language code.
+          ``NotImplemented`` if ``other`` has another type.
+
+      >>> LanguageCode(language="en-us") == "en-us"
+      True
+      >>> LanguageCode(language="*") == "en-us"
+      False
+
 
 
    .. py:method:: __lt__(other: object|str|LanguageCode) -> bool
@@ -75,6 +84,15 @@ docbuild.models.language.LanguageCode
       * "*" is always the "smallest" language
       * If self contains "*" and the other not, return True
       * If self and the other contains "*", return False
+
+      :param other: A :class:`LanguageCode` or a language code string.
+      :return: ``True`` if ``self`` sorts before ``other``.
+          ``NotImplemented`` if ``other`` has another type.
+
+      >>> LanguageCode(language="*") < LanguageCode(language="en-us")
+      True
+      >>> LanguageCode(language="en-us") < "fr-fr"
+      True
 
 
 
@@ -97,6 +115,10 @@ docbuild.models.language.LanguageCode
       >>> LanguageCode("de-de").matches("*")
       True
 
+      :param other: A :class:`LanguageCode` or a language code string.
+      :return: ``True`` if both are the same language, or one of them
+          is ``*``.
+
 
 
    .. py:method:: validate_language(value: str) -> str
@@ -104,6 +126,11 @@ docbuild.models.language.LanguageCode
 
 
       Check if the passed language adheres to the allowed language.
+
+      :param value: The normalized language code.
+      :return: The language code, unchanged.
+      :raises ValueError: If the language code is not in
+          :attr:`ALLOWED_LANGS`.
 
 
 

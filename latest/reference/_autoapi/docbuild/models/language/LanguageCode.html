@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.language.LanguageCode &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
+    <title>docbuild.models.language.LanguageCode &#8212; Docbuild Documentation 0.31.1.dev17+g10b728cf9.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../_static/documentation_options.js?v=9c20e9d2"></script>
+    <script src="../../../../../_static/documentation_options.js?v=825ff851"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -749,6 +749,21 @@ conforming to Pydantic’s <a class="reference external" href="https://pydantic.
 </ul>
 <p>If you need to check for wildcard logic, use
 <a class="reference internal" href="#docbuild.models.language.LanguageCode.matches" title="docbuild.models.language.LanguageCode.matches"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matches()</span></code></a> instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageCode</span></code> or a language code string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if both have the same language code.
+<code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code> if <code class="docutils literal notranslate"><span class="pre">other</span></code> has another type.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LanguageCode</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;en-us&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;en-us&quot;</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">LanguageCode</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;en-us&quot;</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -761,6 +776,21 @@ conforming to Pydantic’s <a class="reference external" href="https://pydantic.
 <li><p>If self contains “*” and the other not, return True</p></li>
 <li><p>If self and the other contains “*”, return False</p></li>
 </ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageCode</span></code> or a language code string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">self</span></code> sorts before <code class="docutils literal notranslate"><span class="pre">other</span></code>.
+<code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code> if <code class="docutils literal notranslate"><span class="pre">other</span></code> has another type.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">LanguageCode</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">LanguageCode</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;en-us&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">LanguageCode</span><span class="p">(</span><span class="n">language</span><span class="o">=</span><span class="s2">&quot;en-us&quot;</span><span class="p">)</span> <span class="o">&lt;</span> <span class="s2">&quot;fr-fr&quot;</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -781,12 +811,33 @@ conforming to Pydantic’s <a class="reference external" href="https://pydantic.
 <span class="go">True</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">LanguageCode</span></code> or a language code string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if both are the same language, or one of them
+is <code class="docutils literal notranslate"><span class="pre">*</span></code>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docbuild.models.language.LanguageCode.validate_language">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#docbuild.models.language.LanguageCode.validate_language" title="Link to this definition">#</a></dt>
 <dd><p>Check if the passed language adheres to the allowed language.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The normalized language code.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The language code, unchanged.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.15)"><strong>ValueError</strong></a> – If the language code is not in
+<a class="reference internal" href="#docbuild.models.language.LanguageCode.ALLOWED_LANGS" title="docbuild.models.language.LanguageCode.ALLOWED_LANGS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ALLOWED_LANGS</span></code></a>.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
