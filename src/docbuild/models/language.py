@@ -43,7 +43,14 @@ class LanguageCode(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _convert_str_to_dict(cls, data: str | dict[str, Any]) -> dict[str, Any]:
-        """Allow initializing LanguageCode from a plain string."""
+        """Allow initializing LanguageCode from a plain string.
+
+        :param data: A language code string, or the input data as a dict.
+        :return: The input data as a dict with a ``language`` key.
+
+        >>> LanguageCode.model_validate("en_US")
+        LanguageCode(language='en-us')
+        """
         if isinstance(data, str):
             return {"language": data}
         return data
@@ -67,6 +74,15 @@ class LanguageCode(BaseModel):
 
         If you need to check for wildcard logic, use
         :meth:`~docbuild.models.language.LanguageCode.matches()` instead.
+
+        :param other: A :class:`LanguageCode` or a language code string.
+        :return: ``True`` if both have the same language code.
+            ``NotImplemented`` if ``other`` has another type.
+
+        >>> LanguageCode(language="en-us") == "en-us"
+        True
+        >>> LanguageCode(language="*") == "en-us"
+        False
         """
         if isinstance(other, LanguageCode):
             return self.language == other.language
@@ -82,6 +98,15 @@ class LanguageCode(BaseModel):
         * "*" is always the "smallest" language
         * If self contains "*" and the other not, return True
         * If self and the other contains "*", return False
+
+        :param other: A :class:`LanguageCode` or a language code string.
+        :return: ``True`` if ``self`` sorts before ``other``.
+            ``NotImplemented`` if ``other`` has another type.
+
+        >>> LanguageCode(language="*") < LanguageCode(language="en-us")
+        True
+        >>> LanguageCode(language="en-us") < "fr-fr"
+        True
         """
         if isinstance(other, LanguageCode):
             other_value = other.language
@@ -115,6 +140,10 @@ class LanguageCode(BaseModel):
         True
         >>> LanguageCode("de-de").matches("*")
         True
+
+        :param other: A :class:`LanguageCode` or a language code string.
+        :return: ``True`` if both are the same language, or one of them
+            is ``*``.
         """
         # Also defensively strip spaces when performing wildcard matches against strings
         other_value = str(other).strip() if isinstance(other, str) else str(other)
@@ -125,7 +154,17 @@ class LanguageCode(BaseModel):
     @field_validator("language", mode="before")
     @classmethod
     def _normalize_language_separator(cls, value: str) -> str:
-        """Strip whitespaces, normalize separator, and auto-complete partial languages."""
+        """Strip whitespaces, normalize separator, and auto-complete partial languages.
+
+        :param value: The language code as given.
+        :return: The normalized language code. Values that are not strings
+            are returned unchanged.
+
+        >>> LanguageCode(language=" EN_us ")
+        LanguageCode(language='en-us')
+        >>> LanguageCode(language="en")
+        LanguageCode(language='en-us')
+        """
         if isinstance(value, str):
             val = value.strip().lower().replace("_", "-")
 
@@ -141,7 +180,13 @@ class LanguageCode(BaseModel):
     @field_validator("language")
     @classmethod
     def validate_language(cls, value: str) -> str:
-        """Check if the passed language adheres to the allowed language."""
+        """Check if the passed language adheres to the allowed language.
+
+        :param value: The normalized language code.
+        :return: The language code, unchanged.
+        :raises ValueError: If the language code is not in
+            :attr:`ALLOWED_LANGS`.
+        """
         if value not in cls.ALLOWED_LANGS:
             raise ValueError(
                 (
