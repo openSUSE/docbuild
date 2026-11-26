@@ -156,7 +156,16 @@ class ManagedGitRepo:
         is_local: bool = True,
         options: list[str] | None = None,
     ) -> None:
-        """Create a temporary worktree from the bare repository."""
+        """Create a temporary worktree from the bare repository.
+
+        :param target_dir: The directory where the worktree is created.
+        :param branch: The branch to check out.
+        :param is_local: Has no effect. Git already uses ``--local`` when it
+            clones from a local path.
+        :param options: Extra options passed to :command:`git clone`.
+        :raises FileNotFoundError: If the bare repository does not exist.
+        :raises RuntimeError: If the :command:`git clone` command fails.
+        """
         if not self.bare_repo_path.exists():
             raise FileNotFoundError(
                 "Cannot create worktree. Bare repository does not exist at: "
