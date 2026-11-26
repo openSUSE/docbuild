@@ -8,7 +8,18 @@ class StrEnumMeta(EnumMeta):
     """Custom metaclass for StrEnum to allow attribute-style access."""
 
     def __getitem__(cls, name: str) -> object:
-        """Access enum members using attribute-style names with underscores."""
+        """Access enum members using attribute-style names with underscores.
+
+        Dashes in ``name`` are replaced with underscores first, so the
+        acronym can be used as well.
+
+        :param name: The member name or acronym, for example ``sle-ha``.
+        :return: The matching enum member.
+        :raises KeyError: If no member has this name.
+
+        >>> Product["sle-ha"]
+        <Product.sle_ha: 'SUSE Linux Enterprise High Availability'>
+        """
         candidate = name.replace("-", "_")
         try:
             return super().__getitem__(candidate)
@@ -27,7 +38,11 @@ class BaseProductEnum(StrEnum, metaclass=StrEnumMeta):
 
     @classmethod
     def _missing_(cls, value: object) -> Self | None:
-        """Raise custom error for unknown values."""
+        """Raise custom error for unknown values.
+
+        :param value: The value that did not match a member.
+        :raises ValueError: Always, with a list of the allowed values.
+        """
         allowed = ", ".join(repr(v.value) for v in cls)
         raise ValueError(
             f"{value!r} is not a valid {cls.__name__}. Allowed values are: {allowed}",
@@ -91,6 +106,13 @@ class Product(BaseProductEnum):
         This intentionally overrides :meth:`BaseProductEnum._missing_`, which
         only raises a formatted :class:`ValueError`. Here we add product-specific
         coercion rules (acronyms and ``*``), then fall back to the base method.
+
+        :param value: The value that did not match a member.
+        :return: The member with this acronym, or ``Product.ALL`` for ``*``.
+        :raises ValueError: If ``value`` is not a known acronym.
+
+        >>> Product("sle-micro")
+        <Product.sle_micro: 'SUSE Linux Micro'>
         """
         if isinstance(value, str):
             if value == "*":

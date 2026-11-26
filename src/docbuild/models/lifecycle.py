@@ -27,7 +27,13 @@ class LifecycleFlag(Flag):
 
     @classmethod
     def _missing_(cls: type[Self], value: object) -> Self | None:
-        """Handle missing values by attempting to parse strings."""
+        """Handle missing values by attempting to parse strings.
+
+        :param value: The value that did not match a member.
+        :return: The parsed flag, or ``None`` if ``value`` is not a valid
+            string. ``None`` makes :class:`~enum.Flag` raise a
+            :class:`ValueError`.
+        """
         if isinstance(value, str):
             try:
                 return cls.from_str(value)
@@ -45,13 +51,17 @@ class LifecycleFlag(Flag):
         Additionally, the class knows the values "unknown".
         An empty string, "", is equivalent to "unknown".
 
+        :param value: The lifecycle names, for example ``supported,beta``.
+        :return: The combined flag.
+        :raises ValueError: If one of the names is not a valid lifecycle.
+
         Examples:
         >>> LifecycleFlag.from_str("supported")
-        <LifecycleFlag.supported: 2>
+        <LifecycleFlag.supported: 1>
         >>> LifecycleFlag.from_str("supported,beta")
-        <LifecycleFlag.supported|beta: 6>
+        <LifecycleFlag.supported|beta: 3>
         >>> LifecycleFlag.from_str("beta,supported|beta")
-        <LifecycleFlag.supported|beta: 6>
+        <LifecycleFlag.supported|beta: 3>
         >>> LifecycleFlag.from_str("")
         <LifecycleFlag.unknown: 0>
 
@@ -75,12 +85,19 @@ class LifecycleFlag(Flag):
             ) from err
 
     def __contains__(self: Self, other: str | Flag) -> bool:
-        """Return True if self has at least one of same flags set as other.
+        """Return True if self has all the flags that are set in other.
+
+        :param other: A flag, or lifecycle names like ``supported|beta``.
+        :return: ``True`` if all flags of ``other`` are set in ``self``.
+            ``False`` if one is missing or ``other`` has another type.
+        :raises ValueError: If ``other`` is a string with an invalid name.
 
         >>> "supported" in LifecycleFlag.beta
         False
-        >>> "supported|beta" in LifecycleFlag.beta
+        >>> "beta" in LifecycleFlag.from_str("supported|beta")
         True
+        >>> "supported|beta" in LifecycleFlag.beta
+        False
         """
         if isinstance(other, str):
             item_flag = self.__class__.from_str(other)
