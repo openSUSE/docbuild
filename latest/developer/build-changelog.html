@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Building the Changelog &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Building the Changelog &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -510,9 +510,15 @@
 <li><p>added news fragments (see <a class="reference internal" href="add-newsfragments.html#add-newsfragments"><span class="std std-ref">Adding News Fragments</span></a>)</p></li>
 <li><p>updated the project (see <a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Updating the Project</span></a>)</p></li>
 </ul>
-<ol class="arabic">
-<li><p>If needed, <a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">bump the version</span></a>.</p></li>
-<li><p>Build the changelog file from all news fragments:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Bump the version if needed</p>
+<div class="sd-step-content docutils">
+<p>If needed, <a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">bump the version</span></a>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Build the changelog</p>
+<div class="sd-step-content docutils">
+<p>Build the changelog file from all news fragments:</p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">Build a combined changelog from news fragments</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>towncrier<span class="w"> </span>build<span class="w"> </span><span class="o">[</span>--yes<span class="o">]</span>
@@ -520,9 +526,18 @@
 </div>
 </div>
 <p>After this command, the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file in the root directory is updated and all news fragments are removed from the directory <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code>.</p>
+</div>
 </li>
-<li><p>Review the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file. Sometimes the changelog may not look as expected, especially if the news fragments are not formatted correctly. You can edit the file manually to fix any issues.</p></li>
-<li><p>Commit the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> and the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory with a message that describes the change.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Review the changelog</p>
+<div class="sd-step-content docutils">
+<p>Review the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> file. Sometimes the changelog may not look as expected, especially if the news fragments are not formatted correctly. You can edit the file manually to fix any issues.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Commit the changelog and news fragments</p>
+<div class="sd-step-content docutils">
+<p>Commit the <code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code> and the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory with a message that describes the change.</p>
+</div>
+</li>
 </ol>
 </section>
 

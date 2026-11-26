@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Migrating old Docserv Config to new Portal Config &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -701,19 +701,27 @@ The recommended approach is to use the migration script as described in
 <p>The steps below are a simplified version of what the command <strong class="command">docserv-stitch</strong> does on the Docserv server to create the stitchfile.</p>
 <p>Make sure your Docserv configs are valid.</p>
 </div>
-<ol class="arabic">
-<li><p>Clone the Docserv config repo if you haven’t already:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Clone the Docserv config repository</p>
+<div class="sd-step-content docutils">
+<p>Clone the Docserv config repo if you haven’t already:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitlab.suse.de/susedoc/docserv-config.git
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>docserv-config/config.d
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Set the result file name and path:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Set the stitchfile path</p>
+<div class="sd-step-content docutils">
+<p>Set the result file name and path:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">stitchfile</span><span class="o">=</span><span class="s2">&quot;/tmp/docserv-stitch-</span><span class="k">$(</span>date<span class="w"> </span>--iso-8601<span class="k">)</span><span class="s2">.xml&quot;</span>
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Prepare the header of the stitchfile:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Prepare the stitchfile header</p>
+<div class="sd-step-content docutils">
+<p>Prepare the header of the stitchfile:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>&lt;&lt;<span class="w"> </span>EOF<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 <span class="go">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="go">&lt;docservconfig&gt;</span>
@@ -722,20 +730,30 @@ The recommended approach is to use the migration script as described in
 <span class="go">EOF</span>
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Copy content from all categories into result:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Append category configuration</p>
+<div class="sd-step-content docutils">
+<p>Copy content from all categories into the result:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xmllint<span class="w"> </span>--xpath<span class="w"> </span><span class="s2">&quot;/*&quot;</span><span class="w"> </span>_categories.xml<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Append all config files to the result and resolve any XInclude elements:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Append config files and resolve XIncludes</p>
+<div class="sd-step-content docutils">
+<p>Append all config files to the result and resolve any XInclude elements:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>xmllint<span class="w"> </span>--xinclude<span class="w"> </span>--xpath<span class="w"> </span><span class="s2">&quot;/*&quot;</span><span class="w"> </span><span class="o">[</span>a-z<span class="o">]</span>*.xml<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Close the root element:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Close the root element</p>
+<div class="sd-step-content docutils">
+<p>Close the root element:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;&lt;/docservconfig&gt;\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$stitchfile</span><span class="s2">&quot;</span>
 </pre></div>
+</div>
 </div>
 </li>
 </ol>

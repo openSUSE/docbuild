@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating external Links &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating external Links &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -510,28 +510,36 @@
 <p>For some products, additional resources may be required. These can be
 links to partners or supporting resources outside of the portal.</p>
 <p>As these resources are <em>external</em> from a portal point of view, use
-the <code class="docutils literal notranslate"><span class="pre">&lt;external&gt;</span></code> element. Follow this procedure:</p>
-<ol class="arabic">
-<li><p>Find for a product and release the file in your configuration directory.</p></li>
-<li><p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) where you want the deliverable to appear.
+the <code class="docutils literal notranslate"><span class="pre">&lt;external&gt;</span></code> element:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Find the product and release configuration file</p>
+<div class="sd-step-content docutils">
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Add the external link to the release</p>
+<div class="sd-step-content docutils">
+<p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) where you want the deliverable to appear.
 After the <code class="docutils literal notranslate"><span class="pre">&lt;/resources&gt;</span></code> end tag, add the following structure:</p>
 <div class="literal-block-wrapper docutils container" id="external-ref-deliverable">
 <div class="code-block-caption"><span class="caption-text">Links to external Resource</span><a class="headerlink" href="#external-ref-deliverable" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;external&gt;</span>
-<span class="w">  </span><span class="nt">&lt;link&gt;</span>
-<span class="w">    </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://www.example.com/product/&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
-<span class="w">    </span><span class="nt">&lt;descriptions&gt;</span>
-<span class="w">      </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
-<span class="w">        </span><span class="nt">&lt;p&gt;</span>How<span class="w"> </span>to<span class="w"> </span>...<span class="nt">&lt;/p&gt;</span>
-<span class="w">      </span><span class="nt">&lt;/desc&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/descriptions&gt;</span>
-<span class="w">  </span><span class="nt">&lt;/link&gt;</span>
+<span class="w">   </span><span class="nt">&lt;link&gt;</span>
+<span class="w">      </span><span class="nt">&lt;url</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;https://www.example.com/product/&quot;</span><span class="w"> </span><span class="na">format=</span><span class="s">&quot;html&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;descriptions&gt;</span>
+<span class="w">         </span><span class="nt">&lt;desc</span><span class="w"> </span><span class="na">lang=</span><span class="s">&quot;en-us&quot;</span><span class="nt">&gt;</span>
+<span class="w">            </span><span class="nt">&lt;p&gt;</span>How<span class="w"> </span>to<span class="w"> </span>...<span class="nt">&lt;/p&gt;</span>
+<span class="w">         </span><span class="nt">&lt;/desc&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/descriptions&gt;</span>
+<span class="w">   </span><span class="nt">&lt;/link&gt;</span>
 <span class="nt">&lt;/external&gt;</span>
 </pre></div>
 </div>
 </div>
+</div>
 </li>
-<li><p>Change the link in the <code class="docutils literal notranslate"><span class="pre">&lt;url</span> <span class="pre">href=&quot;...&quot;&gt;</span></code> element.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Set the link URL and options</p>
+<div class="sd-step-content docutils">
+<p>Change the link in the <code class="docutils literal notranslate"><span class="pre">&lt;url</span> <span class="pre">href=&quot;...&quot;&gt;</span></code> element.</p>
 <p>Depending on the target format, you can set the <code class="docutils literal notranslate"><span class="pre">format</span></code>
 attribute. The allowed formats are <code class="docutils literal notranslate"><span class="pre">html</span></code>, <code class="docutils literal notranslate"><span class="pre">single-html</span></code>, <code class="docutils literal notranslate"><span class="pre">pdf</span></code>,
 <code class="docutils literal notranslate"><span class="pre">epub</span></code>, <code class="docutils literal notranslate"><span class="pre">zip</span></code>, <code class="docutils literal notranslate"><span class="pre">tar</span></code>, and <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
@@ -541,13 +549,19 @@ attribute. The allowed formats are <code class="docutils literal notranslate"><s
 <li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code>: set to <code class="docutils literal notranslate"><span class="pre">true</span></code> if the target resource requires authentication.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">titleformat</span></code>: specify how titles are displayed.</p></li>
 </ul>
+</div>
 </li>
-<li><p>Add your description in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add a description</p>
+<div class="sd-step-content docutils">
+<p>Add your description in the <code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;</span></code> element.</p>
 <p>The child elements are a limited set of HTML.</p>
+</div>
 </li>
-<li><p>Optionally, add additional translations for the link.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add translations (optional)</p>
+<div class="sd-step-content docutils">
 <p>Use an <code class="docutils literal notranslate"><span class="pre">&lt;desc</span> <span class="pre">lang=&quot;...&quot;&gt;</span></code> element for each language. Change the
 language in the <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute.</p>
+</div>
 </li>
 </ol>
 <div class="admonition seealso">

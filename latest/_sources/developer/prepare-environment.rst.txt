@@ -64,38 +64,48 @@ Setting up the development environment
 
 The following steps are recommended to set up your development environment:
 
-#. Follow the steps in :ref:`qs-prepare-installation` and :ref:`qs-install-docbuild`.
+.. steps::
 
-#. If you haven't created a virtual environment, do so:
+   .. step:: Install docbuild
 
-   .. code-block:: console
-      :caption: Creating a virtual environment with |uv|
-      :name: uv-venv
+      Follow the steps in :ref:`qs-prepare-installation` and :ref:`qs-install-docbuild`.
 
-      $ uv venv --prompt venv313 --python 3.13 .venv
+   .. step:: Create a virtual environment (if needed)
 
-   Keep in mind that the Python version used in the virtual environment should match the version specified in the :file:`pyproject.toml` file.
+      If you haven't created a virtual environment, do so:
 
-   The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
-   See file :file:`pyproject.toml` in ``project.requires-python`` for the exact version.
+      .. code-block:: console
+         :caption: Creating a virtual environment with |uv|
+         :name: uv-venv
 
-#. Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:
+         $ uv venv --prompt venv313 --python 3.13 .venv
 
-   .. code-block:: console
-      :caption: Synchronizing the virtual environment with the development dependencies
-      :name: uv-sync-devel
+      Keep in mind that the Python version used in the virtual environment should match the version specified in the :file:`pyproject.toml` file.
 
-      $ uv sync --dev --frozen
+      The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
+      See file :file:`pyproject.toml` in ``project.requires-python`` for the exact version.
 
-   The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
+   .. step:: Synchronize development dependencies
 
-#. Optionally, source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
+      Synchronize the virtual environment with the project dependencies, using the development group instead of the default group:
 
-   .. code-block:: console
-      :caption: Activating the shell aliases for development
-      :name: activate-aliases
+      .. code-block:: console
+         :caption: Synchronizing the virtual environment with the development dependencies
+         :name: uv-sync-devel
 
-      $ source devel/activate-aliases.sh
+         $ uv sync --dev --frozen
+
+      The option ``--frozen`` ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.
+
+   .. step:: Source shell aliases (optional)
+
+      Source the shell aliases defined in :file:`devel/activate-aliases.sh` to abbreviate the longer :command:`uv` calls (see :ref:`devel-helpers` for more information):
+
+      .. code-block:: console
+         :caption: Activating the shell aliases for development
+         :name: activate-aliases
+
+         $ source devel/activate-aliases.sh
 
 
 After completing these steps, your development environment is ready to go.

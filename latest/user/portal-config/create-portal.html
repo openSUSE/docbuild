@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating a Portal Configuration &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -508,37 +508,52 @@
   <section id="creating-a-portal-configuration">
 <span id="create-portal"></span><h1>Creating a Portal Configuration<a class="headerlink" href="#creating-a-portal-configuration" title="Link to this heading">#</a></h1>
 <p>In this example, we are going to use XInclude to split the configuration into multiple files.</p>
-<ol class="arabic">
-<li><p>Create the directory where you want to store your portal configuration
-files, for example <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>.</p></li>
-<li><p>Create a main portal configuration file named <code class="file docutils literal notranslate"><span class="pre">config.d/portal.xml</span></code>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Create the configuration directory</p>
+<div class="sd-step-content docutils">
+<p>Create the directory where you want to store your portal configuration
+files, for example <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Create the main portal configuration</p>
+<div class="sd-step-content docutils">
+<p>Create a main portal configuration file named <code class="file docutils literal notranslate"><span class="pre">config.d/portal.xml</span></code>
 and add the following content:</p>
 <div class="literal-block-wrapper docutils container" id="portal-xml">
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">portal.xml</span></code> Configuration</span><a class="headerlink" href="#portal-xml" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;portal</span><span class="w"> </span><span class="na">schemaversion=</span><span class="s">&quot;7.0&quot;</span>
-<span class="w">   </span><span class="na">xmlns:xi=</span><span class="s">&quot;http://www.w3.org/2001/XInclude&quot;</span><span class="nt">&gt;</span>
-<span class="w">   </span><span class="cm">&lt;!-- &lt;spotlight&gt;...&lt;/spotlight&gt; see below --&gt;</span>
+<span class="w">  </span><span class="na">xmlns:xi=</span><span class="s">&quot;http://www.w3.org/2001/XInclude&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- &lt;spotlight&gt;...&lt;/spotlight&gt; see below --&gt;</span>
 
-<span class="w">   </span><span class="cm">&lt;!-- ... global settings ... --&gt;</span>
-<span class="w">   </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_categories.xml&quot;</span><span class="nt">/&gt;</span>
-<span class="w">   </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_productfamilies.xml&quot;</span><span class="nt">/&gt;</span>
-<span class="w">   </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_series.xml&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- ... global settings ... --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_categories.xml&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_productfamilies.xml&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;global_series.xml&quot;</span><span class="nt">/&gt;</span>
 
-<span class="w">   </span><span class="cm">&lt;!-- ... product definitions ... --&gt;</span>
-<span class="w">   </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;productA/productA.xml&quot;</span><span class="nt">/&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- ... product definitions ... --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;xi:include</span><span class="w"> </span><span class="na">href=</span><span class="s">&quot;productA/productA.xml&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/portal&gt;</span>
 </pre></div>
 </div>
 </div>
+</div>
 </li>
-<li><p>Create the global settings files <code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code>,
+<li class="sd-step"><p class="sd-step-title rubric">Add the global settings files</p>
+<div class="sd-step-content docutils">
+<p>Create the global settings files <code class="file docutils literal notranslate"><span class="pre">global_categories.xml</span></code>,
 <code class="file docutils literal notranslate"><span class="pre">global_productfamilies.xml</span></code>, and <code class="file docutils literal notranslate"><span class="pre">global_series.xml</span></code>
 with the appropriate content for your portal.
-See section <a class="reference internal" href="building-blocks.html#global-settings"><span class="std std-ref">Global Settings</span></a> for details on the expected structure.</p></li>
-<li><p>Create a directory for the first product (in this example, it’s
+See section <a class="reference internal" href="building-blocks.html#global-settings"><span class="std std-ref">Global Settings</span></a> for details on the expected structure.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Add the product definition</p>
+<div class="sd-step-content docutils">
+<p>Create a directory for the first product (in this example, it’s
 <code class="file docutils literal notranslate"><span class="pre">productA</span></code>) and add a product definition file with the name
 <code class="file docutils literal notranslate"><span class="pre">productA/productA.xml</span></code>.
-See section <a class="reference internal" href="building-blocks.html#product-definition"><span class="std std-ref">Product Definition</span></a> for details on the expected structure.</p></li>
+See section <a class="reference internal" href="building-blocks.html#product-definition"><span class="std std-ref">Product Definition</span></a> for details on the expected structure.</p>
+</div>
+</li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

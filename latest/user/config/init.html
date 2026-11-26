@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Starter Configuration &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating Starter Configuration &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -512,12 +512,14 @@ files from Docbuild’s built-in defaults:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init
 </pre></div>
 </div>
-<p>The command creates <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> and <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> in the user
+<p>The command creates both <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> and <code class="file docutils literal notranslate"><span class="pre">env.production.toml</span></code> in the user
 configuration directory and prints their paths. This is the same directory
 Docbuild searches when loading configuration: typically
 <code class="file docutils literal notranslate"><span class="pre">~/.config/docbuild</span></code> on Linux (or <code class="file docutils literal notranslate"><span class="pre">$XDG_CONFIG_HOME/docbuild</span></code> when set),
 and <code class="file docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/docbuild</span></code> on macOS.
 Missing directories are created automatically.</p>
+<section id="creating-individual-configuration-files">
+<h2>Creating Individual Configuration Files<a class="headerlink" href="#creating-individual-configuration-files" title="Link to this heading">#</a></h2>
 <p>To create only one file, use <code class="docutils literal notranslate"><span class="pre">--app</span></code> or <code class="docutils literal notranslate"><span class="pre">--env</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--app
 <span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>init<span class="w"> </span>--env
@@ -541,6 +543,7 @@ TOML has no null value.</p>
 <p>The files include a generated-file header; comments from the example templates
 are not copied. Edit the generated environment configuration for your portal,
 then check it with <a class="reference internal" href="validate.html#validate-config"><span class="std std-ref">Validating Configuration</span></a>.</p>
+</section>
 <section id="choosing-an-environment-role">
 <h2>Choosing an Environment Role<a class="headerlink" href="#choosing-an-environment-role" title="Link to this heading">#</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">--role</span></code> to create an environment configuration for production (the
@@ -602,6 +605,7 @@ An explicit <code class="docutils literal notranslate"><span class="pre">--role<
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-individual-configuration-files">Creating Individual Configuration Files</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-an-environment-role">Choosing an Environment Role</a></li>
 </ul>
   </nav></div>

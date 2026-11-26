@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Preparing Your Development Environment &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -605,9 +605,15 @@ for each file type.</p>
 <section id="setting-up-the-development-environment">
 <h2>Setting up the development environment<a class="headerlink" href="#setting-up-the-development-environment" title="Link to this heading">#</a></h2>
 <p>The following steps are recommended to set up your development environment:</p>
-<ol class="arabic">
-<li><p>Follow the steps in <a class="reference internal" href="../quickstart/index.html#qs-prepare-installation"><span class="std std-ref">Preparing the uv environment</span></a> and <a class="reference internal" href="../quickstart/index.html#qs-install-docbuild"><span class="std std-ref">Installing docbuild</span></a>.</p></li>
-<li><p>If you haven’t created a virtual environment, do so:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Install docbuild</p>
+<div class="sd-step-content docutils">
+<p>Follow the steps in <a class="reference internal" href="../quickstart/index.html#qs-prepare-installation"><span class="std std-ref">Preparing the uv environment</span></a> and <a class="reference internal" href="../quickstart/index.html#qs-install-docbuild"><span class="std std-ref">Installing docbuild</span></a>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Create a virtual environment (if needed)</p>
+<div class="sd-step-content docutils">
+<p>If you haven’t created a virtual environment, do so:</p>
 <div class="literal-block-wrapper docutils container" id="uv-venv">
 <div class="code-block-caption"><span class="caption-text">Creating a virtual environment with <strong class="command">uv</strong></span><a class="headerlink" href="#uv-venv" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>venv<span class="w"> </span>--prompt<span class="w"> </span>venv313<span class="w"> </span>--python<span class="w"> </span><span class="m">3</span>.13<span class="w"> </span>.venv
@@ -617,8 +623,11 @@ for each file type.</p>
 <p>Keep in mind that the Python version used in the virtual environment should match the version specified in the <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
 <p>The example above uses Python 3.13, but you can adjust it according to your needs as long as it is compatible with the project.
 See file <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> in <code class="docutils literal notranslate"><span class="pre">project.requires-python</span></code> for the exact version.</p>
+</div>
 </li>
-<li><p>Synchronize the virtual environment with the project dependencies, but use the development group instead of the default group:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Synchronize development dependencies</p>
+<div class="sd-step-content docutils">
+<p>Synchronize the virtual environment with the project dependencies, using the development group instead of the default group:</p>
 <div class="literal-block-wrapper docutils container" id="uv-sync-devel">
 <div class="code-block-caption"><span class="caption-text">Synchronizing the virtual environment with the development dependencies</span><a class="headerlink" href="#uv-sync-devel" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>uv<span class="w"> </span>sync<span class="w"> </span>--dev<span class="w"> </span>--frozen
@@ -626,12 +635,16 @@ See file <code class="file docutils literal notranslate"><span class="pre">pypro
 </div>
 </div>
 <p>The option <code class="docutils literal notranslate"><span class="pre">--frozen</span></code> ensures that the dependencies are installed exactly as specified in the lock file, preventing any unexpected changes.</p>
+</div>
 </li>
-<li><p>Optionally, source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
+<li class="sd-step"><p class="sd-step-title rubric">Source shell aliases (optional)</p>
+<div class="sd-step-content docutils">
+<p>Source the shell aliases defined in <code class="file docutils literal notranslate"><span class="pre">devel/activate-aliases.sh</span></code> to abbreviate the longer <strong class="command">uv</strong> calls (see <a class="reference internal" href="#devel-helpers"><span class="std std-ref">Helper Tools</span></a> for more information):</p>
 <div class="literal-block-wrapper docutils container" id="activate-aliases">
 <div class="code-block-caption"><span class="caption-text">Activating the shell aliases for development</span><a class="headerlink" href="#activate-aliases" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>devel/activate-aliases.sh
 </pre></div>
+</div>
 </div>
 </div>
 </li>

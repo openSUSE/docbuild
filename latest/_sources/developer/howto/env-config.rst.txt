@@ -12,91 +12,99 @@ Adding a new config key
 
 To add a new configuration key, follow these steps. In this example, we'll add a key named ``new_xyz_feature`` to the ``[general]`` section. The feature is configured with a string like ``"on:5"``, where ``on`` is the status and ``5`` is the level.
 
-#. Define a data class (if necessary).
+.. steps::
 
-   For complex data, it's a good practice to define a :func:`~dataclasses.dataclass` to hold the structured data.
+    .. step:: Define a data class if needed
 
-   .. code-block:: python
+        For complex data, it's a good practice to define a :func:`~dataclasses.dataclass` to hold the structured data.
 
-      from dataclasses import dataclass
+        .. code-block:: python
 
-      @dataclass
-      class FeatureSetting:
-          status: str
-          level: int
+            from dataclasses import dataclass
 
-#. Edit the example file :file:`etc/docbuild/env.example.toml`.
+            @dataclass
+            class FeatureSetting:
+                 status: str
+                 level: int
 
-   Add the new key and a comment explaining its purpose and format.
+    .. step:: Edit the environment example file
 
-   .. code-block:: toml
-      :caption: Example of adding a new config key to the environment configuration
+        Edit :file:`etc/docbuild/env.example.toml`, add the new key, and include a comment explaining its purpose and format.
 
-      [general]
-      # ...
-      # new_xyz_feature(string): Enable the new XYZ feature.
-      # Format: "status:level", e.g., "on:5"
-      new_xyz_feature = "on:5"
+        .. code-block:: toml
+            :caption: Example of adding a new config key to the environment configuration
 
-#. Adjust the appropriate model in :mod:`docbuild.models.config.env`.
+            [general]
+            # ...
+            # new_xyz_feature(string): Enable the new XYZ feature.
+            # Format: "status:level", e.g., "on:5"
+            new_xyz_feature = "on:5"
 
-   a. Add a new field to the model. The type hint should be the custom class you defined.
+    .. step:: Adjust the environment model
 
-      .. code-block:: python
-         :caption: Example of adding a new field to a Pydantic model
+        Adjust the appropriate model in :mod:`docbuild.models.config.env`:
 
-         class EnvGeneral(BaseModel):
-             # ...
-             new_xyz_feature: FeatureSetting = Field(
-                 default="on:5",
-                 title="XYZ Feature Setting",
-                 description="Setting for the new XYZ feature.",
-             )
+        #. Add a field to the model. The type hint should be the custom class you defined.
 
-   b. Add a :func:`~pydantic.field_validator` to parse the input string into your custom object.
+           .. code-block:: python
+              :caption: Example of adding a new field to a Pydantic model
 
-      The validator takes the raw string from the TOML file and returns an instance of your ``FeatureSetting`` class.
+              class EnvGeneral(BaseModel):
+                  # ...
+                  new_xyz_feature: FeatureSetting = Field(
+                      default="on:5",
+                      title="XYZ Feature Setting",
+                      description="Setting for the new XYZ feature.",
+                  )
 
-      .. code-block:: python
+        #. Add a :func:`~pydantic.field_validator` to parse the input string into your custom object.
 
-         @field_validator("new_xyz_feature", mode="before")
-         @classmethod
-         def validate_new_xyz_feature(cls, v: str) -> FeatureSetting:
-             if not isinstance(v, str):
-                 raise ValueError("must be a string in format 'status:level'")
-             try:
-                 status, level_str = v.split(":")
-                 level = int(level_str)
-                 if status not in ("on", "off"):
-                     raise ValueError("status must be 'on' or 'off'")
-                 return FeatureSetting(status=status, level=level)
-             except (ValueError, TypeError) as e:
-                 raise ValueError(f"invalid format: {e}") from e
+           The validator takes the raw string from the TOML file and returns an instance of your ``FeatureSetting`` class.
 
-   c. Consider if a custom serializer is needed.
+           .. code-block:: python
 
-      To control how the ``FeatureSetting`` object is converted back to a string (e.g., for :meth:`~pydantic.BaseModel.model_dump`), add a :func:`~pydantic.field_serializer`.
+              @field_validator("new_xyz_feature", mode="before")
+              @classmethod
+              def validate_new_xyz_feature(cls, v: str) -> FeatureSetting:
+                  if not isinstance(v, str):
+                      raise ValueError("must be a string in format 'status:level'")
+                  try:
+                      status, level_str = v.split(":")
+                      level = int(level_str)
+                      if status not in ("on", "off"):
+                          raise ValueError("status must be 'on' or 'off'")
+                      return FeatureSetting(status=status, level=level)
+                  except (ValueError, TypeError) as e:
+                      raise ValueError(f"invalid format: {e}") from e
 
-      .. code-block:: python
+        #. Consider whether a custom serializer is needed.
 
-         @field_serializer("new_xyz_feature")
-         def serialize_new_xyz_feature(self, feature: FeatureSetting) -> str:
-             return f"{feature.status}:{feature.level}"
+           To control how the ``FeatureSetting`` object is converted back to a string (e.g., for :meth:`~pydantic.BaseModel.model_dump`), add a :func:`~pydantic.field_serializer`.
 
-#. Access the value in your code.
+           .. code-block:: python
 
-   You can now access the structured data from the configuration object.
+              @field_serializer("new_xyz_feature")
+              def serialize_new_xyz_feature(self, feature: FeatureSetting) -> str:
+                  return f"{feature.status}:{feature.level}"
 
-   .. code-block:: python
-      :caption: Example of accessing the new config key in code
+    .. step:: Access the value in your code
 
-      def cmd_mycommand(ctx: click.Context):
-         env: EnvConfig = ctx.obj.envconfig
-         feature_setting = env.general.new_xyz_feature
-         if feature_setting.status == "on":
-             # Use feature_setting.level
-             ...
+        You can now access the structured data from the configuration object.
 
-#. Write tests.
+        .. code-block:: python
+            :caption: Example of accessing the new config key in code
 
-#. Decide if this is something you need to document in the user or developer documentation.
+            def cmd_mycommand(ctx: click.Context):
+                env: EnvConfig = ctx.obj.envconfig
+                feature_setting = env.general.new_xyz_feature
+                if feature_setting.status == "on":
+                     # Use feature_setting.level
+                     ...
+
+    .. step:: Write tests
+
+        Write tests for the new configuration key.
+
+    .. step:: Document the new key if needed
+
+        Decide if this is something you need to document in the user or developer documentation.

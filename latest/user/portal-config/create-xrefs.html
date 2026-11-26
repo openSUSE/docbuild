@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Cross-References &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating Cross-References &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -509,11 +509,17 @@
 <span id="create-xrefs"></span><h1>Creating Cross-References<a class="headerlink" href="#creating-cross-references" title="Link to this heading">#</a></h1>
 <p>Some products may be related to other resources: products, releases, or other
 deliverables. To avoid replication, use a cross-reference.</p>
-<p>To create such cross-reference follow this procedure:</p>
-<ol class="arabic">
-<li><p>Find the deliverable you want to link to and copy the ID. For example,
-our ID would be <code class="docutils literal notranslate"><span class="pre">nas.1.0.overview</span></code>.</p></li>
-<li><p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) where you want the deliverable to appear.
+<p>To create a cross-reference:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Find the target deliverable</p>
+<div class="sd-step-content docutils">
+<p>Find the deliverable you want to link to and copy its ID. For example,
+our ID would be <code class="docutils literal notranslate"><span class="pre">nas.1.0.overview</span></code>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Add the cross-reference to the target release</p>
+<div class="sd-step-content docutils">
+<p>Find the release (<code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code>) where you want the deliverable to appear.
 Inside the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> tag, add the following structure:</p>
 <div class="literal-block-wrapper docutils container" id="xref-deliverable">
 <div class="code-block-caption"><span class="caption-text">Links to another Deliverable</span><a class="headerlink" href="#xref-deliverable" title="Link to this code">#</a></div>
@@ -528,8 +534,10 @@ Inside the <code class="docutils literal notranslate"><span class="pre">&lt;loca
 </div>
 <p>Within the list of deliverables, you are free to place the
 cross-reference anywhere.</p>
+</div>
 </li>
-<li><p>Optionally, customize the cross-reference:</p>
+<li class="sd-step"><p class="sd-step-title rubric">(Optionally) customize the cross-reference</p>
+<div class="sd-step-content docutils">
 <ul>
 <li><p>To group the reference under a specific heading on the page, add a
 <code class="docutils literal notranslate"><span class="pre">category</span></code> attribute to the <code class="docutils literal notranslate"><span class="pre">&lt;xref&gt;</span></code> element (e.g.
@@ -559,11 +567,10 @@ description, add a <code class="docutils literal notranslate"><span class="pre">
 <p>The parent <code class="docutils literal notranslate"><span class="pre">&lt;deliverable</span> <span class="pre">type=&quot;xref&quot;&gt;</span></code> element also accepts optional
 attributes:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">xml:id</span></code>: Assign an ID if this reference needs to be targeted by
-translated releases.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">gated</span></code>: Set to <code class="docutils literal notranslate"><span class="pre">&quot;true&quot;</span></code> if access requires authentication.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sitemap</span></code>: Set to <code class="docutils literal notranslate"><span class="pre">&quot;false&quot;</span></code> to omit this deliverable from the sitemap.</p></li>
 </ul>
+</div>
 </li>
 </ol>
 <section id="valid-target-types">

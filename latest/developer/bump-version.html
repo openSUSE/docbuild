@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Bumping the Version &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Bumping the Version &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -513,20 +513,26 @@
 </div>
 </div>
 <p>This script automates the versioning process with the following actions:</p>
-<ol class="arabic simple">
-<li><p>Validates that all required files and arguments are present and correctly formatted, ensuring the version string adheres to the MAJOR.MINOR.PATCH (Semantic Versioning) format.</p></li>
-</ol>
-<ol class="arabic simple">
-<li><p>Increments the version according to the <a class="reference internal" href="../glossary.html#term-SemVer"><span class="xref std std-term">SemVer</span></a> rules:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Validate the inputs</p>
+<div class="sd-step-content docutils">
+<p>Validate that all required files and arguments are present and correctly formatted, ensuring the version string adheres to the MAJOR.MINOR.PATCH (Semantic Versioning) format.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Increment the version</p>
+<div class="sd-step-content docutils">
+<p>Increment the version according to the <a class="reference internal" href="../glossary.html#term-SemVer"><span class="xref std std-term">SemVer</span></a> rules:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">major</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">MAJOR</span></code> number and resets <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> and <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> to zero.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">minor</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">MINOR</span></code> number and resets the <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> part to zero.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">patch</span></code>: increments the <code class="docutils literal notranslate"><span class="pre">PATCH</span></code> number.</p></li>
 </ul>
+</div>
 </li>
-</ol>
-<ol class="arabic simple">
-<li><p>It writes back the version and commits the change.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Write back the version and commit the change</p>
+<div class="sd-step-content docutils">
+</div>
+</li>
 </ol>
 </section>
 

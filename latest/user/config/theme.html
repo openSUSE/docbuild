@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Configuring the Terminal Theme &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -675,9 +675,13 @@ Docbuild supports two equivalent formats for defining styles:</p>
 <section id="procedure-customizing-and-verifying-your-theme">
 <h2>Procedure: Customizing and Verifying Your Theme<a class="headerlink" href="#procedure-customizing-and-verifying-your-theme" title="Link to this heading">#</a></h2>
 <p>Follow these steps to customize your theme and verify the changes:</p>
-<ol class="arabic">
-<li><p>Open or create your <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> in your project or configuration directory.</p></li>
-<li><p>Add the <code class="docutils literal notranslate"><span class="pre">[theme]</span></code> section with your desired overrides:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><div class="sd-step-content docutils">
+<p>Open or create your <code class="file docutils literal notranslate"><span class="pre">config.toml</span></code> in your project or configuration directory.</p>
+</div>
+</li>
+<li class="sd-step"><div class="sd-step-content docutils">
+<p>Add the <code class="docutils literal notranslate"><span class="pre">[theme]</span></code> section with your desired overrides:</p>
 <div class="literal-block-wrapper docutils container" id="id6">
 <div class="code-block-caption"><span class="caption-text">Define custom theme overrides</span><a class="headerlink" href="#id6" title="Link to this code">#</a></div>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[theme]</span>
@@ -687,8 +691,10 @@ Docbuild supports two equivalent formats for defining styles:</p>
 </pre></div>
 </div>
 </div>
+</div>
 </li>
-<li><p>Verify that your custom theme values are loaded:</p>
+<li class="sd-step"><div class="sd-step-content docutils">
+<p>Verify that your custom theme values are loaded:</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">Inspect active theme settings</span><a class="headerlink" href="#id7" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--app<span class="w"> </span>--flat
@@ -705,8 +711,10 @@ app.theme.hint = &#39;italic cyan&#39;
 app.theme.muted = &#39;dim white&#39;
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Validate the configuration file syntax:</p>
+<li class="sd-step"><div class="sd-step-content docutils">
+<p>Validate the configuration file syntax:</p>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">Validate configuration</span><a class="headerlink" href="#id8" title="Link to this code">#</a></div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>config<span class="w"> </span>validate
@@ -720,6 +728,7 @@ app.theme.muted = &#39;dim white&#39;
     Input should be &#39;header&#39;, &#39;error&#39;, &#39;warning&#39;, &#39;info&#39;, &#39;success&#39;, &#39;hint&#39; or &#39;muted&#39;
     See: https://opensuse.github.io/docbuild/latest/errors/enum.html
 </pre></div>
+</div>
 </div>
 </li>
 </ol>

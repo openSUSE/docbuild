@@ -3,39 +3,38 @@
 Adding Translations
 ===================
 
-To add translations for a product, proceed as follows:
+To add translations for a product:
 
-#. Identify the product and release you want to add the translations to.
+.. steps::
 
-   If you haven't created a release yet, create one as described in
-   section :ref:`create-product`.
+   .. step:: Identify the product and release
 
-#. Open the file with the configuration for the release.
+      If you haven't created a release yet, create one as described in
+      section :ref:`create-product`.
 
-   In our example, we want to add translations for the example
-   :file:`1.0.xml` for the 1.0 release of the NAS product.
+   .. step:: Open the release configuration file
 
-#. Add a ``<locale>`` element for the language you want to
-   add the translation for.
+      In our example, we want to add translations for the example
+      :file:`1.0.xml` for the 1.0 release of the NAS product.
 
-   For example, to add a translation for German, add a
-   ``<locale>`` element with the ``lang`` attribute set to ``de-de``:
+   .. step:: Add a locale for the translation
 
-   .. code-block:: xml
-      :caption: Adding a ``<locale>`` Element for German
-      :name: locale
+      For example, to add a translation for German, add a
+      ``<locale>`` element with the ``lang`` attribute set to ``de-de``:
 
-      <locale lang="de-de">
-        <branch>translations</branch>
-        <subdir>l10n/de-de</subdir>
-        <!-- NO deliverables! -->
-      </locale>
+      .. code-block:: xml
+         :caption: Adding a ``<locale>`` Element for German
+         :name: locale
 
-   As translations are usually stored in a separate Git branch and
-   perhaps also in a different directory, the ``<locale>`` element
-   requires a ``<branch>`` element and provides an optional ``<subdir>`` element.
+         <locale lang="de-de">
+           <branch>translations</branch>
+           <subdir>l10n/de-de</subdir>
+           <!-- NO deliverables! -->
+         </locale>
 
-#. Done.
+      As translations are usually stored in a separate Git branch and
+      perhaps also in a different directory, the ``<locale>`` element
+      requires a ``<branch>`` element and provides an optional ``<subdir>`` element.
 
 
 Translations are derived from the default language (English) and act

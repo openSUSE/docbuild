@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Updating the Release Workflow &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Updating the Release Workflow &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -532,36 +532,82 @@ The following steps outline how to generate a new PAT and store it in GitHub Sec
 </div>
 <p>In order to execute the release workflow, it needs a PAT. If the PAT is
 expired, revoked, or you need to update it for any reason, follow these steps:</p>
-<ol class="arabic simple">
-<li><p>Log in to GitHub account. Click your your avatar icon, then
-<span class="guilabel">Settings</span>.</p></li>
-<li><p>In the left sidebar, click <span class="guilabel">Developer settings</span> &gt;
-<span class="guilabel">Personal access tokens</span> &gt; <span class="guilabel">Tokens (classic)</span>.</p></li>
-<li><p>Click the <span class="guilabel">Generate new token</span> button and select
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Open GitHub settings</p>
+<div class="sd-step-content docutils">
+<p>Log in to your GitHub account. Click your avatar icon, then
+<span class="guilabel">Settings</span>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Open classic personal access tokens</p>
+<div class="sd-step-content docutils">
+<p>In the left sidebar, click <span class="guilabel">Developer settings</span> &gt; <span class="guilabel">Personal access tokens</span> &gt; <span class="guilabel">Tokens (classic)</span>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Start creating a classic token</p>
+<div class="sd-step-content docutils">
+<p>Click the <span class="guilabel">Generate new token</span> button and select
 <span class="guilabel">Tokens (classic)</span>. You may need to authenticate if you
-enabled Two Factor Authentication (2FA).</p></li>
-<li><p>Enter the name <code class="docutils literal notranslate"><span class="pre">PAT_DOCBUILD_TOKEN_FOR_TAGS</span></code>.</p></li>
-<li><p>Select an expiration date for the token. It’s recommended to set an
-expiration date to enhance security.</p></li>
-<li><p>Select the scopes <code class="docutils literal notranslate"><span class="pre">repo``and</span> <span class="pre">``workflow</span></code> to allow the token to
-push tags and trigger workflows.</p></li>
-<li><p>Click :<span class="guilabel">Generate token</span>.</p></li>
-<li><p>Copy the generated token and store it securely.
-You won’t be able to see the token again after you leave the page, so make sure to save it in a secure location.</p></li>
+enabled Two Factor Authentication (2FA).</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Name the token</p>
+<div class="sd-step-content docutils">
+<p>Enter the name <code class="docutils literal notranslate"><span class="pre">PAT_DOCBUILD_TOKEN_FOR_TAGS</span></code>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Set the token expiration</p>
+<div class="sd-step-content docutils">
+<p>Select an expiration date for the token. It’s recommended to set an
+expiration date to enhance security.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Select the required scopes</p>
+<div class="sd-step-content docutils">
+<p>Select the scopes <code class="docutils literal notranslate"><span class="pre">repo</span></code> and <code class="docutils literal notranslate"><span class="pre">workflow</span></code> to allow the token to
+push tags and trigger workflows.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Generate the token</p>
+<div class="sd-step-content docutils">
+<p>Click <span class="guilabel">Generate token</span>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Copy and store the token securely</p>
+<div class="sd-step-content docutils">
+<p>You won’t be able to see the token again after you leave the page, so make sure to save it in a secure location.</p>
+</div>
+</li>
 </ol>
 </section>
 <section id="updating-the-pat-in-github-secrets">
 <span id="release-update-pat-github-secrets"></span><h2>Updating the PAT in GitHub Secrets<a class="headerlink" href="#updating-the-pat-in-github-secrets" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p>Go to the <a class="github reference external" href="https://github.com/openSUSE/docbuild/settings">openSUSE/docbuild</a> page of the repository.</p></li>
-<li><dl class="simple">
-<dt>In the left sidebar, click <span class="guilabel">Secrets and variables</span> &gt;</dt><dd><p><span class="guilabel">Actions</span>.</p>
-</dd>
-</dl>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Open the repository settings</p>
+<div class="sd-step-content docutils">
+<p>Go to the <a class="github reference external" href="https://github.com/openSUSE/docbuild/settings">openSUSE/docbuild</a> page of the repository.</p>
+</div>
 </li>
-<li><p>Click the <span class="guilabel">New repository secret</span> button.</p></li>
-<li><p>Enter the name <code class="docutils literal notranslate"><span class="pre">PAT_DOCBUILD_TOKEN_FOR_TAGS</span></code> and paste the copied token.</p></li>
-<li><p>Finish with <span class="guilabel">Add secret</span> to save the new token in GitHub Secrets.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Open Actions secrets</p>
+<div class="sd-step-content docutils">
+<p>In the left sidebar, click <span class="guilabel">Secrets and variables</span> &gt; <span class="guilabel">Actions</span>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Add a repository secret</p>
+<div class="sd-step-content docutils">
+<p>Click the <span class="guilabel">New repository secret</span> button.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Enter the PAT secret</p>
+<div class="sd-step-content docutils">
+<p>Enter the name <code class="docutils literal notranslate"><span class="pre">PAT_DOCBUILD_TOKEN_FOR_TAGS</span></code> and paste the copied token.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Save the secret</p>
+<div class="sd-step-content docutils">
+<p>Finish with <span class="guilabel">Add secret</span> to save the new token in GitHub Secrets.</p>
+</div>
+</li>
 </ol>
 </section>
 </section>

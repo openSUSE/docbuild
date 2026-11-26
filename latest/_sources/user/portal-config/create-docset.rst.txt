@@ -3,97 +3,96 @@
 Creating Docsets
 ================
 
-A "docset" is usually a specific "release" of a product. To define
-a new docset, proceed as follows:
+.. steps::
 
-#. Determine the "name" of a docset.
+   .. step:: Choose a docset name
 
-   This attribute acts as an identifier. The value should be short and
-   descriptive. It is used in the doctype syntax, when you request a build, and
-   has an impact when directories are created and it is visible in the URL.
+      This attribute acts as an identifier. The value should be short and
+      descriptive. It is used in the doctype syntax, when you request a build, and
+      has an impact when directories are created and it is visible in the URL.
 
-   Let's assume, we want to create ``1.0`` release, hence you
-   would set the value to ``1.0``.
+      Let's assume, we want to create ``1.0`` release, hence you
+      would set the value to ``1.0``.
 
-#. Determine the docset ID (the ``xml:id`` attribute).
+   .. step:: Choose the docset ID
 
-   This unique ID is used in several places in the configuration.
-   It is not used outside the Portal configuration.
-   As the ID cannot start with a number due to the XML ID definition,
-   it's recommended to prefix it with the product ID.
+      This unique ID is used in several places in the configuration.
+      It is not used outside the Portal configuration.
+      As the ID cannot start with a number due to the XML ID definition,
+      it's recommended to prefix it with the product ID.
 
-   In our example, with a product ID of ``nas`` the docset ID
-   would become ``nas.1.0``.
+      In our example, with a product ID of ``nas`` the docset ID
+      would become ``nas.1.0``.
 
-#. Determine the lifecycle of the docset.
+   .. step:: Set the docset lifecycle
 
-   Each product and its releases go through a product lifecycle:
-   from a beta release, to supported, and finally to unsupported.
+      Each product and its releases go through a product lifecycle:
+      from a beta release, to supported, and finally to unsupported.
 
-   A new release is likely be ``beta`` or ``supported``.
-   Older, out-of-date releases becomes ``unsupported`` over time.
+      A new release is likely be ``beta`` or ``supported``.
+      Older, out-of-date releases becomes ``unsupported`` over time.
 
-   An unsupported docset is not automatically selected during
-   a build unless it's explicitly requested.
+      An unsupported docset is not automatically selected during
+      a build unless it's explicitly requested.
 
-#. Add a docset/release.
+   .. step:: Add the docset release
 
-   Each release is defined with a ``<docset>`` element.
-   Depending on the amount of deliverables and the complexity
-   of the release, you can either put the
-   ``<docset>`` element directly into the product configuration
-   file or create a separate file for each release and include
-   it in the product configuration.
-   See section :ref:`single-vs-multifile` for more details.
+      Each release is defined with a ``<docset>`` element.
+      Depending on the amount of deliverables and the complexity
+      of the release, you can either put the
+      ``<docset>`` element directly into the product configuration
+      file or create a separate file for each release and include
+      it in the product configuration.
+      See section :ref:`single-vs-multifile` for more details.
 
-   We choose the second option and create a file named
-   :file:`1.0.xml` for the 1.0 release of the NAS product:
+      We choose the second option and create a file named
+      :file:`1.0.xml` for the 1.0 release of the NAS product:
 
-   .. code-block:: xml
-      :caption: The 1.0 release of the NAS product :file:`1.0.xml`
-      :name: nas.docset
+      .. code-block:: xml
+         :caption: The 1.0 release of the NAS product :file:`1.0.xml`
+         :name: nas.docset
 
-      <docset xml:id="nas.1.0" path="1.0" lifecycle="supported">
-        <version>1.0</version>
-        <resources>
-          <git remote="https://github.com/example/nas.git"/>
-          <locale lang="en-us">
-            <branch>main</branch>
-            <!-- ... deliverables ... -->
-          </locale>
-        </resources>
-      </docset>
+         <docset xml:id="nas.1.0" path="1.0" lifecycle="supported">
+           <version>1.0</version>
+           <resources>
+             <git remote="https://github.com/example/nas.git"/>
+             <locale lang="en-us">
+               <branch>main</branch>
+               <!-- ... deliverables ... -->
+             </locale>
+           </resources>
+         </docset>
 
-#. Add a ``<resources>`` child element.
+   .. step:: Add the resources element
 
-   A docset contains a ``<resources>`` element, an ``<external>`` element (for
-   external links), or both. Within ``<resources>``:
+      A docset contains a ``<resources>`` element, an ``<external>`` element (for
+      external links), or both. Within ``<resources>``:
 
-   * An optional ``<git>`` element defines the Git repository for
-     the sources of this release.
-     This is only needed if your product is built via DAPS.
-     For other build systems like Antora, the deliverables are built
-     outside of docbuild. In that case, omit this tag.
+      * An optional ``<git>`` element defines the Git repository for
+        the sources of this release.
+        This is only needed if your product is built via DAPS.
+        For other build systems like Antora, the deliverables are built
+        outside of docbuild. In that case, omit this tag.
 
-#. Add a ``<locale lang="en-us">`` element for English.
+   .. step:: Add the English locale
 
-   This is the minimal element you need and holds all English
-   deliverables.
+      This is the minimal element you need and holds all English
+      deliverables.
 
-   Child elements are:
+      Child elements are:
 
-   * ``<branch>`` (required): contains the branch name from the Git repository
-     (for prebuilt deliverables, specify the active branch, e.g. ``main``).
-     The schema requires this element in every ``<locale>``.
-   * ``<subdir>`` (optional): contains the directory where to look for the
-     DC files. For prebuilt deliverables, omit this tag.
+      * ``<branch>`` (required): contains the branch name from the Git repository
+        (for prebuilt deliverables, specify the active branch, e.g. ``main``).
+        The schema requires this element in every ``<locale>``.
+      * ``<subdir>`` (optional): contains the directory where to look for the
+        DC files. For prebuilt deliverables, omit this tag.
 
-#. Optionally add translations in a ``<locale lang="...">`` element.
+   .. step:: Add translations (optional)
 
-   The structure looks slightly different than for English.
-   How to add this, look at section :ref:`add-translations`.
+      The structure looks slightly different than for English.
+      How to add this, look at section :ref:`add-translations`.
 
-#. Add a deliverable in your ``<locale lang="en-us">`` element.
+   .. step:: Add a deliverable
 
-   Continue with section :ref:`add-deliverable`.
+      Continue with section :ref:`add-deliverable`.
 

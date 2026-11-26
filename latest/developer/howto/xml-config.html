@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>XML Config Changes &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>XML Config Changes &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -512,8 +512,10 @@
 <span id="xml-config-add-new-element"></span><h2>Adding a new element<a class="headerlink" href="#adding-a-new-element" title="Link to this heading">#</a></h2>
 <p>To add a new XML element <code class="docutils literal notranslate"><span class="pre">&lt;new_element&gt;</span></code> to the Portal schema, follow
 these steps:</p>
-<ol class="arabic">
-<li><p>Edit the RNG schema file <code class="file docutils literal notranslate"><span class="pre">src/docbuild/config/xml/data/portal-config.rnc</span></code>:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Edit the RNG schema file</p>
+<div class="sd-step-content docutils">
+<p>Edit <code class="file docutils literal notranslate"><span class="pre">src/docbuild/config/xml/data/portal-config.rnc</span></code>:</p>
 <ol class="arabic">
 <li><p>Add the new element definition to the appropriate section of the RNG schema, ensuring it follows the structure and naming conventions of existing elements.</p></li>
 <li><p>Use the <code class="docutils literal notranslate"><span class="pre">db:refname</span></code> element to define the name of the new element.
@@ -547,14 +549,26 @@ to provide a brief description. This will be used for an XML editor.</p>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">ds.new-element</span></code> to refer to your new element definition somewhere
 else.</p></li>
 </ol>
+</div>
 </li>
-<li><p>Adjust the appropriate model in <a class="reference internal" href="../../reference/_autoapi/docbuild/models/deliverable/index.html#module-docbuild.models.deliverable" title="docbuild.models.deliverable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.models.deliverable</span></code></a>.
+<li class="sd-step"><p class="sd-step-title rubric">Adjust the appropriate model</p>
+<div class="sd-step-content docutils">
+<p>Adjust the appropriate model in <a class="reference internal" href="../../reference/_autoapi/docbuild/models/deliverable/index.html#module-docbuild.models.deliverable" title="docbuild.models.deliverable"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.models.deliverable</span></code></a>.
 Depending on the change, you either need to adjust an existing XPath
-expression, add a new method to access this new element, or both.</p></li>
-<li><p>Write tests. Add positive and negative tests against the Portal schema
-using this new element.</p></li>
-<li><p>Decide if this is something you need to document in the user or
-developer documentation.</p></li>
+expression, add a new method to access this new element, or both.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Write schema tests</p>
+<div class="sd-step-content docutils">
+<p>Add positive and negative tests against the Portal schema using this new element.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Document the change if needed</p>
+<div class="sd-step-content docutils">
+<p>Decide if this is something you need to document in the user or
+developer documentation.</p>
+</div>
+</li>
 </ol>
 </section>
 </section>

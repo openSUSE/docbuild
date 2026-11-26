@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding Translations &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Adding Translations &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -507,18 +507,22 @@
                   
   <section id="adding-translations">
 <span id="add-translations"></span><h1>Adding Translations<a class="headerlink" href="#adding-translations" title="Link to this heading">#</a></h1>
-<p>To add translations for a product, proceed as follows:</p>
-<ol class="arabic">
-<li><p>Identify the product and release you want to add the translations to.</p>
+<p>To add translations for a product:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Identify the product and release</p>
+<div class="sd-step-content docutils">
 <p>If you haven’t created a release yet, create one as described in
 section <a class="reference internal" href="create-product.html#create-product"><span class="std std-ref">Creating a Product</span></a>.</p>
+</div>
 </li>
-<li><p>Open the file with the configuration for the release.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Open the release configuration file</p>
+<div class="sd-step-content docutils">
 <p>In our example, we want to add translations for the example
 <code class="file docutils literal notranslate"><span class="pre">1.0.xml</span></code> for the 1.0 release of the NAS product.</p>
+</div>
 </li>
-<li><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element for the language you want to
-add the translation for.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add a locale for the translation</p>
+<div class="sd-step-content docutils">
 <p>For example, to add a translation for German, add a
 <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element with the <code class="docutils literal notranslate"><span class="pre">lang</span></code> attribute set to <code class="docutils literal notranslate"><span class="pre">de-de</span></code>:</p>
 <div class="literal-block-wrapper docutils container" id="locale">
@@ -534,8 +538,8 @@ add the translation for.</p>
 <p>As translations are usually stored in a separate Git branch and
 perhaps also in a different directory, the <code class="docutils literal notranslate"><span class="pre">&lt;locale&gt;</span></code> element
 requires a <code class="docutils literal notranslate"><span class="pre">&lt;branch&gt;</span></code> element and provides an optional <code class="docutils literal notranslate"><span class="pre">&lt;subdir&gt;</span></code> element.</p>
+</div>
 </li>
-<li><p>Done.</p></li>
 </ol>
 <p>Translations are derived from the default language (English) and act
 as a <em>blueprint</em>. The Docbuild tool automatically

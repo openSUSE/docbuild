@@ -168,50 +168,60 @@ Procedure: Customizing and Verifying Your Theme
 
 Follow these steps to customize your theme and verify the changes:
 
-#. Open or create your :file:`config.toml` in your project or configuration directory.
+.. steps::
 
-#. Add the ``[theme]`` section with your desired overrides:
+   .. step::
 
-   .. code-block:: toml
-      :caption: Define custom theme overrides
+      Open or create your :file:`config.toml` in your project or configuration directory.
 
-      [theme]
-      preset = "dark"
-      error = "bold magenta"
-      hint = "italic cyan"
+   .. step::
 
-#. Verify that your custom theme values are loaded:
+      Add the ``[theme]`` section with your desired overrides:
 
-   .. code-block:: console
-      :caption: Inspect active theme settings
+      .. code-block:: toml
+          :caption: Define custom theme overrides
 
-      $ docbuild config list --app --flat
+          [theme]
+          preset = "dark"
+          error = "bold magenta"
+          hint = "italic cyan"
 
-   The output displays your overrides alongside the preserved defaults:
+   .. step::
 
-   .. code-block:: text
+      Verify that your custom theme values are loaded:
 
-      app.theme.header = 'bold cyan'
-      app.theme.error = 'bold magenta'
-      app.theme.warning = 'bold yellow'
-      app.theme.info = 'bold bright_blue'
-      app.theme.success = 'bold green'
-      app.theme.hint = 'italic cyan'
-      app.theme.muted = 'dim white'
+      .. code-block:: console
+          :caption: Inspect active theme settings
 
-#. Validate the configuration file syntax:
+          $ docbuild config list --app --flat
 
-   .. code-block:: console
-      :caption: Validate configuration
+      The output displays your overrides alongside the preserved defaults:
 
-      $ docbuild config validate
+      .. code-block:: text
 
-   If an invalid color or an unknown tag name is configured, Docbuild catches the error and reports it with exact field details:
+          app.theme.header = 'bold cyan'
+          app.theme.error = 'bold magenta'
+          app.theme.warning = 'bold yellow'
+          app.theme.info = 'bold bright_blue'
+          app.theme.success = 'bold green'
+          app.theme.hint = 'italic cyan'
+          app.theme.muted = 'dim white'
 
-   .. code-block:: text
+   .. step::
 
-      1 Validation error in config file 'config.toml':
+      Validate the configuration file syntax:
 
-      (1) In 'theme.eror':
-          Input should be 'header', 'error', 'warning', 'info', 'success', 'hint' or 'muted'
-          See: https://opensuse.github.io/docbuild/latest/errors/enum.html
+      .. code-block:: console
+          :caption: Validate configuration
+
+          $ docbuild config validate
+
+      If an invalid color or an unknown tag name is configured, Docbuild catches the error and reports it with exact field details:
+
+      .. code-block:: text
+
+         1 Validation error in config file 'config.toml':
+
+         (1) In 'theme.eror':
+             Input should be 'header', 'error', 'warning', 'info', 'success', 'hint' or 'muted'
+             See: https://opensuse.github.io/docbuild/latest/errors/enum.html

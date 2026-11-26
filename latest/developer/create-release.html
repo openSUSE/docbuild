@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a New Release &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating a New Release &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -515,28 +515,52 @@ for distribution.</p>
 <li><p>You have the necessary permissions to create a release.</p></li>
 </ul>
 <p>Follow these steps:</p>
-<ol class="arabic">
-<li><p>Create a new branch named <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p></li>
-<li><p><a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">Bump the version</span></a>.</p></li>
-<li><p><a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Update the project</span></a>.</p></li>
-<li><p><a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">Build the changelog</span></a>.</p></li>
-<li><p><a class="reference internal" href="build-docs.html#build-docs"><span class="std std-ref">Build the documentation</span></a>.</p></li>
-<li><p>Optionally, look for Ruff issues:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Create a release branch</p>
+<div class="sd-step-content docutils">
+<p>Create a new branch named <code class="docutils literal notranslate"><span class="pre">release/&lt;VERSION&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;VERSION&gt;</span></code> is the version number you are releasing (e.g., <code class="docutils literal notranslate"><span class="pre">release/1.0.0</span></code>).</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric"><a class="reference internal" href="bump-version.html#bump-version"><span class="std std-ref">Bump the version</span></a></p>
+<div class="sd-step-content docutils">
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric"><a class="reference internal" href="update-project.html#update-project"><span class="std std-ref">Update the project</span></a></p>
+<div class="sd-step-content docutils">
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric"><a class="reference internal" href="build-changelog.html#build-changelog"><span class="std std-ref">Build the changelog</span></a></p>
+<div class="sd-step-content docutils">
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric"><a class="reference internal" href="build-docs.html#build-docs"><span class="std std-ref">Build the documentation</span></a></p>
+<div class="sd-step-content docutils">
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Check for Ruff issues (optional)</p>
+<div class="sd-step-content docutils">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ruff<span class="w"> </span>check<span class="w"> </span>.
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>In your current branch, push the branch to the remote repository:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Push the release branch</p>
+<div class="sd-step-content docutils">
+<p>In your current branch, push the branch to the remote repository:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>HEAD
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Wait for the CI to pass.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Wait for CI and merge the release branch</p>
+<div class="sd-step-content docutils">
+<p>Wait for the CI to pass.</p>
 <ul class="simple">
 <li><p>If it fails, fix the issues and commit again.</p></li>
 <li><p>If the CI passes, (squash-)merge your release branch into the main branch.
 The GitHub Action workflow will automatically create a new release based on the name of the release branch.</p></li>
 </ul>
+</div>
 </li>
 </ol>
 <p>Find the new release in the GitHub repository under the <a class="reference external" href="https://github.com/openSUSE/docbuild/releases/">Releases</a> section.</p>

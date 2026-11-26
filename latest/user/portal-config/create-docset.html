@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating Docsets &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating Docsets &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -507,33 +507,38 @@
                   
   <section id="creating-docsets">
 <span id="create-docset"></span><h1>Creating Docsets<a class="headerlink" href="#creating-docsets" title="Link to this heading">#</a></h1>
-<p>A “docset” is usually a specific “release” of a product. To define
-a new docset, proceed as follows:</p>
-<ol class="arabic">
-<li><p>Determine the “name” of a docset.</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Choose a docset name</p>
+<div class="sd-step-content docutils">
 <p>This attribute acts as an identifier. The value should be short and
 descriptive. It is used in the doctype syntax, when you request a build, and
 has an impact when directories are created and it is visible in the URL.</p>
 <p>Let’s assume, we want to create <code class="docutils literal notranslate"><span class="pre">1.0</span></code> release, hence you
 would set the value to <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</div>
 </li>
-<li><p>Determine the docset ID (the <code class="docutils literal notranslate"><span class="pre">xml:id</span></code> attribute).</p>
+<li class="sd-step"><p class="sd-step-title rubric">Choose the docset ID</p>
+<div class="sd-step-content docutils">
 <p>This unique ID is used in several places in the configuration.
 It is not used outside the Portal configuration.
 As the ID cannot start with a number due to the XML ID definition,
 it’s recommended to prefix it with the product ID.</p>
 <p>In our example, with a product ID of <code class="docutils literal notranslate"><span class="pre">nas</span></code> the docset ID
 would become <code class="docutils literal notranslate"><span class="pre">nas.1.0</span></code>.</p>
+</div>
 </li>
-<li><p>Determine the lifecycle of the docset.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Set the docset lifecycle</p>
+<div class="sd-step-content docutils">
 <p>Each product and its releases go through a product lifecycle:
 from a beta release, to supported, and finally to unsupported.</p>
 <p>A new release is likely be <code class="docutils literal notranslate"><span class="pre">beta</span></code> or <code class="docutils literal notranslate"><span class="pre">supported</span></code>.
 Older, out-of-date releases becomes <code class="docutils literal notranslate"><span class="pre">unsupported</span></code> over time.</p>
 <p>An unsupported docset is not automatically selected during
 a build unless it’s explicitly requested.</p>
+</div>
 </li>
-<li><p>Add a docset/release.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add the docset release</p>
+<div class="sd-step-content docutils">
 <p>Each release is defined with a <code class="docutils literal notranslate"><span class="pre">&lt;docset&gt;</span></code> element.
 Depending on the amount of deliverables and the complexity
 of the release, you can either put the
@@ -558,8 +563,10 @@ See section <a class="reference internal" href="building-blocks.html#single-vs-m
 </pre></div>
 </div>
 </div>
+</div>
 </li>
-<li><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code> child element.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add the resources element</p>
+<div class="sd-step-content docutils">
 <p>A docset contains a <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code> element, an <code class="docutils literal notranslate"><span class="pre">&lt;external&gt;</span></code> element (for
 external links), or both. Within <code class="docutils literal notranslate"><span class="pre">&lt;resources&gt;</span></code>:</p>
 <ul class="simple">
@@ -569,8 +576,10 @@ This is only needed if your product is built via DAPS.
 For other build systems like Antora, the deliverables are built
 outside of docbuild. In that case, omit this tag.</p></li>
 </ul>
+</div>
 </li>
-<li><p>Add a <code class="docutils literal notranslate"><span class="pre">&lt;locale</span> <span class="pre">lang=&quot;en-us&quot;&gt;</span></code> element for English.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add the English locale</p>
+<div class="sd-step-content docutils">
 <p>This is the minimal element you need and holds all English
 deliverables.</p>
 <p>Child elements are:</p>
@@ -581,13 +590,18 @@ The schema requires this element in every <code class="docutils literal notransl
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;subdir&gt;</span></code> (optional): contains the directory where to look for the
 DC files. For prebuilt deliverables, omit this tag.</p></li>
 </ul>
+</div>
 </li>
-<li><p>Optionally add translations in a <code class="docutils literal notranslate"><span class="pre">&lt;locale</span> <span class="pre">lang=&quot;...&quot;&gt;</span></code> element.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add translations (optional)</p>
+<div class="sd-step-content docutils">
 <p>The structure looks slightly different than for English.
 How to add this, look at section <a class="reference internal" href="add-translations.html#add-translations"><span class="std std-ref">Adding Translations</span></a>.</p>
+</div>
 </li>
-<li><p>Add a deliverable in your <code class="docutils literal notranslate"><span class="pre">&lt;locale</span> <span class="pre">lang=&quot;en-us&quot;&gt;</span></code> element.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add a deliverable</p>
+<div class="sd-step-content docutils">
 <p>Continue with section <a class="reference internal" href="add-deliverable.html#add-deliverable"><span class="std std-ref">Adding Deliverables</span></a>.</p>
+</div>
 </li>
 </ol>
 </section>

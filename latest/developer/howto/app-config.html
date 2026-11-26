@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Application Config Changes &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Application Config Changes &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -520,27 +520,58 @@
 <section id="adding-a-new-config-key">
 <span id="app-config-add-new-key"></span><h2>Adding a new config key<a class="headerlink" href="#adding-a-new-config-key" title="Link to this heading">#</a></h2>
 <p>To add a new configuration key <code class="docutils literal notranslate"><span class="pre">new_app_feature</span></code>, follow these steps:</p>
-<ol class="arabic simple">
-<li><p>Decide if you want to add the new key at the root level or introduce
-a new section for it.</p></li>
-<li><p>Edit the example file <code class="file docutils literal notranslate"><span class="pre">etc/docbuild/app.example.toml</span></code> and add
-your new key.</p></li>
-<li><p>Adjust the appropriate model in <a class="reference internal" href="../../reference/_autoapi/docbuild/models/config/app/index.html#module-docbuild.models.config.app" title="docbuild.models.config.app"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.models.config.app</span></code></a>:</p>
-<ol class="arabic simple">
-<li><p>Locate the correct Pydantic model class that corresponds to the
-section of the configuration where your new key belongs.</p></li>
-<li><p>Add a new field to the model class with the same name as the new key,
-its expected datatype, and add a <a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic/fields/#pydantic.fields.Field" title="(in Pydantic v0.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">Field()</span></code></a> definition.</p></li>
-<li><p>Decide if you need a custom validator for the new key.</p></li>
-</ol>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Choose where the new key belongs</p>
+<div class="sd-step-content docutils">
+<p>Decide if you want to add the new key at the root level or introduce
+a new section for it.</p>
+</div>
 </li>
-<li><p>Integrate the key <code class="docutils literal notranslate"><span class="pre">new_app_feature</span></code> into
-<a class="reference internal" href="../../reference/_autoapi/docbuild/cli/defaults/index.html#docbuild.cli.defaults.DEFAULT_APP_CONFIG" title="docbuild.cli.defaults.DEFAULT_APP_CONFIG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_APP_CONFIG</span></code></a>.</p></li>
-<li><p>Access the value of the new configuration key through the environment
-configuration object in your code.</p></li>
-<li><p>Write tests.</p></li>
-<li><p>Decide if this is something you need to document in the user or
-developer documentation.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Add the key to the example configuration</p>
+<div class="sd-step-content docutils">
+<p>Edit the example file <code class="file docutils literal notranslate"><span class="pre">etc/docbuild/app.example.toml</span></code> and add
+your new key.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Update the Pydantic model</p>
+<div class="sd-step-content docutils">
+<p>Adjust the appropriate model in <a class="reference internal" href="../../reference/_autoapi/docbuild/models/config/app/index.html#module-docbuild.models.config.app" title="docbuild.models.config.app"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docbuild.models.config.app</span></code></a>:</p>
+<ol class="arabic">
+<li><p>Locate the correct model class</p>
+<p>Find the Pydantic model class that corresponds to the section of the configuration where your new key belongs.</p>
+</li>
+<li><p>Add a field for the new key</p>
+<p>Add a field with the same name as the new key, its expected datatype, and a <a class="reference external" href="https://pydantic.dev/docs/validation/latest/api/pydantic/fields/#pydantic.fields.Field" title="(in Pydantic v0.0.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">Field()</span></code></a> definition.</p>
+</li>
+<li><p>Decide whether a custom validator is needed</p>
+<p>If your new key requires custom validation logic, implement a validator method in the Pydantic model.</p>
+</li>
+</ol>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Integrate the key into the default configuration</p>
+<div class="sd-step-content docutils">
+<p>Integrate <code class="docutils literal notranslate"><span class="pre">new_app_feature</span></code> into
+<a class="reference internal" href="../../reference/_autoapi/docbuild/cli/defaults/index.html#docbuild.cli.defaults.DEFAULT_APP_CONFIG" title="docbuild.cli.defaults.DEFAULT_APP_CONFIG"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_APP_CONFIG</span></code></a>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Access the new configuration value</p>
+<div class="sd-step-content docutils">
+<p>Access the value of the new configuration key through the environment
+configuration object in your code.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Write tests</p>
+<div class="sd-step-content docutils">
+<p>Write tests for the new configuration key.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Document the new key if needed</p>
+<div class="sd-step-content docutils">
+<p>Decide if this is something you need to document in the user or
+developer documentation.</p>
+</div>
+</li>
 </ol>
 </section>
 </section>

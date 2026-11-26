@@ -8,18 +8,22 @@ is supported by this project.
 
 Follow these steps to set up VSCode for working with this project:
 
-#. Install Visual Studio Code
+.. steps::
 
-   Download and install VSCode from the `official website <https://code.visualstudio.com/>`_.
+   .. step:: Install Visual Studio Code
 
-#. Install the recommended extensions
+      Download and install VSCode from the `official website <https://code.visualstudio.com/>`_.
 
-   Open VSCode and go to the Extensions view by clicking on the Extensions icon.
-   In the text field, enter ``@recommended`` to see the list of recommended extensions for this project.
+   .. step:: Find the recommended extensions
 
-#. Click the cloud icon next to the :guilabel:`Workspace Recommendations` header to `install all recommended extensions <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_workspace-recommended-extensions>`_.
+      Open VSCode and go to the Extensions view by clicking on the Extensions icon.
+      In the text field, enter ``@recommended`` to see the list of recommended extensions for this project.
 
-   Alternatively, you can install the extensions one by one by clicking on the install button next to each extension.
+   .. step:: Install the recommended extensions
 
-   .. image:: img/vscode-install-ext.png
-      :alt: VSCode Extensions view with highlighted cloud icon
+      Click the cloud icon next to the :guilabel:`Workspace Recommendations` header to `install all recommended extensions <https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_workspace-recommended-extensions>`_.
+
+      Alternatively, you can install the extensions one by one by clicking on the install button next to each extension.
+
+      .. image:: img/vscode-install-ext.png
+         :alt: VSCode Extensions view with highlighted cloud icon

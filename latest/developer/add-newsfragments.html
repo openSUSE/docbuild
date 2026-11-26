@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding News Fragments &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Adding News Fragments &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -518,14 +518,16 @@ such as using an invalid fragment type, and ensures the filename follows
 the correct format.</p>
 </div>
 <p>We recommend to follow the steps to make a smooth integration of your changes after you have created a new pull request (PR):</p>
-<ol class="arabic">
-<li><p>Make yourself familiar with the syntax of the news fragments. Each filename follows the syntax:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Learn the news fragment syntax</p>
+<div class="sd-step-content docutils">
+<p>Each filename follows this syntax:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ISSUE</span><span class="o">&gt;.&lt;</span><span class="n">TYPE</span><span class="o">&gt;.</span><span class="n">rst</span>
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">&lt;ISSUE&gt;</span></code> is the GitHub pull request or issue number.
 If you have changes that are not associated with an issue or pull request,
-start with a <code class="docutils literal notranslate"><span class="pre">+</span></code> (plus) sign and a short description
+start with a <code class="docutils literal notranslate"><span class="pre">+</span></code> (plus) sign and a short description.
 The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</span></code> is one of:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">breaking</span></code>: describes a change that breaks backward compatibility.</p></li>
@@ -539,8 +541,11 @@ The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</s
 <li><p><code class="docutils literal notranslate"><span class="pre">security</span></code>: informs about security related issues.</p></li>
 </ul>
 <p>For example, these are valid filenames: <code class="docutils literal notranslate"><span class="pre">123.feature.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">456.bugfix.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">+add-json.feature.rst</span></code> etc.</p>
+</div>
 </li>
-<li><p>Create the new file with the following command, for example for a feature in issue 123:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Create a news fragment file</p>
+<div class="sd-step-content docutils">
+<p>Create the new file with the following command, for example for a feature in issue 123:</p>
 <div class="literal-block-wrapper docutils container" id="towncrier-create">
 <div class="code-block-caption"><span class="caption-text">Create a new newsfragment file</span><a class="headerlink" href="#towncrier-create" title="Link to this code">#</a></div>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>towncrier<span class="w"> </span>create<span class="w"> </span><span class="m">123</span>.feature.rst
@@ -548,26 +553,37 @@ The <code class="docutils literal notranslate"><span class="pre">&lt;TYPE&gt;</s
 </div>
 </div>
 <p>The file is created in the <code class="file docutils literal notranslate"><span class="pre">changelog.d/</span></code> directory.</p>
+</div>
 </li>
-<li><p>Open the file and describe your changes in RST format.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Write the change description</p>
+<div class="sd-step-content docutils">
+<p>Open the file and describe your changes in RST format.</p>
 <ul class="simple">
 <li><p>Prefer simple past tense or constructions with “now”.</p></li>
 <li><p>Wrap symbols like modules, functions, or classes into double backticks
 to render them in a <code class="docutils literal notranslate"><span class="pre">monospace</span> <span class="pre">font</span></code>.</p></li>
 </ul>
 <p>Try to keep the description short.</p>
-</li>
-<li><p>Check your changes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">check</span>
-</pre></div>
 </div>
 </li>
-<li><p>Optionally, build a draft version of the changelog file with the command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">towncrier</span> <span class="n">build</span> <span class="o">--</span><span class="n">draft</span>
+<li class="sd-step"><p class="sd-step-title rubric">Check your changes</p>
+<div class="sd-step-content docutils">
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>towncrier<span class="w"> </span>check
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Commit all your changes and push it.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Build a draft changelog (optional)</p>
+<div class="sd-step-content docutils">
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>towncrier<span class="w"> </span>build<span class="w"> </span>--draft
+</pre></div>
+</div>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Commit and push your changes</p>
+<div class="sd-step-content docutils">
+</div>
+</li>
 </ol>
 <p>This finishes your steps.</p>
 </section>

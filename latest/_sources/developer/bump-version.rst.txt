@@ -14,12 +14,19 @@ This project follows :term:`Semantic Versioning <SemVer>`. To bump the version, 
 
 This script automates the versioning process with the following actions:
 
-1. Validates that all required files and arguments are present and correctly formatted, ensuring the version string adheres to the MAJOR.MINOR.PATCH (Semantic Versioning) format.
 
-1. Increments the version according to the :term:`SemVer` rules:
+.. steps::
 
-   * ``major``: increments the ``MAJOR`` number and resets ``MINOR`` and ``PATCH`` to zero.
-   * ``minor``: increments the ``MINOR`` number and resets the ``PATCH`` part to zero.
-   * ``patch``: increments the ``PATCH`` number.
+   .. step:: Validate the inputs
 
-1. It writes back the version and commits the change.
+      Validate that all required files and arguments are present and correctly formatted, ensuring the version string adheres to the MAJOR.MINOR.PATCH (Semantic Versioning) format.
+
+   .. step:: Increment the version
+
+      Increment the version according to the :term:`SemVer` rules:
+
+      * ``major``: increments the ``MAJOR`` number and resets ``MINOR`` and ``PATCH`` to zero.
+      * ``minor``: increments the ``MINOR`` number and resets the ``PATCH`` part to zero.
+      * ``patch``: increments the ``PATCH`` number.
+
+   .. step:: Write back the version and commit the change

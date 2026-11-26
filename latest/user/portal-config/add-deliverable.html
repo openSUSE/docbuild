@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Adding Deliverables &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Adding Deliverables &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -510,33 +510,49 @@
 <p>A deliverable is a documentation output that docbuild will
 either build from source, take as a prebuilt file, or reference from
 another deliverable, and publish on the portal.</p>
-<p>To add a deliverable, proceed as follows:</p>
-<ol class="arabic">
-<li><p>Identify the docset you want to add the deliverable to.</p>
+<p>To add a deliverable:</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Identify the target docset</p>
+<div class="sd-step-content docutils">
 <p>If you haven’t created a docset yet, create one as described in
 section <a class="reference internal" href="create-product.html#create-product"><span class="std std-ref">Creating a Product</span></a>.</p>
 <p>In this example, we want to add a deliverable to the 1.0
 docset of the NAS product.</p>
+</div>
 </li>
-<li><p>Choose the deliverable type, such as <code class="docutils literal notranslate"><span class="pre">dc</span></code> for <a class="reference internal" href="../../glossary.html#term-DocBook"><span class="xref std std-term">DocBook</span></a> XML/<a class="reference internal" href="../../glossary.html#term-ADoc"><span class="xref std std-term">ADoc</span></a> sources, <code class="docutils literal notranslate"><span class="pre">prebuilt</span></code> for prebuilt files, or <code class="docutils literal notranslate"><span class="pre">xref</span></code> for cross-references.</p></li>
-<li><p>Create a deliverable.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Choose the deliverable type</p>
+<div class="sd-step-content docutils">
+<ul class="simple">
+<li><p><a class="reference internal" href="#build-with-daps"><span class="std std-ref">dc</span></a> for <a class="reference internal" href="../../glossary.html#term-DocBook"><span class="xref std std-term">DocBook</span></a> XML/<a class="reference internal" href="../../glossary.html#term-ADoc"><span class="xref std std-term">ADoc</span></a> sources,</p></li>
+<li><p><a class="reference internal" href="#build-with-prebuilt-file-antora"><span class="std std-ref">prebuilt</span></a> for prebuilt files,</p></li>
+<li><p><a class="reference internal" href="#build-with-cross-reference"><span class="std std-ref">xref</span></a> for cross-references.</p></li>
+</ul>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Create the deliverable</p>
+<div class="sd-step-content docutils">
 <p>In our example, we have a DocBook XML source and a DC file <code class="file docutils literal notranslate"><span class="pre">DC-NAS-overview</span></code>. We want to build HTML, PDF, and
 single HTML output, but not EPUB:</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Example of a Deliverable Built from Source</span><a class="headerlink" href="#id4" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;deliverable</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;dc&quot;</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas.1.0.overview&quot;</span><span class="nt">&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dc</span><span class="w"> </span><span class="na">file=</span><span class="s">&quot;DC-NAS-overview&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">   </span><span class="nt">&lt;format</span><span class="w"> </span><span class="na">epub=</span><span class="s">&quot;0&quot;</span><span class="w"> </span><span class="na">html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">pdf=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">single-html=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/dc&gt;</span>
 <span class="nt">&lt;/deliverable&gt;</span>
 </pre></div>
 </div>
 </div>
+</div>
 </li>
-<li><p>Add as many deliverables as needed.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Add any additional deliverables</p>
+<div class="sd-step-content docutils">
+<p>Add as many deliverables as needed.</p>
+</div>
+</li>
 </ol>
 <section id="build-with-daps">
-<h2>Build with DAPS<a class="headerlink" href="#build-with-daps" title="Link to this heading">#</a></h2>
+<span id="id1"></span><h2>Build with DAPS<a class="headerlink" href="#build-with-daps" title="Link to this heading">#</a></h2>
 <p>A deliverable that is built by <strong class="command">daps</strong> from a DocBook XML
 or AsciiDoc source file. It needs a DC file and the <code class="docutils literal notranslate"><span class="pre">format</span></code> attribute to specify the output formats:</p>
 <div class="literal-block-wrapper docutils container" id="dc-deliverable-example">
@@ -605,7 +621,7 @@ subdirectories, then resolves the <code class="docutils literal notranslate"><sp
 <p>The resulting source directory is <code class="file docutils literal notranslate"><span class="pre">l10n/sles/common/guide</span></code>.</p>
 </section>
 <section id="build-with-prebuilt-file-antora">
-<h2>Build with Prebuilt file (Antora)<a class="headerlink" href="#build-with-prebuilt-file-antora" title="Link to this heading">#</a></h2>
+<span id="id2"></span><h2>Build with Prebuilt file (Antora)<a class="headerlink" href="#build-with-prebuilt-file-antora" title="Link to this heading">#</a></h2>
 <p>A deliverable that is already built and available as a file.
 It can be used for documentation that is not in
 DocBook XML or ADoc format or for documentation that is built
@@ -628,7 +644,7 @@ by a different tool than <strong class="command">daps</strong>:</p>
 </div>
 </section>
 <section id="build-with-cross-reference">
-<h2>Build with Cross-Reference<a class="headerlink" href="#build-with-cross-reference" title="Link to this heading">#</a></h2>
+<span id="id3"></span><h2>Build with Cross-Reference<a class="headerlink" href="#build-with-cross-reference" title="Link to this heading">#</a></h2>
 <p>A deliverable that points to another deliverable, product, or release
 within the portal configuration:</p>
 <div class="literal-block-wrapper docutils container" id="xref-deliverable-example">

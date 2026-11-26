@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Submitting a Pull Request &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Submitting a Pull Request &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -508,37 +508,83 @@
 <section id="making-and-submitting-your-changes">
 <h2>Making and submitting your changes<a class="headerlink" href="#making-and-submitting-your-changes" title="Link to this heading">#</a></h2>
 <p>Prepare your changes for review:</p>
-<ol class="arabic simple">
-<li><p>Ensure your fork is up to date with the upstream repository. This is crucial to avoid conflicts and ensure you are working with the latest changes.</p></li>
-<li><p>Create a branch in your fork. It’s recommended to use the issue number and a descriptive name for the branch that reflects the changes you plan to make.</p></li>
-<li><p>Make your changes in the codebase.</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Update your fork</p>
+<div class="sd-step-content docutils">
+<p>Ensure your fork is up to date with the upstream repository. This is crucial to avoid conflicts and ensure you are working with the latest changes.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Create a branch</p>
+<div class="sd-step-content docutils">
+<p>Create a branch in your fork. It’s recommended to use the issue number and a descriptive name for the branch that reflects the changes you plan to make.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Make your changes</p>
+<div class="sd-step-content docutils">
+<p>Make your changes in the codebase.</p>
 <ul class="simple">
 <li><p>Ensure that you <a class="reference internal" href="run-testsuite.html#run-testsuite"><span class="std std-ref">run the test suite</span></a>.</p></li>
 <li><p>Watch for the <a class="reference internal" href="run-testsuite.html#interprete-coverage"><span class="std std-ref">coverage report</span></a> and try to keep the coverage high.</p></li>
 <li><p>Enhance the documentation if it’s a user-facing change.</p></li>
 </ul>
+</div>
 </li>
-<li><p><a class="reference internal" href="add-newsfragments.html#add-newsfragments"><span class="std std-ref">Create a news fragment</span></a> file about your changes and add it to the same branch.</p></li>
-<li><p>Commit your changes with a clear and concise commit message.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add a news fragment</p>
+<div class="sd-step-content docutils">
+<p><a class="reference internal" href="add-newsfragments.html#add-newsfragments"><span class="std std-ref">Create a news fragment</span></a> file about your changes and add it to the same branch.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Commit your changes</p>
+<div class="sd-step-content docutils">
+<p>Commit your changes with a clear and concise commit message.</p>
 <ul class="simple">
 <li><p>Include the issue number if applicable and add phrases like <code class="docutils literal notranslate"><span class="pre">Fixes</span> <span class="pre">#123</span></code>.</p></li>
 <li><p>It’s enough to have a high-level description of the changes.</p></li>
 <li><p>The message should explain <em>why</em> these changes were necessary.</p></li>
 </ul>
+</div>
 </li>
-<li><p><a class="reference external" href="https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository">Push your branch to your fork</a>.</p></li>
-<li><p><a class="reference external" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request-from-a-fork">Open a pull request from your fork</a> on GitHub with a description of your changes and their purpose.</p></li>
-<li><p><a class="reference external" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/requesting-a-pull-request-review">Request a review</a> on GitHub.</p></li>
+<li class="sd-step"><p class="sd-step-title rubric">Push your branch</p>
+<div class="sd-step-content docutils">
+<p><a class="reference external" href="https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository">Push your branch to your fork</a>.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Open a pull request</p>
+<div class="sd-step-content docutils">
+<p><a class="reference external" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request-from-a-fork">Open a pull request from your fork</a> on GitHub with a description of your changes and their purpose.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Request a review</p>
+<div class="sd-step-content docutils">
+<p><a class="reference external" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/requesting-a-pull-request-review">Request a review</a> on GitHub.</p>
+</div>
+</li>
 </ol>
 </section>
 <section id="reviewing-and-merging">
 <h2>Reviewing and merging<a class="headerlink" href="#reviewing-and-merging" title="Link to this heading">#</a></h2>
 <p>Complete the review process:</p>
-<ol class="arabic simple">
-<li><p>Address any feedback from the review. Make additional commits to your branch as needed.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">main</span></code> has advanced, update your branch and resolve any conflicts.</p></li>
-<li><p>Ensure that the test suite passes after addressing feedback.</p></li>
-<li><p>Wait for the maintainers to merge your pull request after the review is complete and all tests pass.</p></li>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Address review feedback</p>
+<div class="sd-step-content docutils">
+<p>Address any feedback from the review. Make additional commits to your branch as needed.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Update your branch if needed</p>
+<div class="sd-step-content docutils">
+<p>If <code class="docutils literal notranslate"><span class="pre">main</span></code> has advanced, update your branch and resolve any conflicts.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Run the test suite</p>
+<div class="sd-step-content docutils">
+<p>Ensure that the test suite passes after addressing feedback.</p>
+</div>
+</li>
+<li class="sd-step"><p class="sd-step-title rubric">Wait for the pull request to be merged</p>
+<div class="sd-step-content docutils">
+<p>Wait for the maintainers to merge your pull request after the review is complete and all tests pass.</p>
+</div>
+</li>
 </ol>
 </section>
 </section>

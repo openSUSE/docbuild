@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Creating a Product &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Creating a Product &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -507,24 +507,29 @@
                   
   <section id="creating-a-product">
 <span id="create-product"></span><h1>Creating a Product<a class="headerlink" href="#creating-a-product" title="Link to this heading">#</a></h1>
-<p>A product is the main building block of the portal configuration. To define
-a new product, proceed as follows:</p>
-<ol class="arabic">
-<li><p>Determine the product ID.</p>
+<ol role="list" class="arabic sd-steps">
+<li class="sd-step"><p class="sd-step-title rubric">Determine the product ID</p>
+<div class="sd-step-content docutils">
 <p>This unique ID is used in several places in the configuration.
 The product ID should be short and descriptive.
 In this example, we assume we were asked to create a new product about
 NAS functionality.
 A good product ID would be <code class="docutils literal notranslate"><span class="pre">nas</span></code>.</p>
+</div>
 </li>
-<li><p>In your configuration directory <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>, create a new
+<li class="sd-step"><p class="sd-step-title rubric">Create the product configuration file</p>
+<div class="sd-step-content docutils">
+<p>In your configuration directory <code class="file docutils literal notranslate"><span class="pre">config.d/</span></code>, create a new
 directory and the configuration file for the product:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>config.d/nas
 $<span class="w"> </span>touch<span class="w"> </span>config.d/nas/nas.xml
 </pre></div>
 </div>
+</div>
 </li>
-<li><p>Edit the product configuration file and add the following content:</p>
+<li class="sd-step"><p class="sd-step-title rubric">Define the product</p>
+<div class="sd-step-content docutils">
+<p>Edit the product configuration file and add the following content:</p>
 <div class="literal-block-wrapper docutils container" id="nas-xml">
 <div class="code-block-caption"><span class="caption-text">Example <code class="file docutils literal notranslate"><span class="pre">nas.xml</span></code> Configuration</span><a class="headerlink" href="#nas-xml" title="Link to this code">#</a></div>
 <div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;product</span><span class="w"> </span><span class="na">xml:id=</span><span class="s">&quot;nas&quot;</span><span class="w"> </span><span class="na">family=</span><span class="s">&quot;f.linux&quot;</span><span class="w"> </span><span class="na">series=</span><span class="s">&quot;s.pas&quot;</span><span class="w"> </span><span class="na">rank=</span><span class="s">&quot;10&quot;</span><span class="nt">&gt;</span>
@@ -549,9 +554,12 @@ of the products on the portal. Look at the existing products to
 determine a good rank for your product.</p></li>
 <li><p>Assign a maintainer for the product.</p></li>
 </ul>
+</div>
 </li>
-<li><p>Add a docset.</p>
+<li class="sd-step"><p class="sd-step-title rubric">Add a docset</p>
+<div class="sd-step-content docutils">
 <p>Continue with section <a class="reference internal" href="create-docset.html#create-docset"><span class="std std-ref">Creating Docsets</span></a>.</p>
+</div>
 </li>
 </ol>
 </section>

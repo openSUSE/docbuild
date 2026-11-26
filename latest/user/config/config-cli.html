@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Setting Config Keys on the Command Line &#8212; Docbuild Documentation 0.31.1.dev15+gd3f9bc25c.d20261126</title>
+    <title>Setting Config Keys on the Command Line &#8212; Docbuild Documentation 0.31.1.dev16+ge96dcfb8b.d20261126</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=9eca81c0"></script>
+    <script src="../../_static/documentation_options.js?v=9c20e9d2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -509,8 +509,8 @@
 <span id="config-overwriting-cli"></span><h1>Setting Config Keys on the Command Line<a class="headerlink" href="#setting-config-keys-on-the-command-line" title="Link to this heading">#</a></h1>
 <p>To temporarily override configuration options directly from the command line use the <code class="docutils literal notranslate"><span class="pre">-C</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-env</span></code> option for environment configuration and the <code class="docutils literal notranslate"><span class="pre">-A</span></code> or <code class="docutils literal notranslate"><span class="pre">--set-app</span></code> option for application configuration. This avoids having to create or modify TOML files for quick adjustments.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">key=value</span></code> syntax, and use dot notation for nested options:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.canonical_url_domain=https://doc.example.net&quot;</span><span class="w"> </span>-C<span class="w"> </span>paths.root_config_dir<span class="o">=</span>/etc/docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
-
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>docbuild<span class="w"> </span>-C<span class="w"> </span><span class="s2">&quot;general.canonical_url_domain=https://doc.example.net&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-C<span class="w"> </span>paths.root_config_dir<span class="o">=</span>/etc/docbuild<span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--env
 <span class="gp">$ </span>docbuild<span class="w"> </span>-A<span class="w"> </span><span class="nv">max_workers</span><span class="o">=</span><span class="m">4</span><span class="w"> </span>config<span class="w"> </span>list<span class="w"> </span>--app
 </pre></div>
 </div>
