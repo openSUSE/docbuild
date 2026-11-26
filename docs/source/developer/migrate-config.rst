@@ -233,44 +233,58 @@ Manually Creating the Docserv Stitchfile
    Make sure your Docserv configs are valid.
 
 
-#. Clone the Docserv config repo if you haven't already:
+.. steps::
 
-   .. code-block:: console
+   .. step:: Clone the Docserv config repository
 
-      $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
-      $ cd docserv-config/config.d
+      Clone the Docserv config repo if you haven't already:
 
-#. Set the result file name and path:
+      .. code-block:: console
 
-   .. code-block:: console
+         $ git clone https://gitlab.suse.de/susedoc/docserv-config.git
+         $ cd docserv-config/config.d
 
-      $ stitchfile="/tmp/docserv-stitch-$(date --iso-8601).xml"
+   .. step:: Set the stitchfile path
 
-#. Prepare the header of the stitchfile:
+      Set the result file name and path:
 
-   .. code-block:: console
+      .. code-block:: console
 
-      $ cat << EOF > "$stitchfile"
-      <?xml version="1.0" encoding="UTF-8"?>
-      <docservconfig>
-      <!-- <hashes>...</hashes> -->
+         $ stitchfile="/tmp/docserv-stitch-$(date --iso-8601).xml"
 
-      EOF
+   .. step:: Prepare the stitchfile header
 
-#. Copy content from all categories into result:
+      Prepare the header of the stitchfile:
 
-   .. code-block:: console
+      .. code-block:: console
 
-      $ xmllint --xpath "/*" _categories.xml >> "$stitchfile"
+         $ cat << EOF > "$stitchfile"
+         <?xml version="1.0" encoding="UTF-8"?>
+         <docservconfig>
+         <!-- <hashes>...</hashes> -->
 
-#. Append all config files to the result and resolve any XInclude elements:
+         EOF
 
-   .. code-block:: console
+   .. step:: Append category configuration
 
-      $ xmllint --xinclude --xpath "/*" [a-z]*.xml >> "$stitchfile"
+      Copy content from all categories into the result:
 
-#. Close the root element:
+      .. code-block:: console
 
-   .. code-block:: console
+         $ xmllint --xpath "/*" _categories.xml >> "$stitchfile"
 
-      $ printf "</docservconfig>\n" >> "$stitchfile"
+   .. step:: Append config files and resolve XIncludes
+
+      Append all config files to the result and resolve any XInclude elements:
+
+      .. code-block:: console
+
+         $ xmllint --xinclude --xpath "/*" [a-z]*.xml >> "$stitchfile"
+
+   .. step:: Close the root element
+
+      Close the root element:
+
+      .. code-block:: console
+
+         $ printf "</docservconfig>\n" >> "$stitchfile"

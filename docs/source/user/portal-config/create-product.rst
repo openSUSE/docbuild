@@ -3,52 +3,55 @@
 Creating a Product
 ==================
 
-A product is the main building block of the portal configuration. To define
-a new product, proceed as follows:
+.. steps::
 
-#. Determine the product ID.
+   .. step:: Determine the product ID
 
-   This unique ID is used in several places in the configuration.
-   The product ID should be short and descriptive.
-   In this example, we assume we were asked to create a new product about
-   NAS functionality.
-   A good product ID would be ``nas``.
+      This unique ID is used in several places in the configuration.
+      The product ID should be short and descriptive.
+      In this example, we assume we were asked to create a new product about
+      NAS functionality.
+      A good product ID would be ``nas``.
 
-#. In your configuration directory :file:`config.d/`, create a new
-   directory and the configuration file for the product:
+   .. step:: Create the product configuration file
 
-   .. code-block:: shell
+      In your configuration directory :file:`config.d/`, create a new
+      directory and the configuration file for the product:
 
-        $ mkdir -p config.d/nas
-        $ touch config.d/nas/nas.xml
+      .. code-block:: shell
 
-#. Edit the product configuration file and add the following content:
+           $ mkdir -p config.d/nas
+           $ touch config.d/nas/nas.xml
 
-   .. code-block:: xml
-      :caption: Example :file:`nas.xml` Configuration
-      :name: nas.xml
+   .. step:: Define the product
 
-      <product xml:id="nas" family="f.linux" series="s.pas" rank="10">
-         <name>Network Attached Storage</name>
-         <acronym>nas</acronym>
-         <maintainers>
-           <contact>johndoe@example.com</contact>
-         </maintainers>
+      Edit the product configuration file and add the following content:
 
-         <!-- ... releases with <docset> elements... -->
-      </product>
+      .. code-block:: xml
+         :caption: Example :file:`nas.xml` Configuration
+         :name: nas.xml
 
-   * Decide on the ``family`` and ``series`` attributes for this product.
+         <product xml:id="nas" family="f.linux" series="s.pas" rank="10">
+            <name>Network Attached Storage</name>
+            <acronym>nas</acronym>
+            <maintainers>
+              <contact>johndoe@example.com</contact>
+            </maintainers>
 
-     If you are not sure, you can assign the family to "Linux" (ID=f.linux)
-     and the series to "Products & Solutions" (ID=s.pas).
+            <!-- ... releases with <docset> elements... -->
+         </product>
 
-   * For the ``rank`` attribute, assign a number to determine the order
-     of the products on the portal. Look at the existing products to
-     determine a good rank for your product.
+      * Decide on the ``family`` and ``series`` attributes for this product.
 
-   * Assign a maintainer for the product.
+        If you are not sure, you can assign the family to "Linux" (ID=f.linux)
+        and the series to "Products & Solutions" (ID=s.pas).
 
-#. Add a docset.
+      * For the ``rank`` attribute, assign a number to determine the order
+        of the products on the portal. Look at the existing products to
+        determine a good rank for your product.
 
-   Continue with section :ref:`create-docset`.
+      * Assign a maintainer for the product.
+
+   .. step:: Add a docset
+
+      Continue with section :ref:`create-docset`.

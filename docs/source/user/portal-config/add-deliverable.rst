@@ -7,35 +7,44 @@ A deliverable is a documentation output that docbuild will
 either build from source, take as a prebuilt file, or reference from
 another deliverable, and publish on the portal.
 
-To add a deliverable, proceed as follows:
+To add a deliverable:
 
-#. Identify the docset you want to add the deliverable to.
+.. steps::
 
-   If you haven't created a docset yet, create one as described in
-   section :ref:`create-product`.
+  .. step:: Identify the target docset
 
-   In this example, we want to add a deliverable to the 1.0
-   docset of the NAS product.
+    If you haven't created a docset yet, create one as described in
+    section :ref:`create-product`.
 
-#. Choose the deliverable type, such as ``dc`` for :term:`DocBook` XML/:term:`ADoc` sources, ``prebuilt`` for prebuilt files, or ``xref`` for cross-references.
+    In this example, we want to add a deliverable to the 1.0
+    docset of the NAS product.
 
-#. Create a deliverable.
+  .. step:: Choose the deliverable type
 
-   In our example, we have a DocBook XML source and a DC file :file:`DC-NAS-overview`. We want to build HTML, PDF, and
-   single HTML output, but not EPUB:
+     * :ref:`dc <build-with-daps>` for :term:`DocBook` XML/:term:`ADoc` sources,
+     * :ref:`prebuilt <build-with-prebuilt-file-antora>` for prebuilt files,
+     * :ref:`xref <build-with-cross-reference>` for cross-references.
 
-   .. code-block:: xml
+  .. step:: Create the deliverable
+
+    In our example, we have a DocBook XML source and a DC file :file:`DC-NAS-overview`. We want to build HTML, PDF, and
+    single HTML output, but not EPUB:
+
+    .. code-block:: xml
       :caption: Example of a Deliverable Built from Source
 
       <deliverable type="dc" xml:id="nas.1.0.overview">
         <dc file="DC-NAS-overview">
-          <format epub="0" html="1" pdf="1" single-html="1" />
+         <format epub="0" html="1" pdf="1" single-html="1" />
         </dc>
       </deliverable>
 
-#. Add as many deliverables as needed.
+  .. step:: Add any additional deliverables
+
+    Add as many deliverables as needed.
 
 
+.. _build-with-daps:
 
 Build with DAPS
 ---------------
@@ -103,6 +112,10 @@ subdirectories, then resolves the ``..`` component:
 
 The resulting source directory is :file:`l10n/sles/common/guide`.
 
+
+..  _build-with-prebuilt-file-antora:
+
+
 Build with Prebuilt file (Antora)
 ---------------------------------
 
@@ -127,6 +140,8 @@ by a different tool than :command:`daps`:
       </prebuilt>
     </deliverable>
 
+
+.. _build-with-cross-reference:
 
 Build with Cross-Reference
 --------------------------
