@@ -63,7 +63,7 @@ classifiers = [
 
 [dependency-groups]
 typing = [
-    "pyrefly>=1.4.0",
+    "pyrefly>=1.5.0",
     "pyright>=1.1.411",
 ]
 formatting = [
@@ -93,7 +93,7 @@ docs = [
     "sphobjinv>=2.4",
 ]
 repl = [
-    "ipython>=9.18.1",
+    "ipython>=9.19.1",
 ]
 github-action = [
   {include-group = "tests"},
