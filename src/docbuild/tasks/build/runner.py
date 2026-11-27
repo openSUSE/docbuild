@@ -13,6 +13,7 @@ from lxml import etree  # type: ignore
 from docbuild.tasks.build.llms.generator import generate_llmstxt
 
 from ...config.app import normalize_runtime_placeholders
+from ...exceptions import NoDeliverablesError
 from ...models.deliverable import Deliverable
 from ...models.doctype import Doctype
 from ...utils.display import get_live_manager
@@ -20,7 +21,7 @@ from ...utils.shell import run_command
 from ...utils.sync import RsyncOptions, rsync
 from ..metadata.repos import update_repositories
 from ..metadata.runner import get_deliverable_from_doctype
-from ..portal import parse_portal_config
+from ..portal import parse_portal_config, report_unmatched_doctypes
 from ..publish import render_target_suffix
 from ..translations import resolve_actual_translations
 from ..worktrees import process_with_shared_worktrees
@@ -172,15 +173,21 @@ async def process_doctype(
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
 ) -> list[Deliverable]:
-    """Process a doctype and build its deliverables using grouped aiostream pipelines."""
+    """Process a doctype and build its deliverables using grouped aiostream pipelines.
+
+    :raises NoDeliverablesError: If the doctype matches no deliverables.
+    """
     deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
 
     deliverables = [deli for deli in deliverables if deli.xml.is_dc]
     deliverables.sort()
 
+    if not deliverables:
+        raise NoDeliverablesError(str(doctype))
+
     manager = get_live_manager()
     stage = manager._active if manager else None
-    if stage is not None and deliverables:
+    if stage is not None:
         current_total = stage._total or 0
         stage.set_total(current_total + len(deliverables))
 
@@ -190,14 +197,13 @@ async def process_doctype(
         await update_repositories(deliverables, repo_dir)
 
     # Pre-resolve valid translations across all languages for these deliverables
-    if deliverables:
-        translations_map = await resolve_actual_translations(root, doctype, repo_dir)
-        for d in deliverables:
-            key = getattr(d.xml, "target_id", None) or getattr(d.xml, "dcfile", None)
-            if key and key in translations_map:
-                d.resolved_translations = translations_map[key]
-            else:
-                d.resolved_translations = {str(getattr(d.xml, "lang", "en-us"))}
+    translations_map = await resolve_actual_translations(root, doctype, repo_dir)
+    for d in deliverables:
+        key = getattr(d.xml, "target_id", None) or getattr(d.xml, "dcfile", None)
+        if key and key in translations_map:
+            d.resolved_translations = translations_map[key]
+        else:
+            d.resolved_translations = {str(getattr(d.xml, "lang", "en-us"))}
 
     manager = get_live_manager()
     stage = manager._active if manager else None
@@ -257,27 +263,33 @@ async def process(
         else nullcontext()
     )
 
+    unmatched: list[Doctype] = []
+
     with stage_context as stage:
         if stage is not None:
             stage.set_total(0)
 
         async def _wrapped_process(dt: "Doctype") -> list:
-            return await process_doctype(
-                root,
-                dt,
-                repo_dir,
-                tmp_repo_dir,
-                tmp_build_base_dir,
-                target_base_dir,
-                target_dir_dyn,
-                max_workers,
-                global_semaphore,
-                daps_tmpls,
-                skip_repo_update=skip_repo_update,
-                build_llmstxt=build_llmstxt,
-                llmstxt_dir=llmstxt_dir,
-                rsync_options=rsync_options,
-            )
+            try:
+                return await process_doctype(
+                    root,
+                    dt,
+                    repo_dir,
+                    tmp_repo_dir,
+                    tmp_build_base_dir,
+                    target_base_dir,
+                    target_dir_dyn,
+                    max_workers,
+                    global_semaphore,
+                    daps_tmpls,
+                    skip_repo_update=skip_repo_update,
+                    build_llmstxt=build_llmstxt,
+                    llmstxt_dir=llmstxt_dir,
+                    rsync_options=rsync_options,
+                )
+            except NoDeliverablesError:
+                unmatched.append(dt)
+                return []
 
         async with asyncio.TaskGroup() as task_group:
             tasks = [
@@ -291,8 +303,13 @@ async def process(
 
     all_failed = [d for failed_list in results_per_doctype for d in failed_list]
 
+    report_unmatched_doctypes(unmatched)
+
     if all_failed:
         log.error("Build completed with %d failures.", len(all_failed))
+        return 1
+
+    if unmatched:
         return 1
 
     log.info("All deliverables built successfully and synced to target!")

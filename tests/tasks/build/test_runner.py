@@ -9,6 +9,7 @@ import pytest
 import yaml
 
 from docbuild.cli.defaults import DEFAULT_ENV_CONFIG
+from docbuild.exceptions import NoDeliverablesError
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 import docbuild.tasks.build.runner as build_runner
@@ -261,6 +262,62 @@ async def test_process_doctype_build(
         assert failed == []
         mock_group_build.assert_called_once()
         mock_update.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_process_doctype_without_deliverables_raises(
+    empty_xml_root: etree._ElementTree,
+    tmp_path: Path,
+) -> None:
+    """Raise and skip the build when a doctype matches no deliverables."""
+    doctype = Doctype.from_str("sles/16.0/en-us")
+
+    with (
+        patch.object(build_runner, "process_with_shared_worktrees", new_callable=AsyncMock) as mock_group_build,
+        patch.object(build_runner, "update_repositories", new_callable=AsyncMock) as mock_update,
+        pytest.raises(NoDeliverablesError, match=r"sles/16\.0"),
+    ):
+        await process_doctype(
+            root=empty_xml_root,
+            doctype=doctype,
+            repo_dir=tmp_path,
+            tmp_repo_dir=tmp_path,
+            tmp_build_base_dir=tmp_path,
+            target_base_dir=tmp_path / "target",
+            target_dir_dyn="{product}",
+            max_workers=1,
+            semaphore=asyncio.Semaphore(1),
+            daps_tmpls={},
+        )
+
+    mock_group_build.assert_not_called()
+    mock_update.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_process_without_deliverables_fails(tmp_path: Path) -> None:
+    """Return a non-zero exit code and print an error for unmatched doctypes."""
+    doctypes = [Doctype.from_str("sles/16.0/en-us"), Doctype.from_str("sles/16.1/en-us")]
+
+    async def fake_process_doctype(root: object, dt: Doctype, *args: object, **kwargs: object) -> list:
+        if "16.0" in str(dt):
+            raise NoDeliverablesError(str(dt))
+        return []
+
+    with (
+        patch.object(build_runner, "parse_portal_config", new_callable=AsyncMock),
+        patch.object(build_runner, "process_doctype", side_effect=fake_process_doctype) as mock_pd,
+        patch.object(build_runner, "report_unmatched_doctypes") as mock_report,
+    ):
+        result = await process(
+            tmp_path, tmp_path, tmp_path, tmp_path,
+            tmp_path / "target", "{product}",
+            1, doctypes, {},
+        )
+
+    assert result == 1
+    assert mock_pd.call_count == 2
+    mock_report.assert_called_once_with([doctypes[0]])
 
 
 @pytest.mark.asyncio

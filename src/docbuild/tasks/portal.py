@@ -13,6 +13,7 @@ from ..cli.console import console_err, console_out
 from ..config.xml.checks import CheckResult, register_check
 from ..config.xml.xinclude import parse_xml_with_xinclude_base
 from ..constants import XML_NS
+from ..models.doctype import Doctype
 from ..utils.decorators import RegistryDecorator
 from ..utils.shell import run_command
 
@@ -210,6 +211,38 @@ async def parse_portal_config(filepath: Path | str) -> etree._ElementTree:
     :returns: Parsed :class:`lxml.etree._ElementTree`.
     """
     return await asyncio.to_thread(parse_xml_with_xinclude_base, filepath)
+
+
+async def find_unmatched_doctypes(
+    main_portal_config: Path,
+    doctypes: tuple[Doctype, ...] | list[Doctype],
+) -> list[Doctype]:
+    """Return the doctypes that match no buildable deliverables.
+
+    :param main_portal_config: Path to the main portal config.
+    :param doctypes: The doctypes to check.
+    :return: The doctypes without any DC deliverable, in input order.
+    """
+    # Local import: the metadata package imports this module.
+    from .metadata.deliverables import get_deliverable_from_doctype
+
+    if not doctypes:
+        return []
+    # Own parse: get_deliverable_from_doctype adds synthetic nodes to the tree.
+    root = await parse_portal_config(main_portal_config)
+    return [
+        dt
+        for dt in doctypes
+        if not any(d.xml.is_dc for d in get_deliverable_from_doctype(root, dt))
+    ]
+
+
+def report_unmatched_doctypes(unmatched: list[Doctype]) -> None:
+    """Print an error for each doctype that matches no deliverables."""
+    for dt in unmatched:
+        console_err.print(
+            f"[error]No deliverables found for doctype:[/] {escape(str(dt))}"
+        )
 
 
 async def run_checks_and_display(

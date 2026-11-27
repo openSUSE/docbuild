@@ -70,3 +70,29 @@ def test_run_sitemap_after_success(build_result, options, expected):
         )
     else:
         generate.assert_not_awaited()
+
+
+def test_run_unmatched_doctype_aborts_early():
+    """Abort before metadata and build when a doctype matches nothing."""
+    env = EnvConfig.from_dict({})
+    context = DocBuildContext(envconfig=env)
+    with (
+        patch.object(sysdeps, "check_dependencies", return_value=[]),
+        patch.object(
+            cmd_run, "find_unmatched_doctypes", new_callable=AsyncMock
+        ) as find_unmatched,
+        patch.object(cmd_run, "report_unmatched_doctypes") as report,
+        patch.object(cmd_run, "metadata_process", new_callable=AsyncMock) as metadata,
+        patch.object(cmd_run, "build_process", new_callable=AsyncMock) as process,
+        patch.object(
+            cmd_run, "generate_sitemap_with_progress", new_callable=AsyncMock
+        ) as generate,
+    ):
+        find_unmatched.return_value = ["sles/16.0@unknown/en-us"]
+        result = CliRunner().invoke(run, ["sles/16.0/en-us"], obj=context)
+
+    assert result.exit_code == 1, result.output
+    report.assert_called_once_with(["sles/16.0@unknown/en-us"])
+    metadata.assert_not_awaited()
+    process.assert_not_awaited()
+    generate.assert_not_awaited()
