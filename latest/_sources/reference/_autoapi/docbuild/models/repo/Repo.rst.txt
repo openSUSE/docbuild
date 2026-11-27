@@ -134,6 +134,11 @@ docbuild.models.repo.Repo
           >>> repo == "opensuse/docbuild@v1"
           True
 
+      :param other: A :class:`Repo` object or a string to compare with.
+      :return: True if both have the same name, False otherwise.
+          ``NotImplemented`` if ``other`` is neither a string nor a
+          :class:`Repo` object.
+
 
 
    .. py:method:: __str__() -> str
@@ -151,6 +156,24 @@ docbuild.models.repo.Repo
    .. py:method:: __contains__(item: str) -> bool
 
       Check if a string is part of the repository's abbreviated name.
+
+      The check is case-insensitive.
+
+      :param item: The string to look for.
+      :return: True if ``item`` is part of the name, False otherwise.
+          Always False if ``item`` is not a string.
+
+      For example:
+
+      .. code-block:: python
+
+          >>> repo = Repo("opensuse/docbuild")
+          >>> "docbuild" in repo
+          True
+          >>> "openSUSE" in repo
+          True
+          >>> "en-us" in repo
+          False
 
 
 

@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>docbuild.models.repo.Repo &#8212; Docbuild Documentation 0.31.1.dev17+g10b728cf9.d20261126</title>
+    <title>docbuild.models.repo.Repo &#8212; Docbuild Documentation 0.31.1.dev20+gd212b53b5.d20261127</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../../../_static/documentation_options.js?v=825ff851"></script>
+    <script src="../../../../../_static/documentation_options.js?v=61d89a4b"></script>
     <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -808,6 +808,16 @@ a GitHub repo.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code> object or a string to compare with.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if both have the same name, False otherwise.
+<code class="docutils literal notranslate"><span class="pre">NotImplemented</span></code> if <code class="docutils literal notranslate"><span class="pre">other</span></code> is neither a string nor a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Repo</span></code> object.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -826,6 +836,26 @@ a GitHub repo.</p>
 <dt class="sig sig-object py" id="docbuild.models.repo.Repo.__contains__">
 <span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#docbuild.models.repo.Repo.__contains__" title="Link to this definition">#</a></dt>
 <dd><p>Check if a string is part of the repository’s abbreviated name.</p>
+<p>The check is case-insensitive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>item</strong> – The string to look for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if <code class="docutils literal notranslate"><span class="pre">item</span></code> is part of the name, False otherwise.
+Always False if <code class="docutils literal notranslate"><span class="pre">item</span></code> is not a string.</p>
+</dd>
+</dl>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">repo</span> <span class="o">=</span> <span class="n">Repo</span><span class="p">(</span><span class="s2">&quot;opensuse/docbuild&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;docbuild&quot;</span> <span class="ow">in</span> <span class="n">repo</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;openSUSE&quot;</span> <span class="ow">in</span> <span class="n">repo</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;en-us&quot;</span> <span class="ow">in</span> <span class="n">repo</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
