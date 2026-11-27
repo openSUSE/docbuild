@@ -236,17 +236,6 @@ class Repo:
         :raises ValueError: If ``value`` does not match any of the
             supported notations.
 
-        For example:
-
-        .. code-block:: python
-
-            >>> data = Repo("opensuse/docbuild")._consolidate_match(
-            ...     "gh://opensuse/docbuild@v1"
-            ... )
-            >>> data["url"]
-            'https://github.com/opensuse/docbuild.git'
-            >>> data["branch"]
-            'v1'
         """
         match = self._REPOS_PATTERN.match(value)
         if not match:
