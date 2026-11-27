@@ -228,7 +228,15 @@ class Repo:
         object.__setattr__(self, "branch", branch)
 
     def _consolidate_match(self, value: str) -> dict:
-        """Consolidate keys for a cleaner API."""
+        """Consolidate keys for a cleaner API.
+
+        :param value: The lowercased repository string to parse.
+        :return: A dictionary with the keys ``org``, ``repo``, ``service``,
+            ``url``, and ``branch``.
+        :raises ValueError: If ``value`` does not match any of the
+            supported notations.
+
+        """
         match = self._REPOS_PATTERN.match(value)
         if not match:
             raise ValueError(
@@ -293,6 +301,11 @@ class Repo:
             True
             >>> repo == "opensuse/docbuild@v1"
             True
+
+        :param other: A :class:`Repo` object or a string to compare with.
+        :return: True if both have the same name, False otherwise.
+            ``NotImplemented`` if ``other`` is neither a string nor a
+            :class:`Repo` object.
         """
         if isinstance(other, str):
             return self.name == Repo(other).name
@@ -309,7 +322,26 @@ class Repo:
         return hash(self.name)
 
     def __contains__(self, item: str) -> bool:
-        """Check if a string is part of the repository's abbreviated name."""
+        """Check if a string is part of the repository's abbreviated name.
+
+        The check is case-insensitive.
+
+        :param item: The string to look for.
+        :return: True if ``item`` is part of the name, False otherwise.
+            Always False if ``item`` is not a string.
+
+        For example:
+
+        .. code-block:: python
+
+            >>> repo = Repo("opensuse/docbuild")
+            >>> "docbuild" in repo
+            True
+            >>> "openSUSE" in repo
+            True
+            >>> "en-us" in repo
+            False
+        """
         if isinstance(item, str):
             return item.lower() in self.name
         return False
