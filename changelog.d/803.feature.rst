@@ -1,0 +1,1 @@
+Support configuring products via a ``[products]`` mapping (``acronym = "Full Name"``) in :file:`env.toml` with layered configuration merging and a read-only product catalog, validate portal XML product IDs with typo suggestions, and use the catalog across CLI completion, portal listing, and LLM documentation generation.

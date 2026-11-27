@@ -5,9 +5,10 @@ from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass
 
-from lxml import etree
+from lxml import etree  # type: ignore
 
 from ...constants import ALLOWED_LANGUAGES, XML_ID
+from ...models.product import ProductCatalog
 from ...utils.convert import convert2bool
 from ...utils.decorators import factory_registry
 from .semantic_xpath import semantic_xpath
@@ -759,3 +760,37 @@ def check_deliverable_reference(
 
 
 check_deliverable_references = check_deliverable_reference
+
+
+@register_check
+def check_unknown_product_ids(
+    tree: etree._Element | etree._ElementTree,
+    catalog: ProductCatalog | None = None,
+) -> Iterator[CheckResult]:
+    """Check that ``<product xml:id="...">`` entries match known products.
+
+    Catches typos in product IDs (such as ``slse`` instead of ``sles``) against
+    the configured product catalog and suggests close matches.
+    """
+    active_catalog = catalog if catalog is not None else ProductCatalog.default()
+    allowed = [a for a in active_catalog.acronyms if a != "*"]
+
+    for prod in tree.xpath("//product"):
+        prod_id = (prod.get(XML_ID) or "").strip()
+        if not prod_id:
+            continue
+        if prod_id not in active_catalog:
+            suggestions = active_catalog.suggest(prod_id)
+            hint = ""
+            if suggestions:
+                hint = " Did you mean: " + ", ".join(repr(s) for s in suggestions) + "?"
+            allowed_str = ", ".join(allowed)
+            message = (
+                f"Unknown product ID {prod_id!r} (possible typo).{hint} "
+                f"Allowed products: {allowed_str}"
+            )
+            yield CheckResult(
+                message=message,
+                xpath=semantic_xpath(prod),
+                error_code="unknown_product_id",
+            )

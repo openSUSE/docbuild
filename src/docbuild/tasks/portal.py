@@ -2,6 +2,7 @@
 
 import asyncio
 from dataclasses import dataclass
+import inspect
 import logging
 from pathlib import Path
 from subprocess import CompletedProcess
@@ -13,6 +14,7 @@ from ..cli.console import console_err, console_out
 from ..config.xml.checks import CheckResult, register_check
 from ..config.xml.xinclude import parse_xml_with_xinclude_base
 from ..constants import XML_NS
+from ..models.product import ProductCatalog
 from ..utils.decorators import RegistryDecorator
 from ..utils.shell import run_command
 
@@ -149,17 +151,23 @@ async def validate_rng(
 
 async def run_python_checks(
     tree: etree._ElementTree,
+    catalog: ProductCatalog | None = None,
 ) -> list[tuple[str, CheckResult]]:
     """Run all registered Python-based checks against a parsed XML tree.
 
     :param tree: The parsed XML element tree.
+    :param catalog: Optional product catalog used to validate product IDs.
     :return: A list of tuples containing check names and their results.
     """
     check_results = []
     for check in registry.registry:
         try:
+            accepts_catalog = "catalog" in inspect.signature(check).parameters
             # Call check which now returns a generator
-            generator = await asyncio.to_thread(check, tree)
+            if accepts_catalog:
+                generator = await asyncio.to_thread(check, tree, catalog)
+            else:
+                generator = await asyncio.to_thread(check, tree)
             # Collect all results from the generator
             for result in generator:
                 check_results.append((check.__name__, result))
@@ -215,14 +223,16 @@ async def parse_portal_config(filepath: Path | str) -> etree._ElementTree:
 async def run_checks_and_display(
     tree: etree._ElementTree,
     verbose: int = 0,
+    catalog: ProductCatalog | None = None,
 ) -> bool:
     """Execute registered Python checks and print formatted results.
 
     :param tree: Parsed XML tree to check.
     :param verbose: Verbosity level (0=disabled, 1=verbose, 2=debug).
+    :param catalog: Optional product catalog used to validate product IDs.
     :returns: True when all checks succeeded (or when no checks are registered).
     """
-    check_results = await run_python_checks(tree)
+    check_results = await run_python_checks(tree, catalog=catalog)
 
     summary_line: str | None = None
     if check_results:
@@ -275,12 +285,14 @@ async def validate_portal_config(
     main_portal_config: Path,
     portal_schema: Path,
     verbose: int = 0,
+    catalog: ProductCatalog | None = None,
 ) -> int:
     """Asynchronous function to process validation.
 
     :param main_portal_config: Path to the main Portal XML configuration file.
     :param portal_schema: Path to the Portal RELAX NG schema file.
     :param verbose: Output verbosity level.
+    :param catalog: Optional product catalog used to validate product IDs.
     :return: 0 if validation passed, 1 if any failures occurred.
     """
     log.debug("Starting validation process for Portal XML config %s", main_portal_config)
@@ -317,7 +329,10 @@ async def validate_portal_config(
     console_out.print("[header]Stage 2 (Python checks):[/] [success]success[/]")
 
     # Run custom Python checks only after RNG validation and XML parsing succeeded.
-    checks_passed = await run_checks_and_display(tree, verbose)
+    if catalog is not None:
+        checks_passed = await run_checks_and_display(tree, verbose, catalog=catalog)
+    else:
+        checks_passed = await run_checks_and_display(tree, verbose)
 
     if verbose > 0:  # pragma: no cover
         status = "successfully validated" if checks_passed else "failed validation"

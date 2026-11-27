@@ -37,7 +37,6 @@ class Doctype(BaseModel):
     >>> doctype = Doctype.from_str("sles/15-SP6@supported/en-us,de-de")
     >>> doctype.product
     <Product.sles: 'sles'>
-    <Product.sles: 'SUSE Linux Enterprise Server'>
     >>> doctype.docset
     ['15-SP6']
     >>> doctype.lifecycle.name

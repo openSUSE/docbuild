@@ -15,7 +15,7 @@ from docbuild.cli.console import console_err
 from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.json_ld import JsonLD
-from docbuild.models.product import Product
+from docbuild.models.product import Product, ProductCatalog
 from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
@@ -73,8 +73,13 @@ def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
     return metadata
 
 
-def resolve_product_name(acronym: str) -> str:
+def resolve_product_name(
+    acronym: str,
+    catalog: ProductCatalog | None = None,
+) -> str:
     """Resolve a product acronym (e.g. 'sles') to its full display name."""
+    if catalog is not None and (entry := catalog.get(acronym)) is not None:
+        return entry.name
     try:
         return str(Product(acronym))
     except ValueError:
@@ -90,6 +95,7 @@ async def process_single_html_file(
     static_title: str,
     categories: list[str] | None = None,
     only_md: bool = False,
+    catalog: ProductCatalog | None = None,
 ) -> str | None:
     """Process an HTML file to generate Markdown and update HTML with link tags."""
     if not html_file.exists():
@@ -118,7 +124,7 @@ async def process_single_html_file(
     # (Format: en-us/sles/16.1/html/...)
     path_parts = full_rel_path.parts
     if len(path_parts) > 3 and path_parts[3] == "html":
-        frontmatter["product"] = resolve_product_name(path_parts[1])
+        frontmatter["product"] = resolve_product_name(path_parts[1], catalog=catalog)
         frontmatter["version"] = path_parts[2]
 
     if ld_data:
@@ -160,6 +166,7 @@ async def generate_llmstxt(
     llms_exclude_extra: list[str] | None = None,
     only_md: bool = False,
     html_dir: Path | str | None = None,
+    catalog: ProductCatalog | None = None,
 ) -> None:
     """Generate Markdown and llms.txt files from the HTML output directory."""
     if not build_llmstxt:
@@ -221,6 +228,7 @@ async def generate_llmstxt(
                 static_title=static_title,
                 categories=categories,
                 only_md=only_md,
+                catalog=catalog,
             )
 
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
