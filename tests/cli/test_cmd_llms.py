@@ -1,5 +1,6 @@
 """Tests for the retroactive LLMs generation CLI command."""
 
+import os
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
@@ -112,3 +113,58 @@ def test_build_group_help_lists_llms() -> None:
     result = runner.invoke(cli, ["build", "--help"])
     assert result.exit_code == 0
     assert "llms" in result.output
+
+
+def test_llms_preserves_html_symlinks(tmp_path: Path) -> None:
+    """Test that symlinks in HTML output are preserved as symlinks in Markdown output."""
+    runner = CliRunner()
+    target_dir = tmp_path / "target_base"
+    html_dir = target_dir / "en-us" / "sles" / "15-SP7" / "html" / "SLES-amd-sev"
+    html_dir.mkdir(parents=True, exist_ok=True)
+
+    article_file = html_dir / "article-amd-sev.html"
+    article_file.write_text(
+        """<!DOCTYPE html>
+<html>
+<head><title>AMD SEV Article</title></head>
+<body><main><h1>AMD SEV Article</h1><p>Content.</p></main></body>
+</html>""",
+        encoding="utf-8",
+    )
+
+    symlink_file = html_dir / "index.html"
+    try:
+        symlink_file.symlink_to("article-amd-sev.html")
+    except OSError:
+        import pytest
+        pytest.skip("Creating symlinks is not supported/permitted on this platform")
+
+    result = runner.invoke(
+        cli,
+        [
+            "-C", "build.build_llmstxt=true",
+            "-C", f"paths.target.target_base_dir={target_dir}",
+            "-C", "paths.llmstxt_dir=docs",
+            "build", "llms", "--all",
+        ],
+    )
+
+    assert result.exit_code == 0
+
+    # 1. Target markdown file was generated
+    md_file = target_dir / "docs" / "en-us" / "sles" / "15-SP7" / "html" / "SLES-amd-sev" / "article-amd-sev.md"
+    assert md_file.exists()
+    assert "# AMD SEV Article" in md_file.read_text(encoding="utf-8")
+
+    # 2. Symlink was preserved in markdown directory pointing to the .md target
+    dest_symlink = target_dir / "docs" / "en-us" / "sles" / "15-SP7" / "html" / "SLES-amd-sev" / "index.html"
+    assert dest_symlink.is_symlink()
+    assert os.readlink(dest_symlink) == "article-amd-sev.md"
+
+    # 3. Target HTML file got alternate markdown link
+    assert "/docs/en-us/sles/15-SP7/html/SLES-amd-sev/article-amd-sev.md" in article_file.read_text(encoding="utf-8")
+
+    # 4. llms.txt has only canonical entry, no duplicate index entry
+    llms_txt = (target_dir / "docs" / "llms.txt").read_text(encoding="utf-8")
+    assert "/docs/en-us/sles/15-SP7/html/SLES-amd-sev/article-amd-sev.md" in llms_txt
+    assert "index.md" not in llms_txt
