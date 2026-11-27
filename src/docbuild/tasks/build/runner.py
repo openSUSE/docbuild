@@ -89,6 +89,8 @@ async def process_single_deliverable(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    llms_exclude: list[str] | None = None,
+    llms_exclude_extra: list[str] | None = None,
 ) -> tuple[bool, Deliverable]:
     """Build and sync formats for a single deliverable using an existing worktree."""
     safe_id = deliverable.make_safe_name(deliverable.full_id)
@@ -135,7 +137,9 @@ async def process_single_deliverable(
                             target_base_dir=target_base_dir,
                             build_llmstxt=build_llmstxt,
                             llmstxt_dir=llmstxt_dir,
-                            html_dir=target_dest
+                            html_dir=target_dest,
+                            llms_exclude=llms_exclude,
+                            llms_exclude_extra=llms_exclude_extra,
                         )
                     if sync_result.returncode == 0:
                         log.info("Successfully synced %s for %s", fmt, deliverable.full_id)
@@ -171,6 +175,8 @@ async def process_doctype(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    llms_exclude: list[str] | None = None,
+    llms_exclude_extra: list[str] | None = None,
 ) -> list[Deliverable]:
     """Process a doctype and build its deliverables using grouped aiostream pipelines."""
     deliverables: list[Deliverable] = await asyncio.to_thread(get_deliverable_from_doctype, root, doctype)
@@ -216,6 +222,8 @@ async def process_doctype(
                     build_llmstxt,
                     llmstxt_dir,
                     rsync_options=rsync_options,
+                    llms_exclude=llms_exclude,
+                    llms_exclude_extra=llms_exclude_extra,
                 )
                 if item and not success:
                     item.fail()
@@ -245,6 +253,8 @@ async def process(
     build_llmstxt: bool = True,
     llmstxt_dir: str = "docs",
     rsync_options: RsyncOptions | None = None,
+    llms_exclude: list[str] | None = None,
+    llms_exclude_extra: list[str] | None = None,
 ) -> int:
     """Execute the build task pipeline."""
     root = await parse_portal_config(main_portal_config)
@@ -277,6 +287,8 @@ async def process(
                 build_llmstxt=build_llmstxt,
                 llmstxt_dir=llmstxt_dir,
                 rsync_options=rsync_options,
+                llms_exclude=llms_exclude,
+                llms_exclude_extra=llms_exclude_extra,
             )
 
         async with asyncio.TaskGroup() as task_group:

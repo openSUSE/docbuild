@@ -1,5 +1,6 @@
 """DOM manipulation utilities for LLM Markdown conversion."""
 
+from html import escape
 import re
 
 from justhtml.dom import Element, Node, NodeType, Text
@@ -23,9 +24,84 @@ def is_empty_removable(node: NodeType) -> bool:
     """Check if an anchor or list item is empty and should be removed."""
     if not isinstance(node, Node) or node.name.lower() not in {"a", "li"}:
         return False
+    if get_attrs(node).get("id"):
+        return False
     if node.to_text(strip=True):
         return False
     return not (node.query("img") or node.query("table"))
+
+
+def is_empty_anchor(node: Node) -> bool:
+    """Check whether an anchor has no visible text or embedded content."""
+    return (
+        node.name.lower() == "a"
+        and not node.to_text(strip=True)
+        and not node.query("img")
+        and not node.query("table")
+    )
+
+
+def preserve_node_id_anchor(
+    parent: Node,
+    children: list[NodeType],
+    child: Node,
+    target_ids: set[str],
+    placeholders: dict[str, str],
+    counter: int,
+) -> int:
+    """Preserve a referenced ID and remove an otherwise empty anchor."""
+    node_id = get_attrs(child).get("id")
+    if not node_id:
+        return counter
+
+    if node_id in target_ids:
+        key = f"DOCBUILDMDANCHOR{counter}END"
+        counter += 1
+        marker = Text(key)
+        marker.parent = parent
+        children.insert(children.index(child), marker)
+        placeholders[key] = f'<a id="{escape(node_id, quote=True)}"></a>'
+        if child.attrs is not None:
+            child.attrs.pop("id", None)
+
+    if is_empty_anchor(child):
+        children.remove(child)
+        child.parent = None
+
+    return counter
+
+
+def preserve_id_anchors(
+    root: NodeType, target_ids: set[str] | None = None
+) -> dict[str, str]:
+    """Add Markdown placeholders for IDs referenced by generated links."""
+    placeholders: dict[str, str] = {}
+    counter = 0
+    target_ids = target_ids or set()
+
+    def visit(parent: NodeType) -> None:
+        nonlocal counter
+        if not isinstance(parent, Node):
+            return
+        children = getattr(parent, "children", None)
+        if not children:
+            return
+
+        for child in list(children):
+            if not isinstance(child, Node):
+                continue
+
+            if child.name.lower() not in {"html", "head"}:
+                counter = preserve_node_id_anchor(
+                    parent, children, child, target_ids, placeholders, counter
+                )
+                if child.parent is None:
+                    continue
+
+            visit(child)
+
+    visit(root)
+    return placeholders
 
 
 def unwrap_li_paragraphs(node: Node) -> None:

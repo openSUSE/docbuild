@@ -283,3 +283,45 @@ def test_clean_and_convert_full_flow() -> None:
     assert "Title" in md
     assert "Body paragraph." in md
     assert "Toolbar" not in md
+
+
+def test_clean_and_convert_rewrites_html_links_and_preserves_ids(
+    tmp_path: Path,
+) -> None:
+    """Rewrite generated targets and preserve fragment anchors in Markdown."""
+    html_dir = tmp_path / "html"
+    source_html = html_dir / "guide" / "index.html"
+    generated_target = html_dir / "reference" / "example.html"
+    html = """<html><body id="body-id">
+<p><a href="../reference/example.html?view=full#example-id">Example</a></p>
+<p><a href="../ignored/rh-notes.html#license">Release notes</a></p>
+<p><a href="https://docs.example.test/other.html#topic">External</a></p>
+<p><a href="#body-id">Whole document</a></p>
+<section id="section-id"><h2>Section</h2></section>
+<div id="example-id"><h2>Example target</h2></div>
+<a id="empty-target"></a>
+</body></html>"""
+
+    md = clean_and_convert(
+        html,
+        source_html=source_html,
+        html_dir=html_dir,
+        generated_html_files={generated_target.resolve()},
+        anchor_ids={"body-id", "example-id", "section-id", "empty-target"},
+        canonical_domain="https://docs.example.test",
+        deliverable_route="en-us/sles/16.0/html/guidebook",
+    )
+
+    assert (
+        "[Example](../reference/example.md?view=full#example-id)" in md
+    )
+    assert (
+        "[Release notes](https://docs.example.test/en-us/sles/16.0/html/"
+        "guidebook/ignored/rh-notes.html#license)" in md
+    )
+    assert "[External](https://docs.example.test/other.html#topic)" in md
+    assert '[Whole document](#body-id)' in md
+    assert '<a id="body-id"></a>' in md
+    assert '<a id="section-id"></a>' in md
+    assert '<a id="example-id"></a>' in md
+    assert '<a id="empty-target"></a>' in md

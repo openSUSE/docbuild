@@ -321,12 +321,14 @@ def test_xml_category_title() -> None:
     d4 = DeliverableXMLView(root.xpath("//deliverable[@xml:id='d4']")[0])
 
     assert d1.category_title == "Has Title Element"
+    assert d1.category_titles == ["Has Title Element"]
     assert d1b.category_title == "Has Title Attribute"
     assert d2.category_title == "Has Name Element"
-    assert (
-        d3.category_title == "cat-missing"
-    )  # Falls back to raw ID if not defined in <categories>
+    assert d2.category_titles == ["Has Name Element"]
+    assert d3.category_title is None
+    assert d3.category_titles == []
     assert d4.category_title is None  # No category assigned
+    assert d4.category_titles == []
 
 
 def test_xref_recursive_resolution() -> None:

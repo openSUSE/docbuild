@@ -1,0 +1,1 @@
+Generated Markdown now links to generated Markdown pages instead of their HTML counterparts, preserving fragment targets. Links to excluded pages continue to point to canonical HTML URLs.

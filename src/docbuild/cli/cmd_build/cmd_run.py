@@ -180,6 +180,8 @@ def run(  # noqa: C901
             rsync_options=env.rsync.to_options(),
             build_llmstxt=env.build.build_llmstxt,
             llmstxt_dir=env.paths.llmstxt_dir,
+            llms_exclude=env.llms.exclude,
+            llms_exclude_extra=env.llms.exclude_extra,
         )
 
     t = None

@@ -16,7 +16,12 @@ from docbuild.cli.message import WARNING
 from docbuild.models.deliverable import Deliverable
 from docbuild.models.json_ld import JsonLD
 from docbuild.models.product import Product
-from docbuild.tasks.build.llms.core import clean_and_convert, inject_llms_links
+from docbuild.tasks.build.llms.core import (
+    clean_and_convert,
+    collect_link_fragments,
+    inject_llms_links,
+)
+from docbuild.tasks.build.llms.dom import get_attrs
 from docbuild.utils.merge import merge_and_deduplicate_lists
 
 log = logging.getLogger(__name__)
@@ -34,7 +39,9 @@ def warn_metadata(msg: str) -> None:
     console_err.print(WARNING.render(console=console_err), escape(msg))
 
 
-def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
+def extract_json_ld(
+    html_content: str, html_file: Path, fallback_description: str = ""
+) -> JsonLD | None:
     """Extract and validate JSON-LD metadata from an HTML document."""
     doc = JustHTML(html_content, sanitize=False)
     ld_script = doc.query_one('script[type="application/ld+json"]')
@@ -64,13 +71,30 @@ def extract_json_ld(html_content: str, html_file: Path) -> JsonLD | None:
         return None
 
     dumped = metadata.model_dump(by_alias=True)
-    missing_fields = [field for field in EXPECTED_LD_FIELDS if not dumped.get(field)]
+    missing_fields = [
+        field
+        for field in EXPECTED_LD_FIELDS
+        if not dumped.get(field)
+        and not (field == "description" and fallback_description)
+    ]
     if missing_fields:
         warn_metadata(
             f"Missing JSON-LD field(s) {', '.join(missing_fields)} in {html_file}"
         )
 
     return metadata
+
+
+def extract_meta_description(html_content: str) -> str:
+    """Return the non-empty HTML meta description, if present."""
+    doc = JustHTML(html_content, sanitize=False)
+    for meta in doc.query("meta"):
+        attrs = get_attrs(meta)
+        if attrs.get("name", "").strip().lower() == "description":
+            description = attrs.get("content", "").strip()
+            if description:
+                return description
+    return ""
 
 
 def resolve_product_name(acronym: str) -> str:
@@ -90,6 +114,9 @@ async def process_single_html_file(
     static_title: str,
     categories: list[str] | None = None,
     only_md: bool = False,
+    generated_html_files: set[Path] | None = None,
+    anchor_ids: set[str] | None = None,
+    canonical_domain: str = "https://documentation.suse.com",
 ) -> str | None:
     """Process an HTML file to generate Markdown and update HTML with link tags."""
     if not html_file.exists():
@@ -108,9 +135,13 @@ async def process_single_html_file(
     md_file.parent.mkdir(parents=True, exist_ok=True)
 
     html_content = html_file.read_text(encoding="utf-8")
-    ld_data = extract_json_ld(html_content, html_file)
+    meta_description = extract_meta_description(html_content)
+    ld_data = extract_json_ld(html_content, html_file, meta_description)
 
-    frontmatter = {"title": static_title, "description": ""}
+    frontmatter = {
+        "title": static_title,
+        "description": meta_description,
+    }
     if categories:
         frontmatter["categories"] = categories
 
@@ -123,7 +154,8 @@ async def process_single_html_file(
 
     if ld_data:
         frontmatter["title"] = ld_data.name or frontmatter["title"]
-        frontmatter["description"] = ld_data.description or ""
+        if ld_data.description:
+            frontmatter["description"] = ld_data.description
         for key, value in (
             ("dateCreated", ld_data.date_created),
             ("dateModified", ld_data.date_modified),
@@ -135,7 +167,15 @@ async def process_single_html_file(
     yaml_block = yaml.safe_dump(
         frontmatter, default_flow_style=False, sort_keys=False, allow_unicode=True, width=float("inf")
     )
-    md_content = clean_and_convert(html_content)
+    md_content = clean_and_convert(
+        html_content,
+        source_html=html_file,
+        html_dir=html_dir,
+        generated_html_files=generated_html_files,
+        anchor_ids=anchor_ids,
+        canonical_domain=canonical_domain,
+        deliverable_route=deliverable_route,
+    )
     full_md = f"---\n{yaml_block}---\n\n{md_content}"
     md_file.write_text(full_md, encoding="utf-8")
 
@@ -190,7 +230,7 @@ async def generate_llmstxt(
         return
 
     # Extract categories safely
-    categories = (getattr(d_xml, "categoryid", "") or "").split()
+    categories = d_xml.category_titles
 
     try:
         index_lines = [
@@ -211,6 +251,11 @@ async def generate_llmstxt(
                 continue
             html_files.append(file)
 
+        generated_html_files = {file.resolve() for file in html_files}
+        link_fragments = collect_link_fragments(
+            html_files, scan_dir, generated_html_files
+        )
+
         async def process_file(html_file: Path) -> str | None:
             return await process_single_html_file(
                 html_file=html_file,
@@ -221,6 +266,9 @@ async def generate_llmstxt(
                 static_title=static_title,
                 categories=categories,
                 only_md=only_md,
+                generated_html_files=generated_html_files,
+                anchor_ids=link_fragments.get(html_file.resolve(), set()),
+                canonical_domain=canonical_domain,
             )
 
         pipeline = stream.iterate(html_files) | pipe.map(process_file, ordered=False, task_limit=10)
@@ -235,6 +283,7 @@ async def generate_llmstxt(
             f.write("\n".join(index_lines) + "\n")
 
         log.info("Successfully generated Markdown for %s", deliverable.full_id)
+        log.info("LLMS Markdown output directory: %s", llms_dest / deliverable_route)
 
     except Exception as e:
         log.error("Failed to generate llms.txt: %s", e)
