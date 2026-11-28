@@ -137,7 +137,8 @@ def send_message(config: EnvMail, message: EmailMessage) -> None:
             "SMTP authentication requires both DOCBUILD_SMTP_USERNAME and DOCBUILD_SMTP_PASSWORD"
         )
         return
-    if config.tls == "implicit":
+    implicit_tls = config.tls == "implicit"
+    if implicit_tls:
         connection = smtplib.SMTP_SSL(
             config.smtp_host,
             config.smtp_port,
@@ -149,7 +150,7 @@ def send_message(config: EnvMail, message: EmailMessage) -> None:
             config.smtp_host, config.smtp_port, timeout=config.timeout
         )
     with connection as client:
-        if config.tls == "starttls":
+        if not implicit_tls:
             client.starttls(context=ssl.create_default_context())
         if username and password:
             client.login(username, password)

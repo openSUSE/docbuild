@@ -62,6 +62,7 @@ def test_env_without_mail():
         {"timeout": 0},
         {"timeout": float("inf")},
         {"tls": "both"},
+        {"tls": "none"},
         {"sender": "missing-domain"},
         {"admin_emails": ["one@site.test,two@site.test"]},
         {"smtp_password": "not-allowed"},
@@ -140,10 +141,11 @@ def test_cli_build_outcome(env, enabled, outcome, exit_code, count, caplog):
         assert result.exception is outcome
 
 
-@pytest.mark.parametrize("mode", ["starttls", "implicit", "none"])
-def test_transport(env, monkeypatch, mode):
+@pytest.mark.parametrize("mode", ["starttls", "implicit"])
+@pytest.mark.parametrize("authenticated", [True, False])
+def test_transport(env, monkeypatch, mode, authenticated):
     env.mail.tls = mode
-    if mode != "none":
+    if authenticated:
         monkeypatch.setenv("DOCBUILD_SMTP_USERNAME", "test-user")
         monkeypatch.setenv("DOCBUILD_SMTP_PASSWORD", "test-password")
     message = EmailMessage()
@@ -158,19 +160,34 @@ def test_transport(env, monkeypatch, mode):
     assert constructor.call_args.args == ("relay", 587)
     assert constructor.call_args.kwargs["timeout"] == 10
     assert client.starttls.called == (mode == "starttls")
-    if mode != "none":
-        kwargs = (
-            client.starttls.call_args.kwargs
-            if mode == "starttls"
-            else constructor.call_args.kwargs
-        )
-        assert kwargs["context"].verify_mode == ssl.CERT_REQUIRED
-        assert kwargs["context"].check_hostname
+    kwargs = (
+        client.starttls.call_args.kwargs
+        if mode == "starttls"
+        else constructor.call_args.kwargs
+    )
+    assert kwargs["context"].verify_mode == ssl.CERT_REQUIRED
+    assert kwargs["context"].check_hostname
+    expected = ["starttls"] if mode == "starttls" else []
+    if authenticated:
+        expected.append("login")
         client.login.assert_called_once_with("test-user", "test-password")
     else:
         client.login.assert_not_called()
     client.send_message.assert_called_once_with(message)
+    assert [name for name, _, _ in client.method_calls] == [*expected, "send_message"]
     connection.__exit__.assert_called_once()
+
+
+def test_starttls_failure_prevents_delivery(env, monkeypatch):
+    monkeypatch.setenv("DOCBUILD_SMTP_USERNAME", "test-user")
+    monkeypatch.setenv("DOCBUILD_SMTP_PASSWORD", "test-password")
+    with patch.object(smtplib, "SMTP") as smtp:
+        client = smtp.return_value.__enter__.return_value
+        client.starttls.side_effect = ssl.SSLError
+        with pytest.raises(ssl.SSLError):
+            notifications.send_message(env.mail, EmailMessage())
+    client.login.assert_not_called()
+    client.send_message.assert_not_called()
 
 
 def test_delivery_failure_isolated(env, monkeypatch, caplog):

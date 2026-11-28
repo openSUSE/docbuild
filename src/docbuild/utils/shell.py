@@ -12,13 +12,11 @@ from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
 log = logging.getLogger(GITLOGGER_NAME)
 
 
-def subprocess_env(env: dict[str, str] | None = None) -> dict[str, str] | None:
+def subprocess_env(env: dict[str, str] | None = None) -> dict[str, str]:
     """Keep SMTP credentials in the parent process when invoking external tools."""
     source = os.environ if env is None else env
     mail_keys = ("DOCBUILD_SMTP_USERNAME", "DOCBUILD_SMTP_PASSWORD")
-    if any(key in source for key in mail_keys):
-        return {key: value for key, value in source.items() if key not in mail_keys}
-    return env
+    return {key: value for key, value in source.items() if key not in mail_keys}
 
 
 async def run_command(

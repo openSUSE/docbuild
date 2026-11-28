@@ -34,8 +34,10 @@ product. Administrators receive one digest including failures without a product.
    tls = "starttls"
    timeout = 10
 
-Use :code:`implicit` for TLS on connection (usually port 465), or :code:`none`
-for a trusted local relay. The timeout is in seconds.
+TLS is required for all notification mail.
+STARTTLS (:code:`starttls`) commonly uses port 587.
+For implicit TLS, set :code:`tls = "implicit"` and configure the relay port, commonly 465.
+The timeout is in seconds.
 For authenticated delivery, supply both :envvar:`DOCBUILD_SMTP_USERNAME` and
-:envvar:`DOCBUILD_SMTP_PASSWORD` in the process environment and use TLS.
+:envvar:`DOCBUILD_SMTP_PASSWORD` in the process environment.
 Omit both variables for an unauthenticated relay.

@@ -2,9 +2,10 @@
 
 import dataclasses
 import logging
+import os
 from pathlib import Path
 import subprocess
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, patch
 
 from click.testing import CliRunner
 import pytest
@@ -106,7 +107,18 @@ def test_get_binary_version_custom_args() -> None:
     mock_result.stdout = "tool version 1.2.3\n"
     mock_result.stderr = ""
 
-    with patch.object(subprocess, "run", return_value=mock_result) as mock_run:
+    with (
+        patch.dict(
+            os.environ,
+            {
+                "DOCBUILD_SMTP_USERNAME": "user",
+                "DOCBUILD_SMTP_PASSWORD": "pw",
+                "KEEP": "value",
+            },
+            clear=True,
+        ),
+        patch.object(subprocess, "run", return_value=mock_result) as mock_run,
+    ):
         assert sysdeps.get_binary_version("tool", args=("-V",)) == "1.2.3"
         mock_run.assert_called_once_with(
             ["tool", "-V"],
@@ -116,6 +128,7 @@ def test_get_binary_version_custom_args() -> None:
             check=False,
             stdin=subprocess.DEVNULL,
             timeout=5.0,
+            env={"KEEP": "value"},
         )
 
 
@@ -135,6 +148,7 @@ def test_get_binary_version_custom_timeout() -> None:
             check=False,
             stdin=subprocess.DEVNULL,
             timeout=12.5,
+            env=ANY,
         )
 
 

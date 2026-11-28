@@ -308,7 +308,7 @@ class EnvMail(BaseModel):
         min_length=1, pattern=r"^\S+$", description="SMTP relay hostname."
     )
     smtp_port: int = Field(default=587, ge=1, le=65535, description="SMTP relay port.")
-    tls: Literal["starttls", "implicit", "none"] = Field(
+    tls: Literal["starttls", "implicit"] = Field(
         default="starttls", description="SMTP transport encryption."
     )
     timeout: float = Field(

@@ -1,10 +1,11 @@
 """Tests for shell command utilities."""
 
+import os
 from pathlib import Path
 
 import pytest
 
-from docbuild.utils.shell import execute_git_command
+from docbuild.utils.shell import execute_git_command, subprocess_env
 
 
 async def test_execute_git_command_with_gitconfig(tmp_path):
@@ -62,3 +63,23 @@ async def test_execute_git_command_with_failed_command():
         await execute_git_command(
             "foo",  # wrong git command
         )
+
+
+def test_subprocess_env(monkeypatch):
+    source = {
+        "DOCBUILD_SMTP_USERNAME": "test-user",
+        "DOCBUILD_SMTP_PASSWORD": "test-password",
+        "KEEP": "value",
+    }
+    for key, value in source.items():
+        monkeypatch.setenv(key, value)
+    original = source.copy()
+    assert subprocess_env(source) == {"KEEP": "value"}
+    assert source == original
+    assert subprocess_env({}) == {}
+
+    child = subprocess_env()
+    assert child["KEEP"] == "value"
+    for key in ("DOCBUILD_SMTP_USERNAME", "DOCBUILD_SMTP_PASSWORD"):
+        assert key not in child
+        assert os.environ[key] == source[key]
