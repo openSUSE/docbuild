@@ -1,5 +1,7 @@
 """Unit tests for docbuild.tasks.publish."""
 
+import asyncio
+from contextlib import nullcontext
 from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -13,6 +15,7 @@ from docbuild.tasks.publish import (
     render_target_suffix,
     stage_server_root_files,
 )
+from docbuild.utils.display import ItemState, LiveProgressManager, get_live_manager
 from docbuild.utils.sync import RsyncOptions
 
 
@@ -62,7 +65,8 @@ async def test_stage_server_root_files_failure(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
-async def test_collect_publish_paths(tmp_path: Path) -> None:
+@pytest.mark.parametrize("track", [False, True])
+async def test_collect_publish_paths(tmp_path: Path, track: bool) -> None:
     """Verify relative publish paths are collected based on deliverables."""
     portal_config = tmp_path / "portal.xml"
     portal_config.write_text("<docservconfig/>", encoding="utf-8")
@@ -81,17 +85,69 @@ async def test_collect_publish_paths(tmp_path: Path) -> None:
 
     with (
         patch("docbuild.tasks.publish.parse_portal_config", new_callable=AsyncMock),
-        patch("docbuild.tasks.publish.get_deliverable_from_doctype", return_value=[mock_d]),
+        patch(
+            "docbuild.tasks.publish.get_deliverable_from_doctype",
+            side_effect=[[mock_d], [mock_d], []],
+        ),
+        LiveProgressManager(disable=True) if track else nullcontext() as manager,
     ):
         paths = await collect_publish_paths(
             portal_config=portal_config,
-            doctypes=[doctype],
+            doctypes=[doctype, doctype, Doctype.from_str("sles/16.0/de-de")],
             target_base_dir=target_base,
             target_dir_dyn="{product}/{docset}/{lang}",
             include_server_files=False,
         )
 
-    assert "sles/16.0/en-us/html" in paths
+    assert paths == ["sles/16.0/en-us/html"]
+    if track:
+        (stage,) = manager.stages
+        assert stage.counts == {ItemState.SUCCEEDED: 3, ItemState.SKIPPED: 1}
+        assert not stage.running
+
+
+async def test_collection_error(tmp_path):
+    with pytest.raises(OSError), LiveProgressManager(disable=True) as manager:
+        await collect_publish_paths(tmp_path / "missing.xml", [], tmp_path, "{lang}")
+    (stage,) = manager.stages
+    assert stage.counts == {ItemState.FAILED: 1}
+    assert not stage.running
+    assert get_live_manager() is None
+
+
+async def test_empty_publish(tmp_path):
+    portal = tmp_path / "portal.xml"
+    portal.write_text("<docservconfig/>")
+    with LiveProgressManager(disable=True) as manager:
+        paths = await collect_publish_paths(portal, [], tmp_path, "{lang}")
+        assert paths == []
+        assert await publish_deliverables(tmp_path, "localhost", "/docs", paths) == 0
+    (collection,) = manager.stages
+    assert collection.counts == {ItemState.SUCCEEDED: 1}
+
+
+@pytest.mark.parametrize("cancel", [False, True])
+async def test_transfer_interruption(tmp_path, monkeypatch, cancel):
+    error = asyncio.CancelledError if cancel else OSError
+    file_list = None
+
+    async def interrupt(source, dest, *, content_only, options):
+        nonlocal file_list
+        file_list = options.files_from
+        assert file_list.read_text().splitlines() == ["first", "second"]
+        (stage,) = manager.stages
+        assert list(stage.running.values()) == [dest]
+        assert not stage.counts
+        raise error()
+
+    monkeypatch.setattr("docbuild.tasks.publish.rsync", interrupt)
+    with pytest.raises(error), LiveProgressManager(disable=True) as manager:
+        await publish_deliverables(tmp_path, "localhost", "/docs", ["first", "second"])
+    (stage,) = manager.stages
+    assert stage.counts == ({} if cancel else {ItemState.FAILED: 1})
+    assert not stage.running
+    assert file_list is not None and not file_list.exists()
+    assert get_live_manager() is None
 
 
 @pytest.mark.asyncio

@@ -12,6 +12,7 @@ from ...tasks.publish import (
     publish_deliverables,
     stage_server_root_files,
 )
+from ...utils.display import LiveProgressManager
 from ...utils.sync import RsyncOptions
 from ...utils.sysdeps import requires_system_tools
 from ..callback import validate_doctypes
@@ -82,6 +83,9 @@ def _handle_server_root_files_staging(
     default=False,
     help="Confirm publishing without prompting.",
 )
+@click.option(
+    "-L", "--live", is_flag=True, default=False, help="Enable live progress view."
+)
 @requires_system_tools(["rsync"])
 @click.pass_obj
 def run(
@@ -91,6 +95,7 @@ def run(
     with_server_files: bool,
     dry_run: bool,
     yes: bool,
+    live: bool,
 ) -> None:
     """Run the publish command."""
     envconfig = context.envconfig
@@ -112,22 +117,25 @@ def run(
     base_opts = envconfig.rsync.to_options()
     rsync_opts = replace(base_opts, dry_run=dry_run) if dry_run else base_opts
 
-    # 1. Optionally stage server root files
-    if with_server_files and server_rootfiles_dir:
-        _handle_server_root_files_staging(server_rootfiles_dir, target_base_dir, rsync_opts)
+    with LiveProgressManager(console=console, disable=not live):
+        # 1. Optionally stage server root files
+        if with_server_files and server_rootfiles_dir:
+            _handle_server_root_files_staging(
+                server_rootfiles_dir, target_base_dir, rsync_opts
+            )
 
-    # 2. Collect files to sync
-    portal_config = envconfig.paths.main_portal_config
-    paths_to_sync = asyncio.run(
-        collect_publish_paths(
-            portal_config=portal_config,
-            doctypes=doctypes,
-            target_base_dir=target_base_dir,
-            target_dir_dyn=target_dir_dyn,
-            include_server_files=with_server_files,
-            server_rootfiles_dir=server_rootfiles_dir,
+        # 2. Collect files to sync
+        portal_config = envconfig.paths.main_portal_config
+        paths_to_sync = asyncio.run(
+            collect_publish_paths(
+                portal_config=portal_config,
+                doctypes=doctypes,
+                target_base_dir=target_base_dir,
+                target_dir_dyn=target_dir_dyn,
+                include_server_files=with_server_files,
+                server_rootfiles_dir=server_rootfiles_dir,
+            )
         )
-    )
 
     if not paths_to_sync:
         console.print("[warning]No deliverables or files found to publish.[/]")
@@ -148,15 +156,16 @@ def run(
         click.confirm("Do you want to continue?", abort=True)
 
     # 4. Perform remote rsync
-    ret = asyncio.run(
-        publish_deliverables(
-            target_base_dir=target_base_dir,
-            remote_server=remote_server,
-            remote_path=remote_path,
-            paths_to_sync=paths_to_sync,
-            rsync_options=rsync_opts,
+    with LiveProgressManager(console=console, disable=not live):
+        ret = asyncio.run(
+            publish_deliverables(
+                target_base_dir=target_base_dir,
+                remote_server=remote_server,
+                remote_path=remote_path,
+                paths_to_sync=paths_to_sync,
+                rsync_options=rsync_opts,
+            )
         )
-    )
 
     if ret != 0:
         console_err.print(f"[error]Publish failed with returncode {ret}.[/]")

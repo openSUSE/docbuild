@@ -1,0 +1,1 @@
+Show path collection and remote transfer progress with ``docbuild publish run --live`` (``-L``).

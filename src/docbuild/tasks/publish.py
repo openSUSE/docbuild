@@ -1,6 +1,8 @@
 """Task module for publishing built documentation to a remote destination."""
 
 import asyncio
+from collections.abc import Iterable
+from contextlib import nullcontext
 from dataclasses import replace
 import logging
 from pathlib import Path
@@ -9,6 +11,7 @@ import tempfile
 from ..config.app import normalize_runtime_placeholders
 from ..models.deliverable import Deliverable
 from ..models.doctype import Doctype
+from ..utils.display import get_live_manager
 from ..utils.sync import RsyncOptions, rsync
 from .metadata.runner import get_deliverable_from_doctype
 from .portal import parse_portal_config
@@ -53,6 +56,22 @@ async def stage_server_root_files(
     return True
 
 
+def _deliverable_publish_paths(
+    deliverables: Iterable[Deliverable], target_base_dir: Path, target_dir_dyn: str
+) -> set[str]:
+    """Find existing output directories for the selected deliverables."""
+    paths = set()
+    for d in deliverables:
+        if not d.xml.is_dc:
+            continue
+        target_suffix = render_target_suffix(target_dir_dyn, d)
+        for fmt, enabled in d.format.items():
+            rel_dir = target_suffix / fmt
+            if enabled and (target_base_dir / rel_dir).exists():
+                paths.add(rel_dir.as_posix())
+    return paths
+
+
 async def collect_publish_paths(
     portal_config: Path,
     doctypes: tuple[Doctype, ...] | list[Doctype],
@@ -62,27 +81,39 @@ async def collect_publish_paths(
     server_rootfiles_dir: Path | None = None,
 ) -> list[str]:
     """Collect relative file and directory paths under target_base_dir to publish."""
-    root = await parse_portal_config(portal_config)
     paths_to_sync: set[str] = set()
+    manager = get_live_manager()
+    root_files = server_rootfiles_dir if include_server_files else None
+    total = 1 + len(doctypes) + int(root_files is not None)
+    stage_ctx = (
+        manager.stage("Collect publish paths", total) if manager else nullcontext()
+    )
+    with stage_ctx as stage:
+        with stage.item(f"Parsing {portal_config.name}") if stage else nullcontext():
+            root = await parse_portal_config(portal_config)
 
-    for dt in doctypes:
-        deliverables = await asyncio.to_thread(get_deliverable_from_doctype, root, dt)
-        for d in deliverables:
-            if not d.xml.is_dc:
-                continue
+        for dt in doctypes:
+            with stage.item(str(dt)) if stage else nullcontext() as item:
+                deliverables = await asyncio.to_thread(
+                    get_deliverable_from_doctype, root, dt
+                )
+                paths = _deliverable_publish_paths(
+                    deliverables, target_base_dir, target_dir_dyn
+                )
+                paths_to_sync.update(paths)
+                if item and not paths:
+                    item.skip()
 
-            target_suffix = render_target_suffix(target_dir_dyn, d)
-
-            for fmt, enabled in d.format.items():
-                if enabled:
-                    rel_dir = target_suffix / fmt
-                    full_dir = target_base_dir / rel_dir
-                    if full_dir.exists():
-                        paths_to_sync.add(rel_dir.as_posix())
-
-    if include_server_files and server_rootfiles_dir and server_rootfiles_dir.is_dir():
-        for item in server_rootfiles_dir.iterdir():
-            paths_to_sync.add(item.name)
+        if root_files is not None:
+            with stage.item("Server root files") if stage else nullcontext() as item:
+                files = (
+                    {p.name for p in root_files.iterdir()}
+                    if root_files.is_dir()
+                    else set()
+                )
+                paths_to_sync.update(files)
+                if item and not files:
+                    item.skip()
 
     return sorted(paths_to_sync)
 
@@ -110,12 +141,28 @@ async def publish_deliverables(
         opts = replace(base_opts, files_from=tmp_file_path)
 
         log.info("Publishing %d item(s) to %s...", len(paths_to_sync), remote_dest)
-        result = await rsync(target_base_dir, remote_dest, content_only=True, options=opts)
-        if result.returncode == 0:
-            log.info("Successfully published documentation to %s", remote_dest)
-            return 0
-        log.error("Publish failed with returncode %d: %s", result.returncode, result.stderr)
-        return result.returncode
+        manager = get_live_manager()
+        stage_ctx = (
+            manager.stage("Publish deliverables", 1) if manager else nullcontext()
+        )
+        with (
+            stage_ctx as stage,
+            stage.item(remote_dest) if stage else nullcontext() as item,
+        ):
+            result = await rsync(
+                target_base_dir, remote_dest, content_only=True, options=opts
+            )
+            if result.returncode == 0:
+                log.info("Successfully published documentation to %s", remote_dest)
+                return 0
+            if item:
+                item.fail()
+            log.error(
+                "Publish failed with returncode %d: %s",
+                result.returncode,
+                result.stderr,
+            )
+            return result.returncode
     finally:
         if tmp_file_path.exists():
             tmp_file_path.unlink()
