@@ -32,7 +32,22 @@ class PlaceholderSyntaxError(ValueError):
     pass
 
 def unescape(text: str, keep_runtime: bool) -> str:
-    """Unescape double curly braces, optionally preserving runtime placeholders."""
+    """Unescape double curly braces, optionally preserving runtime placeholders.
+
+    :param text: The text to unescape.
+    :param keep_runtime: If True, keep escaped runtime placeholders like
+        ``{{product}}`` as they are.
+    :return: The unescaped text.
+
+    For example:
+
+    .. code-block:: python
+
+        >>> unescape("{{foo}} and {{product}}", keep_runtime=False)
+        '{foo} and {product}'
+        >>> unescape("{{foo}} and {{product}}", keep_runtime=True)
+        '{foo} and {{product}}'
+    """
     if not keep_runtime:
         return text.replace("{{", "{").replace("}}", "}")
 
@@ -42,7 +57,21 @@ def unescape(text: str, keep_runtime: bool) -> str:
 
 
 def normalize_runtime_placeholders(text: str) -> str:
-    """Convert supported escaped runtime placeholders for ``str.format``."""
+    """Convert supported escaped runtime placeholders for ``str.format``.
+
+    Other escaped braces are kept as they are.
+
+    :param text: The text with escaped runtime placeholders.
+    :return: The text with ``{{name}}`` turned into ``{name}`` for
+        each runtime placeholder.
+
+    For example:
+
+    .. code-block:: python
+
+        >>> normalize_runtime_placeholders("{{product}}/{{docset}}/{{foo}}")
+        '{product}/{docset}/{{foo}}'
+    """
     return ESCAPE_REGEX.sub(
         lambda match: (
             f"{{{match.group('runtime')}}}"
@@ -63,6 +92,14 @@ class PlaceholderResolver:
     def __init__(
         self, config: dict[str, Any], max_recursion_depth: int = MAX_RECURSION_DEPTH, *, keep_runtime: bool = False
     ) -> None:
+        """Initialize the resolver.
+
+        :param config: The configuration dictionary. It is changed in place.
+        :param max_recursion_depth: Maximum number of nested placeholder
+            expansions for one value.
+        :param keep_runtime: If True, keep escaped runtime placeholders like
+            ``{{product}}`` as they are.
+        """
         self.config = config
         self.max_recursion_depth = max_recursion_depth
         self.keep_runtime: bool = keep_runtime
@@ -70,7 +107,13 @@ class PlaceholderResolver:
         self._current_key: str | int | None = None
 
     def _resolve_dotted_path(self, path: str) -> ConfigValue:
-        """Resolve a dotted path like 'paths.tmp.session'."""
+        """Resolve a dotted path like 'paths.tmp.session'.
+
+        :param path: The dotted path, resolved from the root of the config.
+        :return: The value at the end of the path.
+        :raises PlaceholderResolutionError: If a key is missing or a part
+            of the path is not a dictionary.
+        """
         parts = path.split(".")
         value = self.config
         resolved_path = []
@@ -96,7 +139,13 @@ class PlaceholderResolver:
         return value
 
     def _resolve_placeholder(self, match: re.Match) -> str:
-        """Resolve a single placeholder match."""
+        """Resolve a single placeholder match.
+
+        :param match: The regex match of a placeholder like ``{foo}``.
+        :return: The resolved value as a string.
+        :raises PlaceholderResolutionError: If the placeholder cannot be
+            resolved.
+        """
         placeholder = match.group(1)
         container_name = self._get_container_name()
 
@@ -117,7 +166,13 @@ class PlaceholderResolver:
             )
 
     def validate_brace_syntax(self, text: str, original_text: str) -> None:
-        """Validate that curly braces are balanced and properly ordered."""
+        """Validate that curly braces are balanced and properly ordered.
+
+        :param text: The text to check, after placeholders were resolved.
+        :param original_text: The original value, used in the error message.
+        :raises PlaceholderSyntaxError: If the braces are not balanced or
+            a ``}`` comes before a ``{``.
+        """
         brace_level = 0
         for char in text:
             if char == "{":
@@ -143,7 +198,16 @@ class PlaceholderResolver:
             raise PlaceholderSyntaxError(f"In configuration key '{container_name}': {msg}")
 
     def _resolve_string_placeholders(self, text: str) -> str:
-        """Resolve all placeholders in a string with recursion protection."""
+        """Resolve all placeholders in a string with recursion protection.
+
+        :param text: The string with placeholders.
+        :return: The string with all placeholders resolved.
+        :raises CircularReferenceError: If there are too many nested
+            placeholder expansions.
+        :raises PlaceholderResolutionError: If a placeholder cannot be
+            resolved.
+        :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
+        """
         original_text = text
         count = 0
         cls = self.__class__
@@ -242,10 +306,28 @@ def replace_placeholders(
 
     :param config: The configuration dictionary.
     :param max_recursion_depth: Maximum recursion depth for placeholder resolution.
+    :param keep_runtime: If True, keep escaped runtime placeholders like
+        ``{{product}}`` as they are.
     :return: A new dictionary with placeholders replaced.
     :raises PlaceholderResolutionError: If a placeholder cannot be resolved.
     :raises CircularReferenceError: If a circular reference is detected.
     :raises PlaceholderSyntaxError: If a placeholder has invalid syntax.
+
+    For example:
+
+    .. code-block:: python
+
+        >>> config = replace_placeholders({
+        ...     "paths": {"root": "/data", "tmp": "{root}/tmp"},
+        ...     "log": "{paths.root}/log",
+        ...     "raw": "{{root}}",
+        ... })
+        >>> config["paths"]["tmp"]
+        '/data/tmp'
+        >>> config["log"]
+        '/data/log'
+        >>> config["raw"]
+        '{root}'
     """
     if not isinstance(config, dict):
         return config
