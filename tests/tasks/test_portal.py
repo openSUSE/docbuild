@@ -10,12 +10,65 @@ from lxml import etree  # type: ignore
 import pytest
 
 from docbuild.config.xml.checks import CheckResult
+from docbuild.models.doctype import Doctype
 from docbuild.tasks import portal as portal_task
 from docbuild.tasks.portal import ValidationResult, validate_portal_config, validate_rng
 
 
 def is_jing_installed():
     return sys.platform != "darwin" and shutil.which("jing") is not None
+
+
+# --- Doctype Matching Tests ---
+
+async def test_find_unmatched_doctypes(tmp_path: Path) -> None:
+    """Return only doctypes without DC deliverables, in input order."""
+    portal = tmp_path / "portal.xml"
+    portal.write_text("""
+        <portal schemaversion="7.0">
+            <product xml:id="sles">
+                <docset xml:id="sles.16.1" path="16.1">
+                    <resources>
+                        <locale lang="en-us">
+                            <deliverable xml:id="d1">
+                                <dc file="DC-test"><format html="1"/></dc>
+                            </deliverable>
+                        </locale>
+                    </resources>
+                </docset>
+            </product>
+        </portal>
+    """)
+    doctypes = [
+        Doctype.from_str("sles/16.0/en-us"),
+        Doctype.from_str("sles/16.1/en-us"),
+        Doctype.from_str("sles/17.0/en-us"),
+    ]
+
+    unmatched = await portal_task.find_unmatched_doctypes(portal, doctypes)
+
+    assert unmatched == [doctypes[0], doctypes[2]]
+
+
+async def test_find_unmatched_doctypes_without_doctypes(tmp_path: Path) -> None:
+    """Skip parsing when there is nothing to check."""
+    with patch.object(portal_task, "parse_portal_config", new_callable=AsyncMock) as mock_parse:
+        assert await portal_task.find_unmatched_doctypes(tmp_path / "portal.xml", ()) == []
+    mock_parse.assert_not_awaited()
+
+
+def test_report_unmatched_doctypes() -> None:
+    """Print one escaped error line per unmatched doctype."""
+    doctypes = [Doctype.from_str("sles/16.0/en-us"), Doctype.from_str("sles/17.0/en-us")]
+
+    with patch.object(portal_task, "console_err") as mock_console:
+        portal_task.report_unmatched_doctypes(doctypes)
+
+    messages = [c.args[0] for c in mock_console.print.call_args_list]
+    assert len(messages) == 2
+    assert all("No deliverables found for doctype" in m for m in messages)
+    assert "16.0" in messages[0]
+    assert "17.0" in messages[1]
 
 
 # --- Core Logic & Parsing Tests ---

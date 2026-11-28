@@ -1,0 +1,5 @@
+``docbuild build run`` now checks all doctypes against the portal
+configuration first. If a doctype matches no deliverables, it prints an
+error message and exits with a non-zero code before updating repositories
+or generating any files. Previously, it silently reported success without
+building anything.

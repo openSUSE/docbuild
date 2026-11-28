@@ -4,7 +4,6 @@ See :ref:`concept-doctype-syntax`
 """
 
 import asyncio
-from contextlib import nullcontext
 import math
 from pathlib import Path
 
@@ -13,6 +12,7 @@ import click
 from ...models.doctype import Doctype
 from ...tasks.build.runner import process as build_process
 from ...tasks.metadata.runner import process as metadata_process
+from ...tasks.portal import find_unmatched_doctypes, report_unmatched_doctypes
 from ...utils.contextmgr import make_timer
 from ...utils.display import ACTIVE_LIVE_MANAGER, LiveProgressManager
 from ..callback import validate_doctypes
@@ -133,6 +133,11 @@ def run(  # noqa: C901
     # console.print(f"Config path: {env.paths.config_dir}")
 
     async def run_pipeline() -> int:
+        unmatched = await find_unmatched_doctypes(main_portal_config, doctypes)
+        if unmatched:
+            report_unmatched_doctypes(unmatched)
+            return 1
+
         manager = ACTIVE_LIVE_MANAGER.get(None)
         build_skip_repo = skip_repo_update
 
@@ -194,7 +199,7 @@ def run(  # noqa: C901
                     )
                 return res
 
-            manager_ctx = LiveProgressManager(console=console, disable=False) if live else nullcontext()
+            manager_ctx = LiveProgressManager(console=console, disable=not live)
             with manager_ctx as mgr:
                 try:
                     result = asyncio.run(main())
