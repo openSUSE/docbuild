@@ -266,28 +266,43 @@ class DeliverableXMLView:
         yield from root.xpath("categories/category")
 
     @cached_property
-    def all_categories(self) -> Generator[etree._Element, None, None]:
+    def all_categories(self) -> tuple[etree._Element, ...]:
         """Return product and root-level category elements."""
-        yield from self.categories()
-        yield from self.categories_from_root()
+        return (*self.categories(), *self.categories_from_root())
+
+    def resolve_category_title(self, cat_id: str) -> str | None:
+        """Resolve one category ID to its display title, if defined."""
+        for cat in self.all_categories:
+            lang_nodes = cat.xpath("id($cat_id)", cat_id=cat_id)
+            if not lang_nodes:
+                continue
+
+            language_node = lang_nodes[0]
+            title = (
+                language_node.findtext("title")
+                or language_node.get("title")
+                or language_node.get("name")
+            )
+            return title.strip() if title else None
+        return None
+
+    @cached_property
+    def category_titles(self) -> list[str]:
+        """Return display titles for all defined assigned category IDs."""
+        category_ids = (self.categoryid or "").split()
+        return [
+            title
+            for cat_id in category_ids
+            if (title := self.resolve_category_title(cat_id))
+        ]
 
     @cached_property
     def category_title(self) -> str | None:
-        """Return the resolved category title, or the raw ID if not found."""
+        """Return the resolved category title, or ``None`` if not found."""
         cat_id = self.categoryid
         if not cat_id:
             return None
-
-        for cat in self.all_categories:
-            lang_nodes = cat.xpath("id($cat_id)", cat_id=cat_id)
-            if lang_nodes:
-                title = lang_nodes[0].findtext("title")
-                if not title:
-                    title = lang_nodes[0].get("title")
-                if not title:
-                    title = lang_nodes[0].get("name")
-                return title.strip() if title else cat_id
-        return cat_id
+        return self.resolve_category_title(cat_id)
 
     def desc(self) -> Generator[etree._Element, None, None]:
         """Yield product ``<desc>`` elements."""

@@ -5,6 +5,7 @@ from itertools import product
 import logging
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import click
 
@@ -141,16 +142,15 @@ def llms(context: DocBuildContext, doctypes: tuple[Doctype, ...], all_docs: bool
 
         def __init__(self, target_dest: Path) -> None:
             self.full_id = f"retroactive_build_{target_dest.name}"
-
-            class DummyXML:
-                title = f"Documentation Index for {target_dest.name}"
-                categoryid: str | None = None
-                product_id = "unknown"
-                docset_version = "unknown"
-                docset_path = "unknown"
-                lang = "unknown"
-
-            self.xml = DummyXML()
+            self.xml = SimpleNamespace(
+                title=f"Documentation Index for {target_dest.name}",
+                categoryid=None,
+                category_titles=[],
+                product_id="unknown",
+                docset_version="unknown",
+                docset_path="unknown",
+                lang="unknown",
+            )
 
     # Process all resolved targets
     try:

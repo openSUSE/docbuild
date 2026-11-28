@@ -159,6 +159,9 @@ async def test_process_single_deliverable_success(tmp_path: Path, rsync_options:
     with (
         patch.object(build_runner, "run_command", new_callable=AsyncMock) as mock_run,
         patch.object(build_runner, "rsync", new_callable=AsyncMock) as mock_rsync,
+        patch.object(
+            build_runner, "generate_llmstxt", new_callable=AsyncMock
+        ) as mock_generate_llmstxt,
     ):
         mock_run.return_value = Mock(returncode=0, stdout="Build OK", stderr="")
         mock_rsync.return_value = Mock(returncode=0, stdout="Sync OK", stderr="")
@@ -171,11 +174,20 @@ async def test_process_single_deliverable_success(tmp_path: Path, rsync_options:
             "{{product}}/{{docset}}/{{lang}}",
             daps_tmpls,
             rsync_options=rsync_options,
+            llms_exclude=["doc-gfdl-license.html"],
+            llms_exclude_extra=["rh-*.html"],
         )
 
         assert success is True
         mock_run.assert_called_once()
         mock_rsync.assert_called_once()
+        mock_generate_llmstxt.assert_awaited_once()
+        assert mock_generate_llmstxt.await_args.kwargs["llms_exclude"] == [
+            "doc-gfdl-license.html"
+        ]
+        assert mock_generate_llmstxt.await_args.kwargs["llms_exclude_extra"] == [
+            "rh-*.html"
+        ]
 
         expected_target = tmp_path / "target/sles/15/en-us/html"
         assert expected_target.is_dir()
@@ -375,13 +387,150 @@ async def test_generate_llmstxt_yaml_frontmatter_extraction(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
+    ("json_ld", "expected_description"),
+    [
+        (None, "HTML meta description"),
+        (
+            '<script type="application/ld+json">'
+            '{"name": "Chapter", "description": "JSON-LD description"}'
+            "</script>",
+            "JSON-LD description",
+        ),
+    ],
+    ids=["meta-description-fallback", "json-ld-description-preferred"],
+)
+async def test_generate_llmstxt_meta_description_fallback(
+    tmp_path: Path,
+    llms_deliverable: Deliverable,
+    json_ld: str | None,
+    expected_description: str,
+) -> None:
+    """Use the HTML meta description when JSON-LD omits description."""
+    target_dir = tmp_path / "target"
+    html_file = target_dir / "en-us" / "sles" / "16.1" / "html" / "index.html"
+    html_file.parent.mkdir(parents=True, exist_ok=True)
+    json_ld_markup = json_ld or ""
+    html_file.write_text(
+        "<!DOCTYPE html><html><head>"
+        '<meta name="description" content="HTML meta description">'
+        f"{json_ld_markup}</head><body><h1>Chapter</h1></body></html>",
+        encoding="utf-8",
+    )
+
+    await generate_llmstxt(
+        deliverable=llms_deliverable,
+        target_base_dir=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+    )
+
+    markdown = (
+        target_dir / "docs" / "en-us" / "sles" / "16.1" / "html" / "index.md"
+    ).read_text(encoding="utf-8")
+    frontmatter = yaml.safe_load(markdown.split("---")[1])
+    assert frontmatter["description"] == expected_description
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "html_subdir",
+    [Path("."), Path("en-us/sles/16.1/html")],
+    ids=["target-base", "doctype-target"],
+)
+async def test_generate_llmstxt_logs_markdown_output_directory(
+    tmp_path: Path,
+    llms_deliverable: Deliverable,
+    caplog: pytest.LogCaptureFixture,
+    html_subdir: Path,
+) -> None:
+    """Log the Markdown output directory for base and doctype scans."""
+    target_dir = tmp_path / "target"
+    html_dir = target_dir / html_subdir
+    html_dir.mkdir(parents=True)
+    (html_dir / "index.html").write_text(
+        "<html><body><h1>Test</h1></body></html>", encoding="utf-8"
+    )
+
+    with caplog.at_level("INFO", logger="docbuild.tasks.build.llms.generator"):
+        await generate_llmstxt(
+            deliverable=llms_deliverable,
+            target_base_dir=target_dir,
+            build_llmstxt=True,
+            llmstxt_dir="docs",
+            html_dir=html_dir,
+        )
+
+    expected_output_dir = target_dir / "docs" / html_subdir
+    assert f"LLMS Markdown output directory: {expected_output_dir}" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_generate_llmstxt_respects_linked_file_exclusions(
+    tmp_path: Path, llms_deliverable: Deliverable
+) -> None:
+    """Keep links to excluded HTML pages canonical and rewrite generated pages."""
+    target_dir = tmp_path / "target"
+    html_dir = target_dir / "en-us" / "sles" / "16.1" / "html"
+    html_dir.mkdir(parents=True)
+    (html_dir / "index.html").write_text(
+        """<html><body>
+<a href="guide.html#guide-section">Guide</a>
+<a href="rh-notes.html#release">Release notes</a>
+<a href="custom-license.html#license">License</a>
+</body></html>""",
+        encoding="utf-8",
+    )
+    (html_dir / "guide.html").write_text(
+        '<html><body><section id="guide-section"><h1>Guide</h1></section>'
+        "</body></html>",
+        encoding="utf-8",
+    )
+    (html_dir / "rh-notes.html").write_text(
+        '<html><body><section id="release">Release notes</section></body></html>',
+        encoding="utf-8",
+    )
+    (html_dir / "custom-license.html").write_text(
+        '<html><body><section id="license">License</section></body></html>',
+        encoding="utf-8",
+    )
+
+    await generate_llmstxt(
+        deliverable=llms_deliverable,
+        target_base_dir=target_dir,
+        build_llmstxt=True,
+        llmstxt_dir="docs",
+        canonical_domain="https://doc.example.com",
+        llms_exclude=["rh-*.html"],
+        llms_exclude_extra=["custom-license.html"],
+    )
+
+    markdown_dir = target_dir / "docs" / "en-us" / "sles" / "16.1" / "html"
+    markdown = (markdown_dir / "index.md").read_text(encoding="utf-8")
+    guide_markdown = (markdown_dir / "guide.md").read_text(encoding="utf-8")
+    assert "[Guide](guide.md#guide-section)" in markdown
+    assert (
+        "[Release notes](https://doc.example.com/en-us/sles/16.1/html/"
+        "rh-notes.html#release)" in markdown
+    )
+    assert (
+        "[License](https://doc.example.com/en-us/sles/16.1/html/"
+        "custom-license.html#license)" in markdown
+    )
+    assert '<a id="guide-section"></a>' in guide_markdown
+    assert not (markdown_dir / "rh-notes.md").exists()
+    assert not (markdown_dir / "custom-license.md").exists()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
         ("category", "expected"),
         [
-                ("administration", ["administration"]),
-                ("administration security", ["administration", "security"]),
+        ("administration", ["Administration"]),
+        ("administration security", ["Administration", "Security"]),
+        ("unknown", []),
                 (None, []),
         ],
-        ids=["single", "multiple", "missing"],
+    ids=["single", "multiple", "unknown", "missing"],
 )
 async def test_generate_llmstxt_assigned_categories(
     tmp_path: Path,
@@ -389,7 +538,7 @@ async def test_generate_llmstxt_assigned_categories(
     category: str | None,
     expected: list[str],
 ) -> None:
-        """Serialize assigned category IDs, not product category XML elements."""
+        """Serialize assigned category names instead of IDs."""
         root = etree.fromstring("""
                 <docservconfig>
                     <product xml:id="sles">
@@ -460,6 +609,11 @@ async def test_generate_llmstxt_assigned_categories(
             "Missing JSON-LD field(s) description, dateCreated, dateModified, datePublished",
         ),
         (
+            '<meta name="description" content="HTML description">'
+            '<script type="application/ld+json">{"name": "Only Name"}</script>',
+            "Missing JSON-LD field(s) dateCreated, dateModified, datePublished",
+        ),
+        (
             '<script type="application/ld+json">{"name": 123}</script>',
             "Invalid JSON-LD fields",
         ),
@@ -468,7 +622,15 @@ async def test_generate_llmstxt_assigned_categories(
             "Invalid JSON-LD fields",
         ),
     ],
-    ids=["no-json-ld", "invalid-json-ld", "non-object-json-ld", "missing-fields", "invalid-field-type", "invalid-date-format"],
+    ids=[
+        "no-json-ld",
+        "invalid-json-ld",
+        "non-object-json-ld",
+        "missing-fields",
+        "meta-description-fallback",
+        "invalid-field-type",
+        "invalid-date-format",
+    ],
 )
 async def test_generate_llmstxt_warns_on_missing_or_invalid_json_ld(
     tmp_path: Path,

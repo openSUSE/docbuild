@@ -1,18 +1,25 @@
 """Core orchestration for HTML to Markdown conversion."""
 
 from html import escape
+from pathlib import Path
+import posixpath
 import re
 from typing import Final
+from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 
 from justhtml import JustHTML
-from justhtml.dom import Element
+from justhtml.dom import Element, Node, NodeType
 
 from docbuild.tasks.build.llms.cleaners import (
     AntoraHTMLCleaner,
     DocBookHTMLCleaner,
     HTMLCleaner,
 )
-from docbuild.tasks.build.llms.dom import get_attrs, replace_node
+from docbuild.tasks.build.llms.dom import (
+    get_attrs,
+    preserve_id_anchors,
+    replace_node,
+)
 from docbuild.tasks.build.llms.markdown import replace_tables_and_images
 
 
@@ -47,16 +54,140 @@ def get_cleaner(doc: JustHTML) -> HTMLCleaner:
             return HTMLCleaner(None, None, None)
 
 
-def clean_and_convert(html_content: str) -> str:
+def rewrite_html_links(
+    root: NodeType,
+    source_html: Path,
+    html_dir: Path,
+    generated_html_files: set[Path],
+    canonical_domain: str,
+    deliverable_route: str,
+) -> None:
+    """Rewrite relative HTML links to generated Markdown or canonical HTML."""
+    if not isinstance(root, Node):
+        return
+
+    html_root = html_dir.resolve()
+    source_path = source_html.resolve()
+    try:
+        source_rel_path = source_path.relative_to(html_root)
+    except ValueError:
+        return
+
+    source_md_path = source_rel_path.with_suffix(".md")
+    canonical_source = urljoin(
+        canonical_domain.rstrip("/") + "/",
+        quote(f"{deliverable_route}/{source_rel_path.as_posix()}", safe="/-._~"),
+    )
+
+    for link in root.query("a"):
+        attrs = get_attrs(link)
+        href = attrs.get("href", "")
+        parsed = urlsplit(href)
+        if (
+            not href
+            or parsed.scheme
+            or parsed.netloc
+            or parsed.path.startswith("/")
+            or not parsed.path.lower().endswith(".html")
+        ):
+            continue
+
+        target_path = (source_path.parent / unquote(parsed.path)).resolve()
+        try:
+            target_rel_path = target_path.relative_to(html_root)
+        except ValueError:
+            target_rel_path = None
+
+        if target_rel_path is not None and target_path in generated_html_files:
+            target_md_path = target_rel_path.with_suffix(".md")
+            relative_md_path = posixpath.relpath(
+                target_md_path.as_posix(), start=source_md_path.parent.as_posix()
+            )
+            rewritten_href = urlunsplit(
+                (
+                    "",
+                    "",
+                    quote(relative_md_path, safe="/-._~"),
+                    parsed.query,
+                    parsed.fragment,
+                )
+            )
+        else:
+            rewritten_href = urljoin(canonical_source, href)
+
+        if isinstance(link, Node) and link.attrs is not None:
+            link.attrs["href"] = rewritten_href
+
+
+def collect_link_fragments(
+    html_files: list[Path], html_dir: Path, generated_html_files: set[Path]
+) -> dict[Path, set[str]]:
+    """Collect fragments referenced by relative links to generated HTML pages."""
+    html_root = html_dir.resolve()
+    fragments: dict[Path, set[str]] = {}
+
+    for source_html in html_files:
+        source_path = source_html.resolve()
+        doc = JustHTML(source_html.read_text(encoding="utf-8"), sanitize=False)
+        for link in doc.query("a"):
+            href = get_attrs(link).get("href", "")
+            parsed = urlsplit(href)
+            if (
+                not parsed.fragment
+                or parsed.scheme
+                or parsed.netloc
+                or parsed.path.startswith("/")
+                or (parsed.path and not parsed.path.lower().endswith(".html"))
+            ):
+                continue
+
+            target_path = (
+                (source_path.parent / unquote(parsed.path)).resolve()
+                if parsed.path
+                else source_path
+            )
+            if target_path not in generated_html_files:
+                continue
+            try:
+                target_path.relative_to(html_root)
+            except ValueError:
+                continue
+            fragments.setdefault(target_path, set()).add(unquote(parsed.fragment))
+
+    return fragments
+
+
+def clean_and_convert(
+    html_content: str,
+    *,
+    source_html: Path | None = None,
+    html_dir: Path | None = None,
+    generated_html_files: set[Path] | None = None,
+    anchor_ids: set[str] | None = None,
+    canonical_domain: str = "https://documentation.suse.com",
+    deliverable_route: str = "",
+) -> str:
     """Parse HTML into a DOM tree, clean it, and convert to Markdown."""
     doc = JustHTML(html_content, sanitize=False)
     cleaner = get_cleaner(doc)
 
     # Mutate the DOM tree in place
     cleaner.clean(doc.root)
+    if source_html is not None and html_dir is not None:
+        rewrite_html_links(
+            doc.root,
+            source_html,
+            html_dir,
+            generated_html_files or set(),
+            canonical_domain,
+            deliverable_route,
+        )
+    anchor_placeholders = preserve_id_anchors(doc.root, anchor_ids)
     placeholders = replace_tables_and_images(doc.root)
 
     md: str = doc.to_markdown()
+    for key, value in anchor_placeholders.items():
+        md = md.replace(key, value)
     for key, val in placeholders.items():
         md = md.replace(key, val)
     md = re.sub(
