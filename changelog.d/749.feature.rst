@@ -1,0 +1,3 @@
+Added optional build failure emails for product maintainers and a run-wide
+digest for administrators. Enable notifications with ``general.enable_mail``
+and configure the SMTP relay in the environment's ``[mail]`` section.

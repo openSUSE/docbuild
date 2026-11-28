@@ -18,6 +18,7 @@ from docbuild.models.deliverable import Deliverable
 from docbuild.models.doctype import Doctype
 from docbuild.models.homepage import Homepage
 from docbuild.models.lifecycle import LifecycleFlag
+from docbuild.notifications import record_failure
 from docbuild.tasks.portal import parse_portal_config
 from docbuild.utils.display import Stage, get_live_manager
 from docbuild.utils.git import ManagedGitRepo
@@ -107,6 +108,7 @@ def generate_homepage(stitchnode: etree._ElementTree, json_cache_dir: Path) -> N
         homepage.save(homepage_path)
         log.info("Successfully generated %s", homepage_path)
     except Exception as e:
+        record_failure("Homepage generation", e)
         log.error("Failed to generate homepage.json: %s", e)
 
 
@@ -273,6 +275,7 @@ async def _process_single_deliverable(
                 item.fail()
             return res
         except Exception as e:
+            record_failure("Metadata generation", e, deliverable)
             log.error("Error in task for %s: %s", deliverable.full_id, e)
             if item is not None:
                 item.fail()
@@ -413,6 +416,7 @@ async def _validate_metadata(
                         if exitfirst:
                             break
         except Exception as e:
+            record_failure("Metadata pipeline", e)
             log.error("Task failed unexpectedly: %s", e)
 
     return all_failed_deliverables

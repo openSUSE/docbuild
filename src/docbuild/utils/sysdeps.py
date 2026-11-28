@@ -12,6 +12,7 @@ import click
 import semver
 
 from ..constants import SYSTEM_DEPENDENCIES, DependencySpec
+from .shell import subprocess_env
 
 log = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ def get_binary_version(
             check=False,
             stdin=subprocess.DEVNULL,
             timeout=timeout,
+            env=subprocess_env(),
         )
     except (OSError, subprocess.SubprocessError) as exc:
         log.debug("Failed to execute '%s' to retrieve version: %s", name, exc)

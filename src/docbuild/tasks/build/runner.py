@@ -10,6 +10,7 @@ from typing import Literal
 
 from lxml import etree  # type: ignore
 
+from docbuild.notifications import record_failure
 from docbuild.tasks.build.llms.generator import generate_llmstxt
 
 from ...config.app import normalize_runtime_placeholders
@@ -108,9 +109,14 @@ async def process_single_deliverable(
                 )
             )
 
-            fmt_success, _ = await build_format(deliverable, fmt, cwd, deliverable_build_dir, tmpl)
+            fmt_success, output = await build_format(
+                deliverable, fmt, cwd, deliverable_build_dir, tmpl
+            )
 
             if not fmt_success:
+                record_failure(
+                    "DAPS build", output, deliverable, fmt, worktree=worktree_dir
+                )
                 success = False
             else:
                 # Resolve placeholders for the target path using upstream's normalize_runtime_placeholders
@@ -147,8 +153,16 @@ async def process_single_deliverable(
                             target_dest,
                             sync_result.stderr,
                         )
+                        record_failure(
+                            "Sync",
+                            sync_result.stderr,
+                            deliverable,
+                            fmt,
+                            worktree=worktree_dir,
+                        )
                         success = False
                 except Exception as e:
+                    record_failure("Sync", e, deliverable, fmt, worktree=worktree_dir)
                     log.error("Exception occurred while syncing %s for %s: %s", fmt, deliverable.full_id, e)
                     success = False
 

@@ -3,12 +3,20 @@
 import asyncio
 from collections.abc import Sequence
 import logging
+import os
 from pathlib import Path
 from subprocess import CompletedProcess
 
 from ..constants import GIT_CONFIG_FILENAME, GITLOGGER_NAME
 
 log = logging.getLogger(GITLOGGER_NAME)
+
+
+def subprocess_env(env: dict[str, str] | None = None) -> dict[str, str]:
+    """Keep SMTP credentials in the parent process when invoking external tools."""
+    source = os.environ if env is None else env
+    mail_keys = ("DOCBUILD_SMTP_USERNAME", "DOCBUILD_SMTP_PASSWORD")
+    return {key: value for key, value in source.items() if key not in mail_keys}
 
 
 async def run_command(
@@ -33,7 +41,7 @@ async def run_command(
         cwd=cwd,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
-        env=env,
+        env=subprocess_env(env),
     )
     # 2. Wait for the process to finish
     bstdout, bstderr = await process.communicate()

@@ -8,6 +8,8 @@ from pathlib import Path
 
 from aiostream import pipe, stream
 
+from docbuild.notifications import record_failure
+
 from ..models.deliverable import Deliverable
 from ..utils.contextmgr import PersistentOnErrorTemporaryDirectory
 from ..utils.git import ManagedGitRepo
@@ -27,9 +29,11 @@ async def _safe_process_one(
         async with semaphore:
             return await process_single_func(d, wt_dir)
     except (OSError, KeyError, ValueError) as exc:
+        record_failure("Build", exc, d, worktree=wt_dir)
         log.error("Unexpected error for %s: %s", d.full_id, exc)
         return False, d
     except Exception as exc:
+        record_failure("Build", exc, d, worktree=wt_dir)
         log.error("Fatal error for %s: %s", d.full_id, exc)
         return False, d
 
@@ -53,6 +57,8 @@ async def _process_group(
             await mg.create_worktree(wt_dir, branch)
         except Exception as e:
             log.error("Failed to create worktree for %s branch %s: %s", repo_url, branch, e)
+            for d in group_deliverables:
+                record_failure("Worktree creation", e, d, worktree=wt_dir)
             return group_deliverables
 
         async def process_mapped(d: Deliverable) -> tuple[bool, Deliverable]:
@@ -72,6 +78,12 @@ async def _process_group(
                         failed_in_group.append(d)
         except Exception as e:
             log.error("Group pipeline failed: %s", e)
+            for d in group_deliverables:
+                record_failure(
+                    "Worktree group",
+                    f"Processing branch {branch} stopped ({type(e).__name__})",
+                    d,
+                )
             failed_in_group.extend(group_deliverables)
 
         return failed_in_group
@@ -96,6 +108,9 @@ async def process_with_shared_worktrees(
         # Prevent failure on deliverables missing Git config
         if not getattr(d, "git", None) or not getattr(d.git, "url", None):
             log.error("Deliverable %s is missing Git remote configuration. Skipping.", d.full_id)
+            record_failure(
+                "Repository preparation", "Missing Git remote configuration", d
+            )
             failed.append(d)
             continue
         groups[(d.git.url, d.branch)].append(d)
@@ -121,6 +136,12 @@ async def process_with_shared_worktrees(
                 failed.extend(group_failed)
     except Exception as e:
         log.error("Global pipeline failed: %s", e)
-        failed.extend([d for ds in groups.values() for d in ds])
+        record_failure("Build pipeline", e)
+        for group in groups.values():
+            for d in group:
+                record_failure(
+                    "Build pipeline", "Shared worktree processing stopped", d
+                )
+            failed.extend(group)
 
     return failed
